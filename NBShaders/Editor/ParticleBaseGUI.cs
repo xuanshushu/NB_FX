@@ -48,7 +48,7 @@ namespace NBShaderEditor
             {
                 _stencilValuesConfig =
                     AssetDatabase.LoadAssetAtPath<StencilValuesConfig>(
-                        "Packages/com.xuanxuan.nb.shaders/Shader/StencilConfig.asset");
+                        "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/StencilConfig.asset");
             }
 
             matEditor = materialEditor;

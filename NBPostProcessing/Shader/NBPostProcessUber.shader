@@ -53,7 +53,8 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
          
                 #include "HLSL/PostProcessingFlags.hlsl"
-                #include "Packages/com.xuanxuan.render.utility/Shader/HLSL/XuanXuan_Utility.hlsl"
+			    #include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
+
                 
                 // This example uses the Attributes structure as an input structure in
                 // the vertex shader.

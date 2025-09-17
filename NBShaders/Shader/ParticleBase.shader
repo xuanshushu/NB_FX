@@ -531,7 +531,8 @@
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
             
-            #include "Packages/com.xuanxuan.render.utility/Shader/HLSL/XuanXuan_Utility.hlsl"
+			#include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
+
             #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
             
             ENDHLSL
@@ -638,7 +639,7 @@
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
             
-            #include "Packages/com.xuanxuan.render.utility/Shader/HLSL/XuanXuan_Utility.hlsl"
+            #include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
             #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
             
             
@@ -746,7 +747,7 @@
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
             
-            #include "Packages/com.xuanxuan.render.utility/Shader/HLSL/XuanXuan_Utility.hlsl"
+			#include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
             #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
             
             
@@ -855,7 +856,7 @@
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
             
-            #include "Packages/com.xuanxuan.render.utility/Shader/HLSL/XuanXuan_Utility.hlsl"
+			#include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
             #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
             
             
@@ -963,7 +964,8 @@
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
             
-            #include "Packages/com.xuanxuan.render.utility/Shader/HLSL/XuanXuan_Utility.hlsl"
+			#include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
+
             #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
             
             
