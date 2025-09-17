@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9177edf81a5b2354490ec4d66c4c069d, type: 3}
+  m_Name: StencilConfig
+  m_EditorClassIdentifier: Assembly-CSharp-Editor:stencilTestHelper:StencilValuesConfig
+  Config:
+  - key: ParticleBaseDefault
+    Values:
+      DefaultQueue: 3100
+      Ref: 0
+      Comp: 8
+      Pass: 0
+      Fail: 0
+      ZFail: 0
+      ReadMask: 255
+      WriteMask: 255
+  - key: Disturbance
+    Values:
+      DefaultQueue: 3000
+      Ref: 0
+      Comp: 8
+      Pass: 0
+      Fail: 0
+      ZFail: 0
+      ReadMask: 255
+      WriteMask: 255
+  - key: ParticalBasePortal
+    Values:
+      DefaultQueue: 3100
+      Ref: 200
+      Comp: 3
+      Pass: 0
+      Fail: 0
+      ZFail: 0
+      ReadMask: 255
+      WriteMask: 255
+  - key: ParticalBasePortalMask
+    Values:
+      DefaultQueue: 2000
+      Ref: 200
+      Comp: 8
+      Pass: 2
+      Fail: 0
+      ZFail: 0
+      ReadMask: 255
+      WriteMask: 255
+  - key: ParticleBaseDecal
+    Values:
+      DefaultQueue: 3100
+      Ref: 2
+      Comp: 7
+      Pass: 0
+      Fail: 0
+      ZFail: 0
+      ReadMask: 255
+      WriteMask: 255
+  - key: ParticleWithoutPlayer
+    Values:
+      DefaultQueue: 3100
+      Ref: 5
+      Comp: 5
+      Pass: 0
+      Fail: 0
+      ZFail: 0
+      ReadMask: 255
+      WriteMask: 255
