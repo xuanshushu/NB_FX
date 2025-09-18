@@ -3,29 +3,28 @@ using UnityEngine;
 using System.Collections.Generic;
 namespace NBShaderEditor
 {
-    public abstract class ShaderGUIItem
+    public class ShaderGUIItem
     {
         public MaterialEditor MatEditor;
+        public ShaderGUI GUI;
         public MaterialProperty Property;
+        public MaterialProperty[] Properties;
         public ShaderGUIItem ParentItem;
         public List<ShaderGUIItem> ChildrenItemList;
         public Material[] Mats;
+        public Rect rect;
+        public RootItem RootItem;
 
-        public ShaderGUIItem(MaterialEditor editor,MaterialProperty[] props,ShaderGUIItem parentItem,string propertyname = null)
+        public ShaderGUIItem(ShaderGUIItem parentItem=null,string propertyname = null)
         {
-            if (propertyname != null)
+            if (parentItem != null)
             {
-                foreach (var prop in props)
-                {
-                    if (prop.name == propertyname)
-                    {
-                        Property = prop;
-                        return;
-                    }
-                }
+                Mats = parentItem.Mats;
+                MatEditor = parentItem.MatEditor;
+                GUI = parentItem.GUI;
+                RootItem = parentItem.RootItem;
             }
-
-            MatEditor = editor;
+            
             ParentItem = parentItem;
             Mats = MatEditor.targets as Material[];
             
