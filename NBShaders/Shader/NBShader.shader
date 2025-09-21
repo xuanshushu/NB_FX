@@ -2,6 +2,7 @@
 {
     Properties
     {
+    	_BigBlockModeSettingFoldOut("_BigBlockModeSettingFoldOut",Float) = 0
     	_MeshSourceMode("Mesh来源模式",Float) = 0
         _UIEffect_Toggle("UI模式_Toggle",Float) = 0
         _DistortionBothDirection_Toggle("__DistortionBothDirection_Toggle",Float) = 0
@@ -75,7 +76,7 @@
     	_CylinderMatrix2("圆柱偏移矩阵2",Vector) = (0,0,0,0)
     	_CylinderMatrix3("圆柱偏移矩阵3",Vector) = (0,0,0,0)
         
-        _Cutoff ("裁剪位置", float) = 0
+        _Cutoff ("裁剪位置", float) = 0.5
     	
     	//--------------光照部分-------------
     	_FxLightMode("灯光模式",Float) = 0
@@ -270,7 +271,7 @@
         _fogintensity ("雾影响强度", Range(0, 1)) = 1
         // -------------------------------------
         // Hidden properties - Generic  通用的隐藏属性
-    	_AdditiveToPreMultiplyAlphaLerp("相加到预乘混合",Range(0,1)) = 0.0
+    	_AdditiveToPreMultiplyAlphaLerp("相加到预乘混合",Float) = 0.0
         [HideInInspector] _Blend ("__mode-ignore", Float) = 0.0
         [HideInInspector] _AlphaClip ("__clip-ignore", Float) = 0.0
         [HideInInspector] _SrcBlend ("__src-ignore", Float) = 1.0

@@ -5,67 +5,143 @@ namespace NBShaderEditor
 {
     public class ShaderGUIItem
     {
-        private const float labelWidth = 100f;
-        public MaterialProperty Property;
+        public const float LabelWidth = 100f;
+        public ShaderPropertyInfo PropertyInfo;
         public ShaderGUIItem ParentItem;
-        public List<ShaderGUIItem> ChildrenItemList;
-        public Rect rect;
-        public ShaderGUIRootItem rootItem;
-        public string propertyName;
-        public GUIContent guiContent;
+        public List<ShaderGUIItem> ChildrenItemList = new List<ShaderGUIItem>();
+        public ShaderGUIRootItem RootItem;
+        public string PropertyName;
+        public GUIContent GuiContent;
+        public int shaderPropertyIndex;
 
-        public virtual void Init()
+        public virtual void InitTriggerByChild()
+        {
+            if ( PropertyInfo == null && PropertyName != null)
+            {
+                PropertyInfo = RootItem.PropertyInfoDic[PropertyName];
+            }
+            CheckIsPropertyModified();
+        }
+        public ShaderGUIItem(ShaderGUIRootItem rtItem,ShaderGUIItem parentItem=null)
+        {
+            RootItem = rtItem;
+            if (parentItem != null)
+            {
+                ParentItem = parentItem;
+            }
+        }
+
+        public Rect BaseRect;
+        public Rect LabelRect;
+        public Rect ControlRect;
+        public Rect ResetRect;
+        private static float ResetButtonSize => EditorGUIUtility.singleLineHeight;
+        public virtual void GetRect()
+        {
+            BaseRect = EditorGUILayout.GetControlRect();
+            LabelRect = BaseRect;
+            LabelRect.width = LabelWidth;
+            ControlRect = BaseRect;
+            ControlRect.x += LabelWidth;
+            ControlRect.width -= LabelWidth;
+            ControlRect.width -= ResetButtonSize;
+            ResetRect = BaseRect;
+            ResetRect.x = BaseRect.x + BaseRect.width -ResetButtonSize;
+            ResetRect.width = ResetButtonSize;
+        }
+
+        
+        public virtual void OnGUI()
+        {
+           
+            GetRect();
+            EditorGUI.LabelField(LabelRect, GuiContent);
+            EditorGUI.BeginChangeCheck();
+            EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
+            DrawController();
+            EditorGUI.showMixedValue = false;
+            if (EditorGUI.EndChangeCheck())
+            {
+                OnEndChange();
+            }
+            _resetButtonContent.text = HasModified ? "R" : "";
+            _resetButtonStyle = HasModified ? GUI.skin.button : GUI.skin.label;
+            if (GUI.Button(ResetRect, _resetButtonContent, _resetButtonStyle))
+            {
+                ExecuteReset();
+            }
+            DrawBlock();
+        }
+
+        public virtual void DrawController()
         {
             
         }
 
-        public ShaderGUIItem(ShaderGUIRootItem rtItem,ShaderGUIItem parentItem=null)
+        public virtual void DrawBlock()
         {
-            rootItem = rtItem;
-            if (parentItem != null)
-            {
-                parentItem = parentItem;
-            }
-            Init();
+            
+        }
+        
+        public virtual void OnEndChange()
+        {
+            CheckIsPropertyModified();
         }
 
-        public void InitProperty()
-        {
-            if (propertyName != null)
-            {
-                Property = rootItem.propertyDic[propertyName];
-            }
-        }
+        #region  ResetLogic
 
-        public Rect baseRect;
-        public Rect labelRect;
-        public Rect controlRect;
-        public Rect resetRect;
-        static float resetButtonSize => EditorGUIUtility.singleLineHeight;
-        public virtual void GetRect()
-        {
-            baseRect = EditorGUILayout.GetControlRect();
-            labelRect = baseRect;
-            labelRect.width = labelWidth;
-            // EditorGUI.DrawRect(labelRect,Color.red);
-            controlRect = baseRect;
-            controlRect.x += labelWidth;
-            controlRect.width -= labelWidth;
-            controlRect.width -= resetButtonSize;
-            // EditorGUI.DrawRect(controlRect,Color.green);
-            resetRect = baseRect;
-            resetRect.x = baseRect.x + baseRect.width -resetButtonSize;
-            resetRect.width = resetButtonSize;
-            // EditorGUI.DrawRect(resetRect,Color.blue);
-        }
 
-        public virtual void OnGUI()
+        private GUIContent _resetButtonContent = new GUIContent("R","重置当前属性及子集属性(如有)");
+        private GUIStyle _resetButtonStyle;
+        public bool HasModified = false;
+        public virtual void CheckIsPropertyModified()
         {
-            if (rootItem.isInit)
+            if (PropertyInfo != null)
             {
-                InitProperty();
+                switch (PropertyInfo.Property.type)
+                {
+                    case MaterialProperty.PropType.Float:
+                    
+                        float defaultValue = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index);
+                        HasModified = !Mathf.Approximately(PropertyInfo.Property.floatValue, defaultValue);
+                    break;
+                }
             }
-            GetRect();
+            else
+            {
+                HasModified = false;//如果没有Property，则是看子集的情况
+            }
+
+            foreach (var childItem in ChildrenItemList)
+            {
+                HasModified |= childItem.HasModified;
+            }
+            ParentItem?.CheckIsPropertyModified();
         }
+        
+        public virtual void ExecuteReset()
+        {
+            if (PropertyInfo != null)
+            {
+                switch (PropertyInfo.Property.type)
+                {
+                    case MaterialProperty.PropType.Float:
+                    
+                        float defaultValue = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index);
+                        PropertyInfo.Property.floatValue = defaultValue;
+                        break;
+                }
+            }
+            
+            foreach (var childItem in ChildrenItemList)
+            {
+                childItem.ExecuteReset();
+            }
+            CheckIsPropertyModified();
+        }
+        
+        #endregion
+        
+        
     }
 }
