@@ -5,34 +5,67 @@ namespace NBShaderEditor
 {
     public class ShaderGUIItem
     {
-        public MaterialEditor MatEditor;
-        public ShaderGUI GUI;
+        private const float labelWidth = 100f;
         public MaterialProperty Property;
-        public MaterialProperty[] Properties;
         public ShaderGUIItem ParentItem;
         public List<ShaderGUIItem> ChildrenItemList;
-        public Material[] Mats;
         public Rect rect;
-        public RootItem RootItem;
+        public ShaderGUIRootItem rootItem;
+        public string propertyName;
+        public GUIContent guiContent;
 
-        public ShaderGUIItem(ShaderGUIItem parentItem=null,string propertyname = null)
+        public virtual void Init()
         {
+            
+        }
+
+        public ShaderGUIItem(ShaderGUIRootItem rtItem,ShaderGUIItem parentItem=null)
+        {
+            rootItem = rtItem;
             if (parentItem != null)
             {
-                Mats = parentItem.Mats;
-                MatEditor = parentItem.MatEditor;
-                GUI = parentItem.GUI;
-                RootItem = parentItem.RootItem;
+                parentItem = parentItem;
             }
-            
-            ParentItem = parentItem;
-            Mats = MatEditor.targets as Material[];
-            
+            Init();
+        }
+
+        public void InitProperty()
+        {
+            if (propertyName != null)
+            {
+                Property = rootItem.propertyDic[propertyName];
+            }
+        }
+
+        public Rect baseRect;
+        public Rect labelRect;
+        public Rect controlRect;
+        public Rect resetRect;
+        static float resetButtonSize => EditorGUIUtility.singleLineHeight;
+        public virtual void GetRect()
+        {
+            baseRect = EditorGUILayout.GetControlRect();
+            labelRect = baseRect;
+            labelRect.width = labelWidth;
+            // EditorGUI.DrawRect(labelRect,Color.red);
+            controlRect = baseRect;
+            controlRect.x += labelWidth;
+            controlRect.width -= labelWidth;
+            controlRect.width -= resetButtonSize;
+            // EditorGUI.DrawRect(controlRect,Color.green);
+            resetRect = baseRect;
+            resetRect.x = baseRect.x + baseRect.width -resetButtonSize;
+            resetRect.width = resetButtonSize;
+            // EditorGUI.DrawRect(resetRect,Color.blue);
         }
 
         public virtual void OnGUI()
         {
-            
+            if (rootItem.isInit)
+            {
+                InitProperty();
+            }
+            GetRect();
         }
     }
 }

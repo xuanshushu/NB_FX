@@ -193,7 +193,7 @@ namespace NBShaderEditor
         }
 
         public float ResetButtonSize => EditorGUIUtility.singleLineHeight;
-
+        
         private GUIContent resetIconContent = new GUIContent();
         //仅仅只是Drawer
         private void DrawResetModifyButtonFinal(Rect position, (string, string) nameTuple)

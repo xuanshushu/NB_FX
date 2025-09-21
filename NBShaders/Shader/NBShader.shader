@@ -1,4 +1,4 @@
-﻿Shader "Effects/NBShader(Deprecated)"
+﻿Shader "Effects/NBShader"
 {
     Properties
     {
@@ -974,5 +974,5 @@
         }
     }
     
-    CustomEditor "NBShaderEditor.ParticleBaseGUI"
+    CustomEditor "NBShaderEditor.NBShaderGUI"
 }
