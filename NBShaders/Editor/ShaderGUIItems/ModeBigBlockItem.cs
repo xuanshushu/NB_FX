@@ -6,14 +6,12 @@ namespace NBShaderEditor
 {
      public class ModeBigBlockItem:ShaderGUIBigBlockItem
     {
-        public ModeBigBlockItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) :
-            base(rootItem, parentItem: parentItem)
+        public ModeBigBlockItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem: parentItem)
         {
             GuiContent = new GUIContent("模式设置", "各种基础模式设置");
             FoldOutPropertyName = "_BigBlockModeSettingFoldOut";
             _meshModePopUp = new MeshModePopUp(rootItem, this);
             _transparentMode = new TransparentModePopUp(rootItem, this);
-            ChildrenItemList.Add(_meshModePopUp);
             base.InitTriggerByChild();
         }
 
@@ -55,8 +53,24 @@ namespace NBShaderEditor
             };
             PropertyName = "_MeshSourceMode";
             GuiContent = new GUIContent("Mesh来源模式", "Mesh来源模式和当前的对象类型一致");
-            MeshSourceModeDic.Add(RootItem,this);
-            base.InitTriggerByChild();
+            MeshSourceModeDic.Add(rootItem,this);
+            InitTriggerByChild();
+        }
+
+        public MixedBool UIEffectEnabled()
+        {
+            if ((int)MeshSourceMode >= 2)
+            {
+                return MixedBool.True;
+            }
+            else if (MeshSourceMode == MeshSourceMode.UnKnowOrMixed)
+            {
+                return MixedBool.Mixed;
+            }
+            else
+            {
+                return MixedBool.False;
+            }
         }
 
         public override void OnGUI()
@@ -108,7 +122,7 @@ namespace NBShaderEditor
             _blendPopUp = new BlendPopUp(RootItem, this);
             PropertyInfo = RootItem.PropertyInfoDic[PropertyName];
             TransparentMode = (TransparentMode)PropertyInfo.Property.floatValue;
-            base.InitTriggerByChild();
+            InitTriggerByChild();
         }
 
 
@@ -246,7 +260,7 @@ namespace NBShaderEditor
             GuiContent = new GUIContent("混合模式");
             BlendModeDic.Add(rootItem,this);
             _addToPreMultiplySlider = new AddToPreMultiplySlider(rootItem, this);
-            base.InitTriggerByChild();
+            InitTriggerByChild();
         }
 
         public override void OnGUI()
@@ -341,7 +355,7 @@ namespace NBShaderEditor
             base.InitTriggerByChild();
         }
 
-        public override void CheckIsPropertyModified()
+        public override void CheckIsPropertyModified(bool isCallByChild = false)
         {
             float defaultValue = 0;
             BlendPopUp blendPopUp = BlendPopUp.BlendModeDic[RootItem];
@@ -351,11 +365,11 @@ namespace NBShaderEditor
             }
             
             HasModified = !Mathf.Approximately(defaultValue,PropertyInfo.Property.floatValue);
-            ParentItem?.CheckIsPropertyModified();
+            ParentItem?.CheckIsPropertyModified(true);
             
         }
 
-        public override void ExecuteReset()
+        public override void ExecuteReset(bool isCallByParent = false)
         {
             float defaultValue = 0;
             BlendPopUp blendPopUp = BlendPopUp.BlendModeDic[RootItem];

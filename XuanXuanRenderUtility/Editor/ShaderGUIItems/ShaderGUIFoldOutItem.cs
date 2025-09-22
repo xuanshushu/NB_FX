@@ -54,13 +54,17 @@ namespace NBShaderEditor
 		}
 
 		public ShaderGUIBigBlockItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) :
-			base(rootItem, parentItem: parentItem) { }
+			base(rootItem, parentItem: parentItem)
+		{
+			
+		}
 		
 		public override void OnGUI()//完全覆写
         {
 	        EditorGUILayout.Space();
 	        GetRect();
 	        EditorGUI.LabelField(LabelRect, GuiContent,_boldStyle);
+	        DrawResetButton();
 	        EditorGUI.indentLevel++;
 	        bool isOpen = _foldOutHelper.BeginFadedGroup(BaseRect);
 	        if (isOpen)

@@ -17,7 +17,6 @@ namespace NBShaderEditor
     
     public class NBShaderRootItem:ShaderGUIRootItem
     {
-        public ShaderGUIBigBlockItem modeBigBlock;
         public override void InitFlags(List<Material> mats)
         {
             ShaderFlags = new List<ShaderFlagsBase>();
@@ -28,13 +27,18 @@ namespace NBShaderEditor
             }
         }
 
+        public ModeBigBlockItem modeBigBlock;
+        public BaseOptionBigBlockItem baseOptionBigBlock;
         public override void OnChildOnGUI()
         {
             if (IsInit)
             {
                 modeBigBlock = new ModeBigBlockItem(this,null);
+                baseOptionBigBlock = new BaseOptionBigBlockItem(this,null);
+                
             }
             modeBigBlock.OnGUI();
+            baseOptionBigBlock.OnGUI();
         }
         
     }
