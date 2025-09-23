@@ -2251,11 +2251,7 @@ namespace NBShaderEditor
             // #else
             Renderer[] renderers =
                 UnityEngine.Object.FindObjectsOfType(typeof(Renderer)) as Renderer[];//为了兼容性使用较慢版本
-            if (renderers != null)
-            {
-                m_RenderersUsingThisMaterial = renderers.ToList();
-                _helper.InitRenderers(m_RenderersUsingThisMaterial);
-            }
+            m_RenderersUsingThisMaterial.Clear();
             // #endif
             foreach (Renderer renderer in renderers)
             {
@@ -2269,8 +2265,18 @@ namespace NBShaderEditor
                         m_ParticleRenderersUsingThisMaterial.Add(psr);
                     }
                 }
+
+                foreach (var mat in renderer.sharedMaterials)
+                {
+                    if (mat == material)
+                    {
+                        m_RenderersUsingThisMaterial.Add(renderer);
+                        break;
+                    }
+                }
                 
             }
+            _helper.InitRenderers(m_RenderersUsingThisMaterial);
         }
         
         //雨轩：UnityEditorInternal命名空间下提供 一个类ReorderableList可以实现通过拖曳来达到列表元素的重新排序。

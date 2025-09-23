@@ -62,12 +62,13 @@ namespace NBShaderEditor
         
         public virtual void OnGUI()
         {
-           
             GetRect();
             EditorGUI.LabelField(LabelRect, GuiContent);
             EditorGUI.BeginChangeCheck();
             EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
+            if (IsPropertyAnimated(PropertyName)) GUI.backgroundColor = RootItem.AnimatedBackgroundColor;
             DrawController();
+            GUI.backgroundColor = RootItem.DefaultBackgroundColor;
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
             {
@@ -102,6 +103,31 @@ namespace NBShaderEditor
             CheckIsPropertyModified();
         }
 
+        private string _animationPropertyPath; 
+        
+         public bool IsPropertyAnimated(string propertyName)
+         {
+             if (propertyName == null) return false;
+            if (AnimationMode.InAnimationMode())
+            {
+                if (_animationPropertyPath == null)
+                {
+                    _animationPropertyPath = "material." + propertyName;
+                }
+                foreach (var r in RootItem.RenderersUsingThisMaterial)
+                {
+                    if (AnimationMode.IsPropertyAnimated(r, _animationPropertyPath))
+                    {
+                        // Debug.Log(propertyName);
+                        return true;
+                    }
+                }
+            }
+        
+            return false;
+        }
+
+
         #region  ResetLogic
 
 
@@ -119,7 +145,7 @@ namespace NBShaderEditor
                     switch (PropertyInfo.Property.type)
                     {
                         case MaterialProperty.PropType.Float:
-                        
+                        case MaterialProperty.PropType.Range:
                             float defaultValue = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index);
                             isDefaultValue = Mathf.Approximately(PropertyInfo.Property.floatValue, defaultValue);
                         break;
@@ -156,7 +182,7 @@ namespace NBShaderEditor
                 switch (PropertyInfo.Property.type)
                 {
                     case MaterialProperty.PropType.Float:
-                    
+                    case MaterialProperty.PropType.Range:
                         float defaultValue = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index);
                         PropertyInfo.Property.floatValue = defaultValue;
                         break;
