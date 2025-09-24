@@ -1,4 +1,4 @@
-﻿Shader "Effects/NBShader(Deprecated)"
+﻿Shader "Effects/NBShader"
 {
     Properties
     {
@@ -18,9 +18,12 @@
         
         _Dissolve_Toggle("__Dissolve_Toggle",Float) = 0
         _DissolveMask_Toggle("__DissolveMask_Toggle",Float) = 0
-        _DissolveVoronoi_Toggle("__DissolveVoronoi_Toggle",Float) = 0
         _Dissolve_useRampMap_Toggle("__Dissolve_useRampMap_Toggle",Float) = 0
         _Dissolve_Test_Toggle("__Dissolve_Test_Toggle",Float) = 0
+    	
+    	_ProgramNoise_Toggle("_ProgramNoise_Toggle",Float) = 0
+        _ProgramNoise_Simple_Toggle("_ProgramNoise_Simple_Toggle",Float) = 0
+        _ProgramNoise_Voronoi_Toggle("_ProgramNoise_Voronoi_Toggle",Float) = 0
 
         
 
@@ -460,6 +463,7 @@
             #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
             //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma  shader_feature_local  _COLORMAPBLEND//颜色渐变
@@ -575,6 +579,7 @@
             #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
@@ -683,6 +688,7 @@
             // #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
@@ -792,6 +798,7 @@
             // #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
@@ -899,6 +906,7 @@
             #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变

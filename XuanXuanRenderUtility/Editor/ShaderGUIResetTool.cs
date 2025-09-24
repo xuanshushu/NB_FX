@@ -174,6 +174,7 @@ namespace NBShaderEditor
                     parentItem.ChildResetItems.Add(item);
                     item.Parent = parentItem;
                 }
+                onValueChangedCallBack?.Invoke();//属性值初始化
                 item.CheckOnValueChange();//Init
             }
             else

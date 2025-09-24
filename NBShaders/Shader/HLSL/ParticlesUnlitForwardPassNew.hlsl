@@ -1,7 +1,7 @@
 #ifndef PARTICLESUNLITFORWARDPASS
     #define PARTICLESUNLITFORWARDPASS
-    #include "HLSL/ParticlesUnlitInputNew.hlsl"
-    #include "HLSL/SixWaySmokeLit.hlsl"
+    #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/ParticlesUnlitInputNew.hlsl"
+    #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/SixWaySmokeLit.hlsl"
 
     
     ///////////////////////////////////////////////////////////////////////////////
@@ -130,6 +130,9 @@
             #if defined(_DISSOLVE) 
                 output.dissolveTexcoord.xy = particleUVs.dissolve_uv;
                 output.dissolveTexcoord.zw = particleUVs.dissolve_mask_uv;
+            #endif
+
+            #ifdef _PROGRAM_NOISE
                 output.dissolveNoiseTexcoord.xy = particleUVs.dissolve_noise1_UV;
                 output.dissolveNoiseTexcoord.zw = particleUVs.dissolve_noise2_UV;
             #endif
@@ -245,7 +248,6 @@
             half decalAlpha = NB_Remap (abs(fragobjectPos.y),0.1,0.5,1,0);
             decalAlpha *= clipValue;
             float2 decalUV = fragobjectPos.xz + 0.5;
-
         #endif
 
         float4 uv = input.texcoord;
@@ -325,9 +327,41 @@
             #ifdef _DISSOLVE
                 dissolve_uv = input.dissolveTexcoord.xy;
                 dissolve_mask_uv = input.dissolveTexcoord.zw;
+            #endif
+            #ifdef _PROGRAM_NOISE
                 dissolve_noise_uv = input.dissolveNoiseTexcoord;
             #endif
         }
+
+
+        half programNoise;
+        #ifdef _PROGRAM_NOISE
+        half programSimpleNoise;
+        half programVoronoiNoise;
+
+        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE))
+        {
+            programSimpleNoise = SimplexNoise(dissolve_noise_uv.xy,_Time.y*_DissolveVoronoi_Vec2.z);
+            programNoise = programSimpleNoise;
+        }
+
+        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI))
+        {
+            half cell;
+            Unity_Voronoi_float(dissolve_noise_uv.zw,_Time.y*_DissolveVoronoi_Vec2.w,_DissolveVoronoi_Vec.zw,programVoronoiNoise,cell);
+            programNoise = programVoronoiNoise ; 
+        }
+        
+        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE)&CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI))
+        {
+            Unity_Blend_HardLight_half(programSimpleNoise,programVoronoiNoise,_DissolveVoronoi_Vec2.x,programNoise);
+        }
+                        
+        // half dissolveSample = dissolveValue;
+        // Unity_Blend_HardLight_half(overlayVoroni,dissolveSample,_DissolveVoronoi_Vec2.y,dissolveValue);
+        return half4(programNoise.rrr,1);
+        #endif
+        
         half2 originUV = MainTex_UV;
 
         #ifdef _PARALLAX_MAPPING
@@ -400,11 +434,7 @@
             // #endif
         
             cum_noise *= noiseMask;
-        
-      
 
-        
-        
         #endif
 
         // SampleAlbedo--------------------
@@ -665,24 +695,7 @@
             
             half dissolveValue = GetColorChannel(dissolveMapSample,FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP);
 
-            UNITY_BRANCH
-            if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DISSOVLE_VORONOI))
-            {
-                half cell;
-                half noise1;
-                noise1 = SimplexNoise(dissolve_noise_uv.xy,_Time.y*_DissolveVoronoi_Vec2.z);
-            
-                half noise2;
-                Unity_Voronoi_float(dissolve_noise_uv.zw,_Time.y*_DissolveVoronoi_Vec2.w,_DissolveVoronoi_Vec.zw,noise2,cell);
-                half overlayVoroni;
-          
-                half dissolveSample = dissolveValue;
-                Unity_Blend_HardLight_half(noise1,noise2,_DissolveVoronoi_Vec2.x,overlayVoroni);
-                
-                Unity_Blend_HardLight_half(overlayVoroni,dissolveSample,_DissolveVoronoi_Vec2.y,dissolveValue);
-
-                
-            }
+//TODO:ProgramNoise
 
             // dissolveValue = SimpleSmoothstep(_Dissolve_Vec2.x,_Dissolve_Vec2.y,dissolveValue);
             dissolveValue = pow(dissolveValue,_Dissolve.y);

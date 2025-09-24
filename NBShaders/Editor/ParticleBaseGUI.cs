@@ -889,6 +889,50 @@ namespace NBShaderEditor
                         });
                 });
 
+            _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutProgramNoise, 3, GetAnimBoolIndex(3), "程序化噪波",
+                "_ProgramNoise_Toggle", shaderKeyword: "_PROGRAM_NOISE", fontStyle: FontStyle.Bold,
+                drawBlock: (isToggle) =>
+                {
+                    DrawUVModeSelect(W9ParticleShaderFlags.foldOutBit1UVModeProgramNoise, 4, "程序噪波UV来源", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE, 0);
+                    _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2ProgramNoiseSimple,5,GetAnimBoolIndex(5),"Perlin噪波",propertyName:"_ProgramNoise_Simple_Toggle",flagBitsName:W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE,flagIndex:1,drawBlock:
+                        isToggle =>
+                        {
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec", "噪波1缩放", true);
+                            _helper.DrawVector4Component("噪波1速度", "_DissolveVoronoi_Vec2", "z", false);
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec4", "噪波1偏移", true);
+                            DrawCustomDataSelect("噪波1偏移速度X自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X, 2);
+                            DrawCustomDataSelect("噪波1偏移速度Y自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y, 2);
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec3", "噪波1偏移速度", true);
+                        });
+                    _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2ProgramNoiseVoronoi, 5,
+                        GetAnimBoolIndex(5), "Voronoi噪波", propertyName: "_ProgramNoise_Voronoi_Toggle",
+                        flagBitsName: W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI, flagIndex: 1,
+                        drawBlock:
+                        isToggle =>
+                        {
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec", "噪波2缩放", false);
+                            _helper.DrawVector4Component("噪波2速度", "_DissolveVoronoi_Vec2", "w", false);
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec4", "噪波2偏移", false);
+                            DrawCustomDataSelect("噪波2偏移速度X自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X, 2);
+                            DrawCustomDataSelect("噪波2偏移速度Y自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y, 2);
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec3", "噪波2偏移速度", false);
+                        });
+
+                    if ((_helper.GetProperty("_ProgramNoise_Simple_Toggle").floatValue > 0.5 &&
+                         _helper.GetProperty("_ProgramNoise_Voronoi_Toggle").floatValue > 0.5) ||
+                        _helper.ResetTool.IsInitResetData)
+                    {
+                        _helper.DrawVector4Component("噪波12混合系数(圆尖)", "_DissolveVoronoi_Vec2", "x", true);
+                    }
+                    // _helper.DrawVector4Component("噪波整体和溶解贴图混合系数", "_DissolveVoronoi_Vec2", "y", true);
+                    EditorGUILayout.Space();
+                });
+        
+
             _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitNoise, 3, GetAnimBoolIndex(3), "扭曲",
                 "_noisemapEnabled", shaderKeyword: "_NOISEMAP", fontStyle: FontStyle.Bold,
                 drawBlock: (isToggle) =>
@@ -922,7 +966,6 @@ namespace NBShaderEditor
                                     _helper.DrawFloat("范围(Pow)", "_ScreenDistortAlphaPow");
                                     _helper.DrawFloat("相乘", "_ScreenDistortAlphaMulti");
                                     _helper.DrawFloat("偏移(相加)", "_ScreenDistortAlphaAdd");
-                            
                                 });
                          
                             EditorGUI.indentLevel--;
@@ -1218,35 +1261,6 @@ namespace NBShaderEditor
                     {
                         _helper.DrawVector4Component("溶解贴图扭曲强度", "_DissolveOffsetRotateDistort", "w", false);
                     });
-                    
-                    _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutDissolveVoronoi, 3, GetAnimBoolIndex(3),
-                        "程序化噪波叠加", "_DissolveVoronoi_Toggle",
-                        W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_DISSOVLE_VORONOI, flagIndex: 1, isIndentBlock: true,
-                        drawBlock: isVoronoiToggle =>
-                        {
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec", "噪波1缩放", true);
-                            _helper.DrawVector4Component("噪波1速度", "_DissolveVoronoi_Vec2", "z", false);
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec4", "噪波1偏移", true);
-                            DrawCustomDataSelect("噪波1偏移速度X自定义曲线",
-                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X, 2);
-                            DrawCustomDataSelect("噪波1偏移速度Y自定义曲线",
-                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y, 2);
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec3", "噪波1偏移速度", true);
-                            EditorGUILayout.Space();
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec", "噪波2缩放", false);
-                            _helper.DrawVector4Component("噪波2速度", "_DissolveVoronoi_Vec2", "w", false);
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec4", "噪波2偏移", false);
-                            DrawCustomDataSelect("噪波2偏移速度X自定义曲线",
-                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X, 2);
-                            DrawCustomDataSelect("噪波2偏移速度Y自定义曲线",
-                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y, 2);
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec3", "噪波2偏移速度", false);
-                            EditorGUILayout.Space();
-                            EditorGUILayout.Space();
-                            _helper.DrawVector4Component("噪波12混合系数(圆尖)", "_DissolveVoronoi_Vec2", "x", true);
-                            _helper.DrawVector4Component("噪波整体和溶解贴图混合系数", "_DissolveVoronoi_Vec2", "y", true);
-                            EditorGUILayout.Space();
-                        });
 
                     _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2DissolveLine,5,GetAnimBoolIndex(5),"溶解描边","_DissolveLineMaskToggle",W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK,1,drawBlock:
                         isDissolveLineMask =>

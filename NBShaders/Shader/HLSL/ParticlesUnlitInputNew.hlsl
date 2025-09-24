@@ -916,18 +916,25 @@
                 float2 dissolveMaskUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP,baseUVs);
                 particleUVs.dissolve_mask_uv = ParticleUVCommonProcess(dissolveMaskUV,_DissolveMaskMap_ST,float2(0,0),_DissolveOffsetRotateDistort.z);
             }
-            if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DISSOVLE_VORONOI))
+        #endif
+
+        #ifdef _PROGRAM_NOISE
+            float2 programNoiseUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE,baseUVs);
+            if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE))
             {
-                float2 halfUV = dissolveUV;
-                // halfUV.x = abs(halfUV.x-0.5);//20240729不明白当时为什么要做这个ABS处理。先注销掉看看。
                 _DissolveVoronoi_Vec4.x += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
                 _DissolveVoronoi_Vec4.y += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
+                particleUVs.dissolve_noise1_UV = programNoiseUV * _DissolveVoronoi_Vec.xy + _DissolveVoronoi_Vec4.xy + time*_DissolveVoronoi_Vec3.xy;
+                
+            }
+            if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI))
+            {
                 _DissolveVoronoi_Vec4.z += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
                 _DissolveVoronoi_Vec4.w += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
-                particleUVs.dissolve_noise1_UV = halfUV * _DissolveVoronoi_Vec.xy + _DissolveVoronoi_Vec4.xy + time*_DissolveVoronoi_Vec3.xy;
-                particleUVs.dissolve_noise2_UV = halfUV * _DissolveVoronoi_Vec.zw + _DissolveVoronoi_Vec4.zw + time*_DissolveVoronoi_Vec3.zw;
+                particleUVs.dissolve_noise2_UV = programNoiseUV * _DissolveVoronoi_Vec.zw + _DissolveVoronoi_Vec4.zw + time*_DissolveVoronoi_Vec3.zw;
             }
         #endif
+        
         
         #ifdef _COLORMAPBLEND
             float2 colorBlendUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP,baseUVs);
@@ -1223,10 +1230,12 @@
         #if defined(_DISSOLVE) 
 
             float4 dissolveTexcoord:TEXCOORD15;
-            float4 dissolveNoiseTexcoord: TEXCOORD5;
 
         #endif
-
+        #ifdef _PROGRAM_NOISE
+            float4 dissolveNoiseTexcoord: TEXCOORD5;
+        #endif
+        
         
         float4 positionWS: TEXCOORD3;
         float4 positionOS: TEXCOORD12;

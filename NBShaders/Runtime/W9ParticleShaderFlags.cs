@@ -132,13 +132,13 @@ public class W9ParticleShaderFlags: ShaderFlagsBase
     public const int FLAG_BIT_PARTICLE_1_MASK_REFINE = 1 << 7;
     public const int FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE = 1 << 8;
     public const int FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR = 1 << 9;
-    public const int FLAG_BIT_PARTICLE_1_DISSOVLE_VORONOI = 1 << 10;
+    public const int FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE = 1 << 10;
     public const int FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP = 1 << 11;
     public const int FLAG_BIT_PARTICLE_1_MASK_MAP2 = 1 << 12;
     public const int FLAG_BIT_PARTICLE_1_MASK_MAP3 = 1 << 13;
     public const int FLAG_BIT_PARTICLE_1_NOISE_MASKMAP = 1 << 14;
     public const int FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER = 1 << 15;
-    public const int FLAG_BIT_PARTICLE_1_CUSTOMDATA2Z_VERTEXOFFSET_INTENSITY= 1 << 16;
+    public const int FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI= 1 << 16;
     public const int FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE= 1 << 17;
     public const int FLAG_BIT_PARTICLE_1_USE_TEXCOORD1= 1 << 18;
     public const int FLAG_BIT_PARTICLE_1_USE_TEXCOORD2= 1 << 19;
@@ -195,7 +195,7 @@ public class W9ParticleShaderFlags: ShaderFlagsBase
     public const int foldOutBitDistortionChoraticaberrat= 1 << 20;
     public const int foldOutDissolve= 1 << 21;
     public const int foldOutDissolveMap= 1 << 22;
-    public const int foldOutDissolveVoronoi= 1 << 23;
+    public const int foldOutProgramNoise= 1 << 23;
     public const int foldOutDissolveRampMap= 1 << 24;
     public const int foldOutDissolveMask= 1 << 25;
     public const int foldOutColorBlend= 1 << 26;
@@ -222,6 +222,7 @@ public class W9ParticleShaderFlags: ShaderFlagsBase
     public const int foldOutBit1UVModeVertexOffsetMaskMap = 1 << 11;
     public const int foldOutBit1UVModeBumpTex = 1 << 12;
     public const int foldOutBit1UVModeRampColorMap = 1 << 13;
+    public const int foldOutBit1UVModeProgramNoise = 1 << 14;
     
     //留一些位置给以后可能会增加的贴图。
     public const int foldOutBit1Portal= 1 << 20;
@@ -242,6 +243,8 @@ public class W9ParticleShaderFlags: ShaderFlagsBase
     public const int foldOutBit2BaseBackColor= 1 << 4;
     public const int foldOutBit2MaskRefine= 1 << 5;
     public const int foldOutBit2ScreenDistortAlphaRefine = 1 << 6;
+    public const int foldOutBit2ProgramNoiseSimple = 1 << 7;
+    public const int foldOutBit2ProgramNoiseVoronoi = 1 << 8;
 
 
     #region CustomDataCodes
@@ -576,6 +579,7 @@ public class W9ParticleShaderFlags: ShaderFlagsBase
     public const int FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP = 11 * 2;
     public const int FLAG_BIT_UVMODE_POS_0_BUMPMAP = 12 * 2;
     public const int FLAG_BIT_UVMODE_POS_0_RAMP_COLOR_MAP = 13 * 2;
+    public const int FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE = 14 * 2;
 
     public void GetUVModeFlagPropID(int flagIndex,out int flagID,out int flagTypeID)
     {

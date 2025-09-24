@@ -1543,10 +1543,10 @@ namespace NBShaderEditor
             ResetTool.EndResetModifyButtonScope();
             EditorGUI.showMixedValue = false;
             
-            if (ResetTool.IsInitResetData)
-            {
-                ResetTool.CheckOnValueChange((label,propertyName));//为什么是在这里验证而不是再ResetTool里。
-            }
+            // if (ResetTool.IsInitResetData)
+            // {
+            //     ResetTool.CheckOnValueChange((label,propertyName));//为什么是在这里验证而不是再ResetTool里。
+            // }
         }
 
         public MaterialProperty GetProperty(string propertyName)

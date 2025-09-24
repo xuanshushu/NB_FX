@@ -1,4 +1,4 @@
-﻿Shader "Effects/NBShader"
+﻿Shader "Effects/NBShader2开发中"
 {
     Properties
     {
@@ -535,7 +535,7 @@
             
 			#include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
 
-            #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
+            #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/ParticlesUnlitForwardPassNew.hlsl"
             
             ENDHLSL
             
@@ -642,7 +642,7 @@
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
             
             #include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
-            #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
+            #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/ParticlesUnlitForwardPassNew.hlsl"
             
             
             ENDHLSL
@@ -750,7 +750,7 @@
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
             
 			#include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
-            #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
+            #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/ParticlesUnlitForwardPassNew.hlsl"
             
             
             ENDHLSL
@@ -859,7 +859,7 @@
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
             
 			#include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
-            #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
+            #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/ParticlesUnlitForwardPassNew.hlsl"
             
             
             ENDHLSL
@@ -968,7 +968,7 @@
             
 			#include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
 
-            #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
+            #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/ParticlesUnlitForwardPassNew.hlsl"
             
             
             ENDHLSL
