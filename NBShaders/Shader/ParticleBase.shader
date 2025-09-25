@@ -24,6 +24,7 @@
     	_ProgramNoise_Toggle("_ProgramNoise_Toggle",Float) = 0
         _ProgramNoise_Simple_Toggle("_ProgramNoise_Simple_Toggle",Float) = 0
         _ProgramNoise_Voronoi_Toggle("_ProgramNoise_Voronoi_Toggle",Float) = 0
+    	_ProgramNoiseBaseBlendOpacity("两种程序噪波混合强度",Float) = 0
 
         
 
@@ -68,6 +69,8 @@
     	_BaseMapColorRefine("主贴图颜色Refine",Vector) = (1,1,2,1)
         _AlphaAll("整体透明度",Range(0,1)) = 1
         _IgnoreVetexColor_Toggle("_IgnoreVetexColor_Toggle",Float) = 0
+    	_MainTexPNoiseBlendOpacity("主贴图噪波图混合强度",Float) = 1
+    	
     	
     	_SpecialUVChannelMode("特殊UV通道选择",Float) = 0
     	
@@ -137,6 +140,8 @@
 	    _MaskMap3GradientFloat0("x:Mask3Alpha0,y:Pos0,z:Mask3Alpha1,w:Pos1",Vector) = (0,0,1,1)
     	_MaskMap3GradientFloat1("x:Mask3Alpha2,y:Pos2,z:Mask3Alpha3,w:Pos3",Vector) = (1,0,1,1)
     	_MaskMap3GradientFloat2("x:Mask3Alpha4,y:Pos4,z:Mask3Alpha5,w:Pos5",Vector) = (1,0,1,1)
+    	
+    	_MaskPNoiseBlendOpacity("遮罩噪波图混合强度",Float) = 1
         
         // 擦除----------------
         //[Header(ChaChu(Anima For CustomData.z).......)]
@@ -175,6 +180,8 @@
     	_TexDistortion_intensity ("主贴图扭曲强度", float) = 0.5
     	_NoiseIntensity("整体扭曲强度",Float) = 1
     	_ScreenDistortIntensity("屏幕扭曲强度",Float) = 1
+    	_DistortPNoiseBlendOpacity("扭曲噪波图混合强度",Float) = 1
+    	
     	
     	_ScreenDistortAlphaRefineToggle("屏幕扭曲Alpha调整开关",Float) = 0
     	_ScreenDistortAlphaPow("屏幕扭曲AlphaPow",Float) = 1
@@ -253,6 +260,8 @@
     	_DissolveRampAlpha1("x:DissolveRampAlpha2,y:Pos2,z:DissolveRampAlpha3,w:Pos3",Vector) = (1,0,1,1)
     	_DissolveRampAlpha2("x:DissolveRampAlpha4,y:Pos4,z:DissolveRampAlpha5,w:Pos5",Vector) = (1,0,1,1)
     	_DissolveRampCount("溶解Ramp映射数量",Integer) = 2
+    	_DissolvePNoiseBlendOpacity("溶解噪波图混合强度",Float) = 1
+    	
 	    
 
         _CustomData1X ("ignore", float) = 0
@@ -382,6 +391,7 @@
         [HideInInspector] _W9ParticleShaderGUIFoldToggle1("_W9ParticleShaderGUIFoldToggle1", Integer) = 255//这边默认全开
         [HideInInspector] _W9ParticleShaderGUIFoldToggle2("_W9ParticleShaderGUIFoldToggle2", Integer) = 255//这边默认全开
         [HideInInspector] _W9ParticleShaderColorChannelFlag("_W9ParticleShaderColorChannelFlag", Integer) = 3//默认主贴图开A通道
+        [HideInInspector] _W9ParticleShaderPNoiseBlendFlag("_W9ParticleShaderPNoiseBlendFlag", Integer) = 0
 	    
     	
     	SaturabilityRangeVec("_Saturability",Vector) = (0,1,0,0)

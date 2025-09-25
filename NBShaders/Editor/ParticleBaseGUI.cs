@@ -122,6 +122,7 @@ namespace NBShaderEditor
         int _meshSourceModeIsParticle = -1; //Particle Or UI Particle;
         private int _useGraphicMainTex = -1; //UI Sprite/UI RawImage
         int _noiseEnabled = -1; //扭曲
+        private int _pNoiseEnabled = -1;//程序化噪波
 
         private MeshSourceMode _meshSourceMode = MeshSourceMode.UnKnowOrMixed;
         private TransparentMode _transparentMode = TransparentMode.UnKnowOrMixed;
@@ -641,9 +642,8 @@ namespace NBShaderEditor
                             _helper.DrawVector4Component("范围(Pow)","_MaskRefineVec","x",false);
                             _helper.DrawVector4Component("相乘","_MaskRefineVec","y",false);
                             _helper.DrawVector4Component("偏移(相加)","_MaskRefineVec","z",false);
-                            
                         });
-
+                    DrawPNoiseBlendModeSelect("遮罩",W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_MASK,"_MaskPNoiseBlendOpacity");
                     _helper.DrawPopUp("遮罩模式", "_MaskMapGradientToggle", _maskMapModeNames,
                         drawBlock: maskMapModeProp =>
                         {
@@ -730,6 +730,9 @@ namespace NBShaderEditor
                         {
                             _helper.DrawSlider("遮罩扭曲强度", "_MaskDistortion_intensity", rangePropertyName:"MaskDistortionIntensityRangeVec");
                         });
+                        
+                       
+                        
 
                     _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitMask2, 3, GetAnimBoolIndex(3), "遮罩2",
                         "_Mask2_Toggle", flagBitsName: W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP2,
@@ -893,6 +896,15 @@ namespace NBShaderEditor
                 "_ProgramNoise_Toggle", shaderKeyword: "_PROGRAM_NOISE", fontStyle: FontStyle.Bold,
                 drawBlock: (isToggle) =>
                 {
+                    if (isToggle.hasMixedValue)
+                    {
+                        _pNoiseEnabled = -1;
+                    }
+                    else
+                    {
+                        _pNoiseEnabled = isToggle.floatValue > 0.5f ? 1 : 0;
+                    }
+                    
                     DrawUVModeSelect(W9ParticleShaderFlags.foldOutBit1UVModeProgramNoise, 4, "程序噪波UV来源", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE, 0);
                     _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2ProgramNoiseSimple,5,GetAnimBoolIndex(5),"Perlin噪波",propertyName:"_ProgramNoise_Simple_Toggle",flagBitsName:W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE,flagIndex:1,drawBlock:
                         isToggle =>
@@ -926,7 +938,7 @@ namespace NBShaderEditor
                          _helper.GetProperty("_ProgramNoise_Voronoi_Toggle").floatValue > 0.5) ||
                         _helper.ResetTool.IsInitResetData)
                     {
-                        _helper.DrawVector4Component("噪波12混合系数(圆尖)", "_DissolveVoronoi_Vec2", "x", true);
+                        DrawPNoiseBlendModeSelect("两种",W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND,"_ProgramNoiseBaseBlendOpacity");
                     }
                     // _helper.DrawVector4Component("噪波整体和溶解贴图混合系数", "_DissolveVoronoi_Vec2", "y", true);
                     EditorGUILayout.Space();
@@ -1044,6 +1056,8 @@ namespace NBShaderEditor
                             }
                         }
                     });
+                    
+                    DrawPNoiseBlendModeSelect("扭曲",W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT,"_DistortPNoiseBlendOpacity");
 
                   
 
@@ -1385,6 +1399,8 @@ namespace NBShaderEditor
                             DrawCustomDataSelect("溶解遮罩图强度自定义曲线",
                                 W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY, 1);
                         });
+                    
+                    DrawPNoiseBlendModeSelect("溶解",W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE,"_DissolvePNoiseBlendOpacity");
 
                 });
 
@@ -2917,6 +2933,68 @@ namespace NBShaderEditor
                 checkHasMixedValueOnValueChange:()=>ColorChannelHasMixedValue(colorChannelBitPos));
             EditorGUILayout.EndHorizontal();
             _helper.ResetTool.EndResetModifyButtonScope();
+        }
+        
+        bool PNoiseBlendModeHasMixedValue(int pNoiseBlendModeBitPos)
+        {
+            W9ParticleShaderFlags.PNoiseBlendMode pNoiseBlendMode = W9ParticleShaderFlags.PNoiseBlendMode.UnKnownOrMixedValue;
+            for (int i = 0; i < shaderFlags.Count; i++)
+            {
+                W9ParticleShaderFlags.PNoiseBlendMode curMode = shaderFlags[i].GetPNoiseBlendMode(pNoiseBlendModeBitPos);
+                if (i == 0)
+                {
+                    pNoiseBlendMode = curMode;
+                }
+                else
+                {
+                    if(pNoiseBlendMode != curMode) return true;
+                }
+            }
+
+            return false;
+        }
+        
+        private string[] _pNoiseBlendModeNames = 
+            {   
+                "不使用" ,
+                "Multiply" ,
+                "Min" ,
+                "HardLight"
+            };
+
+        void DrawPNoiseBlendModeSelect(string label, int pNoiseBlendModeBitPos,string opacityPropertyName)
+        {
+            bool hasMixedValue = PNoiseBlendModeHasMixedValue(pNoiseBlendModeBitPos);
+            EditorGUI.showMixedValue = hasMixedValue;
+            (string, string) nameTuple = (label, "");
+            
+            W9ParticleShaderFlags.PNoiseBlendMode blendMode = shaderFlags[0].GetPNoiseBlendMode(pNoiseBlendModeBitPos);
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.BeginHorizontal();
+            int index = EditorGUILayout.Popup(label+"程序噪波混合", (int)blendMode, _pNoiseBlendModeNames);
+            Action pNoiseBlendModeOnEndChangeCheck = () =>
+            {
+                for (int i = 0; i < shaderFlags.Count; i++)
+                {
+                    shaderFlags[i].SetPNoiseBlendMode((W9ParticleShaderFlags.PNoiseBlendMode)index,pNoiseBlendModeBitPos);
+                }
+                _helper.ResetTool.CheckOnValueChange(nameTuple);
+            };
+            if (EditorGUI.EndChangeCheck())
+            {
+                pNoiseBlendModeOnEndChangeCheck();
+            }
+            EditorGUI.showMixedValue = false;
+            _helper.ResetTool.DrawResetModifyButton(new Rect(),nameTuple,
+                resetCallBack: () => { index = (int)W9ParticleShaderFlags.PNoiseBlendMode.NotUse; }, 
+                onValueChangedCallBack: pNoiseBlendModeOnEndChangeCheck,
+                checkHasModifyOnValueChange: () => { return shaderFlags[0].GetPNoiseBlendMode(pNoiseBlendModeBitPos) != W9ParticleShaderFlags.PNoiseBlendMode.NotUse;},
+                checkHasMixedValueOnValueChange:()=>PNoiseBlendModeHasMixedValue(pNoiseBlendModeBitPos));
+            EditorGUILayout.EndHorizontal();
+            _helper.ResetTool.EndResetModifyButtonScope();
+            
+            _helper.DrawSlider("程序噪波混合强度",opacityPropertyName);
+            
         }
 
         int GetAnimBoolIndex(int foldOutFlagIndex)

@@ -111,6 +111,27 @@ inline float LinearToGammaSpaceExact (float value)
 //     return c * (c * (c * 0.305306011 + 0.682171111) + 0.012522878);
 // }
 
+// float2 Rotate_Radians_float(float2 UV, float2 Center, float Rotation)
+// {
+//     if(Rotation == 0)
+//     {
+//         return UV;
+//     }
+//         
+//     // Rotation = Rotation / 180 * 3.14;    //从角度转为弧度。
+//     Rotation *= 0.01745329222;    //从角度转为弧度。
+//     UV -= Center;
+//     float s = sin(Rotation);
+//     float c = cos(Rotation);
+//     float2x2 rMatrix = float2x2(c, -s, s, c);
+//     rMatrix *= 0.5;
+//     rMatrix += 0.5;
+//     rMatrix = rMatrix * 2 - 1;
+//     UV.xy = mul(UV.xy, rMatrix);
+//     UV += Center;
+//     return UV;
+// }
+
 float2 Rotate_Radians_float(float2 UV, float2 Center, float Rotation)
 {
     if(Rotation == 0)
@@ -120,16 +141,15 @@ float2 Rotate_Radians_float(float2 UV, float2 Center, float Rotation)
         
     // Rotation = Rotation / 180 * 3.14;    //从角度转为弧度。
     Rotation *= 0.01745329222;    //从角度转为弧度。
-    UV -= Center;
-    float s = sin(Rotation);
-    float c = cos(Rotation);
-    float2x2 rMatrix = float2x2(c, -s, s, c);
-    rMatrix *= 0.5;
-    rMatrix += 0.5;
-    rMatrix = rMatrix * 2 - 1;
-    UV.xy = mul(UV.xy, rMatrix);
-    UV += Center;
-    return UV;
+    float s, c;  // 如果 angle 是 uniform，每帧或每物件算一次更省
+    sincos(Rotation, s, c);   // HLSL 内置，一次算出 sin/cos
+
+    float2 d = UV - Center;
+    // 旋转 (x', y') = ( c*x - s*y, s*x + c*y )
+    float2 r = float2(dot(d, float2( c, -s)),
+                      dot(d, float2( s,  c)));
+
+    return r + Center;
 }
 
 inline half luminance(half3 color)

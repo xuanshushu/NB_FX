@@ -248,4 +248,41 @@
             return baseUVs.defaultUVChannel;
         }
     }
+
+    half Blend_HardLight(half Base, half Blend)
+    {
+        half result1 = 1.0 - 2.0 * (1.0 - Base) * (1.0 - Blend);
+        half result2 = 2.0 * Base * Blend;
+        half zeroOrOne = step(Blend, 0.5);
+        half Out = result2 * zeroOrOne + (1 - zeroOrOne) * result1;
+        return Out;
+    }
+
+    #define FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND (0*3)
+    #define FLAG_BIT_PNOISE_BLEND_POS_0_MASK (1*3)
+    #define FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE (2*3)
+    #define FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT (3*3)
+    #define FLAG_BIT_PNOISE_BLEND_POS_0_MAINTEX (4*3)
+
+    half BlendPNoise(uint flagProperty,int flagPos,half source,half pNoise,half opacity)
+    {
+        flagProperty = flagProperty >> flagPos;
+        flagProperty &= 7;
+        switch(flagProperty)
+        {
+            case 0:
+                return source;
+            case 1:
+                return lerp(source,pNoise*source,opacity);
+            case 2:
+                return lerp(source,min(pNoise,source),opacity);
+            case 3:
+                return lerp(source,Blend_HardLight(source,pNoise),opacity);
+            default:
+                return source;
+        }
+    }
+
+
+    
 #endif

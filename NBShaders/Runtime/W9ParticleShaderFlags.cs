@@ -24,6 +24,9 @@ public class W9ParticleShaderFlags: ShaderFlagsBase
 
     public const string colorChannelFlagName = "_W9ParticleShaderColorChannelFlag";
     public static int colorChannelFlagId = Shader.PropertyToID(colorChannelFlagName);
+    
+    public const string pNoiseBlendFlagName = "_W9ParticleShaderPNoiseBlendFlag";
+    public static int pNoiseBlendFlagId = Shader.PropertyToID(pNoiseBlendFlagName);
     public override int GetShaderFlagsId(int index = 0)
     {
         switch (index)
@@ -49,6 +52,9 @@ public class W9ParticleShaderFlags: ShaderFlagsBase
             
             case 6:
                 return colorChannelFlagId;
+            
+            case 7:
+                return pNoiseBlendFlagId;
         
             default:
                 return FlagsId;
@@ -692,6 +698,46 @@ public class W9ParticleShaderFlags: ShaderFlagsBase
         colorChannelFlag = colorChannelFlag >> colorChannelFlagPos;
         colorChannelFlag &= 0b_11;
         return (ColorChannel)colorChannelFlag;
+    }
+    
+    public const int FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND = 0 * 3;
+    public const int FLAG_BIT_PNOISE_BLEND_POS_0_MASK = 1 * 3;
+    public const int FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE= 2 * 3;
+    public const int FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT= 3 * 3;
+    public const int FLAG_BIT_PNOISE_BLEND_POS_0_MAINTEX= 4 * 3;
+
+    public enum PNoiseBlendMode
+    {
+        NotUse = 0,
+        Multiply = 1,
+        Min = 2,
+        HardLight = 3,
+        UnKnownOrMixedValue = -1
+
+        //后续看看要不要更多吧
+    }
+
+    public void SetPNoiseBlendMode(PNoiseBlendMode mode, int pNoiseBlendModeFlagPos)
+    {
+        int pNoiseBlendFlag = material.GetInteger(pNoiseBlendFlagId);
+        int blendMode = (int)mode;
+        if(blendMode<0) return;
+        int clearFlag = 0b_111 << pNoiseBlendModeFlagPos;
+        clearFlag = ~clearFlag;
+        pNoiseBlendFlag &= clearFlag;
+        int pNoiseBlendBit = blendMode << pNoiseBlendModeFlagPos;
+        //先不考虑超过4个选项（2bit）的情况
+        pNoiseBlendFlag |= pNoiseBlendBit;
+        material.SetInteger(pNoiseBlendFlagId,pNoiseBlendFlag);
+    }
+
+    public PNoiseBlendMode GetPNoiseBlendMode(int pNoiseBlendModeFlagPos)
+    {
+        int pNoiseBlendFlag = material.GetInteger(pNoiseBlendFlagId);
+        pNoiseBlendFlag = pNoiseBlendFlag >> pNoiseBlendModeFlagPos;
+        pNoiseBlendFlag &= 0b_111;
+        //先不考虑超过4个选项（2bit）的情况
+        return (PNoiseBlendMode)pNoiseBlendFlag;
     }
 
 }
