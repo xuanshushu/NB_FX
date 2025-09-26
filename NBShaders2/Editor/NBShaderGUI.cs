@@ -1,7 +1,7 @@
 using UnityEditor;
 using System.Collections.Generic;
 using UnityEngine;
-
+using NBShader;
 namespace NBShaderEditor
 {
     public class NBShaderGUI:ShaderGUI

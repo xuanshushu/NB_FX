@@ -1,4 +1,5 @@
-﻿Shader "Effects/NBShader2开发中"
+﻿Shader "Hidden/Effects/NBShader2开发中"
+//Shader "Effects/NBShader2开发中"
 {
     Properties
     {

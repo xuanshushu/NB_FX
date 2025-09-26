@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Rendering;
-using stencilTestHelper;
 using UnityEditor.AnimatedValues;
-using System.Reflection;
 using UnityEditor;
-using UVMode = W9ParticleShaderFlags.UVMode;
+using NBShader;
+using UVMode = NBShader.W9ParticleShaderFlags.UVMode;
 
 namespace NBShaderEditor
 {

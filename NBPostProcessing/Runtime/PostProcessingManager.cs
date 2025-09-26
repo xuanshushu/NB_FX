@@ -1,10 +1,5 @@
 using System;
 using UnityEngine;
-// using Sirenix.OdinInspector;
-
-// #if UNITY_EDITOR
-//     using Sirenix.OdinInspector.Editor;
-// #endif
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

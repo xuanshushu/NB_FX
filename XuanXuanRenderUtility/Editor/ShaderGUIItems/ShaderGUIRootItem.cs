@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using NBShader;
+
 namespace NBShaderEditor
 {
     public class ShaderPropertyInfo

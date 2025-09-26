@@ -1,100 +1,103 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System;
-// using Unity.Properties;
 
-public class BinaryIntAttribute : PropertyAttribute
+namespace NBShaderEditor
 {
-    public int binaryBits;
-    public bool showInputFiled;
-    public int tabNums;
-
-
-    public BinaryIntAttribute(int Bits = 32,bool showInput = false,int tab = 0)
+    public class BinaryIntAttribute : PropertyAttribute
     {
-        binaryBits = Bits;
-        showInputFiled = showInput;
-        tabNums = tab;
-    }
-}
+        public int binaryBits;
+        public bool showInputFiled;
+        public int tabNums;
 
-[CustomPropertyDrawer(typeof(BinaryIntAttribute))]
-public class BinaryIntDrawer : PropertyDrawer
-{
-   
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-    {
-        
-        GUIStyle richTextStyle = EditorStyles.label;
-        richTextStyle.richText = true;
-        BinaryIntAttribute binaryIntAttribute = (BinaryIntAttribute)attribute; 
-        // int value = property.intValue;
-        // int largestBit = 0;
-        // for (int i = 0; i < 32; i++)
-        // {
-        //     if ((~value & (1 << i)) == 0)
-        //     {
-        //         largestBit = i;
-        //     }
-        // }
-        //
-        // int addZeroCount = 0;
-        // if (largestBit < binaryIntAttribute.binaryBits)
-        // {
-        //     addZeroCount = binaryIntAttribute.binaryBits - largestBit - 1;
-        // }
-        //
-        // string addZeroString = "";
-        // for (int i = 0; i < addZeroCount; i++)
-        // {
-        //     addZeroString += "0";
-        // }
-        // string binary = addZeroString+Convert.ToString(property.intValue, 2);
-        string binary = DrawBinaryInt(property.intValue, binaryIntAttribute.binaryBits);
 
-        string tabs = "";
-        for (int i = 0; i < binaryIntAttribute.tabNums; i++)
+        public BinaryIntAttribute(int Bits = 32, bool showInput = false, int tab = 0)
         {
-            tabs += "\t";
-        }
-  
-        if (binaryIntAttribute.showInputFiled)
-        {
-            string labelText = property.displayName + tabs + "<mspace=1em>" + binary + "</mspace>";
-            Rect intRect = EditorGUI.PrefixLabel(position,new GUIContent(labelText),richTextStyle);
-            property.intValue = EditorGUI.IntField( intRect,property.intValue);
-        }
-        else
-        {
-            EditorGUILayout.LabelField(property.displayName + tabs);
-            EditorGUILayout.LabelField(binary);
+            binaryBits = Bits;
+            showInputFiled = showInput;
+            tabNums = tab;
         }
     }
 
-    public static string DrawBinaryInt(int value ,int binaryBits)
+    [CustomPropertyDrawer(typeof(BinaryIntAttribute))]
+    public class BinaryIntDrawer : PropertyDrawer
     {
-        int largestBit = 0;
-        for (int i = 0; i < 32; i++)
+
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if ((~value & (1 << i)) == 0)
+
+            GUIStyle richTextStyle = EditorStyles.label;
+            richTextStyle.richText = true;
+            BinaryIntAttribute binaryIntAttribute = (BinaryIntAttribute)attribute;
+            // int value = property.intValue;
+            // int largestBit = 0;
+            // for (int i = 0; i < 32; i++)
+            // {
+            //     if ((~value & (1 << i)) == 0)
+            //     {
+            //         largestBit = i;
+            //     }
+            // }
+            //
+            // int addZeroCount = 0;
+            // if (largestBit < binaryIntAttribute.binaryBits)
+            // {
+            //     addZeroCount = binaryIntAttribute.binaryBits - largestBit - 1;
+            // }
+            //
+            // string addZeroString = "";
+            // for (int i = 0; i < addZeroCount; i++)
+            // {
+            //     addZeroString += "0";
+            // }
+            // string binary = addZeroString+Convert.ToString(property.intValue, 2);
+            string binary = DrawBinaryInt(property.intValue, binaryIntAttribute.binaryBits);
+
+            string tabs = "";
+            for (int i = 0; i < binaryIntAttribute.tabNums; i++)
             {
-                largestBit = i;
+                tabs += "\t";
+            }
+
+            if (binaryIntAttribute.showInputFiled)
+            {
+                string labelText = property.displayName + tabs + "<mspace=1em>" + binary + "</mspace>";
+                Rect intRect = EditorGUI.PrefixLabel(position, new GUIContent(labelText), richTextStyle);
+                property.intValue = EditorGUI.IntField(intRect, property.intValue);
+            }
+            else
+            {
+                EditorGUILayout.LabelField(property.displayName + tabs);
+                EditorGUILayout.LabelField(binary);
             }
         }
 
-        int addZeroCount = 0;
-        if (largestBit < binaryBits)
+        public static string DrawBinaryInt(int value, int binaryBits)
         {
-            addZeroCount = binaryBits - largestBit - 1;
-        }
+            int largestBit = 0;
+            for (int i = 0; i < 32; i++)
+            {
+                if ((~value & (1 << i)) == 0)
+                {
+                    largestBit = i;
+                }
+            }
 
-        string addZeroString = "";
-        for (int i = 0; i < addZeroCount; i++)
-        {
-            addZeroString += "0";
+            int addZeroCount = 0;
+            if (largestBit < binaryBits)
+            {
+                addZeroCount = binaryBits - largestBit - 1;
+            }
+
+            string addZeroString = "";
+            for (int i = 0; i < addZeroCount; i++)
+            {
+                addZeroString += "0";
+            }
+
+            string binary = addZeroString + Convert.ToString(value, 2);
+            return binary;
         }
-        string binary = addZeroString+Convert.ToString(value, 2);
-        return binary;
     }
 }
     

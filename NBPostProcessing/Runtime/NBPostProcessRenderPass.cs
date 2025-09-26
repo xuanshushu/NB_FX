@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using System.Collections.Generic;
 namespace NBShader
 {
     public class NBPostProcessRenderPass : ScriptableRenderPass

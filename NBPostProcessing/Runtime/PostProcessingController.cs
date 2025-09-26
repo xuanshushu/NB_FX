@@ -1,10 +1,7 @@
-using System;
 using UnityEngine;
-// using Sirenix.OdinInspector;
 #if CINIMACHINE_3_0
 using Unity.Cinemachine;
 #endif
-// using Unity.Cinemachine.Editor;
 #if UNITY_EDITOR
 using UnityEditor.AnimatedValues;
 using UnityEditor;

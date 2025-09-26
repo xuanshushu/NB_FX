@@ -4,10 +4,9 @@ using System.Linq;
 using UnityEditor.AnimatedValues;
 // using UnityEditor.Rendering.Universal.ShaderGUI;
 using UnityEngine;
-using Random = UnityEngine.Random;
-using System.Reflection;
-using UnityEngine.UIElements;
 using UnityEditor;
+using NBShader;
+
 namespace NBShaderEditor
 {
     /*

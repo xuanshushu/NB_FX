@@ -1,11 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using NBShader;
 
-namespace stencilTestHelper
+namespace NBShaderEditor
 {
-    
     public class StencilValuesConfig : ScriptableObject
     {
         // public Dictionary<string, StencilValues> Config = new Dictionary<string, StencilValues>();

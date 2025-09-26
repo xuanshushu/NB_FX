@@ -1,90 +1,91 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 // using Sirenix.OdinInspector;
-
-[ExecuteAlways]
-public class NBShaderSpriteHelper : MonoBehaviour
+namespace NBShader
 {
-    public Sprite sprite;
-    // [ReadOnly]
-    public SpriteRenderer spRenderer;
-    // [ReadOnly]
-    public Image image;
-
-    [InspectorButton("初始化","Init")]
-    public bool ButtomInspector;
-
-    private Material mat;
-    
-    
-    
-    // Start is called before the first frame update
-    void Start()
+    [ExecuteAlways]
+    public class NBShaderSpriteHelper : MonoBehaviour
     {
-        Init();
-    }
-    
-    void Init()
-    {
-        if (TryGetComponent<SpriteRenderer>(out SpriteRenderer spr))
+        public Sprite sprite;
+
+        // [ReadOnly]
+        public SpriteRenderer spRenderer;
+
+        // [ReadOnly]
+        public Image image;
+
+        [InspectorButton("初始化", "Init")] public bool ButtomInspector;
+
+        private Material mat;
+
+
+
+        // Start is called before the first frame update
+        void Start()
         {
-            spRenderer = spr;
-            sprite = spr.sprite;
+            Init();
         }
-        else
+
+        void Init()
         {
-            if (TryGetComponent<Image>(out Image im))
+            if (TryGetComponent<SpriteRenderer>(out SpriteRenderer spr))
             {
-                image = im;
-                sprite = im.sprite;
+                spRenderer = spr;
+                sprite = spr.sprite;
             }
-        }
-
-        
-
-        if (sprite)
-        {
-           Texture texture = sprite.texture;
-           Rect rect = sprite.textureRect;
-           // sharedMaterial.SetVector("_BaseMapReverseST",CalScaleOffset(spRenderer.sprite.textureRect,spRenderer.sprite.texture));
-
-            if (spRenderer)
+            else
             {
-                if (Application.isPlaying)
+                if (TryGetComponent<Image>(out Image im))
                 {
-                    mat = spRenderer.material;
-                }
-                else
-                {
-                    mat = spRenderer.sharedMaterial;
+                    image = im;
+                    sprite = im.sprite;
                 }
             }
-            else if(image)
+
+
+
+            if (sprite)
             {
-                mat = image.material;
+                Texture texture = sprite.texture;
+                Rect rect = sprite.textureRect;
+                // sharedMaterial.SetVector("_BaseMapReverseST",CalScaleOffset(spRenderer.sprite.textureRect,spRenderer.sprite.texture));
+
+                if (spRenderer)
+                {
+                    if (Application.isPlaying)
+                    {
+                        mat = spRenderer.material;
+                    }
+                    else
+                    {
+                        mat = spRenderer.sharedMaterial;
+                    }
+                }
+                else if (image)
+                {
+                    mat = image.material;
+                }
+
+                if (mat && mat.shader.name == "XuanXuan/Effects/Particle_NiuBi")
+                {
+                    mat.SetVector("_MainTex_Reverse_ST", CalScaleOffset(rect, texture));
+                    Debug.Log(mat.name);
+                }
             }
 
-            if (mat && mat.shader.name == "XuanXuan/Effects/Particle_NiuBi")
-            {
-                mat.SetVector("_MainTex_Reverse_ST",CalScaleOffset(rect,texture));
-                Debug.Log(mat.name);
-            }
+
+
         }
-     
-        
-   
-    }
 
-    Vector4 CalScaleOffset(Rect textureRect,Texture texture)
-    {
-        //这是一个反向的scale offset。
-        //算法：如果原scale offset。转换后会是 scaleAfter= 1 / scale , offsetAfter = - offset/scale;
-        Vector2 scaleAfter = new Vector2(texture.width / textureRect.width, texture.height / textureRect.height);
-        Vector2 offsetAfter = new Vector2(-(textureRect.x / texture.width) * scaleAfter.x,
-            -(textureRect.y / texture.height) * scaleAfter.y);
-        Vector4 scaleOffset = new Vector4(scaleAfter.x,scaleAfter.y,offsetAfter.x,offsetAfter.y);
-        return scaleOffset;
+        Vector4 CalScaleOffset(Rect textureRect, Texture texture)
+        {
+            //这是一个反向的scale offset。
+            //算法：如果原scale offset。转换后会是 scaleAfter= 1 / scale , offsetAfter = - offset/scale;
+            Vector2 scaleAfter = new Vector2(texture.width / textureRect.width, texture.height / textureRect.height);
+            Vector2 offsetAfter = new Vector2(-(textureRect.x / texture.width) * scaleAfter.x,
+                -(textureRect.y / texture.height) * scaleAfter.y);
+            Vector4 scaleOffset = new Vector4(scaleAfter.x, scaleAfter.y, offsetAfter.x, offsetAfter.y);
+            return scaleOffset;
+        }
     }
 }
