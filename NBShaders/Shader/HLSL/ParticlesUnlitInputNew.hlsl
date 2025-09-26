@@ -142,6 +142,7 @@
     float4 _DissolveVoronoi_Vec4;
     half4 _DissolveRampMap_ST;
     half4 _Dissolve_Vec2;
+    half _ProgramNoise_Rotate;
 
     half4 _ColorBlendMap_ST;
     float4 _ColorBlendMapOffset;
@@ -925,6 +926,7 @@
 
         #ifdef _PROGRAM_NOISE
             float2 programNoiseUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE,baseUVs);
+            programNoiseUV = Rotate_Radians_float(programNoiseUV,half2(0.5,0.5),_ProgramNoise_Rotate);
             if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE))
             {
                 _DissolveVoronoi_Vec4.x += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);

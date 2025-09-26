@@ -22,6 +22,7 @@
     	
     	_ProgramNoise_Toggle("_ProgramNoise_Toggle",Float) = 0
         _ProgramNoise_Simple_Toggle("_ProgramNoise_Simple_Toggle",Float) = 0
+        _ProgramNoise_Rotate("_ProgramNoise_Rotate",Float) = 0
         _ProgramNoise_Voronoi_Toggle("_ProgramNoise_Voronoi_Toggle",Float) = 0
     	_ProgramNoiseBaseBlendOpacity("两种程序噪波混合强度",Float) = 0
 

@@ -1370,6 +1370,7 @@ namespace NBShaderEditor
                     _helper.DrawToggle("程序化噪波测试颜色","_NB_Debug_PNoise",shaderKeyword:"NB_DEBUG_PNOISE");
                     
                     DrawUVModeSelect(W9ParticleShaderFlags.foldOutBit1UVModeProgramNoise, 4, "程序噪波UV来源", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE, 0);
+                    _helper.DrawFloat("程序化噪波旋转","_ProgramNoise_Rotate");
                     _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2ProgramNoiseSimple,5,GetAnimBoolIndex(5),"Perlin噪波",propertyName:"_ProgramNoise_Simple_Toggle",flagBitsName:W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE,flagIndex:1,drawBlock:
                         isToggle =>
                         {
