@@ -283,6 +283,26 @@
         }
     }
 
+    //ForDistort
+    half2 BlendPNoise(uint flagProperty,int flagPos,half2 source,half2 pNoise,half opacity)
+    {
+        flagProperty = flagProperty >> flagPos;
+        flagProperty &= 7;
+        switch(flagProperty)
+        {
+        case 0:
+            return source;
+        case 1:
+            return lerp(source,pNoise*source,opacity);
+        case 2:
+            return lerp(source,min(pNoise,source),opacity);
+        case 3:
+            return lerp(source,Blend_HardLight(source,pNoise),opacity);
+        default:
+            return source;
+        }
+    }
+
 
     
 #endif

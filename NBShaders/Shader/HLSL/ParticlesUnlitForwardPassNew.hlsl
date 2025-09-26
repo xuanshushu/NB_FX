@@ -354,12 +354,16 @@
         
         if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE)&CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI))
         {
-            Unity_Blend_HardLight_half(programSimpleNoise,programVoronoiNoise,_DissolveVoronoi_Vec2.x,programNoise);
+            programNoise =  BlendPNoise(_W9ParticleShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND,programSimpleNoise,programVoronoiNoise,_ProgramNoiseBaseBlendOpacity);
+            // Unity_Blend_HardLight_half(programSimpleNoise,programVoronoiNoise,_DissolveVoronoi_Vec2.x,programNoise);
         }
                         
         // half dissolveSample = dissolveValue;
         // Unity_Blend_HardLight_half(overlayVoroni,dissolveSample,_DissolveVoronoi_Vec2.y,dissolveValue);
-        return half4(programNoise.rrr,1);
+        #ifdef NB_DEBUG_PNOISE
+        return half4(programNoise.xxx,1);
+        #endif
+        
         #endif
         
         half2 originUV = MainTex_UV;
@@ -423,7 +427,15 @@
             _NoiseIntensity = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY,_NoiseIntensity,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
     
             cum_noise = cum_noise *_DistortionDirection.xy*_NoiseIntensity;
-            
+
+            #ifdef _PROGRAM_NOISE
+                cum_noise =  BlendPNoise(_W9ParticleShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT,cum_noise,programNoise,_DistortPNoiseBlendOpacity);
+            #endif
+        
+
+            #ifdef NB_DEBUG_DISTORT
+                return half4(cum_noise,0,1);
+            #endif
 
             #if defined(_SCREEN_DISTORT_MODE)
                 screenDistort_Noise.xy = cum_noise;
@@ -695,9 +707,11 @@
             
             half dissolveValue = GetColorChannel(dissolveMapSample,FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP);
 
-//TODO:ProgramNoise
-
-            // dissolveValue = SimpleSmoothstep(_Dissolve_Vec2.x,_Dissolve_Vec2.y,dissolveValue);
+            #ifdef _PROGRAM_NOISE
+                dissolveValue =  BlendPNoise(_W9ParticleShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE,dissolveValue,programNoise,_DissolvePNoiseBlendOpacity);
+            #endif
+        
+        
             dissolveValue = pow(dissolveValue,_Dissolve.y);
 
                
@@ -720,7 +734,7 @@
                 dissolveValue = (dissolveValue +dissolveMaskValue)*0.5;//Smart Way By Panda
             }
         
-            #ifdef _DISSOLVE_EDITOR_TEST      //后续Test类的关键字要找机会排除
+            #ifdef NB_DEBUG_DISSOLVE      //后续Test类的关键字要找机会排除
                 return half4(dissolveValue.rrr,1);
             #endif
             half dissolveStrenth = _Dissolve.x + GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
@@ -973,6 +987,11 @@
                 mask1 *= mask3;
             }
 
+            #ifdef _PROGRAM_NOISE
+                mask1 =  BlendPNoise(_W9ParticleShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_MASK,mask1,programNoise,_MaskPNoiseBlendOpacity);
+            #endif
+        
+
             if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MASK_REFINE))
             {
                 mask1 = pow(mask1,_MaskRefineVec.x);
@@ -982,6 +1001,11 @@
 
             mask1 = lerp(1,mask1,_MaskMapVec.x);
             mask1 = saturate(mask1);
+
+            #ifdef NB_DEBUG_MASK
+                return half4(mask1.rrr,1); 
+            #endif
+        
         
             alpha *= mask1;  //mask边缘
         #endif
@@ -1036,8 +1060,6 @@
         alpha *= decalAlpha;
         #endif
         
-    
-        
         half3 beforeFogResult = result;
         result = MixFog(result,input.positionWS.w);
         result = lerp(beforeFogResult, result, _fogintensity);
@@ -1051,9 +1073,6 @@
         {
             result.rgb = LinearToGammaSpace(result.rgb);
         }
-        
-
-   
         
         alpha *= _AlphaAll;
 

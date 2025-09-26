@@ -635,6 +635,7 @@ namespace NBShaderEditor
             _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitMask, 3, GetAnimBoolIndex(3), "遮罩",
                 "_Mask_Toggle", shaderKeyword: "_MASKMAP_ON", fontStyle: FontStyle.Bold, drawBlock: (isToggle) =>
                 {
+                    _helper.DrawToggle("测试遮罩颜色","_NB_Debug_Mask",shaderKeyword:"NB_DEBUG_MASK");
                     _helper.DrawVector4Component("遮罩强度", "_MaskMapVec", "x", true);
                     _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2MaskRefine,5,GetAnimBoolIndex(5),"遮罩整体调整","_MaskRefineToggle",W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MASK_REFINE,1,drawBlock:
                         maskRefineProp =>
@@ -892,71 +893,21 @@ namespace NBShaderEditor
                         });
                 });
 
-            _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutProgramNoise, 3, GetAnimBoolIndex(3), "程序化噪波",
-                "_ProgramNoise_Toggle", shaderKeyword: "_PROGRAM_NOISE", fontStyle: FontStyle.Bold,
-                drawBlock: (isToggle) =>
-                {
-                    if (isToggle.hasMixedValue)
-                    {
-                        _pNoiseEnabled = -1;
-                    }
-                    else
-                    {
-                        _pNoiseEnabled = isToggle.floatValue > 0.5f ? 1 : 0;
-                    }
-                    
-                    DrawUVModeSelect(W9ParticleShaderFlags.foldOutBit1UVModeProgramNoise, 4, "程序噪波UV来源", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE, 0);
-                    _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2ProgramNoiseSimple,5,GetAnimBoolIndex(5),"Perlin噪波",propertyName:"_ProgramNoise_Simple_Toggle",flagBitsName:W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE,flagIndex:1,drawBlock:
-                        isToggle =>
-                        {
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec", "噪波1缩放", true);
-                            _helper.DrawVector4Component("噪波1速度", "_DissolveVoronoi_Vec2", "z", false);
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec4", "噪波1偏移", true);
-                            DrawCustomDataSelect("噪波1偏移速度X自定义曲线",
-                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X, 2);
-                            DrawCustomDataSelect("噪波1偏移速度Y自定义曲线",
-                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y, 2);
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec3", "噪波1偏移速度", true);
-                        });
-                    _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2ProgramNoiseVoronoi, 5,
-                        GetAnimBoolIndex(5), "Voronoi噪波", propertyName: "_ProgramNoise_Voronoi_Toggle",
-                        flagBitsName: W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI, flagIndex: 1,
-                        drawBlock:
-                        isToggle =>
-                        {
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec", "噪波2缩放", false);
-                            _helper.DrawVector4Component("噪波2速度", "_DissolveVoronoi_Vec2", "w", false);
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec4", "噪波2偏移", false);
-                            DrawCustomDataSelect("噪波2偏移速度X自定义曲线",
-                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X, 2);
-                            DrawCustomDataSelect("噪波2偏移速度Y自定义曲线",
-                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y, 2);
-                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec3", "噪波2偏移速度", false);
-                        });
 
-                    if ((_helper.GetProperty("_ProgramNoise_Simple_Toggle").floatValue > 0.5 &&
-                         _helper.GetProperty("_ProgramNoise_Voronoi_Toggle").floatValue > 0.5) ||
-                        _helper.ResetTool.IsInitResetData)
-                    {
-                        DrawPNoiseBlendModeSelect("两种",W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND,"_ProgramNoiseBaseBlendOpacity");
-                    }
-                    // _helper.DrawVector4Component("噪波整体和溶解贴图混合系数", "_DissolveVoronoi_Vec2", "y", true);
-                    EditorGUILayout.Space();
-                });
-        
-
+            MaterialProperty noiseToggleProperty = _helper.GetProperty("_noisemapEnabled");
+            if (noiseToggleProperty.hasMixedValue)
+            {
+                _noiseEnabled = -1;
+            }
+            else
+            {
+                _noiseEnabled = noiseToggleProperty.floatValue > 0.5f ? 1 : 0;
+            }
             _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitNoise, 3, GetAnimBoolIndex(3), "扭曲",
                 "_noisemapEnabled", shaderKeyword: "_NOISEMAP", fontStyle: FontStyle.Bold,
                 drawBlock: (isToggle) =>
                 {
-                    if (isToggle.hasMixedValue)
-                    {
-                        _noiseEnabled = -1;
-                    }
-                    else
-                    {
-                        _noiseEnabled = isToggle.floatValue > 0.5f ? 1 : 0;
-                    }
+                    _helper.DrawToggle("扭曲强度值测试","_NB_Debug_Distort",shaderKeyword:"NB_DEBUG_DISTORT");
                     _helper.DrawSlider("整体扭曲强度", "_NoiseIntensity", rangePropertyName:"_NoiseIntensityRangeVec");
                     DrawCustomDataSelect("扭曲强度自定义曲线", W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY, 1);
                     _helper.DrawPopUp("屏幕扰动模式","_ScreenDistortModeToggle",screenDistortModeNames,drawBlock:
@@ -1009,7 +960,6 @@ namespace NBShaderEditor
 
                     _helper.DrawPopUp("扭曲模式","_DistortMode",distortModeNames,drawBlock: modeProp =>
                     {
-                        EditorGUI.indentLevel++;
                         if((!modeProp.hasMixedValue && Mathf.Approximately(modeProp.floatValue,0))||_helper.ResetTool.IsInitResetData)
                         {
                             EditorGUILayout.LabelField("扭曲贴图RG双通道则为FlowMap,FlowMap贴图设置应该去掉sRGB勾选");
@@ -1040,7 +990,6 @@ namespace NBShaderEditor
                             _helper.DrawSlider("折射率", "_RefractionIOR", 0f, 5f);
                             
                         }
-                        EditorGUI.indentLevel--;
                         
                     },drawOnValueChangedBlock: modePropOnValueChanged =>
                     {
@@ -1248,6 +1197,7 @@ namespace NBShaderEditor
                 drawBlock: (isToggle) =>
                 {
                     
+                    _helper.DrawToggle("溶解度黑白值测试", "_NB_Debug_Dissolve", shaderKeyword: "NB_DEBUG_DISSOLVE");
                     _helper.DrawTextureFoldOut(W9ParticleShaderFlags.foldOutDissolveMap, 3, GetAnimBoolIndex(3), "溶解贴图",
                         "_DissolveMap", drawScaleOffset: true, drawWrapMode: true,
                         flagBitsName: W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MAP, flagIndex: 2,
@@ -1265,8 +1215,8 @@ namespace NBShaderEditor
                             _helper.DrawVector4In2Line("_DissolveOffsetRotateDistort", "溶解贴图偏移速度", true);
                             _helper.DrawVector4Component("溶解贴图旋转", "_DissolveOffsetRotateDistort", "z", true, 0f, 360f);
                         });
+                    DrawPNoiseBlendModeSelect("溶解",W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE,"_DissolvePNoiseBlendOpacity");
                     _helper.DrawVector4Component("溶解值Pow", "_Dissolve","y",true,0f,10f);
-                    _helper.DrawToggle("溶解度黑白值测试", "_Dissolve_Test_Toggle", shaderKeyword: "_DISSOLVE_EDITOR_TEST");
                     _helper.DrawVector4Component("溶解强度", "_Dissolve", "x", true, rangeVecPropName:"DissolveXRangeVec");
                     DrawCustomDataSelect("溶解强度自定义曲线", W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY,
                         0);
@@ -1404,7 +1354,59 @@ namespace NBShaderEditor
 
                 });
 
+            MaterialProperty pNoiseToggle = _helper.GetProperty("_ProgramNoise_Toggle");
+            if (pNoiseToggle.hasMixedValue)
+            {
+                _pNoiseEnabled = -1;
+            }
+            else
+            {
+                _pNoiseEnabled = pNoiseToggle.floatValue > 0.5f ? 1 : 0;
+            }
+            _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutProgramNoise, 3, GetAnimBoolIndex(3), "程序化噪波",
+                "_ProgramNoise_Toggle", shaderKeyword: "_PROGRAM_NOISE", fontStyle: FontStyle.Bold,
+                drawBlock: (isToggle) =>
+                {
+                    _helper.DrawToggle("程序化噪波测试颜色","_NB_Debug_PNoise",shaderKeyword:"NB_DEBUG_PNOISE");
+                    
+                    DrawUVModeSelect(W9ParticleShaderFlags.foldOutBit1UVModeProgramNoise, 4, "程序噪波UV来源", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE, 0);
+                    _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2ProgramNoiseSimple,5,GetAnimBoolIndex(5),"Perlin噪波",propertyName:"_ProgramNoise_Simple_Toggle",flagBitsName:W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE,flagIndex:1,drawBlock:
+                        isToggle =>
+                        {
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec", "噪波1缩放", true);
+                            _helper.DrawVector4Component("噪波1速度", "_DissolveVoronoi_Vec2", "z", false);
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec4", "噪波1偏移", true);
+                            DrawCustomDataSelect("噪波1偏移速度X自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X, 2);
+                            DrawCustomDataSelect("噪波1偏移速度Y自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y, 2);
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec3", "噪波1偏移速度", true);
+                        });
+                    _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2ProgramNoiseVoronoi, 5,
+                        GetAnimBoolIndex(5), "Voronoi噪波", propertyName: "_ProgramNoise_Voronoi_Toggle",
+                        flagBitsName: W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI, flagIndex: 1,
+                        drawBlock:
+                        isToggle =>
+                        {
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec", "噪波2缩放", false);
+                            _helper.DrawVector4Component("噪波2速度", "_DissolveVoronoi_Vec2", "w", false);
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec4", "噪波2偏移", false);
+                            DrawCustomDataSelect("噪波2偏移速度X自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X, 2);
+                            DrawCustomDataSelect("噪波2偏移速度Y自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y, 2);
+                            _helper.DrawVector4In2Line("_DissolveVoronoi_Vec3", "噪波2偏移速度", false);
+                        });
 
+                    if ((_helper.GetProperty("_ProgramNoise_Simple_Toggle").floatValue > 0.5 &&
+                         _helper.GetProperty("_ProgramNoise_Voronoi_Toggle").floatValue > 0.5) ||
+                        _helper.ResetTool.IsInitResetData)
+                    {
+                        DrawPNoiseBlendModeSelect("两种",W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND,"_ProgramNoiseBaseBlendOpacity");
+                    }
+                    // _helper.DrawVector4Component("噪波整体和溶解贴图混合系数", "_DissolveVoronoi_Vec2", "y", true);
+                    EditorGUILayout.Space();
+                });
 
             _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutFresnel, 3, GetAnimBoolIndex(3), "菲涅尔",
                 "_fresnelEnabled", W9ParticleShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_ON, isIndentBlock: true,
@@ -2964,6 +2966,7 @@ namespace NBShaderEditor
 
         void DrawPNoiseBlendModeSelect(string label, int pNoiseBlendModeBitPos,string opacityPropertyName)
         {
+            if(_pNoiseEnabled < 0.5 && !_helper.ResetTool.IsInitResetData) return;
             bool hasMixedValue = PNoiseBlendModeHasMixedValue(pNoiseBlendModeBitPos);
             EditorGUI.showMixedValue = hasMixedValue;
             (string, string) nameTuple = (label, "");

@@ -19,7 +19,6 @@
         _Dissolve_Toggle("__Dissolve_Toggle",Float) = 0
         _DissolveMask_Toggle("__DissolveMask_Toggle",Float) = 0
         _Dissolve_useRampMap_Toggle("__Dissolve_useRampMap_Toggle",Float) = 0
-        _Dissolve_Test_Toggle("__Dissolve_Test_Toggle",Float) = 0
     	
     	_ProgramNoise_Toggle("_ProgramNoise_Toggle",Float) = 0
         _ProgramNoise_Simple_Toggle("_ProgramNoise_Simple_Toggle",Float) = 0
@@ -407,6 +406,11 @@
     	_ScreenDistortIntensityRangeVec("_ScreenDistortIntensity",Vector) = (0,1,0,0)
     	_ParallaxMapping_IntensityRangeVec("_ParallaxMappingRangeVec",Vector) = (0,0.1,0,0)
 //        _offsetUnits("深度偏移单位距离-ignore", range(-2000,2000)) = 0
+    	
+    	_NB_Debug_Mask("_NB_Debug_Mask",Float) = 0
+    	_NB_Debug_PNoise("_NB_Debug_PNoise",Float) = 0
+        _NB_Debug_Dissolve("_NB_Debug_Dissolve",Float) = 0
+        _NB_Debug_Distort("_NB_Debug_Dissolve",Float) = 0
     }
     SubShader
     {
@@ -636,6 +640,9 @@
             #pragma shader_feature_local _ _MATCAP
             #pragma shader_feature_local _ _SPECULAR_COLOR
             #pragma shader_feature_local _ VFX_SIX_WAY_ABSORPTION
+            
+            #pragma shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT
+            
             
             // -------------------------------------
             // Unity defined keywords

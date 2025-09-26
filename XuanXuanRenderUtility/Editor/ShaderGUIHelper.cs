@@ -1142,6 +1142,7 @@ namespace NBShaderEditor
             string colorPropertyName = null, bool drawScaleOffset = true, bool drawWrapMode = false,
             int flagBitsName = 0, int flagIndex = 2, Action<MaterialProperty> drawBlock = null)
         {
+           
             bool foldOutState = shaderFlags[0].CheckFlagBits(foldOutFlagBit, index: foldOutFlagIndex);
             AnimBool animBool = GetAnimBool(foldOutFlagBit, animBoolIndex, foldOutFlagIndex);
             animBool.target = foldOutState;
@@ -1156,6 +1157,7 @@ namespace NBShaderEditor
             {
                 shaderFlags[0].ClearFlagBits(foldOutFlagBit, index: foldOutFlagIndex);
             }
+
         }
 
 
@@ -1484,7 +1486,7 @@ namespace NBShaderEditor
         public void DrawAfterTexture(bool hasTexture, string label, string texturePropertyName, bool drawWrapMode = false, int wrapModeFlagBitsName = 0, int flagIndex = 2,
             Action<MaterialProperty> drawBlock = null)
         {
-            // EditorGUI.indentLevel++;
+            EditorGUI.indentLevel++;
             EditorGUI.BeginDisabledGroup(!hasTexture);
             if (drawWrapMode)
             {
@@ -1492,7 +1494,7 @@ namespace NBShaderEditor
             }
 
             drawBlock?.Invoke(GetProperty(texturePropertyName));
-            // EditorGUI.indentLevel--;
+            EditorGUI.indentLevel--;
             EditorGUI.EndDisabledGroup();
         }
 

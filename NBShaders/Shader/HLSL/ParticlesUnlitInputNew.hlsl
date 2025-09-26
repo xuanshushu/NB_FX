@@ -203,6 +203,11 @@
   
 
     uint _W9ParticleShaderColorChannelFlag;
+    uint _W9ParticleShaderPNoiseBlendFlag;
+    half _ProgramNoiseBaseBlendOpacity;
+    half _MaskPNoiseBlendOpacity;
+    half _DissolvePNoiseBlendOpacity;
+    half _DistortPNoiseBlendOpacity;
 
     CBUFFER_END
 
