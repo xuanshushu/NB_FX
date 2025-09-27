@@ -1120,6 +1120,7 @@
         #endif
 
         color = min(color,1000);
+        color.a = saturate(color.a);
         
         return color;
     }

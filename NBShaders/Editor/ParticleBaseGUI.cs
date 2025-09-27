@@ -1551,6 +1551,7 @@ namespace NBShaderEditor
                         {
                             for (int i = 0; i < mats.Count; i++)
                             {
+                                if(_helper.ResetTool.IsInitResetData) break;//避免初始化时重设
                                 if (isToggle.floatValue > 0.5f)
                                 {
                                     StencilTestHelper.SetMaterialStencil(mats[i], "ParticleBaseDecal",
@@ -1650,6 +1651,8 @@ namespace NBShaderEditor
 
                                 for (int i = 0; i < mats.Count; i++)
                                 {
+                                    if(_helper.ResetTool.IsInitResetData) break;//避免初始化时重设
+                                    
                                     if (isPortalMaskToggle.floatValue > 0.5f)
                                     {
                                         SetPortalMask(mats[i]);
@@ -1668,8 +1671,10 @@ namespace NBShaderEditor
                         });
                     }, drawEndChangeCheck: (isPortalToggle) =>
                     {
+                        
                         for (int i = 0; i < mats.Count; i++)
                         {
+                            if(_helper.ResetTool.IsInitResetData) break;//避免初始化时重设
                             if (isPortalToggle.floatValue > 0.5f)
                             {
                                 if (mats[i].GetFloat("_Portal_MaskToggle") < 0.5f)
