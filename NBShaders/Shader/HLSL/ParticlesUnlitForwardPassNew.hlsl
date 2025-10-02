@@ -1074,7 +1074,9 @@
             result.rgb = LinearToGammaSpace(result.rgb);
         }
         
+
         alpha *= _AlphaAll;
+        alpha = saturate(alpha);
 
         #if defined  (_ALPHAPREMULTIPLY_ON) || defined(_ALPHAMODULATE_ON)
             result *= alpha;
@@ -1082,6 +1084,7 @@
                 alpha *= _AdditiveToPreMultiplyAlphaLerp;
             #endif
         #endif
+
 
         #ifdef _SCREEN_DISTORT_MODE
 
@@ -1120,7 +1123,7 @@
         #endif
 
         color = min(color,1000);
-        color.a = saturate(color.a);
+ 
         
         return color;
     }

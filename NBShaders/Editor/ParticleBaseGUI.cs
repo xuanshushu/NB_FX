@@ -909,28 +909,33 @@ namespace NBShaderEditor
                     _helper.DrawToggle("扭曲强度值测试","_NB_Debug_Distort",shaderKeyword:"NB_DEBUG_DISTORT");
                     _helper.DrawSlider("整体扭曲强度", "_NoiseIntensity", rangePropertyName:"_NoiseIntensityRangeVec");
                     DrawCustomDataSelect("扭曲强度自定义曲线", W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY, 1);
-                    _helper.DrawPopUp("屏幕扰动模式","_ScreenDistortModeToggle",screenDistortModeNames,drawBlock:
+                    if (!(_uiEffectEnabled>0.5f) || _helper.ResetTool.IsInitResetData)
+                    {
+                        _helper.DrawPopUp("屏幕扰动模式","_ScreenDistortModeToggle",screenDistortModeNames,drawBlock:
                         scrDistortModeProp =>
                         {
-                            EditorGUI.indentLevel++;
-                            _helper.DrawSlider("屏幕扭曲强度", "_ScreenDistortIntensity", rangePropertyName:"_ScreenDistortIntensityRangeVec");
-                            _helper.DrawToggle("关闭主材质Pass","_DisableMainPassToggle",drawEndChangeCheck:
-                                disableMainPassToggleProp =>
-                                {
-                                    for (int i = 0; i < mats.Count; i++)
+                            if (scrDistortModeProp.floatValue > 0.5f || _helper.ResetTool.IsInitResetData)
+                            {
+                                EditorGUI.indentLevel++;
+                                _helper.DrawSlider("屏幕扭曲强度", "_ScreenDistortIntensity", rangePropertyName:"_ScreenDistortIntensityRangeVec");
+                                _helper.DrawToggle("关闭主材质Pass","_DisableMainPassToggle",drawEndChangeCheck:
+                                    disableMainPassToggleProp =>
                                     {
-                                        mats[i].SetShaderPassEnabled("UniversalForward",disableMainPassToggleProp.floatValue < 0.5f);
-                                    }
-                                });
-                            _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2ScreenDistortAlphaRefine,5,GetAnimBoolIndex(5),"屏幕扭曲Alpha整体调整","_ScreenDistortAlphaRefineToggle",W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE,1,drawBlock:
-                                AlphaRefineProp =>
-                                {
-                                    _helper.DrawFloat("范围(Pow)", "_ScreenDistortAlphaPow");
-                                    _helper.DrawFloat("相乘", "_ScreenDistortAlphaMulti");
-                                    _helper.DrawFloat("偏移(相加)", "_ScreenDistortAlphaAdd");
-                                });
-                         
-                            EditorGUI.indentLevel--;
+                                        for (int i = 0; i < mats.Count; i++)
+                                        {
+                                            mats[i].SetShaderPassEnabled("UniversalForward",disableMainPassToggleProp.floatValue < 0.5f);
+                                        }
+                                    });
+                                _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2ScreenDistortAlphaRefine,5,GetAnimBoolIndex(5),"屏幕扭曲Alpha整体调整","_ScreenDistortAlphaRefineToggle",W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE,1,drawBlock:
+                                    AlphaRefineProp =>
+                                    {
+                                        _helper.DrawFloat("范围(Pow)", "_ScreenDistortAlphaPow");
+                                        _helper.DrawFloat("相乘", "_ScreenDistortAlphaMulti");
+                                        _helper.DrawFloat("偏移(相加)", "_ScreenDistortAlphaAdd");
+                                    });
+                             
+                                EditorGUI.indentLevel--;
+                            }
                             
                         },drawOnValueChangedBlock:
                         screenDistortModeProp =>
@@ -943,6 +948,10 @@ namespace NBShaderEditor
                                     case ScreenDistortMode.None:
                                         mats[i].SetShaderPassEnabled("NBCameraOpaqueDistortPass", false);
                                         mats[i].SetShaderPassEnabled("NBDeferredDistortPass", false);
+                                        //打开主材质Pass
+                                        mats[i].SetShaderPassEnabled("UniversalForward",true);
+                                        if (i == 0) _helper.GetProperty("_DisableMainPassToggle").floatValue = 0;
+                                        
                                         break;
                                     case ScreenDistortMode.CameraOpaqueDistort:
                                         mats[i].SetShaderPassEnabled("NBCameraOpaqueDistortPass", true);
@@ -956,6 +965,8 @@ namespace NBShaderEditor
                                 }
                             }
                         });
+                    }
+               
 
                     _helper.DrawPopUp("扭曲模式","_DistortMode",distortModeNames,drawBlock: modeProp =>
                     {
@@ -2823,12 +2834,12 @@ namespace NBShaderEditor
 
                 Action drawWorldPosUV = () =>
                 {
-                    _helper.DrawPopUp("坐标平面", "_WorldPosUVMode", _posUVModeNames);
+                    _helper.DrawPopUp("坐标平面", "_WorldSpaceUVModeSelector", _posUVModeNames);
                 };
                 
                 Action drawObjectPosUV = () =>
                 {
-                    _helper.DrawPopUp("坐标平面", "_ObjectPosUVMode", _posUVModeNames);
+                    _helper.DrawPopUp("坐标平面", "_ObjectSpaceUVModeSelector", _posUVModeNames);
                 };
 
                 if (_helper.ResetTool.IsInitResetData)

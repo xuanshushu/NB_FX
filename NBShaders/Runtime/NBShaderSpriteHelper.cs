@@ -66,7 +66,7 @@ namespace NBShader
                     mat = image.material;
                 }
 
-                if (mat && mat.shader.name == "XuanXuan/Effects/Particle_NiuBi")
+                if (mat && mat.shader.name == "Effects/NBShader")
                 {
                     mat.SetVector("_MainTex_Reverse_ST", CalScaleOffset(rect, texture));
                     Debug.Log(mat.name);

@@ -162,8 +162,6 @@
         //[Toggle(_JIZUOBIAO)] _N121 ("JIZUOBIAO?", float) = 0
         [HideInInspector]_PolarCoordinatesEnabled ("__PolarCoordinatesEnabled", Float) = 0.0
         _PCCenter ("xy:极坐标中心 z:极坐标强度", vector) = (0.5, 0.5, 1, 0)//位置坐标用的前两个分量，z分量给强度。
-		_WorldPosUVMode("_WorldPosUVMode",Float) = 0
-    	_ObjectPosUVMode("_ObjectPosUVMode",Float) = 0
         
         // 噪波 --------------
         //[Toggle(_NOISEMAP)]_N ("NOISEMAP?", float) =0
@@ -581,7 +579,7 @@
             // -------------------------------------
             // Material Keywords
  
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             // #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _DISTORT_REFRACTION

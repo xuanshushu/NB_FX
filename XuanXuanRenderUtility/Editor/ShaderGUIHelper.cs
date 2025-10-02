@@ -1655,7 +1655,7 @@ namespace NBShaderEditor
 
         public void DrawGradientUndoPerformed()
         {
-            Debug.Log("UndoGradient");
+            // Debug.Log("UndoGradient");
             isUpateGradientPickerCache = true;
         }
         Dictionary<(string,string),bool> gradientsUpdateDic = new Dictionary<(string,string),bool>();
