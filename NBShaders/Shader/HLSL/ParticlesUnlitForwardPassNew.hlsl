@@ -246,6 +246,7 @@
             clipValue *= step(absFragObjectPos.y,0.5);
             clipValue *= step(absFragObjectPos.z,0.5);
             half decalAlpha = NB_Remap (abs(fragobjectPos.y),0.1,0.5,1,0);
+        decalAlpha = decalAlpha*decalAlpha;
             decalAlpha *= clipValue;
             float2 decalUV = fragobjectPos.xz + 0.5;
         #endif
@@ -369,6 +370,7 @@
         half2 originUV = MainTex_UV;
 
         #ifdef _PARALLAX_MAPPING
+        
             MainTex_UV.xy = ParallaxOcclusionMapping(MainTex_UV,input.tangentViewDir);
         #endif
 
@@ -433,9 +435,6 @@
             #endif
         
 
-            #ifdef NB_DEBUG_DISTORT
-                return half4(cum_noise,0,1);
-            #endif
 
             #if defined(_SCREEN_DISTORT_MODE)
                 screenDistort_Noise.xy = cum_noise;
@@ -447,6 +446,9 @@
         
             cum_noise *= noiseMask;
 
+            #ifdef NB_DEBUG_DISTORT
+                return half4(cum_noise,0,1);
+            #endif
         #endif
 
         // SampleAlbedo--------------------
@@ -859,6 +861,11 @@
                     
                     // fresnelValue = smoothstep(0.5-fresnelHardness,0.5+fresnelHardness,fresnelValue);
                 }
+
+                #ifdef NB_DEBUG_FRESNEL
+                    return half4(fresnelValue.rrr*_FresnelUnit.z,1);
+                #endif
+                
 
                 UNITY_BRANCH
                 if(CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_FADE_ON))

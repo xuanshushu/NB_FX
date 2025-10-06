@@ -243,16 +243,19 @@ namespace NBShaderEditor
                             }
 
                         },drawOnValueChangedBlock: blendProp => {
-                            BlendMode blendMode = (BlendMode)blendProp.floatValue;
-                            MaterialProperty addToPreMultiplyAlphaLerpProp =
-                                _helper.GetProperty("_AdditiveToPreMultiplyAlphaLerp");
-                            if (blendMode == BlendMode.Premultiply)
+                            if (!_helper.ResetTool.IsInitResetData)
                             {
-                                addToPreMultiplyAlphaLerpProp.floatValue = 1;
-                            }
-                            else if (blendMode == BlendMode.Additive)
-                            {
-                                addToPreMultiplyAlphaLerpProp.floatValue = 0;
+                                BlendMode blendMode = (BlendMode)blendProp.floatValue;
+                                MaterialProperty addToPreMultiplyAlphaLerpProp =
+                                    _helper.GetProperty("_AdditiveToPreMultiplyAlphaLerp");
+                                if (blendMode == BlendMode.Premultiply)
+                                {
+                                    addToPreMultiplyAlphaLerpProp.floatValue = 1;
+                                }
+                                else if (blendMode == BlendMode.Additive)
+                                {
+                                    addToPreMultiplyAlphaLerpProp.floatValue = 0;
+                                }
                             }
                         });
                     }
@@ -1277,10 +1280,8 @@ namespace NBShaderEditor
                                         _helper.DrawGradient(true, ColorSpace.Gamma,
                                             "Ramp颜色", 6, "_DissolveRampCount", dissolveRampColorPropArr,
                                             dissolveRampAlphaPropArr);
-                                        matEditor.TextureScaleOffsetProperty(
-                                            _helper.GetProperty("_DissolveRampMap"));
-                                        matEditor.ShaderProperty(_helper.GetProperty("_DissolveRampColor"),
-                                            "Ramp颜色叠加");
+                                        _helper.TextureScaleOffsetProperty("_DissolveRampMap");
+                                        _helper.ColorProperty("Ramp颜色叠加","_DissolveRampColor");
                                         _helper.DrawWrapMode("溶解RampUV",
                                             W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP, 2);
                                         
@@ -1424,6 +1425,8 @@ namespace NBShaderEditor
                 fontStyle: FontStyle.Bold,
                 drawBlock: (isToggle) =>
                 {
+                    _helper.DrawToggle("菲涅尔值测试","_NB_Debug_Distort",shaderKeyword:"NB_DEBUG_FRESNEL");
+                    
                     Action drawFresnelColorMode = () =>
                     {
                         // matEditor.ColorProperty(_helper.GetProperty("_FresnelColor"), "菲涅尔颜色");
@@ -1480,7 +1483,7 @@ namespace NBShaderEditor
                     _helper.DrawVector4Component("菲涅尔硬度", "_FresnelUnit", "w", true, 0f, 1f);
                     _helper.DrawToggle("翻转菲涅尔", "_InvertFresnel_Toggle",
                         W9ParticleShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON);
-                    matEditor.VectorProperty(_helper.GetProperty("_FresnelRotation"), "菲涅尔方向偏移");
+                    _helper.DrawVector4XYZComponet("菲涅尔方向偏移","_FresnelRotation");
                 });
 
 
@@ -1550,7 +1553,7 @@ namespace NBShaderEditor
                     flagIndex: 1, isIndentBlock: true,
                     drawBlock: (isToggle) =>
                     {
-                        matEditor.ColorProperty(_helper.GetProperty("_DepthOutline_Color"), "深度描边颜色");
+                        _helper.ColorProperty("深度描边颜色","_DepthOutline_Color");
                         _helper.DrawVector4In2Line("_DepthOutline_Vec", "深度描边距离", true);
                     });
 
@@ -1662,7 +1665,6 @@ namespace NBShaderEditor
 
                                 for (int i = 0; i < mats.Count; i++)
                                 {
-                                    if(_helper.ResetTool.IsInitResetData) break;//避免初始化时重设
                                     
                                     if (isPortalMaskToggle.floatValue > 0.5f)
                                     {
@@ -1674,6 +1676,7 @@ namespace NBShaderEditor
                                     }
                                     else
                                     {
+                                        if(_helper.ResetTool.IsInitResetData) continue;//避免初始化时重设
                                         RestPortal(mats[i]);
                                     }
 
@@ -1685,7 +1688,6 @@ namespace NBShaderEditor
                         
                         for (int i = 0; i < mats.Count; i++)
                         {
-                            if(_helper.ResetTool.IsInitResetData) break;//避免初始化时重设
                             if (isPortalToggle.floatValue > 0.5f)
                             {
                                 if (mats[i].GetFloat("_Portal_MaskToggle") < 0.5f)
@@ -1699,6 +1701,7 @@ namespace NBShaderEditor
                             }
                             else
                             {
+                                if(_helper.ResetTool.IsInitResetData )continue;//避免初始化时重设
                                 RestPortal(mats[i]);
                             }
                         }
@@ -2367,6 +2370,7 @@ namespace NBShaderEditor
 
             if (material.GetFloat("_ParallaxMapping_Toggle") > 0.5f)
             {
+                needNormal = true;
                 needTangent = true;
             }
 

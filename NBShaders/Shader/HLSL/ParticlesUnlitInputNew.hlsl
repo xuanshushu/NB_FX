@@ -794,47 +794,7 @@
     void ParticleProcessUV(inout ParticleUVs particleUVs,float4 meshTexcoord0,float4 VaryingsP_Custom1,float4 VaryingsP_Custom2,BaseUVs baseUVs)
     {
         particleUVs.specUV = baseUVs.specialUVChannel;
-
-        //----------------------------------------
-        // float2 baseMapUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_MAINTEX,baseUVs);
-        //
-        // #ifdef _FLIPBOOKBLENDING_ON //开启序列帧融合
-        //     if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER))
-        //     {
-        //         //走AnimationSheetHelper脚本的情况，永远和baseMap同步。
-        //         particleUVs.animBlendUV = baseMapUV*_BaseMap_AnimationSheetBlend_ST.xy+_BaseMap_AnimationSheetBlend_ST.zw;
-        //     }
-        //     else
-        //     {
-        //         //走粒子的情况
-        //         particleUVs.animBlendUV = meshTexcoord0.zw;
-        //     }
-        // #endif
-        //
-        //
-        //
-        // _BaseMapUVRotation += time * _BaseMapUVRotationSpeed;
-        // baseMapUV = Rotate_Radians_float(baseMapUV, half2(0.5, 0.5), _BaseMapUVRotation);  //主贴图旋转
-        // UNITY_BRANCH
-        // if(CheckLocalFlags(FLAG_BIT_PARTICLE_UIEFFECT_ON) & !CheckLocalFlags1(FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE))
-        // {
-        //     if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE))
-        //     {
-        //         float2 originUV = meshTexcoord0.xy;//精灵主贴图不调整。
-        //         particleUVs.mainTexUV = originUV*_UI_MainTex_ST.xy+_UI_MainTex_ST.zw;
-        //     }
-        //     else
-        //     {
-        //         particleUVs.mainTexUV = baseMapUV*_UI_MainTex_ST.xy+_UI_MainTex_ST.zw;
-        //     }
-        // }
-        // else
-        // {
-        //     baseMapUV.x += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-        //     baseMapUV.y += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
-        //     particleUVs.mainTexUV = TRANSFORM_TEX(baseMapUV, _BaseMap);  //主帖图UV重复和偏移
-        // }
-        // particleUVs.mainTexUV = UVOffsetAnimaiton(particleUVs.mainTexUV,_BaseMapMaskMapOffset.xy);
+        
         particleUVs.mainTexUV = baseUVs.mainTexUV;
         //-------------------------------------------------
         #ifdef _FLIPBOOKBLENDING_ON //开启序列帧融合
@@ -1036,8 +996,9 @@
         if(CheckLocalFlags(FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE))
         {
             half2  NoiseIntensity = uvAfterNoise - originUV;
-            half noiseXIntensity = abs(NoiseIntensity.x);
-            delta *= ChoraticaberratIntensity*noiseXIntensity;
+            // half noiseXIntensity = abs(NoiseIntensity.x);
+            // delta *= ChoraticaberratIntensity*noiseXIntensity;
+            delta = NoiseIntensity*ChoraticaberratIntensity*10;
         }
         else
         {
@@ -1145,7 +1106,8 @@
         
     }
     half2 ParallaxOcclusionMapping(half2 texCoords, half3 viewDir)
-    { 
+    {
+        texCoords = texCoords * _ParallaxMapping_Map_ST + _ParallaxMapping_Map_ST.zw;
         // number of depth layers
         // const float minLayers = 10;
         // const float maxLayers = 10;

@@ -155,7 +155,7 @@
         //[Toggle(_JIZUOBIAO)] _N121 ("JIZUOBIAO?", float) = 0
         [HideInInspector] _UTwirlEnabled ("__UTwirlEnabled", Float) = 0.0
         _TWParameter ("xy:旋转扭曲中心", vector) = (0.5, 0.5, 0, 0)
-        _TWStrength ("旋转扭曲强度", float) = 0
+        _TWStrength ("旋转扭曲强度", float) = 1
         
         
         // 极坐标 -------------------
@@ -410,6 +410,7 @@
     	_NB_Debug_PNoise("_NB_Debug_PNoise",Float) = 0
         _NB_Debug_Dissolve("_NB_Debug_Dissolve",Float) = 0
         _NB_Debug_Distort("_NB_Debug_Dissolve",Float) = 0
+        _NB_Debug_Fresnel("_NB_Debug_Fresnel",Float) = 0
     }
     SubShader
     {
@@ -461,7 +462,7 @@
             #pragma exclude_renderers d3d11_9x
             #pragma exclude_renderers d3d9
             
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             // -------------------------------------
             // Material Keywords
@@ -640,7 +641,7 @@
             #pragma shader_feature_local _ _SPECULAR_COLOR
             #pragma shader_feature_local _ VFX_SIX_WAY_ABSORPTION
             
-            #pragma shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT
+            #pragma shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT NB_DEBUG_FRESNEL
             
             
             // -------------------------------------
