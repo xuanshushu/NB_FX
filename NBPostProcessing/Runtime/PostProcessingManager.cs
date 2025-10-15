@@ -101,41 +101,6 @@ namespace NBShader
             }
             // 注册编辑器帧更新事件
 #endif
-            // //TODO 后续版本要找比较准确快的找Volume的方式
-            // volume = GameObject.FindObjectOfType<Volume>();
-            // if (volume != null)
-            // {
-            //     profile = volume.profile;
-            // }
-
-            // #if UNITY_EDITOR
-            //         //仅仅用于测试。
-            //         if (currentVirtualCamera == null)
-            //         {
-            //             currentVirtualCamera = FindFirstObjectByType<CinemachineCamera>();
-            //
-            //             if (currentVirtualCamera)
-            //             {
-            //                 if (!currentVirtualCamera.gameObject.TryGetComponent<CinemachineBasicMultiChannelPerlin>(out _perlin))
-            //                 {
-            //                     _perlin = currentVirtualCamera.gameObject.AddComponent<CinemachineBasicMultiChannelPerlin>();
-            //                 }
-            //             }
-            //
-            //             if (_perlin)
-            //             {
-            //                 _perlin.NoiseProfile =
-            //                     // ResourceManager.LoadAssetAsync<NoiseSettings>("Assets/AddressableAssets/Shader/CustomPostprocess/3DPostionShake.asset");
-            //                     //在runtime下是找不到的。但设计是美术做好然后存引用在预制件里。
-            //                     UnityEditor.AssetDatabase.LoadAssetAtPath<NoiseSettings>(
-            //                         "Packages/com.r2.render.postprocessing/3DPostionShake.asset");
-            //                 _perlin.FrequencyGain = 5f; //做一个自定义
-            //                 _perlin.AmplitudeGain = 0f; //一开始先不要震动
-            //             }
-            //         }
-            //
-            // #endif
-
 
             //重置Flag
             flags = new NBPostProcessFlags(material);

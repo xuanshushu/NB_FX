@@ -1342,13 +1342,13 @@
     int2 GetGradientIndex(half timeArr[6], int arrCount, half gradientTime)
     {
         
-        // 边界情况处理
-        if (gradientTime < timeArr[0]) {
-            return int2(-1, 0); // 小于最小值
-        }
-        if (gradientTime >= timeArr[arrCount - 1]) {
-            return int2(arrCount - 1, arrCount); // 大于等于最大值
-        }
+        // // 边界情况处理
+        // if (gradientTime < timeArr[0]) {
+        //     return int2(-1, 0); // 小于最小值
+        // }
+        // if (gradientTime >= timeArr[arrCount - 1]) {
+        //     return int2(arrCount - 1, arrCount); // 大于等于最大值
+        // }
 
         // 顺序查找第一个大于X的元素索引
         [unroll] 
@@ -1371,23 +1371,41 @@
 
     half3 GetGradientColorValue(half3 colorArr[6],half timeArr[6], int arrCount,half gradientTime)
     {
-        int2 indexes = GetGradientIndex(timeArr, arrCount, gradientTime);
-        if (indexes.x < 0) return colorArr[0];
-        if (indexes.y >= arrCount ) return colorArr[arrCount - 1];
-        half interval = GetGradientIndexInterval(timeArr, arrCount, indexes, gradientTime);
-        interval = SmoothStep01(interval);
-        return lerp(colorArr[indexes.x], colorArr[indexes.y], interval);
+        if (gradientTime <= timeArr[0])
+        {
+            return colorArr[0];
+        }
+        else if (gradientTime >= timeArr[arrCount - 1] )
+        {
+            return colorArr[arrCount - 1];
+        }
+        else
+        {
+            int2 indexes = GetGradientIndex(timeArr, arrCount, gradientTime);
+            half interval = GetGradientIndexInterval(timeArr, arrCount, indexes, gradientTime);
+            interval = SmoothStep01(interval);
+            return lerp(colorArr[indexes.x], colorArr[indexes.y], interval);
+        }
     }
 
     half GetGradientAlphaValue(half alphaArr[6],half timeArr[6], int arrCount,half gradientTime)
     {
-        int2 indexes = GetGradientIndex(timeArr, arrCount, gradientTime);
-        if (indexes.x < 0) return alphaArr[0];
-        if (indexes.y >= arrCount ) return alphaArr[arrCount - 1];
-        half interval = GetGradientIndexInterval(timeArr, arrCount, indexes, gradientTime);
-        interval = SmoothStep01(interval);//TODO:消耗很大，如何避免？
-        half alpha  = lerp(alphaArr[indexes.x], alphaArr[indexes.y], interval);
-        alpha *= alpha;//Make Alpha Smoother
-        return alpha ;
+        if (gradientTime <= timeArr[0])
+        {
+            return alphaArr[0];
+        }
+        else if (gradientTime >= timeArr[arrCount - 1] )
+        {
+            return alphaArr[arrCount - 1];
+        }
+        else
+        {
+            int2 indexes = GetGradientIndex(timeArr, arrCount, gradientTime);
+            half interval = GetGradientIndexInterval(timeArr, arrCount, indexes, gradientTime);
+            interval = SmoothStep01(interval);//TODO:消耗很大，如何避免？
+            half alpha  = lerp(alphaArr[indexes.x], alphaArr[indexes.y], interval);
+            alpha *= alpha;//Make Alpha Smoother
+            return alpha ;
+        }
     }
 #endif

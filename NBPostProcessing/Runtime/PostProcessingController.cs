@@ -403,10 +403,13 @@ namespace NBShader
 
                     if (_perlin)
                     {
-                        _perlin.NoiseProfile =
-                                UnityEditor.AssetDatabase.LoadAssetAtPath<NoiseSettings>(
-                                    "Packages/com.xuanxuan.nb.postprocessing/3DPostionShake.asset");
-                        _perlin.FrequencyGain = 5f; //做一个自定义
+                        if (_perlin.NoiseProfile == null)
+                        {
+                            _perlin.NoiseProfile =
+                                    UnityEditor.AssetDatabase.LoadAssetAtPath<NoiseSettings>(
+                                        "Packages/com.xuanxuan.nb.fx/NBPostProcessing/3DPostionShake.asset");
+                            _perlin.FrequencyGain = 5f; //做一个自定义
+                        }
                         _perlin.AmplitudeGain = 0f; //一开始先不要震动
                     }
 
