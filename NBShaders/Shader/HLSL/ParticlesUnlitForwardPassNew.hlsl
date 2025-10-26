@@ -231,9 +231,17 @@
         }
     
         real thisZ = 0;
+
+
+		half3 positionVS = 0;
+		if(needPositionVS())
+		{
+			positionVS = TransformWorldToView(input.positionWS);
+		}
+
         if(needEyeDepth())
         {
-            thisZ = LinearEyeDepth(input.positionNDC.z / input.positionNDC.w, _ZBufferParams);//当前Frag深度。
+			thisZ = (unity_OrthoParams.w == 0) ? LinearEyeDepth(input.positionNDC.z / input.positionNDC.w, _ZBufferParams) : -positionVS.z;//场景当前深度
         }
         
 
@@ -349,7 +357,7 @@
         if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI))
         {
             half cell;
-            Unity_Voronoi_float(dissolve_noise_uv.zw,_Time.y*_DissolveVoronoi_Vec2.w,_DissolveVoronoi_Vec.zw,programVoronoiNoise,cell);
+            Unity_Voronoi_float(dissolve_noise_uv.zw,_Time.y*_DissolveVoronoi_Vec2.w,1,programVoronoiNoise,cell);
             programNoise = programVoronoiNoise ; 
         }
         
@@ -605,7 +613,7 @@
         #ifdef _MATCAP
         // URP 
         half3 normalVS = mul(input.normalWSAndAnimBlend.xyz, (float3x3)UNITY_MATRIX_I_V); // 逆转置矩阵 
-        half3 positionVS = TransformWorldToView(input.positionWS);
+        //half3 positionVS = TransformWorldToView(input.positionWS); 
 
         
         float3 r = reflect(positionVS, normalVS); 

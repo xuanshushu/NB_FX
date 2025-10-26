@@ -1042,6 +1042,19 @@
         return  false;
     }
 
+    bool needPositionVS()
+    {
+        #if defined(_MATCAP)
+            return true;
+        #endif
+
+        if (unity_OrthoParams.w == 1)
+        {
+            return true;
+        }
+        return false;
+    }
+
     bool ignoreFresnel()
     {
         #if defined(PARTICLE_BACKFACE_PASS)
