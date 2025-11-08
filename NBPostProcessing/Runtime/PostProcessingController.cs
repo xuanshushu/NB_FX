@@ -15,7 +15,6 @@ namespace NBShader
         #if UNITY_EDITOR
         public AnimBool[] AnimBools = new AnimBool[10];
         #endif
-        // [ShowInInspector][ReadOnly]
         [SerializeField]
         private PostProcessingManager _manager;
         
@@ -26,193 +25,77 @@ namespace NBShader
                 return _index;
             }
         }
-
-        // [ShowInInspector][ReadOnly]
         private int _index;
-
         public void SetIndex(int controllerIndex)
         {
             _index = controllerIndex;
         }
         
-
-        // [OnValueChanged("SetScreenCenterPos")]
-        // [LabelText("自定义屏幕中心")] 
         public Vector2 customScreenCenterPos = new Vector2(0.5f, 0.5f);
-
         private Vector2 _lastCustomScreenCenterPos = new Vector2(0.5f, 0.5f);
-
-        
-        // [OnValueChanged("SetToggles")]
-        // [ToggleGroup("chromaticAberrationToggle", "色散")]
-        // [OnValueChanged("InitAllSettings")]
         public bool chromaticAberrationToggle = false;
-        
-        // [OnValueChanged("SetUVFromDistort")]
-        // [LabelText("色散UV跟随后处理扭曲")]
-        // [ToggleGroup("chromaticAberrationToggle")]
         public bool caFromDistort = false;
-
-        // [LabelText("色散强度")] 
-        // [ToggleGroup("chromaticAberrationToggle")]
         public float chromaticAberrationIntensity = 0.2f;
-        
-        // [HideIf("caFromDistort")]
-        // [LabelText("色散位置")] 
-        // [ToggleGroup("chromaticAberrationToggle")]
         public float chromaticAberrationPos = 0.5f;
-        
-        // [HideIf("caFromDistort")]
-        // [LabelText("色散过渡范围")] 
-        // [ToggleGroup("chromaticAberrationToggle")]
         public float chromaticAberrationRange = 0.5f;
-
-        // [OnValueChanged("SetToggles")]
-        // [ToggleGroup("distortSpeedToggle", "扭曲")]
         public bool distortSpeedToggle = false;
-
-        // [ToggleGroup("distortSpeedToggle")]
-        // [LabelText("后处理走常规屏幕坐标")] 
-        // [OnValueChanged("SetUVFromDistort")]
         public bool distortScreenUVMode = false;
-        
-        // [LabelText("后处理扭曲")] 
-        // [ToggleGroup("distortSpeedToggle")]
-        // [OnValueChanged("InitAllSettings")]
         public Texture2D distortSpeedTexture;
-
-        // [LabelText("扭曲贴图中间值")]
-        // [ToggleGroup("distortSpeedToggle")]
-        // [OnValueChanged("SetTexture")]
         public float distortTextureMidValue = 1;
-
-        // [LabelText("扭曲贴图ST")]
-        // [ToggleGroup("distortSpeedToggle")]
         public Vector4 distortSpeedTexSt = new Vector4(30,1,0,0);
-        
-
-        // [LabelText("扭曲强度")] 
-        // [ToggleGroup("distortSpeedToggle")]
         public float distortSpeedIntensity = 1f;
-
-        // [HideIf("distortScreenUVMode")]
-        // [LabelText("扭曲位置")] 
-        // [ToggleGroup("distortSpeedToggle")]
         public float distortSpeedPosition = 0.5f;
-
-        // [HideIf("distortScreenUVMode")]
-        // [LabelText("扭曲范围")] 
-        // [ToggleGroup("distortSpeedToggle")]
         public float distortSpeedRange = 1f;
-
-        // [LabelText("扭曲纹理流动X")] 
-        // [ToggleGroup("distortSpeedToggle")]
         public float distortSpeedMoveSpeedX = 0.1f;
-        // [LabelText("扭曲纹理流动Y")] 
-        // [ToggleGroup("distortSpeedToggle")]
         public float distortSpeedMoveSpeed = -0.5f;//因为老的做法是没有X偏移的，只有Y的偏移，不改变量兼容老做法。
         private readonly int _distortSpeedTextureID = Shader.PropertyToID("_SpeedDistortMap");
         private readonly int _distortSpeedTextureStID = Shader.PropertyToID("_SpeedDistortMap_ST");
-
-        // [ToggleGroup("radialBlurToggle", "径向模糊")]
-        // [OnValueChanged("InitAllSettings")]
         public bool radialBlurToggle = false;
-
-        // [OnValueChanged("SetUVFromDistort")]
-        // [ToggleGroup("radialBlurToggle")] [LabelText("径向模糊跟随后处理扭曲")]
         public bool radialBlurFromDistort = false;
-        
-        // [ToggleGroup("radialBlurToggle")]
-        // [LabelText("采样次数")]
         [Range(1,12)]
         public int radialBlurSampleCount = 4;
-        // [ToggleGroup("radialBlurToggle")]
-        // [LabelText("强度")]
         public float radialBlurIntensity = 1;
-        // [HideIf("radialBlurFromDistort")]
-        // [LabelText("位置")]
-        // [ToggleGroup("radialBlurToggle")]
         public float radialBlurPos = 0.5f;
-        // [HideIf("radialBlurFromDistort")]
-        // [LabelText("过度范围")]
-        // [ToggleGroup("radialBlurToggle")]
         public float radialBlurRange = 0.5f;
-        
         #if CINIMACHINE_3_0
-        // [OnValueChanged("SetToggles")]
-        // [ToggleGroup("cameraShakeToggle", "震屏")]
-        // [OnValueChanged("InitAllSettings")]
-        public bool cameraShakeToggle = false;
-
-        // [ToggleGroup("cameraShakeToggle")]
-        // [LabelText("绑定Cinemachine相机")]
-        // [OnValueChanged("InitCinemachineCamera")]
-        public CinemachineCamera cinemachineCamera;
-        
-        // [ToggleGroup("cameraShakeToggle")] 
-        // [LabelText("相机震动强度")]
-        public float cameraShakeIntensity;
+            public bool cameraShakeToggle = false;
+            public CinemachineCamera cinemachineCamera;
+            public float cameraShakeIntensity;
         #endif
         
-        // [ToggleGroup("overlayTextureToggle", "肌理叠加图")]
-        // [OnValueChanged("InitAllSettings")]
         public bool overlayTextureToggle = false;
-
-        // [LabelText("肌理图极坐标模式")] [ToggleGroup("overlayTextureToggle")]
-        // [OnValueChanged("SetTexture")]
         public bool overlayTexturePolarCoordMode = false;
-
-        // [ToggleGroup("overlayTextureToggle")] 
-        // [LabelText("肌理图")]
-        // [OnValueChanged("SetTexture")]
         public Texture2D overlayTexture;
-        
         private readonly int _overlayTextureID = Shader.PropertyToID("_TextureOverlay");
         private readonly int _overlayTextureStID = Shader.PropertyToID("_TextureOverlay_ST");
         private readonly int _textureOverlayAnimProperty = Shader.PropertyToID("_TextureOverlayAnim");
         private readonly int _textureOverlayMaskProperty = Shader.PropertyToID("_TextureOverlayMask");
         private readonly int _textureOverlayMaskStProperty = Shader.PropertyToID("_TextureOverlayMask_ST");
-
-
-        // [LabelText("肌理图缩放平移")] [ToggleGroup("overlayTextureToggle")]
         public Vector4 overlayTextureSt = new Vector4(1, 1, 0, 0);
-        // [LabelText("肌理图偏移动画")] [ToggleGroup("overlayTextureToggle")]
         public Vector2 overlayTextureAnim = new Vector2(0, 0); 
-        // [LabelText("肌理图强度")] [ToggleGroup("overlayTextureToggle")]
         public float overlayTextureIntensity = 1f;
-        // [LabelText("肌理图蒙板")] [ToggleGroup("overlayTextureToggle")]
-        // [OnValueChanged("SetTexture")]
         public Texture2D overlayMaskTexture;
-        // [LabelText("肌理图蒙板缩放平移")] [ToggleGroup("overlayTextureToggle")]
         public Vector4 overlayMaskTextureSt;
         
-        // [ToggleGroup("flashToggle", "反闪")] 
-        // [OnValueChanged("InitAllSettings")]
         public bool flashToggle = false;
-        // [LabelText("反转度")] [ToggleGroup("flashToggle")]
         public float flashInvertIntensity = 1f;
-        // [LabelText("饱和度")] [ToggleGroup("flashToggle")]
         public float flashDeSaturateIntensity = 1f;
-        // [LabelText("对比度")] [ToggleGroup("flashToggle")]
+        public float flashGradientRange = 1f;
         public float flashContrast = 1f;
         public Color flashColor = new Color(1f,1f,1f,1f);
         public Color blackFlashColor = new Color(0f,0f,0f,1f);
+        private readonly int _flashTextureProperty = Shader.PropertyToID("_FlashTexture");
+        public Texture2D flashTexture;
+        public Vector4 flashTextureScaleOffset = new Vector4(1f,1f,0f,0f);
+        public bool flashTexturePolarCoordMode = true;
+        public Vector2 flashVec = new Vector2(0, 0);
+        public float flashTextureIntensity = 0.5f;
         
-        // [ToggleGroup("vignetteToggle", "暗角")] 
-        // [OnValueChanged("InitAllSettings")]
         public bool vignetteToggle = false;
-        // [ToggleGroup("vignetteToggle")] 
-        // [LabelText("暗角颜色")]
         public Color vignetteColor = Color.black;
         private readonly int _vignetteColorID = Shader.PropertyToID("_VignetteColor");
-        // [ToggleGroup("vignetteToggle")] 
-        // [LabelText("暗角强度")]
         public float vignetteIntensity = 1;
-        // [ToggleGroup("vignetteToggle")] 
-        // [LabelText("暗角圆度")]
         public float vignetteRoundness = 1;
-        // [ToggleGroup("vignetteToggle")] 
-        // [LabelText("暗角平滑度")]
         public float vignetteSmothness = 10;
         
        
@@ -237,7 +120,7 @@ namespace NBShader
             SetUVFromDistort();
             SetTexture();
             #if CINIMACHINE_3_0
-            InitCinemachineCamera();
+                InitCinemachineCamera();
             #endif
         }
 
@@ -268,6 +151,24 @@ namespace NBShader
                 {
                     PostProcessingManager.material.SetTexture(_distortSpeedTextureID, null);
                 }
+            }
+
+            if (flashToggle&& flashTexture)
+            {
+                PostProcessingManager.material.SetTexture(_flashTextureProperty, flashTexture);
+                if (flashTexturePolarCoordMode)
+                {
+                    PostProcessingManager.flags.SetFlagBits(NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE_POLLARCOORD);
+                }
+                else
+                {
+                    PostProcessingManager.flags.CheckFlagBits(NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE_POLLARCOORD);
+                }
+            }
+            else
+            {
+                PostProcessingManager.material.SetTexture(_flashTextureProperty, null);
+                PostProcessingManager.flags.CheckFlagBits(NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE_POLLARCOORD);
             }
 
             if (overlayTextureToggle)
@@ -375,53 +276,48 @@ namespace NBShader
             }
         }
 
-        // [LabelText("跳过数值锁定")] public bool isSkipUpdate = false;
-
     #if UNITY_EDITOR
-            // [Button("选择当前Manager")]
             void FindManager()
             {
                 UnityEditor.Selection.activeObject = _manager.gameObject;
             }
 
             #if CINIMACHINE_3_0
-            // [Button("选择当前VituralCamera")]
-            public void FindVirtualCamera()
-            {
-                UnityEditor.Selection.activeObject = _manager.currentVirtualCamera;
-            }
-
-            public void InitCinemachineCamera()
-            {
-                if (cinemachineCamera)
+                public void FindVirtualCamera()
                 {
-                    // _perlin = ;
-                    if (!cinemachineCamera.gameObject.TryGetComponent<CinemachineBasicMultiChannelPerlin>(out var _perlin))
-                    {
-                        _perlin = cinemachineCamera.gameObject.AddComponent<CinemachineBasicMultiChannelPerlin>();
-                    }
-
-                    if (_perlin)
-                    {
-                        if (_perlin.NoiseProfile == null)
-                        {
-                            _perlin.NoiseProfile =
-                                    UnityEditor.AssetDatabase.LoadAssetAtPath<NoiseSettings>(
-                                        "Packages/com.xuanxuan.nb.fx/NBPostProcessing/3DPostionShake.asset");
-                            _perlin.FrequencyGain = 5f; //做一个自定义
-                        }
-                        _perlin.AmplitudeGain = 0f; //一开始先不要震动
-                    }
-
-                    #if  UNITY_EDITOR
-                        if (_manager)
-                        {
-                            _manager.currentVirtualCamera = cinemachineCamera;
-                        }
-                    #endif
+                    UnityEditor.Selection.activeObject = _manager.currentVirtualCamera;
                 }
-                
-            }
+
+                public void InitCinemachineCamera()
+                {
+                    if (cinemachineCamera)
+                    {
+                        if (!cinemachineCamera.gameObject.TryGetComponent<CinemachineBasicMultiChannelPerlin>(out var _perlin))
+                        {
+                            _perlin = cinemachineCamera.gameObject.AddComponent<CinemachineBasicMultiChannelPerlin>();
+                        }
+
+                        if (_perlin)
+                        {
+                            if (_perlin.NoiseProfile == null)
+                            {
+                                _perlin.NoiseProfile =
+                                        UnityEditor.AssetDatabase.LoadAssetAtPath<NoiseSettings>(
+                                            "Packages/com.xuanxuan.nb.fx/NBPostProcessing/3DPostionShake.asset");
+                                _perlin.FrequencyGain = 5f; //做一个自定义
+                            }
+                            _perlin.AmplitudeGain = 0f; //一开始先不要震动
+                        }
+
+                        #if  UNITY_EDITOR
+                            if (_manager)
+                            {
+                                _manager.currentVirtualCamera = cinemachineCamera;
+                            }
+                        #endif
+                    }
+                    
+                }
             #endif
     #endif
 
@@ -545,6 +441,11 @@ namespace NBShader
                     Mathf.Max(PostProcessingManager.flashInvertIntensity, flashInvertIntensity);
                 PostProcessingManager.flashContrast =
                     Mathf.Max(PostProcessingManager.flashContrast, flashContrast);
+                PostProcessingManager.flashGradientRange = Mathf.Max(PostProcessingManager.flashGradientRange, flashGradientRange);
+                PostProcessingManager.flashVec = flashVec;
+                PostProcessingManager.flashTextureIntensity = Mathf.Max(PostProcessingManager.flashTextureIntensity, flashTextureIntensity);
+                PostProcessingManager.flashTextureScaleOffset = flashTextureScaleOffset;
+                
                 PostProcessingManager.flashColor = flashColor;
                 PostProcessingManager.blackFlashColor = blackFlashColor;
             }

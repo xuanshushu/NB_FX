@@ -605,6 +605,10 @@ namespace NBShader
         private bool _lastIsFlash = false;
 
         public static float flashDesaturateIntensity = 0;
+        public static float flashGradientRange = 0;
+        public static Vector4 flashTextureScaleOffset = new Vector4(1,1,0,0);
+        public static Vector2 flashVec = new Vector2(0, 0);
+        public static float flashTextureIntensity = 0.5f;
 
         public static float flashInvertIntensity = 0;
 
@@ -618,6 +622,10 @@ namespace NBShader
         private readonly int _flashContrastProperty = Shader.PropertyToID("_Contrast");
         private readonly int _flashColorProperty = Shader.PropertyToID("_FlashColor");
         private readonly int _blackFlashColorProperty = Shader.PropertyToID("_BlackFlashColor");
+        private readonly int _flashGradientRangeProp = Shader.PropertyToID("_FlashGradientRange");
+        private readonly int _flashTextureScaleOffsetProp = Shader.PropertyToID("_FlashTexture_ST");
+        private readonly int _flashVecProp = Shader.PropertyToID("_FlashVec");
+        private readonly int _flashTextureIntensityProp = Shader.PropertyToID("_FlashTextureIntensity");
 
         private void InitFlash()
         {
@@ -631,10 +639,20 @@ namespace NBShader
             material.SetFloat(_flashContrastProperty, flashContrast);
             material.SetColor(_flashColorProperty, flashColor);
             material.SetColor(_blackFlashColorProperty, blackFlashColor);
+            material.SetFloat(_flashGradientRangeProp, flashGradientRange);
+            material.SetVector(_flashTextureScaleOffsetProp, flashTextureScaleOffset);
+            material.SetVector(_flashVecProp, flashVec);
+            material.SetFloat(_flashTextureIntensityProp, flashTextureIntensity);
+            
             flashDesaturateIntensity = 0;
             flashInvertIntensity = 0;
             flashContrast = 0;
             flashColor = Color.white;
+            blackFlashColor = Color.black;
+            flashGradientRange = 0;
+            flashTextureScaleOffset = Vector4.zero;
+            flashTextureIntensity = 0;
+            flashVec = Vector4.zero;
         }
 
         private void EndFlash()

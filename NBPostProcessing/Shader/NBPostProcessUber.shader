@@ -17,7 +17,11 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
             _Contrast("对比度",Float) = 1
             _FlashColor("闪颜色", Vector) = (1, 1, 1, 1)
             _BlackFlashColor("闪黑颜色", Vector) = (0, 0, 0, 1)
-            
+            _FlashTexture("黑白闪细节图",2D) = "white"
+            _FlashTextureIntensity("黑白细节图混合强度",Float) = 0.5
+            _FlashGradientRange("黑白闪过渡范围",Float) = 1
+            _FlashVec("xy:FlashTextureOffsetAnim",Vector) = (0,0,0,0)
+
 
             [HideInInspector] _NBPostProcessFlags("_NBPostProcessFlags", Integer) = 0
             _ChromaticAberrationVector("色散矢量",Vector) = (1,0,0,0)
@@ -87,6 +91,9 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                 TEXTURE2D(_TextureOverlayMask);
                 SAMPLER(sampler_TextureOverlayMask);
 
+                TEXTURE2D(_FlashTexture);
+                SAMPLER(sampler_FlashTexture);
+
                 #if UNITY_VERSION < 202220
                 SAMPLER(sampler_LinearClamp);
                 #endif
@@ -105,6 +112,10 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     half _InvertIntensity;
                     half _DeSaturateIntensity;
                     half _Contrast;
+                    half _FlashGradientRange;
+                    half _FlashTextureIntensity;
+                    float4 _FlashTexture_ST;
+                    float2 _FlashVec;
                     half3 _FlashColor;
                     half3 _BlackFlashColor;
                 
@@ -178,7 +189,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     }
                     
                     UNITY_BRANCH
-                    if((CheckLocalFlags(FLAG_BIT_DISTORT_SPEED)& (!CheckLocalFlags(FLAG_BIT_POST_DISTORT_SCREEN_UV)))|CheckLocalFlags(FLAG_BIT_OVERLAYTEXTURE_POLLARCOORD))
+                    if((CheckLocalFlags(FLAG_BIT_DISTORT_SPEED)& (!CheckLocalFlags(FLAG_BIT_POST_DISTORT_SCREEN_UV)))|CheckLocalFlags(FLAG_BIT_OVERLAYTEXTURE_POLLARCOORD)|CheckLocalFlags(FLAG_BIT_FLASHTEXTURE_POLLARCOORD))
                     {
                         polarCoordinates= PolarCoordinates(screenUV,_CustomScreenCenter.xy);
                     }
@@ -339,17 +350,44 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                         // half3 invertColor = SRGBToLinear(1- LinearToSRGB(color.xyz));
                         // color.rgb = lerp(color.rgb,invertColor,_InvertIntensity);
 
-                        half3 endColor = lerp(_BlackFlashColor,_FlashColor,luminance(color.rgb));
-                        color.rgb = lerp(color.rgb,endColor,_InvertIntensity);
-                        
-                        color.xyz = RgbToHsv(color.rgb);
-                        half3 colorHSV = color.xyz;
-                        color.y *= _DeSaturateIntensity;
-                        color.rgb = HsvToRgb(color.xyz);
-                        
-                        color.rgb = lerp(half3(0.5,0.5,0.5),color.rgb,_Contrast);
+                        half flashLuminace = luminance(color.rgb);
 
+                        half2 flashTexUV ;
+                        if(CheckLocalFlags(FLAG_BIT_FLASHTEXTURE_POLLARCOORD))
+                        {
+                            flashTexUV = polarCoordinates;
+                        }
+                        else
+                        {
+                            
+                            flashTexUV = screenUV;
+                        }
+
+                        flashTexUV = TRANSFORM_TEX(flashTexUV,_FlashTexture);
+                        flashTexUV = UVOffsetAnimaiton(flashTexUV,_FlashVec.xy,_Time.y);
+
+                        half flashTexColor = SAMPLE_TEXTURE2D(_FlashTexture,sampler_FlashTexture,flashTexUV).r;
+
+                        flashLuminace = lerp(flashLuminace,flashTexColor,_FlashTextureIntensity);
+                        half RangeMin = _FlashGradientRange;
+                        half RangeMax = RangeMin + _Contrast;
+                        flashLuminace = SimpleSmoothstep(RangeMin,RangeMax,flashLuminace);
+                        half3 endColor = lerp(_BlackFlashColor,_FlashColor,flashLuminace);
+                        color.rgb = lerp(color.rgb,endColor,_InvertIntensity);
                         color.a = 1;
+                        
+
+                        // half3 endColor = lerp(_BlackFlashColor,_FlashColor,luminance(color.rgb));
+                        // color.rgb = lerp(color.rgb,endColor,_InvertIntensity);
+                        //
+                        // color.xyz = RgbToHsv(color.rgb);
+                        // half3 colorHSV = color.xyz;
+                        // color.y *= _DeSaturateIntensity;
+                        // color.rgb = HsvToRgb(color.xyz);
+                        //
+                        // color.rgb = lerp(half3(0.5,0.5,0.5),color.rgb,_Contrast);
+                        //
+                        // color.a = 1;
                     }
 
                     UNITY_BRANCH

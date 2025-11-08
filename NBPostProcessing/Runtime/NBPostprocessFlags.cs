@@ -33,6 +33,7 @@ namespace NBShader
         public const int FLAG_BIT_POST_DISTORT_SCREEN_UV = 1 << 9; //默认来自于PolarUV
         public const int FLAG_BIT_RADIALBLUR_BY_DISTORT = 1 << 10; //默认来自于PolarUV
         public const int FLAG_BIT_CHORATICABERRAT_BY_DISTORT = 1 << 11; //默认来自于PolarUV
+        public const int FLAG_BIT_FLASHTEXTURE_POLLARCOORD = 1 << 12;
 
 
     }
