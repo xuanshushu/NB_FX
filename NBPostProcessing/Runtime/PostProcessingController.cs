@@ -78,17 +78,21 @@ namespace NBShader
         public Vector4 overlayMaskTextureSt;
         
         public bool flashToggle = false;
-        public float flashInvertIntensity = 1f;
+        [Range(0,1)]
+        public float flashIntensity = 1f;
+        public float flashInvertIntensity = 0f;
         public float flashDeSaturateIntensity = 1f;
-        public float flashGradientRange = 1f;
-        public float flashContrast = 1f;
-        public Color flashColor = new Color(1f,1f,1f,1f);
+        public float flashGradientRange = 0.25f;
+        public float flashContrast = 0.5f;
+        [ColorUsage(false, true)]
+        public Color flashColor = new Color(2f,2f,2f,1f);
+        [ColorUsage(false, true)]
         public Color blackFlashColor = new Color(0f,0f,0f,1f);
         private readonly int _flashTextureProperty = Shader.PropertyToID("_FlashTexture");
         public Texture2D flashTexture;
-        public Vector4 flashTextureScaleOffset = new Vector4(1f,1f,0f,0f);
+        public Vector4 flashTextureScaleOffset = new Vector4(10f,0.1f,0f,0f);
         public bool flashTexturePolarCoordMode = true;
-        public Vector2 flashVec = new Vector2(0, 0);
+        public Vector2 flashVec = new Vector2(0, 0.05f);
         public float flashTextureIntensity = 0.5f;
         
         public bool vignetteToggle = false;
@@ -162,13 +166,13 @@ namespace NBShader
                 }
                 else
                 {
-                    PostProcessingManager.flags.CheckFlagBits(NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE_POLLARCOORD);
+                    PostProcessingManager.flags.ClearFlagBits(NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE_POLLARCOORD);
                 }
             }
             else
             {
                 PostProcessingManager.material.SetTexture(_flashTextureProperty, null);
-                PostProcessingManager.flags.CheckFlagBits(NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE_POLLARCOORD);
+                PostProcessingManager.flags.ClearFlagBits(NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE_POLLARCOORD);
             }
 
             if (overlayTextureToggle)
@@ -281,45 +285,47 @@ namespace NBShader
             {
                 UnityEditor.Selection.activeObject = _manager.gameObject;
             }
-
-            #if CINIMACHINE_3_0
-                public void FindVirtualCamera()
-                {
-                    UnityEditor.Selection.activeObject = _manager.currentVirtualCamera;
-                }
-
-                public void InitCinemachineCamera()
-                {
-                    if (cinemachineCamera)
-                    {
-                        if (!cinemachineCamera.gameObject.TryGetComponent<CinemachineBasicMultiChannelPerlin>(out var _perlin))
-                        {
-                            _perlin = cinemachineCamera.gameObject.AddComponent<CinemachineBasicMultiChannelPerlin>();
-                        }
-
-                        if (_perlin)
-                        {
-                            if (_perlin.NoiseProfile == null)
-                            {
-                                _perlin.NoiseProfile =
-                                        UnityEditor.AssetDatabase.LoadAssetAtPath<NoiseSettings>(
-                                            "Packages/com.xuanxuan.nb.fx/NBPostProcessing/3DPostionShake.asset");
-                                _perlin.FrequencyGain = 5f; //做一个自定义
-                            }
-                            _perlin.AmplitudeGain = 0f; //一开始先不要震动
-                        }
-
-                        #if  UNITY_EDITOR
-                            if (_manager)
-                            {
-                                _manager.currentVirtualCamera = cinemachineCamera;
-                            }
-                        #endif
-                    }
-                    
-                }
-            #endif
     #endif
+
+        #if CINIMACHINE_3_0
+            #if UNITY_EDITOR
+            public void FindVirtualCamera()
+            {
+                UnityEditor.Selection.activeObject = _manager.currentVirtualCamera;
+            }
+            #endif
+
+            public void InitCinemachineCamera()
+            {
+                if (cinemachineCamera)
+                {
+                    if (!cinemachineCamera.gameObject.TryGetComponent<CinemachineBasicMultiChannelPerlin>(out var _perlin))
+                    {
+                        _perlin = cinemachineCamera.gameObject.AddComponent<CinemachineBasicMultiChannelPerlin>();
+                    }
+
+                    if (_perlin)
+                    {
+                        if (_perlin.NoiseProfile == null)
+                        {
+                            _perlin.NoiseProfile =
+                                    UnityEditor.AssetDatabase.LoadAssetAtPath<NoiseSettings>(
+                                        "Packages/com.xuanxuan.nb.fx/NBPostProcessing/3DPostionShake.asset");
+                            _perlin.FrequencyGain = 5f; //做一个自定义
+                        }
+                        _perlin.AmplitudeGain = 0f; //一开始先不要震动
+                    }
+
+                    #if  UNITY_EDITOR
+                        if (_manager)
+                        {
+                            _manager.currentVirtualCamera = cinemachineCamera;
+                        }
+                    #endif
+                }
+                
+            }
+        #endif
 
 
         private void OnEnable()
@@ -439,6 +445,7 @@ namespace NBShader
                     Mathf.Max(PostProcessingManager.flashDesaturateIntensity, flashDeSaturateIntensity);
                 PostProcessingManager.flashInvertIntensity =
                     Mathf.Max(PostProcessingManager.flashInvertIntensity, flashInvertIntensity);
+                PostProcessingManager.flashIntensity = Mathf.Max(PostProcessingManager.flashIntensity, flashIntensity);
                 PostProcessingManager.flashContrast =
                     Mathf.Max(PostProcessingManager.flashContrast, flashContrast);
                 PostProcessingManager.flashGradientRange = Mathf.Max(PostProcessingManager.flashGradientRange, flashGradientRange);

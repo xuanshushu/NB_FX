@@ -15,6 +15,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
             _InvertIntensity("反向强度",Float) = 0
             _DeSaturateIntensity("饱和度强度",Float) = 0
             _Contrast("对比度",Float) = 1
+            _FlashIntensity("反闪效果强度",Float) = 1
             _FlashColor("闪颜色", Vector) = (1, 1, 1, 1)
             _BlackFlashColor("闪黑颜色", Vector) = (0, 0, 0, 1)
             _FlashTexture("黑白闪细节图",2D) = "white"
@@ -46,6 +47,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
             Pass
             {
                 Blend SrcAlpha OneMinusSrcAlpha
+                ZTest Off
                 HLSLPROGRAM
                 // This line defines the name of the vertex shader.
                 #pragma vertex vert
@@ -108,7 +110,8 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     half _TextureOverlayIntensity;
                     half4 _TextureOverlayMask_ST;
                     half4 _TextureOverlayAnim;
-                    
+
+                    half _FlashIntensity;
                     half _InvertIntensity;
                     half _DeSaturateIntensity;
                     half _Contrast;
@@ -367,13 +370,17 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                         flashTexUV = UVOffsetAnimaiton(flashTexUV,_FlashVec.xy,_Time.y);
 
                         half flashTexColor = SAMPLE_TEXTURE2D(_FlashTexture,sampler_FlashTexture,flashTexUV).r;
+                        flashTexColor = pow(flashTexColor,_DeSaturateIntensity);
 
                         flashLuminace = lerp(flashLuminace,flashTexColor,_FlashTextureIntensity);
                         half RangeMin = _FlashGradientRange;
                         half RangeMax = RangeMin + _Contrast;
                         flashLuminace = SimpleSmoothstep(RangeMin,RangeMax,flashLuminace);
-                        half3 endColor = lerp(_BlackFlashColor,_FlashColor,flashLuminace);
-                        color.rgb = lerp(color.rgb,endColor,_InvertIntensity);
+                        half3 finalBlackFlashColor = lerp(_FlashColor,_BlackFlashColor,_InvertIntensity);
+                        half3 finalFlashColor =  lerp(_BlackFlashColor,_FlashColor,_InvertIntensity);
+                        
+                        half3 endColor = lerp(finalBlackFlashColor,finalFlashColor,flashLuminace);
+                        color.rgb = lerp(color.rgb,endColor,_FlashIntensity);
                         color.a = 1;
                         
 

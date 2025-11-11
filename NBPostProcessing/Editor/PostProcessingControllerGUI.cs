@@ -213,10 +213,21 @@ namespace NBShaderEditor
                 isChangeToggle => { ReflectMethod("InitAllSettings", ppController); },
                 drawBlock: isToggle =>
                 {
+                    SerializedProperty flashIntensityProp = serializedObject.FindProperty("flashIntensity");
+                    EditorGUILayout.PropertyField(flashIntensityProp, new GUIContent("反转效果强度"));
                     SerializedProperty flashInvertIntensityProp = serializedObject.FindProperty("flashInvertIntensity");
                     EditorGUILayout.PropertyField(flashInvertIntensityProp, new GUIContent("反转度"));
-                    SerializedProperty flashTexture = serializedObject.FindProperty("flashTexture");
+                    SerializedProperty flashGradientRangeProp = serializedObject.FindProperty("flashGradientRange");
+                    EditorGUILayout.PropertyField(flashGradientRangeProp, new GUIContent("过渡起始亮度"));
+                    SerializedProperty flashContrastProp = serializedObject.FindProperty("flashContrast");
+                    EditorGUILayout.PropertyField(flashContrastProp, new GUIContent("过渡范围"));
+                    SerializedProperty flashColorProp = serializedObject.FindProperty("flashColor");
+                    EditorGUILayout.PropertyField(flashColorProp, new GUIContent("亮部闪颜色"));
+                    SerializedProperty blackFlashColorProp = serializedObject.FindProperty("blackFlashColor");
+                    EditorGUILayout.PropertyField(blackFlashColorProp, new GUIContent("暗部闪颜色"));
+                    
                     EditorGUI.BeginChangeCheck();
+                    SerializedProperty flashTexture = serializedObject.FindProperty("flashTexture");
                     EditorGUILayout.PropertyField(flashTexture, new GUIContent("反闪纹理图"));
                     if (EditorGUI.EndChangeCheck())
                     {
@@ -228,20 +239,11 @@ namespace NBShaderEditor
                     EditorGUILayout.PropertyField(flashTextureScaleOffsetProp, new GUIContent("反闪纹理图缩放平移"));
                     SerializedProperty flashVecProp = serializedObject.FindProperty("flashVec");
                     EditorGUILayout.PropertyField(flashVecProp, new GUIContent("反闪纹理图偏移速度"));
+                    SerializedProperty flashDeSaturateIntensityProp = serializedObject.FindProperty("flashDeSaturateIntensity");
+                    EditorGUILayout.PropertyField(flashDeSaturateIntensityProp, new GUIContent("纹理图Pow"));
                     SerializedProperty flashTextureIntensityProp = serializedObject.FindProperty("flashTextureIntensity");
-                    EditorGUILayout.PropertyField(flashTextureIntensityProp, new GUIContent("纹理图强度"));
+                    EditorGUILayout.PropertyField(flashTextureIntensityProp, new GUIContent("纹理图混合程度"));
                     
-                    SerializedProperty flashGradientRangeProp = serializedObject.FindProperty("flashGradientRange");
-                    EditorGUILayout.PropertyField(flashGradientRangeProp, new GUIContent("过渡范围"));
-                    SerializedProperty flashDeSaturateIntensityProp =
-                        serializedObject.FindProperty("flashDeSaturateIntensity");
-                    EditorGUILayout.PropertyField(flashDeSaturateIntensityProp, new GUIContent("饱和度"));
-                    SerializedProperty flashContrastProp = serializedObject.FindProperty("flashContrast");
-                    EditorGUILayout.PropertyField(flashContrastProp, new GUIContent("对比度"));
-                    SerializedProperty flashColorProp = serializedObject.FindProperty("flashColor");
-                    EditorGUILayout.PropertyField(flashColorProp, new GUIContent("亮部闪颜色"));
-                    SerializedProperty blackFlashColorProp = serializedObject.FindProperty("blackFlashColor");
-                    EditorGUILayout.PropertyField(blackFlashColorProp, new GUIContent("暗部闪颜色"));
                 });
 
             SerializedProperty vignetteToggleProp = serializedObject.FindProperty("vignetteToggle");

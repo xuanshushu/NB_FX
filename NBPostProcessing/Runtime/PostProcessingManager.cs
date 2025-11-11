@@ -609,6 +609,7 @@ namespace NBShader
         public static Vector4 flashTextureScaleOffset = new Vector4(1,1,0,0);
         public static Vector2 flashVec = new Vector2(0, 0);
         public static float flashTextureIntensity = 0.5f;
+        public static float flashIntensity = 1;
 
         public static float flashInvertIntensity = 0;
 
@@ -617,6 +618,7 @@ namespace NBShader
         public static Color flashColor = new Color(1, 1, 1, 1);
         public static Color blackFlashColor = new Color(0, 0, 0, 1);
 
+        private readonly int _flashIntensityProperty = Shader.PropertyToID("_FlashIntensity");
         private readonly int _flashDesaturateProperty = Shader.PropertyToID("_DeSaturateIntensity");
         private readonly int _flashInvertProperty = Shader.PropertyToID("_InvertIntensity");
         private readonly int _flashContrastProperty = Shader.PropertyToID("_Contrast");
@@ -643,6 +645,7 @@ namespace NBShader
             material.SetVector(_flashTextureScaleOffsetProp, flashTextureScaleOffset);
             material.SetVector(_flashVecProp, flashVec);
             material.SetFloat(_flashTextureIntensityProp, flashTextureIntensity);
+            material.SetFloat(_flashIntensityProperty, flashIntensity);
             
             flashDesaturateIntensity = 0;
             flashInvertIntensity = 0;
@@ -653,6 +656,7 @@ namespace NBShader
             flashTextureScaleOffset = Vector4.zero;
             flashTextureIntensity = 0;
             flashVec = Vector4.zero;
+            flashIntensity = 0;
         }
 
         private void EndFlash()

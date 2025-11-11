@@ -207,6 +207,7 @@
     {
         
         half3 viewDirWS = GetWorldSpaceNormalizeViewDir(input.positionWS.xyz);
+        input.normalWSAndAnimBlend.xyz = facing > 0 ? input.normalWSAndAnimBlend.xyz : -input.normalWSAndAnimBlend.xyz;
         
         
         UNITY_SETUP_INSTANCE_ID(input);
