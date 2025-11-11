@@ -120,7 +120,7 @@ namespace NBShader
         public const int FLAG_BIT_HUESHIFT_ON = 1 << 19;
         public const int FLAG_BIT_PARTICLE_CUSTOMDATA2_ON = 1 << 20;
         public const int FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE = 1 << 21;
-        public const int FLAG_BIT_PARTICLE_COLOR_BLEND_FOLLOW_MAINTEX_UV = 1 << 22;
+        public const int FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX = 1 << 22;
         public const int FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON = 1 << 23;
         public const int FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD = 1 << 24;
         public const int FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE = 1 << 25;
@@ -254,6 +254,7 @@ namespace NBShader
         public const int foldOutBit2ScreenDistortAlphaRefine = 1 << 6;
         public const int foldOutBit2ProgramNoiseSimple = 1 << 7;
         public const int foldOutBit2ProgramNoiseVoronoi = 1 << 8;
+        public const int foldOutBit2ColorAdjustment = 1 << 9;
 
 
         #region CustomDataCodes

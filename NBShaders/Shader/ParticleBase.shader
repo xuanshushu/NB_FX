@@ -31,6 +31,7 @@
         _FresnelMode("__FresnelMode",Float) = 0
         _InvertFresnel_Toggle("__InvertFresnel_Toggle",Float) = 0
         _HueShift_Toggle("__HueShift_Toggle",Float) = 0
+    	_ColorAdjustmentOnlyAffectMainTex("颜色调整仅影响主贴图开关",Float) = 0
         _BackFaceColor_Toggle("_BackFaceColor_Toggle",Float) = 0
         _BackFirstPassToggle("_BackFirstPassToggle",Float) = 0
         

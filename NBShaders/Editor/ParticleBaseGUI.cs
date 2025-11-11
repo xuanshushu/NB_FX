@@ -272,6 +272,48 @@ namespace NBShaderEditor
         {
             _helper.DrawFloat("整体颜色强度", "_BaseColorIntensityForTimeline");
             _helper.DrawSlider("整体透明度", "_AlphaAll", rangePropertyName:"AlphaAllRangeVec");
+            _helper.DrawFoldOut(W9ParticleShaderFlags.foldOutBit2ColorAdjustment, 5,
+                GetAnimBoolIndex(5),"颜色调整",drawBlock: () =>
+                {
+                    _helper.DrawToggle("颜色调整仅影响主贴图","_ColorAdjustmentOnlyAffectMainTex",W9ParticleShaderFlags.FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX);
+                    _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitHueShift, 3, GetAnimBoolIndex(3), "色相偏移",
+                    "_HueShift_Toggle", W9ParticleShaderFlags.FLAG_BIT_HUESHIFT_ON, isIndentBlock: true,
+                    drawBlock: (isToggle) =>
+                    {
+                        _helper.DrawSlider("色相", "_HueShift", 0, 1);
+                        DrawCustomDataSelect("色相自定义曲线", W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT, 0);
+                    });
+
+
+                _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitSaturability, 3, GetAnimBoolIndex(3),
+                    "饱和度", "_ChangeSaturability_Toggle", W9ParticleShaderFlags.FLAG_BIT_SATURABILITY_ON,
+                    isIndentBlock: true, drawBlock: (isToggle) =>
+                    {
+                        _helper.DrawSlider("饱和度", "_Saturability", rangePropertyName:"SaturabilityRangeVec");
+                        DrawCustomDataSelect("饱和度强度自定义曲线", W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_SATURATE, 1);
+                    });
+
+                _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit1MianTexContrast, 4, GetAnimBoolIndex(4),
+                    "对比度", "_Contrast_Toggle", W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST, 1,
+                    isIndentBlock: true, drawBlock: (isToggle) =>
+                    {
+                        matEditor.ShaderProperty(_helper.GetProperty("_ContrastMidColor"), "对比度中值颜色");
+                        _helper.DrawSlider("对比度", "_Contrast", 0, 5);
+                        DrawCustomDataSelect("对比度自定义曲线",
+                            W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST, 2);
+                    });
+
+                _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit1MainTexColorRefine, 4, GetAnimBoolIndex(4),
+                    "颜色修正", "_BaseMapColorRefine_Toggle",
+                    W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE, 1, isIndentBlock: true, drawBlock:
+                    (isToggle) =>
+                    {
+                        _helper.DrawVector4Component("A:主颜色相乘", "_BaseMapColorRefine", "x", false);
+                        _helper.DrawVector4Component("B:主颜色Power", "_BaseMapColorRefine", "y", false);
+                        _helper.DrawVector4Component("B:主颜色Power后相乘", "_BaseMapColorRefine", "z", false);
+                        _helper.DrawVector4Component("A/B线性差值", "_BaseMapColorRefine", "w", true, 0f, 1f);
+                    });
+                });
             if (_uiEffectEnabled == 0)
             {
                 _helper.DrawPopUp("深度测试", "_ZTest", Enum.GetNames(typeof(CompareFunction)));
@@ -430,43 +472,7 @@ namespace NBShaderEditor
                 });
 
 
-                _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitHueShift, 3, GetAnimBoolIndex(3), "主贴图色相偏移",
-                    "_HueShift_Toggle", W9ParticleShaderFlags.FLAG_BIT_HUESHIFT_ON, isIndentBlock: true,
-                    drawBlock: (isToggle) =>
-                    {
-                        _helper.DrawSlider("色相", "_HueShift", 0, 1);
-                        DrawCustomDataSelect("色相自定义曲线", W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT, 0);
-                    });
-
-
-                _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitSaturability, 3, GetAnimBoolIndex(3),
-                    "主贴图饱和度", "_ChangeSaturability_Toggle", W9ParticleShaderFlags.FLAG_BIT_SATURABILITY_ON,
-                    isIndentBlock: true, drawBlock: (isToggle) =>
-                    {
-                        _helper.DrawSlider("饱和度", "_Saturability", rangePropertyName:"SaturabilityRangeVec");
-                        DrawCustomDataSelect("饱和度强度自定义曲线", W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_SATURATE, 1);
-                    });
-
-                _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit1MianTexContrast, 4, GetAnimBoolIndex(4),
-                    "主贴图对比度", "_Contrast_Toggle", W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST, 1,
-                    isIndentBlock: true, drawBlock: (isToggle) =>
-                    {
-                        matEditor.ShaderProperty(_helper.GetProperty("_ContrastMidColor"), "对比度中值颜色");
-                        _helper.DrawSlider("对比度", "_Contrast", 0, 5);
-                        DrawCustomDataSelect("对比度自定义曲线",
-                            W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST, 2);
-                    });
-
-                _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit1MainTexColorRefine, 4, GetAnimBoolIndex(4),
-                    "主贴图颜色修正", "_BaseMapColorRefine_Toggle",
-                    W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE, 1, isIndentBlock: true, drawBlock:
-                    (isToggle) =>
-                    {
-                        _helper.DrawVector4Component("A:主颜色相乘", "_BaseMapColorRefine", "x", false);
-                        _helper.DrawVector4Component("B:主颜色Power", "_BaseMapColorRefine", "y", false);
-                        _helper.DrawVector4Component("B:主颜色Power后相乘", "_BaseMapColorRefine", "z", false);
-                        _helper.DrawVector4Component("A/B线性差值", "_BaseMapColorRefine", "w", true, 0f, 1f);
-                    });
+          
             };
 
             Action drawBaseMapFoldOut = () => { 

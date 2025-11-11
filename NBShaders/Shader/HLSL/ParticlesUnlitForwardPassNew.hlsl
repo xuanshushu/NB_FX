@@ -510,41 +510,57 @@
         
         half alpha = albedo.a;
         half3 result = albedo.rgb;
+        UNITY_BRANCH
+        if (CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX))
+        {
+            ColorAdjustment(result,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+        }
         
         #ifdef _FX_LIGHT_MODE_SIX_WAY
             float4 rigRTBkSample  = BlendTexture(_RigRTBk, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP);
             float4 rigLBtFSample  = BlendTexture(_RigLBtF, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP);
         #endif
-      
-        UNITY_BRANCH
-        if(CheckLocalFlags(FLAG_BIT_HUESHIFT_ON))
-        {
-            half3 hsv = RgbToHsv(result);
-            _HueShift = GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,_HueShift,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
-            hsv.r += _HueShift;
-            result = HsvToRgb(hsv);
-        }
-        
-        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST))
-        {
-            _Contrast = GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,_Contrast,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
-            result.rgb = lerp(_ContrastMidColor,result.rgb,_Contrast);
-        }
 
-        
-        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE))
-        {
-            half3 colorA = result.rgb*_BaseMapColorRefine.x;
-            half3 colorB = pow(result.rgb,_BaseMapColorRefine.y)*_BaseMapColorRefine.z;
-            result.rgb = lerp(colorA,colorB,_BaseMapColorRefine.w);
-        }
+      
+        // UNITY_BRANCH
+        // if(CheckLocalFlags(FLAG_BIT_HUESHIFT_ON))
+        // {
+        //     half3 hsv = RgbToHsv(result);
+        //     _HueShift = GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,_HueShift,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+        //     hsv.r += _HueShift;
+        //     result = HsvToRgb(hsv);
+        // }
+        //
+        // UNITY_BRANCH
+        // if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST))
+        // {
+        //     _Contrast = GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,_Contrast,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+        //     result.rgb = lerp(_ContrastMidColor,result.rgb,_Contrast);
+        // }
+        //
+        // UNITY_BRANCH
+        // if(CheckLocalFlags(FLAG_BIT_SATURABILITY_ON))
+        // {
+        //     half3 resultWB = luminance(result);
+        //     _Saturability = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_SATURATE,_Saturability,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+        //     result.rgb = lerp(resultWB.rgb, result.rgb, _Saturability);
+        // }
+        //
+        //
+        //
+        // if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE))
+        // {
+        //     half3 colorA = result.rgb*_BaseMapColorRefine.x;
+        //     half3 colorB = pow(result.rgb,_BaseMapColorRefine.y)*_BaseMapColorRefine.z;
+        //     result.rgb = lerp(colorA,colorB,_BaseMapColorRefine.w);
+        // }
         
    
 
-        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_BUMP_TEX_UV_FOLLOW_MAINTEX))
-        {
-            BumpTex_uv = MainTex_UV;
-        }
+        // if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_BUMP_TEX_UV_FOLLOW_MAINTEX))
+        // {
+        //     BumpTex_uv = MainTex_UV;
+        // }
 
      
         //光照模式
@@ -638,10 +654,7 @@
         half4 emission = half4(0, 0, 0,1);
         #if defined(_EMISSION)
             #ifdef _NOISEMAP
-            if (!CheckLocalFlags(FLAG_BIT_PARTICLE_EMISSION_FOLLOW_MAINTEX_UV))
-            {
                 emission_uv += cum_noise * _Emi_Distortion_intensity;
-            }
             #endif
             // emission = tex2D_TryLinearizeWithoutAlphaFX(_EmissionMap,emission_uv);
             emission = SampleTexture2DWithWrapFlags(_EmissionMap,emission_uv,FLAG_BIT_WRAPMODE_EMISSIONMAP);
@@ -823,10 +836,7 @@
         //颜色渐变
         #ifdef _COLORMAPBLEND
             #if defined(_NOISEMAP)
-            if (!CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_BLEND_FOLLOW_MAINTEX_UV))
-            {
                 colorBlendMap_uv += cum_noise * _ColorBlendVec.x; //加入扭曲效果
-            }
             #endif
             half4 colorBlend = SampleTexture2DWithWrapFlags(_ColorBlendMap,colorBlendMap_uv,FLAG_BIT_WRAPMODE_COLORBLENDMAP);
             colorBlend.rgb = colorBlend.rgb * _ColorBlendColor.rgb;
@@ -1051,14 +1061,7 @@
         
 
         
-        UNITY_BRANCH
-        if(CheckLocalFlags(FLAG_BIT_SATURABILITY_ON))
-        {
-            half3 resultWB = luminance(result);
-            _Saturability = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_SATURATE,_Saturability,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
-            result.rgb = lerp(resultWB.rgb, result.rgb, _Saturability);
-        }
-        
+  
 
         //和粒子颜色信息运算。雨轩：乘顶点色。
         if(!CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR))
@@ -1079,10 +1082,12 @@
         half3 beforeFogResult = result;
         result = MixFog(result,input.positionWS.w);
         result = lerp(beforeFogResult, result, _fogintensity);
-
-        // #ifndef _SCREEN_DISTORT_MODE
-        //     result.rgb = result.rgb * alpha;
-        // #endif
+        
+        UNITY_BRANCH
+        if (!CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX))
+        {
+           ColorAdjustment(result,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+        }
         
         UNITY_FLATTEN
         if(CheckLocalFlags(FLAG_BIT_PARTICLE_LINEARTOGAMMA_ON))
@@ -1127,6 +1132,8 @@
         #endif
 
         #endif
+
+       
         
         
         half4 color = half4(result, alpha);
