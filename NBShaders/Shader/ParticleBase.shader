@@ -233,7 +233,7 @@
         // Rongjie ------------------
         // [Header(RongJie(Anima For CustomData.y).......)]
         // [Toggle(_DISSOLVE)]_RJ ("RONGJIE?", float) = 0
-        _Dissolve ("x:溶解强度 y:溶解值Pow z:过程溶解强度 w:溶解硬软度", vector) = (0.5, 1, 0, 0.1)
+        _Dissolve ("x:溶解强度 y:溶解值Pow z:过程溶解强度 w:溶解硬软度", vector) = (0.5, 1, 1, 0.1)
     	_DissolveMap("溶解贴图 xy:UV缩放 zw:UV偏移",2D) = "grey"{}
         _DissolveMaskMap("局部溶解蒙版 xy:UV缩放 zw:UV偏移",2D) = "white"{}
         _DissolveOffsetRotateDistort("xy:溶解贴图偏移速度 z:溶解贴图旋转",Vector) = (0,0,0,0)
