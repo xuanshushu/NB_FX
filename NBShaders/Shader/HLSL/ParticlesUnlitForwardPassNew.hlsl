@@ -748,7 +748,8 @@
                 half4 dissolveMaskSample = SampleTexture2DWithWrapFlags(_DissolveMaskMap,dissolve_mask_uv,FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP);
                 dissolveMaskValue = GetColorChannel(dissolveMaskSample,FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP);
                 _Dissolve.z += GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
-                dissolveMaskValue += _Dissolve.z;
+                // dissolveMaskValue += _Dissolve.z;
+                dissolveMaskValue = lerp(dissolveValue, dissolveMaskValue, _Dissolve.z);
                 // dissolveValue = dissolveMaskValue*dissolveValue;
                 //
                 // half mixedDisolveValue ;
@@ -852,75 +853,7 @@
             }
         #endif
 
-        //菲涅
-        
-            UNITY_BRANCH
-            if(CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_ON))
-            {
-                half fresnelValue = 0;
-                if(!ignoreFresnel())
-                {
-                    half3 fresnelDir = normalize(viewDirWS+_FresnelRotation.rgb);
-
-                    half dotNV = dot(fresnelDir,input.normalWSAndAnimBlend.xyz) ;
-                    fresnelValue =  dotNV;
-
-           
-                    _FresnelUnit.x += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);;
-                            
-                    // half fresnelHardness =  - _FresnelUnit.w*0.5 +0.5;
-                    fresnelValue = NB_Remap(fresnelValue,_FresnelUnit.x,_FresnelUnit.x + 1.01 - _FresnelUnit.w,0,1);
-                    UNITY_BRANCH
-                    if(!CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON))
-                    {
-                        fresnelValue = 1- fresnelValue;
-                    }
-                    fresnelValue = pow(fresnelValue,_FresnelUnit.y);
-
-                    
-                    // fresnelValue = smoothstep(0.5-fresnelHardness,0.5+fresnelHardness,fresnelValue);
-                }
-
-                #ifdef NB_DEBUG_FRESNEL
-                    return half4(fresnelValue.rrr*_FresnelUnit.z,1);
-                #endif
-                
-
-                UNITY_BRANCH
-                if(CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_FADE_ON))
-                {
-                    fresnelValue *= alpha;
-                    alpha = lerp(alpha,fresnelValue,_FresnelUnit.z);
-                }
-                else
-                {
-                    float fresnelColorIntensity = fresnelValue*_FresnelColor.a*_FresnelUnit.z;
-                    
-                    result = lerp(result,_FresnelColor.rgb,fresnelColorIntensity);
-                    if (!CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA))
-                    {
-                        alpha = max(alpha,fresnelColorIntensity);//颜色要不要不被主贴图Alpha影响呢？
-                    }
-                }
-                
-            }
-        
-            UNITY_BRANCH
-            if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE))
-            {
-                half depthOutlineValue = 1- SoftParticles(_DepthOutline_Vec.x, _DepthOutline_Vec.y, sceneZ,thisZ);
-                depthOutlineValue *= _DepthOutline_Color.a;
-                half3 originResult = result;
-                //如何在一个pass里，完美的给出两个颜色的Fade。这个问题，没有想清楚。 
-                result = lerp(result,_DepthOutline_Color.rgb,clamp(depthOutlineValue*3,0,1));
-                result = lerp(result,originResult,clamp(alpha-depthOutlineValue,0,1));
-                alpha = max(alpha,depthOutlineValue);
-                
-            }
-        
-        
-        
-        //遮罩部分
+                //遮罩部分
         #if defined(_MASKMAP_ON)
 
             #if defined(_NOISEMAP)
@@ -1035,6 +968,78 @@
         
             alpha *= mask1;  //mask边缘
         #endif
+        
+        //菲涅
+        
+        UNITY_BRANCH
+        if(CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_ON))
+        {
+            half fresnelValue = 0;
+            if(!ignoreFresnel())
+            {
+                half3 fresnelDir = normalize(viewDirWS+_FresnelRotation.rgb);
+
+                half dotNV = dot(fresnelDir,input.normalWSAndAnimBlend.xyz) ;
+                fresnelValue =  dotNV;
+
+       
+                _FresnelUnit.x += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);;
+                        
+                // half fresnelHardness =  - _FresnelUnit.w*0.5 +0.5;
+                fresnelValue = NB_Remap(fresnelValue,_FresnelUnit.x,_FresnelUnit.x + 1.01 - _FresnelUnit.w,0,1);
+                UNITY_BRANCH
+                if(!CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON))
+                {
+                    fresnelValue = 1- fresnelValue;
+                }
+                fresnelValue = pow(fresnelValue,_FresnelUnit.y);
+
+                
+                // fresnelValue = smoothstep(0.5-fresnelHardness,0.5+fresnelHardness,fresnelValue);
+            }
+
+            #ifdef NB_DEBUG_FRESNEL
+                return half4(fresnelValue.rrr*_FresnelUnit.z,1);
+            #endif
+            
+
+            UNITY_BRANCH
+            if(CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_FADE_ON))
+            {
+                fresnelValue *= alpha;
+                alpha = lerp(alpha,fresnelValue,_FresnelUnit.z);
+            }
+            else
+            {
+                float fresnelColorIntensity = fresnelValue*_FresnelColor.a*_FresnelUnit.z;
+                
+                result = lerp(result,_FresnelColor.rgb,fresnelColorIntensity);
+                if (!CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA))
+                {
+                    alpha = max(alpha,fresnelColorIntensity);//颜色要不要不被主贴图Alpha影响呢？
+                }
+                    
+            }
+            
+        }
+    
+        UNITY_BRANCH
+        if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE))
+        {
+            half depthOutlineValue = 1- SoftParticles(_DepthOutline_Vec.x, _DepthOutline_Vec.y, sceneZ,thisZ);
+            depthOutlineValue *= _DepthOutline_Color.a;
+            half3 originResult = result;
+            //如何在一个pass里，完美的给出两个颜色的Fade。这个问题，没有想清楚。 
+            result = lerp(result,_DepthOutline_Color.rgb,clamp(depthOutlineValue*3,0,1));
+            result = lerp(result,originResult,clamp(alpha-depthOutlineValue,0,1));
+            alpha = max(alpha,depthOutlineValue);
+            
+        }
+    
+        
+        
+
+        
         
 
         //可以看https://www.cyanilux.com/tutorials/depth/
