@@ -304,19 +304,19 @@ namespace NBShader
                         _perlin = cinemachineCamera.gameObject.AddComponent<CinemachineBasicMultiChannelPerlin>();
                     }
 
-                    if (_perlin)
-                    {
-                        if (_perlin.NoiseProfile == null)
-                        {
-                            _perlin.NoiseProfile =
-                                    UnityEditor.AssetDatabase.LoadAssetAtPath<NoiseSettings>(
-                                        "Packages/com.xuanxuan.nb.fx/NBPostProcessing/3DPostionShake.asset");
-                            _perlin.FrequencyGain = 5f; //做一个自定义
-                        }
-                        _perlin.AmplitudeGain = 0f; //一开始先不要震动
-                    }
-
                     #if  UNITY_EDITOR
+                        if (_perlin)
+                        {
+                            if (_perlin.NoiseProfile == null)
+                            {
+                                _perlin.NoiseProfile =
+                                        UnityEditor.AssetDatabase.LoadAssetAtPath<NoiseSettings>(
+                                            "Packages/com.xuanxuan.nb.fx/NBPostProcessing/3DPostionShake.asset");
+                                _perlin.FrequencyGain = 5f; //做一个自定义
+                            }
+                            _perlin.AmplitudeGain = 0f; //一开始先不要震动
+                        }
+
                         if (_manager)
                         {
                             _manager.currentVirtualCamera = cinemachineCamera;
