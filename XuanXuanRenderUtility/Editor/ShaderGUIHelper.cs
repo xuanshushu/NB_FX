@@ -1290,7 +1290,7 @@ namespace NBShaderEditor
         }
 
         static float indent => (float) EditorGUI.indentLevel * 15f;
-        public void TextureScaleOffsetProperty(string texturePropertyName)
+        public void TextureScaleOffsetProperty(string texturePropertyName,bool isVectorProp = false)
         {
             ShaderPropertyPack texturePropertyPack = ShaderPropertyPacksDic[texturePropertyName];
             // EditorGUILayout.BeginHorizontal();
@@ -1324,15 +1324,23 @@ namespace NBShaderEditor
             offsetResetButtonRect.x = offsetResetButtonRect.x + offsetResetButtonRect.width - ResetTool.ResetButtonSize;
             offsetResetButtonRect.width = ResetTool.ResetButtonSize;
             
-            DrawScaleOffset(texturePropertyPack,tillingLabelRect,tillingVec2Rect,tillingResetButtonRect,offsetLabelRect,offsetVec2Rect,offsetResetButtonRect);
+            DrawScaleOffset(texturePropertyPack,tillingLabelRect,tillingVec2Rect,tillingResetButtonRect,offsetLabelRect,offsetVec2Rect,offsetResetButtonRect,isVectorProp);
 
         }
 
         public void DrawScaleOffset(ShaderPropertyPack texturePropertyPack, Rect tillingRect, Rect tillingVec2Rect,
-            Rect tillingResetButtonRect, Rect offsetRect, Rect offsetVec2Rect, Rect offsetResetButtonRect)
+            Rect tillingResetButtonRect, Rect offsetRect, Rect offsetVec2Rect, Rect offsetResetButtonRect,bool isVectorProp = false)
         {
             MaterialProperty textureProperty = texturePropertyPack.property;
-            Vector4 tillingOffset = textureProperty.textureScaleAndOffset;
+            Vector4 tillingOffset;
+            if (isVectorProp)
+            {
+                tillingOffset = textureProperty.vectorValue;   
+            }
+            else
+            {
+                tillingOffset = textureProperty.textureScaleAndOffset;
+            }
             string tillingLabel = "Tilling";
             var tillingTuple = (tillingLabel, textureProperty.name + "_ST");
             GUI.Label(tillingRect,tillingLabel);
@@ -1341,7 +1349,14 @@ namespace NBShaderEditor
             {
                 tillingOffset.x = tilling.x;
                 tillingOffset.y = tilling.y;
-                textureProperty.textureScaleAndOffset = tillingOffset;
+                if (isVectorProp)
+                {
+                    textureProperty.vectorValue = tillingOffset;   
+                }
+                else
+                {
+                    textureProperty.textureScaleAndOffset = tillingOffset;
+                }
                 ResetTool.CheckOnValueChange(tillingTuple);
 
             };
@@ -1371,7 +1386,14 @@ namespace NBShaderEditor
             {
                 tillingOffset.z = offset.x;
                 tillingOffset.w = offset.y;
-                textureProperty.textureScaleAndOffset = tillingOffset;
+                if (isVectorProp)
+                {
+                    textureProperty.vectorValue = tillingOffset;   
+                }
+                else
+                {
+                    textureProperty.textureScaleAndOffset = tillingOffset;
+                }
                 ResetTool.CheckOnValueChange(offsetTuple);
 
             };
@@ -1393,6 +1415,7 @@ namespace NBShaderEditor
             },onValueChangedCallBack:drawOffsetEndChangeCheck,VectorValeType.Offset);
             ResetTool.EndResetModifyButtonScope();
         }
+        
         bool WrapModeFlagHasMixedValue(int wrapModeFlagBitsName, int flagIndex)
         {
             int tmpWrapMode = 0;

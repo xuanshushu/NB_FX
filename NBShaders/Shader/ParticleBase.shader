@@ -261,6 +261,8 @@
     	_DissolveRampCount("溶解Ramp映射数量",Integer) = 2
     	_DissolvePNoiseBlendOpacity("溶解噪波图混合强度",Float) = 1
     	
+    	_SharedUVToggle("公共UV开关",Float) = 0
+    	_SharedUV_ST("公共UVTillingOffset",Vector) = (1,1,0,0)
 	    
 
         _CustomData1X ("ignore", float) = 0
@@ -380,6 +382,7 @@
         [HideInInspector] _W9ParticleShaderFlags("_W9ParticleShaderFlags", Integer) = 0
         [HideInInspector] _W9ParticleShaderFlags1("_W9ParticleShaderFlags1", Integer) = 0
         [HideInInspector] _W9ParticleShaderWrapFlags("_W9ParticleShaderWrapFlags", Integer) = 0
+        [HideInInspector] _W9ParticleShaderWrapFlags2("_W9ParticleShaderWrapFlags2", Integer) = 0
         [HideInInspector] _W9ParticleCustomDataFlag0("_W9ParticleCustomDataFlag0", Integer) = 0
         [HideInInspector] _W9ParticleCustomDataFlag1("_W9ParticleCustomDataFlag1", Integer) = 0
         [HideInInspector] _W9ParticleCustomDataFlag2("_W9ParticleCustomDataFlag2", Integer) = 0
@@ -483,6 +486,7 @@
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma  shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
+            #pragma shader_feature_local _SHARED_UV//公共UV
 
             //将光照和UI混用，达到节省Keywords的目的。
             #pragma multi_compile _ UNITY_UI_CLIP_RECT _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS//UI 2D遮罩
@@ -599,7 +603,7 @@
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
-            
+            #pragma shader_feature_local _SHARED_UV//公共UV
             
             
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS //UI 2D遮罩
@@ -711,7 +715,7 @@
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             // #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
-            
+            #pragma shader_feature_local _SHARED_UV//公共UV
             
             
             // #pragma multi_compile_local _ UNITY_UI_CLIP_RECT _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS //UI 2D遮罩
@@ -821,7 +825,7 @@
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             // #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
-            
+            #pragma shader_feature_local _SHARED_UV//公共UV
             
             
             // #pragma multi_compile_local _ UNITY_UI_CLIP_RECT _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS //UI 2D遮罩
@@ -929,7 +933,7 @@
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
-            
+            #pragma shader_feature_local _SHARED_UV//公共UV
             
             
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS //UI 2D遮罩

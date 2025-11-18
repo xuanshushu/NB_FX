@@ -284,11 +284,27 @@ namespace NBShaderEditor
                         case VectorValeType.XY:vecValue.x = defaultVecValue.x; vecValue.y = defaultVecValue.y;
                             property.vectorValue = vecValue;break;
                         case VectorValeType.Tilling:vecValue.x = defaultVecValue.x; vecValue.y = defaultVecValue.y;
-                            property.textureScaleAndOffset = vecValue;break;
+                            if (property.type == MaterialProperty.PropType.Texture)
+                            {
+                                property.textureScaleAndOffset = vecValue;
+                            }
+                            else
+                            {
+                                property.vectorValue = vecValue;
+                            }
+                            break;
                         case VectorValeType.ZW:vecValue.z = defaultVecValue.z; vecValue.w = defaultVecValue.w;
                             property.vectorValue = vecValue;break;
                         case VectorValeType.Offset:vecValue.z = defaultVecValue.z; vecValue.w = defaultVecValue.w;
-                            property.textureScaleAndOffset = vecValue;break;
+                            if (property.type == MaterialProperty.PropType.Texture)
+                            {
+                                property.textureScaleAndOffset = vecValue;
+                            }
+                            else
+                            {
+                                property.vectorValue = vecValue;
+                            }
+                            break;
                         case VectorValeType.XYZ:vecValue.x = defaultVecValue.x; vecValue.y = defaultVecValue.y;
                             vecValue.z = defaultVecValue.z; property.vectorValue = vecValue;break;
                         case VectorValeType.XYZW: property.vectorValue = defaultVecValue;break;
@@ -341,7 +357,14 @@ namespace NBShaderEditor
                     if (vectorValeType == VectorValeType.Tilling || vectorValeType == VectorValeType.Offset)
                     {
                         defaultVecValue = new Vector4(1f, 1f, 0f, 0f);
-                        vecValue = property.textureScaleAndOffset;
+                        if (property.type == MaterialProperty.PropType.Texture)
+                        {
+                            vecValue = property.textureScaleAndOffset;
+                        }
+                        else
+                        {
+                            vecValue = property.vectorValue;
+                        }
                         
                     }
                     else

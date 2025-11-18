@@ -1425,6 +1425,14 @@ namespace NBShaderEditor
                     // _helper.DrawVector4Component("噪波整体和溶解贴图混合系数", "_DissolveVoronoi_Vec2", "y", true);
                     EditorGUILayout.Space();
                 });
+            
+            _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2SharedUV,5,GetAnimBoolIndex(5),"公共UV","_SharedUVToggle",shaderKeyword:"_SHARED_UV",fontStyle:FontStyle.Bold,drawBlock:
+                (isToggle) =>
+                {
+                    _helper.TextureScaleOffsetProperty("_SharedUV_ST",true);
+                    _helper.DrawWrapMode("公共UV",W9ParticleShaderFlags.FLAG_BIT_WRAPMODE2_SHAREDUV,8);
+                    DrawUVModeSelect(W9ParticleShaderFlags.foldOutBit2SharedUVMode,5,"公共UV来源",W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_SHAREDUV,0);
+                });
 
             _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutFresnel, 3, GetAnimBoolIndex(3), "菲涅尔",
                 "_fresnelEnabled", W9ParticleShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_ON, isIndentBlock: true,
@@ -2653,7 +2661,8 @@ namespace NBShaderEditor
             "主贴图",
             "屏幕UV",
             "世界坐标",
-            "局部本地坐标"
+            "局部本地坐标",
+            "公共UV"
         };
         
         private string[] _posUVModeNames =
@@ -2732,11 +2741,13 @@ namespace NBShaderEditor
             {
                 drawUVModeEndChangeCheck();
             }
-            
+
+            bool needFoldOut = uvMode != UVMode.DefaultUVChannel && uvMode != UVMode.CommonUV
+                                    && uvMode != UVMode.ScreenUV && uvMode != UVMode.MainTex;
             bool foldOutState = shaderFlags[0].CheckFlagBits(foldOutFlagBit, index: foldOutFlagIndex);
             AnimBool animBool = _helper.GetAnimBool(foldOutFlagBit, foldOutFlagIndex-3, foldOutFlagIndex);
             animBool.target = foldOutState;
-            if (!uvModeHasMixedValue && uvMode == UVMode.DefaultUVChannel)
+            if (!uvModeHasMixedValue && !needFoldOut)
             {
                 animBool.target = false;
             }
@@ -2775,113 +2786,114 @@ namespace NBShaderEditor
 
             EditorGUI.showMixedValue = false;
 
-            if (!uvModeHasMixedValue)
+            if (needFoldOut||_helper.ResetTool.IsInitResetData)
             {
-                EditorGUI.indentLevel++;
-               
-                float faded = animBool.faded;
-                if (faded == 0) faded = 0.0001f;
-                EditorGUILayout.BeginFadeGroup(faded);
-                if (uvMode != UVMode.DefaultUVChannel )
+                if (!uvModeHasMixedValue)
                 {
+                    EditorGUI.indentLevel++;
+                   
+                    float faded = animBool.faded;
+                    if (faded == 0) faded = 0.0001f;
+                    EditorGUILayout.BeginFadeGroup(faded);
                     EditorGUILayout.LabelField("以下设置材质内通用:",EditorStyles.boldLabel);
-                }
+                    
 
-                Action drawSpecialUVChannel = () =>
-                {
-                    _helper.DrawPopUp("特殊UV通道选择","_SpecialUVChannelMode",  Enum.GetNames(typeof(SpecialUVChannelMode)),
-                        drawOnValueChangedBlock:
-                        specialUVChannelMode =>
-                        {
-                            //在OnValueChange的时候。就已经是一起Set了。
-                            SpecialUVChannelMode spUVMode = (SpecialUVChannelMode)specialUVChannelMode.floatValue;
-                            for (int i = 0; i < shaderFlags.Count; i++)
-                            {
-                                switch (spUVMode)
-                                {
-                                    case SpecialUVChannelMode.UV2_Texcoord1:
-                                        shaderFlags[i].SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1,index:1);
-                                        shaderFlags[i].ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2,index:1);
-                                        break;
-                                    case SpecialUVChannelMode.UV3_Texcoord2:
-                                        shaderFlags[i].ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1,index:1);
-                                        shaderFlags[i].SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2,index:1);
-                                        break;
-                                    //TODO:如果所有UVMode都没有开启，需要都Clear。
-                                }
-                            }
-                        },isSharedGlobalParent:true);
-                };
-
-                Action drawPolarOrTwirl = () =>
-                {
-                    _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitTwril,3,GetAnimBoolIndex(3),"旋转扭曲","_UTwirlEnabled",flagBitsName:W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON,isSharedGlobalParent:true,drawBlock:(isToggle) =>{
-                        _helper.DrawVector4In2Line("_TWParameter","旋转扭曲中心",true);
-                        _helper.DrawFloat("旋转扭曲强度","_TWStrength");
-                    });
-
-                    _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitPolar,3,GetAnimBoolIndex(3),"极坐标", "_PolarCoordinatesEnabled",W9ParticleShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON,isSharedGlobalParent:true,drawBlock:(isToggle) =>{
-                        // _helper.DrawToggle("极坐标只影响特殊功能","_PolarCordinateOnlySpecialFunciton_Toggle",W9ParticleShaderFlags.FLAG_BIT_PARTICLE_PC_ONLYSPECIALFUNC);
-                        _helper.DrawVector4In2Line("_PCCenter","极坐标中心",true);
-                        _helper.DrawVector4Component("极坐标强度","_PCCenter","z",true,0f,1f);
-                    });
-                };
-                
-                Action drawCylinderUV = () =>
-                {
-                    // EditorGUILayout.LabelField("圆柱坐标模式尚未开发完成！");
-                    EditorGUILayout.LabelField("圆柱模式消耗比较大，慎用");
-                    _helper.DrawVector4XYZComponet("圆柱坐标旋转","_CylinderUVRotate");
-                    _helper.DrawVector4XYZComponet("圆柱坐标偏移","_CylinderUVPosOffset");
-                    Matrix4x4 cylinderMatrix =
-                        Matrix4x4.Translate(_helper.GetProperty("_CylinderUVPosOffset").vectorValue) *
-                        Matrix4x4.Rotate(Quaternion.Euler(_helper.GetProperty("_CylinderUVRotate").vectorValue));
-                    _helper.GetProperty("_CylinderMatrix0").vectorValue =cylinderMatrix.GetRow(0);
-                    _helper.GetProperty("_CylinderMatrix1").vectorValue =cylinderMatrix.GetRow(1);
-                    _helper.GetProperty("_CylinderMatrix2").vectorValue =cylinderMatrix.GetRow(2);
-                    _helper.GetProperty("_CylinderMatrix3").vectorValue =cylinderMatrix.GetRow(3);
-                };
-
-                Action drawWorldPosUV = () =>
-                {
-                    _helper.DrawPopUp("坐标平面", "_WorldSpaceUVModeSelector", _posUVModeNames);
-                };
-                
-                Action drawObjectPosUV = () =>
-                {
-                    _helper.DrawPopUp("坐标平面", "_ObjectSpaceUVModeSelector", _posUVModeNames);
-                };
-
-                if (_helper.ResetTool.IsInitResetData)
-                {
-                    drawSpecialUVChannel();
-                    drawPolarOrTwirl();
-                    drawWorldPosUV();
-                    drawObjectPosUV();
-                }
-                else
-                {
-                    switch (uvMode)
+                    Action drawSpecialUVChannel = () =>
                     {
-                        case UVMode.SpecialUVChannel:
-                            drawSpecialUVChannel();
-                            break;
-                        case UVMode.PolarOrTwirl:
-                            drawPolarOrTwirl();
-                            break;
-                        case UVMode.Cylinder:
-                            drawCylinderUV();
-                            break;
-                        case UVMode.WorldPos:
-                            drawWorldPosUV();
-                            break;
-                        case UVMode.ObjectPos:
-                            drawObjectPosUV();
-                            break;
-                    }
-                }
+                        _helper.DrawPopUp("特殊UV通道选择","_SpecialUVChannelMode",  Enum.GetNames(typeof(SpecialUVChannelMode)),
+                            drawOnValueChangedBlock:
+                            specialUVChannelMode =>
+                            {
+                                //在OnValueChange的时候。就已经是一起Set了。
+                                SpecialUVChannelMode spUVMode = (SpecialUVChannelMode)specialUVChannelMode.floatValue;
+                                for (int i = 0; i < shaderFlags.Count; i++)
+                                {
+                                    switch (spUVMode)
+                                    {
+                                        case SpecialUVChannelMode.UV2_Texcoord1:
+                                            shaderFlags[i].SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1,index:1);
+                                            shaderFlags[i].ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2,index:1);
+                                            break;
+                                        case SpecialUVChannelMode.UV3_Texcoord2:
+                                            shaderFlags[i].ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1,index:1);
+                                            shaderFlags[i].SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2,index:1);
+                                            break;
+                                        //TODO:如果所有UVMode都没有开启，需要都Clear。
+                                    }
+                                }
+                            },isSharedGlobalParent:true);
+                    };
 
-                EditorGUILayout.EndFadeGroup();
+                    Action drawPolarOrTwirl = () =>
+                    {
+                        _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitTwril,3,GetAnimBoolIndex(3),"旋转扭曲","_UTwirlEnabled",flagBitsName:W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON,isSharedGlobalParent:true,drawBlock:(isToggle) =>{
+                            _helper.DrawVector4In2Line("_TWParameter","旋转扭曲中心",true);
+                            _helper.DrawFloat("旋转扭曲强度","_TWStrength");
+                        });
+
+                        _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBitPolar,3,GetAnimBoolIndex(3),"极坐标", "_PolarCoordinatesEnabled",W9ParticleShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON,isSharedGlobalParent:true,drawBlock:(isToggle) =>{
+                            // _helper.DrawToggle("极坐标只影响特殊功能","_PolarCordinateOnlySpecialFunciton_Toggle",W9ParticleShaderFlags.FLAG_BIT_PARTICLE_PC_ONLYSPECIALFUNC);
+                            _helper.DrawVector4In2Line("_PCCenter","极坐标中心",true);
+                            _helper.DrawVector4Component("极坐标强度","_PCCenter","z",true,0f,1f);
+                        });
+                    };
+                    
+                    Action drawCylinderUV = () =>
+                    {
+                        // EditorGUILayout.LabelField("圆柱坐标模式尚未开发完成！");
+                        EditorGUILayout.LabelField("圆柱模式消耗比较大，慎用");
+                        _helper.DrawVector4XYZComponet("圆柱坐标旋转","_CylinderUVRotate");
+                        _helper.DrawVector4XYZComponet("圆柱坐标偏移","_CylinderUVPosOffset");
+                        Matrix4x4 cylinderMatrix =
+                            Matrix4x4.Translate(_helper.GetProperty("_CylinderUVPosOffset").vectorValue) *
+                            Matrix4x4.Rotate(Quaternion.Euler(_helper.GetProperty("_CylinderUVRotate").vectorValue));
+                        _helper.GetProperty("_CylinderMatrix0").vectorValue =cylinderMatrix.GetRow(0);
+                        _helper.GetProperty("_CylinderMatrix1").vectorValue =cylinderMatrix.GetRow(1);
+                        _helper.GetProperty("_CylinderMatrix2").vectorValue =cylinderMatrix.GetRow(2);
+                        _helper.GetProperty("_CylinderMatrix3").vectorValue =cylinderMatrix.GetRow(3);
+                    };
+
+                    Action drawWorldPosUV = () =>
+                    {
+                        _helper.DrawPopUp("坐标平面", "_WorldSpaceUVModeSelector", _posUVModeNames);
+                    };
+                    
+                    Action drawObjectPosUV = () =>
+                    {
+                        _helper.DrawPopUp("坐标平面", "_ObjectSpaceUVModeSelector", _posUVModeNames);
+                    };
+
+                    if (_helper.ResetTool.IsInitResetData)
+                    {
+                        drawSpecialUVChannel();
+                        drawPolarOrTwirl();
+                        drawWorldPosUV();
+                        drawObjectPosUV();
+                    }
+                    else
+                    {
+                        switch (uvMode)
+                        {
+                            case UVMode.SpecialUVChannel:
+                                drawSpecialUVChannel();
+                                break;
+                            case UVMode.PolarOrTwirl:
+                                drawPolarOrTwirl();
+                                break;
+                            case UVMode.Cylinder:
+                                drawCylinderUV();
+                                break;
+                            case UVMode.WorldPos:
+                                drawWorldPosUV();
+                                break;
+                            case UVMode.ObjectPos:
+                                drawObjectPosUV();
+                                break;
+                        }
+                    }
+
+                    EditorGUILayout.EndFadeGroup();
+                }
                 EditorGUI.indentLevel--;
             }
             EditorGUI.EndDisabledGroup();

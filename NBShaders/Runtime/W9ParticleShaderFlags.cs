@@ -28,6 +28,9 @@ namespace NBShader
 
         public const string pNoiseBlendFlagName = "_W9ParticleShaderPNoiseBlendFlag";
         public static int pNoiseBlendFlagId = Shader.PropertyToID(pNoiseBlendFlagName);
+        
+        public const string WrapFlags2Name = "_W9ParticleShaderWrapFlags2";
+        public static int WrapFlags2Id = Shader.PropertyToID(WrapFlags2Name);
 
         public override int GetShaderFlagsId(int index = 0)
         {
@@ -57,6 +60,8 @@ namespace NBShader
 
                 case 7:
                     return pNoiseBlendFlagId;
+                case 8:
+                    return WrapFlags2Id;
 
                 default:
                     return FlagsId;
@@ -179,7 +184,9 @@ namespace NBShader
         public const int FLAG_BIT_WRAPMODE_NOISE_MASKMAP = 1 << 12;
         public const int FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP = 1 << 13;
         public const int FLAG_BIT_WRAPMODE_BUMPTEX = 1 << 14;
-        public const int FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP = 1 << 15; //很快就要超支了。。。
+        public const int FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP = 1 << 15; 
+        
+        public const int FLAG_BIT_WRAPMODE2_SHAREDUV = 1 << 0; 
 
         public const int foldOutBitMeshOption = 1 << 0;
         public const int foldOutBitMainTexOption = 1 << 1;
@@ -255,6 +262,8 @@ namespace NBShader
         public const int foldOutBit2ProgramNoiseSimple = 1 << 7;
         public const int foldOutBit2ProgramNoiseVoronoi = 1 << 8;
         public const int foldOutBit2ColorAdjustment = 1 << 9;
+        public const int foldOutBit2SharedUV = 1 << 10;
+        public const int foldOutBit2SharedUVMode = 1 << 11;
 
 
         #region CustomDataCodes
@@ -578,6 +587,7 @@ namespace NBShader
             ScreenUV, //1 0b_01 modeIndex 01
             WorldPos, //2 0b_10 modeIndex 01
             ObjectPos, //3 0b_11 modeIndex 01
+            CommonUV,   //0 0b_00 modeIndex 10
             UnknownOrMixed = -1
         }
 
@@ -596,6 +606,7 @@ namespace NBShader
         public const int FLAG_BIT_UVMODE_POS_0_BUMPMAP = 12 * 2;
         public const int FLAG_BIT_UVMODE_POS_0_RAMP_COLOR_MAP = 13 * 2;
         public const int FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE = 14 * 2;
+        public const int FLAG_BIT_UVMODE_POS_0_SHAREDUV = 15 * 2;
 
         public void GetUVModeFlagPropID(int flagIndex, out int flagID, out int flagTypeID)
         {
