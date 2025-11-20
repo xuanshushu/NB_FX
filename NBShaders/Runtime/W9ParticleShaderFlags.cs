@@ -29,8 +29,8 @@ namespace NBShader
         public const string pNoiseBlendFlagName = "_W9ParticleShaderPNoiseBlendFlag";
         public static int pNoiseBlendFlagId = Shader.PropertyToID(pNoiseBlendFlagName);
         
-        public const string WrapFlags2Name = "_W9ParticleShaderWrapFlags2";
-        public static int WrapFlags2Id = Shader.PropertyToID(WrapFlags2Name);
+        // public const string WrapFlags2Name = "_W9ParticleShaderWrapFlags2";
+        // public static int WrapFlags2Id = Shader.PropertyToID(WrapFlags2Name);
 
         public override int GetShaderFlagsId(int index = 0)
         {
@@ -60,8 +60,8 @@ namespace NBShader
 
                 case 7:
                     return pNoiseBlendFlagId;
-                case 8:
-                    return WrapFlags2Id;
+                // case 8:
+                //     return WrapFlags2Id;
 
                 default:
                     return FlagsId;
@@ -186,7 +186,7 @@ namespace NBShader
         public const int FLAG_BIT_WRAPMODE_BUMPTEX = 1 << 14;
         public const int FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP = 1 << 15; 
         
-        public const int FLAG_BIT_WRAPMODE2_SHAREDUV = 1 << 0; 
+        // public const int FLAG_BIT_WRAPMODE2_SHAREDUV = 1 << 0; 
 
         public const int foldOutBitMeshOption = 1 << 0;
         public const int foldOutBitMainTexOption = 1 << 1;
@@ -320,6 +320,8 @@ namespace NBShader
 
         public const int FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X = 0 * 4;
         public const int FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y = 1 * 4;
+        public const int FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X = 2 * 4;
+        public const int FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y = 3 * 4;
 
 
         public const int isCustomDataBit = 1 << 3;

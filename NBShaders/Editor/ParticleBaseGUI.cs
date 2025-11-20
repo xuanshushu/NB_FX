@@ -1429,9 +1429,20 @@ namespace NBShaderEditor
             _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2SharedUV,5,GetAnimBoolIndex(5),"公共UV","_SharedUVToggle",shaderKeyword:"_SHARED_UV",fontStyle:FontStyle.Bold,drawBlock:
                 (isToggle) =>
                 {
-                    _helper.TextureScaleOffsetProperty("_SharedUV_ST",true);
-                    _helper.DrawWrapMode("公共UV",W9ParticleShaderFlags.FLAG_BIT_WRAPMODE2_SHAREDUV,8);
                     DrawUVModeSelect(W9ParticleShaderFlags.foldOutBit2SharedUVMode,5,"公共UV来源",W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_SHAREDUV,0);
+                    _helper.TextureScaleOffsetProperty("_SharedUV_ST",true);
+                    // _helper.DrawWrapMode("公共UV",W9ParticleShaderFlags.FLAG_BIT_WRAPMODE2_SHAREDUV,8);
+                    DrawCustomDataSelect("偏移X自定义曲线",W9ParticleShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X,3);
+                    DrawCustomDataSelect("偏移Y自定义曲线",W9ParticleShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y,3);
+                    _helper.DrawVector4In2Line("_SharedUV_Vec","偏移速度",true);
+                    _helper.DrawVector4Component("旋转","_SharedUV_Vec","z",false);
+                    _helper.DrawVector4Component("旋转速度","_SharedUV_Vec","w",false);
+                    // DrawNoiseAffectBlock(() =>
+                    // {
+                    //     _helper.DrawSlider("公共UV扭曲强度控制", "_SharedUV_Distort_Intensity",rangePropertyName: "sharedUVDistortionIntensityRangeVec");
+                    //
+                    // });
+                    
                 });
 
             _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutFresnel, 3, GetAnimBoolIndex(3), "菲涅尔",

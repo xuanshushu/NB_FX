@@ -144,6 +144,10 @@
     half4 _Dissolve_Vec2;
     half _ProgramNoise_Rotate;
 
+    half4 _SharedUV_ST;
+    half4 _SharedUV_Vec;
+    // half _SharedUV_Distort_Intensity;
+
     half4 _ColorBlendMap_ST;
     float4 _ColorBlendMapOffset;
     half4 _ColorBlendColor;
@@ -678,6 +682,7 @@
         float2 noiseMaskMapUV;
         float2 bumpTexUV;
         float2 colorRampMapUV;
+        float2 sharedUV;
     };
 
     float2 getPosUVByPosUVMode(float3 pos,half posUVMode)
@@ -759,7 +764,20 @@
             baseUVs.screenUV = screenUV;
             baseUVs.worldPosUV = getPosUVByPosUVMode(positionWS,_WorldSpaceUVModeSelector);
             baseUVs.objectPosUV = getPosUVByPosUVMode(postionOS,_ObjectSpaceUVModeSelector);
+
+            baseUVs.sharedUV = defaultUVChannel;
+            float2 sharedUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_SHAREDUV,baseUVs);
+            _SharedUV_Vec.z += time * _SharedUV_Vec.w;
+            sharedUV = Rotate_Radians_float(sharedUV, half2(0.5, 0.5), _SharedUV_Vec.z);  //主贴图旋转
+  
+            sharedUV.x += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            sharedUV.y += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            sharedUV = sharedUV *_SharedUV_ST.xy +_SharedUV_ST.zw ;  //主帖图UV重复和偏移
         
+            sharedUV = UVOffsetAnimaiton(sharedUV,_SharedUV_Vec.xy);
+            baseUVs.sharedUV = sharedUV;
+        
+            baseUVs.mainTexUV = defaultUVChannel;
             float2 baseMapUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_MAINTEX,baseUVs);
 
             float2 mainTexUV = 0;

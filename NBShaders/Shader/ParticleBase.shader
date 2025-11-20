@@ -263,6 +263,9 @@
     	
     	_SharedUVToggle("公共UV开关",Float) = 0
     	_SharedUV_ST("公共UVTillingOffset",Vector) = (1,1,0,0)
+    	_SharedUV_Vec("xy:公共UV偏移速度,z:旋转,w:旋转速度",Vector) = (0,0,0,0)
+//    	_SharedUV_Distort_Intensity("扭曲强度",Float) = 0
+//    	sharedUVDistortionIntensityRangeVec("_SharedUV_Distort_Intensity",Vector) = (-1,1,0,0)
 	    
 
         _CustomData1X ("ignore", float) = 0

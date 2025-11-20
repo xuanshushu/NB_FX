@@ -521,47 +521,6 @@
             float4 rigLBtFSample  = BlendTexture(_RigLBtF, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP);
         #endif
 
-      
-        // UNITY_BRANCH
-        // if(CheckLocalFlags(FLAG_BIT_HUESHIFT_ON))
-        // {
-        //     half3 hsv = RgbToHsv(result);
-        //     _HueShift = GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,_HueShift,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
-        //     hsv.r += _HueShift;
-        //     result = HsvToRgb(hsv);
-        // }
-        //
-        // UNITY_BRANCH
-        // if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST))
-        // {
-        //     _Contrast = GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,_Contrast,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
-        //     result.rgb = lerp(_ContrastMidColor,result.rgb,_Contrast);
-        // }
-        //
-        // UNITY_BRANCH
-        // if(CheckLocalFlags(FLAG_BIT_SATURABILITY_ON))
-        // {
-        //     half3 resultWB = luminance(result);
-        //     _Saturability = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_SATURATE,_Saturability,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
-        //     result.rgb = lerp(resultWB.rgb, result.rgb, _Saturability);
-        // }
-        //
-        //
-        //
-        // if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE))
-        // {
-        //     half3 colorA = result.rgb*_BaseMapColorRefine.x;
-        //     half3 colorB = pow(result.rgb,_BaseMapColorRefine.y)*_BaseMapColorRefine.z;
-        //     result.rgb = lerp(colorA,colorB,_BaseMapColorRefine.w);
-        // }
-        
-   
-
-        // if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_BUMP_TEX_UV_FOLLOW_MAINTEX))
-        // {
-        //     BumpTex_uv = MainTex_UV;
-        // }
-
      
         //光照模式
         #ifndef _FX_LIGHT_MODE_UNLIT

@@ -115,6 +115,8 @@
 
     #define FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X (0*4)
     #define FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y (1*4)
+    #define FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X (2*4)
+    #define FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y (3*4)
 
     #define isCustomDataBit (1 << 3)
     #define Data12Bit (1 << 2)
@@ -136,6 +138,7 @@
     #define FLAG_BIT_UVMODE_POS_0_BUMPTEX (12*2)
     #define FLAG_BIT_UVMODE_POS_0_RAMP_COLOR_MAP (13*2)
     #define FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE (14*2)
+    #define FLAG_BIT_UVMODE_POS_0_SHAREDUV (15*2)
 
     #define FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA (0*2)
     #define FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1 (1*2)
@@ -206,6 +209,7 @@
         float2 screenUV;
         float2 worldPosUV;
         float2 objectPosUV;
+        float2 sharedUV;
     };
 
     float2 GetUVByUVMode(uint flagProperty,uint flagTypeProperty,int flagPos,BaseUVs baseUVs)
@@ -241,6 +245,14 @@
                     return baseUVs.worldPosUV;
                     case 3:
                     return baseUVs.objectPosUV;
+                    default:
+                    return baseUVs.defaultUVChannel;
+                }
+            case 2:
+                switch(flagProperty)
+                {
+                    case 0:
+                    return baseUVs.sharedUV;
                     default:
                     return baseUVs.defaultUVChannel;
                 }
