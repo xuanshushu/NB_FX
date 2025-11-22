@@ -259,6 +259,8 @@ namespace NBShaderEditor
                     EditorGUILayout.PropertyField(vignetteRoundnessProp, new GUIContent("暗角圆度"));
                     SerializedProperty vignetteSmothnessProp = serializedObject.FindProperty("vignetteSmothness");
                     EditorGUILayout.PropertyField(vignetteSmothnessProp, new GUIContent("暗角平滑度"));
+                    SerializedProperty vignetteFillProp = serializedObject.FindProperty("vignetteFill");
+                    EditorGUILayout.PropertyField(vignetteFillProp, new GUIContent("暗角填充度"));
                 });
 
             if (GUILayout.Button("选择当前Manager"))

@@ -101,6 +101,8 @@ namespace NBShader
         public float vignetteIntensity = 1;
         public float vignetteRoundness = 1;
         public float vignetteSmothness = 10;
+        [Range(0,1)]
+        public float vignetteFill = 0f;
         
        
         public void InitController()
@@ -473,6 +475,7 @@ namespace NBShader
                     Mathf.Max(PostProcessingManager.vignetteIntensity, vignetteIntensity);
                 PostProcessingManager.vignetteRoundness = Mathf.Max(PostProcessingManager.vignetteRoundness, vignetteRoundness);
                 PostProcessingManager.vignetteSmothness = Mathf.Max(PostProcessingManager.vignetteSmothness, vignetteSmothness);
+                PostProcessingManager.vignetteFill = Mathf.Max(PostProcessingManager.vignetteFill, vignetteFill);
                 if (index == PostProcessingManager.laseUpdateControllerIndex)
                 {
                     PostProcessingManager.material.SetColor(_vignetteColorID,vignetteColor);

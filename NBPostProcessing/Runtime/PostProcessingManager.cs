@@ -681,6 +681,7 @@ namespace NBShader
         public static float vignetteIntensity = 0f;
         public static float vignetteRoundness = 0f;
         public static float vignetteSmothness = 0f;
+        public static float vignetteFill = 0f;
 
         private readonly int _vignetteVecProperty = Shader.PropertyToID("_VignetteVec");
 
@@ -692,11 +693,12 @@ namespace NBShader
 
         private void UpdateVignette()
         {
-            Vector4 vignetteVec = new Vector4(vignetteIntensity, vignetteRoundness, vignetteSmothness, 0);
+            Vector4 vignetteVec = new Vector4(vignetteIntensity, vignetteRoundness, vignetteSmothness, vignetteFill);
             material.SetVector(_vignetteVecProperty, vignetteVec);
             vignetteIntensity = 0;
             vignetteRoundness = 0;
             vignetteSmothness = 0;
+            vignetteFill = 0;
         }
 
         private void EndVignette()

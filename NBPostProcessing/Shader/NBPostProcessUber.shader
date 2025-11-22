@@ -406,9 +406,11 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                         half2 dist = dot(screenVec,screenVec);
                         dist = saturate(dist);
                         half factor = pow(1-dist,_VignetteVec.z) ;
-                      
-                        color.rgb *= lerp(_VignetteColor,(1.0).xxx,factor);
-                        // color.rgb *= saturate(factor);
+                        // color.rgb *= lerp(_VignetteColor,(1.0).xxx,factor);
+                        factor = 1- factor;
+                        factor = lerp(factor,1,_VignetteVec.w);
+                        // _VignetteColor *= factor;
+                        color.rgb = lerp(color,_VignetteColor,factor);
                         color.a =1;
                     }
 
