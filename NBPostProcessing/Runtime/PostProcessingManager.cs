@@ -33,14 +33,13 @@ namespace NBShader
                     {
                         GameObject singletonObj = new GameObject();
                         _instance = singletonObj.AddComponent<PostProcessingManager>();
+                        singletonObj.name = "NBPostProcessManager";
                         if (Application.isPlaying)
                         {
-                            singletonObj.name = "NBPostProcessManager";
                             DontDestroyOnLoad(singletonObj);
                         }
                         else
                         {
-                            singletonObj.name = "测试用NB后处理管理器，请美术删除此脚本再上传";
                             singletonObj.hideFlags = HideFlags.HideAndDontSave;//如果要调试可以去掉这个属性
                         }
                     }
