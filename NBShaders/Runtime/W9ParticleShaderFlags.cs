@@ -132,7 +132,7 @@ namespace NBShader
         public const int FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP = 1 << 26;
         public const int FLAG_BIT_PARTICLE_DISSOLVE_MASK = 1 << 27;
         public const int FLAG_BIT_PARTICLE_BACKCOLOR = 1 << 28;
-        public const int FLAG_BIT_PARTICLE_EMISSION_FOLLOW_MAINTEX_UV = 1 << 29;
+        public const int FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA = 1 << 29;
         public const int FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON = 1 << 30;
         public const int FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR = 1 << 31;
 

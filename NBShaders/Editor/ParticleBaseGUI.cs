@@ -313,6 +313,8 @@ namespace NBShaderEditor
                         _helper.DrawVector4Component("B:主颜色Power后相乘", "_BaseMapColorRefine", "z", false);
                         _helper.DrawVector4Component("A/B线性差值", "_BaseMapColorRefine", "w", true, 0f, 1f);
                     });
+                
+                _helper.DrawToggle("颜色乘透明度(改善锯齿)","_ColorMultiAlpha",W9ParticleShaderFlags.FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA);
                 });
             if (_uiEffectEnabled == 0)
             {

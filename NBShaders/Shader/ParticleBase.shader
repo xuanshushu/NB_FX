@@ -26,7 +26,7 @@
         _ProgramNoise_Voronoi_Toggle("_ProgramNoise_Voronoi_Toggle",Float) = 0
     	_ProgramNoiseBaseBlendOpacity("两种程序噪波混合强度",Float) = 0
 
-        
+        _ColorMultiAlpha("颜色乘以透明度",Float) = 0
 
         _FresnelMode("__FresnelMode",Float) = 0
         _InvertFresnel_Toggle("__InvertFresnel_Toggle",Float) = 0
@@ -469,7 +469,7 @@
             #pragma exclude_renderers d3d11_9x
             #pragma exclude_renderers d3d9
             
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             // -------------------------------------
             // Material Keywords
@@ -588,7 +588,7 @@
             // -------------------------------------
             // Material Keywords
  
-//            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             // #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _DISTORT_REFRACTION
@@ -699,7 +699,7 @@
             // -------------------------------------
             // Material Keywords
  
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             #define _SCREEN_DISTORT_MODE
             #define _CAMERA_OPAQUE_DISTORT_PASS
@@ -808,7 +808,7 @@
             // -------------------------------------
             // Material Keywords
  
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
 			#define _SCREEN_DISTORT_MODE
             #define _DEFERRED_DISTORT_PASS
@@ -919,7 +919,7 @@
             // -------------------------------------
             // Material Keywords
  
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _MASKMAP_ON

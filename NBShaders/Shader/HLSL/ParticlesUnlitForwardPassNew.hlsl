@@ -513,7 +513,7 @@
         UNITY_BRANCH
         if (CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX))
         {
-            ColorAdjustment(result,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+            ColorAdjustment(result,alpha,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
         }
         
         #ifdef _FX_LIGHT_MODE_SIX_WAY
@@ -1050,7 +1050,7 @@
         UNITY_BRANCH
         if (!CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX))
         {
-           ColorAdjustment(result,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+           ColorAdjustment(result,alpha,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
         }
         
         UNITY_FLATTEN

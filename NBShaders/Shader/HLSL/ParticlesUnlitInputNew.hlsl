@@ -1440,7 +1440,7 @@
         }
     }
 
-    void ColorAdjustment(inout half3 result,half4 customData1,half4 customData2)
+    void ColorAdjustment(inout half3 result,inout half alpha,half4 customData1,half4 customData2)
     {
         UNITY_BRANCH
         if(CheckLocalFlags(FLAG_BIT_HUESHIFT_ON))
@@ -1474,6 +1474,12 @@
             half3 colorB = pow(result.rgb,_BaseMapColorRefine.y)*_BaseMapColorRefine.z;
             result.rgb = lerp(colorA,colorB,_BaseMapColorRefine.w);
         }
+
+        if (CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA))
+        {
+            result.rgb *= alpha;
+        }
+        
         
     }
 
