@@ -229,12 +229,12 @@ namespace NBShaderEditor
                     EditorGUI.BeginChangeCheck();
                     SerializedProperty flashTexture = serializedObject.FindProperty("flashTexture");
                     EditorGUILayout.PropertyField(flashTexture, new GUIContent("反闪纹理图"));
+                    SerializedProperty flashTexturePolarCoordModeProp = serializedObject.FindProperty("flashTexturePolarCoordMode");
+                    EditorGUILayout.PropertyField(flashTexturePolarCoordModeProp, new GUIContent("反闪纹理图极坐标模式"));
                     if (EditorGUI.EndChangeCheck())
                     {
                         ReflectMethod("SetTexture", ppController);
                     }
-                    SerializedProperty flashTexturePolarCoordModeProp = serializedObject.FindProperty("flashTexturePolarCoordMode");
-                    EditorGUILayout.PropertyField(flashTexturePolarCoordModeProp, new GUIContent("反闪纹理图极坐标模式"));
                     SerializedProperty flashTextureScaleOffsetProp = serializedObject.FindProperty("flashTextureScaleOffset");
                     EditorGUILayout.PropertyField(flashTextureScaleOffsetProp, new GUIContent("反闪纹理图缩放平移"));
                     SerializedProperty flashVecProp = serializedObject.FindProperty("flashVec");

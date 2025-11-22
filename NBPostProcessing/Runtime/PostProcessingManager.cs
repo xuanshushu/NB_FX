@@ -291,7 +291,7 @@ namespace NBShader
             EffectUpdater(InitRadialBlur, UpdateRadialBlur, EndRadialBlur, ref _lastIsRadialBlur, radialBlurToggles);
 
             bool isSetCustomScreenCenterPos =
-                (chromaticAberrationToggles | distortSpeedToggles | radialBlurToggles) > 0;
+                (chromaticAberrationToggles | distortSpeedToggles | radialBlurToggles|flashToggles) > 0;
 
             if (isSetCustomScreenCenterPos)
             {

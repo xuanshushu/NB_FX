@@ -192,7 +192,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     }
                     
                     UNITY_BRANCH
-                    if((CheckLocalFlags(FLAG_BIT_DISTORT_SPEED)& (!CheckLocalFlags(FLAG_BIT_POST_DISTORT_SCREEN_UV)))|CheckLocalFlags(FLAG_BIT_OVERLAYTEXTURE_POLLARCOORD)|CheckLocalFlags(FLAG_BIT_FLASHTEXTURE_POLLARCOORD))
+                    if((CheckLocalFlags(FLAG_BIT_DISTORT_SPEED)& (!CheckLocalFlags(FLAG_BIT_POST_DISTORT_SCREEN_UV)))|CheckLocalFlags(FLAG_BIT_OVERLAYTEXTURE_POLLARCOORD)|CheckLocalFlags(FLAG_BIT_FLASHTEXTURE_POLLARCOORD)|CheckLocalFlags(FLAG_BIT_FLASH))
                     {
                         polarCoordinates= PolarCoordinates(screenUV,_CustomScreenCenter.xy);
                     }
@@ -371,7 +371,10 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
 
                         half flashTexColor = SAMPLE_TEXTURE2D(_FlashTexture,sampler_FlashTexture,flashTexUV).r;
                         flashTexColor = pow(flashTexColor,_DeSaturateIntensity);
+                        
+                        _FlashTextureIntensity *= saturate(polarCoordinates.y*2-0.4);
 
+                        
                         flashLuminace = lerp(flashLuminace,flashTexColor,_FlashTextureIntensity);
                         half RangeMin = _FlashGradientRange;
                         half RangeMax = RangeMin + _Contrast;

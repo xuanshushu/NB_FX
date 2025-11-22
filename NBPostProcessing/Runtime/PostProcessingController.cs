@@ -80,6 +80,7 @@ namespace NBShader
         public bool flashToggle = false;
         [Range(0,1)]
         public float flashIntensity = 1f;
+        [Range(0,1)]
         public float flashInvertIntensity = 0f;
         public float flashDeSaturateIntensity = 1f;
         public float flashGradientRange = 0.25f;
