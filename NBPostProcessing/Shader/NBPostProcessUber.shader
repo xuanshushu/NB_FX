@@ -118,7 +118,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     half _FlashGradientRange;
                     half _FlashTextureIntensity;
                     float4 _FlashTexture_ST;
-                    float2 _FlashVec;
+                    float4 _FlashVec;
                     half3 _FlashColor;
                     half3 _BlackFlashColor;
                 
@@ -365,14 +365,16 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                             
                             flashTexUV = screenUV;
                         }
+                        half flashTexMask = SimpleSmoothstep(_FlashVec.z,_FlashVec.z+_FlashVec.w,flashTexUV.y);
+                        // flashTexMask *= flashTexMask;
 
                         flashTexUV = TRANSFORM_TEX(flashTexUV,_FlashTexture);
                         flashTexUV = UVOffsetAnimaiton(flashTexUV,_FlashVec.xy,_Time.y);
 
                         half flashTexColor = SAMPLE_TEXTURE2D(_FlashTexture,sampler_FlashTexture,flashTexUV).r;
                         flashTexColor = pow(flashTexColor,_DeSaturateIntensity);
-                        
-                        _FlashTextureIntensity *= saturate(polarCoordinates.y*2-0.4);
+                  
+                        _FlashTextureIntensity *= flashTexMask;
 
                         
                         flashLuminace = lerp(flashLuminace,flashTexColor,_FlashTextureIntensity);

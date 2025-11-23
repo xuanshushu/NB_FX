@@ -215,8 +215,6 @@ namespace NBShaderEditor
                 {
                     SerializedProperty flashIntensityProp = serializedObject.FindProperty("flashIntensity");
                     EditorGUILayout.PropertyField(flashIntensityProp, new GUIContent("反转效果强度"));
-                    SerializedProperty flashInvertIntensityProp = serializedObject.FindProperty("flashInvertIntensity");
-                    EditorGUILayout.PropertyField(flashInvertIntensityProp, new GUIContent("反转度"));
                     SerializedProperty flashGradientRangeProp = serializedObject.FindProperty("flashGradientRange");
                     EditorGUILayout.PropertyField(flashGradientRangeProp, new GUIContent("过渡起始亮度"));
                     SerializedProperty flashContrastProp = serializedObject.FindProperty("flashContrast");
@@ -225,6 +223,8 @@ namespace NBShaderEditor
                     EditorGUILayout.PropertyField(flashColorProp, new GUIContent("亮部闪颜色"));
                     SerializedProperty blackFlashColorProp = serializedObject.FindProperty("blackFlashColor");
                     EditorGUILayout.PropertyField(blackFlashColorProp, new GUIContent("暗部闪颜色"));
+                    SerializedProperty flashInvertIntensityProp = serializedObject.FindProperty("flashInvertIntensity");
+                    EditorGUILayout.PropertyField(flashInvertIntensityProp, new GUIContent("反转度"));
                     
                     EditorGUI.BeginChangeCheck();
                     SerializedProperty flashTexture = serializedObject.FindProperty("flashTexture");
@@ -243,6 +243,8 @@ namespace NBShaderEditor
                     EditorGUILayout.PropertyField(flashDeSaturateIntensityProp, new GUIContent("纹理图Pow"));
                     SerializedProperty flashTextureIntensityProp = serializedObject.FindProperty("flashTextureIntensity");
                     EditorGUILayout.PropertyField(flashTextureIntensityProp, new GUIContent("纹理图混合程度"));
+                    SerializedProperty flashVecZWProp = serializedObject.FindProperty("flashVecZW");
+                    EditorGUILayout.PropertyField(flashVecZWProp, new GUIContent("反闪纹理图遮罩位置/过渡范围"));
                     
                 });
 

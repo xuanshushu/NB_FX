@@ -94,6 +94,7 @@ namespace NBShader
         public Vector4 flashTextureScaleOffset = new Vector4(10f,0.1f,0f,0f);
         public bool flashTexturePolarCoordMode = true;
         public Vector2 flashVec = new Vector2(0, 0.05f);
+        public Vector2 flashVecZW = new Vector2(0.2f, 0.2f);//FlashTextureMask
         public float flashTextureIntensity = 0.5f;
         
         public bool vignetteToggle = false;
@@ -452,7 +453,7 @@ namespace NBShader
                 PostProcessingManager.flashContrast =
                     Mathf.Max(PostProcessingManager.flashContrast, flashContrast);
                 PostProcessingManager.flashGradientRange = Mathf.Max(PostProcessingManager.flashGradientRange, flashGradientRange);
-                PostProcessingManager.flashVec = flashVec;
+                PostProcessingManager.flashVec = new Vector4(flashVec.x,flashVec.y,flashVecZW.x,flashVecZW.y);
                 PostProcessingManager.flashTextureIntensity = Mathf.Max(PostProcessingManager.flashTextureIntensity, flashTextureIntensity);
                 PostProcessingManager.flashTextureScaleOffset = flashTextureScaleOffset;
                 

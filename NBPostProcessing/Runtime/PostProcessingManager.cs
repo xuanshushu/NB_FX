@@ -607,7 +607,7 @@ namespace NBShader
         public static float flashDesaturateIntensity = 0;
         public static float flashGradientRange = 0;
         public static Vector4 flashTextureScaleOffset = new Vector4(1,1,0,0);
-        public static Vector2 flashVec = new Vector2(0, 0);
+        public static Vector4 flashVec = new Vector4(0, 0);
         public static float flashTextureIntensity = 0.5f;
         public static float flashIntensity = 1;
 
