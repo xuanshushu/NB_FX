@@ -965,7 +965,7 @@
         half2 uv = TRANSFORM_TEX(originUV,_VertexOffset_Map);
         uv = UVOffsetAnimaiton(uv,_VertexOffset_Vec.xy);
         // half vertexOffsetSample = tex2Dlod(_VertexOffset_Map,half4(uv,0,0));
-        half vertexOffsetSample = SampleTexture2DWithWrapFlags(_VertexOffset_Map,uv,FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP,true,0);
+        half vertexOffsetSample = SampleTexture2DWithWrapFlags(_VertexOffset_Map,uv,FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP,true,0);
         // UNITY_BRANCH
         // if(CheckLocalWrapFlags(FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP))
         // {
