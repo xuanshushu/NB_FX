@@ -113,7 +113,7 @@ public class AnimationSheetHelperEditor : Editor
 
         if (manualPlay.boolValue)
         {
-            EditorGUILayout.Slider(manualPlayePos, 0f, 1f, new GUIContent("手动播放位置"));
+            EditorGUILayout.PropertyField(manualPlayePos, new GUIContent("手动播放位置"));
         }
         else
         {

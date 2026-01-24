@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 // using Sirenix.OdinInspector;
 // using Unity.Mathematics;
@@ -9,9 +10,9 @@ using NBShader;
 public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
 {
 
-    public bool isParticleBaseShader = false;
+    public bool isParticleBaseShader = true;
     
-    public string propertyName;
+    public string propertyName = "_BaseMap_ST";
 
     private int _propertyID;
     private int _particleBaseAniBlendStPropertyID = Shader.PropertyToID("_BaseMap_AnimationSheetBlend_ST");
@@ -22,11 +23,11 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
 
     // [LabelText("序列帧图横向帧数量")]
     // [OnValueChanged("Init")]
-    public int xSize = 1;
+    public int xSize = 4;
 
     // [LabelText("序列帧图纵向帧数量")]
     // [OnValueChanged("Init")]
-    public int ySize = 1;
+    public int ySize = 4;
 
     // [LabelText("手动控制播放")] 
     public bool manualPlay = false;
@@ -37,7 +38,7 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
     
     // [LabelText("播放速度fps")]
     // [HideIf("manualPlay")]
-    public float speed = 1;
+    public float speed = 16;
 
     // [ReadOnly]
     // [LabelText("TillingOffset")]
@@ -177,17 +178,17 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
                 _flags.SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER,index:1);
             }
         }
-        else
-        {
-            if (mat)
-            {
-                if (mat.shader.name == "Mh2/Effects/Particle_NiuBi")
-                {
-                    _flags.SetMaterial(mat);
-                    _flags.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER,index:1);
-                }
-            }
-        }
+        // else
+        // {
+        //     if (mat)
+        //     {
+        //         if (mat.shader.name == "Mh2/Effects/Particle_NiuBi")
+        //         {
+        //             _flags.SetMaterial(mat);
+        //             _flags.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER,index:1);
+        //         }
+        //     }
+        // }
     }
 
     // public void InitPostProcessToggle()
@@ -219,7 +220,8 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         float frameIndexFloat;
         if (manualPlay)
         {
-            frameIndexFloat = manualPlayePos * frameCount;
+            float playPos = Mathf.Repeat(manualPlayePos, 1f);
+            frameIndexFloat = playPos * frameCount;
         }
         else
         {
