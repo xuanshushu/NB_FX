@@ -1068,7 +1068,7 @@ namespace NBShaderEditor
                 "_EmissionEnabled", shaderKeyword: "_EMISSION", isIndentBlock: true, fontStyle: FontStyle.Bold,
                 drawBlock: (isToggle) =>
                 {
-                    _helper.DrawTexture("流光贴图", "_EmissionMap", "_EmissionMapColor",
+                    _helper.DrawTexture("流光贴图", "_EmissionMap", "_EmissionMapColor",drawWrapMode: true,
                         wrapModeFlagBitsName: W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_EMISSIONMAP, flagIndex: 2,
                         drawBlock: theEmissionMap =>
                         {
@@ -1086,7 +1086,7 @@ namespace NBShaderEditor
                 fontStyle: FontStyle.Bold,
                 drawBlock: (isToggle) =>
                 {
-                    _helper.DrawTexture("颜色渐变贴图", "_ColorBlendMap",colorPropertyName:"_ColorBlendColor" ,
+                    _helper.DrawTexture("颜色渐变贴图", "_ColorBlendMap",colorPropertyName:"_ColorBlendColor" ,drawWrapMode: true,
                         wrapModeFlagBitsName: W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_COLORBLENDMAP, flagIndex: 2,
                         drawBlock: texProp =>
                         {
