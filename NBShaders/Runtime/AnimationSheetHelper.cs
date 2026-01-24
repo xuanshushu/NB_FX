@@ -1,23 +1,16 @@
 using UnityEngine;
-using Sirenix.OdinInspector;
-using Unity.Mathematics;
+// using Sirenix.OdinInspector;
+// using Unity.Mathematics;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using NBShader;
 
 [ExecuteInEditMode]
 public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
 {
-    [LabelText("使用 NB Shader")]
-    [OnValueChanged("InitParticleBaseShaderToggle")]
-    public bool isParticleBaseShader = false;
 
-    [LabelText("使用 后处理扭曲")]
-    [OnValueChanged("InitPostProcessToggle")]
-    public bool isPostProcessShader = false;
-    [ShowIf("isPostProcessShader")]
-    [ReadOnly]
-    public PostProcessingController postProcessingController;
-    [LabelText("Shader属性名")]
+    public bool isParticleBaseShader = false;
+    
     public string propertyName;
 
     private int _propertyID;
@@ -27,34 +20,34 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
     
 
 
-    [LabelText("序列帧图横向帧数量")]
-    [OnValueChanged("Init")]
+    // [LabelText("序列帧图横向帧数量")]
+    // [OnValueChanged("Init")]
     public int xSize = 1;
 
-    [LabelText("序列帧图纵向帧数量")]
-    [OnValueChanged("Init")]
+    // [LabelText("序列帧图纵向帧数量")]
+    // [OnValueChanged("Init")]
     public int ySize = 1;
 
-    [LabelText("手动控制播放")] 
+    // [LabelText("手动控制播放")] 
     public bool manualPlay = false;
 
-    [ShowIf("manualPlay")]
-    [LabelText("手动播放位置")] [Range(0, 1)] 
+    // [ShowIf("manualPlay")]
+    // [LabelText("手动播放位置")] [Range(0, 1)] 
     public float manualPlayePos = 0;
     
-    [LabelText("播放速度fps")]
-    [HideIf("manualPlay")]
+    // [LabelText("播放速度fps")]
+    // [HideIf("manualPlay")]
     public float speed = 1;
 
-    [ReadOnly]
-    [LabelText("TillingOffset")]
+    // [ReadOnly]
+    // [LabelText("TillingOffset")]
     public Vector4 scaleOffset;
-    [ReadOnly]
+    // [ReadOnly]
     public Material mat;
 
-    [ReadOnly]
+    // [ReadOnly]
     public int frameIndex;
-    [ReadOnly]
+    // [ReadOnly]
     public int frameCount;
 
     private float _time;
@@ -97,8 +90,8 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         }
     }
 
-    [Button("初始化")]
-    private void Init()
+    // [Button("初始化")]
+    public void Init()
     {
         _time = 0;
         if (xSize <= 0)
@@ -150,7 +143,7 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         }
 
         InitParticleBaseShaderToggle();
-        InitPostProcessToggle();
+        // InitPostProcessToggle();
         
 
         _propertyID = Shader.PropertyToID(propertyName);
@@ -163,7 +156,7 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
     
     
 
-    void InitParticleBaseShaderToggle()
+    public void InitParticleBaseShaderToggle()
     {
         if (isParticleBaseShader)
         {
@@ -197,17 +190,17 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         }
     }
 
-    void InitPostProcessToggle()
-    {
-        if (isPostProcessShader)
-        {
-            TryGetComponent<PostProcessingController>(out postProcessingController);
-        }
-        else
-        {
-            postProcessingController = null;
-        }
-    }
+    // public void InitPostProcessToggle()
+    // {
+    //     if (isPostProcessShader)
+    //     {
+    //         TryGetComponent<PostProcessingController>(out postProcessingController);
+    //     }
+    //     else
+    //     {
+    //         postProcessingController = null;
+    //     }
+    // }
 
 
     // Update is called once per frame
@@ -216,10 +209,10 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
     private float _blendLerp;
     private void Update()
     {
-        if (!isPostProcessShader)//后处理控制不通过才知。
-        {
-            if(!mat || _propertyID==0) return;
-        }
+        // if (!isPostProcessShader)//后处理控制不通过才知。
+        // {
+        //     if(!mat || _propertyID==0) return;
+        // }
 
   
 
@@ -242,14 +235,14 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         
         if (_lastIndex != frameIndex)
         {
-            if (isPostProcessShader)
-            {
-                postProcessingController.distortSpeedTexSt = CalSt(frameIndex);
-            }
-            else
-            {
+            // if (isPostProcessShader)
+            // {
+            //     postProcessingController.distortSpeedTexSt = CalSt(frameIndex);
+            // }
+            // else
+            // {
                 mat.SetVector(_propertyID,CalSt(frameIndex));
-            }
+            // }
             _lastIndex = frameIndex;
             _nextIndex = frameIndex + 1;
             if (isParticleBaseShader)
@@ -261,7 +254,7 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
 
         if (isParticleBaseShader)
         {
-            _blendLerp =  math.frac(frameIndexFloat);
+            _blendLerp =  Mathf.Repeat(frameIndexFloat,1f);
             mat.SetFloat(_particleBaseAniBlendIntensityPropertyID,_blendLerp);
         }
 

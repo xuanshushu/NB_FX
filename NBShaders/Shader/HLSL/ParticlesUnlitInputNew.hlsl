@@ -816,16 +816,17 @@
         particleUVs.mainTexUV = baseUVs.mainTexUV;
         //-------------------------------------------------
         #ifdef _FLIPBOOKBLENDING_ON //开启序列帧融合
-        // if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER))
-        // {
-        //     //走AnimationSheetHelper脚本的情况，永远和baseMap同步。
-        //     particleUVs.animBlendUV = baseMapUV*_BaseMap_AnimationSheetBlend_ST.xy+_BaseMap_AnimationSheetBlend_ST.zw;
-        // }
-        // else
-        // {
+        if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER))
+        {
+            // float2 baseMapUV = (baseUVs.mainTexUV - _BaseMap_ST.zw)/_BaseMap_ST.xy;
+            //走AnimationSheetHelper脚本的情况，永远和baseMap同步。
+            particleUVs.animBlendUV = meshTexcoord0.xy*_BaseMap_AnimationSheetBlend_ST.xy+_BaseMap_AnimationSheetBlend_ST.zw;
+        }
+        else
+        {
             //走粒子的情况
             particleUVs.animBlendUV = meshTexcoord0.zw;
-        // }
+        }
         #endif
        
 

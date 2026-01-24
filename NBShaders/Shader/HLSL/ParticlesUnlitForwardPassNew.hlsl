@@ -268,7 +268,14 @@
         float2 MainTex_UV;
         float3 blendUv;
         blendUv.xy = input.texcoord2AndSpecialUV.xy;
-        blendUv.z = input.normalWSAndAnimBlend.w;
+        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER))
+        {
+            blendUv.z = _AnimationSheetHelperBlendIntensity;
+        }
+        else
+        {
+            blendUv.z = input.normalWSAndAnimBlend.w;
+        }
         float2 MaskMapuv;
         float2 MaskMapuv2;
         float2 MaskMapuv3;
