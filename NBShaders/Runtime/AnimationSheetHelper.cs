@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using NBShader;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [ExecuteInEditMode]
 public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
@@ -69,6 +72,9 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
     {
         // Debug.Log( "ASUpadate_OnEnable");
         Init();
+        #if UNITY_EDITOR
+            EditorApplication.update += EditorUpdate;
+        #endif
     }
 
     private void OnDisable()
@@ -89,6 +95,9 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         {
             usedMaterialList.Remove(mat);
         }
+        #if UNITY_EDITOR
+                EditorApplication.update -= EditorUpdate;
+        #endif
     }
 
     // [Button("初始化")]
@@ -225,7 +234,16 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         }
         else
         {
-            _time += Time.deltaTime * speed;
+            if (!Application.isPlaying)
+            {
+                #if UNITY_EDITOR
+                    _time += (float)editorDeltaTime * speed;
+                #endif
+            }
+            else
+            {
+                _time += Time.deltaTime * speed;
+            }
             frameIndexFloat = _time % frameCount;
         }
         frameIndex = (int) frameIndexFloat;
@@ -288,16 +306,23 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         float yOffset = (ySize - index / xSize -1)*_yScale;
         return new Vector4(_xScale, _yScale, xOffset, yOffset);
     }
-    void OnDrawGizmos()
-    {
 #if UNITY_EDITOR
-        // Ensure continuous Update calls.
+    private double editorDeltaTime = 0;
+    private double lastEditorTime = 0;
+    void EditorUpdate()
+    {
+        
+        if (lastEditorTime == 0)
+        {
+            lastEditorTime = EditorApplication.timeSinceStartup;
+        }
+        editorDeltaTime = EditorApplication.timeSinceStartup - lastEditorTime;
+        lastEditorTime = EditorApplication.timeSinceStartup;
         if (!Application.isPlaying)
         {
-            UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
-            UnityEditor.SceneView.RepaintAll();
+            Update();
         }
-#endif
     }
+#endif
     
 }
