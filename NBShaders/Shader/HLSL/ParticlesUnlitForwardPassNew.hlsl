@@ -705,24 +705,22 @@
             dissolveValue = pow(dissolveValue,_Dissolve.y);
 
                
-
+            
           
+            half dissolveMaskValue = 0;
+            half dissolveMaskStrength = 0;
             UNITY_BRANCH
             if(CheckLocalFlags(FLAG_BIT_PARTICLE_DISSOLVE_MASK))
             {
-                half dissolveMaskValue = 0;
                 half4 dissolveMaskSample = SampleTexture2DWithWrapFlags(_DissolveMaskMap,dissolve_mask_uv,FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP);
                 dissolveMaskValue = GetColorChannel(dissolveMaskSample,FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP);
-                _Dissolve.z += GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
-                // dissolveMaskValue += _Dissolve.z;
-                dissolveMaskValue = lerp(dissolveValue, dissolveMaskValue, _Dissolve.z);
-                // dissolveValue = dissolveMaskValue*dissolveValue;
-                //
-                // half mixedDisolveValue ;
-                // Blend_HardLight_half(dissolveValue,dissolveMaskValue,mixedDisolveValue);
-                // dissolveValue = mixedDisolveValue;
-
-                dissolveValue = (dissolveValue +dissolveMaskValue)*0.5;//Smart Way By Panda
+                dissolveMaskStrength = _Dissolve.z + GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+              
+                if (_DissolveMaskMode < 0.5)
+                {
+                    dissolveMaskValue = lerp(dissolveValue, dissolveMaskValue, dissolveMaskStrength);
+                    dissolveValue = (dissolveValue +dissolveMaskValue)*0.5;//Smart Way By Panda
+                }
             }
         
             #ifdef NB_DEBUG_DISSOLVE      //后续Test类的关键字要找机会排除
@@ -734,9 +732,15 @@
             half dissolveValueBeforeSoftStep = dissolveValue - ((dissolveStrenth)*(invSoftStep + 1)-1)*_Dissolve.w ;
             dissolveValue = dissolveValue*invSoftStep -(1+invSoftStep)*dissolveStrenth +1;
             // dissolveValue = smoothstep(dissolveStrenth-_Dissolve.w,dissolveStrenth,dissolveValue);//Smart Way By Panda
-            dissolveValue = saturate(dissolveValue);
         
-
+        
+            dissolveValue = saturate(dissolveValue);
+            if(CheckLocalFlags(FLAG_BIT_PARTICLE_DISSOLVE_MASK)&&_DissolveMaskMode > 0.5)
+            {
+                dissolveMaskStrength = dissolveMaskStrength -1;
+                dissolveMaskValue = saturate(dissolveMaskValue - dissolveMaskStrength);
+                dissolveValue = lerp(1, dissolveValue, dissolveMaskValue);
+            }
 
             alpha  *= dissolveValue;
             if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP))

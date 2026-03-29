@@ -236,6 +236,7 @@
         _Dissolve ("x:溶解强度 y:溶解值Pow z:过程溶解强度 w:溶解硬软度", vector) = (0.5, 1, 1, 0.1)
     	_DissolveMap("溶解贴图 xy:UV缩放 zw:UV偏移",2D) = "grey"{}
         _DissolveMaskMap("局部溶解蒙版 xy:UV缩放 zw:UV偏移",2D) = "white"{}
+        _DissolveMaskMode("溶解遮罩模式", Float) = 0
         _DissolveOffsetRotateDistort("xy:溶解贴图偏移速度 z:溶解贴图旋转",Vector) = (0,0,0,0)
         [HDR]_DissolveLineColor("溶解描边颜色_hdr",Color) = (1,0,0,1)
         _DissolveVoronoi_Vec("xy:噪波1缩放,zw:噪波2缩放",Vector) = (1,1,2,2)
@@ -459,7 +460,7 @@
             
             HLSLPROGRAM
             #define PARTICLE
-           #if defined ( SHADER_API_GLES)||defined(SHADER_API_GLES3)
+			#if defined ( SHADER_API_GLES)||defined(SHADER_API_GLES3)
             #pragma target 3.0
             #else
             #pragma target 4.5
@@ -469,7 +470,7 @@
             #pragma exclude_renderers d3d11_9x
             #pragma exclude_renderers d3d9
             
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             // -------------------------------------
             // Material Keywords
@@ -588,7 +589,7 @@
             // -------------------------------------
             // Material Keywords
  
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             // #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _DISTORT_REFRACTION
@@ -699,7 +700,7 @@
             // -------------------------------------
             // Material Keywords
  
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             #define _SCREEN_DISTORT_MODE
             #define _CAMERA_OPAQUE_DISTORT_PASS
@@ -808,7 +809,7 @@
             // -------------------------------------
             // Material Keywords
  
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
 			#define _SCREEN_DISTORT_MODE
             #define _DEFERRED_DISTORT_PASS
@@ -919,7 +920,7 @@
             // -------------------------------------
             // Material Keywords
  
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _MASKMAP_ON

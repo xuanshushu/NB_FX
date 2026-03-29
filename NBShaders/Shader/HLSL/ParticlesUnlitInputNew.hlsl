@@ -133,6 +133,7 @@
     half4 _DissolveMap_ST;
     half4 _DissolveOffsetRotateDistort;
     half4 _DissolveMaskMap_ST;
+    half _DissolveMaskMode;
 
     half4 _DissolveLineColor;
     half4 _DissolveRampColor;

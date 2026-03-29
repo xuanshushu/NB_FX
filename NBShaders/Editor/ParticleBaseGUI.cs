@@ -1353,6 +1353,7 @@ namespace NBShaderEditor
                         "_DissolveMask_Toggle", W9ParticleShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_MASK, drawBlock:
                         (isToggle) =>
                         {
+                            _helper.DrawPopUp("溶解遮罩模式", "_DissolveMaskMode", dissolveMaskModeNames);
                             _helper.DrawTexture("溶解遮罩图", "_DissolveMaskMap", drawWrapMode: true,
                                 wrapModeFlagBitsName: W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP,
                                 flagIndex: 2, drawBlock:
@@ -1364,7 +1365,8 @@ namespace NBShaderEditor
                                 });
                             DrawColorChannelSelect("溶解遮罩图通道选择",
                                 W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP);
-                            _helper.DrawVector4Component("溶解遮罩强度", "_Dissolve", "z", false);
+                            bool dissolveMaskStrengthIsSlider = _helper.GetProperty("_DissolveMaskMode").floatValue > 0.5f;
+                            _helper.DrawVector4Component("溶解遮罩强度", "_Dissolve", "z", dissolveMaskStrengthIsSlider,0f,2f);
                             DrawCustomDataSelect("溶解遮罩图强度自定义曲线",
                                 W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY, 1);
                         });
@@ -2004,6 +2006,12 @@ namespace NBShaderEditor
         {
             "渐变控件",
             "Ramp贴图"
+        };
+
+        private string[] dissolveMaskModeNames =
+        {
+            "过程溶解",
+            "溶解遮罩"
         };
         
         private string[] rampColorBlendMode =
