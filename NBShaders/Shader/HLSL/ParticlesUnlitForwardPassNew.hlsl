@@ -181,7 +181,12 @@
             float2 vertexOffsetUVs = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MAP,baseUVsForVertexOffset);
             float2 vertexOffsetMaskUVs = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP,baseUVsForVertexOffset);
 
-            positionOS.xyz = VetexOffset(positionOS,vertexOffsetUVs,vertexOffsetMaskUVs,input.normalOS);
+            half3 vertexOffsetOS = 0;
+            positionOS.xyz = VetexOffset(positionOS,vertexOffsetUVs,vertexOffsetMaskUVs,input.normalOS,vertexOffsetOS);
+            #ifdef NB_DEBUG_VERTEX_OFFSET
+            half3 vertexOffsetWS = TransformObjectToWorldDir(vertexOffsetOS,false);
+            output.color = half4(abs(vertexOffsetWS),1);
+            #endif
 
             //再算一遍
             output.positionWS.xyz = mul(unity_ObjectToWorld, positionOS).xyz;
@@ -211,6 +216,9 @@
         
         
         UNITY_SETUP_INSTANCE_ID(input);
+        #ifdef NB_DEBUG_VERTEX_OFFSET
+        return input.color;
+        #endif
 
         time = _Time.y;
 

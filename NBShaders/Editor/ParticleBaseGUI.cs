@@ -1521,6 +1521,7 @@ namespace NBShaderEditor
                 fontStyle: FontStyle.Bold,
                 drawBlock: isToggle =>
                 {
+                    _helper.DrawToggle("顶点偏移方向测试", "_NB_Debug_VertexOffset", shaderKeyword:"NB_DEBUG_VERTEX_OFFSET");
                     _helper.DrawTexture("顶点偏移贴图", "_VertexOffset_Map", drawScaleOffset: true, drawWrapMode: true,
                         wrapModeFlagBitsName: W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP, flagIndex: 2,
                         drawBlock: texProp =>
@@ -1544,7 +1545,7 @@ namespace NBShaderEditor
                         drawBlock:
                         isToggle =>
                         {
-                            if (!isToggle.hasMixedValue && isToggle.floatValue < 0.5f)
+                            if ((!isToggle.hasMixedValue && isToggle.floatValue < 0.5f)||_helper.ResetTool.IsInitResetData)
                             {
                                 // matEditor.ShaderProperty(_helper.GetProperty("_VertexOffset_CustomDir"), "顶点偏移本地方向");
                                 _helper.DrawVector4XYZComponet("顶点偏移本地方向","_VertexOffset_CustomDir");

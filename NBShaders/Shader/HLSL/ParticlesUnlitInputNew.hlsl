@@ -962,7 +962,7 @@
     // half3 _VertexOffset_CustomDir;
     // half4 _VertexOffset_Map_ST;
 
-    half3 VetexOffset(half3 positionOS,half2 originUV,half2 originMaskUV,half3 normalOS)
+    half3 VetexOffset(half3 positionOS,half2 originUV,half2 originMaskUV,half3 normalOS,out half3 offsetOS)
     {
         half2 uv = TRANSFORM_TEX(originUV,_VertexOffset_Map);
         uv = UVOffsetAnimaiton(uv,_VertexOffset_Vec.xy);
@@ -983,7 +983,6 @@
             vertexOffsetSample = vertexOffsetSample*2-1;
         }
 
-        half3 finalPos;
         half vertexOffsetMask = 1;
         if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP))
         {
@@ -996,15 +995,14 @@
         UNITY_BRANCH
         if(CheckLocalFlags(FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR))
         {
-            finalPos = positionOS + normalOS*_VertexOffset_Vec.z*vertexOffsetSample*vertexOffsetMask;
+            offsetOS = normalOS*_VertexOffset_Vec.z*vertexOffsetSample*vertexOffsetMask;
         }
         else
         {
-            finalPos = positionOS + _VertexOffset_CustomDir*_VertexOffset_Vec.z*vertexOffsetSample*vertexOffsetMask;
+            offsetOS = _VertexOffset_CustomDir*_VertexOffset_Vec.z*vertexOffsetSample*vertexOffsetMask;
         }
 
-
-        return finalPos;
+        return positionOS + offsetOS;
         
     }
 

@@ -419,6 +419,7 @@
         _NB_Debug_Dissolve("_NB_Debug_Dissolve",Float) = 0
         _NB_Debug_Distort("_NB_Debug_Dissolve",Float) = 0
         _NB_Debug_Fresnel("_NB_Debug_Fresnel",Float) = 0
+        _NB_Debug_VertexOffset("_NB_Debug_VertexOffset",Float) = 0
     }
     SubShader
     {
@@ -533,6 +534,7 @@
             #pragma shader_feature_local _ _MATCAP
             #pragma shader_feature_local _ _SPECULAR_COLOR
             #pragma shader_feature_local _ VFX_SIX_WAY_ABSORPTION
+            #pragma shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT NB_DEBUG_FRESNEL NB_DEBUG_VERTEX_OFFSET
             
             
             // -------------------------------------
@@ -650,7 +652,7 @@
             #pragma shader_feature_local _ _SPECULAR_COLOR
             #pragma shader_feature_local _ VFX_SIX_WAY_ABSORPTION
             
-            #pragma shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT NB_DEBUG_FRESNEL
+            #pragma shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT NB_DEBUG_FRESNEL NB_DEBUG_VERTEX_OFFSET
             
             
             // -------------------------------------
