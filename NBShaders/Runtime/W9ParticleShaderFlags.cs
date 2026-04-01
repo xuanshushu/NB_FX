@@ -264,6 +264,7 @@ namespace NBShader
         public const int foldOutBit2ColorAdjustment = 1 << 9;
         public const int foldOutBit2SharedUV = 1 << 10;
         public const int foldOutBit2SharedUVMode = 1 << 11;
+        public const int foldOutBit2VAT = 1 << 12;
 
 
         #region CustomDataCodes

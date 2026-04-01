@@ -15,6 +15,8 @@
         _UseUV1_Toggle("__UseUV1_Toggle",Float) = 0
         _TransparentMode("_TransparentMode",Float) = 1
         _ForceZWriteToggle("_ForceZWriteToggle",Float) = 0
+        _VAT_Toggle("VAT顶点动画图",Float) = 0
+        _VATMode("VAT模式",Float) = 0
         
         _Dissolve_Toggle("__Dissolve_Toggle",Float) = 0
         _DissolveMask_Toggle("__DissolveMask_Toggle",Float) = 0
@@ -492,6 +494,8 @@
             #pragma  shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local _SHARED_UV//公共UV
+            #pragma shader_feature_local _VAT
+            #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
 
             //将光照和UI混用，达到节省Keywords的目的。
             #pragma multi_compile _ UNITY_UI_CLIP_RECT _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS//UI 2D遮罩
@@ -610,8 +614,10 @@
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local _SHARED_UV//公共UV
-            
-            
+            #pragma shader_feature_local _VAT
+            #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+             
+             
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS //UI 2D遮罩
             // #pragma shader_feature_local _PARCUSTOMDATA_ON
 

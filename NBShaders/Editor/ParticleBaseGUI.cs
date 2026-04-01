@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEditorInternal;
@@ -1574,6 +1574,50 @@ namespace NBShaderEditor
                             _helper.DrawVector4Component("顶点偏移遮罩强度", "_VertexOffset_MaskMap_Vec", "z", true);
                         });
                 });
+                _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2VAT, 5, GetAnimBoolIndex(5), "VAT顶点动画图",
+                "_VAT_Toggle", shaderKeyword: "_VAT", fontStyle: FontStyle.Bold,
+                drawBlock: isToggle =>
+                {
+                    _helper.DrawPopUp("VAT模式", "_VATMode", _vatModeNames,
+                        drawOnValueChangedBlock: modeProp =>
+                        {
+                            if (modeProp.hasMixedValue)
+                            {
+                                return;
+                            }
+
+                            for (int i = 0; i < mats.Count; i++)
+                            {
+                                mats[i].SetFloat("_VATMode", modeProp.floatValue);
+                                SyncVatKeywords(mats[i]);
+                            }
+                        });
+                },
+                drawEndChangeCheck: isToggle =>
+                {
+                    if (isToggle.hasMixedValue)
+                    {
+                        return;
+                    }
+
+                    for (int i = 0; i < mats.Count; i++)
+                    {
+                        if (isToggle.floatValue > 0.5f)
+                        {
+                            if (mats[i].GetFloat("_VATMode") < (float)VATMode.Houdini ||
+                                mats[i].GetFloat("_VATMode") > (float)VATMode.Tyflow)
+                            {
+                                mats[i].SetFloat("_VATMode", (float)VATMode.Houdini);
+                            }
+                        }
+
+                        SyncVatKeywords(mats[i]);
+                    }
+                });
+
+
+
+
 
             if (_uiEffectEnabled == 0)
             {
@@ -2042,6 +2086,18 @@ namespace NBShaderEditor
             "折射"
         };
         
+        private enum VATMode
+        {
+            Houdini = 0,
+            Tyflow = 1
+        }
+
+        private readonly string[] _vatModeNames =
+        {
+            "Houdini",
+            "Tyflow"
+        };
+
         void DoAfterDraw()
         {
             // Debug.Log(mats[0].name + " MaterialEditorDoAfterDraw!");
@@ -2298,7 +2354,47 @@ namespace NBShaderEditor
                         shaderFlags[i].SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON);
                         break;
                 }
+
+                SyncVatKeywords(mats[i]);
             }
+        }
+
+        private void SyncVatKeywords(Material material)
+        {
+            bool vatEnabled = material.GetFloat("_VAT_Toggle") > 0.5f;
+            if (!vatEnabled)
+            {
+                material.DisableKeyword("_VAT");
+                material.DisableKeyword("_VAT_HOUDINI");
+                material.DisableKeyword("_VAT_TYFLOW");
+                return;
+            }
+
+            material.EnableKeyword("_VAT");
+            VATMode mode = GetVatMode(material);
+            switch (mode)
+            {
+                case VATMode.Tyflow:
+                    material.DisableKeyword("_VAT_HOUDINI");
+                    material.EnableKeyword("_VAT_TYFLOW");
+                    break;
+                default:
+                    material.EnableKeyword("_VAT_HOUDINI");
+                    material.DisableKeyword("_VAT_TYFLOW");
+                    break;
+            }
+        }
+
+        private VATMode GetVatMode(Material material)
+        {
+            int mode = Mathf.RoundToInt(material.GetFloat("_VATMode"));
+            if (mode < (int)VATMode.Houdini || mode > (int)VATMode.Tyflow)
+            {
+                material.SetFloat("_VATMode", (float)VATMode.Houdini);
+                return VATMode.Houdini;
+            }
+
+            return (VATMode)mode;
         }
         
         public static GUIContent VertexStreams = new GUIContent("顶点流统计",
@@ -3081,3 +3177,5 @@ namespace NBShaderEditor
         // }
     }
 }
+
+
