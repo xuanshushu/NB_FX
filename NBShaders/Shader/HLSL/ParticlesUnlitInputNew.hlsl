@@ -187,6 +187,25 @@
     half4 _VertexOffset_MaskMap_ST;
     half3 _VertexOffset_MaskMap_Vec;
 
+    float _VAT_Toggle;
+    float _VATMode;
+    float _ImportScale;
+    float _Mode;
+    float _DeformingSkin;
+    float _SkinBoneCount;
+    float _RGBAEncoded;
+    float _RGBAHalf;
+    float _LinearToGamma;
+    float _VATIncludesNormals;
+    float _AffectsShadows;
+    float _Frame;
+    float _Frames;
+    float _FrameInterpolation;
+    float _Loop;
+    float _InterpolateLoop;
+    float _Autoplay;
+    float _AutoplaySpeed;
+
     half _ParallaxMapping_Intensity;
     half4 _ParallaxMapping_Map_ST;
     half4 _ParallaxMapping_Vec;
@@ -257,6 +276,7 @@
     SamplerState sampler_linear_clamp;
     SamplerState sampler_linear_RepeatU_ClampV;
     SamplerState sampler_linear_ClampU_RepeatV;
+    SamplerState sampler_point_clamp;
 
 
 
@@ -404,6 +424,9 @@
     #ifdef _COLOR_RAMP
         Texture2D _RampColorMap;
     #endif
+
+    Texture2D _VATTex;
+    float4 _VATTex_TexelSize;
 
     
 
@@ -1200,6 +1223,7 @@
             float3 texcoordBlend: TEXCOORD3;//注意，假如需要UI支持，則Canvas要開放相關Channel
         #else
             float4 texcoords: TEXCOORD0;
+            float2 vatTexcoord4: TEXCOORD3;
         #endif
 
         #if defined(_PARALLAX_MAPPING) || defined(_NORMALMAP) || defined(_FX_LIGHT_MODE_SIX_WAY)
@@ -1208,6 +1232,10 @@
         
         float4 Custom1: TEXCOORD1;
         float4 Custom2: TEXCOORD2;
+        float2 vatTexcoord5: TEXCOORD4;
+        float2 vatTexcoord6: TEXCOORD5;
+        float2 vatTexcoord7: TEXCOORD6;
+        float2 vatTexcoord8: TEXCOORD7;
         
         UNITY_VERTEX_INPUT_INSTANCE_ID
     };

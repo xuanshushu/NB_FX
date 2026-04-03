@@ -17,6 +17,22 @@
         _ForceZWriteToggle("_ForceZWriteToggle",Float) = 0
         _VAT_Toggle("VAT顶点动画图",Float) = 0
         _VATMode("VAT模式",Float) = 0
+        [NoScaleOffset]_VATTex("VAT texture", 2D) = "black" {}
+        _ImportScale("ImportScale", Float) = 0.01
+        _DeformingSkin("Deforming skin", Float) = 0
+        _SkinBoneCount("Skin bone count", Float) = 2
+        _RGBAEncoded("RGBA encoded", Float) = 1
+        _RGBAHalf("RGBA half", Float) = 1
+        _LinearToGamma("Gamma correction", Float) = 1
+        _VATIncludesNormals("VAT includes normals", Float) = 0
+        _AffectsShadows("Affects shadows", Float) = 1
+        _Frame("Frame", Float) = 0
+        _Frames("Frames", Float) = 10
+        _FrameInterpolation("Frame interpolation", Float) = 1
+        _Loop("Loop", Float) = 1
+        _InterpolateLoop("Interpolate loop", Float) = 1
+        _Autoplay("Autoplay", Float) = 0
+        _AutoplaySpeed("AutoplaySpeed", Float) = 1
         
         _Dissolve_Toggle("__Dissolve_Toggle",Float) = 0
         _DissolveMask_Toggle("__DissolveMask_Toggle",Float) = 0

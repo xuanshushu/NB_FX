@@ -14,6 +14,7 @@ namespace NBShaderEditor
     public class ParticleBaseGUI : ShaderGUI
     {
         private ShaderGUIHelper _helper = new ShaderGUIHelper();
+        private ParticleBaseTyflowVATGUI _tyflowVatGui;
         public List<Material> mats = new List<Material>();
         private Shader shader;
         private MaterialEditor matEditor;
@@ -53,6 +54,7 @@ namespace NBShaderEditor
             matEditor = materialEditor;
             EditorGUIUtility.labelWidth = 180f;
             _helper.Init(materialEditor, props, shaderFlags.ToArray(), mats);
+            _tyflowVatGui ??= new ParticleBaseTyflowVATGUI(_helper, mats, GetAnimBoolIndex, SyncVatKeywords);
 
             if (isInit)
             {
@@ -1574,46 +1576,7 @@ namespace NBShaderEditor
                             _helper.DrawVector4Component("顶点偏移遮罩强度", "_VertexOffset_MaskMap_Vec", "z", true);
                         });
                 });
-                _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2VAT, 5, GetAnimBoolIndex(5), "VAT顶点动画图",
-                "_VAT_Toggle", shaderKeyword: "_VAT", fontStyle: FontStyle.Bold,
-                drawBlock: isToggle =>
-                {
-                    _helper.DrawPopUp("VAT模式", "_VATMode", _vatModeNames,
-                        drawOnValueChangedBlock: modeProp =>
-                        {
-                            if (modeProp.hasMixedValue)
-                            {
-                                return;
-                            }
-
-                            for (int i = 0; i < mats.Count; i++)
-                            {
-                                mats[i].SetFloat("_VATMode", modeProp.floatValue);
-                                SyncVatKeywords(mats[i]);
-                            }
-                        });
-                },
-                drawEndChangeCheck: isToggle =>
-                {
-                    if (isToggle.hasMixedValue)
-                    {
-                        return;
-                    }
-
-                    for (int i = 0; i < mats.Count; i++)
-                    {
-                        if (isToggle.floatValue > 0.5f)
-                        {
-                            if (mats[i].GetFloat("_VATMode") < (float)VATMode.Houdini ||
-                                mats[i].GetFloat("_VATMode") > (float)VATMode.Tyflow)
-                            {
-                                mats[i].SetFloat("_VATMode", (float)VATMode.Houdini);
-                            }
-                        }
-
-                        SyncVatKeywords(mats[i]);
-                    }
-                });
+                _tyflowVatGui.Draw();
 
 
 
@@ -2092,12 +2055,6 @@ namespace NBShaderEditor
             Tyflow = 1
         }
 
-        private readonly string[] _vatModeNames =
-        {
-            "Houdini",
-            "Tyflow"
-        };
-
         void DoAfterDraw()
         {
             // Debug.Log(mats[0].name + " MaterialEditorDoAfterDraw!");
@@ -2339,18 +2296,18 @@ namespace NBShaderEditor
                         // setMaterialFlags(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON, false);
                         // setMaterialFlags(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON, false);
                         shaderFlags[i].ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON);
-                        shaderFlags[i].CheckFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON);
+                        shaderFlags[i].ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON);
                         break;
                     case TimeMode.UnScaleTime:
                         // setMaterialFlags(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON, true);
                         // setMaterialFlags(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON, false);
                         shaderFlags[i].SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON);
-                        shaderFlags[i].CheckFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON);
+                        shaderFlags[i].ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON);
                         break;
                     case TimeMode.ScriptableTime:
                         // setMaterialFlags(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON, false);
                         // setMaterialFlags(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON, true);
-                        shaderFlags[i].CheckFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON);
+                        shaderFlags[i].ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON);
                         shaderFlags[i].SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON);
                         break;
                 }
@@ -2616,6 +2573,8 @@ namespace NBShaderEditor
                 streams.Add(ParticleSystemVertexStream.UV2);
                 streamList.Add("TEXCOORD3.xy");
             }
+
+            ParticleBaseTyflowVATGUI.AppendRequiredVertexStreams(material, streams, streamList);
 
 
             //可排序列表绘制。

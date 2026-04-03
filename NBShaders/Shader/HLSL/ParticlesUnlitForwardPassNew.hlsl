@@ -1,6 +1,7 @@
 #ifndef PARTICLESUNLITFORWARDPASS
     #define PARTICLESUNLITFORWARDPASS
     #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/ParticlesUnlitInputNew.hlsl"
+    #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/TyflowVAT.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/SixWaySmokeLit.hlsl"
 
     
@@ -22,6 +23,8 @@
         time = _Time.y;
         
         float4 positionOS = input.vertex;
+        float3 normalOS = input.normalOS;
+        ApplyTyflowVAT(input, positionOS, normalOS);
         // position ws is used to compute eye depth in vertFading
         output.positionWS.xyz = mul(unity_ObjectToWorld, positionOS).xyz;
         output.positionOS.xyz = positionOS;
@@ -33,8 +36,8 @@
             float3x3 objectToTangent =
                 float3x3(
                     input.tangentOS.xyz,
-                    cross(input.normalOS,input.tangentOS.xyz)  * input.tangentOS.w,//Bitangent
-                    input.normalOS
+                    cross(normalOS,input.tangentOS.xyz)  * input.tangentOS.w,//Bitangent
+                    normalOS
                 );
             output.tangentViewDir = mul(objectToTangent,GetObjectSpaceNormalizeViewDir(positionOS));
         #endif
@@ -46,7 +49,7 @@
         output.color = TryLinearize(input.color);
 
         // output.viewDirWS = GetWorldSpaceNormalizeViewDir(output.positionWS.xyz);
-        output.normalWSAndAnimBlend.xyz = TransformObjectToWorldNormal(input.normalOS.xyz);
+        output.normalWSAndAnimBlend.xyz = TransformObjectToWorldNormal(normalOS.xyz);
 
         #if defined(_NORMALMAP)||defined(_FX_LIGHT_MODE_SIX_WAY) 
             real sign = input.tangentOS.w * GetOddNegativeScale();
@@ -182,7 +185,7 @@
             float2 vertexOffsetMaskUVs = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP,baseUVsForVertexOffset);
 
             half3 vertexOffsetOS = 0;
-            positionOS.xyz = VetexOffset(positionOS,vertexOffsetUVs,vertexOffsetMaskUVs,input.normalOS,vertexOffsetOS);
+            positionOS.xyz = VetexOffset(positionOS,vertexOffsetUVs,vertexOffsetMaskUVs,normalOS,vertexOffsetOS);
             #ifdef NB_DEBUG_VERTEX_OFFSET
             half3 vertexOffsetWS = TransformObjectToWorldDir(vertexOffsetOS,false);
             output.color = half4(abs(vertexOffsetWS),1);
