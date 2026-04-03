@@ -417,12 +417,6 @@ float2 TyflowVatGetSkinTexcoord(AttributesParticle input, int index)
 
 void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout float3 normalOS)
 {
-#if defined(_VAT) && defined(_VAT_TYFLOW)
-    if (_VAT_Toggle < 0.5f)
-    {
-        return;
-    }
-
     #if defined(SHADOWS_DEPTH)
     if (_AffectsShadows < 0.5f)
     {
@@ -565,7 +559,6 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
         }
         #endif
     }
-#endif
 }
 
 #endif

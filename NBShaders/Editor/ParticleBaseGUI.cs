@@ -14,6 +14,7 @@ namespace NBShaderEditor
     public class ParticleBaseGUI : ShaderGUI
     {
         private ShaderGUIHelper _helper = new ShaderGUIHelper();
+        private ParticleBaseHoudiniVATGUI _houdiniVatGui;
         private ParticleBaseTyflowVATGUI _tyflowVatGui;
         public List<Material> mats = new List<Material>();
         private Shader shader;
@@ -54,7 +55,8 @@ namespace NBShaderEditor
             matEditor = materialEditor;
             EditorGUIUtility.labelWidth = 180f;
             _helper.Init(materialEditor, props, shaderFlags.ToArray(), mats);
-            _tyflowVatGui ??= new ParticleBaseTyflowVATGUI(_helper, mats, GetAnimBoolIndex, SyncVatKeywords);
+            _houdiniVatGui ??= new ParticleBaseHoudiniVATGUI(_helper);
+            _tyflowVatGui ??= new ParticleBaseTyflowVATGUI(_helper);
 
             if (isInit)
             {
@@ -1576,7 +1578,7 @@ namespace NBShaderEditor
                             _helper.DrawVector4Component("顶点偏移遮罩强度", "_VertexOffset_MaskMap_Vec", "z", true);
                         });
                 });
-                _tyflowVatGui.Draw();
+            DrawVATOptions();
 
 
 
@@ -2049,11 +2051,17 @@ namespace NBShaderEditor
             "折射"
         };
         
-        private enum VATMode
+        internal enum VATMode
         {
             Houdini = 0,
             Tyflow = 1
         }
+
+        private readonly string[] _vatModeNames =
+        {
+            "Houdini",
+            "Tyflow"
+        };
 
         void DoAfterDraw()
         {
@@ -2353,6 +2361,122 @@ namespace NBShaderEditor
 
             return (VATMode)mode;
         }
+
+        private void DrawVATOptions()
+        {
+            _helper.DrawToggleFoldOut(
+                W9ParticleShaderFlags.foldOutBit2VAT,
+                5,
+                GetAnimBoolIndex(5),
+                "VAT顶点动画图",
+                "_VAT_Toggle",
+                shaderKeyword: "_VAT",
+                fontStyle: FontStyle.Bold,
+                drawBlock: isToggle =>
+                {
+                    DrawVatModeSelector();
+
+                    if (!TryGetSelectedVatMode(out VATMode mode))
+                    {
+                        return;
+                    }
+
+                    switch (mode)
+                    {
+                        case VATMode.Tyflow:
+                            _tyflowVatGui.Draw();
+                            break;
+                        default:
+                            _houdiniVatGui.Draw();
+                            break;
+                    }
+                },
+                drawEndChangeCheck: isToggle =>
+                {
+                    if (isToggle.hasMixedValue)
+                    {
+                        return;
+                    }
+
+                    foreach (Material mat in mats)
+                    {
+                        if (isToggle.floatValue > 0.5f)
+                        {
+                            GetVatMode(mat);
+                        }
+
+                        SyncVatKeywords(mat);
+                    }
+                });
+        }
+
+        private void DrawVatModeSelector()
+        {
+            _helper.DrawPopUp(
+                "VAT模式",
+                "_VATMode",
+                _vatModeNames,
+                drawOnValueChangedBlock: modeProp =>
+                {
+                    if (modeProp.hasMixedValue)
+                    {
+                        return;
+                    }
+
+                    foreach (Material mat in mats)
+                    {
+                        mat.SetFloat("_VATMode", modeProp.floatValue);
+                        SyncVatKeywords(mat);
+                    }
+                });
+        }
+
+        private bool TryGetSelectedVatMode(out VATMode mode)
+        {
+            MaterialProperty vatModeProperty = _helper.GetProperty("_VATMode");
+            if (vatModeProperty == null)
+            {
+                mode = VATMode.Houdini;
+                return false;
+            }
+
+            if (vatModeProperty.hasMixedValue)
+            {
+                mode = VATMode.Houdini;
+                return false;
+            }
+
+            int rawMode = Mathf.RoundToInt(vatModeProperty.floatValue);
+            if (rawMode < (int)VATMode.Houdini || rawMode > (int)VATMode.Tyflow)
+            {
+                mode = VATMode.Houdini;
+                return true;
+            }
+
+            mode = (VATMode)rawMode;
+            return true;
+        }
+
+        private void AppendVatRequiredVertexStreams(
+            Material material,
+            List<ParticleSystemVertexStream> streams,
+            List<string> streamList)
+        {
+            if (material.GetFloat("_VAT_Toggle") <= 0.5f)
+            {
+                return;
+            }
+
+            switch (GetVatMode(material))
+            {
+                case VATMode.Tyflow:
+                    ParticleBaseTyflowVATGUI.AppendRequiredVertexStreams(material, streams, streamList);
+                    break;
+                default:
+                    ParticleBaseHoudiniVATGUI.AppendRequiredVertexStreams(material, streams, streamList);
+                    break;
+            }
+        }
         
         public static GUIContent VertexStreams = new GUIContent("顶点流统计",
             "The vertex streams needed for this Material to function properly.");
@@ -2574,7 +2698,7 @@ namespace NBShaderEditor
                 streamList.Add("TEXCOORD3.xy");
             }
 
-            ParticleBaseTyflowVATGUI.AppendRequiredVertexStreams(material, streams, streamList);
+            AppendVatRequiredVertexStreams(material, streams, streamList);
 
 
             //可排序列表绘制。

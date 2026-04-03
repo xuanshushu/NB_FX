@@ -1,7 +1,7 @@
 #ifndef PARTICLESUNLITFORWARDPASS
     #define PARTICLESUNLITFORWARDPASS
     #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/ParticlesUnlitInputNew.hlsl"
-    #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/TyflowVAT.hlsl"
+    #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/VAT.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/SixWaySmokeLit.hlsl"
 
     
@@ -24,7 +24,7 @@
         
         float4 positionOS = input.vertex;
         float3 normalOS = input.normalOS;
-        ApplyTyflowVAT(input, positionOS, normalOS);
+        ApplyVAT(input, positionOS, normalOS);
         // position ws is used to compute eye depth in vertFading
         output.positionWS.xyz = mul(unity_ObjectToWorld, positionOS).xyz;
         output.positionOS.xyz = positionOS;

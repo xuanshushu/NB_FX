@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -8,20 +7,9 @@ namespace NBShaderEditor
 {
     internal sealed class ParticleBaseTyflowVATGUI
     {
-        private const int HoudiniMode = 0;
-        private const int TyflowMode = 1;
         private const int TyflowSkinModeStart = 2;
 
         private readonly ShaderGUIHelper _helper;
-        private readonly List<Material> _mats;
-        private readonly Func<int, int> _getAnimBoolIndex;
-        private readonly Action<Material> _syncVatKeywords;
-
-        private static readonly string[] VatModeNames =
-        {
-            "Houdini",
-            "Tyflow"
-        };
 
         private static readonly string[] TyflowAnimationModeNames =
         {
@@ -33,58 +21,14 @@ namespace NBShaderEditor
             "Skin (PRSXYZ)"
         };
 
-        public ParticleBaseTyflowVATGUI(
-            ShaderGUIHelper helper,
-            List<Material> mats,
-            Func<int, int> getAnimBoolIndex,
-            Action<Material> syncVatKeywords)
+        public ParticleBaseTyflowVATGUI(ShaderGUIHelper helper)
         {
             _helper = helper;
-            _mats = mats;
-            _getAnimBoolIndex = getAnimBoolIndex;
-            _syncVatKeywords = syncVatKeywords;
         }
 
         public void Draw()
         {
-            _helper.DrawToggleFoldOut(
-                W9ParticleShaderFlags.foldOutBit2VAT,
-                5,
-                _getAnimBoolIndex(5),
-                "VAT\u9876\u70B9\u52A8\u753B\u56FE",
-                "_VAT_Toggle",
-                shaderKeyword: "_VAT",
-                fontStyle: FontStyle.Bold,
-                drawBlock: isToggle =>
-                {
-                    DrawVatMode();
-
-                    if (IsTyflowSelected())
-                    {
-                        DrawTyflowSettings();
-                    }
-                },
-                drawEndChangeCheck: isToggle =>
-                {
-                    if (isToggle.hasMixedValue)
-                    {
-                        return;
-                    }
-
-                    foreach (Material mat in _mats)
-                    {
-                        if (isToggle.floatValue > 0.5f)
-                        {
-                            float vatMode = mat.GetFloat("_VATMode");
-                            if (vatMode < HoudiniMode || vatMode > TyflowMode)
-                            {
-                                mat.SetFloat("_VATMode", HoudiniMode);
-                            }
-                        }
-
-                        _syncVatKeywords(mat);
-                    }
-                });
+            DrawTyflowSettings();
         }
 
         public static void AppendRequiredVertexStreams(
@@ -93,41 +37,12 @@ namespace NBShaderEditor
             List<string> streamList)
         {
             if (material.GetFloat("_VAT_Toggle") <= 0.5f ||
-                Mathf.RoundToInt(material.GetFloat("_VATMode")) != TyflowMode)
+                Mathf.RoundToInt(material.GetFloat("_VATMode")) != (int)ParticleBaseGUI.VATMode.Tyflow)
             {
                 return;
             }
 
             AddStream(streams, streamList, ParticleSystemVertexStream.Custom1XYZW, ParticleBaseGUI.streamCustom1Text);
-        }
-
-        private void DrawVatMode()
-        {
-            _helper.DrawPopUp(
-                "VAT\u6A21\u5F0F",
-                "_VATMode",
-                VatModeNames,
-                drawOnValueChangedBlock: modeProp =>
-                {
-                    if (modeProp.hasMixedValue)
-                    {
-                        return;
-                    }
-
-                    foreach (Material mat in _mats)
-                    {
-                        mat.SetFloat("_VATMode", modeProp.floatValue);
-                        _syncVatKeywords(mat);
-                    }
-                });
-        }
-
-        private bool IsTyflowSelected()
-        {
-            MaterialProperty vatModeProperty = _helper.GetProperty("_VATMode");
-            return vatModeProperty != null &&
-                   !vatModeProperty.hasMixedValue &&
-                   Mathf.RoundToInt(vatModeProperty.floatValue) == TyflowMode;
         }
 
         private void DrawTyflowSettings()
