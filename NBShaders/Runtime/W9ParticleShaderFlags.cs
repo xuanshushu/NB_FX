@@ -317,7 +317,7 @@ namespace NBShader
         public const int FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X = 4 * 4;
         public const int FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y = 5 * 4;
         public const int FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST = 6 * 4;
-        //---->这里还有一个坑可以用哦
+        public const int FLAGBIT_POS_2_CUSTOMDATA_TYFLOW_VAT_FRAME = 7 * 4;
 
         public const int FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X = 0 * 4;
         public const int FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y = 1 * 4;

@@ -424,7 +424,14 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
     }
     #endif
 
-    float frame = abs(_Frame + ((_Autoplay > 0.5f) ? (time * 30.0f * _AutoplaySpeed) : 0.0f));
+    float frameBase = _Frame;
+    float frameCustomData = GetCustomData(_W9ParticleCustomDataFlag2, FLAGBIT_POS_2_CUSTOMDATA_TYFLOW_VAT_FRAME, -1.0f, input.Custom1, input.Custom2);
+    if (frameCustomData >= 0.0f)
+    {
+        frameBase = saturate(frameCustomData) * max(_Frames - 1.0f, 0.0f);
+    }
+
+    float frame = abs(frameBase + ((_Autoplay > 0.5f) ? (time * 30.0f * _AutoplaySpeed) : 0.0f));
     frame = (_Loop > 0.5f) ? fmod(frame, _Frames) : min(frame, _Frames - 1.0f);
 
     if ((_Loop > 0.5f) && (_InterpolateLoop < 0.5f) && (frame >= _Frames - 1.0f))
@@ -528,8 +535,11 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
     }
     else
     {
-        uint vertexIndex = (uint)round(input.Custom1.x);
-        uint vertexCount = (uint)round(input.Custom1.y);
+        float2 tyflowVatIndexData = CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM)
+            ? input.texcoords.zw
+            : input.Custom1.xy;
+        uint vertexIndex = (uint)round(tyflowVatIndexData.x);
+        uint vertexCount = (uint)round(tyflowVatIndexData.y);
 
         float4 vertexOffset0 = TyflowVatGetVertexValueAtFrame(vertexIndex, vertexCount, frame0, 0);
         float4 vertexOffset = vertexOffset0;

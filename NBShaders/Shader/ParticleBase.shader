@@ -611,7 +611,7 @@
             // -------------------------------------
             // Material Keywords
  
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             // #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _DISTORT_REFRACTION
