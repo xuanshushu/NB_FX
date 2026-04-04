@@ -911,6 +911,8 @@
         
         #if defined(_EMISSION)
             float2 emissionUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_EMISSION_MAP,baseUVs);
+            emissionUV.x += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            emissionUV.y += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
             particleUVs.emissionUV = ParticleUVCommonProcess(emissionUV,_EmissionMap_ST,_EmissionMapUVOffset.xy,_EmissionMapUVRotation);
         #endif
 
@@ -948,6 +950,8 @@
         
         #ifdef _COLORMAPBLEND
             float2 colorBlendUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP,baseUVs);
+            colorBlendUV.x += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            colorBlendUV.y += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
             particleUVs.colorBlendUV = ParticleUVCommonProcess(colorBlendUV,_ColorBlendMap_ST,_ColorBlendMapOffset.xy,_ColorBlendVec.w);
         
         #endif

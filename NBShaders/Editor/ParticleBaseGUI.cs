@@ -1077,6 +1077,10 @@ namespace NBShaderEditor
                         drawBlock: theEmissionMap =>
                         {
                             DrawUVModeSelect(W9ParticleShaderFlags.foldOutBit1UVModeEmissionMap, 4, "流光贴图UV来源", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_EMISSION_MAP, 0, theEmissionMap);
+                            DrawCustomDataSelect("流光贴图X轴偏移自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X, 3);
+                            DrawCustomDataSelect("流光贴图Y轴偏移自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y, 3);
                             _helper.DrawSlider("流光贴图旋转", "_EmissionMapUVRotation", 0f, 360f);
                             _helper.DrawVector4In2Line("_EmissionMapUVOffset", "流光贴图偏移速度", true);
                             DrawNoiseAffectBlock(() => { _helper.DrawSlider("流光贴图扭曲强度", "_Emi_Distortion_intensity",rangePropertyName:"EmiDistortionIntensityRangeVec"); });
@@ -1095,6 +1099,10 @@ namespace NBShaderEditor
                         drawBlock: texProp =>
                         {
                             DrawUVModeSelect(W9ParticleShaderFlags.foldOutBit1UVModeColorBlendMap, 4, "颜色渐变贴图UV来源", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP, 0, texProp);
+                            DrawCustomDataSelect("颜色渐变贴图X轴偏移自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X, 3);
+                            DrawCustomDataSelect("颜色渐变贴图Y轴偏移自定义曲线",
+                                W9ParticleShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y, 3);
                             _helper.DrawVector4Component("颜色渐变贴图旋转", "_ColorBlendVec", "w", true, 0f, 360f);
                             _helper.DrawVector4In2Line("_ColorBlendMapOffset", "颜色渐变贴图偏移速度", true);
                             DrawNoiseAffectBlock(() => { _helper.DrawVector4Component("颜色渐变扭曲强度","_ColorBlendVec","x",true,0f,1f); });

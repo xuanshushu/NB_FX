@@ -323,6 +323,10 @@ namespace NBShader
         public const int FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y = 1 * 4;
         public const int FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X = 2 * 4;
         public const int FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y = 3 * 4;
+        public const int FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X = 4 * 4;
+        public const int FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y = 5 * 4;
+        public const int FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X = 6 * 4;
+        public const int FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y = 7 * 4;
 
 
         public const int isCustomDataBit = 1 << 3;
