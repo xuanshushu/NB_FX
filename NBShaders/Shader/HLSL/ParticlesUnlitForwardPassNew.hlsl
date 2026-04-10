@@ -24,22 +24,32 @@
         
         float4 positionOS = input.vertex;
         float3 normalOS = input.normalOS;
+        #if defined(_PARALLAX_MAPPING) || defined(_NORMALMAP) || defined(_FX_LIGHT_MODE_SIX_WAY)
+            float4 tangentOS = input.tangentOS;
+        #endif
+        #ifdef _CUSTOM_LOCAL_TRANSFORM
+            positionOS.xyz = TransformWorldToObject_NB(input.vertex.xyz);
+            normalOS = TransformWorldToObjectNormal_NB(input.normalOS);
+            #if defined(_PARALLAX_MAPPING) || defined(_NORMALMAP) || defined(_FX_LIGHT_MODE_SIX_WAY)
+                tangentOS.xyz = TransformWorldToObjectDir_NB(input.tangentOS.xyz);
+            #endif
+        #endif
         ApplyVAT(input, positionOS, normalOS);
         // position ws is used to compute eye depth in vertFading
-        output.positionWS.xyz = mul(unity_ObjectToWorld, positionOS).xyz;
+        output.positionWS.xyz = TransformObjectToWorld_NB(positionOS.xyz);
         output.positionOS.xyz = positionOS;
 
-        output.clipPos = TransformObjectToHClip(positionOS);
+        output.clipPos = TransformObjectToHClip_NB(positionOS.xyz);
         
         #ifdef _PARALLAX_MAPPING
             //视差贴图，需要在Tangent空间下计算。
             float3x3 objectToTangent =
                 float3x3(
-                    input.tangentOS.xyz,
-                    cross(normalOS,input.tangentOS.xyz)  * input.tangentOS.w,//Bitangent
+                    tangentOS.xyz,
+                    cross(normalOS,tangentOS.xyz)  * tangentOS.w,//Bitangent
                     normalOS
                 );
-            output.tangentViewDir = mul(objectToTangent,GetObjectSpaceNormalizeViewDir(positionOS));
+            output.tangentViewDir = mul(objectToTangent, GetCustomLocalSpaceNormalizeViewDir(positionOS.xyz));
         #endif
         
         float unityFogFactor = ComputeFogFactor(output.clipPos.z);
@@ -49,11 +59,11 @@
         output.color = TryLinearize(input.color);
 
         // output.viewDirWS = GetWorldSpaceNormalizeViewDir(output.positionWS.xyz);
-        output.normalWSAndAnimBlend.xyz = TransformObjectToWorldNormal(normalOS.xyz);
+        output.normalWSAndAnimBlend.xyz = TransformObjectToWorldNormal_NB(normalOS.xyz);
 
         #if defined(_NORMALMAP)||defined(_FX_LIGHT_MODE_SIX_WAY) 
-            real sign = input.tangentOS.w * GetOddNegativeScale();
-            half3 tangentWS = TransformObjectToWorldDir(input.tangentOS.xyz);
+            real sign = tangentOS.w * GetCustomLocalOddNegativeScale();
+            half3 tangentWS = TransformObjectToWorldDir_NB(tangentOS.xyz);
             output.tangentWS = half4(tangentWS,sign);
         #endif
 
@@ -187,14 +197,15 @@
             half3 vertexOffsetOS = 0;
             positionOS.xyz = VetexOffset(positionOS,vertexOffsetUVs,vertexOffsetMaskUVs,normalOS,vertexOffsetOS);
             #ifdef NB_DEBUG_VERTEX_OFFSET
-            half3 vertexOffsetWS = TransformObjectToWorldDir(vertexOffsetOS,false);
+            half3 vertexOffsetWS = TransformObjectToWorldDir_NB(vertexOffsetOS,false);
             output.color = half4(abs(vertexOffsetWS),1);
             #endif
+            output.positionWS.xyz = TransformObjectToWorld_NB(positionOS.xyz);
 
             //再算一遍
-            output.positionWS.xyz = mul(unity_ObjectToWorld, positionOS).xyz;
+            output.positionWS.xyz = TransformObjectToWorld_NB(positionOS.xyz);
             output.positionOS.xyz = positionOS;
-            output.clipPos = TransformObjectToHClip(positionOS);
+            output.clipPos = TransformObjectToHClip_NB(positionOS.xyz);
         }
         
         UNITY_BRANCH
@@ -259,7 +270,7 @@
 
         #ifdef _DEPTH_DECAL
             float3 fragWorldPos = ComputeWorldSpacePosition(screenUV, sceneZBufferDepth, UNITY_MATRIX_I_VP);
-            float3 fragobjectPos = TransformWorldToObject(fragWorldPos);
+            float3 fragobjectPos = TransformWorldToObject_NB(fragWorldPos);
         
             float3 absFragObjectPos = abs(fragobjectPos);
             half clipValue = step(absFragObjectPos.x,0.5);

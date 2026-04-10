@@ -233,8 +233,105 @@
     half _MaskPNoiseBlendOpacity;
     half _DissolvePNoiseBlendOpacity;
     half _DistortPNoiseBlendOpacity;
+    float4x4 _CustomLocalTransformLocalToWorld;
+    float4x4 _CustomLocalTransformWorldToLocal;
 
     CBUFFER_END
+
+    float3x3 GetCustomLocalToWorld3x3()
+    {
+        return (float3x3)_CustomLocalTransformLocalToWorld;
+    }
+
+    float3x3 GetCustomWorldToLocal3x3()
+    {
+        return (float3x3)_CustomLocalTransformWorldToLocal;
+    }
+
+    float3 TransformWorldToObject_NB(float3 positionWS)
+    {
+        #ifdef _CUSTOM_LOCAL_TRANSFORM
+            return mul(_CustomLocalTransformWorldToLocal, float4(positionWS, 1.0)).xyz;
+        #else
+            return mul(unity_WorldToObject, float4(positionWS, 1.0)).xyz;
+        #endif
+    }
+
+    float3 TransformObjectToWorld_NB(float3 positionOS)
+    {
+        #ifdef _CUSTOM_LOCAL_TRANSFORM
+            return mul(_CustomLocalTransformLocalToWorld, float4(positionOS, 1.0)).xyz;
+        #else
+            return mul(unity_ObjectToWorld, float4(positionOS, 1.0)).xyz;
+        #endif
+    }
+
+    float4 TransformObjectToHClip_NB(float3 positionOS)
+    {
+        #ifdef _CUSTOM_LOCAL_TRANSFORM
+            return TransformWorldToHClip(TransformObjectToWorld_NB(positionOS));
+        #else
+            return TransformObjectToHClip(positionOS);
+        #endif
+    }
+
+    float3 TransformWorldToObjectDir_NB(float3 dirWS, bool doNormalize = true)
+    {
+        #ifdef _CUSTOM_LOCAL_TRANSFORM
+            float3 dirOS = mul(GetCustomWorldToLocal3x3(), dirWS);
+            return doNormalize ? SafeNormalize(dirOS) : dirOS;
+        #else
+            float3 dirOS = mul((float3x3)unity_WorldToObject, dirWS);
+            return doNormalize ? SafeNormalize(dirOS) : dirOS;
+        #endif
+    }
+
+    float3 TransformWorldToObjectNormal_NB(float3 normalWS)
+    {
+        #ifdef _CUSTOM_LOCAL_TRANSFORM
+            return SafeNormalize(mul(normalWS, GetCustomLocalToWorld3x3()));
+        #else
+            return SafeNormalize(mul(normalWS, (float3x3)unity_ObjectToWorld));
+        #endif
+    }
+
+    float3 TransformObjectToWorldDir_NB(float3 dirOS, bool doNormalize = true)
+    {
+        #ifdef _CUSTOM_LOCAL_TRANSFORM
+            float3 dirWS = mul(GetCustomLocalToWorld3x3(), dirOS);
+            return doNormalize ? SafeNormalize(dirWS) : dirWS;
+        #else
+            return TransformObjectToWorldDir(dirOS, doNormalize);
+        #endif
+    }
+
+    float3 TransformObjectToWorldNormal_NB(float3 normalOS)
+    {
+        #ifdef _CUSTOM_LOCAL_TRANSFORM
+            return SafeNormalize(mul(normalOS, GetCustomWorldToLocal3x3()));
+        #else
+            return TransformObjectToWorldNormal(normalOS);
+        #endif
+    }
+
+    float3 GetCustomLocalSpaceNormalizeViewDir(float3 positionOS)
+    {
+        #ifdef _CUSTOM_LOCAL_TRANSFORM
+            float3 viewDir = TransformWorldToObject_NB(_WorldSpaceCameraPos) - positionOS;
+            return SafeNormalize(viewDir);
+        #else
+            return GetObjectSpaceNormalizeViewDir(positionOS);
+        #endif
+    }
+
+    float GetCustomLocalOddNegativeScale()
+    {
+        #ifdef _CUSTOM_LOCAL_TRANSFORM
+            return determinant(GetCustomLocalToWorld3x3()) < 0.0 ? -1.0 : 1.0;
+        #else
+            return GetOddNegativeScale();
+        #endif
+    }
 
 
     bool CheckLocalFlags(uint bits)

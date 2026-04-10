@@ -532,6 +532,7 @@
             #pragma shader_feature_local _ALPHATEST_ON
             //#pragma shader_feature_local _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON  //粒子颜色和材质颜色的混合运算  暂时先不要了
             #pragma shader_feature_local _FLIPBOOKBLENDING_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             #pragma shader_feature_local _SOFTPARTICLES_ON
             // #pragma shader_feature_local _OCCLUDEOPACITY_ON
             // #pragma shader_feature_local _ _SATURABILITY_ON
@@ -651,6 +652,7 @@
             #pragma shader_feature_local _ALPHATEST_ON
             //#pragma shader_feature_local _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON  //粒子颜色和材质颜色的混合运算  暂时先不要了
             #pragma shader_feature_local _FLIPBOOKBLENDING_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             #pragma shader_feature_local _SOFTPARTICLES_ON
             // #pragma shader_feature_local _OCCLUDEOPACITY_ON
             // #pragma shader_feature_local _ _SATURABILITY_ON
@@ -763,6 +765,7 @@
             #pragma shader_feature_local _ALPHATEST_ON
             //#pragma shader_feature_local _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON  //粒子颜色和材质颜色的混合运算  暂时先不要了
             #pragma shader_feature_local _FLIPBOOKBLENDING_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             #pragma shader_feature_local _SOFTPARTICLES_ON
             // #pragma shader_feature_local _OCCLUDEOPACITY_ON
             // #pragma shader_feature_local _ _SATURABILITY_ON
@@ -873,6 +876,7 @@
             #pragma shader_feature_local _ALPHATEST_ON
             //#pragma shader_feature_local _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON  //粒子颜色和材质颜色的混合运算  暂时先不要了
             #pragma shader_feature_local _FLIPBOOKBLENDING_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             #pragma shader_feature_local _SOFTPARTICLES_ON
             // #pragma shader_feature_local _OCCLUDEOPACITY_ON
             // #pragma shader_feature_local _ _SATURABILITY_ON
@@ -982,6 +986,7 @@
             #pragma shader_feature_local _ALPHATEST_ON
             //#pragma shader_feature_local _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON  //粒子颜色和材质颜色的混合运算  暂时先不要了
             #pragma shader_feature_local _FLIPBOOKBLENDING_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             // #pragma shader_feature_local _SOFTPARTICLES_ON
             // #pragma shader_feature_local _OCCLUDEOPACITY_ON
             // #pragma shader_feature_local _ _SATURABILITY_ON
