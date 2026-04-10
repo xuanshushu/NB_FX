@@ -95,17 +95,29 @@ namespace NBShaderEditor
 
         private void DrawFrameCustomDataSelect()
         {
+            const int dataBitPos = W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_TYFLOW_VAT_FRAME;
+            const int dataIndex = 2;
+            W9ParticleShaderFlags.CutomDataComponent component = GetCurrentCustomDataComponent(dataBitPos, dataIndex);
             if (!IsAnyTyflowParticleModeEnabled() || _helper.shaderFlags == null || _helper.shaderFlags.Length == 0)
             {
+                if (component != W9ParticleShaderFlags.CutomDataComponent.Off)
+                {
+                    component = W9ParticleShaderFlags.CutomDataComponent.Off;
+                    for (int i = 0; i < _helper.shaderFlags.Length; i++)
+                    {
+                        if (_helper.shaderFlags[i] is W9ParticleShaderFlags flags)
+                        {
+                            flags.SetCustomDataFlag(component, dataBitPos, dataIndex);
+                        }
+                    }
+                }
+                
                 return;
             }
 
-            const int dataBitPos = W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_TYFLOW_VAT_FRAME;
-            const int dataIndex = 2;
             (string, string) nameTuple = ("TyflowVATFrameCustomData", "");
 
             EditorGUI.showMixedValue = CustomDataHasMixedValue(dataBitPos, dataIndex);
-            W9ParticleShaderFlags.CutomDataComponent component = GetCurrentCustomDataComponent(dataBitPos, dataIndex);
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.BeginHorizontal();
             component = (W9ParticleShaderFlags.CutomDataComponent)EditorGUILayout.Popup(new GUIContent("Frame CustomData"), (int)component, CustomDataOptions);

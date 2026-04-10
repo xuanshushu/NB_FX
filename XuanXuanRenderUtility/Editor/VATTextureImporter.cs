@@ -70,7 +70,7 @@ namespace NBShader.Editor
         {
             textureImporter.textureType = TextureImporterType.Default;
             textureImporter.sRGBTexture = false;
-            textureImporter.isReadable = true;
+            // textureImporter.isReadable = true;
             textureImporter.mipmapEnabled = false;
             textureImporter.alphaIsTransparency = false;
             textureImporter.textureCompression = TextureImporterCompression.Uncompressed;
