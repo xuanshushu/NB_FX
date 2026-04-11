@@ -7,6 +7,8 @@ namespace NBShader.Editor
     public sealed class VATTextureImporter : AssetPostprocessor
     {
         private const string VatKeyword = "vat";
+        private const string VatKeyword2 = "vertex_animation_textures";
+        
         private const string ExrExtension = ".exr";
         private const string DefaultPlatformName = "DefaultTexturePlatform";
         private const string StandalonePlatformName = "Standalone";
@@ -38,7 +40,11 @@ namespace NBShader.Editor
                 return false;
             }
 
-            return path.IndexOf(VatKeyword, StringComparison.OrdinalIgnoreCase) >= 0;
+            bool shouldImport = false;
+            shouldImport |= path.IndexOf(VatKeyword, StringComparison.OrdinalIgnoreCase) >= 0;
+            shouldImport |= path.IndexOf(VatKeyword2, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            return shouldImport;
         }
 
         private static bool HasSupportedExtension(string path)

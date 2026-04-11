@@ -39,146 +39,154 @@ namespace NBShaderEditor
             List<string> streamList)
         {
             if (material.GetFloat("_VAT_Toggle") <= 0.5f)
+            {
                 return;
+            }
 
-            int subMode = Mathf.RoundToInt(material.GetFloat("_HoudiniVATSubMode"));
+            int subMode = GetMaterialSubMode(material);
 
             AddStream(streams, streamList, ParticleSystemVertexStream.Position, ParticleBaseGUI.streamPositionText);
             AddStream(streams, streamList, ParticleSystemVertexStream.Normal, ParticleBaseGUI.streamNormalText);
 
             switch (subMode)
             {
-                case 0: // SoftBody — needs UV1 (Custom1)
+                case 0: // SoftBody needs UV1 (Custom1)
                     AddStream(streams, streamList, ParticleSystemVertexStream.Custom1XYZW, ParticleBaseGUI.streamCustom1Text);
                     break;
 
-                case 1: // RigidBody — needs UV1, UV2, UV3 (Custom1, Custom2, vatTexcoord5)
+                case 1: // RigidBody needs UV1, UV2, UV3 (Custom1, Custom2, vatTexcoord5)
                     AddStream(streams, streamList, ParticleSystemVertexStream.Custom1XYZW, ParticleBaseGUI.streamCustom1Text);
                     AddStream(streams, streamList, ParticleSystemVertexStream.Custom2XYZW, ParticleBaseGUI.streamCustom2Text);
                     AddStream(streams, streamList, ParticleSystemVertexStream.UV, ParticleBaseGUI.streamUVText);
                     break;
 
-                case 2: // DynamicRemeshing — needs UV0 (texcoords)
+                case 2: // DynamicRemeshing needs UV0 (texcoords)
                     AddStream(streams, streamList, ParticleSystemVertexStream.UV, ParticleBaseGUI.streamUVText);
                     break;
 
-                case 3: // ParticleSprite — needs UV0 (corner) + UV1 (particle U/V)
+                case 3: // ParticleSprite needs UV0 (corner) + UV1 (particle U/V)
                     AddStream(streams, streamList, ParticleSystemVertexStream.UV, ParticleBaseGUI.streamUVText);
                     AddStream(streams, streamList, ParticleSystemVertexStream.Custom1XYZW, ParticleBaseGUI.streamCustom1Text);
                     break;
             }
         }
 
-        // ─────────────────────────────────────────────────────────────
-        // Material property helpers (bypass ShaderGUIHelper.GetProperty)
-        // ─────────────────────────────────────────────────────────────
-
-        private MaterialEditor matEditor => _helper.matEditor;
         private List<Material> mats => _helper.mats;
 
-        private float GetFloat(string name, float defaultValue = 0)
+        private bool IsResetToolInitializing()
         {
-            if (mats == null || mats.Count == 0) return defaultValue;
-            var mat = mats[0];
-            if (mat.HasProperty(name))
-                return mat.GetFloat(name);
-            return defaultValue;
+            return _helper.ResetTool != null && _helper.ResetTool.IsInitResetData;
         }
 
-        private void SetFloat(string name, float value)
+        private bool TryGetCurrentSubMode(out int subMode)
         {
-            if (mats == null) return;
-            foreach (var mat in mats)
+            MaterialProperty property = _helper.GetProperty("_HoudiniVATSubMode");
+            if (property == null || property.hasMixedValue)
             {
-                if (mat != null && mat.HasProperty(name))
-                    mat.SetFloat(name, value);
+                subMode = -1;
+                return false;
             }
+
+            subMode = Mathf.Clamp(Mathf.RoundToInt(property.floatValue), 0, SubModeNames.Length - 1);
+            return true;
         }
 
-        private Texture GetTexture(string name)
+        private bool IsSubMode(params int[] subModes)
         {
-            if (mats == null || mats.Count == 0) return null;
-            var mat = mats[0];
-            if (mat.HasProperty(name))
-                return mat.GetTexture(name);
-            return null;
-        }
-
-        private void SetTexture(string name, Texture value)
-        {
-            if (mats == null) return;
-            foreach (var mat in mats)
+            if (IsResetToolInitializing())
             {
-                if (mat != null)
-                    mat.SetTexture(name, value);
+                return true;
             }
+
+            if (!TryGetCurrentSubMode(out int currentSubMode))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < subModes.Length; i++)
+            {
+                if (currentSubMode == subModes[i])
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        private void DrawFloatField(string label, string propName, float defaultValue = 0)
+        private bool TryGetFloatProperty(string propertyName, out MaterialProperty property)
         {
-            float val = GetFloat(propName, defaultValue);
-            EditorGUI.BeginChangeCheck();
-            val = EditorGUILayout.FloatField(label, val);
-            if (EditorGUI.EndChangeCheck())
-                SetFloat(propName, val);
+            property = _helper.GetProperty(propertyName);
+            return property != null && !property.hasMixedValue;
         }
 
-        private void DrawToggleField(string label, string propName, float defaultValue = 0)
+        private bool IsFloatPropertyOn(string propertyName)
         {
-            bool val = GetFloat(propName, defaultValue) > 0.5f;
-            EditorGUI.BeginChangeCheck();
-            val = EditorGUILayout.Toggle(label, val);
-            if (EditorGUI.EndChangeCheck())
-                SetFloat(propName, val ? 1 : 0);
+            return TryGetFloatProperty(propertyName, out MaterialProperty property) && property.floatValue > 0.5f;
         }
 
-        private void DrawTextureField(string label, string propName)
+        private bool IsFloatPropertyOff(string propertyName)
         {
-            Texture tex = GetTexture(propName);
-            EditorGUI.BeginChangeCheck();
-            tex = EditorGUILayout.ObjectField(label, tex, typeof(Texture2D), false) as Texture;
-            if (EditorGUI.EndChangeCheck())
-                SetTexture(propName, tex);
+            return TryGetFloatProperty(propertyName, out MaterialProperty property) && property.floatValue <= 0.5f;
         }
 
-        // ─────────────────────────────────────────────────────────────
-        // Drawing sections
-        // ─────────────────────────────────────────────────────────────
-
-        private int GetCurrentSubMode()
+        private bool IsFloatPropertyMixed(string propertyName)
         {
-            return Mathf.RoundToInt(GetFloat("_HoudiniVATSubMode", 0));
+            MaterialProperty property = _helper.GetProperty(propertyName);
+            return property != null && property.hasMixedValue;
+        }
+
+        private bool ShouldDrawWhenFloatOn(string propertyName)
+        {
+            return IsResetToolInitializing() || IsFloatPropertyMixed(propertyName) || IsFloatPropertyOn(propertyName);
+        }
+
+        private bool ShouldDrawWhenFloatOff(string propertyName)
+        {
+            return IsResetToolInitializing() || IsFloatPropertyMixed(propertyName) || IsFloatPropertyOff(propertyName);
+        }
+
+        private static bool MaterialFloatOn(Material material, string propertyName)
+        {
+            return material.HasProperty(propertyName) && material.GetFloat(propertyName) > 0.5f;
+        }
+
+        private static int GetMaterialSubMode(Material material)
+        {
+            if (!material.HasProperty("_HoudiniVATSubMode"))
+            {
+                return 0;
+            }
+
+            return Mathf.Clamp(Mathf.RoundToInt(material.GetFloat("_HoudiniVATSubMode")), 0, SubModeNames.Length - 1);
         }
 
         private void DrawSubModeSelector()
         {
-            int current = GetCurrentSubMode();
-            EditorGUI.BeginChangeCheck();
-            int newVal = EditorGUILayout.Popup("Houdini VAT Sub Mode", current, SubModeNames);
-            if (EditorGUI.EndChangeCheck())
-                SetFloat("_HoudiniVATSubMode", newVal);
+            _helper.DrawPopUp("Houdini VAT Sub Mode", "_HoudiniVATSubMode", SubModeNames);
         }
 
         private void DrawPlaybackSection()
         {
-            int subMode = GetCurrentSubMode();
-
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Playback", EditorStyles.boldLabel);
 
-            DrawToggleField("Auto Playback", "_B_autoPlayback", 1);
+            _helper.DrawToggle("Auto Playback", "_B_autoPlayback");
 
-            bool autoPlayback = GetFloat("_B_autoPlayback", 1) > 0.5f;
-            if (!autoPlayback)
-                DrawFloatField("Display Frame", "_displayFrame", 0);
+            if (ShouldDrawWhenFloatOff("_B_autoPlayback"))
+            {
+                _helper.DrawFloat("Display Frame", "_displayFrame");
+            }
 
-            DrawFloatField("Game Time at First Frame", "_gameTimeAtFirstFrame", 0);
-            DrawFloatField("Playback Speed", "_playbackSpeed", 1);
-            DrawFloatField("Houdini FPS", "_houdiniFPS", 24);
-            DrawToggleField("Interframe Interpolation", "_B_interpolate", 1);
+            _helper.DrawFloat("Game Time at First Frame", "_gameTimeAtFirstFrame");
+            _helper.DrawFloat("Playback Speed", "_playbackSpeed");
+            _helper.DrawFloat("Houdini FPS", "_houdiniFPS");
+            _helper.DrawToggle("Interframe Interpolation", "_B_interpolate");
 
-            if (subMode == 1) // RigidBody
-                DrawToggleField("Animate First Frame", "_animateFirstFrame", 0);
+            if (IsSubMode(1)) // RigidBody
+            {
+                _helper.DrawToggle("Animate First Frame", "_animateFirstFrame");
+            }
         }
 
         private void DrawBoundsSection()
@@ -186,142 +194,175 @@ namespace NBShaderEditor
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Bounds Metadata", EditorStyles.boldLabel);
 
-            DrawFloatField("Bound Min X", "_boundMinX", -1);
-            DrawFloatField("Bound Min Y", "_boundMinY", -1);
-            DrawFloatField("Bound Min Z", "_boundMinZ", -1);
-            DrawFloatField("Bound Max X", "_boundMaxX", 1);
-            DrawFloatField("Bound Max Y", "_boundMaxY", 1);
-            DrawFloatField("Bound Max Z", "_boundMaxZ", 1);
+            _helper.DrawFloat("Bound Min X", "_boundMinX");
+            _helper.DrawFloat("Bound Min Y", "_boundMinY");
+            _helper.DrawFloat("Bound Min Z", "_boundMinZ");
+            _helper.DrawFloat("Bound Max X", "_boundMaxX");
+            _helper.DrawFloat("Bound Max Y", "_boundMaxY");
+            _helper.DrawFloat("Bound Max Z", "_boundMaxZ");
         }
 
         private void DrawTextureSection()
         {
-            int subMode = GetCurrentSubMode();
-            float loadLookupTable = GetFloat("_B_LOAD_LOOKUP_TABLE", 0);
-            float loadPosTwoTex   = GetFloat("_B_LOAD_POS_TWO_TEX", 0);
-            float loadColTex      = GetFloat("_B_LOAD_COL_TEX", 0);
-            float unloadRotTex    = GetFloat("_B_UNLOAD_ROT_TEX", 0);
-
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Textures", EditorStyles.boldLabel);
 
-            DrawTextureField("Position Texture", "_posTexture");
+            _helper.DrawTexture("Position Texture", "_posTexture", drawScaleOffset: false, drawWrapMode: false);
 
-            if (loadPosTwoTex > 0.5f)
-                DrawTextureField("Position Texture 2", "_posTexture2");
+            if (ShouldDrawWhenFloatOn("_B_LOAD_POS_TWO_TEX"))
+            {
+                _helper.DrawTexture("Position Texture 2", "_posTexture2", drawScaleOffset: false, drawWrapMode: false);
+            }
 
-            // Rotation texture: hide for ParticleSprite mode or when compressed normals are used
-            if (subMode != 3 && unloadRotTex <= 0.5f)
-                DrawTextureField("Rotation Texture", "_rotTexture");
+            if (ShouldDrawRotationTexture())
+            {
+                _helper.DrawTexture("Rotation Texture", "_rotTexture", drawScaleOffset: false, drawWrapMode: false);
+            }
 
-            if (loadColTex > 0.5f)
-                DrawTextureField("Color Texture", "_colTexture");
+            if (ShouldDrawWhenFloatOn("_B_LOAD_COL_TEX"))
+            {
+                _helper.DrawTexture("Color Texture", "_colTexture", drawScaleOffset: false, drawWrapMode: false);
+            }
 
-            // Lookup table: only for DynamicRemeshing or when flag is set
-            if (subMode == 2 || loadLookupTable > 0.5f)
-                DrawTextureField("Lookup Table", "_lookupTable");
+            if (IsSubMode(2) || ShouldDrawWhenFloatOn("_B_LOAD_LOOKUP_TABLE"))
+            {
+                _helper.DrawTexture("Lookup Table", "_lookupTable", drawScaleOffset: false, drawWrapMode: false);
+            }
         }
 
         private void DrawScaleSection()
         {
-            int subMode = GetCurrentSubMode();
-
-            if (subMode == 1 || subMode == 3)
+            if (IsSubMode(1, 3))
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField("Scale", EditorStyles.boldLabel);
 
-                DrawFloatField("Global Piece Scale Multiplier", "_globalPscaleMul", 1);
-                DrawToggleField("Piece Scales in Position Alpha", "_B_pscaleAreInPosA", 1);
+                _helper.DrawFloat("Global Piece Scale Multiplier", "_globalPscaleMul");
+                _helper.DrawToggle("Piece Scales in Position Alpha", "_B_pscaleAreInPosA");
             }
         }
 
         private void DrawParticleSpriteSection()
         {
-            int subMode = GetCurrentSubMode();
-            if (subMode != 3)
+            if (!IsSubMode(3))
+            {
                 return;
-
-            float canSpin = GetFloat("_B_CAN_SPIN", 0);
+            }
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Particle Sprite", EditorStyles.boldLabel);
 
-            DrawFloatField("Width Base Scale", "_widthBaseScale", 0.2f);
-            DrawFloatField("Height Base Scale", "_heightBaseScale", 0.2f);
+            _helper.DrawFloat("Width Base Scale", "_widthBaseScale");
+            _helper.DrawFloat("Height Base Scale", "_heightBaseScale");
 
-            DrawToggleField("Hide Overlapping Origin", "_B_hideOverlappingOrigin", 1);
-            float hideOrigin = GetFloat("_B_hideOverlappingOrigin", 1);
-            if (hideOrigin > 0.5f)
-                DrawFloatField("Origin Effective Radius", "_originRadius", 0.02f);
-
-            DrawToggleField("Particles Can Spin", "_B_CAN_SPIN", 0);
-
-            if (canSpin > 0.5f)
+            _helper.DrawToggle("Hide Overlapping Origin", "_B_hideOverlappingOrigin");
+            if (ShouldDrawWhenFloatOn("_B_hideOverlappingOrigin"))
             {
-                DrawToggleField("Compute Spin from Heading", "_B_spinFromHeading", 0);
-
-                float spinFromHeading = GetFloat("_B_spinFromHeading", 0);
-                if (spinFromHeading <= 0.5f)
-                    DrawFloatField("Particle Spin Phase", "_spinPhase", 0);
-
-                DrawFloatField("Scale by Velocity Amount", "_scaleByVelAmount", 1);
+                _helper.DrawFloat("Origin Effective Radius", "_originRadius");
             }
 
-            DrawFloatField("Particle Texture U Scale", "_particleTexUScale", 1);
-            DrawFloatField("Particle Texture V Scale", "_particleTexVScale", 1);
+            _helper.DrawToggle("Particles Can Spin", "_B_CAN_SPIN");
+
+            if (ShouldDrawWhenFloatOn("_B_CAN_SPIN"))
+            {
+                _helper.DrawToggle("Compute Spin from Heading", "_B_spinFromHeading");
+
+                if (ShouldDrawWhenFloatOff("_B_spinFromHeading"))
+                {
+                    _helper.DrawFloat("Particle Spin Phase", "_spinPhase");
+                }
+
+                _helper.DrawFloat("Scale by Velocity Amount", "_scaleByVelAmount");
+            }
+
+            _helper.DrawFloat("Particle Texture U Scale", "_particleTexUScale");
+            _helper.DrawFloat("Particle Texture V Scale", "_particleTexVScale");
         }
 
         private void DrawFlagsSection()
         {
-            int subMode = GetCurrentSubMode();
-
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Flags", EditorStyles.boldLabel);
 
-            DrawToggleField("Positions Require Two Textures", "_B_LOAD_POS_TWO_TEX", 0);
+            _helper.DrawToggle("Positions Require Two Textures", "_B_LOAD_POS_TWO_TEX");
 
-            if (subMode != 3)
-                DrawToggleField("Use Compressed Normals (no rotTex)", "_B_UNLOAD_ROT_TEX", 0);
+            if (ShouldDrawCompressedNormalsToggle())
+            {
+                _helper.DrawToggle("Use Compressed Normals (no rotTex)", "_B_UNLOAD_ROT_TEX");
+            }
 
-            DrawToggleField("Load Color Texture", "_B_LOAD_COL_TEX", 0);
+            _helper.DrawToggle("Load Color Texture", "_B_LOAD_COL_TEX");
 
-            if (subMode == 2)
-                DrawToggleField("Load Lookup Table", "_B_LOAD_LOOKUP_TABLE", 0);
+            if (IsSubMode(2))
+            {
+                _helper.DrawToggle("Load Lookup Table", "_B_LOAD_LOOKUP_TABLE");
+            }
+        }
+
+        private bool ShouldDrawRotationTexture()
+        {
+            if (IsResetToolInitializing())
+            {
+                return true;
+            }
+
+            if (!TryGetCurrentSubMode(out int subMode) || subMode == 3)
+            {
+                return false;
+            }
+
+            return IsFloatPropertyMixed("_B_UNLOAD_ROT_TEX") || IsFloatPropertyOff("_B_UNLOAD_ROT_TEX");
+        }
+
+        private bool ShouldDrawCompressedNormalsToggle()
+        {
+            if (IsResetToolInitializing())
+            {
+                return true;
+            }
+
+            return TryGetCurrentSubMode(out int subMode) && subMode != 3;
         }
 
         private void SyncKeywords()
         {
             if (mats == null)
+            {
                 return;
-
-            int subMode = GetCurrentSubMode();
+            }
 
             foreach (Material mat in mats)
             {
-                if (mat == null) continue;
+                if (mat == null)
+                {
+                    continue;
+                }
 
-                // Sync sub-mode keywords
-                SetKeyword(mat, "_HOUDINI_VAT_SOFTBODY",         subMode == 0);
-                SetKeyword(mat, "_HOUDINI_VAT_RIGIDBODY",        subMode == 1);
-                SetKeyword(mat, "_HOUDINI_VAT_DYNAMIC_REMESH",   subMode == 2);
-                SetKeyword(mat, "_HOUDINI_VAT_PARTICLE_SPRITE",  subMode == 3);
+                int subMode = GetMaterialSubMode(mat);
 
-                // Sync feature keywords based on flags
-                SetKeyword(mat, "_B_LOAD_POS_TWO_TEX",   mat.GetFloat("_B_LOAD_POS_TWO_TEX")   > 0.5f);
-                SetKeyword(mat, "_B_UNLOAD_ROT_TEX",     mat.GetFloat("_B_UNLOAD_ROT_TEX")     > 0.5f);
-                SetKeyword(mat, "_B_LOAD_COL_TEX",       mat.GetFloat("_B_LOAD_COL_TEX")       > 0.5f);
-                SetKeyword(mat, "_B_CAN_SPIN",           mat.GetFloat("_B_CAN_SPIN")           > 0.5f);
-                SetKeyword(mat, "_B_LOAD_LOOKUP_TABLE",  mat.GetFloat("_B_LOAD_LOOKUP_TABLE")  > 0.5f);
+                SetKeyword(mat, "_HOUDINI_VAT_SOFTBODY", subMode == 0);
+                SetKeyword(mat, "_HOUDINI_VAT_RIGIDBODY", subMode == 1);
+                SetKeyword(mat, "_HOUDINI_VAT_DYNAMIC_REMESH", subMode == 2);
+                SetKeyword(mat, "_HOUDINI_VAT_PARTICLE_SPRITE", subMode == 3);
+
+                SetKeyword(mat, "_B_LOAD_POS_TWO_TEX", MaterialFloatOn(mat, "_B_LOAD_POS_TWO_TEX"));
+                SetKeyword(mat, "_B_UNLOAD_ROT_TEX", MaterialFloatOn(mat, "_B_UNLOAD_ROT_TEX"));
+                SetKeyword(mat, "_B_LOAD_COL_TEX", MaterialFloatOn(mat, "_B_LOAD_COL_TEX"));
+                SetKeyword(mat, "_B_CAN_SPIN", MaterialFloatOn(mat, "_B_CAN_SPIN"));
+                SetKeyword(mat, "_B_LOAD_LOOKUP_TABLE", MaterialFloatOn(mat, "_B_LOAD_LOOKUP_TABLE"));
             }
         }
 
         private static void SetKeyword(Material mat, string keyword, bool state)
         {
             if (state)
+            {
                 mat.EnableKeyword(keyword);
+            }
             else
+            {
                 mat.DisableKeyword(keyword);
+            }
         }
 
         private static void AddStream(
@@ -331,7 +372,9 @@ namespace NBShaderEditor
             string streamLabel)
         {
             if (streams.Contains(stream))
+            {
                 return;
+            }
 
             streams.Add(stream);
             streamList.Add(streamLabel);
