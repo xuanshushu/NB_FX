@@ -8,8 +8,6 @@ namespace NBShaderEditor
 {
     internal sealed class ParticleBaseTyflowVATGUI
     {
-        private const int MeshSourceModeParticle = 0;
-        private const int MeshSourceModeUIParticle = 5;
         private const int TyflowSkinModeStart = 2;
         private const float TyflowParticleHighestNonSkinMode = 1.5f;
 
@@ -23,19 +21,6 @@ namespace NBShaderEditor
             "Skin (PR)",
             "Skin (PRSAVE)",
             "Skin (PRSXYZ)"
-        };
-
-        private static readonly string[] CustomDataOptions =
-        {
-            "**OFF**",
-            "CustomData1_X",
-            "CustomData1_Y",
-            "CustomData1_Z",
-            "CustomData1_W",
-            "CustomData2_X",
-            "CustomData2_Y",
-            "CustomData2_Z",
-            "CustomData2_W"
         };
 
         public ParticleBaseTyflowVATGUI(ShaderGUIHelper helper)
@@ -95,7 +80,7 @@ namespace NBShaderEditor
 
         private void DrawFrameCustomDataSelect()
         {
-            const int dataBitPos = W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_TYFLOW_VAT_FRAME;
+            const int dataBitPos = W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME;
             const int dataIndex = 2;
             W9ParticleShaderFlags.CutomDataComponent component = GetCurrentCustomDataComponent(dataBitPos, dataIndex);
             if (!IsAnyTyflowParticleModeEnabled() || _helper.shaderFlags == null || _helper.shaderFlags.Length == 0)
@@ -115,12 +100,12 @@ namespace NBShaderEditor
                 return;
             }
 
-            (string, string) nameTuple = ("TyflowVATFrameCustomData", "");
+            (string, string) nameTuple = ("VATFrameCustomData", "");
 
             EditorGUI.showMixedValue = CustomDataHasMixedValue(dataBitPos, dataIndex);
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.BeginHorizontal();
-            component = (W9ParticleShaderFlags.CutomDataComponent)EditorGUILayout.Popup(new GUIContent("Frame CustomData"), (int)component, CustomDataOptions);
+            component = (W9ParticleShaderFlags.CutomDataComponent)EditorGUILayout.Popup(new GUIContent("VAT Frame CustomData"), (int)component, ParticleBaseGUI.CustomDataOptions);
             EditorGUI.showMixedValue = false;
 
             Action applySelection = () =>
@@ -269,9 +254,9 @@ namespace NBShaderEditor
                 return false;
             }
 
-            int meshSourceMode = Mathf.RoundToInt(material.GetFloat("_MeshSourceMode"));
-            if (meshSourceMode != MeshSourceModeParticle &&
-                meshSourceMode != MeshSourceModeUIParticle)
+            ParticleBaseGUI.MeshSourceMode meshSourceMode = (ParticleBaseGUI.MeshSourceMode)Mathf.RoundToInt(material.GetFloat("_MeshSourceMode"));
+            if (meshSourceMode != ParticleBaseGUI.MeshSourceMode.Particle &&
+                meshSourceMode != ParticleBaseGUI.MeshSourceMode.UIParticle)
             {
                 return false;
             }

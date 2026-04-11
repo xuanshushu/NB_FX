@@ -2787,7 +2787,7 @@ namespace NBShaderEditor
             
         }
 
-        private string[] _customDataOptions =
+        internal static readonly string[] CustomDataOptions =
         {
             "**不使用**",
             "CustomData1_X",
@@ -2833,7 +2833,7 @@ namespace NBShaderEditor
             W9ParticleShaderFlags.CutomDataComponent component = shaderFlags[0].GetCustomDataFlag(dataBitPos, dataIndex);
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.BeginHorizontal();
-            component = (W9ParticleShaderFlags.CutomDataComponent)EditorGUILayout.Popup(new GUIContent(label), (int)component, _customDataOptions);
+            component = (W9ParticleShaderFlags.CutomDataComponent)EditorGUILayout.Popup(new GUIContent(label), (int)component, CustomDataOptions);
             EditorGUI.showMixedValue = false;
             Action customDataDrawEndChangeCheck = () =>
             {
@@ -3119,7 +3119,7 @@ namespace NBShaderEditor
             "2D UIParticle"
         };
 
-        enum MeshSourceMode
+        internal enum MeshSourceMode
         {
             Particle,
             Mesh,

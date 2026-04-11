@@ -425,7 +425,7 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
     #endif
 
     float frameBase = _Frame;
-    float frameCustomData = GetCustomData(_W9ParticleCustomDataFlag2, FLAGBIT_POS_2_CUSTOMDATA_TYFLOW_VAT_FRAME, -1.0f, input.Custom1, input.Custom2);
+    float frameCustomData = GetCustomData(_W9ParticleCustomDataFlag2, FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME, -1.0f, input.Custom1, input.Custom2);
     if (frameCustomData >= 0.0f)
     {
         frameBase = saturate(frameCustomData) * max(_Frames - 1.0f, 0.0f);

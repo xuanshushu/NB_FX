@@ -123,7 +123,14 @@ float HVAT_HashRandom2D(float2 seed)
 // 帧选择
 // ─────────────────────────────────────────────────────────────────────
 
-void HVAT_ComputeFrameSelection(out float selectedFrame, out float frameAlpha)
+float2 HVAT_GetVatUV1(AttributesParticle input)
+{
+    return CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM)
+           ? input.texcoords.zw
+           : input.Custom1.xy;
+}
+
+void HVAT_ComputeFrameSelection(AttributesParticle input, out float selectedFrame, out float frameAlpha)
 {
     float totalFrames = _frameCount;
     float animTime    = (_Time.y - _gameTimeAtFirstFrame)
@@ -135,6 +142,17 @@ void HVAT_ComputeFrameSelection(out float selectedFrame, out float frameAlpha)
                     ? floor(frameFloat) + 1.0
                     : floor(_displayFrame);
     frameAlpha    = frac(_B_autoPlayback ? frameFloat : _displayFrame);
+
+    if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM))
+    {
+        float frameCustomData = GetCustomData(_W9ParticleCustomDataFlag2, FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME, -1.0, input.Custom1, input.Custom2);
+        if (frameCustomData >= 0.0)
+        {
+            float customFrame = saturate(frameCustomData) * max(totalFrames - 1.0, 0.0) + 1.0;
+            selectedFrame = floor(customFrame);
+            frameAlpha = frac(customFrame);
+        }
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -152,7 +170,7 @@ void ApplyHoudiniVAT(AttributesParticle input, inout float4 positionOS, inout fl
 
     // ── 帧选择 ──
     float selectedFrame, frameAlpha;
-    HVAT_ComputeFrameSelection(selectedFrame, frameAlpha);
+    HVAT_ComputeFrameSelection(input, selectedFrame, frameAlpha);
     float totalFrames = _frameCount;
 
     float3 boundsMax = float3(_boundMaxX, _boundMaxY, _boundMaxZ);
@@ -163,8 +181,9 @@ void ApplyHoudiniVAT(AttributesParticle input, inout float4 positionOS, inout fl
     // ─────────────────────────────────────────────────────────────────
     if (_HoudiniVATSubMode < 0.5)
     {
-        float uv1r = input.Custom1.r;
-        float uv1g = input.Custom1.g;
+        float2 vatUV1 = HVAT_GetVatUV1(input);
+        float uv1r = vatUV1.r;
+        float uv1g = vatUV1.g;
         float multiplyBoundMinB = uv1r * oneMinusBoundMinB;
 
         float2 texUV = HVAT_VatUV(selectedFrame, uv1r, uv1g,
@@ -209,8 +228,9 @@ void ApplyHoudiniVAT(AttributesParticle input, inout float4 positionOS, inout fl
     // ─────────────────────────────────────────────────────────────────
     if (_HoudiniVATSubMode < 1.5)
     {
-        float uv1r = input.Custom1.r;
-        float uv1g = input.Custom1.g;
+        float2 vatUV1 = HVAT_GetVatUV1(input);
+        float uv1r = vatUV1.r;
+        float uv1g = vatUV1.g;
         float multiplyBoundMinB = uv1r * oneMinusBoundMinB;
 
         // 当前帧和下一帧 UV
@@ -355,8 +375,9 @@ void ApplyHoudiniVAT(AttributesParticle input, inout float4 positionOS, inout fl
     // Sub Mode 3: ParticleSprite — Billboard + Spin + Origin Mask
     // ─────────────────────────────────────────────────────────────────
     {
-        float uv1r = input.Custom1.r;
-        float uv1g = input.Custom1.g;
+        float2 vatUV1 = HVAT_GetVatUV1(input);
+        float uv1r = vatUV1.r;
+        float uv1g = vatUV1.g;
         float multiplyBoundMinB = uv1r * oneMinusBoundMinB;
 
         // 当前帧 + 下一帧 UV

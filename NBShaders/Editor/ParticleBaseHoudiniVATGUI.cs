@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using NBShader;
 
 namespace NBShaderEditor
 {
@@ -44,18 +46,19 @@ namespace NBShaderEditor
             }
 
             int subMode = GetMaterialSubMode(material);
+            bool isParticleMode = IsHoudiniParticleModeEnabled(material);
 
             AddStream(streams, streamList, ParticleSystemVertexStream.Position, ParticleBaseGUI.streamPositionText);
             AddStream(streams, streamList, ParticleSystemVertexStream.Normal, ParticleBaseGUI.streamNormalText);
 
             switch (subMode)
             {
-                case 0: // SoftBody needs UV1 (Custom1)
-                    AddStream(streams, streamList, ParticleSystemVertexStream.Custom1XYZW, ParticleBaseGUI.streamCustom1Text);
+                case 0: // SoftBody needs VAT UV1.
+                    AddVatUV1Stream(streams, streamList, isParticleMode);
                     break;
 
-                case 1: // RigidBody needs UV1, UV2, UV3 (Custom1, Custom2, vatTexcoord5)
-                    AddStream(streams, streamList, ParticleSystemVertexStream.Custom1XYZW, ParticleBaseGUI.streamCustom1Text);
+                case 1: // RigidBody needs VAT UV1, UV2, UV3 (Custom2, vatTexcoord5)
+                    AddVatUV1Stream(streams, streamList, isParticleMode);
                     AddStream(streams, streamList, ParticleSystemVertexStream.Custom2XYZW, ParticleBaseGUI.streamCustom2Text);
                     AddStream(streams, streamList, ParticleSystemVertexStream.UV, ParticleBaseGUI.streamUVText);
                     break;
@@ -64,9 +67,9 @@ namespace NBShaderEditor
                     AddStream(streams, streamList, ParticleSystemVertexStream.UV, ParticleBaseGUI.streamUVText);
                     break;
 
-                case 3: // ParticleSprite needs UV0 (corner) + UV1 (particle U/V)
+                case 3: // ParticleSprite needs UV0 (corner) + VAT UV1 (particle U/V)
                     AddStream(streams, streamList, ParticleSystemVertexStream.UV, ParticleBaseGUI.streamUVText);
-                    AddStream(streams, streamList, ParticleSystemVertexStream.Custom1XYZW, ParticleBaseGUI.streamCustom1Text);
+                    AddVatUV1Stream(streams, streamList, isParticleMode);
                     break;
             }
         }
@@ -161,6 +164,20 @@ namespace NBShaderEditor
             return Mathf.Clamp(Mathf.RoundToInt(material.GetFloat("_HoudiniVATSubMode")), 0, SubModeNames.Length - 1);
         }
 
+        private static bool IsHoudiniParticleModeEnabled(Material material)
+        {
+            if (material == null ||
+                material.GetFloat("_VAT_Toggle") <= 0.5f ||
+                Mathf.RoundToInt(material.GetFloat("_VATMode")) != (int)ParticleBaseGUI.VATMode.Houdini)
+            {
+                return false;
+            }
+
+            ParticleBaseGUI.MeshSourceMode meshSourceMode = (ParticleBaseGUI.MeshSourceMode)Mathf.RoundToInt(material.GetFloat("_MeshSourceMode"));
+            return meshSourceMode == ParticleBaseGUI.MeshSourceMode.Particle ||
+                   meshSourceMode == ParticleBaseGUI.MeshSourceMode.UIParticle;
+        }
+
         private void DrawSubModeSelector()
         {
             _helper.DrawPopUp("Houdini VAT Sub Mode", "_HoudiniVATSubMode", SubModeNames);
@@ -177,6 +194,8 @@ namespace NBShaderEditor
             {
                 _helper.DrawFloat("Display Frame", "_displayFrame");
             }
+
+            DrawFrameCustomDataSelect();
 
             _helper.DrawFloat("Game Time at First Frame", "_gameTimeAtFirstFrame");
             _helper.DrawFloat("Playback Speed", "_playbackSpeed");
@@ -200,6 +219,138 @@ namespace NBShaderEditor
             _helper.DrawFloat("Bound Max X", "_boundMaxX");
             _helper.DrawFloat("Bound Max Y", "_boundMaxY");
             _helper.DrawFloat("Bound Max Z", "_boundMaxZ");
+        }
+
+        private void DrawFrameCustomDataSelect()
+        {
+            const int dataBitPos = W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME;
+            const int dataIndex = 2;
+            W9ParticleShaderFlags.CutomDataComponent component = GetCurrentCustomDataComponent(dataBitPos, dataIndex);
+            if (!IsAnyHoudiniParticleModeEnabled() || _helper.shaderFlags == null || _helper.shaderFlags.Length == 0)
+            {
+                ClearFrameCustomData(dataBitPos, dataIndex);
+                return;
+            }
+
+            (string, string) nameTuple = ("VATFrameCustomData", "");
+
+            EditorGUI.showMixedValue = CustomDataHasMixedValue(dataBitPos, dataIndex);
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.BeginHorizontal();
+            component = (W9ParticleShaderFlags.CutomDataComponent)EditorGUILayout.Popup(new GUIContent("VAT Frame CustomData"), (int)component, ParticleBaseGUI.CustomDataOptions);
+            EditorGUI.showMixedValue = false;
+
+            Action applySelection = () =>
+            {
+                for (int i = 0; i < _helper.shaderFlags.Length; i++)
+                {
+                    if (_helper.shaderFlags[i] is W9ParticleShaderFlags flags)
+                    {
+                        flags.SetCustomDataFlag(component, dataBitPos, dataIndex);
+                    }
+                }
+
+                _helper.ResetTool.CheckOnValueChange(nameTuple);
+            };
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                applySelection();
+            }
+
+            _helper.ResetTool.DrawResetModifyButton(
+                new Rect(),
+                nameTuple,
+                resetCallBack: () =>
+                {
+                    component = W9ParticleShaderFlags.CutomDataComponent.Off;
+                    applySelection();
+                },
+                onValueChangedCallBack: applySelection,
+                checkHasModifyOnValueChange: () => GetCurrentCustomDataComponent(dataBitPos, dataIndex) != W9ParticleShaderFlags.CutomDataComponent.Off,
+                checkHasMixedValueOnValueChange: () => CustomDataHasMixedValue(dataBitPos, dataIndex));
+            EditorGUILayout.EndHorizontal();
+            _helper.ResetTool.EndResetModifyButtonScope();
+        }
+
+        private void ClearFrameCustomData(int dataBitPos, int dataIndex)
+        {
+            if (_helper.shaderFlags == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < _helper.shaderFlags.Length; i++)
+            {
+                if (_helper.shaderFlags[i] is W9ParticleShaderFlags flags)
+                {
+                    flags.SetCustomDataFlag(W9ParticleShaderFlags.CutomDataComponent.Off, dataBitPos, dataIndex);
+                }
+            }
+        }
+
+        private W9ParticleShaderFlags.CutomDataComponent GetCurrentCustomDataComponent(int dataBitPos, int dataIndex)
+        {
+            if (_helper.shaderFlags == null || _helper.shaderFlags.Length == 0)
+            {
+                return W9ParticleShaderFlags.CutomDataComponent.Off;
+            }
+
+            if (_helper.shaderFlags[0] is W9ParticleShaderFlags flags)
+            {
+                return flags.GetCustomDataFlag(dataBitPos, dataIndex);
+            }
+
+            return W9ParticleShaderFlags.CutomDataComponent.Off;
+        }
+
+        private bool CustomDataHasMixedValue(int dataBitPos, int dataIndex)
+        {
+            if (_helper.shaderFlags == null || _helper.shaderFlags.Length == 0)
+            {
+                return false;
+            }
+
+            W9ParticleShaderFlags.CutomDataComponent component = W9ParticleShaderFlags.CutomDataComponent.UnKnownOrMixed;
+            for (int i = 0; i < _helper.shaderFlags.Length; i++)
+            {
+                if (!(_helper.shaderFlags[i] is W9ParticleShaderFlags flags))
+                {
+                    continue;
+                }
+
+                W9ParticleShaderFlags.CutomDataComponent current = flags.GetCustomDataFlag(dataBitPos, dataIndex);
+                if (component == W9ParticleShaderFlags.CutomDataComponent.UnKnownOrMixed)
+                {
+                    component = current;
+                    continue;
+                }
+
+                if (component != current)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsAnyHoudiniParticleModeEnabled()
+        {
+            if (_helper.mats == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < _helper.mats.Count; i++)
+            {
+                if (IsHoudiniParticleModeEnabled(_helper.mats[i]))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void DrawTextureSection()
@@ -378,6 +529,20 @@ namespace NBShaderEditor
 
             streams.Add(stream);
             streamList.Add(streamLabel);
+        }
+
+        private static void AddVatUV1Stream(
+            List<ParticleSystemVertexStream> streams,
+            List<string> streamList,
+            bool isParticleMode)
+        {
+            if (isParticleMode)
+            {
+                AddStream(streams, streamList, ParticleSystemVertexStream.UV2, ParticleBaseGUI.streamUV2Text);
+                return;
+            }
+
+            AddStream(streams, streamList, ParticleSystemVertexStream.Custom1XYZW, ParticleBaseGUI.streamCustom1Text);
         }
     }
 }
