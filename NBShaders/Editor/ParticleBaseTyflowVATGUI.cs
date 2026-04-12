@@ -8,6 +8,7 @@ namespace NBShaderEditor
 {
     internal sealed class ParticleBaseTyflowVATGUI
     {
+        private const string TyflowSubModeProperty = "_TyFlowVATSubMode";
         private const int TyflowSkinModeStart = 2;
         private const float TyflowParticleHighestNonSkinMode = 1.5f;
 
@@ -23,6 +24,16 @@ namespace NBShaderEditor
             "Skin (PRSXYZ)"
         };
 
+        private static readonly string[] TyflowModeKeywords =
+        {
+            "_TYFLOW_VAT_ABSOLUTE",
+            "_TYFLOW_VAT_RELATIVE",
+            "_TYFLOW_VAT_SKIN_R",
+            "_TYFLOW_VAT_SKIN_PR",
+            "_TYFLOW_VAT_SKIN_PRSAVE",
+            "_TYFLOW_VAT_SKIN_PRSXYZ"
+        };
+
         public ParticleBaseTyflowVATGUI(ShaderGUIHelper helper)
         {
             _helper = helper;
@@ -31,6 +42,7 @@ namespace NBShaderEditor
         public void Draw()
         {
             DrawTyflowSettings();
+            SyncKeywords();
         }
 
         public static void AppendRequiredVertexStreams(
@@ -50,11 +62,11 @@ namespace NBShaderEditor
         {
             _helper.DrawTexture("VAT texture", "_VATTex", drawScaleOffset: false, drawWrapMode: false);
             _helper.DrawFloat("ImportScale", "_ImportScale");
-            _helper.DrawPopUp("Mode", "_Mode", TyflowAnimationModeNames);
+            _helper.DrawPopUp("TyFlow VAT Sub Mode", TyflowSubModeProperty, TyflowAnimationModeNames);
 
-            if (IsTyflowSkinModeSelected())
+            if (HasUnsupportedParticleMode())
             {
-                EditorGUILayout.HelpBox("TyFlow VAT skin modes are TODO and are currently skipped.", MessageType.Warning);
+                EditorGUILayout.HelpBox("该 TyFlow VAT 类型需要 Mesh 多 UV 数据，不支持 ParticleSystem VertexStream 模式。", MessageType.Warning);
             }
             else if (HasParticleUV2Conflict())
             {
@@ -187,12 +199,22 @@ namespace NBShaderEditor
             return false;
         }
 
-        private bool IsTyflowSkinModeSelected()
+        private bool HasUnsupportedParticleMode()
         {
-            MaterialProperty modeProperty = _helper.GetProperty("_Mode");
-            return modeProperty != null &&
-                   !modeProperty.hasMixedValue &&
-                   modeProperty.floatValue >= TyflowSkinModeStart;
+            if (_helper.mats == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < _helper.mats.Count; i++)
+            {
+                if (IsUnsupportedParticleMode(_helper.mats[i]))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private bool IsAnyTyflowParticleModeEnabled()
@@ -248,7 +270,11 @@ namespace NBShaderEditor
 
         private static bool IsTyflowParticleModeEnabled(Material material)
         {
-            if (material.GetFloat("_VAT_Toggle") <= 0.5f ||
+            if (material == null ||
+                !material.HasProperty("_VAT_Toggle") ||
+                !material.HasProperty("_VATMode") ||
+                !material.HasProperty("_MeshSourceMode") ||
+                material.GetFloat("_VAT_Toggle") <= 0.5f ||
                 Mathf.RoundToInt(material.GetFloat("_VATMode")) != (int)ParticleBaseGUI.VATMode.Tyflow)
             {
                 return false;
@@ -261,7 +287,85 @@ namespace NBShaderEditor
                 return false;
             }
 
-            return material.GetFloat("_Mode") <= TyflowParticleHighestNonSkinMode;
+            return GetMaterialSubMode(material) <= TyflowParticleHighestNonSkinMode;
+        }
+
+        private static bool IsUnsupportedParticleMode(Material material)
+        {
+            if (material == null ||
+                !material.HasProperty("_VAT_Toggle") ||
+                !material.HasProperty("_VATMode") ||
+                !material.HasProperty("_MeshSourceMode") ||
+                material.GetFloat("_VAT_Toggle") <= 0.5f ||
+                Mathf.RoundToInt(material.GetFloat("_VATMode")) != (int)ParticleBaseGUI.VATMode.Tyflow)
+            {
+                return false;
+            }
+
+            ParticleBaseGUI.MeshSourceMode meshSourceMode = (ParticleBaseGUI.MeshSourceMode)Mathf.RoundToInt(material.GetFloat("_MeshSourceMode"));
+            if (meshSourceMode != ParticleBaseGUI.MeshSourceMode.Particle &&
+                meshSourceMode != ParticleBaseGUI.MeshSourceMode.UIParticle)
+            {
+                return false;
+            }
+
+            return GetMaterialSubMode(material) >= TyflowSkinModeStart;
+        }
+
+        private static int GetMaterialSubMode(Material material)
+        {
+            if (!material.HasProperty(TyflowSubModeProperty))
+            {
+                return 0;
+            }
+
+            return Mathf.Clamp(Mathf.RoundToInt(material.GetFloat(TyflowSubModeProperty)), 0, TyflowModeKeywords.Length - 1);
+        }
+
+        private void SyncKeywords()
+        {
+            if (_helper.mats == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < _helper.mats.Count; i++)
+            {
+                SyncKeywords(_helper.mats[i]);
+            }
+        }
+
+        internal static void SyncKeywords(Material mat)
+        {
+            if (mat == null)
+            {
+                return;
+            }
+
+            SetSubModeKeyword(mat, GetMaterialSubMode(mat));
+        }
+
+        internal static void ClearKeywords(Material mat)
+        {
+            if (mat == null)
+            {
+                return;
+            }
+
+            SetSubModeKeyword(mat, -1);
+        }
+
+        private static void SetSubModeKeyword(Material mat, int enabledIndex)
+        {
+            for (int i = 0; i < TyflowModeKeywords.Length; i++)
+            {
+                mat.DisableKeyword(TyflowModeKeywords[i]);
+            }
+
+            if (enabledIndex >= 0 && enabledIndex < TyflowModeKeywords.Length)
+            {
+                mat.EnableKeyword(TyflowModeKeywords[enabledIndex]);
+            }
         }
 
         private static void AddStream(

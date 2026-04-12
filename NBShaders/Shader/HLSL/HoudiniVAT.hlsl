@@ -13,6 +13,14 @@ TEXTURE2D(_rotTexture);   SAMPLER(sampler_rotTexture);
 TEXTURE2D(_colTexture);   SAMPLER(sampler_colTexture);
 TEXTURE2D(_lookupTable);  SAMPLER(sampler_lookupTable);
 
+#if defined(_VAT) && defined(_VAT_HOUDINI) && \
+    !defined(_HOUDINI_VAT_SOFTBODY) && \
+    !defined(_HOUDINI_VAT_RIGIDBODY) && \
+    !defined(_HOUDINI_VAT_DYNAMIC_REMESH) && \
+    !defined(_HOUDINI_VAT_PARTICLE_SPRITE)
+    #define _HOUDINI_VAT_SOFTBODY
+#endif
+
 // ── extern 材质属性（Unity 自动从材质中查找同名值） ───────────────────
 
 // Playback
@@ -28,9 +36,6 @@ extern float _frameCount;
 // Bounds
 extern float _boundMinX, _boundMinY, _boundMinZ;
 extern float _boundMaxX, _boundMaxY, _boundMaxZ;
-
-// Sub mode selector (0=SoftBody, 1=RigidBody, 2=DynamicRemeshing, 3=ParticleSprite)
-extern float _HoudiniVATSubMode;
 
 // Scale
 extern float _globalPscaleMul;
@@ -179,7 +184,7 @@ void ApplyHoudiniVAT(AttributesParticle input, inout float4 positionOS, inout fl
     // ─────────────────────────────────────────────────────────────────
     // Sub Mode 0: SoftBody — 加法位移 + 四元数法线 / 压缩法线
     // ─────────────────────────────────────────────────────────────────
-    if (_HoudiniVATSubMode < 0.5)
+#if defined(_HOUDINI_VAT_SOFTBODY)
     {
         float2 vatUV1 = HVAT_GetVatUV1(input);
         float uv1r = vatUV1.r;
@@ -226,8 +231,13 @@ void ApplyHoudiniVAT(AttributesParticle input, inout float4 positionOS, inout fl
     // ─────────────────────────────────────────────────────────────────
     // Sub Mode 1: RigidBody — Pivot 旋转 + Pscale + 帧间插值
     // ─────────────────────────────────────────────────────────────────
-    if (_HoudiniVATSubMode < 1.5)
+#elif defined(_HOUDINI_VAT_RIGIDBODY)
     {
+        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM))
+        {
+            return;
+        }
+
         float2 vatUV1 = HVAT_GetVatUV1(input);
         float uv1r = vatUV1.r;
         float uv1g = vatUV1.g;
@@ -321,7 +331,7 @@ void ApplyHoudiniVAT(AttributesParticle input, inout float4 positionOS, inout fl
     // ─────────────────────────────────────────────────────────────────
     // Sub Mode 2: DynamicRemeshing — Lookup Table → 绝对位置
     // ─────────────────────────────────────────────────────────────────
-    if (_HoudiniVATSubMode < 2.5)
+#elif defined(_HOUDINI_VAT_DYNAMIC_REMESH)
     {
         // 使用 uv0 (texcoords.r/g) 作为 piece UV
         float uv0r = input.texcoords.r;
@@ -372,6 +382,7 @@ void ApplyHoudiniVAT(AttributesParticle input, inout float4 positionOS, inout fl
     }
 
     // ─────────────────────────────────────────────────────────────────
+#elif defined(_HOUDINI_VAT_PARTICLE_SPRITE)
     // Sub Mode 3: ParticleSprite — Billboard + Spin + Origin Mask
     // ─────────────────────────────────────────────────────────────────
     {
@@ -504,6 +515,7 @@ void ApplyHoudiniVAT(AttributesParticle input, inout float4 positionOS, inout fl
         normalOS       = normalOS_new;
         return;
     }
+#endif
 }
 
 #endif // HOUDINI_VAT_INCLUDED

@@ -19,6 +19,7 @@
         _VATMode("VAT模式",Float) = 0
         [NoScaleOffset]_VATTex("VAT texture", 2D) = "black" {}
         _ImportScale("ImportScale", Float) = 0.01
+        [HideInInspector] _TyFlowVATSubMode("TyFlow VAT Sub Mode", Float) = 0
         _DeformingSkin("Deforming skin", Float) = 0
         _SkinBoneCount("Skin bone count", Float) = 2
         _RGBAEncoded("RGBA encoded", Float) = 1
@@ -408,7 +409,6 @@
         
         // ObsoleteProperties   弃用的属性？？？？
         [HideInInspector] _FlipbookMode ("flipbook mode", Float) = 0
-        [HideInInspector] _Mode ("mode", Float) = 0
         // [HideInInspector] _Color ("color", Color) = (1, 1, 1, 1)
         
         [HideInInspector]_fresnelEnabled ("__fresnelEnabled", Float) = 0.0
@@ -546,8 +546,10 @@
             #pragma  shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local _SHARED_UV//公共UV
-            #pragma shader_feature_local _VAT
+            #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
             #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+            #pragma shader_feature_local_vertex _ _HOUDINI_VAT_SOFTBODY _HOUDINI_VAT_RIGIDBODY _HOUDINI_VAT_DYNAMIC_REMESH _HOUDINI_VAT_PARTICLE_SPRITE
+            #pragma shader_feature_local_vertex _ _TYFLOW_VAT_ABSOLUTE _TYFLOW_VAT_RELATIVE _TYFLOW_VAT_SKIN_R _TYFLOW_VAT_SKIN_PR _TYFLOW_VAT_SKIN_PRSAVE _TYFLOW_VAT_SKIN_PRSXYZ
 
             //将光照和UI混用，达到节省Keywords的目的。
             #pragma multi_compile _ UNITY_UI_CLIP_RECT _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS//UI 2D遮罩
@@ -567,7 +569,6 @@
             #pragma shader_feature_local _ _ALPHAPREMULTIPLY_ON _ALPHAMODULATE_ON     //设置alpah Add 。。组合
             #pragma shader_feature_local _ALPHATEST_ON
             //#pragma shader_feature_local _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON  //粒子颜色和材质颜色的混合运算  暂时先不要了
-            #pragma shader_feature_local _FLIPBOOKBLENDING_ON
             #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             #pragma shader_feature_local _SOFTPARTICLES_ON
             // #pragma shader_feature_local _OCCLUDEOPACITY_ON
@@ -667,8 +668,10 @@
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local _SHARED_UV//公共UV
-            #pragma shader_feature_local _VAT
+            #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
             #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+            #pragma shader_feature_local_vertex _ _HOUDINI_VAT_SOFTBODY _HOUDINI_VAT_RIGIDBODY _HOUDINI_VAT_DYNAMIC_REMESH _HOUDINI_VAT_PARTICLE_SPRITE
+            #pragma shader_feature_local_vertex _ _TYFLOW_VAT_ABSOLUTE _TYFLOW_VAT_RELATIVE _TYFLOW_VAT_SKIN_R _TYFLOW_VAT_SKIN_PR _TYFLOW_VAT_SKIN_PRSAVE _TYFLOW_VAT_SKIN_PRSXYZ
              
              
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS //UI 2D遮罩
@@ -687,7 +690,6 @@
             #pragma shader_feature_local _ _ALPHAPREMULTIPLY_ON _ALPHAMODULATE_ON     //设置alpah Add 。。组合
             #pragma shader_feature_local _ALPHATEST_ON
             //#pragma shader_feature_local _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON  //粒子颜色和材质颜色的混合运算  暂时先不要了
-            #pragma shader_feature_local _FLIPBOOKBLENDING_ON
             #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             #pragma shader_feature_local _SOFTPARTICLES_ON
             // #pragma shader_feature_local _OCCLUDEOPACITY_ON

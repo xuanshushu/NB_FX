@@ -18,6 +18,14 @@ namespace NBShaderEditor
             "Particle Sprites (Billboard)"
         };
 
+        private static readonly string[] SubModeKeywords =
+        {
+            "_HOUDINI_VAT_SOFTBODY",
+            "_HOUDINI_VAT_RIGIDBODY",
+            "_HOUDINI_VAT_DYNAMIC_REMESH",
+            "_HOUDINI_VAT_PARTICLE_SPRITE"
+        };
+
         public ParticleBaseHoudiniVATGUI(ShaderGUIHelper helper)
         {
             _helper = helper;
@@ -58,6 +66,11 @@ namespace NBShaderEditor
                     break;
 
                 case 1: // RigidBody needs VAT UV1, UV2, UV3 (Custom2, vatTexcoord5)
+                    if (isParticleMode)
+                    {
+                        break;
+                    }
+
                     AddVatUV1Stream(streams, streamList, isParticleMode);
                     AddStream(streams, streamList, ParticleSystemVertexStream.Custom2XYZW, ParticleBaseGUI.streamCustom2Text);
                     AddStream(streams, streamList, ParticleSystemVertexStream.UV, ParticleBaseGUI.streamUVText);
@@ -149,11 +162,6 @@ namespace NBShaderEditor
             return IsResetToolInitializing() || IsFloatPropertyMixed(propertyName) || IsFloatPropertyOff(propertyName);
         }
 
-        private static bool MaterialFloatOn(Material material, string propertyName)
-        {
-            return material.HasProperty(propertyName) && material.GetFloat(propertyName) > 0.5f;
-        }
-
         private static int GetMaterialSubMode(Material material)
         {
             if (!material.HasProperty("_HoudiniVATSubMode"))
@@ -167,6 +175,9 @@ namespace NBShaderEditor
         private static bool IsHoudiniParticleModeEnabled(Material material)
         {
             if (material == null ||
+                !material.HasProperty("_VAT_Toggle") ||
+                !material.HasProperty("_VATMode") ||
+                !material.HasProperty("_MeshSourceMode") ||
                 material.GetFloat("_VAT_Toggle") <= 0.5f ||
                 Mathf.RoundToInt(material.GetFloat("_VATMode")) != (int)ParticleBaseGUI.VATMode.Houdini)
             {
@@ -181,6 +192,10 @@ namespace NBShaderEditor
         private void DrawSubModeSelector()
         {
             _helper.DrawPopUp("Houdini VAT Sub Mode", "_HoudiniVATSubMode", SubModeNames);
+            if (HasUnsupportedParticleMode())
+            {
+                EditorGUILayout.HelpBox("该 Houdini VAT 类型需要 Mesh 多 UV 数据，不支持 ParticleSystem VertexStream 模式。", MessageType.Warning);
+            }
         }
 
         private void DrawPlaybackSection()
@@ -353,6 +368,29 @@ namespace NBShaderEditor
             return false;
         }
 
+        private bool HasUnsupportedParticleMode()
+        {
+            if (_helper.mats == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < _helper.mats.Count; i++)
+            {
+                if (IsUnsupportedParticleMode(_helper.mats[i]))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsUnsupportedParticleMode(Material material)
+        {
+            return IsHoudiniParticleModeEnabled(material) && GetMaterialSubMode(material) == 1;
+        }
+
         private void DrawTextureSection()
         {
             EditorGUILayout.Space();
@@ -489,30 +527,40 @@ namespace NBShaderEditor
                     continue;
                 }
 
-                int subMode = GetMaterialSubMode(mat);
-
-                SetKeyword(mat, "_HOUDINI_VAT_SOFTBODY", subMode == 0);
-                SetKeyword(mat, "_HOUDINI_VAT_RIGIDBODY", subMode == 1);
-                SetKeyword(mat, "_HOUDINI_VAT_DYNAMIC_REMESH", subMode == 2);
-                SetKeyword(mat, "_HOUDINI_VAT_PARTICLE_SPRITE", subMode == 3);
-
-                SetKeyword(mat, "_B_LOAD_POS_TWO_TEX", MaterialFloatOn(mat, "_B_LOAD_POS_TWO_TEX"));
-                SetKeyword(mat, "_B_UNLOAD_ROT_TEX", MaterialFloatOn(mat, "_B_UNLOAD_ROT_TEX"));
-                SetKeyword(mat, "_B_LOAD_COL_TEX", MaterialFloatOn(mat, "_B_LOAD_COL_TEX"));
-                SetKeyword(mat, "_B_CAN_SPIN", MaterialFloatOn(mat, "_B_CAN_SPIN"));
-                SetKeyword(mat, "_B_LOAD_LOOKUP_TABLE", MaterialFloatOn(mat, "_B_LOAD_LOOKUP_TABLE"));
+                SyncKeywords(mat);
             }
         }
 
-        private static void SetKeyword(Material mat, string keyword, bool state)
+        internal static void SyncKeywords(Material mat)
         {
-            if (state)
+            if (mat == null)
             {
-                mat.EnableKeyword(keyword);
+                return;
             }
-            else
+
+            SetSubModeKeyword(mat, GetMaterialSubMode(mat));
+        }
+
+        internal static void ClearKeywords(Material mat)
+        {
+            if (mat == null)
             {
-                mat.DisableKeyword(keyword);
+                return;
+            }
+
+            SetSubModeKeyword(mat, -1);
+        }
+
+        private static void SetSubModeKeyword(Material mat, int enabledIndex)
+        {
+            for (int i = 0; i < SubModeKeywords.Length; i++)
+            {
+                mat.DisableKeyword(SubModeKeywords[i]);
+            }
+
+            if (enabledIndex >= 0 && enabledIndex < SubModeKeywords.Length)
+            {
+                mat.EnableKeyword(SubModeKeywords[enabledIndex]);
             }
         }
 

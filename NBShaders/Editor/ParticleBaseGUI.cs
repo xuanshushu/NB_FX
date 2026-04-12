@@ -1779,7 +1779,8 @@ namespace NBShaderEditor
                             EditorGUILayout.HelpBox("需要添加AnimationSheetHelper脚本", MessageType.Info);
                         }
                     }
-                });
+                },
+                drawEndChangeCheck: SyncFlipbookVatExclusion);
 
         }
 
@@ -2337,12 +2338,11 @@ namespace NBShaderEditor
             bool vatEnabled = material.GetFloat("_VAT_Toggle") > 0.5f;
             if (!vatEnabled)
             {
-                material.DisableKeyword("_VAT");
-                material.DisableKeyword("_VAT_HOUDINI");
-                material.DisableKeyword("_VAT_TYFLOW");
+                ClearVatKeywords(material);
                 return;
             }
 
+            DisableFlipbook(material);
             material.EnableKeyword("_VAT");
             VATMode mode = GetVatMode(material);
             switch (mode)
@@ -2350,12 +2350,73 @@ namespace NBShaderEditor
                 case VATMode.Tyflow:
                     material.DisableKeyword("_VAT_HOUDINI");
                     material.EnableKeyword("_VAT_TYFLOW");
+                    ParticleBaseHoudiniVATGUI.ClearKeywords(material);
+                    ParticleBaseTyflowVATGUI.SyncKeywords(material);
                     break;
                 default:
                     material.EnableKeyword("_VAT_HOUDINI");
                     material.DisableKeyword("_VAT_TYFLOW");
+                    ParticleBaseHoudiniVATGUI.SyncKeywords(material);
+                    ParticleBaseTyflowVATGUI.ClearKeywords(material);
                     break;
             }
+        }
+
+        private void SyncFlipbookVatExclusion(MaterialProperty flipbookProperty)
+        {
+            if (flipbookProperty.hasMixedValue || flipbookProperty.floatValue <= 0.5f)
+            {
+                return;
+            }
+
+            foreach (Material mat in mats)
+            {
+                DisableVat(mat);
+            }
+        }
+
+        private static void DisableVat(Material material)
+        {
+            if (material == null)
+            {
+                return;
+            }
+
+            if (material.HasProperty("_VAT_Toggle"))
+            {
+                material.SetFloat("_VAT_Toggle", 0.0f);
+            }
+
+            ClearVatKeywords(material);
+        }
+
+        private static void ClearVatKeywords(Material material)
+        {
+            if (material == null)
+            {
+                return;
+            }
+
+            material.DisableKeyword("_VAT");
+            material.DisableKeyword("_VAT_HOUDINI");
+            material.DisableKeyword("_VAT_TYFLOW");
+            ParticleBaseHoudiniVATGUI.ClearKeywords(material);
+            ParticleBaseTyflowVATGUI.ClearKeywords(material);
+        }
+
+        private static void DisableFlipbook(Material material)
+        {
+            if (material == null)
+            {
+                return;
+            }
+
+            if (material.HasProperty("_FlipbookBlending"))
+            {
+                material.SetFloat("_FlipbookBlending", 0.0f);
+            }
+
+            material.DisableKeyword("_FLIPBOOKBLENDING_ON");
         }
 
         private VATMode GetVatMode(Material material)

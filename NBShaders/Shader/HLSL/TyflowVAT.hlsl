@@ -1,14 +1,24 @@
 #ifndef TYFLOW_VAT_INCLUDED
 #define TYFLOW_VAT_INCLUDED
 
-#define TYFLOW_VAT_MODE_ABSOLUTE 0
-#define TYFLOW_VAT_MODE_RELATIVE 1
-#define TYFLOW_VAT_MODE_SKIN_R 2
-#define TYFLOW_VAT_MODE_SKIN_PR 3
-#define TYFLOW_VAT_MODE_SKIN_PRSAVE 4
-#define TYFLOW_VAT_MODE_SKIN_PRSXYZ 5
-
 #define TYFLOW_VAT_SKIN_MAX_BONES 7
+
+#if defined(_VAT) && defined(_VAT_TYFLOW) && \
+    !defined(_TYFLOW_VAT_ABSOLUTE) && \
+    !defined(_TYFLOW_VAT_RELATIVE) && \
+    !defined(_TYFLOW_VAT_SKIN_R) && \
+    !defined(_TYFLOW_VAT_SKIN_PR) && \
+    !defined(_TYFLOW_VAT_SKIN_PRSAVE) && \
+    !defined(_TYFLOW_VAT_SKIN_PRSXYZ)
+    #define _TYFLOW_VAT_ABSOLUTE
+#endif
+
+#if defined(_TYFLOW_VAT_SKIN_R) || \
+    defined(_TYFLOW_VAT_SKIN_PR) || \
+    defined(_TYFLOW_VAT_SKIN_PRSAVE) || \
+    defined(_TYFLOW_VAT_SKIN_PRSXYZ)
+    #define TYFLOW_VAT_SKIN_MODE
+#endif
 
 struct TyflowVatMatrix3
 {
@@ -218,12 +228,16 @@ float4 TyflowVatQlerp(float4 a, float4 b, float blend)
 
 int TyflowVatGetMetaDataSize()
 {
-    if ((_Mode == TYFLOW_VAT_MODE_SKIN_PRSXYZ) || (_DeformingSkin > 0.5f))
+    #if defined(_TYFLOW_VAT_SKIN_PRSXYZ)
+    return 12;
+    #else
+    if (_DeformingSkin > 0.5f)
     {
         return 12;
     }
 
     return 3;
+    #endif
 }
 
 float3 TyflowVatGetTMPos(float startIndex)
@@ -291,52 +305,38 @@ TyflowVatTMParts TyflowVatGetVertexTMPartsAtFrame(int tmInx, int frame, int numT
     float3 scale = float3(1, 1, 1);
 
     float pixelsPerTM = 0;
-    if (_Mode == TYFLOW_VAT_MODE_SKIN_R)
-    {
-        pixelsPerTM = 2;
-    }
-    else if (_Mode == TYFLOW_VAT_MODE_SKIN_PR)
-    {
-        pixelsPerTM = 5;
-    }
-    else if (_Mode == TYFLOW_VAT_MODE_SKIN_PRSXYZ)
-    {
-        pixelsPerTM = 7;
-    }
-    else if (_Mode == TYFLOW_VAT_MODE_SKIN_PRSAVE)
-    {
-        pixelsPerTM = 6;
-    }
+    #if defined(_TYFLOW_VAT_SKIN_R)
+    pixelsPerTM = 2;
+    #elif defined(_TYFLOW_VAT_SKIN_PR)
+    pixelsPerTM = 5;
+    #elif defined(_TYFLOW_VAT_SKIN_PRSXYZ)
+    pixelsPerTM = 7;
+    #elif defined(_TYFLOW_VAT_SKIN_PRSAVE)
+    pixelsPerTM = 6;
+    #endif
 
     float frameTMInx = (2 + numTMs * TyflowVatGetMetaDataSize()) + (frame * numTMs * pixelsPerTM) + (pixelsPerTM * tmInx);
 
-    if (_Mode == TYFLOW_VAT_MODE_SKIN_R)
-    {
-        pos = TyflowVatGetTMPos(2 + tmInx * TyflowVatGetMetaDataSize());
-        rot = TyflowVatGetTMRot(frameTMInx);
-    }
-    else if (_Mode == TYFLOW_VAT_MODE_SKIN_PR)
-    {
-        pos = TyflowVatGetTMPos(frameTMInx);
-        frameTMInx += 3;
-        rot = TyflowVatGetTMRot(frameTMInx);
-    }
-    else if (_Mode == TYFLOW_VAT_MODE_SKIN_PRSXYZ)
-    {
-        pos = TyflowVatGetTMPos(frameTMInx);
-        frameTMInx += 3;
-        rot = TyflowVatGetTMRot(frameTMInx);
-        frameTMInx += 2;
-        scale = TyflowVatGetTMScaleXYZ(frameTMInx);
-    }
-    else if (_Mode == TYFLOW_VAT_MODE_SKIN_PRSAVE)
-    {
-        pos = TyflowVatGetTMPos(frameTMInx);
-        frameTMInx += 3;
-        rot = TyflowVatGetTMRot(frameTMInx);
-        frameTMInx += 2;
-        scale = TyflowVatGetTMScaleAve(frameTMInx);
-    }
+    #if defined(_TYFLOW_VAT_SKIN_R)
+    pos = TyflowVatGetTMPos(2 + tmInx * TyflowVatGetMetaDataSize());
+    rot = TyflowVatGetTMRot(frameTMInx);
+    #elif defined(_TYFLOW_VAT_SKIN_PR)
+    pos = TyflowVatGetTMPos(frameTMInx);
+    frameTMInx += 3;
+    rot = TyflowVatGetTMRot(frameTMInx);
+    #elif defined(_TYFLOW_VAT_SKIN_PRSXYZ)
+    pos = TyflowVatGetTMPos(frameTMInx);
+    frameTMInx += 3;
+    rot = TyflowVatGetTMRot(frameTMInx);
+    frameTMInx += 2;
+    scale = TyflowVatGetTMScaleXYZ(frameTMInx);
+    #elif defined(_TYFLOW_VAT_SKIN_PRSAVE)
+    pos = TyflowVatGetTMPos(frameTMInx);
+    frameTMInx += 3;
+    rot = TyflowVatGetTMRot(frameTMInx);
+    frameTMInx += 2;
+    scale = TyflowVatGetTMScaleAve(frameTMInx);
+    #endif
 
     TyflowVatTMParts parts;
     parts.pos = pos;
@@ -443,10 +443,13 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
     uint frame1 = (uint)ceil(frame) % (uint)_Frames;
     float frameInterp = frame - frame0;
 
-    if (_Mode > TYFLOW_VAT_MODE_RELATIVE)
+    #if defined(TYFLOW_VAT_SKIN_MODE)
+    if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM))
     {
         return;
-
+    }
+    else
+    {
         int numTMs = TyflowVatTex2DInt(1);
         float3 combinedPos = float3(0, 0, 0);
         float3 combinedNormal = float3(0, 0, 0);
@@ -483,7 +486,13 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
             TyflowVatMatrix3 tm = TyflowVatTMFromParts(tmParts0);
             TyflowVatMatrix3 invStartTM;
 
-            if ((_Mode == TYFLOW_VAT_MODE_SKIN_PRSXYZ) || (_DeformingSkin > 0.5f))
+            #if defined(_TYFLOW_VAT_SKIN_PRSXYZ)
+            bool useInvStartTM = true;
+            #else
+            bool useInvStartTM = _DeformingSkin > 0.5f;
+            #endif
+
+            if (useInvStartTM)
             {
                 invStartTM = TyflowVatGetVertexInvTM((int)tmInx);
             }
@@ -496,7 +505,7 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
             }
 
             float3 localPos;
-            if ((_Mode == TYFLOW_VAT_MODE_SKIN_PRSXYZ) || (_DeformingSkin > 0.5f))
+            if (useInvStartTM)
             {
                 localPos = TyflowVatGetLocalVertexPosFromTM(positionOS.xyz, invStartTM);
             }
@@ -513,7 +522,7 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
                 float3 animatedNormal = normalOS;
                 tm.row3 = float3(0, 0, 0);
 
-                if ((_Mode == TYFLOW_VAT_MODE_SKIN_PRSXYZ) || (_DeformingSkin > 0.5f))
+                if (useInvStartTM)
                 {
                     invStartTM.row3 = float3(0, 0, 0);
                     float3 localNormal = TyflowVatGetLocalVertexPosFromTM(animatedNormal, invStartTM);
@@ -533,7 +542,7 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
         positionOS.xyz = combinedPos;
         normalOS = combinedNormal;
     }
-    else
+    #elif defined(_TYFLOW_VAT_ABSOLUTE) || defined(_TYFLOW_VAT_RELATIVE)
     {
         float2 tyflowVatIndexData = CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM)
             ? input.texcoords.zw
@@ -550,14 +559,11 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
             vertexOffset = lerp(vertexOffset0, vertexOffset1, frameInterp);
         }
 
-        if (_Mode == TYFLOW_VAT_MODE_RELATIVE)
-        {
-            positionOS.xyz += (vertexOffset * float4(-1, 1, 1, 1) * _ImportScale).xyz;
-        }
-        else if (_Mode == TYFLOW_VAT_MODE_ABSOLUTE)
-        {
-            positionOS.xyz = (vertexOffset * float4(-1, 1, 1, 1) * _ImportScale).xyz;
-        }
+        #if defined(_TYFLOW_VAT_RELATIVE)
+        positionOS.xyz += (vertexOffset * float4(-1, 1, 1, 1) * _ImportScale).xyz;
+        #else
+        positionOS.xyz = (vertexOffset * float4(-1, 1, 1, 1) * _ImportScale).xyz;
+        #endif
 
         #if !defined(SHADOWS_DEPTH)
         if (_VATIncludesNormals > 0.5f)
@@ -569,6 +575,7 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
         }
         #endif
     }
+    #endif
 }
 
 #endif

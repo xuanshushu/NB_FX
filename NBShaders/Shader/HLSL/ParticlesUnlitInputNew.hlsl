@@ -190,7 +190,7 @@
     float _VAT_Toggle;
     float _VATMode;
     float _ImportScale;
-    float _Mode;
+    float _TyFlowVATSubMode;
     float _DeformingSkin;
     float _SkinBoneCount;
     float _RGBAEncoded;
