@@ -92,7 +92,6 @@ namespace NBShader.Editor
             settings.compressionQuality = 100;
             settings.crunchedCompression = false;
             settings.allowsAlphaSplitting = false;
-            settings.ignorePlatformSupport = false;
             textureImporter.SetPlatformTextureSettings(settings);
         }
     }
