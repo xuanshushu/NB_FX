@@ -1397,19 +1397,19 @@
         #endif
 
         #if defined(_NORMALMAP) || defined(_FX_LIGHT_MODE_SIX_WAY)
-            half4 tangentWS : TEXCOOR19;
+            half4 tangentWS : TEXCOORD19;
         #endif
         #if defined (_NORMALMAP) || defined(_COLOR_RAMP) 
-            float4 bumpTexAndColorRampMapTexcoord : TEXCOOR20;
+            float4 bumpTexAndColorRampMapTexcoord : TEXCOORD20;
         #endif
 
         #ifdef _FX_LIGHT_MODE_SIX_WAY
-            half3 bakeDiffuseLighting0 :TEXCOOR21;
-            half3 bakeDiffuseLighting1 :TEXCOOR22;
-            half3 bakeDiffuseLighting2 :TEXCOOR23;
-            half3 backBakeDiffuseLighting0 :TEXCOOR24;
-            half3 backBakeDiffuseLighting1 :TEXCOOR25;
-            half3 backBakeDiffuseLighting2 :TEXCOOR26;
+            half3 bakeDiffuseLighting0 :TEXCOORD21;
+            half3 bakeDiffuseLighting1 :TEXCOORD22;
+            half3 bakeDiffuseLighting2 :TEXCOORD23;
+            half3 backBakeDiffuseLighting0 :TEXCOORD24;
+            half3 backBakeDiffuseLighting1 :TEXCOORD25;
+            half3 backBakeDiffuseLighting2 :TEXCOORD26;
         #endif
         
         UNITY_VERTEX_INPUT_INSTANCE_ID

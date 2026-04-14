@@ -640,7 +640,7 @@
             HLSLPROGRAM
             #define PARTICLE
             //20240228 target3.0 顶点着色器限制16个输出。提高版本
-           #if defined ( SHADER_API_GLES)||defined(SHADER_API_GLES3)
+			#if defined ( SHADER_API_GLES)||defined(SHADER_API_GLES3)
             #pragma target 3.0
             #else
             #pragma target 4.5
@@ -649,7 +649,7 @@
             // -------------------------------------
             // Material Keywords
  
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             // #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _DISTORT_REFRACTION
