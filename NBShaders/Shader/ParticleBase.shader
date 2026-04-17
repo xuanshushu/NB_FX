@@ -542,7 +542,9 @@
             #pragma shader_feature_local _DISSOLVE
             #pragma shader_feature_local _PROGRAM_NOISE
             //后续Test类的关键字要找机会排除
+            #if defined(UNITY_EDITOR)
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
+            #endif
             #pragma  shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local _SHARED_UV//公共UV
@@ -594,7 +596,10 @@
             #pragma shader_feature_local _ VFX_SIX_WAY_ABSORPTION
             #pragma shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT NB_DEBUG_FRESNEL NB_DEBUG_VERTEX_OFFSET
             
-            
+            #if !defined(_FX_LIGHT_MODE_UNLIT) && !defined(_FX_LIGHT_MODE_BLINN_PHONG) && !defined(_FX_LIGHT_MODE_HALF_LAMBERT) && !defined(_FX_LIGHT_MODE_PBR) && !defined(_FX_LIGHT_MODE_SIX_WAY)
+            #define _FX_LIGHT_MODE_UNLIT
+            #endif
+			
             // -------------------------------------
             // Unity defined keywords
             // 之后进行优化时再说。
@@ -664,7 +669,9 @@
             #pragma shader_feature_local _DISSOLVE
             #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
+			#if defined(UNITY_EDITOR)
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
+            #endif
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local _SHARED_UV//公共UV
@@ -714,8 +721,14 @@
             #pragma shader_feature_local _ _SPECULAR_COLOR
             #pragma shader_feature_local _ VFX_SIX_WAY_ABSORPTION
             
+            #if !defined(_FX_LIGHT_MODE_UNLIT) && !defined(_FX_LIGHT_MODE_BLINN_PHONG) && !defined(_FX_LIGHT_MODE_HALF_LAMBERT) && !defined(_FX_LIGHT_MODE_PBR) && !defined(_FX_LIGHT_MODE_SIX_WAY)
+            #define _FX_LIGHT_MODE_UNLIT
+            #endif
+
+            #if defined(UNITY_EDITOR)
             #pragma shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT NB_DEBUG_FRESNEL NB_DEBUG_VERTEX_OFFSET
-            
+            #endif
+
             
             // -------------------------------------
             // Unity defined keywords
@@ -780,7 +793,9 @@
             #pragma shader_feature_local _DISSOLVE
             #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
+            #if defined(UNITY_EDITOR)
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
+            #endif
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             // #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local _SHARED_UV//公共UV
@@ -827,6 +842,10 @@
             // #pragma shader_feature_local _ _SPECULAR_COLOR
             // #pragma shader_feature_local _ VFX_SIX_WAY_ABSORPTION
             
+            #if !defined(_FX_LIGHT_MODE_UNLIT) && !defined(_FX_LIGHT_MODE_BLINN_PHONG) && !defined(_FX_LIGHT_MODE_HALF_LAMBERT) && !defined(_FX_LIGHT_MODE_PBR) && !defined(_FX_LIGHT_MODE_SIX_WAY)
+            #define _FX_LIGHT_MODE_UNLIT
+            #endif
+
             // -------------------------------------
             // Unity defined keywords
             // 之后进行优化时再说。
@@ -891,7 +910,9 @@
             #pragma shader_feature_local _DISSOLVE
             #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
+            #if defined(UNITY_EDITOR)
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
+            #endif
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             // #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local _SHARED_UV//公共UV
@@ -938,6 +959,10 @@
             // #pragma shader_feature_local _ _SPECULAR_COLOR
             // #pragma shader_feature_local _ VFX_SIX_WAY_ABSORPTION
             
+            #if !defined(_FX_LIGHT_MODE_UNLIT) && !defined(_FX_LIGHT_MODE_BLINN_PHONG) && !defined(_FX_LIGHT_MODE_HALF_LAMBERT) && !defined(_FX_LIGHT_MODE_PBR) && !defined(_FX_LIGHT_MODE_SIX_WAY)
+            #define _FX_LIGHT_MODE_UNLIT
+            #endif
+
             // -------------------------------------
             // Unity defined keywords
             // 之后进行优化时再说。

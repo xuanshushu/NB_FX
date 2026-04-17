@@ -2,8 +2,9 @@
     #define PARTICLESUNLITFORWARDPASS
     #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/ParticlesUnlitInputNew.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/VAT.hlsl"
+    #if defined(_FX_LIGHT_MODE_SIX_WAY)
     #include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/SixWaySmokeLit.hlsl"
-
+    #endif
     
     ///////////////////////////////////////////////////////////////////////////////
     //                  Vertex and Fragment functions                            //
