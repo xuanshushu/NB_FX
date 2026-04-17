@@ -40,9 +40,15 @@ namespace NBShader.Editor
                 return false;
             }
 
+            string fileName = Path.GetFileName(path);
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return false;
+            }
+
             bool shouldImport = false;
-            shouldImport |= path.IndexOf(VatKeyword, StringComparison.OrdinalIgnoreCase) >= 0;
-            shouldImport |= path.IndexOf(VatKeyword2, StringComparison.OrdinalIgnoreCase) >= 0;
+            shouldImport |= fileName.IndexOf(VatKeyword, StringComparison.OrdinalIgnoreCase) >= 0;
+            shouldImport |= fileName.IndexOf(VatKeyword2, StringComparison.OrdinalIgnoreCase) >= 0;
 
             return shouldImport;
         }
