@@ -587,7 +587,7 @@
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
 
             //LIGHTING
-			#pragma shader_feature_local _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
+			#pragma shader_feature_local _ _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
             #pragma shader_feature_local _ _NORMALMAP
             #pragma shader_feature_local _ _MATCAP
             #pragma shader_feature_local _ _SPECULAR_COLOR
@@ -708,7 +708,7 @@
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
 
             //LIGHTING
-			#pragma shader_feature_local _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
+			#pragma shader_feature_local _ _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
             #pragma shader_feature_local _ _NORMALMAP
             #pragma shader_feature_local _ _MATCAP
             #pragma shader_feature_local _ _SPECULAR_COLOR
@@ -821,7 +821,7 @@
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
 
             //LIGHTING
-			// #pragma shader_feature_local _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
+			// #pragma shader_feature_local _ _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
             #pragma shader_feature_local _ _NORMALMAP
             // #pragma shader_feature_local _ _MATCAP
             // #pragma shader_feature_local _ _SPECULAR_COLOR
@@ -932,7 +932,7 @@
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
 
             //LIGHTING
-			// #pragma shader_feature_local _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
+			// #pragma shader_feature_local _ _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
             #pragma shader_feature_local _ _NORMALMAP
             // #pragma shader_feature_local _ _MATCAP
             // #pragma shader_feature_local _ _SPECULAR_COLOR
@@ -1042,7 +1042,7 @@
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
 
             //LIGHTING
-			// #pragma shader_feature_local _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
+			// #pragma shader_feature_local _ _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
 				#pragma shader_feature_local _ _NORMALMAP
    //          #pragma shader_feature_local _ _MATCAP
    //          #pragma shader_feature_local _ _SPECULAR_COLOR
