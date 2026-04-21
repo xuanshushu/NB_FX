@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace NBShaderEditor
 {
-     public class ModeBigBlockItem:ShaderGUIBigBlockItem
+     public class ModeBigBlockItem : NBShaderBlockItem
     {
-        public ModeBigBlockItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem: parentItem)
+        private readonly NBShaderRootItem _nbRootItem;
+
+        public ModeBigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+            : base(
+                rootItem,
+                parentItem,
+                "_BigBlockModeSettingFoldOut",
+                "inspector.block.mode.label",
+                "模式设置",
+                "inspector.block.mode.tip",
+                "各种基础模式设置")
         {
-            GuiContent = new GUIContent("模式设置", "各种基础模式设置");
-            FoldOutPropertyName = "_BigBlockModeSettingFoldOut";
+            _nbRootItem = rootItem;
             _meshModePopUp = new MeshModePopUp(rootItem, this);
             _transparentMode = new TransparentModePopUp(rootItem, this);
             base.InitTriggerByChild();
@@ -37,7 +46,7 @@ namespace NBShaderEditor
     public class MeshModePopUp : ShaderGUIPopUpItem,IDisposable
     {
         public MeshSourceMode MeshSourceMode; 
-        public static Dictionary<ShaderGUIRootItem,MeshModePopUp> MeshSourceModeDic = new Dictionary<ShaderGUIRootItem,MeshModePopUp>();  
+        public static Dictionary<ShaderGUIRootItem,MeshModePopUp> MeshSourceModeDic = new Dictionary<ShaderGUIRootItem,MeshModePopUp>();
         public MeshModePopUp(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) :
             base(rootItem, parentItem: parentItem)
         {
@@ -82,6 +91,15 @@ namespace NBShaderEditor
             else
             {
                 MeshSourceMode = (MeshSourceMode)PropertyInfo.Property.floatValue;
+            }
+        }
+
+        public override void OnEndChange()
+        {
+            base.OnEndChange();
+            if (RootItem is NBShaderRootItem nbRootItem)
+            {
+                nbRootItem.Context.Refresh();
             }
         }
 
@@ -157,27 +175,20 @@ namespace NBShaderEditor
         public override void OnEndChange()
         {
             TransparentMode = (TransparentMode)PropertyInfo.Property.floatValue;
-            ShaderPropertyInfo zWritePropInfo = RootItem.PropertyInfoDic["_ZWrite"];//TODO ModifyToZWriteToggleGUI
-            ShaderPropertyInfo queueBiasPropInfo = RootItem.PropertyInfoDic["_QueueBias"];//TODO ModifyToQueueBiasGUI
-            
-            
             switch (TransparentMode)
             {
                 case TransparentMode.Opaque:
-                    zWritePropInfo.Property.floatValue = 1;
-                    foreach (var mat in RootItem.Mats)
+                    if (RootItem is NBShaderRootItem opaqueRootItem)
                     {
-                        mat.renderQueue = 2100 + (int)queueBiasPropInfo.Property.floatValue; //3D粒子永远最前显示
+                        opaqueRootItem.SyncService.ApplyTransparentMode(TransparentMode);
                     }
                     _blendPopUp.PropertyInfo.Property.floatValue = (float)BlendMode.Opaque;
                     _blendPopUp.OnEndChange();
                     break;
                 case TransparentMode.Transparent:
-                    zWritePropInfo.Property.floatValue = 0;
-                
-                    foreach (var mat in RootItem.Mats)
+                    if (RootItem is NBShaderRootItem transparentRootItem)
                     {
-                        mat.renderQueue = 3000 + (int)queueBiasPropInfo.Property.floatValue; 
+                        transparentRootItem.SyncService.ApplyTransparentMode(TransparentMode);
                     }
 
                     if (_blendPopUp.BlendMode == BlendMode.Opaque)
@@ -188,26 +199,13 @@ namespace NBShaderEditor
 
                     break;
                 case TransparentMode.CutOff:
-                    zWritePropInfo.Property.floatValue = 1;
-                    foreach (var mat in RootItem.Mats)
+                    if (RootItem is NBShaderRootItem cutOffRootItem)
                     {
-                        mat.renderQueue = 2450 + (int)queueBiasPropInfo.Property.floatValue; //3D粒子永远最前显示
+                        cutOffRootItem.SyncService.ApplyTransparentMode(TransparentMode);
                     }
                     _blendPopUp.PropertyInfo.Property.floatValue = (float)BlendMode.Opaque;
                     _blendPopUp.OnEndChange();
                     break;
-            }
-
-            foreach (var mat in RootItem.Mats)
-            {
-                if (TransparentMode == TransparentMode.CutOff)
-                {
-                    mat.EnableKeyword("_ALPHATEST_ON");
-                }
-                else
-                {
-                    mat.DisableKeyword("_ALPHATEST_ON");
-                }
             }
 
             base.OnEndChange();
@@ -299,41 +297,9 @@ namespace NBShaderEditor
                 _addToPreMultiplySlider.OnEndChange();
             }
 
-            foreach (var mat in RootItem.Mats)
+            if (RootItem is NBShaderRootItem nbRootItem)
             {
-                 switch (BlendMode)
-                {
-                    case BlendMode.Alpha:
-                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                        mat.DisableKeyword("_ALPHAMODULATE_ON");
-                        break;
-                    case BlendMode.Premultiply:
-                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                        mat.DisableKeyword("_ALPHAMODULATE_ON");
-                        break;
-                    case BlendMode.Additive:
-                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                        mat.DisableKeyword("_ALPHAMODULATE_ON");
-                        break;
-                    case BlendMode.Multiply:
-                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
-                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                        mat.EnableKeyword("_ALPHAMODULATE_ON");
-                        break;
-                    case BlendMode.Opaque:
-                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-                        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                        break;
-                }
-                
+                nbRootItem.SyncService.ApplyBlendMode(BlendMode);
             }
             
             base.OnEndChange();

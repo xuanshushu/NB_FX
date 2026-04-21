@@ -5,6 +5,10 @@
     {
     	_BigBlockModeSettingFoldOut("_BigBlockModeSettingFoldOut",Float) = 0
     	_BaseOptionBigBlockItemFoldOut("BaseOptionBigBlockItem",Float) = 0
+    	_MainTexBigBlockItemFoldOut("_MainTexBigBlockItemFoldOut",Float) = 0
+    	_LightBigBlockItemFoldOut("_LightBigBlockItemFoldOut",Float) = 0
+    	_FeatureBigBlockItemFoldOut("_FeatureBigBlockItemFoldOut",Float) = 0
+    	_TABigBlockItemFoldOut("_TABigBlockItemFoldOut",Float) = 0
     	_MeshSourceMode("Mesh来源模式",Float) = 0
         _UIEffect_Toggle("UI模式_Toggle",Float) = 0
         _DistortionBothDirection_Toggle("__DistortionBothDirection_Toggle",Float) = 0

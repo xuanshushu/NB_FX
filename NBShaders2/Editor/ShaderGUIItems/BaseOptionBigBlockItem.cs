@@ -4,13 +4,18 @@ using UnityEngine.Rendering;
 
 namespace NBShaderEditor
 {
-    public class BaseOptionBigBlockItem:ShaderGUIBigBlockItem
+    public class BaseOptionBigBlockItem : NBShaderBlockItem
     {
-        public BaseOptionBigBlockItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) :
-            base(rootItem, parentItem: parentItem)
+        public BaseOptionBigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem) :
+            base(
+                rootItem,
+                parentItem,
+                "_BaseOptionBigBlockItemFoldOut",
+                "inspector.block.base.label",
+                "基本全局功能",
+                "inspector.block.base.tip",
+                "全局控制功能")
         {
-            GuiContent = new GUIContent("基本全局功能", "全局控制功能");
-            FoldOutPropertyName = "_BaseOptionBigBlockItemFoldOut";
             _baseColorIntensityItem = new BaseColorIntensityItem(rootItem, this);
             _alphaAllItem = new AlphaAllItem(rootItem, this);
             _zTestItem = new ZTestItem(rootItem, this);
