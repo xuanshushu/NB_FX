@@ -35,6 +35,17 @@ namespace NBShaderEditor
 	        return EditorGUILayout.BeginFadeGroup(animBool.faded);
         }
 
+        public bool DrawFoldOut(Rect baseRect)
+        {
+	        Rect foldOutRect = baseRect;
+	        foldOutRect.x = baseRect.x - foldOutWidth;
+	        foldOutRect.width = foldOutWidth + ShaderGUIItem.LabelWidth;//覆盖整个Label
+	        bool isOpen = _propertyInfo.Property.floatValue > 0.5f;
+	        isOpen = EditorGUI.Foldout(foldOutRect, isOpen, string.Empty, true);
+	        _propertyInfo.Property.floatValue = isOpen ? 1f : 0f;
+	        return isOpen;
+        }
+
         public void EndFadedGroup()
         {
 	        EditorGUILayout.EndFadeGroup();
@@ -73,7 +84,7 @@ namespace NBShaderEditor
 	        }
 	        EditorGUILayout.EndFadeGroup();
 	        EditorGUI.indentLevel--;
-	        Rect rect = EditorGUILayout.GetControlRect(false, 1);
+	        Rect rect = ApplyGlobalRectCompensation(EditorGUILayout.GetControlRect(false, 1));
 	        EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 0.5f));
         }
 	}

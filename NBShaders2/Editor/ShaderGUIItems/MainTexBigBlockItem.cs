@@ -2,119 +2,119 @@ using UnityEditor;
 
 namespace NBShaderEditor
 {
-    public class MainTexBigBlockItem : NBShaderBlockItem
+    public class MainTexBigBlockItem : BigBlockItem
     {
-        private readonly NBShaderTexturePropertyItem _baseMapItem;
-        private readonly NBShaderColorPropertyItem _uiColorItem;
-        private readonly NBShaderVector2LinePropertyItem _uiMainTexTilingItem;
-        private readonly NBShaderVector2LinePropertyItem _uiMainTexOffsetItem;
-        private readonly NBShaderVector2LinePropertyItem _baseMapOffsetSpeedItem;
-        private readonly NBShaderSliderPropertyItem _baseMapRotationItem;
-        private readonly NBShaderFloatPropertyItem _baseMapRotationSpeedItem;
-        private readonly NBShaderHelpBoxItem _graphicMainTexHelpBox;
+        private readonly NBShaderRootItem _nbRootItem;
+        private readonly TexturePropertyGroupItem _baseMapGroupItem;
+        private readonly ColorLineItem _uiColorItem;
+        private readonly TextureScaleOffsetItem _uiMainTexScaleOffsetItem;
+        private readonly Vector2LineItem _baseMapOffsetSpeedItem;
+        private readonly ShaderGUISliderItem _baseMapRotationItem;
+        private readonly ShaderGUIFloatItem _baseMapRotationSpeedItem;
+        private readonly HelpBoxItem _graphicMainTexHelpBox;
 
         public MainTexBigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(
                 rootItem,
                 parentItem,
                 "_MainTexBigBlockItemFoldOut",
-                "inspector.block.maintex.label",
-                "主贴图功能",
-                "inspector.block.maintex.tip",
-                "主贴图和主颜色相关功能")
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.block.maintex.label",
+                    "Main Texture",
+                    "inspector.block.maintex.tip",
+                    "Main texture and base color controls"))
         {
-            _baseMapItem = new NBShaderTexturePropertyItem(
+            _nbRootItem = rootItem;
+            _baseMapGroupItem = new TexturePropertyGroupItem(
                 rootItem,
                 this,
                 "_BaseMap",
-                "inspector.maintex.basemap.label",
-                "主贴图",
                 "_BaseColor",
-                drawScaleOffset: true,
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.basemap.label",
+                    "Main Texture"),
                 isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.False);
 
-            _graphicMainTexHelpBox = new NBShaderHelpBoxItem(
+            _graphicMainTexHelpBox = new HelpBoxItem(
                 rootItem,
                 this,
-                "inspector.maintex.graphic.tip",
-                "当前模式下主贴图来自 Graphic，Inspector 只提供颜色和 ST 调整。",
+                () => NBShaderInspectorLocalization.Get(
+                    "inspector.maintex.graphic.tip",
+                    "Current mode uses Graphic texture. Only color and ST remain editable."),
                 MessageType.Info);
 
-            _uiColorItem = new NBShaderColorPropertyItem(
+            _uiColorItem = new ColorLineItem(
                 rootItem,
                 this,
                 "_Color",
-                "inspector.maintex.uicolor.label",
-                "贴图颜色叠加",
+                showLabel: false,
+                contentProvider: () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.uicolor.label",
+                    "Graphic Color"),
                 isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.True);
 
-            _uiMainTexTilingItem = new NBShaderVector2LinePropertyItem(
+            _uiMainTexScaleOffsetItem = new TextureScaleOffsetItem(
                 rootItem,
                 this,
                 "_UI_MainTex_ST",
-                true,
-                "inspector.maintex.uitiling.label",
-                "Tiling",
+                isVectorProperty: true,
                 isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.True);
 
-            _uiMainTexOffsetItem = new NBShaderVector2LinePropertyItem(
-                rootItem,
-                this,
-                "_UI_MainTex_ST",
-                false,
-                "inspector.maintex.uioffset.label",
-                "Offset",
-                isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.True);
-
-            _baseMapOffsetSpeedItem = new NBShaderVector2LinePropertyItem(
+            _baseMapOffsetSpeedItem = new Vector2LineItem(
                 rootItem,
                 this,
                 "_BaseMapMaskMapOffset",
                 true,
-                "inspector.maintex.offsetspeed.label",
-                "偏移速度",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.offsetspeed.label",
+                    "Offset Speed"),
                 isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.False);
 
-            _baseMapRotationItem = new NBShaderSliderPropertyItem(
-                rootItem,
-                this,
-                "_BaseMapUVRotation",
-                "inspector.maintex.rotation.label",
-                "主贴图旋转",
-                0f,
-                360f,
-                isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.False);
+            _baseMapRotationItem = new ShaderGUISliderItem(rootItem, this)
+            {
+                PropertyName = "_BaseMapUVRotation",
+                GuiContent = NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.rotation.label",
+                    "Rotation"),
+                Min = 0f,
+                Max = 360f
+            };
+            _baseMapRotationItem.InitTriggerByChild();
 
-            _baseMapRotationSpeedItem = new NBShaderFloatPropertyItem(
-                rootItem,
-                this,
-                "_BaseMapUVRotationSpeed",
-                "inspector.maintex.rotationspeed.label",
-                "主贴图旋转速度",
-                isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.False);
+            _baseMapRotationSpeedItem = new ShaderGUIFloatItem(rootItem, this)
+            {
+                PropertyName = "_BaseMapUVRotationSpeed",
+                GuiContent = NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.rotationspeed.label",
+                    "Rotation Speed")
+            };
+            _baseMapRotationSpeedItem.InitTriggerByChild();
 
             InitTriggerByChild();
         }
 
         public override void DrawBlock()
         {
-            if (NBRootItem.Context.UseGraphicMainTex == MixedBool.Mixed)
+            if (_nbRootItem.Context.UseGraphicMainTex == MixedBool.Mixed)
             {
-                EditorGUILayout.HelpBox("Mesh 来源混合时，主贴图编辑入口会根据材质模式分别显示。", MessageType.Info);
+                EditorGUILayout.HelpBox("Mixed mesh-source modes will show the matching texture controls per material state.", MessageType.Info);
             }
 
-            if (NBRootItem.Context.UseGraphicMainTex == MixedBool.True)
+            _baseMapGroupItem.OnGUI();
+
+            if (_nbRootItem.Context.UseGraphicMainTex == MixedBool.True)
             {
                 _graphicMainTexHelpBox.OnGUI();
             }
 
-            _baseMapItem.OnGUI();
             _uiColorItem.OnGUI();
-            _uiMainTexTilingItem.OnGUI();
-            _uiMainTexOffsetItem.OnGUI();
+            _uiMainTexScaleOffsetItem.OnGUI();
             _baseMapOffsetSpeedItem.OnGUI();
-            _baseMapRotationItem.OnGUI();
-            _baseMapRotationSpeedItem.OnGUI();
+            if (_nbRootItem.Context.UseGraphicMainTex == MixedBool.False)
+            {
+                _baseMapRotationItem.OnGUI();
+                _baseMapRotationSpeedItem.OnGUI();
+            }
         }
     }
 }

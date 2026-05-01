@@ -10,225 +10,225 @@ namespace NBShaderEditor
         UnKnownOrMixedValue = -1
     }
 
-    public class LightBigBlockItem : NBShaderBlockItem
+    public class LightBigBlockItem : BigBlockItem
     {
-        private readonly NBShaderPopupPropertyItem _lightModeItem;
-        private readonly NBShaderTogglePropertyItem _specularToggleItem;
-        private readonly NBShaderColorPropertyItem _specularColorItem;
-        private readonly NBShaderVectorComponentPropertyItem _specularSmoothnessItem;
-        private readonly NBShaderVectorComponentPropertyItem _pbrMetallicItem;
-        private readonly NBShaderVectorComponentPropertyItem _pbrSmoothnessItem;
-        private readonly NBShaderTogglePropertyItem _bumpToggleItem;
-        private readonly NBShaderTexturePropertyItem _bumpTextureItem;
-        private readonly NBShaderSliderPropertyItem _bumpScaleItem;
-        private readonly NBShaderTogglePropertyItem _matCapToggleItem;
-        private readonly NBShaderTexturePropertyItem _matCapTextureItem;
-        private readonly NBShaderVectorComponentPropertyItem _matCapBlendItem;
-        private readonly NBShaderTexturePropertyItem _sixWayPositiveItem;
-        private readonly NBShaderTexturePropertyItem _sixWayNegativeItem;
-        private readonly NBShaderTogglePropertyItem _sixWayAbsorptionToggleItem;
-        private readonly NBShaderVectorComponentPropertyItem _sixWayAbsorptionStrengthItem;
-        private readonly NBShaderTexturePropertyItem _sixWayEmissionRampItem;
-        private readonly NBShaderColorPropertyItem _sixWayEmissionColorItem;
+        private readonly NBShaderRootItem _nbRootItem;
+        private readonly FxLightModePopupItem _lightModeItem;
+        private readonly ToggleItem _specularToggleItem;
+        private readonly ColorItem _specularColorItem;
+        private readonly VectorComponentItem _specularSmoothnessItem;
+        private readonly VectorComponentItem _pbrMetallicItem;
+        private readonly VectorComponentItem _pbrSmoothnessItem;
+        private readonly ToggleItem _bumpToggleItem;
+        private readonly TextureItem _bumpTextureItem;
+        private readonly ShaderGUISliderItem _bumpScaleItem;
+        private readonly ToggleItem _matCapToggleItem;
+        private readonly TextureItem _matCapTextureItem;
+        private readonly VectorComponentItem _matCapBlendItem;
+        private readonly TextureItem _sixWayPositiveItem;
+        private readonly TextureItem _sixWayNegativeItem;
+        private readonly ToggleItem _sixWayAbsorptionToggleItem;
+        private readonly VectorComponentItem _sixWayAbsorptionStrengthItem;
+        private readonly TextureItem _sixWayEmissionRampItem;
+        private readonly ColorItem _sixWayEmissionColorItem;
 
         public LightBigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(
                 rootItem,
                 parentItem,
                 "_LightBigBlockItemFoldOut",
-                "inspector.block.light.label",
-                "光照功能",
-                "inspector.block.light.tip",
-                "法线、MatCap 和光照模式相关功能")
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.block.light.label",
+                    "光照功能",
+                    "inspector.block.light.tip",
+                    "法线、MatCap 和光照模式相关功能"))
         {
-            _lightModeItem = new NBShaderPopupPropertyItem(
-                rootItem,
-                this,
-                "_FxLightMode",
-                "inspector.light.mode.label",
-                "光照类型",
-                new[]
-                {
-                    "默认无光(Unlit)",
-                    "简单光照(BlinnPhong)",
-                    "简单光照通透(HalfLambert)",
-                    "高级光照(PBR)",
-                    "六路光照(SixWay)"
-                },
-                onValueChanged: () =>
-                {
-                    rootItem.SyncService.ApplyLightMode((FxLightMode)rootItem.PropertyInfoDic["_FxLightMode"].Property.floatValue);
-                    rootItem.Context.Refresh();
-                });
+            _nbRootItem = rootItem;
+            _lightModeItem = new FxLightModePopupItem(rootItem, this);
 
-            _specularToggleItem = new NBShaderTogglePropertyItem(
+            _specularToggleItem = new ToggleItem(
                 rootItem,
                 this,
                 "_BlinnPhongSpecularToggle",
-                "inspector.light.specular.toggle.label",
-                "高光开关",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.specular.toggle.label",
+                    "高光开关"),
                 enabled => rootItem.SyncService.ApplyToggleKeyword("_SPECULAR_COLOR", enabled),
-                isVisible: () => rootItem.Context.FxLightMode == FxLightMode.BlinnPhong || rootItem.Context.FxLightMode == FxLightMode.HalfLambert);
+                () => rootItem.Context.FxLightMode == FxLightMode.BlinnPhong || rootItem.Context.FxLightMode == FxLightMode.HalfLambert);
 
-            _specularColorItem = new NBShaderColorPropertyItem(
+            _specularColorItem = new ColorItem(
                 rootItem,
                 this,
                 "_SpecularColor",
-                "inspector.light.specular.color.label",
-                "高光颜色",
-                isVisible: () => IsToggleOn(rootItem, "_BlinnPhongSpecularToggle") && (_IsBlinnOrHalf(rootItem)));
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.specular.color.label",
+                    "高光颜色"),
+                () => IsToggleOn(rootItem, "_BlinnPhongSpecularToggle") && IsBlinnOrHalf(rootItem));
 
-            _specularSmoothnessItem = new NBShaderVectorComponentPropertyItem(
+            _specularSmoothnessItem = new VectorComponentItem(
                 rootItem,
                 this,
                 "_MaterialInfo",
                 1,
-                "inspector.light.specular.smoothness.label",
-                "光滑度",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.specular.smoothness.label",
+                    "光滑度"),
                 true,
                 0f,
                 1f,
-                isVisible: () => IsToggleOn(rootItem, "_BlinnPhongSpecularToggle") && (_IsBlinnOrHalf(rootItem)));
+                () => IsToggleOn(rootItem, "_BlinnPhongSpecularToggle") && IsBlinnOrHalf(rootItem));
 
-            _pbrMetallicItem = new NBShaderVectorComponentPropertyItem(
+            _pbrMetallicItem = new VectorComponentItem(
                 rootItem,
                 this,
                 "_MaterialInfo",
                 0,
-                "inspector.light.pbr.metallic.label",
-                "金属度",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.pbr.metallic.label",
+                    "金属度"),
                 true,
                 0f,
                 1f,
-                isVisible: () => rootItem.Context.FxLightMode == FxLightMode.PBR);
+                () => rootItem.Context.FxLightMode == FxLightMode.PBR);
 
-            _pbrSmoothnessItem = new NBShaderVectorComponentPropertyItem(
+            _pbrSmoothnessItem = new VectorComponentItem(
                 rootItem,
                 this,
                 "_MaterialInfo",
                 1,
-                "inspector.light.pbr.smoothness.label",
-                "光滑度",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.pbr.smoothness.label",
+                    "光滑度"),
                 true,
                 0f,
                 1f,
-                isVisible: () => rootItem.Context.FxLightMode == FxLightMode.PBR);
+                () => rootItem.Context.FxLightMode == FxLightMode.PBR);
 
-            _bumpToggleItem = new NBShaderTogglePropertyItem(
+            _bumpToggleItem = new ToggleItem(
                 rootItem,
                 this,
                 "_BumpMapToggle",
-                "inspector.light.bump.toggle.label",
-                "法线贴图开关",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.bump.toggle.label",
+                    "法线贴图开关"),
                 enabled => rootItem.SyncService.ApplyToggleKeyword("_NORMALMAP", enabled),
-                isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay);
+                () => rootItem.Context.FxLightMode != FxLightMode.SixWay);
 
-            _bumpTextureItem = new NBShaderTexturePropertyItem(
+            _bumpTextureItem = new TextureItem(
                 rootItem,
                 this,
                 "_BumpTex",
-                "inspector.light.bump.texture.label",
-                "法线贴图",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.bump.texture.label",
+                    "法线贴图"),
                 drawScaleOffset: false,
                 isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay && IsToggleOn(rootItem, "_BumpMapToggle"));
 
-            _bumpScaleItem = new NBShaderSliderPropertyItem(
-                rootItem,
-                this,
-                "_BumpScale",
-                "inspector.light.bump.scale.label",
-                "法线强度",
-                0f,
-                1f,
-                "BumpScaleRangeVec",
-                isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay && IsToggleOn(rootItem, "_BumpMapToggle"));
+            _bumpScaleItem = new ShaderGUISliderItem(rootItem, this)
+            {
+                PropertyName = "_BumpScale",
+                GuiContent = NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.bump.scale.label",
+                    "法线强度"),
+                RangePropertyName = "BumpScaleRangeVec"
+            };
+            _bumpScaleItem.InitTriggerByChild();
 
-            _matCapToggleItem = new NBShaderTogglePropertyItem(
+            _matCapToggleItem = new ToggleItem(
                 rootItem,
                 this,
                 "_MatCapToggle",
-                "inspector.light.matcap.toggle.label",
-                "MatCap模拟材质",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.matcap.toggle.label",
+                    "MatCap模拟材质"),
                 enabled => rootItem.SyncService.ApplyToggleKeyword("_MATCAP", enabled),
-                isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay);
+                () => rootItem.Context.FxLightMode != FxLightMode.SixWay);
 
-            _matCapTextureItem = new NBShaderTexturePropertyItem(
+            _matCapTextureItem = new TextureItem(
                 rootItem,
                 this,
                 "_MatCapTex",
-                "inspector.light.matcap.texture.label",
-                "MatCap图",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.matcap.texture.label",
+                    "MatCap图"),
                 "_MatCapColor",
                 drawScaleOffset: false,
                 isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay && IsToggleOn(rootItem, "_MatCapToggle"));
 
-            _matCapBlendItem = new NBShaderVectorComponentPropertyItem(
+            _matCapBlendItem = new VectorComponentItem(
                 rootItem,
                 this,
                 "_MatCapInfo",
                 0,
-                "inspector.light.matcap.blend.label",
-                "MatCap相加到相乘过渡",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.matcap.blend.label",
+                    "MatCap相加到相乘过渡"),
                 true,
                 0f,
                 1f,
-                isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay && IsToggleOn(rootItem, "_MatCapToggle"));
+                () => rootItem.Context.FxLightMode != FxLightMode.SixWay && IsToggleOn(rootItem, "_MatCapToggle"));
 
-            _sixWayPositiveItem = new NBShaderTexturePropertyItem(
+            _sixWayPositiveItem = new TextureItem(
                 rootItem,
                 this,
                 "_RigRTBk",
-                "inspector.light.sixway.positive.label",
-                "六路正方向图(P)",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.sixway.positive.label",
+                    "六路正方向图(P)"),
                 drawScaleOffset: false,
                 isVisible: () => rootItem.Context.FxLightMode == FxLightMode.SixWay);
 
-            _sixWayNegativeItem = new NBShaderTexturePropertyItem(
+            _sixWayNegativeItem = new TextureItem(
                 rootItem,
                 this,
                 "_RigLBtF",
-                "inspector.light.sixway.negative.label",
-                "六路反方向图(N)",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.sixway.negative.label",
+                    "六路反方向图(N)"),
                 drawScaleOffset: false,
                 isVisible: () => rootItem.Context.FxLightMode == FxLightMode.SixWay);
 
-            _sixWayAbsorptionToggleItem = new NBShaderTogglePropertyItem(
+            _sixWayAbsorptionToggleItem = new ToggleItem(
                 rootItem,
                 this,
                 "_SixWayColorAbsorptionToggle",
-                "inspector.light.sixway.absorption.toggle.label",
-                "光照颜色吸收",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.sixway.absorption.toggle.label",
+                    "光照颜色吸收"),
                 enabled => rootItem.SyncService.ApplyToggleKeyword("VFX_SIX_WAY_ABSORPTION", enabled),
-                isVisible: () => rootItem.Context.FxLightMode == FxLightMode.SixWay);
+                () => rootItem.Context.FxLightMode == FxLightMode.SixWay);
 
-            _sixWayAbsorptionStrengthItem = new NBShaderVectorComponentPropertyItem(
+            _sixWayAbsorptionStrengthItem = new VectorComponentItem(
                 rootItem,
                 this,
                 "_SixWayInfo",
                 0,
-                "inspector.light.sixway.absorption.strength.label",
-                "六路吸收强度",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.sixway.absorption.strength.label",
+                    "六路吸收强度"),
                 true,
                 0f,
                 1f,
-                isVisible: () => rootItem.Context.FxLightMode == FxLightMode.SixWay && IsToggleOn(rootItem, "_SixWayColorAbsorptionToggle"));
+                () => rootItem.Context.FxLightMode == FxLightMode.SixWay && IsToggleOn(rootItem, "_SixWayColorAbsorptionToggle"));
 
-            _sixWayEmissionRampItem = new NBShaderTexturePropertyItem(
+            _sixWayEmissionRampItem = new TextureItem(
                 rootItem,
                 this,
                 "_SixWayEmissionRamp",
-                "inspector.light.sixway.ramp.label",
-                "六路自发光Ramp",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.sixway.ramp.label",
+                    "六路自发光Ramp"),
                 drawScaleOffset: false,
                 isVisible: () => rootItem.Context.FxLightMode == FxLightMode.SixWay);
 
-            _sixWayEmissionColorItem = new NBShaderColorPropertyItem(
+            _sixWayEmissionColorItem = new ColorItem(
                 rootItem,
                 this,
                 "_SixWayEmissionColor",
-                "inspector.light.sixway.color.label",
-                "六路自发光颜色",
-                isVisible: () => rootItem.Context.FxLightMode == FxLightMode.SixWay);
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.light.sixway.color.label",
+                    "六路自发光颜色"),
+                () => rootItem.Context.FxLightMode == FxLightMode.SixWay);
 
             InitTriggerByChild();
         }
@@ -243,7 +243,11 @@ namespace NBShaderEditor
             _pbrSmoothnessItem.OnGUI();
             _bumpToggleItem.OnGUI();
             _bumpTextureItem.OnGUI();
-            _bumpScaleItem.OnGUI();
+            if (_nbRootItem.Context.FxLightMode != FxLightMode.SixWay && IsToggleOn(_nbRootItem, "_BumpMapToggle"))
+            {
+                _bumpScaleItem.OnGUI();
+            }
+
             _matCapToggleItem.OnGUI();
             _matCapTextureItem.OnGUI();
             _matCapBlendItem.OnGUI();
@@ -261,9 +265,39 @@ namespace NBShaderEditor
                    rootItem.PropertyInfoDic[propertyName].Property.floatValue > 0.5f;
         }
 
-        private static bool _IsBlinnOrHalf(NBShaderRootItem rootItem)
+        private static bool IsBlinnOrHalf(NBShaderRootItem rootItem)
         {
             return rootItem.Context.FxLightMode == FxLightMode.BlinnPhong || rootItem.Context.FxLightMode == FxLightMode.HalfLambert;
+        }
+    }
+
+    public class FxLightModePopupItem : ShaderGUIPopUpItem
+    {
+        private readonly NBShaderRootItem _nbRootItem;
+
+        public FxLightModePopupItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
+        {
+            _nbRootItem = rootItem;
+            PropertyName = "_FxLightMode";
+            GuiContent = NBShaderInspectorLocalization.MakeContent(
+                "inspector.light.mode.label",
+                "光照类型");
+            PopUpNames = new[]
+            {
+                "默认无光(Unlit)",
+                "简单光照(BlinnPhong)",
+                "简单光照过渡(HalfLambert)",
+                "高级光照(PBR)",
+                "六路光照(SixWay)"
+            };
+            InitTriggerByChild();
+        }
+
+        public override void OnEndChange()
+        {
+            base.OnEndChange();
+            _nbRootItem.SyncService.ApplyLightMode((FxLightMode)PropertyInfo.Property.floatValue);
+            _nbRootItem.Context.Refresh();
         }
     }
 }

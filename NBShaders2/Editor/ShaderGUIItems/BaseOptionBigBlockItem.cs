@@ -4,54 +4,48 @@ using UnityEngine.Rendering;
 
 namespace NBShaderEditor
 {
-    public class BaseOptionBigBlockItem : NBShaderBlockItem
+    public class BaseOptionBigBlockItem : BigBlockItem
     {
         public BaseOptionBigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem) :
             base(
                 rootItem,
                 parentItem,
                 "_BaseOptionBigBlockItemFoldOut",
-                "inspector.block.base.label",
-                "基本全局功能",
-                "inspector.block.base.tip",
-                "全局控制功能")
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.block.base.label",
+                    "基本全局功能",
+                    "inspector.block.base.tip",
+                    "全局控制功能"))
         {
-            _baseColorIntensityItem = new BaseColorIntensityItem(rootItem, this);
-            _alphaAllItem = new AlphaAllItem(rootItem, this);
+            _baseColorIntensityItem = new ShaderGUIFloatItem(rootItem, this)
+            {
+                PropertyName = "_BaseColorIntensityForTimeline",
+                GuiContent = new GUIContent("整体颜色强度", "")
+            };
+            _baseColorIntensityItem.InitTriggerByChild();
+
+            _alphaAllItem = new ShaderGUISliderItem(rootItem, this)
+            {
+                PropertyName = "_AlphaAll",
+                GuiContent = new GUIContent("整体透明度"),
+                RangePropertyName = "AlphaAllRangeVec"
+            };
+            _alphaAllItem.InitTriggerByChild();
+
             _zTestItem = new ZTestItem(rootItem, this);
             base.InitTriggerByChild();
             
         }
         
-        BaseColorIntensityItem _baseColorIntensityItem;
-        AlphaAllItem _alphaAllItem;
-        ZTestItem _zTestItem;
+        private readonly ShaderGUIFloatItem _baseColorIntensityItem;
+        private readonly ShaderGUISliderItem _alphaAllItem;
+        private readonly ZTestItem _zTestItem;
 
         public override void DrawBlock()
         {
             _baseColorIntensityItem.OnGUI();
             _alphaAllItem.OnGUI();
             _zTestItem.OnGUI();
-        }
-    }
-    public class BaseColorIntensityItem:ShaderGUIFloatItem
-    {
-        public BaseColorIntensityItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem: parentItem)
-        {
-            PropertyName = "_BaseColorIntensityForTimeline";
-            GuiContent = new GUIContent("整体颜色强度", "");
-            base.InitTriggerByChild();
-        }
-    }
-    
-    public class AlphaAllItem:ShaderGUISliderItem
-    {
-        public AlphaAllItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem: parentItem)
-        {
-            PropertyName = "_AlphaAll";
-            GuiContent = new GUIContent("整体透明度");
-            RangePropertyName = "AlphaAllRangeVec";
-            base.InitTriggerByChild();
         }
     }
 

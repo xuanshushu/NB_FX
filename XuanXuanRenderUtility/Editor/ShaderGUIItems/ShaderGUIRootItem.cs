@@ -20,16 +20,15 @@ namespace NBShaderEditor
         public List<ShaderFlagsBase> ShaderFlags;//各个继承类各自初始化
         public bool IsInit = true;
         public Color DefaultBackgroundColor;
-        public readonly Color AnimatedBackgroundColor = Color.red;
         public List<Renderer> RenderersUsingThisMaterial = new List<Renderer>();
     
         
         public virtual void OnGUI(MaterialEditor editor,MaterialProperty[] props)
         {
             MatEditor = editor;
+            DefaultBackgroundColor = GUI.backgroundColor;
             if (IsInit)
             {
-                DefaultBackgroundColor = GUI.backgroundColor;
                 Mats = new List<Material>();
                 foreach (var obj in editor.targets)
                 {
@@ -60,7 +59,16 @@ namespace NBShaderEditor
             }
           
             OnChildOnGUI();
+            RepaintWhenAnimationModeActive();
             IsInit = false;
+        }
+
+        void RepaintWhenAnimationModeActive()
+        {
+            if (AnimationMode.InAnimationMode())
+            {
+                MatEditor.Repaint();
+            }
         }
 
         void CacheRenderersUsingThisMaterial(Material material)

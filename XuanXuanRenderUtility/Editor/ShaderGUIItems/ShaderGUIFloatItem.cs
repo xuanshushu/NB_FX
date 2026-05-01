@@ -25,7 +25,8 @@ namespace NBShaderEditor
         public float Max = 1;
         public string RangePropertyName;
         ShaderPropertyInfo _rangePropertyInfo;
-        private const float RangeWidth = 50f;
+        private const float SliderFrontGap = 5f;
+        private const float SliderBackGap = 2f;
 
         public override void InitTriggerByChild()
         {
@@ -41,46 +42,102 @@ namespace NBShaderEditor
         public ShaderGUISliderItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) :
             base(rootItem, parentItem: parentItem) { }
 
+        public override void OnGUI()
+        {
+            if (_rangePropertyInfo == null)
+            {
+                base.OnGUI();
+                return;
+            }
+
+            GetRect();
+            EditorGUI.LabelField(LabelRect, GuiContent);
+            EditorGUI.BeginChangeCheck();
+            DrawController();
+            EditorGUI.showMixedValue = false;
+            if (EditorGUI.EndChangeCheck())
+            {
+                OnEndChange();
+            }
+            DrawResetButton();
+            DrawBlock();
+        }
+
         public override void DrawController()
         {
             if (_rangePropertyInfo != null)
             {
+                float rangeFieldWidth = EditorGUIUtility.fieldWidth;
                 Rect minRect = ControlRect;
-                minRect.width = RangeWidth;
+                minRect.width = rangeFieldWidth;
                 Rect maxRect = ControlRect;
-                maxRect.x += maxRect.width;
-                maxRect.x -= RangeWidth;
-                maxRect.width = RangeWidth;
-                ControlRect.x += RangeWidth;
-                ControlRect.width -= 2 * RangeWidth;
+                maxRect.x = ControlRect.xMax - rangeFieldWidth;
+                maxRect.width = rangeFieldWidth;
+                Rect sliderRect = ControlRect;
+                sliderRect.x = minRect.xMax + SliderFrontGap;
+                sliderRect.width = Mathf.Max(0f, maxRect.x - sliderRect.x - SliderBackGap + EditorGUI.indentLevel * UnityEditorGUIIndentWidth);
                 
                 RangeVecHasMixedValue(out bool minValueHasMixed,out bool maxValueHasMixed);
                 
                 Vector4 rangeVector = _rangePropertyInfo.Property.vectorValue;
                 float min = rangeVector.x;
                 float max = rangeVector.y;
-                EditorGUI.showMixedValue = minValueHasMixed;
 
-                GUI.backgroundColor = RootItem.DefaultBackgroundColor;
+                EditorGUI.showMixedValue = minValueHasMixed;
+                bool minAnimatedScope = BeginAnimatedPropertyBackground(minRect, _rangePropertyInfo.Property);
                 min = EditorGUI.FloatField(minRect, min);
+                EndAnimatedPropertyBackground(minAnimatedScope);
                 EditorGUI.showMixedValue = maxValueHasMixed;
+                bool maxAnimatedScope = BeginAnimatedPropertyBackground(maxRect, _rangePropertyInfo.Property);
                 max = EditorGUI.FloatField(maxRect, max);
+                EndAnimatedPropertyBackground(maxAnimatedScope);
                 rangeVector.x = min;
                 rangeVector.y = max;
                 _rangePropertyInfo.Property.vectorValue = rangeVector;
+
+                float sliderMin = Mathf.Min(min, max);
+                float sliderMax = Mathf.Max(min, max);
+                float value = DraggableLabelFloat.Handle(
+                    LabelRect,
+                    PropertyInfo.Property.floatValue,
+                    DraggableLabelFloat.GetSensitivityByRange(sliderMin, sliderMax),
+                    sliderMin,
+                    sliderMax);
                 EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
-                if (IsPropertyAnimated(PropertyName)) GUI.backgroundColor = RootItem.AnimatedBackgroundColor;
-                PropertyInfo.Property.floatValue = EditorGUI.Slider(ControlRect, PropertyInfo.Property.floatValue, min, max);
-                GUI.backgroundColor = RootItem.DefaultBackgroundColor;
+                bool sliderAnimatedScope = BeginAnimatedPropertyBackground(sliderRect, PropertyInfo.Property);
+                value = SliderNoIndent(sliderRect, value, sliderMin, sliderMax);
+                EndAnimatedPropertyBackground(sliderAnimatedScope);
+
+                PropertyInfo.Property.floatValue = Mathf.Clamp(value, sliderMin, sliderMax);
                 EditorGUI.showMixedValue = false;
 
             }
             else
             {
-                PropertyInfo.Property.floatValue = EditorGUI.Slider(ControlRect, PropertyInfo.Property.floatValue,Min,Max);
+                float value = DraggableLabelFloat.Handle(
+                    LabelRect,
+                    PropertyInfo.Property.floatValue,
+                    DraggableLabelFloat.GetSensitivityByRange(Min, Max),
+                    Min,
+                    Max);
+                PropertyInfo.Property.floatValue = EditorGUI.Slider(ControlRect, value,Min,Max);
             }
         }
-        
+
+        private static float SliderNoIndent(Rect rect, float value, float min, float max)
+        {
+            int indentLevel = EditorGUI.indentLevel;
+            try
+            {
+                EditorGUI.indentLevel = 0;
+                return EditorGUI.Slider(rect, value, min, max);
+            }
+            finally
+            {
+                EditorGUI.indentLevel = indentLevel;
+            }
+        }
+
         void RangeVecHasMixedValue( out bool minValueHasMixed, out bool maxValueHasMixed)
         { 
             minValueHasMixed = false;
@@ -279,6 +336,17 @@ namespace NBShaderEditor
             }
 
             return value;
+        }
+
+        public static float GetSensitivityByRange(float min, float max)
+        {
+            float range = Mathf.Abs(max - min);
+            if (float.IsNaN(range) || float.IsInfinity(range) || Mathf.Approximately(range, 0f))
+            {
+                return -1f;
+            }
+
+            return range * 0.003f;
         }
 
     }

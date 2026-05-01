@@ -2,25 +2,27 @@ using UnityEditor;
 
 namespace NBShaderEditor
 {
-    public class FeatureBigBlockItem : NBShaderBlockItem
+    public class FeatureBigBlockItem : BigBlockItem
     {
-        private readonly NBShaderHelpBoxItem _placeholder;
+        private readonly HelpBoxItem _placeholder;
 
         public FeatureBigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(
                 rootItem,
                 parentItem,
                 "_FeatureBigBlockItemFoldOut",
-                "inspector.block.feature.label",
-                "特别功能",
-                "inspector.block.feature.tip",
-                "遮罩、扭曲、溶解等特效功能")
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.block.feature.label",
+                    "特效功能",
+                    "inspector.block.feature.tip",
+                    "遮罩、扭曲、溶解等特效功能"))
         {
-            _placeholder = new NBShaderHelpBoxItem(
+            _placeholder = new HelpBoxItem(
                 rootItem,
                 this,
-                "inspector.placeholder.feature",
-                "Feature block is migrating to the new NBShader2 framework.");
+                () => NBShaderInspectorLocalization.Get(
+                    "inspector.placeholder.feature",
+                    "Feature block is migrating to the new NBShader2 framework."));
             InitTriggerByChild();
         }
 

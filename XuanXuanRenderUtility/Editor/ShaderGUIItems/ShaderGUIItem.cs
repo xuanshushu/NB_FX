@@ -11,7 +11,13 @@ namespace NBShaderEditor
     }
     public class ShaderGUIItem
     {
-        public const float LabelWidth = 100f;
+        public const float LabelWidth = 115f;
+        public const float GlobalRectXOffset = -15f;
+        public const float GlobalRectWidthExpansion = 10f;
+        public const float UnityEditorGUIIndentWidth = 15f;
+        public const float EditorGUIIndentWidth = 8f;
+        public const float ControlResetGap = 3f;
+        public const float ControlIndentCompensation = 10f;
         public ShaderPropertyInfo PropertyInfo;
         public ShaderGUIItem ParentItem;
         public List<ShaderGUIItem> ChildrenItemList = new List<ShaderGUIItem>();
@@ -44,19 +50,59 @@ namespace NBShaderEditor
         public Rect LabelRect;
         public Rect ControlRect;
         public Rect ResetRect;
-        private static float ResetButtonSize => EditorGUIUtility.singleLineHeight;
+        public static float ResetButtonSize => EditorGUIUtility.singleLineHeight;
         public virtual void GetRect()
         {
-            BaseRect = EditorGUILayout.GetControlRect();
-            LabelRect = BaseRect;
-            LabelRect.width = LabelWidth;
-            ControlRect = BaseRect;
-            ControlRect.x += LabelWidth;
-            ControlRect.width -= LabelWidth;
-            ControlRect.width -= ResetButtonSize;
-            ResetRect = BaseRect;
-            ResetRect.x = BaseRect.x + BaseRect.width -ResetButtonSize;
-            ResetRect.width = ResetButtonSize;
+            BaseRect = ApplyGlobalRectCompensation(EditorGUILayout.GetControlRect());
+            SplitLineRect(BaseRect, out LabelRect, out ControlRect, out ResetRect);
+        }
+
+        public static Rect ApplyGlobalRectCompensation(Rect rect)
+        {
+            rect.x += GlobalRectXOffset;
+            rect.width = Mathf.Max(0f, rect.width + GlobalRectWidthExpansion);
+            rect = ApplyEditorGUIIndentWidth(rect);
+            return rect;
+        }
+
+        public static Rect ApplyEditorGUIIndentWidth(Rect rect)
+        {
+            float indentDelta = EditorGUI.indentLevel * (EditorGUIIndentWidth - UnityEditorGUIIndentWidth);
+            rect.x += indentDelta;
+            rect.width = Mathf.Max(0f, rect.width - indentDelta);
+            return rect;
+        }
+
+        public static void SplitLineRect(
+            Rect baseRect,
+            out Rect labelRect,
+            out Rect controlRect,
+            out Rect resetRect,
+            bool applyControlIndentCompensation = true)
+        {
+            labelRect = baseRect;
+            labelRect.width = LabelWidth;
+
+            Rect controlAndResetRect = baseRect;
+            controlAndResetRect.x += LabelWidth;
+            controlAndResetRect.width = Mathf.Max(0f, controlAndResetRect.width - LabelWidth);
+            SplitControlAndResetRect(controlAndResetRect, out controlRect, out resetRect, applyControlIndentCompensation);
+        }
+
+        public static void SplitControlAndResetRect(
+            Rect baseRect,
+            out Rect controlRect,
+            out Rect resetRect,
+            bool applyControlIndentCompensation = true)
+        {
+            resetRect = baseRect;
+            resetRect.x = baseRect.xMax - ResetButtonSize;
+            resetRect.width = ResetButtonSize;
+
+            float controlIndentCompensation = applyControlIndentCompensation ? ControlIndentCompensation : 0f;
+            controlRect = baseRect;
+            controlRect.x -= controlIndentCompensation;
+            controlRect.width = Mathf.Max(0f, baseRect.width - ResetButtonSize - ControlResetGap + controlIndentCompensation);
         }
 
         
@@ -66,9 +112,9 @@ namespace NBShaderEditor
             EditorGUI.LabelField(LabelRect, GuiContent);
             EditorGUI.BeginChangeCheck();
             EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
-            if (IsPropertyAnimated(PropertyName)) GUI.backgroundColor = RootItem.AnimatedBackgroundColor;
+            bool animatedPropertyScope = BeginAnimatedPropertyBackground(BaseRect, PropertyInfo.Property);
             DrawController();
-            GUI.backgroundColor = RootItem.DefaultBackgroundColor;
+            EndAnimatedPropertyBackground(animatedPropertyScope);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
             {
@@ -80,6 +126,7 @@ namespace NBShaderEditor
 
         public void DrawResetButton()//如果重写OnGUI，一定要记得调用DrawResetButton
         {
+            CheckIsPropertyModified();
             _resetButtonContent.text = HasModified ? "R" : "";
             _resetButtonStyle = HasModified ? GUI.skin.button : GUI.skin.label;
             if (GUI.Button(ResetRect, _resetButtonContent, _resetButtonStyle))
@@ -103,28 +150,66 @@ namespace NBShaderEditor
             CheckIsPropertyModified();
         }
 
-        private string _animationPropertyPath; 
-        
-         public bool IsPropertyAnimated(string propertyName)
+        private readonly Dictionary<string, string> _animationPropertyPathDic = new Dictionary<string, string>();
+
+        protected bool BeginAnimatedPropertyBackground(Rect totalPosition, MaterialProperty property)
+        {
+            if (property == null || RootItem?.MatEditor == null)
+            {
+                return false;
+            }
+
+            RootItem.MatEditor.BeginAnimatedCheck(totalPosition, property);
+            return true;
+        }
+
+        protected void EndAnimatedPropertyBackground(bool scopeActive)
+        {
+            if (scopeActive && RootItem?.MatEditor != null)
+            {
+                RootItem.MatEditor.EndAnimatedCheck();
+            }
+        }
+
+        public bool IsPropertyAnimated(string propertyName, params string[] componentNames)
          {
              if (propertyName == null) return false;
             if (AnimationMode.InAnimationMode())
             {
-                if (_animationPropertyPath == null)
-                {
-                    _animationPropertyPath = "material." + propertyName;
-                }
                 foreach (var r in RootItem.RenderersUsingThisMaterial)
                 {
-                    if (AnimationMode.IsPropertyAnimated(r, _animationPropertyPath))
+                    if (componentNames != null && componentNames.Length > 0)
                     {
-                        // Debug.Log(propertyName);
+                        foreach (string componentName in componentNames)
+                        {
+                            if (AnimationMode.IsPropertyAnimated(r, GetAnimationPropertyPath(propertyName, componentName)))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    else if (AnimationMode.IsPropertyAnimated(r, GetAnimationPropertyPath(propertyName, string.Empty)))
+                    {
                         return true;
                     }
                 }
             }
         
             return false;
+        }
+
+        private string GetAnimationPropertyPath(string propertyName, string componentName)
+        {
+            string key = string.IsNullOrEmpty(componentName) ? propertyName : propertyName + "." + componentName;
+            if (!_animationPropertyPathDic.TryGetValue(key, out string propertyPath))
+            {
+                propertyPath = string.IsNullOrEmpty(componentName)
+                    ? "material." + propertyName
+                    : "material." + propertyName + "." + componentName;
+                _animationPropertyPathDic.Add(key, propertyPath);
+            }
+
+            return propertyPath;
         }
 
 
@@ -149,6 +234,14 @@ namespace NBShaderEditor
                             float defaultValue = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index);
                             isDefaultValue = Mathf.Approximately(PropertyInfo.Property.floatValue, defaultValue);
                         break;
+                        case MaterialProperty.PropType.Color:
+                            Vector4 defaultColor = RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index);
+                            isDefaultValue = Approximately(PropertyInfo.Property.colorValue, defaultColor);
+                            break;
+                        case MaterialProperty.PropType.Vector:
+                            Vector4 defaultVector = RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index);
+                            isDefaultValue = Approximately(PropertyInfo.Property.vectorValue, defaultVector);
+                            break;
                     }
                 }
                 else
@@ -186,6 +279,12 @@ namespace NBShaderEditor
                         float defaultValue = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index);
                         PropertyInfo.Property.floatValue = defaultValue;
                         break;
+                    case MaterialProperty.PropType.Color:
+                        PropertyInfo.Property.colorValue = RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index);
+                        break;
+                    case MaterialProperty.PropType.Vector:
+                        PropertyInfo.Property.vectorValue = RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index);
+                        break;
                 }
                 PropertyIsDefaultValue = true;
             }
@@ -199,6 +298,14 @@ namespace NBShaderEditor
             {
                 ParentItem?.CheckIsPropertyModified(true);
             }
+        }
+
+        private static bool Approximately(Vector4 a, Vector4 b)
+        {
+            return Mathf.Approximately(a.x, b.x) &&
+                   Mathf.Approximately(a.y, b.y) &&
+                   Mathf.Approximately(a.z, b.z) &&
+                   Mathf.Approximately(a.w, b.w);
         }
         
         #endregion

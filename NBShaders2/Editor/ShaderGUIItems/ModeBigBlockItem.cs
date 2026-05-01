@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace NBShaderEditor
 {
-     public class ModeBigBlockItem : NBShaderBlockItem
+     public class ModeBigBlockItem : BigBlockItem
     {
         private readonly NBShaderRootItem _nbRootItem;
 
@@ -12,10 +12,11 @@ namespace NBShaderEditor
                 rootItem,
                 parentItem,
                 "_BigBlockModeSettingFoldOut",
-                "inspector.block.mode.label",
-                "模式设置",
-                "inspector.block.mode.tip",
-                "各种基础模式设置")
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.block.mode.label",
+                    "模式设置",
+                    "inspector.block.mode.tip",
+                    "各种基础模式设置"))
         {
             _nbRootItem = rootItem;
             _meshModePopUp = new MeshModePopUp(rootItem, this);
@@ -135,7 +136,12 @@ namespace NBShaderEditor
             PropertyName = "_TransparentMode";
             GuiContent = new GUIContent("透明模式", "透明模式");
             TransparentModeDic.Add(RootItem,this);
-            _cutOffSlider = new CutOffSlider(RootItem, this);
+            _cutOffSlider = new ShaderGUISliderItem(RootItem, this)
+            {
+                PropertyName = "_Cutoff",
+                GuiContent = new GUIContent("裁剪位置", "0为完全不裁剪，1为完全裁剪")
+            };
+            _cutOffSlider.InitTriggerByChild();
             _blendPopUp = new BlendPopUp(RootItem, this);
             PropertyInfo = RootItem.PropertyInfoDic[PropertyName];
             TransparentMode = (TransparentMode)PropertyInfo.Property.floatValue;
@@ -156,7 +162,7 @@ namespace NBShaderEditor
             }
         }
 
-        private CutOffSlider _cutOffSlider;
+        private ShaderGUISliderItem _cutOffSlider;
         private BlendPopUp _blendPopUp;
         public override void DrawBlock()
         {
@@ -218,18 +224,7 @@ namespace NBShaderEditor
         
         
     }
-    
-    public class CutOffSlider:ShaderGUISliderItem
-    {
-        public CutOffSlider(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
-        {
-            PropertyName = "_Cutoff";
-            GuiContent = new GUIContent("裁剪位置", "0为完全不裁剪，1为完全裁剪");
-            base.InitTriggerByChild();
-        }
-        
-    }
-    
+
     public enum BlendMode
     {
         Alpha, // Old school alpha-blending mode, fresnel does not affect amount of transparency
