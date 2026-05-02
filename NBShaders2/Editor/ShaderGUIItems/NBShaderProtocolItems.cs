@@ -15,7 +15,7 @@ namespace NBShaderEditor
         private readonly string _shaderPassName;
         private readonly Action<bool> _onValueChanged;
         private readonly Func<bool> _isVisible;
-        private readonly GUIStyle _foldOutStyle;
+        private readonly GUIStyle _labelStyle;
         private readonly ShaderGUIFoldOutHelper _foldOutHelper;
 
         public PropertyToggleBlockItem(
@@ -41,7 +41,7 @@ namespace NBShaderEditor
             _shaderPassName = shaderPassName;
             _onValueChanged = onValueChanged;
             _isVisible = isVisible;
-            _foldOutStyle = new GUIStyle(EditorStyles.foldout)
+            _labelStyle = new GUIStyle(EditorStyles.label)
             {
                 fontStyle = bold ? FontStyle.Bold : FontStyle.Normal
             };
@@ -59,7 +59,6 @@ namespace NBShaderEditor
             GuiContent = _contentProvider();
             GetRect();
             MaterialProperty property = PropertyInfo.Property;
-            _foldOutHelper.DrawFoldOutLabel(LabelRect, GuiContent, _foldOutStyle);
 
             bool enabled = property.floatValue > 0.5f;
             EditorGUI.showMixedValue = property.hasMixedValue;
@@ -78,6 +77,10 @@ namespace NBShaderEditor
                 OnEndChange();
             }
 
+            Rect foldOutRect = LabelRect;
+            foldOutRect.width = Mathf.Max(0f, ControlRect.x - LabelRect.x);
+            _foldOutHelper.DrawFoldOut(foldOutRect);
+            EditorGUI.LabelField(LabelRect, GuiContent, _labelStyle);
             DrawResetButton();
 
             if (_foldOutHelper.BeginFadeGroup())
@@ -128,6 +131,69 @@ namespace NBShaderEditor
             }
 
             _onValueChanged?.Invoke(enabled);
+        }
+    }
+
+    public class TextureRelatedFoldOutItem : ShaderGUIItem
+    {
+        private readonly ShaderGUIFoldOutHelper _foldOutHelper;
+        private readonly string _texturePropertyName;
+        private readonly Func<GUIContent> _contentProvider;
+        private readonly Func<bool> _isVisible;
+
+        public TextureRelatedFoldOutItem(
+            ShaderGUIRootItem rootItem,
+            ShaderGUIItem parentItem,
+            string foldOutPropertyName,
+            string texturePropertyName,
+            Func<GUIContent> contentProvider,
+            Func<bool> isVisible = null) : base(rootItem, parentItem)
+        {
+            _foldOutHelper = new ShaderGUIFoldOutHelper(rootItem, foldOutPropertyName);
+            _texturePropertyName = texturePropertyName;
+            _contentProvider = contentProvider ?? (() => GUIContent.none);
+            _isVisible = isVisible;
+            CheckIsPropertyModified();
+        }
+
+        public override void OnGUI()
+        {
+            if (_isVisible != null && !_isVisible())
+            {
+                return;
+            }
+
+            GetRect();
+            EditorGUI.LabelField(LabelRect, _contentProvider(), EditorStyles.boldLabel);
+            _foldOutHelper.DrawFoldOut(LabelRect);
+            DrawResetButton();
+
+            if (_foldOutHelper.BeginFadeGroup())
+            {
+                EditorGUI.indentLevel++;
+                using (new EditorGUI.DisabledScope(!HasTexture()))
+                {
+                    DrawBlock();
+                }
+
+                EditorGUI.indentLevel--;
+            }
+
+            _foldOutHelper.EndFadedGroup();
+        }
+
+        public override void DrawBlock()
+        {
+            for (int i = 0; i < ChildrenItemList.Count; i++)
+            {
+                ChildrenItemList[i].OnGUI();
+            }
+        }
+
+        private bool HasTexture()
+        {
+            return RootItem.PropertyInfoDic.TryGetValue(_texturePropertyName, out ShaderPropertyInfo info) &&
+                   (info.Property.hasMixedValue || info.Property.textureValue != null);
         }
     }
 
@@ -772,15 +838,13 @@ namespace NBShaderEditor
                 {
                     mode = (W9ParticleShaderFlags.UVMode)index;
                     SetMode(mode);
+                    _foldOutHelper.SetOpen(NeedsFoldOut(mode));
                     CheckIsPropertyModified();
                 }
 
                 DrawResetButton();
 
-                bool needFoldOut = mode != W9ParticleShaderFlags.UVMode.DefaultUVChannel &&
-                                   mode != W9ParticleShaderFlags.UVMode.CommonUV &&
-                                   mode != W9ParticleShaderFlags.UVMode.ScreenUV &&
-                                   mode != W9ParticleShaderFlags.UVMode.MainTex;
+                bool needFoldOut = NeedsFoldOut(mode);
                 if (needFoldOut)
                 {
                     _foldOutHelper.DrawFoldOut(LabelRect);
@@ -854,6 +918,14 @@ namespace NBShaderEditor
             {
                 ParentItem?.CheckIsPropertyModified(true);
             }
+        }
+
+        private static bool NeedsFoldOut(W9ParticleShaderFlags.UVMode mode)
+        {
+            return mode != W9ParticleShaderFlags.UVMode.DefaultUVChannel &&
+                   mode != W9ParticleShaderFlags.UVMode.CommonUV &&
+                   mode != W9ParticleShaderFlags.UVMode.ScreenUV &&
+                   mode != W9ParticleShaderFlags.UVMode.MainTex;
         }
 
         private bool HasTexture()

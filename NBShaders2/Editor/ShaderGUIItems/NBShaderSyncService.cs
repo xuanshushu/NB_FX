@@ -41,7 +41,8 @@ namespace NBShaderEditor
                     zWriteProperty.floatValue = 0;
                     foreach (Material mat in _rootItem.Mats)
                     {
-                        mat.renderQueue = 3000 + queueBias;
+                        bool uiEffect = IsUIEffectMode(mat);
+                        mat.renderQueue = (uiEffect ? 3000 : 3100) + queueBias;
                         mat.DisableKeyword("_ALPHATEST_ON");
                     }
                     break;
@@ -77,6 +78,7 @@ namespace NBShaderEditor
                 SyncTimeMode(mat, flags);
                 SyncScreenDistortPasses(mat);
                 SyncVatKeywords(mat);
+                SyncParallaxLayerCount(mat);
             }
         }
 
@@ -554,6 +556,38 @@ namespace NBShaderEditor
                 {
                     mat.SetInt("_ZWrite", 0);
                 }
+            }
+        }
+
+        private static bool IsUIEffectMode(Material mat)
+        {
+            if (mat == null || !mat.HasProperty("_MeshSourceMode"))
+            {
+                return false;
+            }
+
+            MeshSourceMode meshSourceMode = (MeshSourceMode)Mathf.RoundToInt(mat.GetFloat("_MeshSourceMode"));
+            return meshSourceMode == MeshSourceMode.UIEffectRawImage ||
+                   meshSourceMode == MeshSourceMode.UIEffectSprite ||
+                   meshSourceMode == MeshSourceMode.UIEffectBaseMap ||
+                   meshSourceMode == MeshSourceMode.UIParticle;
+        }
+
+        private static void SyncParallaxLayerCount(Material mat)
+        {
+            if (mat == null ||
+                !mat.HasProperty("_ParallaxMapping_Toggle") ||
+                !mat.HasProperty("_ParallaxMapping_Vec") ||
+                mat.GetFloat("_ParallaxMapping_Toggle") <= 0.5f)
+            {
+                return;
+            }
+
+            Vector4 value = mat.GetVector("_ParallaxMapping_Vec");
+            if (value.y < value.x + 1f)
+            {
+                value.y = value.x + 1f;
+                mat.SetVector("_ParallaxMapping_Vec", value);
             }
         }
 

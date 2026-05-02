@@ -18,20 +18,34 @@ namespace NBShaderEditor
         public override void OnGUI()
         {
             if (_nbRootItem.Mats == null ||
-                _nbRootItem.Mats.Count != 1 ||
-                _nbRootItem.Context.ParticleMode != MixedBool.True)
+                _nbRootItem.Mats.Count != 1)
             {
                 return;
             }
 
             Material material = _nbRootItem.Mats[0];
-            if (material == null || _nbRootItem.ShaderFlags.Count == 0 || !(_nbRootItem.ShaderFlags[0] is W9ParticleShaderFlags flags))
+            if (material == null)
             {
                 return;
             }
 
             List<ParticleSystemRenderer> renderers = FindParticleRenderers(material);
             if (renderers.Count == 0)
+            {
+                return;
+            }
+
+            W9ParticleShaderFlags flags = _nbRootItem.ShaderFlags.Count > 0
+                ? _nbRootItem.ShaderFlags[0] as W9ParticleShaderFlags
+                : null;
+            flags?.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER, index: 1);
+
+            if (_nbRootItem.Context.ParticleMode != MixedBool.True)
+            {
+                return;
+            }
+
+            if (flags == null)
             {
                 return;
             }

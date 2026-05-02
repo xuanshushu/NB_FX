@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 namespace NBShaderEditor
 {
@@ -87,6 +88,8 @@ namespace NBShaderEditor
             {
                 MeshSourceMode = (MeshSourceMode)PropertyInfo.Property.floatValue;
             }
+
+            DrawParticleSystemMismatchWarning();
         }
 
         public override void OnEndChange()
@@ -101,6 +104,49 @@ namespace NBShaderEditor
         public void Dispose()
         {
             MeshSourceModeDic.Remove(RootItem);
+        }
+
+        private void DrawParticleSystemMismatchWarning()
+        {
+            if (!(RootItem is NBShaderRootItem nbRootItem) ||
+                nbRootItem.Mats == null ||
+                nbRootItem.Mats.Count == 0 ||
+                !IsUsedByParticleSystem(nbRootItem.Mats[0]) ||
+                nbRootItem.Context.ParticleMode == MixedBool.True)
+            {
+                return;
+            }
+
+            EditorGUILayout.HelpBox(
+                NBShaderInspectorLocalization.GetInspectorText(
+                    "mode.meshSource.particleModeMismatch",
+                    "检测到材质用在粒子系统上，和设置不匹配"),
+                MessageType.Error);
+        }
+
+        private static bool IsUsedByParticleSystem(Material material)
+        {
+            if (material == null)
+            {
+                return false;
+            }
+
+            Renderer[] renderers = UnityEngine.Object.FindObjectsOfType(typeof(Renderer)) as Renderer[];
+            if (renderers == null)
+            {
+                return false;
+            }
+
+            foreach (Renderer renderer in renderers)
+            {
+                if (renderer is ParticleSystemRenderer psr &&
+                    (psr.sharedMaterial == material || psr.trailMaterial == material))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static readonly string[] MeshSourceOptions =

@@ -6,6 +6,9 @@ namespace NBShader
     [ExecuteAlways]
     public class NBShaderSpriteHelper : MonoBehaviour
     {
+        private const string ParticleBaseShaderName = "Effects/NBShader";
+        private const string NBShader2ShaderName = "Effects/NBShader2";
+
         public Sprite sprite;
 
         // [ReadOnly]
@@ -66,7 +69,7 @@ namespace NBShader
                     mat = image.material;
                 }
 
-                if (mat && mat.shader.name == "Effects/NBShader")
+                if (mat && IsSupportedShader(mat.shader))
                 {
                     mat.SetVector("_MainTex_Reverse_ST", CalScaleOffset(rect, texture));
                     Debug.Log(mat.name);
@@ -86,6 +89,11 @@ namespace NBShader
                 -(textureRect.y / texture.height) * scaleAfter.y);
             Vector4 scaleOffset = new Vector4(scaleAfter.x, scaleAfter.y, offsetAfter.x, offsetAfter.y);
             return scaleOffset;
+        }
+
+        private static bool IsSupportedShader(Shader shader)
+        {
+            return shader && (shader.name == ParticleBaseShaderName || shader.name == NBShader2ShaderName);
         }
     }
 }

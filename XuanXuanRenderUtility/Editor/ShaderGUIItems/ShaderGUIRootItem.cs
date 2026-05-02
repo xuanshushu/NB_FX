@@ -39,7 +39,7 @@ namespace NBShaderEditor
                 Shader = Mats[0].shader;
                 CacheRenderersUsingThisMaterial(Mats[0]);
             }
-            if (PropertyInfoDic.Count != props.Length)
+            if (ShouldRebuildPropertyInfo(props))
             {
                 PropertyInfoDic.Clear();
                 for (int i = 0; i < props.Length; i++)
@@ -55,7 +55,9 @@ namespace NBShaderEditor
             {
                 for (int i = 0; i < props.Length; i++)
                 {
-                    PropertyInfoDic[props[i].name].Property = props[i];
+                    ShaderPropertyInfo propInfo = PropertyInfoDic[props[i].name];
+                    propInfo.Property = props[i];
+                    propInfo.Index = i;
                 }
             }
           
@@ -75,6 +77,24 @@ namespace NBShaderEditor
         public void RequestClearUnusedTextureReferences()
         {
             ClearUnusedTextureReferencesRequested = true;
+        }
+
+        private bool ShouldRebuildPropertyInfo(MaterialProperty[] props)
+        {
+            if (PropertyInfoDic.Count != props.Length)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < props.Length; i++)
+            {
+                if (!PropertyInfoDic.ContainsKey(props[i].name))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         void RepaintWhenAnimationModeActive()

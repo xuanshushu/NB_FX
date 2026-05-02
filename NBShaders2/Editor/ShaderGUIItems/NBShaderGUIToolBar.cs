@@ -13,7 +13,7 @@ namespace NBShaderEditor
 
         private readonly NBShaderRootItem _rootItem;
 
-        private static Material copiedMaterial;
+        private static Material copiedMaterialSnapshot;
         private static Shader copiedShader;
 
         public NBShaderGUIToolBar(NBShaderRootItem rootItem)
@@ -45,12 +45,11 @@ namespace NBShaderEditor
 
                 if (ToolbarButton(toolbarRect, ref buttonX, TextContent("copy", "C", "复制材质属性")))
                 {
-                    copiedMaterial = material;
-                    copiedShader = material.shader;
+                    CopyMaterial(material);
                 }
             }
 
-            using (new EditorGUI.DisabledScope(!hasMaterial || (copiedMaterial == null && copiedShader == null)))
+            using (new EditorGUI.DisabledScope(!hasMaterial || !HasCopiedMaterial()))
             {
                 if (ToolbarButton(toolbarRect, ref buttonX, TextContent("paste", "V", "粘贴材质属性")))
                 {
@@ -90,6 +89,32 @@ namespace NBShaderEditor
             return new Rect(x, toolbarRect.y, ButtonWidth, toolbarRect.height);
         }
 
+        private static bool HasCopiedMaterial()
+        {
+            return copiedMaterialSnapshot != null;
+        }
+
+        private static void CopyMaterial(Material material)
+        {
+            if (copiedMaterialSnapshot != null)
+            {
+                UnityEngine.Object.DestroyImmediate(copiedMaterialSnapshot);
+                copiedMaterialSnapshot = null;
+                copiedShader = null;
+            }
+
+            if (material == null)
+            {
+                return;
+            }
+
+            copiedMaterialSnapshot = new Material(material)
+            {
+                hideFlags = HideFlags.HideAndDontSave
+            };
+            copiedShader = copiedMaterialSnapshot.shader;
+        }
+
         private void ShowResetPopupMenu()
         {
             GenericMenu menu = new GenericMenu();
@@ -116,30 +141,25 @@ namespace NBShaderEditor
         private void PasteMaterial()
         {
             Material material = MainMaterial;
-            if (material == null)
+            if (material == null || !HasCopiedMaterial())
             {
                 return;
             }
 
             Undo.RecordObject(material, UndoText("paste", "粘贴材质属性"));
-            bool shaderChanged = copiedShader != null && material.shader != copiedShader;
             if (copiedShader != null)
             {
                 material.shader = copiedShader;
             }
 
-            if (copiedMaterial != null)
-            {
-                material.CopyPropertiesFromMaterial(copiedMaterial);
-            }
+            material.CopyPropertiesFromMaterial(copiedMaterialSnapshot);
 
             EditorUtility.SetDirty(material);
             _rootItem.IsInit = true;
-
-            if (shaderChanged)
-            {
-                GUIUtility.ExitGUI();
-            }
+            _rootItem.SyncService?.SyncMaterialState();
+            _rootItem.Context?.Refresh();
+            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+            GUIUtility.ExitGUI();
         }
 
         private void ResetSpecialUVChannel()

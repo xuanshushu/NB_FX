@@ -8,6 +8,7 @@ namespace NBShader
     public sealed class NBParticleLocalTransformHelper : MonoBehaviour
     {
         private const string ParticleBaseShaderName = "Effects/NBShader";
+        private const string NBShader2ShaderName = "Effects/NBShader2";
         private const string CustomLocalTransformKeyword = "_CUSTOM_LOCAL_TRANSFORM";
 
         private static readonly int CustomLocalTransformLocalToWorldId =
@@ -140,14 +141,20 @@ namespace NBShader
                 return false;
             }
 
-            if (material.shader == null || material.shader.name != ParticleBaseShaderName)
+            if (material.shader == null || !IsSupportedShader(material.shader))
             {
                 material = null;
-                LogWarningOnce("NBParticleLocalTransformHelper only supports ParticleBase materials using shader '" + ParticleBaseShaderName + "'.");
+                LogWarningOnce("NBParticleLocalTransformHelper only supports ParticleBase materials using shader '" +
+                               ParticleBaseShaderName + "' or '" + NBShader2ShaderName + "'.");
                 return false;
             }
 
             return true;
+        }
+
+        private static bool IsSupportedShader(Shader shader)
+        {
+            return shader.name == ParticleBaseShaderName || shader.name == NBShader2ShaderName;
         }
 
         private Material GetRuntimeMaterial()

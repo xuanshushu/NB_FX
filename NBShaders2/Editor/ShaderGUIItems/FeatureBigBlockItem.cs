@@ -96,26 +96,29 @@ namespace NBShaderEditor
             AddVectorComponent(rootItem, refineBlock, "_MaskRefineVec", 1, "相乘", false);
             AddVectorComponent(rootItem, refineBlock, "_MaskRefineVec", 2, "偏移(相加)", false);
 
-            new PNoiseBlendModeItem(rootItem, maskBlock, W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_MASK, "_MaskPNoiseBlendOpacity", () => Content("遮罩程序噪波混合"));
+            new PNoiseBlendModeItem(rootItem, maskBlock, W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_MASK, "_MaskPNoiseBlendOpacity", () => Content("遮罩程序噪波混合"),
+                () => rootItem.Context.ProgramNoiseEnabled == MixedBool.True);
             AddMaskMap(rootItem, maskBlock, "_MaskMap", "_MaskMapGradientToggle", "_MaskUVModeFoldOut", "遮罩",
                 W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP,
                 W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1,
                 W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_MASKMAP,
                 W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT,
-                1);
+                1,
+                "_MaskMapFoldOut");
             new CustomDataSelectItem(rootItem, maskBlock, W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X, 0, () => Content("Mask图X轴偏移自定义曲线"));
             new CustomDataSelectItem(rootItem, maskBlock, W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y, 0, () => Content("Mask图Y轴偏移自定义曲线"));
             new Vector2LineItem(rootItem, maskBlock, "_MaskMapOffsetAnition", true, () => Content("遮罩偏移速度"));
             AddSlider(rootItem, maskBlock, "_MaskMapUVRotation", "遮罩旋转", 0f, 360f);
             PropertyToggleBlockItem rotateBlock = ToggleBlock(
                 rootItem,
-                "_MaskMapFoldOut",
+                "_MaskRotationFoldOut",
                 "_Mask_RotationToggle",
                 "遮罩旋转速度",
                 W9ParticleShaderFlags.FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON,
                 parent: maskBlock);
             AddFloat(rootItem, rotateBlock, "_MaskMapRotationSpeed", "旋转速度");
-            AddSlider(rootItem, maskBlock, "_MaskDistortion_intensity", "遮罩扭曲强度", rangePropertyName: "MaskDistortionIntensityRangeVec");
+            ShaderGUIItem maskNoiseAffect = new NoiseAffectItem(rootItem, maskBlock);
+            AddSlider(rootItem, maskNoiseAffect, "_MaskDistortion_intensity", "遮罩扭曲强度", rangePropertyName: "MaskDistortionIntensityRangeVec");
 
             PropertyToggleBlockItem mask2Block = ToggleBlock(
                 rootItem,
@@ -189,20 +192,21 @@ namespace NBShaderEditor
 
             new PopupItem(rootItem, noiseBlock, "_DistortMode", () => Content("扭曲模式"), DistortModeNames,
                 property => rootItem.SyncService.ApplyToggleKeyword("_DISTORT_REFRACTION", property.floatValue > 0.5f));
-            AddTextureWithWrap(rootItem, noiseBlock, "_NoiseMap", "扭曲贴图", W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_NOISEMAP,
+            TextureRelatedFoldOutItem noiseMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, noiseBlock, "_NoiseMap", "扭曲贴图", "_NoiseMapFoldOut", W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_NOISEMAP,
                 isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            new UVModeSelectItem(rootItem, noiseBlock, "_NoiseUVModeFoldOut", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MAP, 0, () => Content("扭曲贴图UV来源"), "_NoiseMap",
+            new UVModeSelectItem(rootItem, noiseMapRelatedFoldOut, "_NoiseUVModeFoldOut", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MAP, 0, () => Content("扭曲贴图UV来源"), "_NoiseMap",
                 isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            new Vector2LineItem(rootItem, noiseBlock, "_DistortionDirection", true, () => Content("扭曲方向强度"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            new CustomDataSelectItem(rootItem, noiseBlock, W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X, 2, () => Content("扭曲方向强度X自定义曲线"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            new CustomDataSelectItem(rootItem, noiseBlock, W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y, 2, () => Content("扭曲方向强度Y自定义曲线"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            AddSlider(rootItem, noiseBlock, "_NoiseMapUVRotation", "扭曲旋转", 0f, 360f, isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            new Vector2LineItem(rootItem, noiseBlock, "_NoiseOffset", true, () => Content("扭曲偏移速度"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            AddToggle(rootItem, noiseBlock, "_DistortionBothDirection_Toggle", "0.5为中值，双向扭曲",
+            new Vector2LineItem(rootItem, noiseMapRelatedFoldOut, "_DistortionDirection", true, () => Content("扭曲方向强度"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
+            new CustomDataSelectItem(rootItem, noiseMapRelatedFoldOut, W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X, 2, () => Content("扭曲方向强度X自定义曲线"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
+            new CustomDataSelectItem(rootItem, noiseMapRelatedFoldOut, W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y, 2, () => Content("扭曲方向强度Y自定义曲线"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
+            AddSlider(rootItem, noiseMapRelatedFoldOut, "_NoiseMapUVRotation", "扭曲旋转", 0f, 360f, isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
+            new Vector2LineItem(rootItem, noiseMapRelatedFoldOut, "_NoiseOffset", true, () => Content("扭曲偏移速度"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
+            AddToggle(rootItem, noiseMapRelatedFoldOut, "_DistortionBothDirection_Toggle", "0.5为中值，双向扭曲",
                 enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON, enabled),
                 () => IsPropertyMode(rootItem, "_DistortMode", 0));
             AddSlider(rootItem, noiseBlock, "_RefractionIOR", "折射率", 0f, 5f, isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 1));
-            new PNoiseBlendModeItem(rootItem, noiseBlock, W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT, "_DistortPNoiseBlendOpacity", () => Content("扭曲程序噪波混合"));
+            new PNoiseBlendModeItem(rootItem, noiseBlock, W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT, "_DistortPNoiseBlendOpacity", () => Content("扭曲程序噪波混合"),
+                () => rootItem.Context.ProgramNoiseEnabled == MixedBool.True);
 
             PropertyToggleBlockItem noiseMaskBlock = ToggleBlock(
                 rootItem,
@@ -224,7 +228,8 @@ namespace NBShaderEditor
                 W9ParticleShaderFlags.FLAG_BIT_PARTICLE_CHORATICABERRAT,
                 parent: noiseBlock,
                 bold: true);
-            AddToggle(rootItem, chromaticBlock, "_Distortion_Choraticaberrat_WithNoise_Toggle", "色散强度受扭曲强度影响",
+            ShaderGUIItem chromaticNoiseAffect = new NoiseAffectItem(rootItem, chromaticBlock);
+            AddToggle(rootItem, chromaticNoiseAffect, "_Distortion_Choraticaberrat_WithNoise_Toggle", "色散强度受扭曲强度影响",
                 enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE, enabled));
             AddVectorComponent(rootItem, chromaticBlock, "_DistortionDirection", 2, "色散强度", false);
             new CustomDataSelectItem(rootItem, chromaticBlock, W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY, 0, () => Content("色散强度自定义曲线"));
@@ -239,7 +244,8 @@ namespace NBShaderEditor
             new CustomDataSelectItem(rootItem, block, W9ParticleShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y, 3, () => Content("流光贴图Y轴偏移自定义曲线"));
             AddSlider(rootItem, block, "_EmissionMapUVRotation", "流光贴图旋转", 0f, 360f);
             new Vector2LineItem(rootItem, block, "_EmissionMapUVOffset", true, () => Content("流光贴图偏移速度"));
-            AddFloat(rootItem, block, "_Emi_Distortion_intensity", "流光贴图扭曲强度");
+            ShaderGUIItem emissionNoiseAffect = new NoiseAffectItem(rootItem, block);
+            AddFloat(rootItem, emissionNoiseAffect, "_Emi_Distortion_intensity", "流光贴图扭曲强度");
             AddFloat(rootItem, block, "_EmissionMapColorIntensity", "流光颜色强度");
         }
 
@@ -252,7 +258,8 @@ namespace NBShaderEditor
             new CustomDataSelectItem(rootItem, block, W9ParticleShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y, 3, () => Content("颜色渐变贴图Y轴偏移自定义曲线"));
             AddVectorComponent(rootItem, block, "_ColorBlendVec", 3, "颜色渐变贴图旋转", true, 0f, 360f);
             new Vector2LineItem(rootItem, block, "_ColorBlendMapOffset", true, () => Content("颜色渐变贴图偏移速度"));
-            AddVectorComponent(rootItem, block, "_ColorBlendVec", 0, "颜色渐变扭曲强度", true);
+            ShaderGUIItem colorBlendNoiseAffect = new NoiseAffectItem(rootItem, block);
+            AddVectorComponent(rootItem, colorBlendNoiseAffect, "_ColorBlendVec", 0, "颜色渐变扭曲强度", true);
             new PopupItem(rootItem, block, "_ColorBlendAlphaMultiplyMode", () => Content("颜色渐变图Alpha作用"), OnOffNames,
                 property => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE, property.floatValue > 0.5f));
             AddVectorComponent(rootItem, block, "_ColorBlendVec", 2, "颜色渐变图Alpha强度", true);
@@ -283,19 +290,21 @@ namespace NBShaderEditor
         {
             PropertyToggleBlockItem block = ToggleBlock(rootItem, "_DissolveBlockFoldOut", "_Dissolve_Toggle", "溶解", keyword: "_DISSOLVE", bold: true);
             AddToggle(rootItem, block, "_NB_Debug_Dissolve", "溶解度黑白值测试", enabled => rootItem.SyncService.ApplyToggleKeyword("NB_DEBUG_DISSOLVE", enabled));
-            AddTextureWithWrap(rootItem, block, "_DissolveMap", "溶解贴图", W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MAP);
-            new ColorChannelSelectItem(rootItem, block, W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP, 0, () => Content("溶解贴图通道选择"));
-            new CustomDataSelectItem(rootItem, block, W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X, 1, () => Content("溶解贴图X轴偏移自定义曲线"));
-            new CustomDataSelectItem(rootItem, block, W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y, 1, () => Content("溶解贴图Y轴偏移自定义曲线"));
-            new UVModeSelectItem(rootItem, block, "_DissolveUVModeFoldOut", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP, 0, () => Content("溶解贴图UV来源"), "_DissolveMap");
-            new Vector2LineItem(rootItem, block, "_DissolveOffsetRotateDistort", true, () => Content("溶解贴图偏移速度"));
-            AddVectorComponent(rootItem, block, "_DissolveOffsetRotateDistort", 2, "溶解贴图旋转", true, 0f, 360f);
-            new PNoiseBlendModeItem(rootItem, block, W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE, "_DissolvePNoiseBlendOpacity", () => Content("溶解程序噪波混合"));
+            TextureRelatedFoldOutItem dissolveMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, block, "_DissolveMap", "溶解贴图", "_DissolveMapFoldOut", W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MAP);
+            new ColorChannelSelectItem(rootItem, dissolveMapRelatedFoldOut, W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP, 0, () => Content("溶解贴图通道选择"));
+            new CustomDataSelectItem(rootItem, dissolveMapRelatedFoldOut, W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X, 1, () => Content("溶解贴图X轴偏移自定义曲线"));
+            new CustomDataSelectItem(rootItem, dissolveMapRelatedFoldOut, W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y, 1, () => Content("溶解贴图Y轴偏移自定义曲线"));
+            new UVModeSelectItem(rootItem, dissolveMapRelatedFoldOut, "_DissolveUVModeFoldOut", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP, 0, () => Content("溶解贴图UV来源"), "_DissolveMap");
+            new Vector2LineItem(rootItem, dissolveMapRelatedFoldOut, "_DissolveOffsetRotateDistort", true, () => Content("溶解贴图偏移速度"));
+            AddVectorComponent(rootItem, dissolveMapRelatedFoldOut, "_DissolveOffsetRotateDistort", 2, "溶解贴图旋转", true, 0f, 360f);
+            new PNoiseBlendModeItem(rootItem, block, W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE, "_DissolvePNoiseBlendOpacity", () => Content("溶解程序噪波混合"),
+                () => rootItem.Context.ProgramNoiseEnabled == MixedBool.True);
             AddVectorComponent(rootItem, block, "_Dissolve", 1, "溶解值Pow", true, 0f, 10f);
             AddSlider(rootItem, block, "_Dissolve", "溶解强度", rangePropertyName: "DissolveXRangeVec", vectorComponentIndex: 0);
             new CustomDataSelectItem(rootItem, block, W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY, 0, () => Content("溶解强度自定义曲线"));
             AddVectorComponent(rootItem, block, "_Dissolve", 3, "溶解硬软度", true, 0.001f, 1f);
-            AddVectorComponent(rootItem, block, "_DissolveOffsetRotateDistort", 3, "溶解贴图扭曲强度", false);
+            ShaderGUIItem dissolveNoiseAffect = new NoiseAffectItem(rootItem, block);
+            AddVectorComponent(rootItem, dissolveNoiseAffect, "_DissolveOffsetRotateDistort", 3, "溶解贴图扭曲强度", false);
 
             PropertyToggleBlockItem lineBlock = ToggleBlock(rootItem, "_DissolveLineFoldOut", "_DissolveLineMaskToggle", "溶解描边",
                 W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK, 1, parent: block);
@@ -360,7 +369,8 @@ namespace NBShaderEditor
                 W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND,
                 "_ProgramNoiseBaseBlendOpacity",
                 () => Content("两种程序噪波混合"),
-                () => rootItem.Context.IsToggleOn("_ProgramNoise_Simple_Toggle") &&
+                () => rootItem.Context.ProgramNoiseEnabled == MixedBool.True &&
+                      rootItem.Context.IsToggleOn("_ProgramNoise_Simple_Toggle") &&
                       rootItem.Context.IsToggleOn("_ProgramNoise_Voronoi_Toggle"));
         }
 
@@ -384,8 +394,8 @@ namespace NBShaderEditor
             AddToggle(rootItem, block, "_NB_Debug_Fresnel", "菲涅尔测试颜色", enabled => rootItem.SyncService.ApplyToggleKeyword("NB_DEBUG_FRESNEL", enabled));
             new PopupItem(rootItem, block, "_FresnelMode", () => Content("菲涅尔模式"), FresnelModeNames,
                 property => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON, property.floatValue > 0.5f));
-            new ColorItem(rootItem, block, "_FresnelColor", () => Content("菲涅尔颜色"));
-            AddFloat(rootItem, block, "_FresnelFadeDistance", "菲涅尔透明乘数");
+            Func<bool> isFresnelColorMode = () => IsPropertyMode(rootItem, "_FresnelMode", 0);
+            new ColorItem(rootItem, block, "_FresnelColor", () => Content("菲涅尔颜色"), isFresnelColorMode);
             AddVectorComponent(rootItem, block, "_FresnelUnit", 2, "菲涅尔强度", true);
             AddVectorComponent(rootItem, block, "_FresnelUnit", 0, "菲涅尔位置", true, -1f, 1f);
             new CustomDataSelectItem(rootItem, block, W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET, 0, () => Content("菲涅尔位置自定义曲线"));
@@ -394,7 +404,8 @@ namespace NBShaderEditor
             AddToggle(rootItem, block, "_InvertFresnel_Toggle", "翻转菲涅尔",
                 enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON, enabled));
             AddToggle(rootItem, block, "_FresnelColorAffectByAlpha", "菲涅尔颜色受Alpha影响",
-                enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA, enabled));
+                enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA, enabled),
+                isFresnelColorMode);
             AddVectorComponent(rootItem, block, "_FresnelRotation", 0, "菲涅尔方向偏移X", false);
             AddVectorComponent(rootItem, block, "_FresnelRotation", 1, "菲涅尔方向偏移Y", false);
             AddVectorComponent(rootItem, block, "_FresnelRotation", 2, "菲涅尔方向偏移Z", false);
@@ -416,9 +427,10 @@ namespace NBShaderEditor
                 enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_VERTEXOFFSET_START_FROM_ZERO, enabled, 1));
             AddToggle(rootItem, block, "_VertexOffset_NormalDir_Toggle", "顶点偏移使用法线方向",
                 enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR, enabled));
-            AddVectorComponent(rootItem, block, "_VertexOffset_CustomDir", 0, "顶点偏移本地方向X", false);
-            AddVectorComponent(rootItem, block, "_VertexOffset_CustomDir", 1, "顶点偏移本地方向Y", false);
-            AddVectorComponent(rootItem, block, "_VertexOffset_CustomDir", 2, "顶点偏移本地方向Z", false);
+            Func<bool> showCustomDirection = () => IsPropertyOff(rootItem, "_VertexOffset_NormalDir_Toggle");
+            AddVectorComponent(rootItem, block, "_VertexOffset_CustomDir", 0, "顶点偏移本地方向X", false, isVisible: showCustomDirection);
+            AddVectorComponent(rootItem, block, "_VertexOffset_CustomDir", 1, "顶点偏移本地方向Y", false, isVisible: showCustomDirection);
+            AddVectorComponent(rootItem, block, "_VertexOffset_CustomDir", 2, "顶点偏移本地方向Z", false, isVisible: showCustomDirection);
 
             PropertyToggleBlockItem maskBlock = ToggleBlock(rootItem, "_VertexOffsetMaskBlockFoldOut", "_VertexOffset_Mask_Toggle", "顶点偏移遮罩",
                 W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP, 1, parent: block);
@@ -452,6 +464,8 @@ namespace NBShaderEditor
             AddSlider(rootItem, block, "_ParallaxMapping_Intensity", "视差", rangePropertyName: "_ParallaxMapping_IntensityRangeVec");
             AddVectorComponent(rootItem, block, "_ParallaxMapping_Vec", 0, "遮蔽视差最小层数", true, 0f, 100f);
             AddVectorComponent(rootItem, block, "_ParallaxMapping_Vec", 1, "遮蔽视差最大层数", true, 0f, 100f);
+            new HelpBoxItem(rootItem, block, () => Text("feature.parallax.layerWarning.message", "遮蔽视差层数过高将影响性能"), MessageType.Warning,
+                () => IsParallaxMaxLayerHigh(rootItem));
         }
 
         private void AddPortal(NBShaderRootItem rootItem)
@@ -463,7 +477,7 @@ namespace NBShaderEditor
 
         private void AddFlipbook(NBShaderRootItem rootItem)
         {
-            AddToggle(rootItem, this, "_FlipbookBlending", "序列帧融帧(丝滑)", rootItem.SyncService.ApplyFlipbookEnabled);
+            new FlipbookToggleItem(rootItem, this);
         }
 
         private void AddVat(NBShaderRootItem rootItem)
@@ -567,13 +581,24 @@ namespace NBShaderEditor
             int colorChannelFlagPos,
             int uvModeFlagPos,
             int gradientFlag,
-            int gradientFlagIndex)
+            int gradientFlagIndex,
+            string textureFoldOutPropertyName = null)
         {
             new PopupItem(rootItem, parent, modePropertyName, () => Content(label + "模式"), TextureGradientNames,
                 property => rootItem.SyncService.ApplyToggleFlag(gradientFlag, property.floatValue > 0.5f, gradientFlagIndex));
-            AddTextureWithWrap(rootItem, parent, texturePropertyName, label + "贴图", wrapFlag,
-                isVisible: () => IsPropertyMode(rootItem, modePropertyName, 0));
-            new ColorChannelSelectItem(rootItem, parent, colorChannelFlagPos, 0, () => Content(label + "通道选择"),
+            ShaderGUIItem textureParent = parent;
+            if (string.IsNullOrEmpty(textureFoldOutPropertyName))
+            {
+                AddTextureWithWrap(rootItem, parent, texturePropertyName, label + "贴图", wrapFlag,
+                    isVisible: () => IsPropertyMode(rootItem, modePropertyName, 0));
+            }
+            else
+            {
+                textureParent = AddTextureWithRelatedFoldOut(rootItem, parent, texturePropertyName, label + "贴图", textureFoldOutPropertyName, wrapFlag,
+                    isVisible: () => IsPropertyMode(rootItem, modePropertyName, 0));
+            }
+
+            new ColorChannelSelectItem(rootItem, textureParent, colorChannelFlagPos, 0, () => Content(label + "通道选择"),
                 () => IsPropertyMode(rootItem, modePropertyName, 0));
             AddAlphaGradient(rootItem, parent, label + "渐变", texturePropertyName + "GradientCount", texturePropertyName + "GradientFloat",
                 () => IsPropertyMode(rootItem, modePropertyName, 1));
@@ -581,6 +606,36 @@ namespace NBShaderEditor
             new WrapModeItem(rootItem, parent, wrapFlag, () => Content(label + "UV Wrap"), 2,
                 () => IsPropertyMode(rootItem, modePropertyName, 1));
             new UVModeSelectItem(rootItem, parent, uvFoldOutPropertyName, uvModeFlagPos, 0, () => Content(label + "UV来源"), texturePropertyName);
+        }
+
+        private TextureRelatedFoldOutItem AddTextureWithRelatedFoldOut(
+            NBShaderRootItem rootItem,
+            ShaderGUIItem parent,
+            string texturePropertyName,
+            string label,
+            string foldOutPropertyName,
+            int wrapFlag,
+            string colorPropertyName = null,
+            Func<bool> isVisible = null)
+        {
+            new TextureItem(
+                rootItem,
+                parent,
+                texturePropertyName,
+                () => Content(label),
+                colorPropertyName,
+                isVisible: isVisible,
+                tillingContentProvider: TillingContent,
+                offsetContentProvider: OffsetContent);
+            TextureRelatedFoldOutItem relatedFoldOut = new TextureRelatedFoldOutItem(
+                rootItem,
+                parent,
+                foldOutPropertyName,
+                texturePropertyName,
+                () => Content(label + "相关功能"),
+                isVisible);
+            new WrapModeItem(rootItem, relatedFoldOut, wrapFlag, () => Content(label + " Wrap"), 2);
+            return relatedFoldOut;
         }
 
         private void AddTextureWithWrap(
@@ -811,6 +866,13 @@ namespace NBShaderEditor
             return rootItem.PropertyInfoDic.TryGetValue(propertyName, out ShaderPropertyInfo info) &&
                    !info.Property.hasMixedValue &&
                    info.Property.floatValue <= 0.5f;
+        }
+
+        private static bool IsParallaxMaxLayerHigh(NBShaderRootItem rootItem)
+        {
+            return rootItem.PropertyInfoDic.TryGetValue("_ParallaxMapping_Vec", out ShaderPropertyInfo info) &&
+                   !info.Property.hasMixedValue &&
+                   info.Property.vectorValue.y >= 20f;
         }
 
         private static bool ShouldDrawWhenFloatOn(NBShaderRootItem rootItem, string propertyName)
@@ -1123,6 +1185,114 @@ namespace NBShaderEditor
                 }
 
                 EditorGUILayout.HelpBox(_messageProvider(), _messageType);
+            }
+        }
+
+        private class NoiseAffectItem : ShaderGUIItem
+        {
+            private readonly NBShaderRootItem _nbRootItem;
+
+            public NoiseAffectItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+                : base(rootItem, parentItem)
+            {
+                _nbRootItem = rootItem;
+            }
+
+            public override void OnGUI()
+            {
+                bool previousMixedValue = EditorGUI.showMixedValue;
+                bool noiseEnabledHasMixedValue = _nbRootItem.Context.NoiseEnabled == MixedBool.Mixed;
+                using (new EditorGUI.DisabledScope(_nbRootItem.Context.NoiseEnabled == MixedBool.False))
+                {
+                    for (int i = 0; i < ChildrenItemList.Count; i++)
+                    {
+                        EditorGUI.showMixedValue = noiseEnabledHasMixedValue;
+                        ChildrenItemList[i].OnGUI();
+                    }
+                }
+
+                EditorGUI.showMixedValue = previousMixedValue;
+            }
+
+            public override void CheckIsPropertyModified(bool isCallByChild = false)
+            {
+                HasModified = false;
+                for (int i = 0; i < ChildrenItemList.Count; i++)
+                {
+                    HasModified |= ChildrenItemList[i].HasModified;
+                }
+
+                ParentItem?.CheckIsPropertyModified(true);
+            }
+        }
+
+        private class FlipbookToggleItem : ToggleItem
+        {
+            private readonly NBShaderRootItem _nbRootItem;
+
+            public FlipbookToggleItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+                : base(
+                    rootItem,
+                    parentItem,
+                    "_FlipbookBlending",
+                    () => Content("序列帧融帧(丝滑)"),
+                    rootItem.SyncService.ApplyFlipbookEnabled)
+            {
+                _nbRootItem = rootItem;
+            }
+
+            public override void DrawBlock()
+            {
+                if (PropertyInfo.Property.hasMixedValue || PropertyInfo.Property.floatValue <= 0.5f)
+                {
+                    return;
+                }
+
+                if (_nbRootItem.Context.MeshSourceMode == MeshSourceMode.Particle ||
+                    _nbRootItem.Context.MeshSourceMode == MeshSourceMode.UIParticle)
+                {
+                    if (HasSpecialUVChannel())
+                    {
+                        EditorGUILayout.HelpBox(
+                            Text(
+                                "feature.flipbook.specialUvWarning.message",
+                                "序列帧融帧和特殊UV通道同时开启，粒子序列帧应该影响UV0和UV1两个通道，特殊通道只能使用UV3（原始UV）"),
+                            MessageType.Warning);
+                    }
+                    else
+                    {
+                        EditorGUILayout.HelpBox(
+                            Text(
+                                "feature.flipbook.particleInfo.message",
+                                "AnimationSheet的AffectUVChannel需要有UV0和UV1"),
+                            MessageType.Info);
+                    }
+
+                    return;
+                }
+
+                if (_nbRootItem.Context.MeshSourceMode == MeshSourceMode.Mesh)
+                {
+                    EditorGUILayout.HelpBox(
+                        Text(
+                            "feature.flipbook.meshInfo.message",
+                            "需要添加AnimationSheetHelper脚本"),
+                        MessageType.Info);
+                }
+            }
+
+            private bool HasSpecialUVChannel()
+            {
+                for (int i = 0; i < _nbRootItem.ShaderFlags.Count; i++)
+                {
+                    if (_nbRootItem.ShaderFlags[i] is W9ParticleShaderFlags flags &&
+                        flags.CheckIsUVModeOn(W9ParticleShaderFlags.UVMode.SpecialUVChannel))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
 

@@ -17,6 +17,7 @@ Shader "Effects/NBShader2"
         _BaseBackColorFoldOut("_BaseBackColorFoldOut",Float) = 0
         _DistanceFadeFoldOut("_DistanceFadeFoldOut",Float) = 0
         _SoftParticlesFoldOut("_SoftParticlesFoldOut",Float) = 0
+        _BaseMapFoldOut("_BaseMapFoldOut",Float) = 0
         _MainTexUVModeFoldOut("_MainTexUVModeFoldOut",Float) = 0
         _GlobalTwirlFoldOut("_GlobalTwirlFoldOut",Float) = 0
         _GlobalPolarFoldOut("_GlobalPolarFoldOut",Float) = 0
@@ -28,6 +29,7 @@ Shader "Effects/NBShader2"
         _MaskRefineFoldOut("_MaskRefineFoldOut",Float) = 0
         _MaskMapFoldOut("_MaskMapFoldOut",Float) = 0
         _MaskUVModeFoldOut("_MaskUVModeFoldOut",Float) = 0
+        _MaskRotationFoldOut("_MaskRotationFoldOut",Float) = 0
         _Mask2BlockFoldOut("_Mask2BlockFoldOut",Float) = 0
         _Mask2UVModeFoldOut("_Mask2UVModeFoldOut",Float) = 0
         _Mask3BlockFoldOut("_Mask3BlockFoldOut",Float) = 0
@@ -143,9 +145,7 @@ Shader "Effects/NBShader2"
         
         _Dissolve_Toggle("__Dissolve_Toggle",Float) = 0
         _DissolveMask_Toggle("__DissolveMask_Toggle",Float) = 0
-        _DissolveVoronoi_Toggle("__DissolveVoronoi_Toggle",Float) = 0
         _Dissolve_useRampMap_Toggle("__Dissolve_useRampMap_Toggle",Float) = 0
-        _Dissolve_Test_Toggle("__Dissolve_Test_Toggle",Float) = 0
         _ProgramNoise_Toggle("_ProgramNoise_Toggle",Float) = 0
         _ProgramNoise_Simple_Toggle("_ProgramNoise_Simple_Toggle",Float) = 0
         _ProgramNoise_Rotate("_ProgramNoise_Rotate",Float) = 0
@@ -287,8 +287,6 @@ Shader "Effects/NBShader2"
         //[Toggle(_JIZUOBIAO)] _N121 ("JIZUOBIAO?", float) = 0
         [HideInInspector]_PolarCoordinatesEnabled ("__PolarCoordinatesEnabled", Float) = 0.0
         _PCCenter ("xy:极坐标中心 z:极坐标强度", vector) = (0.5, 0.5, 1, 0)//位置坐标用的前两个分量，z分量给强度。
-		_WorldPosUVMode("_WorldPosUVMode",Float) = 0
-    	_ObjectPosUVMode("_ObjectPosUVMode",Float) = 0
         
         // 噪波 --------------
         //[Toggle(_NOISEMAP)]_N ("NOISEMAP?", float) =0
@@ -593,7 +591,7 @@ Shader "Effects/NBShader2"
             #pragma exclude_renderers d3d11_9x
             #pragma exclude_renderers d3d9
             
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             // -------------------------------------
             // Material Keywords
@@ -717,7 +715,7 @@ Shader "Effects/NBShader2"
             // -------------------------------------
             // Material Keywords
  
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             // #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _DISTORT_REFRACTION
@@ -831,8 +829,8 @@ Shader "Effects/NBShader2"
             // -------------------------------------
             // Material Keywords
  
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
-            
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+
             #define _SCREEN_DISTORT_MODE
             #define _CAMERA_OPAQUE_DISTORT_PASS
             #pragma shader_feature_local _ _DISTORT_REFRACTION
@@ -890,6 +888,7 @@ Shader "Effects/NBShader2"
 
             //LIGHTING
 			// #pragma shader_feature_local _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
+            #pragma shader_feature_local _FX_LIGHT_MODE_UNLIT
             #pragma shader_feature_local _ _NORMALMAP
             // #pragma shader_feature_local _ _MATCAP
             // #pragma shader_feature_local _ _SPECULAR_COLOR
@@ -942,8 +941,8 @@ Shader "Effects/NBShader2"
             // -------------------------------------
             // Material Keywords
  
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
-            
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+
 			#define _SCREEN_DISTORT_MODE
             #define _DEFERRED_DISTORT_PASS
             #pragma shader_feature_local _ _DISTORT_REFRACTION
@@ -1002,6 +1001,7 @@ Shader "Effects/NBShader2"
 
             //LIGHTING
 			// #pragma shader_feature_local _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
+            #pragma shader_feature_local _FX_LIGHT_MODE_UNLIT
             #pragma shader_feature_local _ _NORMALMAP
             // #pragma shader_feature_local _ _MATCAP
             // #pragma shader_feature_local _ _SPECULAR_COLOR
@@ -1055,7 +1055,7 @@ Shader "Effects/NBShader2"
             // -------------------------------------
             // Material Keywords
  
-            #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
             
             #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _MASKMAP_ON
@@ -1113,6 +1113,7 @@ Shader "Effects/NBShader2"
 
             //LIGHTING
 			// #pragma shader_feature_local _FX_LIGHT_MODE_UNLIT _FX_LIGHT_MODE_BLINN_PHONG _FX_LIGHT_MODE_HALF_LAMBERT _FX_LIGHT_MODE_PBR _FX_LIGHT_MODE_SIX_WAY 
+            #pragma shader_feature_local _FX_LIGHT_MODE_UNLIT
 			#pragma shader_feature_local _ _NORMALMAP
    //          #pragma shader_feature_local _ _MATCAP
    //          #pragma shader_feature_local _ _SPECULAR_COLOR

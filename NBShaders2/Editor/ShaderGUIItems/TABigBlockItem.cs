@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -6,11 +7,14 @@ namespace NBShaderEditor
 {
     public class TABigBlockItem : BigBlockItem
     {
+        private const string StencilConfigAssetPath = "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/StencilConfig.asset";
+
         private readonly NBShaderRootItem _nbRootItem;
         private readonly PropertyToggleBlockItem _zOffsetBlock;
         private readonly RenderQueueItem _renderQueueItem;
         private readonly PropertyToggleBlockItem _customStencilBlock;
         private readonly BlockItem _keywordBlock;
+        private StencilValuesConfig _stencilValuesConfig;
 
         public TABigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(
@@ -48,6 +52,7 @@ namespace NBShaderEditor
                 () => Content("ta.customStencil", "Custom Stencil Test"),
                 onValueChanged: OnCustomStencilChanged,
                 bold: true);
+            new StencilConfigKeyItem(rootItem, _customStencilBlock, this);
             AddFloat(rootItem, _customStencilBlock, "_StencilKeyIndex", "Stencil Config Index");
             AddFloat(rootItem, _customStencilBlock, "_Stencil", "Stencil Value");
             AddPopup(rootItem, _customStencilBlock, "_StencilComp", "Stencil Compare", Enum.GetNames(typeof(CompareFunction)));
@@ -107,6 +112,12 @@ namespace NBShaderEditor
             }
         }
 
+        private string GetStencilKey(int index)
+        {
+            _stencilValuesConfig ??= AssetDatabase.LoadAssetAtPath<StencilValuesConfig>(StencilConfigAssetPath);
+            return _stencilValuesConfig != null ? _stencilValuesConfig.GetKeyByIndex(index) : string.Empty;
+        }
+
         private static void AddFloat(NBShaderRootItem rootItem, ShaderGUIItem parentItem, string propertyName, string label)
         {
             ShaderGUIFloatItem item = new ShaderGUIFloatItem(rootItem, parentItem)
@@ -131,6 +142,44 @@ namespace NBShaderEditor
         private static GUIContent Content(string key, string fallback, string tip = "")
         {
             return NBShaderInspectorLocalization.MakeContent("inspector." + key + ".label", fallback, "inspector." + key + ".tip", tip);
+        }
+
+        private sealed class StencilConfigKeyItem : ShaderGUIItem
+        {
+            private readonly NBShaderRootItem _nbRootItem;
+            private readonly TABigBlockItem _owner;
+
+            public StencilConfigKeyItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, TABigBlockItem owner)
+                : base(rootItem, parentItem)
+            {
+                _nbRootItem = rootItem;
+                _owner = owner;
+            }
+
+            public override void OnGUI()
+            {
+                if (!_nbRootItem.PropertyInfoDic.TryGetValue("_StencilKeyIndex", out ShaderPropertyInfo info))
+                {
+                    return;
+                }
+
+                string key = string.Empty;
+                bool hasMixedValue = info.Property.hasMixedValue;
+                if (!hasMixedValue)
+                {
+                    key = _owner.GetStencilKey(Mathf.RoundToInt(info.Property.floatValue));
+                }
+
+                EditorGUI.showMixedValue = hasMixedValue;
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.TextField(
+                        NBShaderInspectorLocalization.GetInspectorText("ta.stencil.currentConfig", "当前Config:"),
+                        key);
+                }
+
+                EditorGUI.showMixedValue = false;
+            }
         }
     }
 }

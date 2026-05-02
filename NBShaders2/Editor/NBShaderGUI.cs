@@ -66,7 +66,11 @@ namespace NBShaderEditor
             _modeBlock.OnGUI();
             _baseBlock.OnGUI();
             _mainTexBlock.OnGUI();
-            _lightBlock.OnGUI();
+            if (Context.UIEffectEnabled == MixedBool.False)
+            {
+                _lightBlock.OnGUI();
+            }
+
             _featureBlock.OnGUI();
             _taBlock.OnGUI();
             SyncService.SyncMaterialState();

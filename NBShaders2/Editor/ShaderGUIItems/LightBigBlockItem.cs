@@ -105,11 +105,17 @@ namespace NBShaderEditor
                 _bumpBlock,
                 "_BumpTex",
                 () => Content("light.bump.texture", "Normal Map"),
-                drawScaleOffset: false);
-            new WrapModeItem(rootItem, _bumpBlock, W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_BUMPTEX, () => Content("light.bump.wrap", "Normal Map Wrap"));
-            new UVModeSelectItem(
+                drawScaleOffset: true);
+            TextureRelatedFoldOutItem bumpTexRelatedFoldOut = new TextureRelatedFoldOutItem(
                 rootItem,
                 _bumpBlock,
+                "_BumpTexFoldOut",
+                "_BumpTex",
+                () => Content("light.bump.related", "Normal Map Related"));
+            new WrapModeItem(rootItem, bumpTexRelatedFoldOut, W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_BUMPTEX, () => Content("light.bump.wrap", "Normal Map Wrap"));
+            new UVModeSelectItem(
+                rootItem,
+                bumpTexRelatedFoldOut,
                 "_BumpUVModeFoldOut",
                 W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_BUMPMAP,
                 0,
@@ -117,11 +123,11 @@ namespace NBShaderEditor
                 "_BumpTex");
             new ToggleItem(
                 rootItem,
-                _bumpBlock,
+                bumpTexRelatedFoldOut,
                 "_BumpMapMaskMode",
                 () => Content("light.bump.maskMode", "Normal Map Multi Channel"),
                 enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE, enabled));
-            ShaderGUISliderItem bumpScaleItem = new ShaderGUISliderItem(rootItem, _bumpBlock)
+            ShaderGUISliderItem bumpScaleItem = new ShaderGUISliderItem(rootItem, bumpTexRelatedFoldOut)
             {
                 PropertyName = "_BumpScale",
                 GuiContent = Content("light.bump.scale", "Normal Strength"),
@@ -215,6 +221,7 @@ namespace NBShaderEditor
             _matCapBlock.OnGUI();
             _sixWayPositiveItem.OnGUI();
             _sixWayNegativeItem.OnGUI();
+            DrawSixWayWarning();
             _sixWayAbsorptionToggleItem.OnGUI();
             _sixWayAbsorptionStrengthItem.OnGUI();
             _sixWayEmissionRampItem.OnGUI();
@@ -225,6 +232,20 @@ namespace NBShaderEditor
         private bool IsSixWay()
         {
             return _nbRootItem.Context.FxLightMode == FxLightMode.SixWay;
+        }
+
+        private void DrawSixWayWarning()
+        {
+            if (!IsSixWay())
+            {
+                return;
+            }
+
+            EditorGUILayout.HelpBox(
+                NBShaderInspectorLocalization.GetInspectorText(
+                    "light.sixway.uvWarning.message",
+                    "六路UV跟随主贴图UV及颜色"),
+                MessageType.Warning);
         }
 
         private void SyncSixWayRampFlag(MaterialProperty rampProperty)

@@ -57,7 +57,7 @@ namespace NBShaderEditor
 	        return isOpen;
         }
 
-        private void SetOpen(bool isOpen)
+        public void SetOpen(bool isOpen)
         {
 	        animBool.target = isOpen;
 	        _propertyInfo.Property.floatValue = isOpen ? 1f : 0f;

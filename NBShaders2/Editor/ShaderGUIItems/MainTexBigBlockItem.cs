@@ -8,6 +8,7 @@ namespace NBShaderEditor
     {
         private readonly NBShaderRootItem _nbRootItem;
         private readonly TexturePropertyGroupItem _baseMapGroupItem;
+        private readonly TextureRelatedFoldOutItem _baseMapRelatedFoldOutItem;
         private readonly ColorLineItem _uiColorItem;
         private readonly TextureScaleOffsetItem _uiMainTexScaleOffsetItem;
         private readonly ColorChannelSelectItem _alphaChannelItem;
@@ -46,6 +47,16 @@ namespace NBShaderEditor
                 tillingContentProvider: TillingContent,
                 offsetContentProvider: OffsetContent);
 
+            _baseMapRelatedFoldOutItem = new TextureRelatedFoldOutItem(
+                rootItem,
+                this,
+                "_BaseMapFoldOut",
+                "_BaseMap",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.basemap.related.label",
+                    "Main Texture Related"),
+                () => rootItem.Context.UseGraphicMainTex == MixedBool.False);
+
             _graphicMainTexHelpBox = new HelpBoxItem(
                 rootItem,
                 this,
@@ -75,7 +86,7 @@ namespace NBShaderEditor
 
             _alphaChannelItem = new ColorChannelSelectItem(
                 rootItem,
-                this,
+                _baseMapRelatedFoldOutItem,
                 W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA,
                 3,
                 () => NBShaderInspectorLocalization.MakeContent(
@@ -84,7 +95,7 @@ namespace NBShaderEditor
 
             _baseMapWrapModeItem = new WrapModeItem(
                 rootItem,
-                this,
+                _baseMapRelatedFoldOutItem,
                 W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_BASEMAP,
                 () => NBShaderInspectorLocalization.MakeContent(
                     "inspector.maintex.wrap.label",
@@ -94,7 +105,7 @@ namespace NBShaderEditor
 
             _uvModeItem = new UVModeSelectItem(
                 rootItem,
-                this,
+                _baseMapRelatedFoldOutItem,
                 "_MainTexUVModeFoldOut",
                 W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_MAINTEX,
                 0,
@@ -106,7 +117,7 @@ namespace NBShaderEditor
 
             _offsetXCustomDataItem = new CustomDataSelectItem(
                 rootItem,
-                this,
+                _baseMapRelatedFoldOutItem,
                 W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X,
                 0,
                 () => NBShaderInspectorLocalization.MakeContent(
@@ -116,7 +127,7 @@ namespace NBShaderEditor
 
             _offsetYCustomDataItem = new CustomDataSelectItem(
                 rootItem,
-                this,
+                _baseMapRelatedFoldOutItem,
                 W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y,
                 0,
                 () => NBShaderInspectorLocalization.MakeContent(
@@ -126,7 +137,7 @@ namespace NBShaderEditor
 
             _baseMapOffsetSpeedItem = new Vector2LineItem(
                 rootItem,
-                this,
+                _baseMapRelatedFoldOutItem,
                 "_BaseMapMaskMapOffset",
                 true,
                 () => NBShaderInspectorLocalization.MakeContent(
@@ -134,7 +145,7 @@ namespace NBShaderEditor
                     "Offset Speed"),
                 isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.False);
 
-            _baseMapRotationItem = new ShaderGUISliderItem(rootItem, this)
+            _baseMapRotationItem = new ShaderGUISliderItem(rootItem, _baseMapRelatedFoldOutItem)
             {
                 PropertyName = "_BaseMapUVRotation",
                 GuiContent = NBShaderInspectorLocalization.MakeContent(
@@ -145,7 +156,7 @@ namespace NBShaderEditor
             };
             _baseMapRotationItem.InitTriggerByChild();
 
-            _baseMapRotationSpeedItem = new ShaderGUIFloatItem(rootItem, this)
+            _baseMapRotationSpeedItem = new ShaderGUIFloatItem(rootItem, _baseMapRelatedFoldOutItem)
             {
                 PropertyName = "_BaseMapUVRotationSpeed",
                 GuiContent = NBShaderInspectorLocalization.MakeContent(
@@ -154,7 +165,7 @@ namespace NBShaderEditor
             };
             _baseMapRotationSpeedItem.InitTriggerByChild();
 
-            _texDistortionIntensityItem = new ShaderGUISliderItem(rootItem, this)
+            _texDistortionIntensityItem = new ShaderGUISliderItem(rootItem, _baseMapRelatedFoldOutItem)
             {
                 PropertyName = "_TexDistortion_intensity",
                 GuiContent = NBShaderInspectorLocalization.MakeContent(
@@ -166,7 +177,7 @@ namespace NBShaderEditor
 
             _pNoiseBlendModeItem = new PNoiseBlendModeItem(
                 rootItem,
-                this,
+                _baseMapRelatedFoldOutItem,
                 W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_MAINTEX,
                 "_MainTexPNoiseBlendOpacity",
                 () => NBShaderInspectorLocalization.MakeContent(
@@ -197,6 +208,18 @@ namespace NBShaderEditor
 
             _uiColorItem.OnGUI();
             _uiMainTexScaleOffsetItem.OnGUI();
+            if (_nbRootItem.Context.UseGraphicMainTex == MixedBool.False)
+            {
+                _baseMapRelatedFoldOutItem.OnGUI();
+            }
+            else
+            {
+                DrawMainTexRelatedItems();
+            }
+        }
+
+        private void DrawMainTexRelatedItems()
+        {
             _alphaChannelItem.OnGUI();
             _baseMapWrapModeItem.OnGUI();
             _uvModeItem.OnGUI();
@@ -209,9 +232,16 @@ namespace NBShaderEditor
                 _baseMapRotationSpeedItem.OnGUI();
             }
 
-            if (_nbRootItem.Context.NoiseEnabled == MixedBool.True)
+            if (_nbRootItem.Context.UseGraphicMainTex == MixedBool.False)
             {
-                _texDistortionIntensityItem.OnGUI();
+                bool previousMixedValue = EditorGUI.showMixedValue;
+                EditorGUI.showMixedValue = _nbRootItem.Context.NoiseEnabled == MixedBool.Mixed;
+                using (new EditorGUI.DisabledScope(_nbRootItem.Context.NoiseEnabled == MixedBool.False))
+                {
+                    _texDistortionIntensityItem.OnGUI();
+                }
+
+                EditorGUI.showMixedValue = previousMixedValue;
             }
 
             _pNoiseBlendModeItem.OnGUI();

@@ -267,6 +267,7 @@ namespace NBShaderEditor
             _zTestItem.OnGUI();
             _cullItem.OnGUI();
             _backFirstPassItem.OnGUI();
+            DrawBackFirstPassWarning();
             _forceZWriteItem.OnGUI();
             _baseBackColorBlock.OnGUI();
             _distanceFadeBlock.OnGUI();
@@ -297,6 +298,23 @@ namespace NBShaderEditor
         private bool IsParticleMode()
         {
             return _nbRootItem.Context.ParticleMode == MixedBool.True;
+        }
+
+        private void DrawBackFirstPassWarning()
+        {
+            if (!Is3DTransparent() ||
+                !_nbRootItem.PropertyInfoDic.ContainsKey("_BackFirstPassToggle") ||
+                _nbRootItem.PropertyInfoDic["_BackFirstPassToggle"].Property.hasMixedValue ||
+                _nbRootItem.PropertyInfoDic["_BackFirstPassToggle"].Property.floatValue <= 0.5f)
+            {
+                return;
+            }
+
+            EditorGUILayout.HelpBox(
+                NBShaderInspectorLocalization.GetInspectorText(
+                    "base.backFirstPass.warning",
+                    "预渲染反面会导致打断动态合批，请谨慎使用。"),
+                MessageType.Warning);
         }
 
         private void OnBackFirstPassChanged(bool enabled)
