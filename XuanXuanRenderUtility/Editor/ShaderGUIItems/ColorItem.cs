@@ -38,7 +38,10 @@ namespace NBShaderEditor
             EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
             EditorGUI.BeginChangeCheck();
             bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, PropertyInfo.Property);
-            color = EditorGUI.ColorField(ControlRect, GUIContent.none, color, true, true, hdr);
+            using (new EditorGUIIndentLevelScope(0))
+            {
+                color = EditorGUI.ColorField(ControlRect, GUIContent.none, color, true, true, hdr);
+            }
             EndAnimatedPropertyBackground(animatedScope);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
@@ -106,7 +109,10 @@ namespace NBShaderEditor
             EditorGUI.showMixedValue = property.hasMixedValue;
             EditorGUI.BeginChangeCheck();
             bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
-            color = EditorGUI.ColorField(ControlRect, GUIContent.none, color, true, true, hdr);
+            using (new EditorGUIIndentLevelScope(0))
+            {
+                color = EditorGUI.ColorField(ControlRect, GUIContent.none, color, true, true, hdr);
+            }
             EndAnimatedPropertyBackground(animatedScope);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())

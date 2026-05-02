@@ -1,4 +1,5 @@
 using UnityEditor;
+using NBShader;
 
 namespace NBShaderEditor
 {
@@ -8,9 +9,16 @@ namespace NBShaderEditor
         private readonly TexturePropertyGroupItem _baseMapGroupItem;
         private readonly ColorLineItem _uiColorItem;
         private readonly TextureScaleOffsetItem _uiMainTexScaleOffsetItem;
+        private readonly ColorChannelSelectItem _alphaChannelItem;
+        private readonly WrapModeItem _baseMapWrapModeItem;
+        private readonly UVModeSelectItem _uvModeItem;
+        private readonly CustomDataSelectItem _offsetXCustomDataItem;
+        private readonly CustomDataSelectItem _offsetYCustomDataItem;
         private readonly Vector2LineItem _baseMapOffsetSpeedItem;
         private readonly ShaderGUISliderItem _baseMapRotationItem;
         private readonly ShaderGUIFloatItem _baseMapRotationSpeedItem;
+        private readonly ShaderGUISliderItem _texDistortionIntensityItem;
+        private readonly PNoiseBlendModeItem _pNoiseBlendModeItem;
         private readonly HelpBoxItem _graphicMainTexHelpBox;
 
         public MainTexBigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
@@ -60,6 +68,57 @@ namespace NBShaderEditor
                 isVectorProperty: true,
                 isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.True);
 
+            _alphaChannelItem = new ColorChannelSelectItem(
+                rootItem,
+                this,
+                W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA,
+                3,
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.alphaChannel.label",
+                    "Alpha Channel"));
+
+            _baseMapWrapModeItem = new WrapModeItem(
+                rootItem,
+                this,
+                W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_BASEMAP,
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.wrap.label",
+                    "Main Texture Wrap"),
+                2,
+                () => rootItem.Context.UseGraphicMainTex == MixedBool.False);
+
+            _uvModeItem = new UVModeSelectItem(
+                rootItem,
+                this,
+                "_MainTexUVModeFoldOut",
+                W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_MAINTEX,
+                0,
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.uvmode.label",
+                    "Main Texture UV Source"),
+                forceEnable: true,
+                isVisible: () => rootItem.Context.MeshSourceMode != MeshSourceMode.UIEffectSprite);
+
+            _offsetXCustomDataItem = new CustomDataSelectItem(
+                rootItem,
+                this,
+                W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X,
+                0,
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.customdata.offsetx.label",
+                    "Main Texture Offset X Custom Data"),
+                () => rootItem.Context.ParticleMode == MixedBool.True);
+
+            _offsetYCustomDataItem = new CustomDataSelectItem(
+                rootItem,
+                this,
+                W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y,
+                0,
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.customdata.offsety.label",
+                    "Main Texture Offset Y Custom Data"),
+                () => rootItem.Context.ParticleMode == MixedBool.True);
+
             _baseMapOffsetSpeedItem = new Vector2LineItem(
                 rootItem,
                 this,
@@ -90,6 +149,26 @@ namespace NBShaderEditor
             };
             _baseMapRotationSpeedItem.InitTriggerByChild();
 
+            _texDistortionIntensityItem = new ShaderGUISliderItem(rootItem, this)
+            {
+                PropertyName = "_TexDistortion_intensity",
+                GuiContent = NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.distortionIntensity.label",
+                    "Main Texture Distortion"),
+                RangePropertyName = "TexDistortionintensityRangeVec"
+            };
+            _texDistortionIntensityItem.InitTriggerByChild();
+
+            _pNoiseBlendModeItem = new PNoiseBlendModeItem(
+                rootItem,
+                this,
+                W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_MAINTEX,
+                "_MainTexPNoiseBlendOpacity",
+                () => NBShaderInspectorLocalization.MakeContent(
+                    "inspector.maintex.pnoiseBlend.label",
+                    "Main Texture Program Noise Blend"),
+                () => rootItem.Context.ProgramNoiseEnabled == MixedBool.True);
+
             InitTriggerByChild();
         }
 
@@ -109,12 +188,24 @@ namespace NBShaderEditor
 
             _uiColorItem.OnGUI();
             _uiMainTexScaleOffsetItem.OnGUI();
+            _alphaChannelItem.OnGUI();
+            _baseMapWrapModeItem.OnGUI();
+            _uvModeItem.OnGUI();
+            _offsetXCustomDataItem.OnGUI();
+            _offsetYCustomDataItem.OnGUI();
             _baseMapOffsetSpeedItem.OnGUI();
             if (_nbRootItem.Context.UseGraphicMainTex == MixedBool.False)
             {
                 _baseMapRotationItem.OnGUI();
                 _baseMapRotationSpeedItem.OnGUI();
             }
+
+            if (_nbRootItem.Context.NoiseEnabled == MixedBool.True)
+            {
+                _texDistortionIntensityItem.OnGUI();
+            }
+
+            _pNoiseBlendModeItem.OnGUI();
         }
     }
 }

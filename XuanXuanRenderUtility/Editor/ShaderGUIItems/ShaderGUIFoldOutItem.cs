@@ -46,6 +46,20 @@ namespace NBShaderEditor
 	        return isOpen;
         }
 
+        public bool DrawFoldOutLabel(Rect labelRect, GUIContent content, GUIStyle style)
+        {
+	        Rect foldOutRect = labelRect;
+	        float indentOffset = EditorGUI.indentLevel * ShaderGUIItem.UnityEditorGUIIndentWidth;
+	        foldOutRect.x += indentOffset;
+	        foldOutRect.width = Mathf.Max(0f, foldOutRect.width - indentOffset);
+	        foldOutRect.x -= foldOutWidth;
+	        foldOutRect.width += foldOutWidth;
+	        bool isOpen = _propertyInfo.Property.floatValue > 0.5f;
+	        isOpen = GUI.Toggle(foldOutRect, isOpen, content, style ?? EditorStyles.foldout);
+	        _propertyInfo.Property.floatValue = isOpen ? 1f : 0f;
+	        return isOpen;
+        }
+
         public void EndFadedGroup()
         {
 	        EditorGUILayout.EndFadeGroup();

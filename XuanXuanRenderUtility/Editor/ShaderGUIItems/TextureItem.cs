@@ -189,7 +189,11 @@ namespace NBShaderEditor
             EditorGUI.showMixedValue = property.hasMixedValue;
             EditorGUI.BeginChangeCheck();
             bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
-            Texture texture = (Texture)EditorGUI.ObjectField(ControlRect, property.textureValue, typeof(Texture2D));
+            Texture texture;
+            using (new EditorGUIIndentLevelScope(0))
+            {
+                texture = (Texture)EditorGUI.ObjectField(ControlRect, property.textureValue, typeof(Texture2D));
+            }
             EndAnimatedPropertyBackground(animatedScope);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
@@ -299,7 +303,10 @@ namespace NBShaderEditor
             EditorGUI.showMixedValue = property.hasMixedValue;
             EditorGUI.BeginChangeCheck();
             bool tillingAnimatedScope = BeginAnimatedPropertyBackground(tillingVec2Rect, property);
-            tilling = EditorGUI.Vector2Field(tillingVec2Rect, GUIContent.none, tilling);
+            using (new EditorGUIIndentLevelScope(0))
+            {
+                tilling = EditorGUI.Vector2Field(tillingVec2Rect, GUIContent.none, tilling);
+            }
             EndAnimatedPropertyBackground(tillingAnimatedScope);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
@@ -322,7 +329,10 @@ namespace NBShaderEditor
             EditorGUI.showMixedValue = property.hasMixedValue;
             EditorGUI.BeginChangeCheck();
             bool offsetAnimatedScope = BeginAnimatedPropertyBackground(offsetVec2Rect, property);
-            offset = EditorGUI.Vector2Field(offsetVec2Rect, GUIContent.none, offset);
+            using (new EditorGUIIndentLevelScope(0))
+            {
+                offset = EditorGUI.Vector2Field(offsetVec2Rect, GUIContent.none, offset);
+            }
             EndAnimatedPropertyBackground(offsetAnimatedScope);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())

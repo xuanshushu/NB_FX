@@ -1,4 +1,4 @@
-﻿Shader "Effects/NBShader2"
+Shader "Effects/NBShader2"
 //Shader "Effects/NBShader2开发中"
 {
     Properties
@@ -9,6 +9,69 @@
     	_LightBigBlockItemFoldOut("_LightBigBlockItemFoldOut",Float) = 0
     	_FeatureBigBlockItemFoldOut("_FeatureBigBlockItemFoldOut",Float) = 0
     	_TABigBlockItemFoldOut("_TABigBlockItemFoldOut",Float) = 0
+        _BaseColorAdjustmentFoldOut("_BaseColorAdjustmentFoldOut",Float) = 0
+        _HueShiftFoldOut("_HueShiftFoldOut",Float) = 0
+        _SaturabilityFoldOut("_SaturabilityFoldOut",Float) = 0
+        _ContrastFoldOut("_ContrastFoldOut",Float) = 0
+        _BaseMapColorRefineFoldOut("_BaseMapColorRefineFoldOut",Float) = 0
+        _BaseBackColorFoldOut("_BaseBackColorFoldOut",Float) = 0
+        _DistanceFadeFoldOut("_DistanceFadeFoldOut",Float) = 0
+        _SoftParticlesFoldOut("_SoftParticlesFoldOut",Float) = 0
+        _MainTexUVModeFoldOut("_MainTexUVModeFoldOut",Float) = 0
+        _GlobalTwirlFoldOut("_GlobalTwirlFoldOut",Float) = 0
+        _GlobalPolarFoldOut("_GlobalPolarFoldOut",Float) = 0
+        _BumpToggleFoldOut("_BumpToggleFoldOut",Float) = 0
+        _BumpTexFoldOut("_BumpTexFoldOut",Float) = 0
+        _BumpUVModeFoldOut("_BumpUVModeFoldOut",Float) = 0
+        _MatCapFoldOut("_MatCapFoldOut",Float) = 0
+        _MaskBlockFoldOut("_MaskBlockFoldOut",Float) = 0
+        _MaskRefineFoldOut("_MaskRefineFoldOut",Float) = 0
+        _MaskMapFoldOut("_MaskMapFoldOut",Float) = 0
+        _MaskUVModeFoldOut("_MaskUVModeFoldOut",Float) = 0
+        _Mask2BlockFoldOut("_Mask2BlockFoldOut",Float) = 0
+        _Mask2UVModeFoldOut("_Mask2UVModeFoldOut",Float) = 0
+        _Mask3BlockFoldOut("_Mask3BlockFoldOut",Float) = 0
+        _Mask3UVModeFoldOut("_Mask3UVModeFoldOut",Float) = 0
+        _NoiseBlockFoldOut("_NoiseBlockFoldOut",Float) = 0
+        _ScreenDistortAlphaFoldOut("_ScreenDistortAlphaFoldOut",Float) = 0
+        _NoiseMapFoldOut("_NoiseMapFoldOut",Float) = 0
+        _NoiseUVModeFoldOut("_NoiseUVModeFoldOut",Float) = 0
+        _NoiseMaskBlockFoldOut("_NoiseMaskBlockFoldOut",Float) = 0
+        _NoiseMaskUVModeFoldOut("_NoiseMaskUVModeFoldOut",Float) = 0
+        _ChromaticAberrationFoldOut("_ChromaticAberrationFoldOut",Float) = 0
+        _EmissionBlockFoldOut("_EmissionBlockFoldOut",Float) = 0
+        _EmissionUVModeFoldOut("_EmissionUVModeFoldOut",Float) = 0
+        _ColorBlendBlockFoldOut("_ColorBlendBlockFoldOut",Float) = 0
+        _ColorBlendUVModeFoldOut("_ColorBlendUVModeFoldOut",Float) = 0
+        _RampColorBlockFoldOut("_RampColorBlockFoldOut",Float) = 0
+        _RampColorUVModeFoldOut("_RampColorUVModeFoldOut",Float) = 0
+        _DissolveBlockFoldOut("_DissolveBlockFoldOut",Float) = 0
+        _DissolveMapFoldOut("_DissolveMapFoldOut",Float) = 0
+        _DissolveUVModeFoldOut("_DissolveUVModeFoldOut",Float) = 0
+        _DissolveLineFoldOut("_DissolveLineFoldOut",Float) = 0
+        _DissolveRampFoldOut("_DissolveRampFoldOut",Float) = 0
+        _DissolveRampUVModeFoldOut("_DissolveRampUVModeFoldOut",Float) = 0
+        _DissolveMaskFoldOut("_DissolveMaskFoldOut",Float) = 0
+        _DissolveMaskUVModeFoldOut("_DissolveMaskUVModeFoldOut",Float) = 0
+        _ProgramNoiseBlockFoldOut("_ProgramNoiseBlockFoldOut",Float) = 0
+        _ProgramNoiseUVModeFoldOut("_ProgramNoiseUVModeFoldOut",Float) = 0
+        _ProgramNoiseSimpleFoldOut("_ProgramNoiseSimpleFoldOut",Float) = 0
+        _ProgramNoiseVoronoiFoldOut("_ProgramNoiseVoronoiFoldOut",Float) = 0
+        _SharedUVBlockFoldOut("_SharedUVBlockFoldOut",Float) = 0
+        _SharedUVModeFoldOut("_SharedUVModeFoldOut",Float) = 0
+        _FresnelBlockFoldOut("_FresnelBlockFoldOut",Float) = 0
+        _VertexOffsetBlockFoldOut("_VertexOffsetBlockFoldOut",Float) = 0
+        _VertexOffsetUVModeFoldOut("_VertexOffsetUVModeFoldOut",Float) = 0
+        _VertexOffsetMaskBlockFoldOut("_VertexOffsetMaskBlockFoldOut",Float) = 0
+        _VertexOffsetMaskUVModeFoldOut("_VertexOffsetMaskUVModeFoldOut",Float) = 0
+        _DepthOutlineBlockFoldOut("_DepthOutlineBlockFoldOut",Float) = 0
+        _ParallaxBlockFoldOut("_ParallaxBlockFoldOut",Float) = 0
+        _ParallaxUVModeFoldOut("_ParallaxUVModeFoldOut",Float) = 0
+        _PortalBlockFoldOut("_PortalBlockFoldOut",Float) = 0
+        _VATBlockFoldOut("_VATBlockFoldOut",Float) = 0
+        _ZOffsetBlockFoldOut("_ZOffsetBlockFoldOut",Float) = 0
+        _CustomStencilTestFoldOut("_CustomStencilTestFoldOut",Float) = 0
+        _ShaderKeywordFoldOut("_ShaderKeywordFoldOut",Float) = 0
     	_MeshSourceMode("Mesh来源模式",Float) = 0
         _UIEffect_Toggle("UI模式_Toggle",Float) = 0
         _DistortionBothDirection_Toggle("__DistortionBothDirection_Toggle",Float) = 0
@@ -22,17 +85,79 @@
         _UseUV1_Toggle("__UseUV1_Toggle",Float) = 0
         _TransparentMode("_TransparentMode",Float) = 1
         _ForceZWriteToggle("_ForceZWriteToggle",Float) = 0
+        _VAT_Toggle("VAT顶点动画图",Float) = 0
+        _VATMode("VAT模式",Float) = 0
+        [NoScaleOffset]_VATTex("VAT texture", 2D) = "black" {}
+        _ImportScale("ImportScale", Float) = 0.01
+        [HideInInspector] _TyFlowVATSubMode("TyFlow VAT Sub Mode", Float) = 0
+        _DeformingSkin("Deforming skin", Float) = 0
+        _SkinBoneCount("Skin bone count", Float) = 2
+        _RGBAEncoded("RGBA encoded", Float) = 1
+        _RGBAHalf("RGBA half", Float) = 1
+        _LinearToGamma("Gamma correction", Float) = 1
+        _VATIncludesNormals("VAT includes normals", Float) = 0
+        [HideInInspector] _HoudiniVATSubMode("Houdini VAT Sub Mode", Float) = 0
+        [HideInInspector] _B_autoPlayback("Auto Playback", Float) = 1
+        [HideInInspector] _gameTimeAtFirstFrame("Game Time at First Frame", Float) = 0
+        [HideInInspector] _playbackSpeed("Playback Speed", Float) = 1
+        [HideInInspector] _houdiniFPS("Houdini FPS", Float) = 24
+        [HideInInspector] _displayFrame("Display Frame", Float) = 0
+        [HideInInspector] _B_interpolate("Interframe Interpolation", Float) = 1
+        [HideInInspector] _animateFirstFrame("Animate First Frame", Float) = 0
+        [HideInInspector] _frameCount("Frame Count", Float) = 1
+        [HideInInspector] _boundMinX("Bound Min X", Float) = -1
+        [HideInInspector] _boundMinY("Bound Min Y", Float) = -1
+        [HideInInspector] _boundMinZ("Bound Min Z", Float) = -1
+        [HideInInspector] _boundMaxX("Bound Max X", Float) = 1
+        [HideInInspector] _boundMaxY("Bound Max Y", Float) = 1
+        [HideInInspector] _boundMaxZ("Bound Max Z", Float) = 1
+        [HideInInspector] _globalPscaleMul("Global Piece Scale Multiplier", Float) = 1
+        [HideInInspector] _B_pscaleAreInPosA("Piece Scales in Position Alpha", Float) = 1
+        [HideInInspector] _widthBaseScale("Width Base Scale", Float) = 0.2
+        [HideInInspector] _heightBaseScale("Height Base Scale", Float) = 0.2
+        [HideInInspector] _B_hideOverlappingOrigin("Hide Overlapping Origin", Float) = 1
+        [HideInInspector] _originRadius("Origin Effective Radius", Float) = 0.02
+        [HideInInspector] _B_CAN_SPIN("Particles Can Spin", Float) = 0
+        [HideInInspector] _B_spinFromHeading("Compute Spin from Heading", Float) = 0
+        [HideInInspector] _spinPhase("Particle Spin Phase", Float) = 0
+        [HideInInspector] _scaleByVelAmount("Scale by Velocity Amount", Float) = 1
+        [HideInInspector] _particleTexUScale("Particle Texture U Scale", Float) = 1
+        [HideInInspector] _particleTexVScale("Particle Texture V Scale", Float) = 1
+        [HideInInspector] _B_LOAD_POS_TWO_TEX("Positions Require Two Textures", Float) = 0
+        [HideInInspector] _B_UNLOAD_ROT_TEX("Use Compressed Normals", Float) = 0
+        [HideInInspector] _B_LOAD_COL_TEX("Load Color Texture", Float) = 0
+        [HideInInspector] _B_LOAD_LOOKUP_TABLE("Load Lookup Table", Float) = 0
+        [HideInInspector][NoScaleOffset] _posTexture("Houdini Position Texture", 2D) = "black" {}
+        [HideInInspector][NoScaleOffset] _posTexture2("Houdini Position Texture 2", 2D) = "black" {}
+        [HideInInspector][NoScaleOffset] _rotTexture("Houdini Rotation Texture", 2D) = "black" {}
+        [HideInInspector][NoScaleOffset] _colTexture("Houdini Color Texture", 2D) = "white" {}
+        [HideInInspector][NoScaleOffset] _lookupTable("Houdini Lookup Table", 2D) = "white" {}
+        _AffectsShadows("Affects shadows", Float) = 1
+        _Frame("Frame", Float) = 0
+        _Frames("Frames", Float) = 10
+        _FrameInterpolation("Frame interpolation", Float) = 1
+        _Loop("Loop", Float) = 1
+        _InterpolateLoop("Interpolate loop", Float) = 1
+        _Autoplay("Autoplay", Float) = 0
+        _AutoplaySpeed("AutoplaySpeed", Float) = 1
         
         _Dissolve_Toggle("__Dissolve_Toggle",Float) = 0
         _DissolveMask_Toggle("__DissolveMask_Toggle",Float) = 0
         _DissolveVoronoi_Toggle("__DissolveVoronoi_Toggle",Float) = 0
         _Dissolve_useRampMap_Toggle("__Dissolve_useRampMap_Toggle",Float) = 0
         _Dissolve_Test_Toggle("__Dissolve_Test_Toggle",Float) = 0
+        _ProgramNoise_Toggle("_ProgramNoise_Toggle",Float) = 0
+        _ProgramNoise_Simple_Toggle("_ProgramNoise_Simple_Toggle",Float) = 0
+        _ProgramNoise_Rotate("_ProgramNoise_Rotate",Float) = 0
+        _ProgramNoise_Voronoi_Toggle("_ProgramNoise_Voronoi_Toggle",Float) = 0
+        _ProgramNoiseBaseBlendOpacity("两种程序噪波混合强度",Float) = 0
 	    
 
         _FresnelMode("__FresnelMode",Float) = 0
         _InvertFresnel_Toggle("__InvertFresnel_Toggle",Float) = 0
         _HueShift_Toggle("__HueShift_Toggle",Float) = 0
+        _ColorAdjustmentOnlyAffectMainTex("颜色调整仅影响主贴图开关",Float) = 0
+        _ColorMultiAlpha("颜色乘以透明度",Float) = 0
         _BackFaceColor_Toggle("_BackFaceColor_Toggle",Float) = 0
         _BackFirstPassToggle("_BackFirstPassToggle",Float) = 0
         
@@ -68,9 +193,10 @@
         _ContrastMidColor ("对比度中值颜色", Color) = (0.5, 0.5, 0.5, 1)//HDR颜色不需要做Gamma Linear转换，Unity默认用Linear颜色
         _HueShift("色相",Range(0,1)) = 0
 		_BaseMapColorRefine_Toggle ("__BaseMapColorRefine_Toggle",Float) = 0
-    	_BaseMapColorRefine("主贴图颜色Refine",Vector) = (1,1,2,1)
+        _BaseMapColorRefine("主贴图颜色Refine",Vector) = (1,1,2,1)
         _AlphaAll("整体透明度",Range(0,1)) = 1
         _IgnoreVetexColor_Toggle("_IgnoreVetexColor_Toggle",Float) = 0
+        _MainTexPNoiseBlendOpacity("主贴图噪波图混合强度",Float) = 1
     	
     	_SpecialUVChannelMode("特殊UV通道选择",Float) = 0
     	
@@ -81,7 +207,7 @@
     	_CylinderMatrix2("圆柱偏移矩阵2",Vector) = (0,0,0,0)
     	_CylinderMatrix3("圆柱偏移矩阵3",Vector) = (0,0,0,0)
         
-        _Cutoff ("裁剪位置", float) = 0.5
+        _Cutoff ("裁剪位置", float) = 0
     	
     	//--------------光照部分-------------
     	_FxLightMode("灯光模式",Float) = 0
@@ -140,6 +266,7 @@
 	    _MaskMap3GradientFloat0("x:Mask3Alpha0,y:Pos0,z:Mask3Alpha1,w:Pos1",Vector) = (0,0,1,1)
     	_MaskMap3GradientFloat1("x:Mask3Alpha2,y:Pos2,z:Mask3Alpha3,w:Pos3",Vector) = (1,0,1,1)
     	_MaskMap3GradientFloat2("x:Mask3Alpha4,y:Pos4,z:Mask3Alpha5,w:Pos5",Vector) = (1,0,1,1)
+        _MaskPNoiseBlendOpacity("遮罩噪波图混合强度",Float) = 1
         
         // 擦除----------------
         //[Header(ChaChu(Anima For CustomData.z).......)]
@@ -153,7 +280,7 @@
         //[Toggle(_JIZUOBIAO)] _N121 ("JIZUOBIAO?", float) = 0
         [HideInInspector] _UTwirlEnabled ("__UTwirlEnabled", Float) = 0.0
         _TWParameter ("xy:旋转扭曲中心", vector) = (0.5, 0.5, 0, 0)
-        _TWStrength ("旋转扭曲强度", float) = 0
+        _TWStrength ("旋转扭曲强度", float) = 1
         
         
         // 极坐标 -------------------
@@ -178,6 +305,7 @@
     	_TexDistortion_intensity ("主贴图扭曲强度", float) = 0.5
     	_NoiseIntensity("整体扭曲强度",Float) = 1
     	_ScreenDistortIntensity("屏幕扭曲强度",Float) = 1
+        _DistortPNoiseBlendOpacity("扭曲噪波图混合强度",Float) = 1
     	
     	_ScreenDistortAlphaRefineToggle("屏幕扭曲Alpha调整开关",Float) = 0
     	_ScreenDistortAlphaPow("屏幕扭曲AlphaPow",Float) = 1
@@ -230,9 +358,10 @@
         // Rongjie ------------------
         // [Header(RongJie(Anima For CustomData.y).......)]
         // [Toggle(_DISSOLVE)]_RJ ("RONGJIE?", float) = 0
-        _Dissolve ("x:溶解强度 y:溶解值Pow z:过程溶解强度 w:溶解硬软度", vector) = (0.5, 1, 0, 0.1)
-    	_DissolveMap("溶解贴图 xy:UV缩放 zw:UV偏移",2D) = "grey"{}
+        _Dissolve ("x:溶解强度 y:溶解值Pow z:过程溶解强度 w:溶解硬软度", vector) = (0.5, 1, 1, 0.1)
+        _DissolveMap("溶解贴图 xy:UV缩放 zw:UV偏移",2D) = "grey"{}
         _DissolveMaskMap("局部溶解蒙版 xy:UV缩放 zw:UV偏移",2D) = "white"{}
+        _DissolveMaskMode("溶解遮罩模式", Float) = 0
         _DissolveOffsetRotateDistort("xy:溶解贴图偏移速度 z:溶解贴图旋转",Vector) = (0,0,0,0)
         [HDR]_DissolveLineColor("溶解描边颜色_hdr",Color) = (1,0,0,1)
         _DissolveVoronoi_Vec("xy:噪波1缩放,zw:噪波2缩放",Vector) = (1,1,2,2)
@@ -256,6 +385,11 @@
     	_DissolveRampAlpha1("x:DissolveRampAlpha2,y:Pos2,z:DissolveRampAlpha3,w:Pos3",Vector) = (1,0,1,1)
     	_DissolveRampAlpha2("x:DissolveRampAlpha4,y:Pos4,z:DissolveRampAlpha5,w:Pos5",Vector) = (1,0,1,1)
     	_DissolveRampCount("溶解Ramp映射数量",Integer) = 2
+        _DissolvePNoiseBlendOpacity("溶解噪波图混合强度",Float) = 1
+
+        _SharedUVToggle("公共UV开关",Float) = 0
+        _SharedUV_ST("公共UVTillingOffset",Vector) = (1,1,0,0)
+        _SharedUV_Vec("xy:公共UV偏移速度,z:旋转,w:旋转速度",Vector) = (0,0,0,0)
 	    
 
         _CustomData1X ("ignore", float) = 0
@@ -375,6 +509,7 @@
         [HideInInspector] _W9ParticleShaderFlags("_W9ParticleShaderFlags", Integer) = 0
         [HideInInspector] _W9ParticleShaderFlags1("_W9ParticleShaderFlags1", Integer) = 0
         [HideInInspector] _W9ParticleShaderWrapFlags("_W9ParticleShaderWrapFlags", Integer) = 0
+        [HideInInspector] _W9ParticleShaderWrapFlags2("_W9ParticleShaderWrapFlags2", Integer) = 0
         [HideInInspector] _W9ParticleCustomDataFlag0("_W9ParticleCustomDataFlag0", Integer) = 0
         [HideInInspector] _W9ParticleCustomDataFlag1("_W9ParticleCustomDataFlag1", Integer) = 0
         [HideInInspector] _W9ParticleCustomDataFlag2("_W9ParticleCustomDataFlag2", Integer) = 0
@@ -385,6 +520,7 @@
         [HideInInspector] _W9ParticleShaderGUIFoldToggle1("_W9ParticleShaderGUIFoldToggle1", Integer) = 255//这边默认全开
         [HideInInspector] _W9ParticleShaderGUIFoldToggle2("_W9ParticleShaderGUIFoldToggle2", Integer) = 255//这边默认全开
         [HideInInspector] _W9ParticleShaderColorChannelFlag("_W9ParticleShaderColorChannelFlag", Integer) = 3//默认主贴图开A通道
+        [HideInInspector] _W9ParticleShaderPNoiseBlendFlag("_W9ParticleShaderPNoiseBlendFlag", Integer) = 0
 	    
     	
     	SaturabilityRangeVec("_Saturability",Vector) = (0,1,0,0)
@@ -400,6 +536,12 @@
     	_ScreenDistortIntensityRangeVec("_ScreenDistortIntensity",Vector) = (0,1,0,0)
     	_ParallaxMapping_IntensityRangeVec("_ParallaxMappingRangeVec",Vector) = (0,0.1,0,0)
 //        _offsetUnits("深度偏移单位距离-ignore", range(-2000,2000)) = 0
+        _NB_Debug_Mask("_NB_Debug_Mask",Float) = 0
+        _NB_Debug_PNoise("_NB_Debug_PNoise",Float) = 0
+        _NB_Debug_Dissolve("_NB_Debug_Dissolve",Float) = 0
+        _NB_Debug_Distort("_NB_Debug_Dissolve",Float) = 0
+        _NB_Debug_Fresnel("_NB_Debug_Fresnel",Float) = 0
+        _NB_Debug_VertexOffset("_NB_Debug_VertexOffset",Float) = 0
     }
     SubShader
     {
@@ -466,10 +608,16 @@
             #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
             //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma  shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
+            #pragma shader_feature_local _SHARED_UV//公共UV
+            #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
+            #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+            #pragma shader_feature_local_vertex _ _HOUDINI_VAT_SOFTBODY _HOUDINI_VAT_RIGIDBODY _HOUDINI_VAT_DYNAMIC_REMESH _HOUDINI_VAT_PARTICLE_SPRITE
+            #pragma shader_feature_local_vertex _ _TYFLOW_VAT_ABSOLUTE _TYFLOW_VAT_RELATIVE _TYFLOW_VAT_SKIN_R _TYFLOW_VAT_SKIN_PR _TYFLOW_VAT_SKIN_PRSAVE _TYFLOW_VAT_SKIN_PRSXYZ
 
             //将光照和UI混用，达到节省Keywords的目的。
             #pragma multi_compile _ UNITY_UI_CLIP_RECT _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS//UI 2D遮罩
@@ -480,6 +628,7 @@
 
             //用于特效层关键字
             // #pragma shader_feature_local  _UIEFFECT_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             
             #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
            
@@ -489,7 +638,6 @@
             #pragma shader_feature_local _ _ALPHAPREMULTIPLY_ON _ALPHAMODULATE_ON     //设置alpah Add 。。组合
             #pragma shader_feature_local _ALPHATEST_ON
             //#pragma shader_feature_local _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON  //粒子颜色和材质颜色的混合运算  暂时先不要了
-            #pragma shader_feature_local _FLIPBOOKBLENDING_ON
             #pragma shader_feature_local _SOFTPARTICLES_ON
             // #pragma shader_feature_local _OCCLUDEOPACITY_ON
             // #pragma shader_feature_local _ _SATURABILITY_ON
@@ -512,6 +660,7 @@
             #pragma shader_feature_local _ _MATCAP
             #pragma shader_feature_local _ _SPECULAR_COLOR
             #pragma shader_feature_local _ VFX_SIX_WAY_ABSORPTION
+            #pragma shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT NB_DEBUG_FRESNEL NB_DEBUG_VERTEX_OFFSET
             
             
             // -------------------------------------
@@ -581,10 +730,16 @@
             #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
+            #pragma shader_feature_local _SHARED_UV//公共UV
+            #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
+            #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+            #pragma shader_feature_local_vertex _ _HOUDINI_VAT_SOFTBODY _HOUDINI_VAT_RIGIDBODY _HOUDINI_VAT_DYNAMIC_REMESH _HOUDINI_VAT_PARTICLE_SPRITE
+            #pragma shader_feature_local_vertex _ _TYFLOW_VAT_ABSOLUTE _TYFLOW_VAT_RELATIVE _TYFLOW_VAT_SKIN_R _TYFLOW_VAT_SKIN_PR _TYFLOW_VAT_SKIN_PRSAVE _TYFLOW_VAT_SKIN_PRSXYZ
             
             
             
@@ -593,6 +748,7 @@
 
             //用于特效层关键字
             // #pragma shader_feature_local  _UIEFFECT_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             
             #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
 
@@ -604,7 +760,6 @@
             #pragma shader_feature_local _ _ALPHAPREMULTIPLY_ON _ALPHAMODULATE_ON     //设置alpah Add 。。组合
             #pragma shader_feature_local _ALPHATEST_ON
             //#pragma shader_feature_local _ _COLOROVERLAY_ON _COLORCOLOR_ON _COLORADDSUBDIFF_ON  //粒子颜色和材质颜色的混合运算  暂时先不要了
-            #pragma shader_feature_local _FLIPBOOKBLENDING_ON
             #pragma shader_feature_local _SOFTPARTICLES_ON
             // #pragma shader_feature_local _OCCLUDEOPACITY_ON
             // #pragma shader_feature_local _ _SATURABILITY_ON
@@ -627,6 +782,7 @@
             #pragma shader_feature_local _ _MATCAP
             #pragma shader_feature_local _ _SPECULAR_COLOR
             #pragma shader_feature_local _ VFX_SIX_WAY_ABSORPTION
+            #pragma shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT NB_DEBUG_FRESNEL NB_DEBUG_VERTEX_OFFSET
             
             // -------------------------------------
             // Unity defined keywords
@@ -689,10 +845,12 @@
             // #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             // #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
+            #pragma shader_feature_local _SHARED_UV//公共UV
             
             
             
@@ -701,6 +859,7 @@
 
             //用于特效层关键字
             // #pragma shader_feature_local  _UIEFFECT_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             
             #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
 
@@ -798,10 +957,12 @@
             // #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             // #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
+            #pragma shader_feature_local _SHARED_UV//公共UV
             
             
             
@@ -810,6 +971,7 @@
 
             //用于特效层关键字
             // #pragma shader_feature_local  _UIEFFECT_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             
             #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
 
@@ -905,10 +1067,12 @@
             #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
+            #pragma shader_feature_local _SHARED_UV//公共UV
             
             
             
@@ -918,6 +1082,7 @@
 
             //用于特效层关键字
             // #pragma shader_feature_local  _UIEFFECT_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
             
             #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
 

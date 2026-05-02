@@ -53,7 +53,10 @@ namespace NBShaderEditor
             GetRect();
             EditorGUI.LabelField(LabelRect, GuiContent);
             EditorGUI.BeginChangeCheck();
-            DrawController();
+            using (new EditorGUIIndentLevelScope(0))
+            {
+                DrawController();
+            }
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
             {

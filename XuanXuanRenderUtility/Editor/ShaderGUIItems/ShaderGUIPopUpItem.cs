@@ -16,5 +16,11 @@ namespace NBShaderEditor
         {
             PropertyInfo.Property.floatValue = EditorGUI.Popup(ControlRect,(int)PropertyInfo.Property.floatValue,PopUpNames);
         }
+
+        public override void ExecuteReset(bool isCallByParent = false)
+        {
+            base.ExecuteReset(isCallByParent);
+            OnEndChange();
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace NBShaderEditor
     }
     public class ShaderGUIItem
     {
-        public const float LabelWidth = 115f;
+        public const float LabelWidth = 180f;
         public const float GlobalRectXOffset = -15f;
         public const float GlobalRectWidthExpansion = 10f;
         public const float UnityEditorGUIIndentWidth = 15f;
@@ -61,11 +61,10 @@ namespace NBShaderEditor
         {
             rect.x += GlobalRectXOffset;
             rect.width = Mathf.Max(0f, rect.width + GlobalRectWidthExpansion);
-            rect = ApplyEditorGUIIndentWidth(rect);
             return rect;
         }
 
-        public static Rect ApplyEditorGUIIndentWidth(Rect rect)
+        public static Rect ApplyLabelIndentWidth(Rect rect)
         {
             float indentDelta = EditorGUI.indentLevel * (EditorGUIIndentWidth - UnityEditorGUIIndentWidth);
             rect.x += indentDelta;
@@ -82,6 +81,7 @@ namespace NBShaderEditor
         {
             labelRect = baseRect;
             labelRect.width = LabelWidth;
+            labelRect = ApplyLabelIndentWidth(labelRect);
 
             Rect controlAndResetRect = baseRect;
             controlAndResetRect.x += LabelWidth;
@@ -113,7 +113,10 @@ namespace NBShaderEditor
             EditorGUI.BeginChangeCheck();
             EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
             bool animatedPropertyScope = BeginAnimatedPropertyBackground(BaseRect, PropertyInfo.Property);
-            DrawController();
+            using (new EditorGUIIndentLevelScope(0))
+            {
+                DrawController();
+            }
             EndAnimatedPropertyBackground(animatedPropertyScope);
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
@@ -138,6 +141,22 @@ namespace NBShaderEditor
         public virtual void DrawController()
         {
             
+        }
+
+        protected readonly struct EditorGUIIndentLevelScope : System.IDisposable
+        {
+            private readonly int _indentLevel;
+
+            public EditorGUIIndentLevelScope(int indentLevel)
+            {
+                _indentLevel = EditorGUI.indentLevel;
+                EditorGUI.indentLevel = indentLevel;
+            }
+
+            public void Dispose()
+            {
+                EditorGUI.indentLevel = _indentLevel;
+            }
         }
 
         public virtual void DrawBlock()

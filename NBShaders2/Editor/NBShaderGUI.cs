@@ -26,6 +26,7 @@ namespace NBShaderEditor
         private LightBigBlockItem _lightBlock;
         private FeatureBigBlockItem _featureBlock;
         private TABigBlockItem _taBlock;
+        private ParticleVertexStreamsItem _particleVertexStreamsItem;
 
         public override void InitFlags(System.Collections.Generic.List<Material> mats)
         {
@@ -54,6 +55,7 @@ namespace NBShaderEditor
                 _lightBlock = new LightBigBlockItem(this, null);
                 _featureBlock = new FeatureBigBlockItem(this, null);
                 _taBlock = new TABigBlockItem(this, null);
+                _particleVertexStreamsItem = new ParticleVertexStreamsItem(this, null);
             }
 
             _modeBlock.OnGUI();
@@ -62,6 +64,8 @@ namespace NBShaderEditor
             _lightBlock.OnGUI();
             _featureBlock.OnGUI();
             _taBlock.OnGUI();
+            SyncService.SyncMaterialState();
+            _particleVertexStreamsItem.OnGUI();
         }
     }
 }

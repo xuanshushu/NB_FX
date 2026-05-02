@@ -62,7 +62,7 @@ namespace NBShaderEditor
             };
             PropertyName = "_MeshSourceMode";
             GuiContent = new GUIContent("Mesh来源模式", "Mesh来源模式和当前的对象类型一致");
-            MeshSourceModeDic.Add(rootItem,this);
+            MeshSourceModeDic[rootItem] = this;
             InitTriggerByChild();
         }
 
@@ -135,7 +135,7 @@ namespace NBShaderEditor
             };
             PropertyName = "_TransparentMode";
             GuiContent = new GUIContent("透明模式", "透明模式");
-            TransparentModeDic.Add(RootItem,this);
+            TransparentModeDic[RootItem] = this;
             _cutOffSlider = new ShaderGUISliderItem(RootItem, this)
             {
                 PropertyName = "_Cutoff",
@@ -250,7 +250,7 @@ namespace NBShaderEditor
                 "正片叠底Multiply"
             };
             GuiContent = new GUIContent("混合模式");
-            BlendModeDic.Add(rootItem,this);
+            BlendModeDic[rootItem] = this;
             _addToPreMultiplySlider = new AddToPreMultiplySlider(rootItem, this);
             InitTriggerByChild();
         }

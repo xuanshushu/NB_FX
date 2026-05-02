@@ -50,6 +50,14 @@ namespace NBShaderEditor
         protected virtual void DrawLeadingSpace()
         {
         }
+
+        public override void DrawBlock()
+        {
+            for (int i = 0; i < ChildrenItemList.Count; i++)
+            {
+                ChildrenItemList[i].OnGUI();
+            }
+        }
     }
 
     public class BigBlockItem : BlockItem
