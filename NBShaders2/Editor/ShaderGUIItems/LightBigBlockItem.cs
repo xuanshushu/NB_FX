@@ -259,6 +259,15 @@ namespace NBShaderEditor
 
     public class FxLightModePopupItem : ShaderGUIPopUpItem
     {
+        private static readonly string[] LightModeOptions =
+        {
+            "Unlit",
+            "BlinnPhong",
+            "HalfLambert",
+            "PBR",
+            "SixWay"
+        };
+
         private readonly NBShaderRootItem _nbRootItem;
 
         public FxLightModePopupItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
@@ -266,15 +275,15 @@ namespace NBShaderEditor
             _nbRootItem = rootItem;
             PropertyName = "_FxLightMode";
             GuiContent = NBShaderInspectorLocalization.MakeContent("inspector.light.mode.label", "Light Mode");
-            PopUpNames = new[]
-            {
-                "Unlit",
-                "BlinnPhong",
-                "HalfLambert",
-                "PBR",
-                "SixWay"
-            };
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("light.mode", LightModeOptions);
             InitTriggerByChild();
+        }
+
+        public override void OnGUI()
+        {
+            GuiContent = NBShaderInspectorLocalization.MakeContent("inspector.light.mode.label", "Light Mode");
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("light.mode", LightModeOptions);
+            base.OnGUI();
         }
 
         public override void OnEndChange()

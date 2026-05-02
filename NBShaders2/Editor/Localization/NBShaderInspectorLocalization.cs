@@ -9,15 +9,51 @@ namespace NBShaderEditor
     internal static class NBShaderInspectorLocalization
     {
         private const string DefaultLanguage = "zh-CN";
+        private const string EnglishLanguage = "en-US";
+        private const string TooltipColumnSuffix = "-tip";
+        private const string TooltipColumnAliasSuffix = "-tooltip";
         private const string LanguagePreferenceKey = "NBShader2.Localization.Language";
         private const string CsvAssetPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Editor/Localization/NBShaderInspectorLocalization.csv";
+        private const string ChineseMenuPath = "Tools/NBShader2/Language/中文";
+        private const string EnglishMenuPath = "Tools/NBShader2/Language/English";
 
         private static Dictionary<string, Dictionary<string, string>> _table;
         private static string[] _languages;
 
         public static GUIContent MakeContent(string labelKey, string labelFallback, string tooltipKey = null, string tooltipFallback = "")
         {
-            return new GUIContent(Get(labelKey, labelFallback), Get(tooltipKey, tooltipFallback));
+            return new GUIContent(Get(labelKey, labelFallback), GetTooltip(labelKey, tooltipKey, tooltipFallback));
+        }
+
+        public static GUIContent MakeInspectorContent(string key, string fallback, string tip = "")
+        {
+            return MakeContent("inspector." + key + ".label", fallback, "inspector." + key + ".tip", tip);
+        }
+
+        public static string GetInspectorText(string key, string fallback = "")
+        {
+            return Get("inspector." + key, fallback);
+        }
+
+        public static string[] GetInspectorOptions(string key, string[] fallback)
+        {
+            return GetOptions("inspector." + key + ".option", fallback);
+        }
+
+        public static string[] GetOptions(string keyPrefix, string[] fallback)
+        {
+            if (fallback == null)
+            {
+                return Array.Empty<string>();
+            }
+
+            string[] values = new string[fallback.Length];
+            for (int i = 0; i < fallback.Length; i++)
+            {
+                values[i] = Get($"{keyPrefix}.{i}", fallback[i]);
+            }
+
+            return values;
         }
 
         public static string Get(string key, string fallback = "")
@@ -43,6 +79,80 @@ namespace NBShaderEditor
             }
 
             return fallback;
+        }
+
+        public static string GetTooltip(string labelKey, string tooltipKey = null, string fallback = "")
+        {
+            EnsureLoaded();
+            if (!string.IsNullOrEmpty(labelKey) &&
+                _table != null &&
+                _table.TryGetValue(labelKey, out Dictionary<string, string> row))
+            {
+                string language = GetCurrentLanguage();
+                if (TryGetTooltip(row, language, out string localizedTooltip))
+                {
+                    return localizedTooltip;
+                }
+
+                if (TryGetTooltip(row, DefaultLanguage, out string defaultTooltip))
+                {
+                    return defaultTooltip;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(tooltipKey))
+            {
+                return Get(tooltipKey, fallback);
+            }
+
+            return fallback;
+        }
+
+        public static void Reload()
+        {
+            _table = null;
+            _languages = null;
+        }
+
+        [MenuItem(ChineseMenuPath)]
+        private static void SelectChinese()
+        {
+            SetLanguage(DefaultLanguage);
+        }
+
+        [MenuItem(ChineseMenuPath, true)]
+        private static bool ValidateChinese()
+        {
+            Menu.SetChecked(ChineseMenuPath, string.Equals(GetCurrentLanguage(), DefaultLanguage, StringComparison.OrdinalIgnoreCase));
+            return true;
+        }
+
+        [MenuItem(EnglishMenuPath)]
+        private static void SelectEnglish()
+        {
+            SetLanguage(EnglishLanguage);
+        }
+
+        [MenuItem(EnglishMenuPath, true)]
+        private static bool ValidateEnglish()
+        {
+            Menu.SetChecked(EnglishMenuPath, string.Equals(GetCurrentLanguage(), EnglishLanguage, StringComparison.OrdinalIgnoreCase));
+            return true;
+        }
+
+        [MenuItem("Tools/NBShader2/Language/Reload Localization")]
+        private static void ReloadMenu()
+        {
+            AssetDatabase.ImportAsset(CsvAssetPath, ImportAssetOptions.ForceUpdate);
+            Reload();
+            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+        }
+
+        private static void SetLanguage(string language)
+        {
+            EditorPrefs.SetString(LanguagePreferenceKey, language);
+            Reload();
+            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
         }
 
         private static void EnsureLoaded()
@@ -79,7 +189,16 @@ namespace NBShaderEditor
                 return;
             }
 
-            _languages = headers.GetRange(1, headers.Count - 1).ToArray();
+            var languages = new List<string>();
+            for (int i = 1; i < headers.Count; i++)
+            {
+                if (!IsTooltipColumn(headers[i]))
+                {
+                    languages.Add(headers[i]);
+                }
+            }
+
+            _languages = languages.ToArray();
             for (int rowIndex = 1; rowIndex < rows.Count; rowIndex++)
             {
                 List<string> values = ParseCsvRow(rows[rowIndex]);
@@ -188,6 +307,34 @@ namespace NBShaderEditor
 
             values.Add(builder.ToString());
             return values;
+        }
+
+        private static bool IsTooltipColumn(string header)
+        {
+            return !string.IsNullOrEmpty(header) &&
+                   (header.EndsWith(TooltipColumnSuffix, StringComparison.OrdinalIgnoreCase) ||
+                    header.EndsWith(TooltipColumnAliasSuffix, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool TryGetTooltip(Dictionary<string, string> row, string language, out string tooltip)
+        {
+            tooltip = string.Empty;
+            if (string.IsNullOrEmpty(language))
+            {
+                return false;
+            }
+
+            if (row.TryGetValue(language + TooltipColumnSuffix, out tooltip) && !string.IsNullOrEmpty(tooltip))
+            {
+                return true;
+            }
+
+            if (row.TryGetValue(language + TooltipColumnAliasSuffix, out tooltip) && !string.IsNullOrEmpty(tooltip))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static string GetCurrentLanguage()

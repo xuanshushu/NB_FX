@@ -6,6 +6,8 @@ namespace NBShaderEditor
 {
     public class ColorItem : ShaderGUIItem
     {
+        private const float ColorFieldLeftInset = EditorGUIIndentWidth;
+
         private readonly Func<GUIContent> _contentProvider;
         private readonly Func<bool> _isVisible;
 
@@ -30,17 +32,18 @@ namespace NBShaderEditor
             }
 
             GuiContent = _contentProvider();
-            GetRect();
+            GetRect(false);
             EditorGUI.LabelField(LabelRect, GuiContent);
 
             Color color = PropertyInfo.Property.colorValue;
             bool hdr = (PropertyInfo.Property.flags & MaterialProperty.PropFlags.HDR) != 0;
             EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
             EditorGUI.BeginChangeCheck();
-            bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, PropertyInfo.Property);
+            Rect colorRect = GetLabeledColorFieldRect(ControlRect);
+            bool animatedScope = BeginAnimatedPropertyBackground(colorRect, PropertyInfo.Property);
             using (new EditorGUIIndentLevelScope(0))
             {
-                color = EditorGUI.ColorField(ControlRect, GUIContent.none, color, true, true, hdr);
+                color = EditorGUI.ColorField(colorRect, GUIContent.none, color, true, true, hdr);
             }
             EndAnimatedPropertyBackground(animatedScope);
             EditorGUI.showMixedValue = false;
@@ -52,6 +55,21 @@ namespace NBShaderEditor
 
             DrawResetButton();
             DrawBlock();
+        }
+
+        internal static Rect GetNoLabelColorFieldRect(Rect rect)
+        {
+            rect.x += ColorFieldLeftInset;
+            rect.width = Mathf.Max(0f, rect.width - ColorFieldLeftInset);
+            return rect;
+        }
+
+        internal static Rect GetLabeledColorFieldRect(Rect rect)
+        {
+            float leftPadding = EditorStyles.colorField.padding.left + ColorFieldLeftInset +1f;
+            rect.x -= leftPadding;
+            rect.width += leftPadding;
+            return rect;
         }
     }
 
@@ -94,7 +112,7 @@ namespace NBShaderEditor
 
             if (_showLabel)
             {
-                SplitLineRect(rect, out LabelRect, out ControlRect, out ResetRect);
+                SplitLineRect(rect, out LabelRect, out ControlRect, out ResetRect, false);
                 EditorGUI.LabelField(LabelRect, GuiContent);
             }
             else
@@ -108,10 +126,13 @@ namespace NBShaderEditor
             bool hdr = (property.flags & MaterialProperty.PropFlags.HDR) != 0;
             EditorGUI.showMixedValue = property.hasMixedValue;
             EditorGUI.BeginChangeCheck();
-            bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
+            Rect colorRect = _showLabel
+                ? ColorItem.GetLabeledColorFieldRect(ControlRect)
+                : ColorItem.GetNoLabelColorFieldRect(ControlRect);
+            bool animatedScope = BeginAnimatedPropertyBackground(colorRect, property);
             using (new EditorGUIIndentLevelScope(0))
             {
-                color = EditorGUI.ColorField(ControlRect, GUIContent.none, color, true, true, hdr);
+                color = EditorGUI.ColorField(colorRect, GUIContent.none, color, true, true, hdr);
             }
             EndAnimatedPropertyBackground(animatedScope);
             EditorGUI.showMixedValue = false;

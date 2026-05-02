@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEngine;
 using NBShader;
 
 namespace NBShaderEditor
@@ -41,13 +42,15 @@ namespace NBShaderEditor
                 () => NBShaderInspectorLocalization.MakeContent(
                     "inspector.maintex.basemap.label",
                     "Main Texture"),
-                isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.False);
+                isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.False,
+                tillingContentProvider: TillingContent,
+                offsetContentProvider: OffsetContent);
 
             _graphicMainTexHelpBox = new HelpBoxItem(
                 rootItem,
                 this,
                 () => NBShaderInspectorLocalization.Get(
-                    "inspector.maintex.graphic.tip",
+                    "inspector.maintex.graphic.message",
                     "Current mode uses Graphic texture. Only color and ST remain editable."),
                 MessageType.Info);
 
@@ -66,7 +69,9 @@ namespace NBShaderEditor
                 this,
                 "_UI_MainTex_ST",
                 isVectorProperty: true,
-                isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.True);
+                isVisible: () => rootItem.Context.UseGraphicMainTex == MixedBool.True,
+                tillingContentProvider: TillingContent,
+                offsetContentProvider: OffsetContent);
 
             _alphaChannelItem = new ColorChannelSelectItem(
                 rootItem,
@@ -176,7 +181,11 @@ namespace NBShaderEditor
         {
             if (_nbRootItem.Context.UseGraphicMainTex == MixedBool.Mixed)
             {
-                EditorGUILayout.HelpBox("Mixed mesh-source modes will show the matching texture controls per material state.", MessageType.Info);
+                EditorGUILayout.HelpBox(
+                    NBShaderInspectorLocalization.GetInspectorText(
+                        "maintex.mixedMeshSource.message",
+                        "Mixed mesh-source modes will show the matching texture controls per material state."),
+                    MessageType.Info);
             }
 
             _baseMapGroupItem.OnGUI();
@@ -206,6 +215,16 @@ namespace NBShaderEditor
             }
 
             _pNoiseBlendModeItem.OnGUI();
+        }
+
+        private static GUIContent TillingContent()
+        {
+            return NBShaderInspectorLocalization.MakeInspectorContent("common.tilling", "Tilling");
+        }
+
+        private static GUIContent OffsetContent()
+        {
+            return NBShaderInspectorLocalization.MakeInspectorContent("common.offset", "Offset");
         }
     }
 }

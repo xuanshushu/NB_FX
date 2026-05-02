@@ -265,7 +265,7 @@ namespace NBShaderEditor
                 property => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON, property.floatValue > 0.5f));
             AddTextureWithWrap(rootItem, block, "_RampColorMap", "颜色映射黑白图", W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP,
                 isVisible: () => IsPropertyMode(rootItem, "_RampColorSourceMode", 1));
-            new TextureScaleOffsetItem(rootItem, block, "_RampColorMap", false, () => IsPropertyMode(rootItem, "_RampColorSourceMode", 0));
+            new TextureScaleOffsetItem(rootItem, block, "_RampColorMap", false, () => IsPropertyMode(rootItem, "_RampColorSourceMode", 0), TillingContent, OffsetContent);
             new WrapModeItem(rootItem, block, W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP, () => Content("颜色映射UV Wrap"), 2,
                 () => IsPropertyMode(rootItem, "_RampColorSourceMode", 0));
             new ColorChannelSelectItem(rootItem, block, W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_RAMP_COLOR_MAP, 0, () => Content("颜色映射黑白图通道选择"),
@@ -311,7 +311,7 @@ namespace NBShaderEditor
                 () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 1));
             AddGradient(rootItem, rampBlock, "Ramp颜色", "_DissolveRampCount", "_DissolveRampColor", "_DissolveRampAlpha", hdr: true,
                 isVisible: () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 0));
-            new TextureScaleOffsetItem(rootItem, rampBlock, "_DissolveRampMap", false, () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 0));
+            new TextureScaleOffsetItem(rootItem, rampBlock, "_DissolveRampMap", false, () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 0), TillingContent, OffsetContent);
             new ColorItem(rootItem, rampBlock, "_DissolveRampColor", () => Content("Ramp颜色叠加"), () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 0));
             new WrapModeItem(rootItem, rampBlock, W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP, () => Content("溶解RampUV Wrap"), 2,
                 () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 0));
@@ -477,7 +477,7 @@ namespace NBShaderEditor
 
             new PopupItem(rootItem, block, "_HoudiniVATSubMode", () => Content("Houdini VAT Sub Mode"), HoudiniVatSubModeNames,
                 _ => rootItem.SyncService.SyncMaterialState(), isHoudini);
-            new HelpBoxItem(rootItem, block, "该 Houdini VAT 类型需要 Mesh 多 UV 数据，不支持 ParticleSystem VertexStream 模式。", MessageType.Warning,
+            new HelpBoxItem(rootItem, block, () => Text("feature.vat.houdiniUnsupportedParticle.message", "该 Houdini VAT 类型需要 Mesh 多 UV 数据，不支持 ParticleSystem VertexStream 模式。"), MessageType.Warning,
                 () => isHoudini() && HasUnsupportedHoudiniParticleMode(rootItem));
             AddSectionLabel(rootItem, block, "Playback", isHoudini);
             AddToggle(rootItem, block, "_B_autoPlayback", "Auto Playback", isVisible: isHoudini);
@@ -535,9 +535,9 @@ namespace NBShaderEditor
             AddFloat(rootItem, block, "_ImportScale", "ImportScale", isTyflow);
             new PopupItem(rootItem, block, "_TyFlowVATSubMode", () => Content("TyFlow VAT Sub Mode"), TyFlowVatSubModeNames,
                 _ => rootItem.SyncService.SyncMaterialState(), isTyflow);
-            new HelpBoxItem(rootItem, block, "该 TyFlow VAT 类型需要 Mesh 多 UV 数据，不支持 ParticleSystem VertexStream 模式。", MessageType.Warning,
+            new HelpBoxItem(rootItem, block, () => Text("feature.vat.tyflowUnsupportedParticle.message", "该 TyFlow VAT 类型需要 Mesh 多 UV 数据，不支持 ParticleSystem VertexStream 模式。"), MessageType.Warning,
                 () => isTyflow() && HasUnsupportedTyflowParticleMode(rootItem));
-            new HelpBoxItem(rootItem, block, "TyFlow VAT uses UV2 (TEXCOORD0.zw) as vertexIndex / vertexCount in ParticleSystem mode. Flipbook blending or Special UV (UV2) conflicts with it; VAT takes priority.", MessageType.Warning,
+            new HelpBoxItem(rootItem, block, () => Text("feature.vat.tyflowUv2Conflict.message", "TyFlow VAT uses UV2 (TEXCOORD0.zw) as vertexIndex / vertexCount in ParticleSystem mode. Flipbook blending or Special UV (UV2) conflicts with it; VAT takes priority."), MessageType.Warning,
                 () => isTyflow() && !HasUnsupportedTyflowParticleMode(rootItem) && HasTyflowParticleUV2Conflict(rootItem));
             AddToggle(rootItem, block, "_DeformingSkin", "Deforming skin", isVisible: isTyflow);
             AddFloat(rootItem, block, "_SkinBoneCount", "Skin bone count", isTyflow);
@@ -577,7 +577,7 @@ namespace NBShaderEditor
                 () => IsPropertyMode(rootItem, modePropertyName, 0));
             AddAlphaGradient(rootItem, parent, label + "渐变", texturePropertyName + "GradientCount", texturePropertyName + "GradientFloat",
                 () => IsPropertyMode(rootItem, modePropertyName, 1));
-            new TextureScaleOffsetItem(rootItem, parent, texturePropertyName, false, () => IsPropertyMode(rootItem, modePropertyName, 1));
+            new TextureScaleOffsetItem(rootItem, parent, texturePropertyName, false, () => IsPropertyMode(rootItem, modePropertyName, 1), TillingContent, OffsetContent);
             new WrapModeItem(rootItem, parent, wrapFlag, () => Content(label + "UV Wrap"), 2,
                 () => IsPropertyMode(rootItem, modePropertyName, 1));
             new UVModeSelectItem(rootItem, parent, uvFoldOutPropertyName, uvModeFlagPos, 0, () => Content(label + "UV来源"), texturePropertyName);
@@ -592,7 +592,15 @@ namespace NBShaderEditor
             string colorPropertyName = null,
             Func<bool> isVisible = null)
         {
-            new TextureItem(rootItem, parent, texturePropertyName, () => Content(label), colorPropertyName, isVisible: isVisible);
+            new TextureItem(
+                rootItem,
+                parent,
+                texturePropertyName,
+                () => Content(label),
+                colorPropertyName,
+                isVisible: isVisible,
+                tillingContentProvider: TillingContent,
+                offsetContentProvider: OffsetContent);
             new WrapModeItem(rootItem, parent, wrapFlag, () => Content(label + " Wrap"), 2, isVisible);
         }
 
@@ -1004,7 +1012,27 @@ namespace NBShaderEditor
 
         private static GUIContent Content(string label)
         {
-            return new GUIContent(label);
+            return NBShaderInspectorLocalization.MakeContent("inspector.feature." + label + ".label", label);
+        }
+
+        private static GUIContent TillingContent()
+        {
+            return NBShaderInspectorLocalization.MakeInspectorContent("common.tilling", "Tilling");
+        }
+
+        private static GUIContent OffsetContent()
+        {
+            return NBShaderInspectorLocalization.MakeInspectorContent("common.offset", "Offset");
+        }
+
+        private static string Text(string key, string fallback)
+        {
+            return NBShaderInspectorLocalization.GetInspectorText(key, fallback);
+        }
+
+        private static string[] PopupOptions(string propertyName, string[] fallback)
+        {
+            return NBShaderInspectorLocalization.GetInspectorOptions("feature.popup." + propertyName, fallback);
         }
 
         private class FloatItem : ShaderGUIFloatItem
@@ -1075,14 +1103,14 @@ namespace NBShaderEditor
 
         private class HelpBoxItem : ShaderGUIItem
         {
-            private readonly string _message;
+            private readonly Func<string> _messageProvider;
             private readonly MessageType _messageType;
             private readonly Func<bool> _isVisible;
 
-            public HelpBoxItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem, string message, MessageType messageType, Func<bool> isVisible)
+            public HelpBoxItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem, Func<string> messageProvider, MessageType messageType, Func<bool> isVisible)
                 : base(rootItem, parentItem)
             {
-                _message = message;
+                _messageProvider = messageProvider ?? (() => string.Empty);
                 _messageType = messageType;
                 _isVisible = isVisible;
             }
@@ -1094,7 +1122,7 @@ namespace NBShaderEditor
                     return;
                 }
 
-                EditorGUILayout.HelpBox(_message, _messageType);
+                EditorGUILayout.HelpBox(_messageProvider(), _messageType);
             }
         }
 
@@ -1148,6 +1176,7 @@ namespace NBShaderEditor
         private class PopupItem : ShaderGUIPopUpItem
         {
             private readonly Func<GUIContent> _contentProvider;
+            private readonly Func<string[]> _popupNamesProvider;
             private readonly Action<MaterialProperty> _onValueChanged;
             private readonly Func<bool> _isVisible;
 
@@ -1162,9 +1191,10 @@ namespace NBShaderEditor
             {
                 PropertyName = propertyName;
                 _contentProvider = contentProvider;
+                _popupNamesProvider = () => PopupOptions(propertyName, popupNames);
                 _onValueChanged = onValueChanged;
                 _isVisible = isVisible;
-                PopUpNames = popupNames;
+                PopUpNames = _popupNamesProvider();
                 InitTriggerByChild();
             }
 
@@ -1176,6 +1206,7 @@ namespace NBShaderEditor
                 }
 
                 GuiContent = _contentProvider();
+                PopUpNames = _popupNamesProvider();
                 base.OnGUI();
             }
 

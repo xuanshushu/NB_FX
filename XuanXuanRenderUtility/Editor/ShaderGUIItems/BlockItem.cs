@@ -33,8 +33,9 @@ namespace NBShaderEditor
             DrawLeadingSpace();
             GetRect();
             EditorGUI.LabelField(LabelRect, GuiContent, TitleStyle);
+            bool isOpen = _foldOutHelper.DrawFoldOut(LabelRect);
+            DrawResetButton();
             EditorGUI.indentLevel++;
-            bool isOpen = _foldOutHelper.DrawFoldOut(BaseRect);
             if (isOpen)
             {
                 DrawBlock();

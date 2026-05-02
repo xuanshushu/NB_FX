@@ -166,7 +166,10 @@ namespace NBShaderEditor
             EditorGUI.BeginChangeCheck();
             using (new EditorGUIIndentLevelScope(0))
             {
-                channel = EditorGUI.Popup(ControlRect, channel, ChannelNames);
+                channel = EditorGUI.Popup(
+                    ControlRect,
+                    channel,
+                    NBShaderInspectorLocalization.GetInspectorOptions("protocol.colorChannel", ChannelNames));
             }
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
@@ -285,7 +288,10 @@ namespace NBShaderEditor
             int index;
             using (new EditorGUIIndentLevelScope(0))
             {
-                index = EditorGUI.Popup(ControlRect, (int)component, Options);
+                index = EditorGUI.Popup(
+                    ControlRect,
+                    (int)component,
+                    NBShaderInspectorLocalization.GetInspectorOptions("protocol.customData", Options));
             }
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
@@ -407,7 +413,10 @@ namespace NBShaderEditor
             EditorGUI.BeginChangeCheck();
             using (new EditorGUIIndentLevelScope(0))
             {
-                mode = EditorGUI.Popup(ControlRect, mode, Options);
+                mode = EditorGUI.Popup(
+                    ControlRect,
+                    mode,
+                    NBShaderInspectorLocalization.GetInspectorOptions("protocol.wrapMode", Options));
             }
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
@@ -520,7 +529,7 @@ namespace NBShaderEditor
             _opacitySlider = new ShaderGUISliderItem(rootItem, this)
             {
                 PropertyName = opacityPropertyName,
-                GuiContent = new GUIContent("程序噪波混合强度"),
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.pnoise.opacity", "Program Noise Blend Opacity"),
                 Min = 0f,
                 Max = 1f
             };
@@ -543,7 +552,10 @@ namespace NBShaderEditor
             int index;
             using (new EditorGUIIndentLevelScope(0))
             {
-                index = EditorGUI.Popup(ControlRect, (int)mode, Options);
+                index = EditorGUI.Popup(
+                    ControlRect,
+                    (int)mode,
+                    NBShaderInspectorLocalization.GetInspectorOptions("protocol.pnoiseBlend", Options));
             }
             EditorGUI.showMixedValue = false;
             if (EditorGUI.EndChangeCheck())
@@ -553,6 +565,7 @@ namespace NBShaderEditor
             }
 
             DrawResetButton();
+            _opacitySlider.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.pnoise.opacity", "Program Noise Blend Opacity");
             _opacitySlider.OnGUI();
         }
 
@@ -686,14 +699,14 @@ namespace NBShaderEditor
                 this,
                 "_GlobalTwirlFoldOut",
                 "_UTwirlEnabled",
-                () => new GUIContent("旋转扭曲"),
+                () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.twirl", "Twirl"),
                 W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON,
                 0);
-            _twirlCenterItem = new Vector2LineItem(rootItem, _twirlBlock, "_TWParameter", true, () => new GUIContent("旋转扭曲中心"));
+            _twirlCenterItem = new Vector2LineItem(rootItem, _twirlBlock, "_TWParameter", true, () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.twirlCenter", "Twirl Center"));
             _twirlStrengthItem = new ShaderGUIFloatItem(rootItem, _twirlBlock)
             {
                 PropertyName = "_TWStrength",
-                GuiContent = new GUIContent("旋转扭曲强度")
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.twirlStrength", "Twirl Strength")
             };
             _twirlStrengthItem.InitTriggerByChild();
 
@@ -702,28 +715,28 @@ namespace NBShaderEditor
                 this,
                 "_GlobalPolarFoldOut",
                 "_PolarCoordinatesEnabled",
-                () => new GUIContent("极坐标"),
+                () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.polar", "Polar Coordinates"),
                 W9ParticleShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON,
                 0);
-            _polarCenterItem = new Vector2LineItem(rootItem, _polarBlock, "_PCCenter", true, () => new GUIContent("极坐标中心"));
-            _polarStrengthItem = new VectorComponentItem(rootItem, _polarBlock, "_PCCenter", 2, () => new GUIContent("极坐标强度"), true, 0f, 1f);
+            _polarCenterItem = new Vector2LineItem(rootItem, _polarBlock, "_PCCenter", true, () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.polarCenter", "Polar Center"));
+            _polarStrengthItem = new VectorComponentItem(rootItem, _polarBlock, "_PCCenter", 2, () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.polarStrength", "Polar Strength"), true, 0f, 1f);
 
-            _cylinderRotateItem = new Vector3Item(rootItem, this, "_CylinderUVRotate", () => new GUIContent("圆柱坐标旋转"), _ => UpdateCylinderMatrix(rootItem));
-            _cylinderOffsetItem = new Vector3Item(rootItem, this, "_CylinderUVPosOffset", () => new GUIContent("圆柱坐标偏移"), _ => UpdateCylinderMatrix(rootItem));
+            _cylinderRotateItem = new Vector3Item(rootItem, this, "_CylinderUVRotate", () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.cylinderRotate", "Cylinder Rotation"), _ => UpdateCylinderMatrix(rootItem));
+            _cylinderOffsetItem = new Vector3Item(rootItem, this, "_CylinderUVPosOffset", () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.cylinderOffset", "Cylinder Offset"), _ => UpdateCylinderMatrix(rootItem));
 
             _worldSpaceItem = new ShaderGUIPopUpItem(rootItem, this)
             {
                 PropertyName = "_WorldSpaceUVModeSelector",
-                GuiContent = new GUIContent("坐标平面"),
-                PopUpNames = PosUVModeNames
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane"),
+                PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames)
             };
             _worldSpaceItem.InitTriggerByChild();
 
             _objectSpaceItem = new ShaderGUIPopUpItem(rootItem, this)
             {
                 PropertyName = "_ObjectSpaceUVModeSelector",
-                GuiContent = new GUIContent("坐标平面"),
-                PopUpNames = PosUVModeNames
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane"),
+                PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames)
             };
             _objectSpaceItem.InitTriggerByChild();
 
@@ -747,7 +760,10 @@ namespace NBShaderEditor
                 int index;
                 using (new EditorGUIIndentLevelScope(0))
                 {
-                    index = EditorGUI.Popup(ControlRect, (int)mode, UVModeNames);
+                    index = EditorGUI.Popup(
+                        ControlRect,
+                        (int)mode,
+                        NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.mode", UVModeNames));
                 }
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
@@ -763,11 +779,15 @@ namespace NBShaderEditor
                                    mode != W9ParticleShaderFlags.UVMode.CommonUV &&
                                    mode != W9ParticleShaderFlags.UVMode.ScreenUV &&
                                    mode != W9ParticleShaderFlags.UVMode.MainTex;
-                bool isOpen = needFoldOut && _foldOutHelper.DrawFoldOut(BaseRect);
+                bool isOpen = needFoldOut && _foldOutHelper.DrawFoldOut(LabelRect);
                 if (isOpen && !HasMixedValue())
                 {
                     EditorGUI.indentLevel++;
-                    EditorGUILayout.LabelField("以下设置材质内通用:", EditorStyles.boldLabel);
+                    EditorGUILayout.LabelField(
+                        NBShaderInspectorLocalization.GetInspectorText(
+                            "protocol.uv.sharedMaterial.message",
+                            "The following settings are shared in the material:"),
+                        EditorStyles.boldLabel);
                     switch (mode)
                     {
                         case W9ParticleShaderFlags.UVMode.SpecialUVChannel:
@@ -778,15 +798,22 @@ namespace NBShaderEditor
                             _polarBlock.OnGUI();
                             break;
                         case W9ParticleShaderFlags.UVMode.Cylinder:
-                            EditorGUILayout.LabelField("圆柱模式消耗比较大，慎用");
+                            EditorGUILayout.LabelField(
+                                NBShaderInspectorLocalization.GetInspectorText(
+                                    "protocol.uv.cylinderWarning.message",
+                                    "Cylinder mode is expensive. Use it carefully."));
                             _cylinderRotateItem.OnGUI();
                             _cylinderOffsetItem.OnGUI();
                             UpdateCylinderMatrix(RootItem);
                             break;
                         case W9ParticleShaderFlags.UVMode.WorldPos:
+                            _worldSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
+                            _worldSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
                             _worldSpaceItem.OnGUI();
                             break;
                         case W9ParticleShaderFlags.UVMode.ObjectPos:
+                            _objectSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
+                            _objectSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
                             _objectSpaceItem.OnGUI();
                             break;
                     }
@@ -896,9 +923,16 @@ namespace NBShaderEditor
             public SpecialUVChannelModeItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
             {
                 PropertyName = "_SpecialUVChannelMode";
-                GuiContent = new GUIContent("特殊UV通道选择");
-                PopUpNames = SpecialUVChannelNames;
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.specialChannel", "Special UV Channel");
+                PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.specialChannel", SpecialUVChannelNames);
                 InitTriggerByChild();
+            }
+
+            public override void OnGUI()
+            {
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.specialChannel", "Special UV Channel");
+                PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.specialChannel", SpecialUVChannelNames);
+                base.OnGUI();
             }
 
             public override void OnEndChange()
@@ -944,7 +978,7 @@ namespace NBShaderEditor
             string[] keywords = RootItem.Mats[0].shaderKeywords;
             if (keywords == null || keywords.Length == 0)
             {
-                EditorGUILayout.LabelField("None");
+                EditorGUILayout.LabelField(NBShaderInspectorLocalization.GetInspectorText("common.none", "None"));
                 return;
             }
 

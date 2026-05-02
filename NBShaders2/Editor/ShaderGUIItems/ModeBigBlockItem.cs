@@ -51,17 +51,9 @@ namespace NBShaderEditor
         public MeshModePopUp(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) :
             base(rootItem, parentItem: parentItem)
         {
-            PopUpNames = new[]
-            {
-                "粒子系统",
-                "模型（非粒子发射）",
-                "2D RawImage",
-                "2D 精灵",
-                "2D 材质贴图",
-                "2D UIParticle"
-            };
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("mode.meshSource", MeshSourceOptions);
             PropertyName = "_MeshSourceMode";
-            GuiContent = new GUIContent("Mesh来源模式", "Mesh来源模式和当前的对象类型一致");
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.meshSource", "Mesh Source Mode", "Matches the current object type.");
             MeshSourceModeDic[rootItem] = this;
             InitTriggerByChild();
         }
@@ -84,6 +76,8 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("mode.meshSource", MeshSourceOptions);
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.meshSource", "Mesh Source Mode", "Matches the current object type.");
             base.OnGUI();
             if (PropertyInfo.Property.hasMixedValue)
             {
@@ -108,6 +102,16 @@ namespace NBShaderEditor
         {
             MeshSourceModeDic.Remove(RootItem);
         }
+
+        private static readonly string[] MeshSourceOptions =
+        {
+            "粒子系统",
+            "模型（非粒子发射）",
+            "2D RawImage",
+            "2D 精灵",
+            "2D 材质贴图",
+            "2D UIParticle"
+        };
     }
     
     public enum TransparentMode
@@ -127,19 +131,14 @@ namespace NBShaderEditor
         public TransparentModePopUp(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) :
             base(rootItem, parentItem: parentItem)
         {
-            PopUpNames = new[]
-            {
-                "不透明Opaque",
-                "半透明Transparent",
-                "不透明裁剪CutOff"
-            };
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("mode.transparent", TransparentOptions);
             PropertyName = "_TransparentMode";
-            GuiContent = new GUIContent("透明模式", "透明模式");
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.transparent", "Transparent Mode", "Controls opaque, transparent, and cutoff rendering.");
             TransparentModeDic[RootItem] = this;
             _cutOffSlider = new ShaderGUISliderItem(RootItem, this)
             {
                 PropertyName = "_Cutoff",
-                GuiContent = new GUIContent("裁剪位置", "0为完全不裁剪，1为完全裁剪")
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.cutoff", "Cutoff", "0 keeps everything, 1 clips everything.")
             };
             _cutOffSlider.InitTriggerByChild();
             _blendPopUp = new BlendPopUp(RootItem, this);
@@ -151,6 +150,9 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("mode.transparent", TransparentOptions);
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.transparent", "Transparent Mode", "Controls opaque, transparent, and cutoff rendering.");
+            _cutOffSlider.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.cutoff", "Cutoff", "0 keeps everything, 1 clips everything.");
             base.OnGUI();
             if (PropertyInfo.Property.hasMixedValue)
             {
@@ -221,6 +223,13 @@ namespace NBShaderEditor
         {
             TransparentModeDic.Remove(RootItem);//回收时清掉相关引用。？会不会有时序问题
         }
+
+        private static readonly string[] TransparentOptions =
+        {
+            "不透明Opaque",
+            "半透明Transparent",
+            "不透明裁剪CutOff"
+        };
         
         
     }
@@ -242,14 +251,8 @@ namespace NBShaderEditor
         public BlendPopUp(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
         {
             PropertyName = "_Blend";
-            PopUpNames = new[]
-            {
-                "透明度混合AlphaBlend",
-                "预乘PreMultiply",
-                "叠加Additive",
-                "正片叠底Multiply"
-            };
-            GuiContent = new GUIContent("混合模式");
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("mode.blend", BlendOptions);
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.blend", "Blend Mode");
             BlendModeDic[rootItem] = this;
             _addToPreMultiplySlider = new AddToPreMultiplySlider(rootItem, this);
             InitTriggerByChild();
@@ -257,6 +260,8 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("mode.blend", BlendOptions);
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.blend", "Blend Mode");
             base.OnGUI();
             if (PropertyInfo.Property.hasMixedValue)
             {
@@ -304,6 +309,14 @@ namespace NBShaderEditor
         {
             BlendModeDic.Remove(RootItem);
         }
+
+        private static readonly string[] BlendOptions =
+        {
+            "透明度混合AlphaBlend",
+            "预乘PreMultiply",
+            "叠加Additive",
+            "正片叠底Multiply"
+        };
     }
 
     public class AddToPreMultiplySlider : ShaderGUISliderItem
@@ -311,8 +324,14 @@ namespace NBShaderEditor
         public AddToPreMultiplySlider(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
         {
             PropertyName = "_AdditiveToPreMultiplyAlphaLerp";
-            GuiContent = new GUIContent("叠加到预乘混合", "0为叠加混合，1为预乘混合");
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.additiveToPremultiply", "Additive To Premultiply", "0 is additive, 1 is premultiply.");
             base.InitTriggerByChild();
+        }
+
+        public override void OnGUI()
+        {
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.additiveToPremultiply", "Additive To Premultiply", "0 is additive, 1 is premultiply.");
+            base.OnGUI();
         }
 
         public override void CheckIsPropertyModified(bool isCallByChild = false)
@@ -341,6 +360,5 @@ namespace NBShaderEditor
             PropertyInfo.Property.floatValue = defaultValue;
         }
     }
-    
-    
+
 }

@@ -11,11 +11,13 @@ namespace NBShaderEditor
     }
     public class ShaderGUIItem
     {
-        public const float LabelWidth = 180f;
+        public const float MinLabelWidth = 120f;
+        public const float LabelWidthRatio = 0.4f;
         public const float GlobalRectXOffset = -15f;
-        public const float GlobalRectWidthExpansion = 10f;
+        public const float GlobalRectWidthExpansion = 15f;
         public const float UnityEditorGUIIndentWidth = 15f;
-        public const float EditorGUIIndentWidth = 8f;
+        public const float EditorGUIIndentWidth = 10f;
+        public const float FoldOutArrowWidth = UnityEditorGUIIndentWidth;
         public const float ControlResetGap = 3f;
         public const float ControlIndentCompensation = 10f;
         public ShaderPropertyInfo PropertyInfo;
@@ -51,10 +53,10 @@ namespace NBShaderEditor
         public Rect ControlRect;
         public Rect ResetRect;
         public static float ResetButtonSize => EditorGUIUtility.singleLineHeight;
-        public virtual void GetRect()
+        public virtual void GetRect(bool applyControlIndentCompensation = true)
         {
             BaseRect = ApplyGlobalRectCompensation(EditorGUILayout.GetControlRect());
-            SplitLineRect(BaseRect, out LabelRect, out ControlRect, out ResetRect);
+            SplitLineRect(BaseRect, out LabelRect, out ControlRect, out ResetRect, applyControlIndentCompensation);
         }
 
         public static Rect ApplyGlobalRectCompensation(Rect rect)
@@ -72,6 +74,24 @@ namespace NBShaderEditor
             return rect;
         }
 
+        public static Rect ApplyDirectLabelIndentWidth(Rect rect)
+        {
+            float indentOffset = EditorGUI.indentLevel * EditorGUIIndentWidth;
+            rect.x += indentOffset;
+            rect.width = Mathf.Max(0f, rect.width - indentOffset);
+            return rect;
+        }
+
+        public static float GetEditorLabelTextX(Rect labelRect)
+        {
+            return labelRect.x + EditorGUI.indentLevel * UnityEditorGUIIndentWidth;
+        }
+
+        public static float GetLabelWidth(Rect baseRect)
+        {
+            return Mathf.Max(MinLabelWidth, baseRect.width * LabelWidthRatio);
+        }
+
         public static void SplitLineRect(
             Rect baseRect,
             out Rect labelRect,
@@ -79,13 +99,14 @@ namespace NBShaderEditor
             out Rect resetRect,
             bool applyControlIndentCompensation = true)
         {
+            float labelWidth = GetLabelWidth(baseRect);
             labelRect = baseRect;
-            labelRect.width = LabelWidth;
+            labelRect.width = labelWidth;
             labelRect = ApplyLabelIndentWidth(labelRect);
 
             Rect controlAndResetRect = baseRect;
-            controlAndResetRect.x += LabelWidth;
-            controlAndResetRect.width = Mathf.Max(0f, controlAndResetRect.width - LabelWidth);
+            controlAndResetRect.x += labelWidth;
+            controlAndResetRect.width = Mathf.Max(0f, controlAndResetRect.width - labelWidth);
             SplitControlAndResetRect(controlAndResetRect, out controlRect, out resetRect, applyControlIndentCompensation);
         }
 

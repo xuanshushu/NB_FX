@@ -27,6 +27,7 @@ namespace NBShaderEditor
         ShaderPropertyInfo _rangePropertyInfo;
         private const float SliderFrontGap = 5f;
         private const float SliderBackGap = 2f;
+        private const float RangeFieldWidth = 30f;
 
         public override void InitTriggerByChild()
         {
@@ -70,12 +71,11 @@ namespace NBShaderEditor
         {
             if (_rangePropertyInfo != null)
             {
-                float rangeFieldWidth = EditorGUIUtility.fieldWidth;
                 Rect minRect = ControlRect;
-                minRect.width = rangeFieldWidth;
+                minRect.width = RangeFieldWidth;
                 Rect maxRect = ControlRect;
-                maxRect.x = ControlRect.xMax - rangeFieldWidth;
-                maxRect.width = rangeFieldWidth;
+                maxRect.x = ControlRect.xMax - RangeFieldWidth;
+                maxRect.width = RangeFieldWidth;
                 Rect sliderRect = ControlRect;
                 sliderRect.x = minRect.xMax + SliderFrontGap;
                 sliderRect.width = Mathf.Max(0f, maxRect.x - sliderRect.x - SliderBackGap + EditorGUI.indentLevel * UnityEditorGUIIndentWidth);

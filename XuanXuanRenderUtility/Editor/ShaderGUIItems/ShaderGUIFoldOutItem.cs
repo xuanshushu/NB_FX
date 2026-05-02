@@ -21,43 +21,41 @@ namespace NBShaderEditor
 	    private string _propertyName;
 	    private AnimBool animBool = new AnimBool();
 
-	    private const float foldOutWidth = 15f;
 	    private ShaderPropertyInfo _propertyInfo;
 	    
-        public bool BeginFadedGroup(Rect baseRect)
+        public bool BeginFadedGroup(Rect labelRect)
         {
-	        Rect foldOutRect = baseRect;
-	        foldOutRect.x = baseRect.x - foldOutWidth;
-	        foldOutRect.width = foldOutWidth + ShaderGUIItem.LabelWidth;//覆盖整个Label
+	        Rect foldOutRect = MakeFoldOutRect(labelRect);
 	        animBool.target = _propertyInfo.Property.floatValue>0.5f?true:false;
-	        animBool.target = EditorGUI.Foldout(foldOutRect,animBool.target,string.Empty,true);
+	        animBool.target = GUI.Toggle(foldOutRect, animBool.target, GUIContent.none, EditorStyles.foldout);
 	        _propertyInfo.Property.floatValue = animBool.target?1f:0f;
 	        return EditorGUILayout.BeginFadeGroup(animBool.faded);
         }
 
-        public bool DrawFoldOut(Rect baseRect)
+        public bool DrawFoldOut(Rect labelRect)
         {
-	        Rect foldOutRect = baseRect;
-	        foldOutRect.x = baseRect.x - foldOutWidth;
-	        foldOutRect.width = foldOutWidth + ShaderGUIItem.LabelWidth;//覆盖整个Label
+	        Rect foldOutRect = MakeFoldOutRect(labelRect);
 	        bool isOpen = _propertyInfo.Property.floatValue > 0.5f;
-	        isOpen = EditorGUI.Foldout(foldOutRect, isOpen, string.Empty, true);
+	        isOpen = GUI.Toggle(foldOutRect, isOpen, GUIContent.none, EditorStyles.foldout);
 	        _propertyInfo.Property.floatValue = isOpen ? 1f : 0f;
 	        return isOpen;
         }
 
         public bool DrawFoldOutLabel(Rect labelRect, GUIContent content, GUIStyle style)
         {
-	        Rect foldOutRect = labelRect;
-	        float indentOffset = EditorGUI.indentLevel * ShaderGUIItem.UnityEditorGUIIndentWidth;
-	        foldOutRect.x += indentOffset;
-	        foldOutRect.width = Mathf.Max(0f, foldOutRect.width - indentOffset);
-	        foldOutRect.x -= foldOutWidth;
-	        foldOutRect.width += foldOutWidth;
+	        Rect foldOutRect = MakeFoldOutRect(labelRect);
 	        bool isOpen = _propertyInfo.Property.floatValue > 0.5f;
 	        isOpen = GUI.Toggle(foldOutRect, isOpen, content, style ?? EditorStyles.foldout);
 	        _propertyInfo.Property.floatValue = isOpen ? 1f : 0f;
 	        return isOpen;
+        }
+
+        private static Rect MakeFoldOutRect(Rect labelRect)
+        {
+	        Rect foldOutRect = labelRect;
+	        foldOutRect.x = ShaderGUIItem.GetEditorLabelTextX(labelRect) - ShaderGUIItem.FoldOutArrowWidth;
+	        foldOutRect.width = Mathf.Max(0f, labelRect.xMax - foldOutRect.x);
+	        return foldOutRect;
         }
 
         public void EndFadedGroup()
@@ -90,8 +88,8 @@ namespace NBShaderEditor
 	        GetRect();
 	        EditorGUI.LabelField(LabelRect, GuiContent,_boldStyle);
 	        DrawResetButton();
+	        bool isOpen = _foldOutHelper.BeginFadedGroup(LabelRect);
 	        EditorGUI.indentLevel++;
-	        bool isOpen = _foldOutHelper.BeginFadedGroup(BaseRect);
 	        if (isOpen)
 	        {
 				DrawBlock();

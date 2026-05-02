@@ -54,7 +54,7 @@ Example pattern:
 _alphaAllItem = new ShaderGUISliderItem(rootItem, this)
 {
     PropertyName = "_AlphaAll",
-    GuiContent = new GUIContent("整体透明度"),
+    GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.alphaAll", "Overall Alpha"),
     RangePropertyName = "AlphaAllRangeVec"
 };
 _alphaAllItem.InitTriggerByChild();
@@ -82,6 +82,42 @@ Shared items must not reference:
 - NBShader-specific keyword, pass, or flag logic
 
 NBShader-specific labels should be passed into shared items through `GUIContent` providers from the call site.
+
+## Localization Rules
+
+NBShader2 Inspector user-facing text must go through `NBShaderInspectorLocalization`.
+
+- Use CSV keys in `NBShaders2/Editor/Localization/NBShaderInspectorLocalization.csv`.
+- CSV format is `key,zh-CN,en-US,zh-CN-tip,en-US-tip`.
+- Tooltip text belongs to the same row as its label key. If a row has no tooltip, leave the tip columns empty.
+- Legacy `.tip` rows are only compatibility fallback for existing non-label message reads. New label tooltips must not create a separate `.tip` key.
+- Language selection is editor-wide and stored in `EditorPrefs` key `NBShader2.Localization.Language`.
+- Language menus live under `Tools/NBShader2/Language/中文` and `Tools/NBShader2/Language/English`.
+- CSV edits can be reloaded through `Tools/NBShader2/Language/Reload Localization`.
+
+Fallback order:
+
+- current language
+- `zh-CN`
+- code fallback
+
+Key conventions:
+
+- normal labels use `inspector.<block>.<feature>.<name>.label`
+- label tooltips use the same key as the label and read the `<language>-tip` column
+- standalone tooltip/help text that is not attached to a `GUIContent` should use `.message` or another explicit text key
+- pure messages use `inspector.<block>.<feature>.<name>.message`
+- buttons use `inspector.<block>.<feature>.<name>.button`
+- popup options use `inspector.<block>.<feature>.<name>.option.<index>`
+
+Code conventions:
+
+- Normal controls should call `NBShaderInspectorLocalization.MakeInspectorContent(key, fallback, tip)` or pass a provider that calls it. The helper reads the label from `inspector.<key>.label` and the tooltip from the same CSV row first.
+- HelpBox/message strings should call `NBShaderInspectorLocalization.GetInspectorText(key, fallback)`.
+- Popup options should call `NBShaderInspectorLocalization.GetInspectorOptions(key, fallbackArray)` or update `PopUpNames` from an options provider.
+- Shared `XuanXuanRenderUtility/Editor/ShaderGUIItems` must not reference `NBShaderInspectorLocalization`.
+- Shared items that draw visible labels should expose `GUIContent` providers; NBShader2 call sites provide localized content.
+- Technical identifiers stay untranslated unless they are deliberately shown as UI copy: shader property names, keyword names, pass names, enum protocol values, render queue numbers, and stencil config keys remain stable.
 
 ## NBShaders2 Item Rules
 
@@ -179,7 +215,9 @@ Do not calculate label/control/reset positions independently in leaf items. Use 
 Standard row responsibilities:
 
 - `BaseRect` is the compensated full row rect.
-- `LabelRect` uses `LabelWidth`.
+- `LabelRect` uses `GetLabelWidth(BaseRect)`.
+- `GetLabelWidth()` has a fixed minimum (`MinLabelWidth`) and then grows by `LabelWidthRatio` once the inspector row is wide enough.
+- Do not read or hardcode a fixed label width in business items. If a custom layout needs the normal label/control split, call `SplitLineRect()`.
 - `ControlRect` starts after `LabelRect` and reserves reset space.
 - `ResetRect` is fixed to the right side and uses `ResetButtonSize`.
 - `ControlResetGap` is the only standard gap between control and reset.
@@ -200,13 +238,18 @@ Editor indent rules:
 - Do not introduce a separate per-block indent-count constant.
 - Unity's internal per-level indent width is represented by `UnityEditorGUIIndentWidth`.
 - The desired NBShader GUI visual indent width is represented by `EditorGUIIndentWidth`.
-- `ApplyEditorGUIIndentWidth()` converts Unity's built-in indent width into the desired visual indent width for the NBShader GUI rect system.
+- `ApplyLabelIndentWidth()` converts Unity's built-in `EditorGUI.LabelField` indent width into the desired visual indent width for the NBShader GUI rect system.
+- Direct `GUI.Label`, `GUI.Toggle`, texture preview rects, and other non-`EditorGUI.LabelField` labels do not get Unity's built-in label indent. Use `ApplyDirectLabelIndentWidth()` for their label start.
+- Foldout arrows must be positioned from the final visual label text x, not from `BaseRect.x`. Use `ShaderGUIFoldOutHelper` / `GetEditorLabelTextX()` and do not call `EditorGUI.Foldout()` directly in business items.
+- Do not hardcode a local texture or foldout indent width. Three-line texture groups must use `ApplyDirectLabelIndentWidth()` for the texture preview left edge and `SplitLineRect()` for Tilling/Offset control/reset positions.
 
 Control indent compensation:
 
 - `ControlIndentCompensation` is not the same thing as row indent.
 - It only adjusts `ControlRect` by moving `x` left and increasing `width`.
 - Use it only to compensate controls whose Unity internal drawing is shifted right inside the passed rect.
+- Do not apply it to controls that draw exactly inside the passed rect, such as single-line `ColorField`; call `GetRect(false)` or `SplitLineRect(..., false)` for those rows.
+- `EditorGUI.ColorField` draws the visible swatch through `EditorStyles.colorField.padding.Remove(position)`. Labeled color rows may compensate this padding inside `ColorItem`; no-label color rows keep their own local inset. Do not add Color-only constants to `ShaderGUIItem`.
 - Keep `LabelRect` and `ResetRect` independent from this compensation.
 - Composite layouts may disable it with `applyControlIndentCompensation: false` and then apply a local compensation only to the actual control rect when needed.
 
@@ -215,6 +258,12 @@ Full-width or no-label rows:
 - Rows such as full-width color bars should not automatically use label/control semantics.
 - If a row has no label, call `SplitControlAndResetRect()` directly and disable control compensation when the row must preserve its left edge.
 - Reset alignment should still come from `SplitControlAndResetRect()`.
+
+Texture rows:
+
+- All texture object inputs should use the shared three-row texture layout (`TexturePropertyGroupItem` through `TextureItem`) instead of `MaterialEditor.TexturePropertySingleLine()`.
+- Texture rows without editable Tilling/Offset should still reserve the three-row texture object area and leave the Tilling/Offset rows empty.
+- Texture color rows remain separate no-label color rows after the three-row texture object group.
 
 ## Animated Property Rules
 

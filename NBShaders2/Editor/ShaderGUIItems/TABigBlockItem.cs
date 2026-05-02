@@ -112,7 +112,7 @@ namespace NBShaderEditor
             ShaderGUIFloatItem item = new ShaderGUIFloatItem(rootItem, parentItem)
             {
                 PropertyName = propertyName,
-                GuiContent = new GUIContent(label)
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("ta.property." + propertyName, label)
             };
             item.InitTriggerByChild();
         }
@@ -122,7 +122,7 @@ namespace NBShaderEditor
             ShaderGUIPopUpItem item = new ShaderGUIPopUpItem(rootItem, parentItem)
             {
                 PropertyName = propertyName,
-                GuiContent = new GUIContent(label),
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("ta.property." + propertyName, label),
                 PopUpNames = options
             };
             item.InitTriggerByChild();

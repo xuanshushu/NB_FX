@@ -6,9 +6,8 @@ namespace NBShaderEditor
 {
     public class TextureItem : ShaderGUIItem
     {
-        private readonly string _colorPropertyName;
-        private readonly bool _drawScaleOffset;
-        private readonly Func<GUIContent> _contentProvider;
+        private readonly string _texturePropertyName;
+        private readonly TexturePropertyGroupItem _groupItem;
         private readonly Func<bool> _isVisible;
         private readonly Action<MaterialProperty> _afterDraw;
 
@@ -20,14 +19,22 @@ namespace NBShaderEditor
             string colorPropertyName = null,
             bool drawScaleOffset = true,
             Action<MaterialProperty> afterDraw = null,
-            Func<bool> isVisible = null) : base(rootItem, parentItem)
+            Func<bool> isVisible = null,
+            Func<GUIContent> tillingContentProvider = null,
+            Func<GUIContent> offsetContentProvider = null) : base(rootItem, parentItem)
         {
-            PropertyName = texturePropertyName;
-            _colorPropertyName = colorPropertyName;
-            _drawScaleOffset = drawScaleOffset;
-            _contentProvider = contentProvider ?? (() => GUIContent.none);
+            _texturePropertyName = texturePropertyName;
             _isVisible = isVisible;
             _afterDraw = afterDraw;
+            _groupItem = new TexturePropertyGroupItem(
+                rootItem,
+                this,
+                texturePropertyName,
+                colorPropertyName,
+                contentProvider,
+                drawScaleOffset,
+                tillingContentProvider: tillingContentProvider,
+                offsetContentProvider: offsetContentProvider);
             InitTriggerByChild();
         }
 
@@ -38,20 +45,11 @@ namespace NBShaderEditor
                 return;
             }
 
-            MaterialProperty textureProperty = PropertyInfo.Property;
-            MaterialProperty colorProperty = null;
-            if (!string.IsNullOrEmpty(_colorPropertyName) && RootItem.PropertyInfoDic.ContainsKey(_colorPropertyName))
+            _groupItem.OnGUI();
+            if (_afterDraw != null && RootItem.PropertyInfoDic.TryGetValue(_texturePropertyName, out ShaderPropertyInfo texturePropertyInfo))
             {
-                colorProperty = RootItem.PropertyInfoDic[_colorPropertyName].Property;
+                _afterDraw(texturePropertyInfo.Property);
             }
-
-            RootItem.MatEditor.TexturePropertySingleLine(_contentProvider(), textureProperty, colorProperty);
-            if (_drawScaleOffset)
-            {
-                RootItem.MatEditor.TextureScaleOffsetProperty(textureProperty);
-            }
-
-            _afterDraw?.Invoke(textureProperty);
         }
     }
 
@@ -68,14 +66,25 @@ namespace NBShaderEditor
             string texturePropertyName,
             string colorPropertyName,
             Func<GUIContent> contentProvider,
-            Func<bool> isVisible = null) : base(rootItem, parentItem)
+            bool drawScaleOffset = true,
+            Func<bool> isVisible = null,
+            Func<GUIContent> tillingContentProvider = null,
+            Func<GUIContent> offsetContentProvider = null) : base(rootItem, parentItem)
         {
             _isVisible = isVisible;
             _textureItem = new TextureObjectItem(rootItem, this, texturePropertyName, contentProvider);
             _colorItem = string.IsNullOrEmpty(colorPropertyName)
                 ? null
                 : new ColorLineItem(rootItem, this, colorPropertyName, false, contentProvider);
-            _scaleOffsetItem = new TextureScaleOffsetItem(rootItem, this, texturePropertyName, false);
+            _scaleOffsetItem = drawScaleOffset
+                ? new TextureScaleOffsetItem(
+                    rootItem,
+                    this,
+                    texturePropertyName,
+                    false,
+                    tillingContentProvider: tillingContentProvider,
+                    offsetContentProvider: offsetContentProvider)
+                : null;
             InitTriggerByChild();
         }
 
@@ -95,7 +104,7 @@ namespace NBShaderEditor
             Rect textureLabelRow = new Rect(textureGroupRect.x, textureGroupRect.y, textureGroupRect.width, singleLineHeight);
             Rect tillingRow = new Rect(textureGroupRect.x, textureGroupRect.y + singleLineHeight + rowGap, textureGroupRect.width, singleLineHeight);
             Rect offsetRow = new Rect(textureGroupRect.x, tillingRow.y + singleLineHeight + rowGap, textureGroupRect.width, singleLineHeight);
-            Rect indentedTextureLabelRow = EditorGUI.IndentedRect(textureLabelRow);
+            Rect indentedTextureLabelRow = ApplyDirectLabelIndentWidth(textureLabelRow);
 
             Rect textureRect = new Rect(indentedTextureLabelRow.x + 2f, textureLabelRow.y, textureFieldHeight, textureFieldHeight);
             textureRect.x -= 2f;
@@ -113,7 +122,7 @@ namespace NBShaderEditor
             offsetVec2Rect = ApplyControlIndentCompensation(offsetVec2Rect);
 
             _textureItem.Draw(textureRect, textureLabelRect);
-            _scaleOffsetItem.Draw(tillingLabelRect, tillingVec2Rect, tillingResetRect, offsetLabelRect, offsetVec2Rect, offsetResetRect);
+            _scaleOffsetItem?.Draw(tillingLabelRect, tillingVec2Rect, tillingResetRect, offsetLabelRect, offsetVec2Rect, offsetResetRect);
             _colorItem?.OnGUI();
         }
 
@@ -252,17 +261,23 @@ namespace NBShaderEditor
 
         private readonly bool _isVectorProperty;
         private readonly Func<bool> _isVisible;
+        private readonly Func<GUIContent> _tillingContentProvider;
+        private readonly Func<GUIContent> _offsetContentProvider;
 
         public TextureScaleOffsetItem(
             ShaderGUIRootItem rootItem,
             ShaderGUIItem parentItem,
             string propertyName,
             bool isVectorProperty,
-            Func<bool> isVisible = null) : base(rootItem, parentItem)
+            Func<bool> isVisible = null,
+            Func<GUIContent> tillingContentProvider = null,
+            Func<GUIContent> offsetContentProvider = null) : base(rootItem, parentItem)
         {
             PropertyName = propertyName;
             _isVectorProperty = isVectorProperty;
             _isVisible = isVisible;
+            _tillingContentProvider = tillingContentProvider ?? (() => TillingContent);
+            _offsetContentProvider = offsetContentProvider ?? (() => OffsetContent);
             InitTriggerByChild();
         }
 
@@ -283,7 +298,7 @@ namespace NBShaderEditor
             Rect offsetVec2Rect = ControlRect;
             Rect offsetResetRect = ResetRect;
 
-            Draw(tillingLabelRect, tillingVec2Rect, tillingResetRect, offsetLabelRect, offsetVec2Rect, offsetResetRect);
+            Draw(tillingLabelRect, tillingVec2Rect, tillingResetRect, offsetLabelRect, offsetVec2Rect, offsetResetRect, true);
             DrawBlock();
         }
 
@@ -293,12 +308,13 @@ namespace NBShaderEditor
             Rect tillingResetRect,
             Rect offsetLabelRect,
             Rect offsetVec2Rect,
-            Rect offsetResetRect)
+            Rect offsetResetRect,
+            bool useEditorLabelField = false)
         {
             MaterialProperty property = PropertyInfo.Property;
             Vector4 scaleOffset = GetScaleOffset(property);
 
-            GUI.Label(tillingLabelRect, TillingContent);
+            DrawLabel(tillingLabelRect, _tillingContentProvider(), useEditorLabelField);
             Vector2 tilling = new Vector2(scaleOffset.x, scaleOffset.y);
             EditorGUI.showMixedValue = property.hasMixedValue;
             EditorGUI.BeginChangeCheck();
@@ -324,7 +340,7 @@ namespace NBShaderEditor
                 Apply(scaleOffset);
             }
 
-            GUI.Label(offsetLabelRect, OffsetContent);
+            DrawLabel(offsetLabelRect, _offsetContentProvider(), useEditorLabelField);
             Vector2 offset = new Vector2(scaleOffset.z, scaleOffset.w);
             EditorGUI.showMixedValue = property.hasMixedValue;
             EditorGUI.BeginChangeCheck();
@@ -349,6 +365,17 @@ namespace NBShaderEditor
                 scaleOffset.w = 0f;
                 Apply(scaleOffset);
             }
+        }
+
+        private static void DrawLabel(Rect rect, GUIContent content, bool useEditorLabelField)
+        {
+            if (useEditorLabelField)
+            {
+                EditorGUI.LabelField(rect, content);
+                return;
+            }
+
+            GUI.Label(rect, content);
         }
 
         public override void CheckIsPropertyModified(bool isCallByChild = false)

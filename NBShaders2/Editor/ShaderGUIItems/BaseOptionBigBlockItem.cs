@@ -329,13 +329,14 @@ namespace NBShaderEditor
         public ZTestItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem: parentItem)
         {
             PropertyName = "_ZTest";
-            GuiContent = new GUIContent("ZTest");
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.ztest", "ZTest");
             PopUpNames = Enum.GetNames(typeof(CompareFunction));
             InitTriggerByChild();
         }
 
         public override void OnGUI()
         {
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.ztest", "ZTest");
             if (RootItem is NBShaderRootItem nbRootItem)
             {
                 if (nbRootItem.Context.UIEffectEnabled == MixedBool.True)
@@ -363,20 +364,35 @@ namespace NBShaderEditor
         public CullModeItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
         {
             PropertyName = "_Cull";
-            GuiContent = new GUIContent("Cull");
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.cull", "Cull");
             PopUpNames = Enum.GetNames(typeof(RenderFace));
             InitTriggerByChild();
+        }
+
+        public override void OnGUI()
+        {
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.cull", "Cull");
+            base.OnGUI();
         }
     }
 
     public class ForceZWriteItem : ShaderGUIPopUpItem
     {
+        private static readonly string[] Options = { "Default", "Force On", "Force Off" };
+
         public ForceZWriteItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
         {
             PropertyName = "_ForceZWriteToggle";
-            GuiContent = new GUIContent("Force ZWrite");
-            PopUpNames = new[] { "Default", "Force On", "Force Off" };
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.forceZWrite", "Force ZWrite");
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("base.forceZWrite", Options);
             InitTriggerByChild();
+        }
+
+        public override void OnGUI()
+        {
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.forceZWrite", "Force ZWrite");
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("base.forceZWrite", Options);
+            base.OnGUI();
         }
 
         public override void OnEndChange()

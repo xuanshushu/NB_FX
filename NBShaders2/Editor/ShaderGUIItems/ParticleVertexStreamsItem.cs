@@ -8,8 +8,6 @@ namespace NBShaderEditor
 {
     public class ParticleVertexStreamsItem : ShaderGUIItem
     {
-        private static readonly GUIContent Title = new GUIContent("Particle Vertex Streams");
-
         private readonly NBShaderRootItem _nbRootItem;
 
         public ParticleVertexStreamsItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
@@ -41,7 +39,9 @@ namespace NBShaderEditor
             BuildExpectedStreams(material, flags, out List<ParticleSystemVertexStream> streams, out List<string> streamNames);
 
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField(Title, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(
+                NBShaderInspectorLocalization.MakeInspectorContent("vertexStreams.title", "Particle Vertex Streams"),
+                EditorStyles.boldLabel);
             using (new EditorGUI.DisabledScope(true))
             {
                 for (int i = 0; i < streamNames.Count; i++)
@@ -285,11 +285,18 @@ namespace NBShaderEditor
                 return;
             }
 
-            string targetName = trail ? "Particle trail renderers" : "Particle renderers";
-            EditorGUILayout.HelpBox(targetName + " with mismatched vertex streams:\n-" + string.Join("\n-", warnings), MessageType.Error, true);
-            if (GUILayout.Button(trail ? "Apply Trail Vertex Streams" : "Apply Vertex Streams", EditorStyles.miniButton))
+            string mismatchText = trail
+                ? NBShaderInspectorLocalization.GetInspectorText("vertexStreams.trailMismatch", "Particle trail renderers with mismatched vertex streams:")
+                : NBShaderInspectorLocalization.GetInspectorText("vertexStreams.mismatch", "Particle renderers with mismatched vertex streams:");
+            EditorGUILayout.HelpBox(mismatchText + "\n-" + string.Join("\n-", warnings), MessageType.Error, true);
+            GUIContent buttonContent = trail
+                ? NBShaderInspectorLocalization.MakeContent("inspector.vertexStreams.applyTrail.button", "Apply Trail Vertex Streams")
+                : NBShaderInspectorLocalization.MakeContent("inspector.vertexStreams.apply.button", "Apply Vertex Streams");
+            if (GUILayout.Button(buttonContent, EditorStyles.miniButton))
             {
-                Undo.RecordObjects(renderers.Where(r => r != null).ToArray(), "Apply custom vertex streams from material");
+                Undo.RecordObjects(
+                    renderers.Where(r => r != null).ToArray(),
+                    NBShaderInspectorLocalization.GetInspectorText("vertexStreams.apply.undo", "Apply custom vertex streams from material"));
                 foreach (ParticleSystemRenderer renderer in renderers)
                 {
                     if (trail)
