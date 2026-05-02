@@ -26,6 +26,7 @@ namespace NBShaderEditor
         public ShaderGUIRootItem RootItem;
         public string PropertyName;
         public GUIContent GuiContent;
+        private static int _parentControlDisabledDepth;
 
         public virtual void InitTriggerByChild()//根Child一定要做这个事情
         {
@@ -130,20 +131,28 @@ namespace NBShaderEditor
         public virtual void OnGUI()
         {
             GetRect();
-            EditorGUI.LabelField(LabelRect, GuiContent);
-            EditorGUI.BeginChangeCheck();
-            EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
-            bool animatedPropertyScope = BeginAnimatedPropertyBackground(BaseRect, PropertyInfo.Property);
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                DrawController();
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
-            EndAnimatedPropertyBackground(animatedPropertyScope);
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
+
+            using (ParentControlDisabledScope())
             {
-                OnEndChange();
+                EditorGUI.BeginChangeCheck();
+                EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
+                bool animatedPropertyScope = BeginAnimatedPropertyBackground(BaseRect, PropertyInfo.Property);
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    DrawController();
+                }
+                EndAnimatedPropertyBackground(animatedPropertyScope);
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    OnEndChange();
+                }
             }
+
             DrawResetButton();
             DrawBlock();
         }
@@ -153,9 +162,12 @@ namespace NBShaderEditor
             CheckIsPropertyModified();
             _resetButtonContent.text = HasModified ? "R" : "";
             _resetButtonStyle = HasModified ? GUI.skin.button : GUI.skin.label;
-            if (GUI.Button(ResetRect, _resetButtonContent, _resetButtonStyle))
+            using (ParentControlDisabledScope())
             {
-                ExecuteReset();
+                if (GUI.Button(ResetRect, _resetButtonContent, _resetButtonStyle))
+                {
+                    ExecuteReset();
+                }
             }
         }
 
@@ -177,6 +189,35 @@ namespace NBShaderEditor
             public void Dispose()
             {
                 EditorGUI.indentLevel = _indentLevel;
+            }
+        }
+
+        protected bool IsParentControlDisabled => _parentControlDisabledDepth > 0;
+
+        protected EditorGUI.DisabledScope ParentControlDisabledScope(bool disabled = false)
+        {
+            return new EditorGUI.DisabledScope(IsParentControlDisabled || disabled);
+        }
+
+        protected readonly struct InheritedControlDisabledScope : System.IDisposable
+        {
+            private readonly bool _disabled;
+
+            public InheritedControlDisabledScope(bool disabled)
+            {
+                _disabled = disabled;
+                if (_disabled)
+                {
+                    _parentControlDisabledDepth++;
+                }
+            }
+
+            public void Dispose()
+            {
+                if (_disabled)
+                {
+                    _parentControlDisabledDepth = Mathf.Max(0, _parentControlDisabledDepth - 1);
+                }
             }
         }
 

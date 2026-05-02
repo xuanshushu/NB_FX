@@ -33,24 +33,30 @@ namespace NBShaderEditor
 
             GuiContent = _contentProvider();
             GetRect(false);
-            EditorGUI.LabelField(LabelRect, GuiContent);
+            using (ParentControlDisabledScope())
+            {
+                EditorGUI.LabelField(LabelRect, GuiContent);
+            }
 
             Color color = PropertyInfo.Property.colorValue;
             bool hdr = (PropertyInfo.Property.flags & MaterialProperty.PropFlags.HDR) != 0;
-            EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
-            EditorGUI.BeginChangeCheck();
-            Rect colorRect = GetLabeledColorFieldRect(ControlRect);
-            bool animatedScope = BeginAnimatedPropertyBackground(colorRect, PropertyInfo.Property);
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                color = EditorGUI.ColorField(colorRect, GUIContent.none, color, true, true, hdr);
-            }
-            EndAnimatedPropertyBackground(animatedScope);
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
-            {
-                PropertyInfo.Property.colorValue = color;
-                OnEndChange();
+                EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
+                EditorGUI.BeginChangeCheck();
+                Rect colorRect = GetLabeledColorFieldRect(ControlRect);
+                bool animatedScope = BeginAnimatedPropertyBackground(colorRect, PropertyInfo.Property);
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    color = EditorGUI.ColorField(colorRect, GUIContent.none, color, true, true, hdr);
+                }
+                EndAnimatedPropertyBackground(animatedScope);
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    PropertyInfo.Property.colorValue = color;
+                    OnEndChange();
+                }
             }
 
             DrawResetButton();
@@ -113,7 +119,10 @@ namespace NBShaderEditor
             if (_showLabel)
             {
                 SplitLineRect(rect, out LabelRect, out ControlRect, out ResetRect, false);
-                EditorGUI.LabelField(LabelRect, GuiContent);
+                using (ParentControlDisabledScope())
+                {
+                    EditorGUI.LabelField(LabelRect, GuiContent);
+                }
             }
             else
             {
@@ -124,22 +133,25 @@ namespace NBShaderEditor
             MaterialProperty property = PropertyInfo.Property;
             Color color = property.colorValue;
             bool hdr = (property.flags & MaterialProperty.PropFlags.HDR) != 0;
-            EditorGUI.showMixedValue = property.hasMixedValue;
-            EditorGUI.BeginChangeCheck();
-            Rect colorRect = _showLabel
-                ? ColorItem.GetLabeledColorFieldRect(ControlRect)
-                : ColorItem.GetNoLabelColorFieldRect(ControlRect);
-            bool animatedScope = BeginAnimatedPropertyBackground(colorRect, property);
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                color = EditorGUI.ColorField(colorRect, GUIContent.none, color, true, true, hdr);
-            }
-            EndAnimatedPropertyBackground(animatedScope);
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
-            {
-                property.colorValue = color;
-                OnEndChange();
+                EditorGUI.showMixedValue = property.hasMixedValue;
+                EditorGUI.BeginChangeCheck();
+                Rect colorRect = _showLabel
+                    ? ColorItem.GetLabeledColorFieldRect(ControlRect)
+                    : ColorItem.GetNoLabelColorFieldRect(ControlRect);
+                bool animatedScope = BeginAnimatedPropertyBackground(colorRect, property);
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    color = EditorGUI.ColorField(colorRect, GUIContent.none, color, true, true, hdr);
+                }
+                EndAnimatedPropertyBackground(animatedScope);
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    property.colorValue = color;
+                    OnEndChange();
+                }
             }
 
             DrawResetButton();

@@ -20,7 +20,10 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
-            EditorGUILayout.HelpBox(_messageProvider(), _messageType);
+            using (ParentControlDisabledScope())
+            {
+                EditorGUILayout.HelpBox(_messageProvider(), _messageType);
+            }
         }
     }
 }

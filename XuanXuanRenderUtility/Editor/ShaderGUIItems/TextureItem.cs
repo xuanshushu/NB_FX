@@ -201,27 +201,33 @@ namespace NBShaderEditor
             ResetRect = resetRect;
 
             MaterialProperty property = PropertyInfo.Property;
-            if (RootItem.ClearUnusedTextureReferencesRequested && !GUI.enabled)
+            if (RootItem.ClearUnusedTextureReferencesRequested && (IsParentControlDisabled || !GUI.enabled))
             {
                 ClearTextureIfRequested();
             }
 
-            GUI.Label(LabelRect, _contentProvider(), EditorStyles.boldLabel);
-
-            EditorGUI.showMixedValue = property.hasMixedValue;
-            EditorGUI.BeginChangeCheck();
-            bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
-            Texture texture;
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                texture = (Texture)EditorGUI.ObjectField(ControlRect, property.textureValue, typeof(Texture2D));
+                GUI.Label(LabelRect, _contentProvider(), EditorStyles.boldLabel);
             }
-            EndAnimatedPropertyBackground(animatedScope);
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
+
+            using (ParentControlDisabledScope())
             {
-                property.textureValue = texture;
-                OnEndChange();
+                EditorGUI.showMixedValue = property.hasMixedValue;
+                EditorGUI.BeginChangeCheck();
+                bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
+                Texture texture;
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    texture = (Texture)EditorGUI.ObjectField(ControlRect, property.textureValue, typeof(Texture2D));
+                }
+                EndAnimatedPropertyBackground(animatedScope);
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    property.textureValue = texture;
+                    OnEndChange();
+                }
             }
 
             DrawResetButton();
@@ -345,67 +351,76 @@ namespace NBShaderEditor
             Vector4 scaleOffset = GetScaleOffset(property);
 
             DrawLabel(tillingLabelRect, _tillingContentProvider(), useEditorLabelField);
-            Vector2 tilling = new Vector2(scaleOffset.x, scaleOffset.y);
-            EditorGUI.showMixedValue = property.hasMixedValue;
-            EditorGUI.BeginChangeCheck();
-            bool tillingAnimatedScope = BeginAnimatedPropertyBackground(tillingVec2Rect, property);
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                tilling = EditorGUI.Vector2Field(tillingVec2Rect, GUIContent.none, tilling);
-            }
-            EndAnimatedPropertyBackground(tillingAnimatedScope);
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
-            {
-                scaleOffset.x = tilling.x;
-                scaleOffset.y = tilling.y;
-                Apply(scaleOffset);
-            }
+                Vector2 tilling = new Vector2(scaleOffset.x, scaleOffset.y);
+                EditorGUI.showMixedValue = property.hasMixedValue;
+                EditorGUI.BeginChangeCheck();
+                bool tillingAnimatedScope = BeginAnimatedPropertyBackground(tillingVec2Rect, property);
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    tilling = EditorGUI.Vector2Field(tillingVec2Rect, GUIContent.none, tilling);
+                }
+                EndAnimatedPropertyBackground(tillingAnimatedScope);
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    scaleOffset.x = tilling.x;
+                    scaleOffset.y = tilling.y;
+                    Apply(scaleOffset);
+                }
 
-            bool tillingModified = property.hasMixedValue || tilling != Vector2.one;
-            if (GUI.Button(tillingResetRect, tillingModified ? "R" : string.Empty, tillingModified ? GUI.skin.button : GUI.skin.label))
-            {
-                scaleOffset.x = 1f;
-                scaleOffset.y = 1f;
-                Apply(scaleOffset);
+                bool tillingModified = property.hasMixedValue || tilling != Vector2.one;
+                if (GUI.Button(tillingResetRect, tillingModified ? "R" : string.Empty, tillingModified ? GUI.skin.button : GUI.skin.label))
+                {
+                    scaleOffset.x = 1f;
+                    scaleOffset.y = 1f;
+                    Apply(scaleOffset);
+                }
             }
 
             DrawLabel(offsetLabelRect, _offsetContentProvider(), useEditorLabelField);
-            Vector2 offset = new Vector2(scaleOffset.z, scaleOffset.w);
-            EditorGUI.showMixedValue = property.hasMixedValue;
-            EditorGUI.BeginChangeCheck();
-            bool offsetAnimatedScope = BeginAnimatedPropertyBackground(offsetVec2Rect, property);
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                offset = EditorGUI.Vector2Field(offsetVec2Rect, GUIContent.none, offset);
-            }
-            EndAnimatedPropertyBackground(offsetAnimatedScope);
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
-            {
-                scaleOffset.z = offset.x;
-                scaleOffset.w = offset.y;
-                Apply(scaleOffset);
-            }
+                Vector2 offset = new Vector2(scaleOffset.z, scaleOffset.w);
+                EditorGUI.showMixedValue = property.hasMixedValue;
+                EditorGUI.BeginChangeCheck();
+                bool offsetAnimatedScope = BeginAnimatedPropertyBackground(offsetVec2Rect, property);
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    offset = EditorGUI.Vector2Field(offsetVec2Rect, GUIContent.none, offset);
+                }
+                EndAnimatedPropertyBackground(offsetAnimatedScope);
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    scaleOffset.z = offset.x;
+                    scaleOffset.w = offset.y;
+                    Apply(scaleOffset);
+                }
 
-            bool offsetModified = property.hasMixedValue || offset != Vector2.zero;
-            if (GUI.Button(offsetResetRect, offsetModified ? "R" : string.Empty, offsetModified ? GUI.skin.button : GUI.skin.label))
-            {
-                scaleOffset.z = 0f;
-                scaleOffset.w = 0f;
-                Apply(scaleOffset);
+                bool offsetModified = property.hasMixedValue || offset != Vector2.zero;
+                if (GUI.Button(offsetResetRect, offsetModified ? "R" : string.Empty, offsetModified ? GUI.skin.button : GUI.skin.label))
+                {
+                    scaleOffset.z = 0f;
+                    scaleOffset.w = 0f;
+                    Apply(scaleOffset);
+                }
             }
         }
 
-        private static void DrawLabel(Rect rect, GUIContent content, bool useEditorLabelField)
+        private void DrawLabel(Rect rect, GUIContent content, bool useEditorLabelField)
         {
-            if (useEditorLabelField)
+            using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(rect, content);
-                return;
-            }
+                if (useEditorLabelField)
+                {
+                    EditorGUI.LabelField(rect, content);
+                    return;
+                }
 
-            GUI.Label(rect, content);
+                GUI.Label(rect, content);
+            }
         }
 
         public override void CheckIsPropertyModified(bool isCallByChild = false)

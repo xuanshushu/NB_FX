@@ -34,33 +34,40 @@ namespace NBShaderEditor
 
             GetRect();
             MaterialProperty property = PropertyInfo.Property;
-            EditorGUI.LabelField(LabelRect, _contentProvider());
-            EditorGUI.showMixedValue = property.hasMixedValue;
-            EditorGUI.BeginChangeCheck();
-            Vector4 vector = property.vectorValue;
-            Vector2 value = _firstLine ? new Vector2(vector.x, vector.y) : new Vector2(vector.z, vector.w);
-            bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                value = EditorGUI.Vector2Field(ControlRect, GUIContent.none, value);
+                EditorGUI.LabelField(LabelRect, _contentProvider());
             }
-            EndAnimatedPropertyBackground(animatedScope);
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
-            {
-                if (_firstLine)
-                {
-                    vector.x = value.x;
-                    vector.y = value.y;
-                }
-                else
-                {
-                    vector.z = value.x;
-                    vector.w = value.y;
-                }
 
-                property.vectorValue = vector;
-                OnEndChange();
+            using (ParentControlDisabledScope())
+            {
+                EditorGUI.showMixedValue = property.hasMixedValue;
+                EditorGUI.BeginChangeCheck();
+                Vector4 vector = property.vectorValue;
+                Vector2 value = _firstLine ? new Vector2(vector.x, vector.y) : new Vector2(vector.z, vector.w);
+                bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    value = EditorGUI.Vector2Field(ControlRect, GUIContent.none, value);
+                }
+                EndAnimatedPropertyBackground(animatedScope);
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    if (_firstLine)
+                    {
+                        vector.x = value.x;
+                        vector.y = value.y;
+                    }
+                    else
+                    {
+                        vector.z = value.x;
+                        vector.w = value.y;
+                    }
+
+                    property.vectorValue = vector;
+                    OnEndChange();
+                }
             }
 
             DrawResetButton();
@@ -162,41 +169,48 @@ namespace NBShaderEditor
 
             GetRect();
             MaterialProperty property = PropertyInfo.Property;
-            EditorGUI.LabelField(LabelRect, _contentProvider());
-            EditorGUI.showMixedValue = property.hasMixedValue;
-            EditorGUI.BeginChangeCheck();
-            Vector4 vector = property.vectorValue;
-            float value = GetValue(vector);
-            if (_isSlider)
+            using (ParentControlDisabledScope())
             {
-                value = DraggableLabelFloat.Handle(
-                    LabelRect,
-                    value,
-                    DraggableLabelFloat.GetSensitivityByRange(_min, _max),
-                    _min,
-                    _max);
-                bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
-                using (new EditorGUIIndentLevelScope(0))
-                {
-                    value = EditorGUI.Slider(ControlRect, value, _min, _max);
-                }
-                EndAnimatedPropertyBackground(animatedScope);
+                EditorGUI.LabelField(LabelRect, _contentProvider());
             }
-            else
+
+            using (ParentControlDisabledScope())
             {
-                bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
-                using (new EditorGUIIndentLevelScope(0))
+                EditorGUI.showMixedValue = property.hasMixedValue;
+                EditorGUI.BeginChangeCheck();
+                Vector4 vector = property.vectorValue;
+                float value = GetValue(vector);
+                if (_isSlider)
                 {
-                    value = EditorGUI.FloatField(ControlRect, value);
+                    value = DraggableLabelFloat.Handle(
+                        LabelRect,
+                        value,
+                        DraggableLabelFloat.GetSensitivityByRange(_min, _max),
+                        _min,
+                        _max);
+                    bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
+                    using (new EditorGUIIndentLevelScope(0))
+                    {
+                        value = EditorGUI.Slider(ControlRect, value, _min, _max);
+                    }
+                    EndAnimatedPropertyBackground(animatedScope);
                 }
-                EndAnimatedPropertyBackground(animatedScope);
-            }
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
-            {
-                SetValue(ref vector, value);
-                property.vectorValue = vector;
-                OnEndChange();
+                else
+                {
+                    bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
+                    using (new EditorGUIIndentLevelScope(0))
+                    {
+                        value = EditorGUI.FloatField(ControlRect, value);
+                    }
+                    EndAnimatedPropertyBackground(animatedScope);
+                }
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    SetValue(ref vector, value);
+                    property.vectorValue = vector;
+                    OnEndChange();
+                }
             }
 
             DrawResetButton();
@@ -322,16 +336,23 @@ namespace NBShaderEditor
             }
 
             GetRect();
-            EditorGUI.LabelField(LabelRect, _contentProvider());
-            EditorGUI.BeginChangeCheck();
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                DrawController();
+                EditorGUI.LabelField(LabelRect, _contentProvider());
             }
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
+
+            using (ParentControlDisabledScope())
             {
-                OnEndChange();
+                EditorGUI.BeginChangeCheck();
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    DrawController();
+                }
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    OnEndChange();
+                }
             }
 
             DrawResetButton();
@@ -541,26 +562,33 @@ namespace NBShaderEditor
 
             GetRect();
             MaterialProperty property = PropertyInfo.Property;
-            EditorGUI.LabelField(LabelRect, _contentProvider());
-            EditorGUI.showMixedValue = property.hasMixedValue;
-            EditorGUI.BeginChangeCheck();
-            Vector4 vector = property.vectorValue;
-            Vector3 value = new Vector3(vector.x, vector.y, vector.z);
-            bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                value = EditorGUI.Vector3Field(ControlRect, GUIContent.none, value);
+                EditorGUI.LabelField(LabelRect, _contentProvider());
             }
-            EndAnimatedPropertyBackground(animatedScope);
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
+
+            using (ParentControlDisabledScope())
             {
-                vector.x = value.x;
-                vector.y = value.y;
-                vector.z = value.z;
-                property.vectorValue = vector;
-                OnEndChange();
-                _onValueChanged?.Invoke(value);
+                EditorGUI.showMixedValue = property.hasMixedValue;
+                EditorGUI.BeginChangeCheck();
+                Vector4 vector = property.vectorValue;
+                Vector3 value = new Vector3(vector.x, vector.y, vector.z);
+                bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    value = EditorGUI.Vector3Field(ControlRect, GUIContent.none, value);
+                }
+                EndAnimatedPropertyBackground(animatedScope);
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    vector.x = value.x;
+                    vector.y = value.y;
+                    vector.z = value.z;
+                    property.vectorValue = vector;
+                    OnEndChange();
+                    _onValueChanged?.Invoke(value);
+                }
             }
 
             DrawResetButton();

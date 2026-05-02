@@ -71,20 +71,26 @@ namespace NBShaderEditor
 
             CacheProperties();
             GetRect();
-            EditorGUI.LabelField(LabelRect, _contentProvider());
+            using (ParentControlDisabledScope())
+            {
+                EditorGUI.LabelField(LabelRect, _contentProvider());
+            }
 
             Gradient gradient = ReadGradient();
-            EditorGUI.BeginChangeCheck();
-            bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, PropertyInfo.Property);
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                gradient = EditorGUI.GradientField(ControlRect, GUIContent.none, gradient, _hdr, _colorSpace);
-            }
-            EndAnimatedPropertyBackground(animatedScope);
-            if (EditorGUI.EndChangeCheck())
-            {
-                WriteGradient(gradient);
-                OnEndChange();
+                EditorGUI.BeginChangeCheck();
+                bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, PropertyInfo.Property);
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    gradient = EditorGUI.GradientField(ControlRect, GUIContent.none, gradient, _hdr, _colorSpace);
+                }
+                EndAnimatedPropertyBackground(animatedScope);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    WriteGradient(gradient);
+                    OnEndChange();
+                }
             }
 
             DrawResetButton();

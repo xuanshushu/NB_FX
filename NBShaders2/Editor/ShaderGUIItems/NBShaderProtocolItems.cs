@@ -61,32 +61,39 @@ namespace NBShaderEditor
             MaterialProperty property = PropertyInfo.Property;
 
             bool enabled = property.floatValue > 0.5f;
-            EditorGUI.showMixedValue = property.hasMixedValue;
-            EditorGUI.BeginChangeCheck();
-            bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                enabled = EditorGUI.Toggle(ControlRect, enabled);
-            }
-            EndAnimatedPropertyBackground(animatedScope);
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
-            {
-                property.floatValue = enabled ? 1f : 0f;
-                ApplySideEffects(enabled);
-                OnEndChange();
+                EditorGUI.showMixedValue = property.hasMixedValue;
+                EditorGUI.BeginChangeCheck();
+                bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    enabled = EditorGUI.Toggle(ControlRect, enabled);
+                }
+                EndAnimatedPropertyBackground(animatedScope);
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    property.floatValue = enabled ? 1f : 0f;
+                    ApplySideEffects(enabled);
+                    OnEndChange();
+                }
             }
 
             Rect foldOutRect = LabelRect;
             foldOutRect.width = Mathf.Max(0f, ControlRect.x - LabelRect.x);
             _foldOutHelper.DrawFoldOut(foldOutRect);
-            EditorGUI.LabelField(LabelRect, GuiContent, _labelStyle);
+            using (ParentControlDisabledScope())
+            {
+                EditorGUI.LabelField(LabelRect, GuiContent, _labelStyle);
+            }
+
             DrawResetButton();
 
             if (_foldOutHelper.BeginFadeGroup())
             {
                 EditorGUI.indentLevel++;
-                using (new EditorGUI.DisabledScope(property.hasMixedValue || property.floatValue <= 0.5f))
+                using (new InheritedControlDisabledScope(property.hasMixedValue || property.floatValue <= 0.5f))
                 {
                     DrawBlock();
                 }
@@ -164,14 +171,18 @@ namespace NBShaderEditor
             }
 
             GetRect();
-            EditorGUI.LabelField(LabelRect, _contentProvider(), EditorStyles.boldLabel);
             _foldOutHelper.DrawFoldOut(LabelRect);
+            using (ParentControlDisabledScope())
+            {
+                EditorGUI.LabelField(LabelRect, _contentProvider(), EditorStyles.boldLabel);
+            }
+
             DrawResetButton();
 
             if (_foldOutHelper.BeginFadeGroup())
             {
                 EditorGUI.indentLevel++;
-                using (new EditorGUI.DisabledScope(!HasTexture()))
+                using (new InheritedControlDisabledScope(!HasTexture()))
                 {
                     DrawBlock();
                 }
@@ -228,22 +239,29 @@ namespace NBShaderEditor
             }
 
             GetRect();
-            EditorGUI.LabelField(LabelRect, _contentProvider());
-            int channel = GetFirstChannel();
-            EditorGUI.showMixedValue = HasMixedValue();
-            EditorGUI.BeginChangeCheck();
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                channel = EditorGUI.Popup(
-                    ControlRect,
-                    channel,
-                    NBShaderInspectorLocalization.GetInspectorOptions("protocol.colorChannel", ChannelNames));
+                EditorGUI.LabelField(LabelRect, _contentProvider());
             }
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
+
+            int channel = GetFirstChannel();
+            using (ParentControlDisabledScope())
             {
-                SetChannel(channel);
-                CheckIsPropertyModified();
+                EditorGUI.showMixedValue = HasMixedValue();
+                EditorGUI.BeginChangeCheck();
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    channel = EditorGUI.Popup(
+                        ControlRect,
+                        channel,
+                        NBShaderInspectorLocalization.GetInspectorOptions("protocol.colorChannel", ChannelNames));
+                }
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    SetChannel(channel);
+                    CheckIsPropertyModified();
+                }
             }
 
             DrawResetButton();
@@ -349,26 +367,33 @@ namespace NBShaderEditor
             }
 
             GetRect();
-            EditorGUI.LabelField(LabelRect, _contentProvider());
-            W9ParticleShaderFlags.CutomDataComponent component = GetFirstComponent();
-            EditorGUI.showMixedValue = HasMixedValue();
-            EditorGUI.BeginChangeCheck();
-            int index;
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                index = EditorGUI.Popup(
-                    ControlRect,
-                    (int)component,
-                    NBShaderInspectorLocalization.GetInspectorOptions("protocol.customData", Options));
+                EditorGUI.LabelField(LabelRect, _contentProvider());
             }
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
+
+            W9ParticleShaderFlags.CutomDataComponent component = GetFirstComponent();
+            using (ParentControlDisabledScope())
             {
-                SetComponent((W9ParticleShaderFlags.CutomDataComponent)index);
-                CheckIsPropertyModified();
-                if (RootItem is NBShaderRootItem nbRootItem)
+                EditorGUI.showMixedValue = HasMixedValue();
+                EditorGUI.BeginChangeCheck();
+                int index;
+                using (new EditorGUIIndentLevelScope(0))
                 {
-                    nbRootItem.SyncService.SyncMaterialState();
+                    index = EditorGUI.Popup(
+                        ControlRect,
+                        (int)component,
+                        NBShaderInspectorLocalization.GetInspectorOptions("protocol.customData", Options));
+                }
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    SetComponent((W9ParticleShaderFlags.CutomDataComponent)index);
+                    CheckIsPropertyModified();
+                    if (RootItem is NBShaderRootItem nbRootItem)
+                    {
+                        nbRootItem.SyncService.SyncMaterialState();
+                    }
                 }
             }
 
@@ -475,22 +500,29 @@ namespace NBShaderEditor
             }
 
             GetRect();
-            EditorGUI.LabelField(LabelRect, _contentProvider());
-            int mode = GetFirstMode();
-            EditorGUI.showMixedValue = HasMixedValue();
-            EditorGUI.BeginChangeCheck();
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                mode = EditorGUI.Popup(
-                    ControlRect,
-                    mode,
-                    NBShaderInspectorLocalization.GetInspectorOptions("protocol.wrapMode", Options));
+                EditorGUI.LabelField(LabelRect, _contentProvider());
             }
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
+
+            int mode = GetFirstMode();
+            using (ParentControlDisabledScope())
             {
-                SetMode(mode);
-                CheckIsPropertyModified();
+                EditorGUI.showMixedValue = HasMixedValue();
+                EditorGUI.BeginChangeCheck();
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    mode = EditorGUI.Popup(
+                        ControlRect,
+                        mode,
+                        NBShaderInspectorLocalization.GetInspectorOptions("protocol.wrapMode", Options));
+                }
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    SetMode(mode);
+                    CheckIsPropertyModified();
+                }
             }
 
             DrawResetButton();
@@ -613,23 +645,30 @@ namespace NBShaderEditor
             }
 
             GetRect();
-            EditorGUI.LabelField(LabelRect, _contentProvider());
-            W9ParticleShaderFlags.PNoiseBlendMode mode = GetFirstMode();
-            EditorGUI.showMixedValue = HasMixedValue();
-            EditorGUI.BeginChangeCheck();
-            int index;
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                index = EditorGUI.Popup(
-                    ControlRect,
-                    (int)mode,
-                    NBShaderInspectorLocalization.GetInspectorOptions("protocol.pnoiseBlend", Options));
+                EditorGUI.LabelField(LabelRect, _contentProvider());
             }
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
+
+            W9ParticleShaderFlags.PNoiseBlendMode mode = GetFirstMode();
+            using (ParentControlDisabledScope())
             {
-                SetMode((W9ParticleShaderFlags.PNoiseBlendMode)index);
-                CheckIsPropertyModified();
+                EditorGUI.showMixedValue = HasMixedValue();
+                EditorGUI.BeginChangeCheck();
+                int index;
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    index = EditorGUI.Popup(
+                        ControlRect,
+                        (int)mode,
+                        NBShaderInspectorLocalization.GetInspectorOptions("protocol.pnoiseBlend", Options));
+                }
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    SetMode((W9ParticleShaderFlags.PNoiseBlendMode)index);
+                    CheckIsPropertyModified();
+                }
             }
 
             DrawResetButton();
@@ -818,11 +857,16 @@ namespace NBShaderEditor
                 return;
             }
 
-            using (new EditorGUI.DisabledScope(!_forceEnable && !HasTexture()))
+            bool controlDisabled = !_forceEnable && !HasTexture();
+            GetRect();
+            using (ParentControlDisabledScope(controlDisabled))
             {
-                GetRect();
                 EditorGUI.LabelField(LabelRect, _contentProvider());
-                W9ParticleShaderFlags.UVMode mode = GetFirstMode();
+            }
+
+            W9ParticleShaderFlags.UVMode mode = GetFirstMode();
+            using (ParentControlDisabledScope(controlDisabled))
+            {
                 EditorGUI.showMixedValue = HasMixedValue();
                 EditorGUI.BeginChangeCheck();
                 int index;
@@ -843,23 +887,29 @@ namespace NBShaderEditor
                 }
 
                 DrawResetButton();
+            }
 
-                bool needFoldOut = NeedsFoldOut(mode);
-                if (needFoldOut)
-                {
-                    _foldOutHelper.DrawFoldOut(LabelRect);
-                }
+            bool needFoldOut = NeedsFoldOut(mode);
+            if (needFoldOut)
+            {
+                _foldOutHelper.DrawFoldOut(LabelRect);
+            }
 
-                if (needFoldOut && !HasMixedValue())
+            if (needFoldOut && !HasMixedValue())
+            {
+                if (_foldOutHelper.BeginFadeGroup())
                 {
-                    if (_foldOutHelper.BeginFadeGroup())
+                    EditorGUI.indentLevel++;
+                    using (ParentControlDisabledScope(controlDisabled))
                     {
-                        EditorGUI.indentLevel++;
                         EditorGUILayout.LabelField(
                             NBShaderInspectorLocalization.GetInspectorText(
                                 "protocol.uv.sharedMaterial.message",
                                 "The following settings are shared in the material:"),
                             EditorStyles.boldLabel);
+                    }
+                    using (new InheritedControlDisabledScope(controlDisabled))
+                    {
                         switch (mode)
                         {
                             case W9ParticleShaderFlags.UVMode.SpecialUVChannel:
@@ -870,10 +920,14 @@ namespace NBShaderEditor
                                 _polarBlock.OnGUI();
                                 break;
                             case W9ParticleShaderFlags.UVMode.Cylinder:
-                                EditorGUILayout.LabelField(
-                                    NBShaderInspectorLocalization.GetInspectorText(
-                                        "protocol.uv.cylinderWarning.message",
-                                        "Cylinder mode is expensive. Use it carefully."));
+                                using (ParentControlDisabledScope())
+                                {
+                                    EditorGUILayout.LabelField(
+                                        NBShaderInspectorLocalization.GetInspectorText(
+                                            "protocol.uv.cylinderWarning.message",
+                                            "Cylinder mode is expensive. Use it carefully."));
+                                }
+
                                 _cylinderRotateItem.OnGUI();
                                 _cylinderOffsetItem.OnGUI();
                                 UpdateCylinderMatrix(RootItem);
@@ -889,12 +943,12 @@ namespace NBShaderEditor
                                 _objectSpaceItem.OnGUI();
                                 break;
                         }
-
-                        EditorGUI.indentLevel--;
                     }
 
-                    _foldOutHelper.EndFadedGroup();
+                    EditorGUI.indentLevel--;
                 }
+
+                _foldOutHelper.EndFadedGroup();
             }
         }
 
@@ -1052,7 +1106,11 @@ namespace NBShaderEditor
         public override void OnGUI()
         {
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField(_contentProvider(), EditorStyles.boldLabel);
+            using (ParentControlDisabledScope())
+            {
+                EditorGUILayout.LabelField(_contentProvider(), EditorStyles.boldLabel);
+            }
+
             if (RootItem.Mats == null || RootItem.Mats.Count == 0 || RootItem.Mats[0] == null)
             {
                 return;
@@ -1061,13 +1119,20 @@ namespace NBShaderEditor
             string[] keywords = RootItem.Mats[0].shaderKeywords;
             if (keywords == null || keywords.Length == 0)
             {
-                EditorGUILayout.LabelField(NBShaderInspectorLocalization.GetInspectorText("common.none", "None"));
+                using (ParentControlDisabledScope())
+                {
+                    EditorGUILayout.LabelField(NBShaderInspectorLocalization.GetInspectorText("common.none", "None"));
+                }
+
                 return;
             }
 
             for (int i = 0; i < keywords.Length; i++)
             {
-                EditorGUILayout.LabelField(keywords[i]);
+                using (ParentControlDisabledScope())
+                {
+                    EditorGUILayout.LabelField(keywords[i]);
+                }
             }
         }
     }

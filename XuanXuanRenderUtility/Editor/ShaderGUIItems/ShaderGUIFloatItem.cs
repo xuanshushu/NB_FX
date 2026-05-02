@@ -52,16 +52,23 @@ namespace NBShaderEditor
             }
 
             GetRect();
-            EditorGUI.LabelField(LabelRect, GuiContent);
-            EditorGUI.BeginChangeCheck();
-            using (new EditorGUIIndentLevelScope(0))
+            using (ParentControlDisabledScope())
             {
-                DrawController();
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
-            EditorGUI.showMixedValue = false;
-            if (EditorGUI.EndChangeCheck())
+
+            using (ParentControlDisabledScope())
             {
-                OnEndChange();
+                EditorGUI.BeginChangeCheck();
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    DrawController();
+                }
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    OnEndChange();
+                }
             }
             DrawResetButton();
             DrawBlock();
@@ -260,6 +267,11 @@ namespace NBShaderEditor
 
         public static float Handle(Rect labelRect, float value, float sensitivity = -1f, float? min = null, float? max = null)
         {
+            if (!GUI.enabled)
+            {
+                return value;
+            }
+
             EditorGUIUtility.AddCursorRect(labelRect, MouseCursor.SlideArrow);
 
             int id = GUIUtility.GetControlID(FocusType.Passive, labelRect);

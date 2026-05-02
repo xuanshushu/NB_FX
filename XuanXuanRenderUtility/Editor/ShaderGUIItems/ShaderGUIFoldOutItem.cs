@@ -99,9 +99,13 @@ namespace NBShaderEditor
         {
 	        EditorGUILayout.Space();
 	        GetRect();
-	        EditorGUI.LabelField(LabelRect, GuiContent,_boldStyle);
 	        DrawResetButton();
 	        bool isOpen = _foldOutHelper.BeginFadedGroup(LabelRect);
+	        using (ParentControlDisabledScope())
+	        {
+		        EditorGUI.LabelField(LabelRect, GuiContent,_boldStyle);
+	        }
+
 	        EditorGUI.indentLevel++;
 	        if (isOpen)
 	        {

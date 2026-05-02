@@ -32,8 +32,12 @@ namespace NBShaderEditor
             GuiContent = _contentProvider();
             DrawLeadingSpace();
             GetRect();
-            EditorGUI.LabelField(LabelRect, GuiContent, TitleStyle);
             _foldOutHelper.DrawFoldOut(LabelRect);
+            using (ParentControlDisabledScope())
+            {
+                EditorGUI.LabelField(LabelRect, GuiContent, TitleStyle);
+            }
+
             DrawResetButton();
             EditorGUI.indentLevel++;
             if (_foldOutHelper.BeginFadeGroup())

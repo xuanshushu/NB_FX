@@ -1159,7 +1159,10 @@ namespace NBShaderEditor
                 }
 
                 EditorGUILayout.Space();
-                EditorGUILayout.LabelField(_contentProvider(), EditorStyles.boldLabel);
+                using (ParentControlDisabledScope())
+                {
+                    EditorGUILayout.LabelField(_contentProvider(), EditorStyles.boldLabel);
+                }
             }
         }
 
@@ -1184,7 +1187,10 @@ namespace NBShaderEditor
                     return;
                 }
 
-                EditorGUILayout.HelpBox(_messageProvider(), _messageType);
+                using (ParentControlDisabledScope())
+                {
+                    EditorGUILayout.HelpBox(_messageProvider(), _messageType);
+                }
             }
         }
 
@@ -1202,7 +1208,7 @@ namespace NBShaderEditor
             {
                 bool previousMixedValue = EditorGUI.showMixedValue;
                 bool noiseEnabledHasMixedValue = _nbRootItem.Context.NoiseEnabled == MixedBool.Mixed;
-                using (new EditorGUI.DisabledScope(_nbRootItem.Context.NoiseEnabled == MixedBool.False))
+                using (new InheritedControlDisabledScope(_nbRootItem.Context.NoiseEnabled == MixedBool.False))
                 {
                     for (int i = 0; i < ChildrenItemList.Count; i++)
                     {
@@ -1253,19 +1259,25 @@ namespace NBShaderEditor
                 {
                     if (HasSpecialUVChannel())
                     {
-                        EditorGUILayout.HelpBox(
+                        using (ParentControlDisabledScope())
+                        {
+                            EditorGUILayout.HelpBox(
                             Text(
                                 "feature.flipbook.specialUvWarning.message",
                                 "序列帧融帧和特殊UV通道同时开启，粒子序列帧应该影响UV0和UV1两个通道，特殊通道只能使用UV3（原始UV）"),
-                            MessageType.Warning);
+                                MessageType.Warning);
+                        }
                     }
                     else
                     {
-                        EditorGUILayout.HelpBox(
+                        using (ParentControlDisabledScope())
+                        {
+                            EditorGUILayout.HelpBox(
                             Text(
                                 "feature.flipbook.particleInfo.message",
                                 "AnimationSheet的AffectUVChannel需要有UV0和UV1"),
-                            MessageType.Info);
+                                MessageType.Info);
+                        }
                     }
 
                     return;
@@ -1273,11 +1285,14 @@ namespace NBShaderEditor
 
                 if (_nbRootItem.Context.MeshSourceMode == MeshSourceMode.Mesh)
                 {
-                    EditorGUILayout.HelpBox(
+                    using (ParentControlDisabledScope())
+                    {
+                        EditorGUILayout.HelpBox(
                         Text(
                             "feature.flipbook.meshInfo.message",
                             "需要添加AnimationSheetHelper脚本"),
-                        MessageType.Info);
+                            MessageType.Info);
+                    }
                 }
             }
 

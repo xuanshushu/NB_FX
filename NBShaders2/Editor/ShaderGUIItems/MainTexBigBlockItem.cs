@@ -236,7 +236,7 @@ namespace NBShaderEditor
             {
                 bool previousMixedValue = EditorGUI.showMixedValue;
                 EditorGUI.showMixedValue = _nbRootItem.Context.NoiseEnabled == MixedBool.Mixed;
-                using (new EditorGUI.DisabledScope(_nbRootItem.Context.NoiseEnabled == MixedBool.False))
+                using (new InheritedControlDisabledScope(_nbRootItem.Context.NoiseEnabled == MixedBool.False))
                 {
                     _texDistortionIntensityItem.OnGUI();
                 }
