@@ -20,6 +20,7 @@ namespace NBShaderEditor
         public List<ShaderFlagsBase> ShaderFlags;//各个继承类各自初始化
         public bool IsInit = true;
         public Color DefaultBackgroundColor;
+        public bool ClearUnusedTextureReferencesRequested { get; private set; }
         public List<Renderer> RenderersUsingThisMaterial = new List<Renderer>();
     
         
@@ -58,9 +59,22 @@ namespace NBShaderEditor
                 }
             }
           
-            OnChildOnGUI();
+            try
+            {
+                OnChildOnGUI();
+            }
+            finally
+            {
+                ClearUnusedTextureReferencesRequested = false;
+            }
+
             RepaintWhenAnimationModeActive();
             IsInit = false;
+        }
+
+        public void RequestClearUnusedTextureReferences()
+        {
+            ClearUnusedTextureReferencesRequested = true;
         }
 
         void RepaintWhenAnimationModeActive()

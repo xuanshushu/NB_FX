@@ -42,6 +42,7 @@ namespace NBShaderEditor
         {
             if (_isVisible != null && !_isVisible())
             {
+                _groupItem.ClearTextureIfRequested();
                 return;
             }
 
@@ -92,6 +93,7 @@ namespace NBShaderEditor
         {
             if (_isVisible != null && !_isVisible())
             {
+                _textureItem.ClearTextureIfRequested();
                 return;
             }
 
@@ -124,6 +126,11 @@ namespace NBShaderEditor
             _textureItem.Draw(textureRect, textureLabelRect);
             _scaleOffsetItem?.Draw(tillingLabelRect, tillingVec2Rect, tillingResetRect, offsetLabelRect, offsetVec2Rect, offsetResetRect);
             _colorItem?.OnGUI();
+        }
+
+        public void ClearTextureIfRequested()
+        {
+            _textureItem.ClearTextureIfRequested();
         }
 
         private static Rect MoveRectLeftKeepingRight(Rect rect, float x)
@@ -172,6 +179,7 @@ namespace NBShaderEditor
         {
             if (_isVisible != null && !_isVisible())
             {
+                ClearTextureIfRequested();
                 return;
             }
 
@@ -193,6 +201,11 @@ namespace NBShaderEditor
             ResetRect = resetRect;
 
             MaterialProperty property = PropertyInfo.Property;
+            if (RootItem.ClearUnusedTextureReferencesRequested && !GUI.enabled)
+            {
+                ClearTextureIfRequested();
+            }
+
             GUI.Label(LabelRect, _contentProvider(), EditorStyles.boldLabel);
 
             EditorGUI.showMixedValue = property.hasMixedValue;
@@ -212,6 +225,23 @@ namespace NBShaderEditor
             }
 
             DrawResetButton();
+        }
+
+        public void ClearTextureIfRequested()
+        {
+            if (!RootItem.ClearUnusedTextureReferencesRequested || PropertyInfo == null)
+            {
+                return;
+            }
+
+            MaterialProperty property = PropertyInfo.Property;
+            if (property == null || property.textureValue == null)
+            {
+                return;
+            }
+
+            property.textureValue = null;
+            OnEndChange();
         }
 
         public override void CheckIsPropertyModified(bool isCallByChild = false)

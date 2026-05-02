@@ -27,6 +27,7 @@ namespace NBShaderEditor
         private FeatureBigBlockItem _featureBlock;
         private TABigBlockItem _taBlock;
         private ParticleVertexStreamsItem _particleVertexStreamsItem;
+        private NBShaderGUIToolBar _toolBar;
 
         public override void InitFlags(System.Collections.Generic.List<Material> mats)
         {
@@ -49,6 +50,7 @@ namespace NBShaderEditor
 
             if (IsInit)
             {
+                _toolBar = new NBShaderGUIToolBar(this);
                 _modeBlock = new ModeBigBlockItem(this, null);
                 _baseBlock = new BaseOptionBigBlockItem(this, null);
                 _mainTexBlock = new MainTexBigBlockItem(this, null);
@@ -58,6 +60,9 @@ namespace NBShaderEditor
                 _particleVertexStreamsItem = new ParticleVertexStreamsItem(this, null);
             }
 
+            _toolBar ??= new NBShaderGUIToolBar(this);
+            _toolBar.DrawToolbar();
+
             _modeBlock.OnGUI();
             _baseBlock.OnGUI();
             _mainTexBlock.OnGUI();
@@ -66,6 +71,16 @@ namespace NBShaderEditor
             _taBlock.OnGUI();
             SyncService.SyncMaterialState();
             _particleVertexStreamsItem.OnGUI();
+        }
+
+        public void ExecuteResetAllItems()
+        {
+            _modeBlock?.ExecuteReset(true);
+            _baseBlock?.ExecuteReset(true);
+            _mainTexBlock?.ExecuteReset(true);
+            _lightBlock?.ExecuteReset(true);
+            _featureBlock?.ExecuteReset(true);
+            _taBlock?.ExecuteReset(true);
         }
     }
 }

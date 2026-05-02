@@ -7,14 +7,19 @@ namespace NBShaderEditor
     
     public class ShaderGUIFoldOutHelper
     {
+	    private const float FoldOutAnimationSpeed = 10f;
+
 	    public ShaderGUIFoldOutHelper(ShaderGUIRootItem rootItem, string foldOutPropertyName)
 	    {
 		    _rootItem = rootItem;
 		    _propertyName = foldOutPropertyName;
 		    _propertyInfo = _rootItem.PropertyInfoDic[_propertyName];
-		    
+
+		    bool isOpen = _propertyInfo.Property.floatValue > 0.5f;
+		    animBool.value = isOpen;
+		    animBool.target = isOpen;
 		    animBool.valueChanged.AddListener(rootItem.MatEditor.Repaint);
-		    animBool.speed = 6f;
+		    animBool.speed = FoldOutAnimationSpeed;
 	    }
 	    
 	    private ShaderGUIRootItem _rootItem;
@@ -25,10 +30,12 @@ namespace NBShaderEditor
 	    
         public bool BeginFadedGroup(Rect labelRect)
         {
-	        Rect foldOutRect = MakeFoldOutRect(labelRect);
-	        animBool.target = _propertyInfo.Property.floatValue>0.5f?true:false;
-	        animBool.target = GUI.Toggle(foldOutRect, animBool.target, GUIContent.none, EditorStyles.foldout);
-	        _propertyInfo.Property.floatValue = animBool.target?1f:0f;
+	        DrawFoldOut(labelRect);
+	        return BeginFadeGroup();
+        }
+
+        public bool BeginFadeGroup()
+        {
 	        return EditorGUILayout.BeginFadeGroup(animBool.faded);
         }
 
@@ -37,7 +44,7 @@ namespace NBShaderEditor
 	        Rect foldOutRect = MakeFoldOutRect(labelRect);
 	        bool isOpen = _propertyInfo.Property.floatValue > 0.5f;
 	        isOpen = GUI.Toggle(foldOutRect, isOpen, GUIContent.none, EditorStyles.foldout);
-	        _propertyInfo.Property.floatValue = isOpen ? 1f : 0f;
+	        SetOpen(isOpen);
 	        return isOpen;
         }
 
@@ -46,8 +53,14 @@ namespace NBShaderEditor
 	        Rect foldOutRect = MakeFoldOutRect(labelRect);
 	        bool isOpen = _propertyInfo.Property.floatValue > 0.5f;
 	        isOpen = GUI.Toggle(foldOutRect, isOpen, content, style ?? EditorStyles.foldout);
-	        _propertyInfo.Property.floatValue = isOpen ? 1f : 0f;
+	        SetOpen(isOpen);
 	        return isOpen;
+        }
+
+        private void SetOpen(bool isOpen)
+        {
+	        animBool.target = isOpen;
+	        _propertyInfo.Property.floatValue = isOpen ? 1f : 0f;
         }
 
         private static Rect MakeFoldOutRect(Rect labelRect)

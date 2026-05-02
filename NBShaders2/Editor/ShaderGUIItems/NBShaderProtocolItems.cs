@@ -59,7 +59,7 @@ namespace NBShaderEditor
             GuiContent = _contentProvider();
             GetRect();
             MaterialProperty property = PropertyInfo.Property;
-            bool isOpen = _foldOutHelper.DrawFoldOutLabel(LabelRect, GuiContent, _foldOutStyle);
+            _foldOutHelper.DrawFoldOutLabel(LabelRect, GuiContent, _foldOutStyle);
 
             bool enabled = property.floatValue > 0.5f;
             EditorGUI.showMixedValue = property.hasMixedValue;
@@ -80,7 +80,7 @@ namespace NBShaderEditor
 
             DrawResetButton();
 
-            if (isOpen)
+            if (_foldOutHelper.BeginFadeGroup())
             {
                 EditorGUI.indentLevel++;
                 using (new EditorGUI.DisabledScope(property.hasMixedValue || property.floatValue <= 0.5f))
@@ -89,6 +89,8 @@ namespace NBShaderEditor
                 }
                 EditorGUI.indentLevel--;
             }
+
+            _foldOutHelper.EndFadedGroup();
         }
 
         public override void ExecuteReset(bool isCallByParent = false)
@@ -779,46 +781,55 @@ namespace NBShaderEditor
                                    mode != W9ParticleShaderFlags.UVMode.CommonUV &&
                                    mode != W9ParticleShaderFlags.UVMode.ScreenUV &&
                                    mode != W9ParticleShaderFlags.UVMode.MainTex;
-                bool isOpen = needFoldOut && _foldOutHelper.DrawFoldOut(LabelRect);
-                if (isOpen && !HasMixedValue())
+                if (needFoldOut)
                 {
-                    EditorGUI.indentLevel++;
-                    EditorGUILayout.LabelField(
-                        NBShaderInspectorLocalization.GetInspectorText(
-                            "protocol.uv.sharedMaterial.message",
-                            "The following settings are shared in the material:"),
-                        EditorStyles.boldLabel);
-                    switch (mode)
+                    _foldOutHelper.DrawFoldOut(LabelRect);
+                }
+
+                if (needFoldOut && !HasMixedValue())
+                {
+                    if (_foldOutHelper.BeginFadeGroup())
                     {
-                        case W9ParticleShaderFlags.UVMode.SpecialUVChannel:
-                            _specialUVChannelItem.OnGUI();
-                            break;
-                        case W9ParticleShaderFlags.UVMode.PolarOrTwirl:
-                            _twirlBlock.OnGUI();
-                            _polarBlock.OnGUI();
-                            break;
-                        case W9ParticleShaderFlags.UVMode.Cylinder:
-                            EditorGUILayout.LabelField(
-                                NBShaderInspectorLocalization.GetInspectorText(
-                                    "protocol.uv.cylinderWarning.message",
-                                    "Cylinder mode is expensive. Use it carefully."));
-                            _cylinderRotateItem.OnGUI();
-                            _cylinderOffsetItem.OnGUI();
-                            UpdateCylinderMatrix(RootItem);
-                            break;
-                        case W9ParticleShaderFlags.UVMode.WorldPos:
-                            _worldSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
-                            _worldSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
-                            _worldSpaceItem.OnGUI();
-                            break;
-                        case W9ParticleShaderFlags.UVMode.ObjectPos:
-                            _objectSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
-                            _objectSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
-                            _objectSpaceItem.OnGUI();
-                            break;
+                        EditorGUI.indentLevel++;
+                        EditorGUILayout.LabelField(
+                            NBShaderInspectorLocalization.GetInspectorText(
+                                "protocol.uv.sharedMaterial.message",
+                                "The following settings are shared in the material:"),
+                            EditorStyles.boldLabel);
+                        switch (mode)
+                        {
+                            case W9ParticleShaderFlags.UVMode.SpecialUVChannel:
+                                _specialUVChannelItem.OnGUI();
+                                break;
+                            case W9ParticleShaderFlags.UVMode.PolarOrTwirl:
+                                _twirlBlock.OnGUI();
+                                _polarBlock.OnGUI();
+                                break;
+                            case W9ParticleShaderFlags.UVMode.Cylinder:
+                                EditorGUILayout.LabelField(
+                                    NBShaderInspectorLocalization.GetInspectorText(
+                                        "protocol.uv.cylinderWarning.message",
+                                        "Cylinder mode is expensive. Use it carefully."));
+                                _cylinderRotateItem.OnGUI();
+                                _cylinderOffsetItem.OnGUI();
+                                UpdateCylinderMatrix(RootItem);
+                                break;
+                            case W9ParticleShaderFlags.UVMode.WorldPos:
+                                _worldSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
+                                _worldSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
+                                _worldSpaceItem.OnGUI();
+                                break;
+                            case W9ParticleShaderFlags.UVMode.ObjectPos:
+                                _objectSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
+                                _objectSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
+                                _objectSpaceItem.OnGUI();
+                                break;
+                        }
+
+                        EditorGUI.indentLevel--;
                     }
 
-                    EditorGUI.indentLevel--;
+                    _foldOutHelper.EndFadedGroup();
                 }
             }
         }
