@@ -1,14 +1,28 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace NBShaderEditor
 {
     public class ShaderGUIFloatItem:ShaderGUIItem
     {
-        public ShaderGUIFloatItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) :
+        private readonly Func<bool> _isVisible;
+
+        public ShaderGUIFloatItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem, Func<bool> isVisible = null) :
             base(rootItem, parentItem: parentItem)
         {
+            _isVisible = isVisible;
             base.InitTriggerByChild();
+        }
+
+        public override void OnGUI()
+        {
+            if (_isVisible != null && !_isVisible())
+            {
+                return;
+            }
+
+            base.OnGUI();
         }
 
         public override void DrawController()
@@ -25,6 +39,7 @@ namespace NBShaderEditor
         public float Max = 1;
         public string RangePropertyName;
         ShaderPropertyInfo _rangePropertyInfo;
+        private readonly Func<bool> _isVisible;
         private const float SliderFrontGap = 5f;
         private const float SliderBackGap = 2f;
         private const float RangeFieldWidth = 30f;
@@ -40,11 +55,19 @@ namespace NBShaderEditor
             base.InitTriggerByChild();
         }
 
-        public ShaderGUISliderItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) :
-            base(rootItem, parentItem: parentItem) { }
+        public ShaderGUISliderItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem, Func<bool> isVisible = null) :
+            base(rootItem, parentItem: parentItem)
+        {
+            _isVisible = isVisible;
+        }
 
         public override void OnGUI()
         {
+            if (_isVisible != null && !_isVisible())
+            {
+                return;
+            }
+
             if (_rangePropertyInfo == null)
             {
                 base.OnGUI();

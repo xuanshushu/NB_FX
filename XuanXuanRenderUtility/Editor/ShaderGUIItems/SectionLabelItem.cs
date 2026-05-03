@@ -1,23 +1,21 @@
 using System;
 using UnityEditor;
+using UnityEngine;
 
 namespace NBShaderEditor
 {
-    public class HelpBoxItem : ShaderGUIItem
+    public class SectionLabelItem : ShaderGUIItem
     {
-        private readonly MessageType _messageType;
-        private readonly Func<string> _messageProvider;
+        private readonly Func<GUIContent> _contentProvider;
         private readonly Func<bool> _isVisible;
 
-        public HelpBoxItem(
+        public SectionLabelItem(
             ShaderGUIRootItem rootItem,
             ShaderGUIItem parentItem,
-            Func<string> messageProvider,
-            MessageType messageType = MessageType.Info,
+            Func<GUIContent> contentProvider,
             Func<bool> isVisible = null) : base(rootItem, parentItem)
         {
-            _messageProvider = messageProvider ?? (() => string.Empty);
-            _messageType = messageType;
+            _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
         }
 
@@ -28,9 +26,10 @@ namespace NBShaderEditor
                 return;
             }
 
+            EditorGUILayout.Space();
             using (ParentControlDisabledScope())
             {
-                EditorGUILayout.HelpBox(_messageProvider(), _messageType);
+                EditorGUILayout.LabelField(_contentProvider(), EditorStyles.boldLabel);
             }
         }
     }

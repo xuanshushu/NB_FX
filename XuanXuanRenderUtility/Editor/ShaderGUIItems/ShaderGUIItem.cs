@@ -111,6 +111,32 @@ namespace NBShaderEditor
             SplitControlAndResetRect(controlAndResetRect, out controlRect, out resetRect, applyControlIndentCompensation);
         }
 
+
+        protected static GUIContent LocalizedContent(
+            string tableName,
+            string labelKey,
+            string labelFallback,
+            string tooltipKey = null,
+            string tooltipFallback = "")
+        {
+            return ShaderGUILocalization.MakeContent(tableName, labelKey, labelFallback, tooltipKey, tooltipFallback);
+        }
+
+        protected static GUIContent LocalizedInspectorContent(string tableName, string key, string fallback, string tip = "")
+        {
+            return ShaderGUILocalization.MakeInspectorContent(tableName, key, fallback, tip);
+        }
+
+        protected static string LocalizedText(string tableName, string key, string fallback = "")
+        {
+            return ShaderGUILocalization.GetInspectorText(tableName, key, fallback);
+        }
+
+        protected static string[] LocalizedOptions(string tableName, string key, string[] fallback)
+        {
+            return ShaderGUILocalization.GetInspectorOptions(tableName, key, fallback);
+        }
+
         public static void SplitControlAndResetRect(
             Rect baseRect,
             out Rect controlRect,
