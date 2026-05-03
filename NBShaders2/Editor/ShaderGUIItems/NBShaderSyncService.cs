@@ -32,7 +32,7 @@ namespace NBShaderEditor
                     zWriteProperty.floatValue = 1;
                     foreach (Material mat in _rootItem.Mats)
                     {
-                        mat.renderQueue = 2100 + queueBias;
+                        mat.renderQueue = 2000 + queueBias;
                         mat.DisableKeyword("_ALPHATEST_ON");
                     }
                     break;
@@ -42,7 +42,7 @@ namespace NBShaderEditor
                     foreach (Material mat in _rootItem.Mats)
                     {
                         bool uiEffect = IsUIEffectMode(mat);
-                        mat.renderQueue = (uiEffect ? 3000 : 3100) + queueBias;
+                        mat.renderQueue = 3000 + queueBias;
                         mat.DisableKeyword("_ALPHATEST_ON");
                     }
                     break;
