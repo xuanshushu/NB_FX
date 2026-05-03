@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -12,13 +13,12 @@ namespace NBShaderEditor
         private const string EnglishLanguage = "en-US";
         private const string TooltipColumnSuffix = "-tip";
         private const string TooltipColumnAliasSuffix = "-tooltip";
-        private const string LanguagePreferenceKey = "NBShader2.Localization.Language";
         private const string CsvAssetPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Editor/Localization/NBShaderInspectorLocalization.csv";
-        private const string ChineseMenuPath = "Tools/NBShader2/Language/中文";
-        private const string EnglishMenuPath = "Tools/NBShader2/Language/English";
 
         private static Dictionary<string, Dictionary<string, string>> _table;
         private static string[] _languages;
+
+        public static string CurrentLanguage => GetCurrentLanguage();
 
         public static GUIContent MakeContent(string labelKey, string labelFallback, string tooltipKey = null, string tooltipFallback = "")
         {
@@ -112,47 +112,6 @@ namespace NBShaderEditor
         {
             _table = null;
             _languages = null;
-        }
-
-        [MenuItem(ChineseMenuPath)]
-        private static void SelectChinese()
-        {
-            SetLanguage(DefaultLanguage);
-        }
-
-        [MenuItem(ChineseMenuPath, true)]
-        private static bool ValidateChinese()
-        {
-            Menu.SetChecked(ChineseMenuPath, string.Equals(GetCurrentLanguage(), DefaultLanguage, StringComparison.OrdinalIgnoreCase));
-            return true;
-        }
-
-        [MenuItem(EnglishMenuPath)]
-        private static void SelectEnglish()
-        {
-            SetLanguage(EnglishLanguage);
-        }
-
-        [MenuItem(EnglishMenuPath, true)]
-        private static bool ValidateEnglish()
-        {
-            Menu.SetChecked(EnglishMenuPath, string.Equals(GetCurrentLanguage(), EnglishLanguage, StringComparison.OrdinalIgnoreCase));
-            return true;
-        }
-
-        [MenuItem("Tools/NBShader2/Language/Reload Localization")]
-        private static void ReloadMenu()
-        {
-            AssetDatabase.ImportAsset(CsvAssetPath, ImportAssetOptions.ForceUpdate);
-            Reload();
-            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
-        }
-
-        private static void SetLanguage(string language)
-        {
-            EditorPrefs.SetString(LanguagePreferenceKey, language);
-            Reload();
-            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
         }
 
         private static void EnsureLoaded()
@@ -341,7 +300,7 @@ namespace NBShaderEditor
         {
             EnsureLoaded();
 
-            string preferred = EditorPrefs.GetString(LanguagePreferenceKey, GetSystemLanguageName());
+            string preferred = GetPreferredLanguageName();
             foreach (string language in _languages)
             {
                 if (string.Equals(language, preferred, StringComparison.OrdinalIgnoreCase))
@@ -353,16 +312,132 @@ namespace NBShaderEditor
             return DefaultLanguage;
         }
 
+        private static string GetPreferredLanguageName()
+        {
+            switch (NBFXProjectSettings.LanguageMode)
+            {
+                case NBFXLanguageMode.Chinese:
+                    return DefaultLanguage;
+                case NBFXLanguageMode.English:
+                    return EnglishLanguage;
+                case NBFXLanguageMode.FollowEditor:
+                default:
+                    return GetLanguageFromEditor();
+            }
+        }
+
+        private static string GetLanguageFromEditor()
+        {
+            if (TryGetEditorLanguageName(out string language))
+            {
+                return language;
+            }
+
+            return GetSystemLanguageName();
+        }
+
+        private static bool TryGetEditorLanguageName(out string language)
+        {
+            language = string.Empty;
+
+            Type localizationDatabaseType = typeof(Editor).Assembly.GetType("UnityEditor.LocalizationDatabase");
+            if (localizationDatabaseType == null)
+            {
+                return false;
+            }
+
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+            string[] memberNames =
+            {
+                "currentEditorLanguage",
+                "CurrentEditorLanguage"
+            };
+
+            foreach (string memberName in memberNames)
+            {
+                PropertyInfo propertyInfo = localizationDatabaseType.GetProperty(memberName, flags);
+                if (propertyInfo != null && TryGetEditorLanguageValue(() => propertyInfo.GetValue(null, null), out language))
+                {
+                    return true;
+                }
+
+                FieldInfo fieldInfo = localizationDatabaseType.GetField(memberName, flags);
+                if (fieldInfo != null && TryGetEditorLanguageValue(() => fieldInfo.GetValue(null), out language))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool TryGetEditorLanguageValue(Func<object> valueGetter, out string language)
+        {
+            language = string.Empty;
+            try
+            {
+                return TryMapLanguageValue(valueGetter(), out language);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool TryMapLanguageValue(object value, out string language)
+        {
+            language = string.Empty;
+            if (value == null)
+            {
+                return false;
+            }
+
+            if (value is SystemLanguage systemLanguage)
+            {
+                language = MapSystemLanguage(systemLanguage);
+                return true;
+            }
+
+            string languageName = value.ToString();
+            if (string.IsNullOrEmpty(languageName))
+            {
+                return false;
+            }
+
+            string normalizedLanguageName = languageName.Replace("_", "-").ToLowerInvariant();
+            if (normalizedLanguageName.StartsWith("en", StringComparison.Ordinal) ||
+                normalizedLanguageName.Contains("english"))
+            {
+                language = EnglishLanguage;
+                return true;
+            }
+
+            if (normalizedLanguageName.StartsWith("zh", StringComparison.Ordinal) ||
+                normalizedLanguageName.Contains("chinese"))
+            {
+                language = DefaultLanguage;
+                return true;
+            }
+
+            language = DefaultLanguage;
+            return true;
+        }
+
         private static string GetSystemLanguageName()
         {
-            switch (Application.systemLanguage)
+            return MapSystemLanguage(Application.systemLanguage);
+        }
+
+        private static string MapSystemLanguage(SystemLanguage systemLanguage)
+        {
+            switch (systemLanguage)
             {
                 case SystemLanguage.English:
-                    return "en-US";
+                    return EnglishLanguage;
                 case SystemLanguage.Chinese:
                 case SystemLanguage.ChineseSimplified:
                 case SystemLanguage.ChineseTraditional:
-                    return "zh-CN";
+                    return DefaultLanguage;
                 default:
                     return DefaultLanguage;
             }

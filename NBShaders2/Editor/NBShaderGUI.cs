@@ -7,10 +7,17 @@ namespace NBShaderEditor
     public class NBShaderGUI : ShaderGUI
     {
         private NBShaderRootItem _rootItem;
+        private string _currentLanguage;
 
         public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
         {
-            _rootItem ??= new NBShaderRootItem();
+            string currentLanguage = NBShaderInspectorLocalization.CurrentLanguage;
+            if (_rootItem == null || !string.Equals(_currentLanguage, currentLanguage, System.StringComparison.OrdinalIgnoreCase))
+            {
+                _rootItem = new NBShaderRootItem();
+                _currentLanguage = currentLanguage;
+            }
+
             _rootItem.OnGUI(materialEditor, properties);
         }
     }

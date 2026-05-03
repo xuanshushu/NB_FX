@@ -91,9 +91,8 @@ NBShader2 Inspector user-facing text must go through `NBShaderInspectorLocalizat
 - CSV format is `key,zh-CN,en-US,zh-CN-tip,en-US-tip`.
 - Tooltip text belongs to the same row as its label key. If a row has no tooltip, leave the tip columns empty.
 - Legacy `.tip` rows are only compatibility fallback for existing non-label message reads. New label tooltips must not create a separate `.tip` key.
-- Language selection is editor-wide and stored in `EditorPrefs` key `NBShader2.Localization.Language`.
-- Language menus live under `Tools/NBShader2/Language/中文` and `Tools/NBShader2/Language/English`.
-- CSV edits can be reloaded through `Tools/NBShader2/Language/Reload Localization`.
+- Language selection is project-wide and stored by `NBFXProjectSettings` in `ProjectSettings/NB_FXSettings.asset`.
+- Language selection is edited through Project Settings > Project > NB_FX, not through Unity menu items.
 
 Fallback order:
 
