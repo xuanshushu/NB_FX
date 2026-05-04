@@ -1,3 +1,6 @@
+using System;
+using NBShader;
+using NBShaders2.Editor.FeatureLevel;
 using UnityEditor;
 using UnityEngine;
 
@@ -5,6 +8,8 @@ namespace NBShaderEditor
 {
     public class NBShaderGUIContext
     {
+        private const string FeatureTierPropertyName = "_NBShader2FeatureTier";
+
         private readonly NBShaderRootItem _rootItem;
 
         public NBShaderGUIContext(NBShaderRootItem rootItem)
@@ -22,6 +27,64 @@ namespace NBShaderEditor
         public MixedBool VatEnabled { get; private set; } = MixedBool.Mixed;
         public MixedBool FlipbookEnabled { get; private set; } = MixedBool.Mixed;
         public FxLightMode FxLightMode { get; private set; } = FxLightMode.UnKnownOrMixedValue;
+        public NBShader2FeatureTier CurrentTier { get; private set; } = NBShader2FeatureTier.Ultra;
+        public bool CurrentTierMixed { get; private set; }
+
+        public bool IsKeywordAllowed(string keyword)
+        {
+            if (!NBShader2FeatureCatalog.IsManagedKeyword(keyword))
+            {
+                return true;
+            }
+
+            if (CurrentTierMixed)
+            {
+                return true;
+            }
+
+            return NBShader2FeatureLevelProjectSettings.instance.GetAllowedKeywordSet(CurrentTier).Contains(keyword);
+        }
+
+        public bool AreKeywordsAllowed(params string[] keywords)
+        {
+            if (keywords == null)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < keywords.Length; i++)
+            {
+                if (!IsKeywordAllowed(keywords[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool IsAnyKeywordAllowed(params string[] keywords)
+        {
+            if (keywords == null || keywords.Length == 0)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < keywords.Length; i++)
+            {
+                if (IsKeywordAllowed(keywords[i]))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsCatalogKeyword(string keyword)
+        {
+            return NBShader2FeatureCatalog.IsManagedKeyword(keyword);
+        }
 
         public bool HasProperty(string propertyName)
         {
@@ -35,6 +98,8 @@ namespace NBShaderEditor
 
         public void Refresh()
         {
+            RefreshFeatureTier();
+
             if (HasProperty("_MeshSourceMode"))
             {
                 MaterialProperty meshSourceModeProperty = GetProperty("_MeshSourceMode");
@@ -76,10 +141,33 @@ namespace NBShaderEditor
                     : (FxLightMode)lightModeProperty.floatValue;
             }
 
-            NoiseEnabled = GetToggleState("_noisemapEnabled");
-            ProgramNoiseEnabled = GetToggleState("_ProgramNoise_Toggle");
-            VatEnabled = GetToggleState("_VAT_Toggle");
-            FlipbookEnabled = GetToggleState("_FlipbookBlending");
+            NoiseEnabled = IsKeywordAllowed("_NOISEMAP") ? GetToggleState("_noisemapEnabled") : MixedBool.False;
+            ProgramNoiseEnabled = IsKeywordAllowed("_PROGRAM_NOISE") ? GetToggleState("_ProgramNoise_Toggle") : MixedBool.False;
+            VatEnabled = IsKeywordAllowed("_VAT") ? GetToggleState("_VAT_Toggle") : MixedBool.False;
+            FlipbookEnabled = IsKeywordAllowed("_FLIPBOOKBLENDING_ON") ? GetToggleState("_FlipbookBlending") : MixedBool.False;
+        }
+
+        private void RefreshFeatureTier()
+        {
+            if (!HasProperty(FeatureTierPropertyName))
+            {
+                CurrentTier = NBShader2FeatureTier.Ultra;
+                CurrentTierMixed = false;
+                return;
+            }
+
+            MaterialProperty tierProperty = GetProperty(FeatureTierPropertyName);
+            CurrentTierMixed = tierProperty.hasMixedValue;
+            CurrentTier = CurrentTierMixed
+                ? NBShader2FeatureTier.Ultra
+                : ToFeatureTier(Mathf.RoundToInt(tierProperty.floatValue));
+        }
+
+        private static NBShader2FeatureTier ToFeatureTier(int value)
+        {
+            return Enum.IsDefined(typeof(NBShader2FeatureTier), value) && value >= 0
+                ? (NBShader2FeatureTier)value
+                : NBShader2FeatureTier.Ultra;
         }
 
         public MixedBool GetToggleState(string propertyName)

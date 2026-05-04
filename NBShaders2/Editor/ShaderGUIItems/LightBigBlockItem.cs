@@ -211,22 +211,65 @@ namespace NBShaderEditor
 
         public override void DrawBlock()
         {
-            _lightModeItem.OnGUI();
-            _specularToggleItem.OnGUI();
-            _specularColorItem.OnGUI();
-            _specularSmoothnessItem.OnGUI();
-            _pbrMetallicItem.OnGUI();
-            _pbrSmoothnessItem.OnGUI();
-            _bumpBlock.OnGUI();
-            _matCapBlock.OnGUI();
-            _sixWayPositiveItem.OnGUI();
-            _sixWayNegativeItem.OnGUI();
-            DrawSixWayWarning();
-            _sixWayAbsorptionToggleItem.OnGUI();
-            _sixWayAbsorptionStrengthItem.OnGUI();
-            _sixWayEmissionRampItem.OnGUI();
-            _sixWayEmissionPowItem.OnGUI();
-            _sixWayEmissionColorItem.OnGUI();
+            if (IsAnyLightModeAllowed())
+            {
+                _lightModeItem.OnGUI();
+            }
+
+            if (IsTierAllowed("_SPECULAR_COLOR"))
+            {
+                _specularToggleItem.OnGUI();
+                _specularColorItem.OnGUI();
+                _specularSmoothnessItem.OnGUI();
+            }
+
+            if (IsTierAllowed("_FX_LIGHT_MODE_PBR"))
+            {
+                _pbrMetallicItem.OnGUI();
+                _pbrSmoothnessItem.OnGUI();
+            }
+
+            if (IsTierAllowed("_NORMALMAP"))
+            {
+                _bumpBlock.OnGUI();
+            }
+
+            if (IsTierAllowed("_MATCAP"))
+            {
+                _matCapBlock.OnGUI();
+            }
+
+            if (IsTierAllowed("_FX_LIGHT_MODE_SIX_WAY"))
+            {
+                _sixWayPositiveItem.OnGUI();
+                _sixWayNegativeItem.OnGUI();
+                DrawSixWayWarning();
+                _sixWayEmissionRampItem.OnGUI();
+                _sixWayEmissionPowItem.OnGUI();
+                _sixWayEmissionColorItem.OnGUI();
+            }
+
+            if (IsTierAllowed("VFX_SIX_WAY_ABSORPTION"))
+            {
+                _sixWayAbsorptionToggleItem.OnGUI();
+                _sixWayAbsorptionStrengthItem.OnGUI();
+            }
+        }
+
+        private bool IsTierAllowed(string keyword)
+        {
+            return _nbRootItem.Context == null || _nbRootItem.Context.IsKeywordAllowed(keyword);
+        }
+
+        private bool IsAnyLightModeAllowed()
+        {
+            return _nbRootItem.Context == null ||
+                   _nbRootItem.Context.IsAnyKeywordAllowed(
+                       "_FX_LIGHT_MODE_UNLIT",
+                       "_FX_LIGHT_MODE_BLINN_PHONG",
+                       "_FX_LIGHT_MODE_HALF_LAMBERT",
+                       "_FX_LIGHT_MODE_PBR",
+                       "_FX_LIGHT_MODE_SIX_WAY");
         }
 
         private bool IsSixWay()
