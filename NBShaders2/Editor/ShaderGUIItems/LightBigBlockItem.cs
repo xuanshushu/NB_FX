@@ -43,13 +43,13 @@ namespace NBShaderEditor
             _nbRootItem = rootItem;
             _lightModeItem = new FxLightModePopupItem(rootItem, this);
 
-            _specularToggleItem = new ToggleItem(
+            _specularToggleItem = new NBShaderKeywordToggleItem(
                 rootItem,
                 this,
                 "_BlinnPhongSpecularToggle",
+                "_SPECULAR_COLOR",
                 () => Content("light.specular.toggle", "Specular"),
-                enabled => rootItem.SyncService.ApplyToggleKeyword("_SPECULAR_COLOR", enabled),
-                () => IsBlinnOrHalf(rootItem));
+                isVisible: () => IsBlinnOrHalf(rootItem));
 
             _specularColorItem = new ColorItem(
                 rootItem,
@@ -162,13 +162,13 @@ namespace NBShaderEditor
                 drawScaleOffset: false,
                 isVisible: IsSixWay);
 
-            _sixWayAbsorptionToggleItem = new ToggleItem(
+            _sixWayAbsorptionToggleItem = new NBShaderKeywordToggleItem(
                 rootItem,
                 this,
                 "_SixWayColorAbsorptionToggle",
+                "VFX_SIX_WAY_ABSORPTION",
                 () => Content("light.sixway.absorption.toggle", "Light Color Absorption"),
-                enabled => rootItem.SyncService.ApplyToggleKeyword("VFX_SIX_WAY_ABSORPTION", enabled),
-                IsSixWay);
+                isVisible: IsSixWay);
 
             _sixWayAbsorptionStrengthItem = new VectorComponentItem(
                 rootItem,

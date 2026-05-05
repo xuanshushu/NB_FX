@@ -17,7 +17,10 @@ namespace NBShaderEditor
                 "_DepthDecal_Toggle",
                 () => FeatureToggleFoldOutItem.Content("深度贴花"),
                 rootItem.SyncService.ApplyDepthDecalEnabled,
-                () => rootItem.Context.UIEffectEnabled != MixedBool.True);
+                FeatureToggleFoldOutItem.TierVisible(
+                    rootItem,
+                    "_DEPTH_DECAL",
+                    () => rootItem.Context.UIEffectEnabled != MixedBool.True));
             InitTriggerByChild();
         }
 

@@ -13,7 +13,13 @@ namespace NBShaderEditor
         public NoiseAndDistortFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(rootItem, parentItem, "_NoiseBlockFoldOut", "_noisemapEnabled", "扭曲", keyword: "_NOISEMAP")
         {
-            new ToggleItem(rootItem, this, "_NB_Debug_Distort", () => Content("扭曲强度值测试"), enabled => rootItem.SyncService.ApplyToggleKeyword("NB_DEBUG_DISTORT", enabled));
+            new NBShaderKeywordToggleItem(
+                rootItem,
+                this,
+                "_NB_Debug_Distort",
+                "NB_DEBUG_DISTORT",
+                () => Content("扭曲强度值测试"),
+                isVisible: null);
             ShaderGUISliderItem noiseIntensityItem = new ShaderGUISliderItem(rootItem, this)
             {
                 PropertyName = "_NoiseIntensity",
@@ -24,8 +30,15 @@ namespace NBShaderEditor
             new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY, 1, () => Content("扭曲强度自定义曲线"));
             new FeaturePopupItem(rootItem, this, "_ScreenDistortModeToggle", () => Content("屏幕扰动模式"), ScreenDistortModeNames,
                 property => rootItem.SyncService.ApplyScreenDistortMode(Mathf.RoundToInt(property.floatValue)),
-                () => rootItem.Context.UIEffectEnabled != MixedBool.True);
-            ShaderGUISliderItem screenDistortIntensityItem = new ShaderGUISliderItem(rootItem, this, () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f))
+                () => rootItem.Context.UIEffectEnabled != MixedBool.True,
+                "_SCREEN_DISTORT_MODE");
+            ShaderGUISliderItem screenDistortIntensityItem = new ShaderGUISliderItem(
+                rootItem,
+                this,
+                TierVisible(
+                    rootItem,
+                    "_SCREEN_DISTORT_MODE",
+                    () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f)))
             {
                 PropertyName = "_ScreenDistortIntensity",
                 GuiContent = Content("屏幕扭曲强度"),
@@ -41,7 +54,10 @@ namespace NBShaderEditor
                 {
                     rootItem.SyncService.ApplyScreenDistortMode(GetIntProperty(rootItem, "_ScreenDistortModeToggle"));
                 },
-                () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f));
+                TierVisible(
+                    rootItem,
+                    "_SCREEN_DISTORT_MODE",
+                    () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f)));
 
             PropertyToggleBlockItem screenAlphaBlock = ToggleBlock(
                 rootItem,
@@ -51,7 +67,10 @@ namespace NBShaderEditor
                 NBShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE,
                 1,
                 parent: this,
-                isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f));
+                isVisible: TierVisible(
+                    rootItem,
+                    "_SCREEN_DISTORT_MODE",
+                    () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f)));
             ShaderGUIFloatItem screenDistortAlphaPowItem = new ShaderGUIFloatItem(rootItem, screenAlphaBlock)
             {
                 PropertyName = "_ScreenDistortAlphaPow",
@@ -72,7 +91,8 @@ namespace NBShaderEditor
             screenDistortAlphaAddItem.InitTriggerByChild();
 
             new FeaturePopupItem(rootItem, this, "_DistortMode", () => Content("扭曲模式"), DistortModeNames,
-                property => rootItem.SyncService.ApplyToggleKeyword("_DISTORT_REFRACTION", property.floatValue > 0.5f));
+                property => rootItem.SyncService.ApplyToggleKeyword("_DISTORT_REFRACTION", property.floatValue > 0.5f),
+                keyword: "_DISTORT_REFRACTION");
             TextureRelatedFoldOutItem noiseMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, this, "_NoiseMap", "扭曲贴图", "_NoiseMapFoldOut", NBShaderFlags.FLAG_BIT_WRAPMODE_NOISEMAP,
                 isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
             new UVModeSelectItem(rootItem, noiseMapRelatedFoldOut, "_NoiseUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MAP, 0, () => Content("扭曲贴图UV来源"), "_NoiseMap",
@@ -96,7 +116,10 @@ namespace NBShaderEditor
                 () => Content("0.5为中值，双向扭曲"),
                 enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON, enabled),
                 () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            ShaderGUISliderItem refractionIorItem = new ShaderGUISliderItem(rootItem, this, () => IsPropertyMode(rootItem, "_DistortMode", 1))
+            ShaderGUISliderItem refractionIorItem = new ShaderGUISliderItem(
+                rootItem,
+                this,
+                TierVisible(rootItem, "_DISTORT_REFRACTION", () => IsPropertyMode(rootItem, "_DistortMode", 1)))
             {
                 PropertyName = "_RefractionIOR",
                 GuiContent = Content("折射率"),

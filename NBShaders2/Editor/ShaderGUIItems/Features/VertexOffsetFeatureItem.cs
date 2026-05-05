@@ -10,7 +10,13 @@ namespace NBShaderEditor
         public VertexOffsetFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(rootItem, parentItem, "_VertexOffsetBlockFoldOut", "_VertexOffset_Toggle", "顶点偏移", NBShaderFlags.FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON, keyword: "_VERTEX_OFFSET")
         {
-            new ToggleItem(rootItem, this, "_NB_Debug_VertexOffset", () => Content("顶点偏移方向测试"), enabled => rootItem.SyncService.ApplyToggleKeyword("NB_DEBUG_VERTEX_OFFSET", enabled));
+            new NBShaderKeywordToggleItem(
+                rootItem,
+                this,
+                "_NB_Debug_VertexOffset",
+                "NB_DEBUG_VERTEX_OFFSET",
+                () => Content("顶点偏移方向测试"),
+                isVisible: null);
             AddTextureWithWrap(rootItem, this, "_VertexOffset_Map", "顶点偏移贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP);
             new UVModeSelectItem(rootItem, this, "_VertexOffsetUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MAP, 0, () => Content("顶点偏移贴图UV来源"), "_VertexOffset_Map");
             new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X, 1, () => Content("顶点扰动X轴偏移自定义曲线"));

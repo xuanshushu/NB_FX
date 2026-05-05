@@ -46,6 +46,13 @@ namespace NBShaderEditor
 
         private bool IsFeatureItemAllowed(ShaderGUIItem item)
         {
+            if (item is DepthFeatureItem)
+            {
+                var rootItem = (NBShaderRootItem)RootItem;
+                return rootItem.Context == null ||
+                       rootItem.Context.IsAnyKeywordAllowed("_DEPTH_DECAL", "_DEPTH_OUTLINE");
+            }
+
             string keyword = GetFeatureKeyword(item);
             return string.IsNullOrEmpty(keyword) || ((NBShaderRootItem)RootItem).Context.IsKeywordAllowed(keyword);
         }

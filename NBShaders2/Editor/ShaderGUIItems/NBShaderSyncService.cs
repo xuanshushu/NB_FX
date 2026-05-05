@@ -10,6 +10,38 @@ namespace NBShaderEditor
         private readonly NBShaderRootItem _rootItem;
         private StencilValuesConfig _stencilValuesConfig;
 
+        private static readonly KeywordToggleBinding[] ToggleKeywordBindings =
+        {
+            new KeywordToggleBinding("_SoftParticlesEnabled", "_SOFTPARTICLES_ON"),
+            new KeywordToggleBinding("_StencilWithoutPlayerToggle", "_STENCIL_WITHOUT_PLAYER"),
+            new KeywordToggleBinding("_Mask_Toggle", "_MASKMAP_ON"),
+            new KeywordToggleBinding("_noisemapEnabled", "_NOISEMAP"),
+            new KeywordToggleBinding("_EmissionEnabled", "_EMISSION"),
+            new KeywordToggleBinding("_ColorBlendMap_Toggle", "_COLORMAPBLEND"),
+            new KeywordToggleBinding("_RampColorToggle", "_COLOR_RAMP"),
+            new KeywordToggleBinding("_Dissolve_Toggle", "_DISSOLVE"),
+            new KeywordToggleBinding("_ProgramNoise_Toggle", "_PROGRAM_NOISE"),
+            new KeywordToggleBinding("_SharedUVToggle", "_SHARED_UV"),
+            new KeywordToggleBinding("_fresnelEnabled", "_FRESNEL"),
+            new KeywordToggleBinding("_ParallaxMapping_Toggle", "_PARALLAX_MAPPING"),
+            new KeywordToggleBinding("_VertexOffset_Toggle", "_VERTEX_OFFSET"),
+            new KeywordToggleBinding("_FlipbookBlending", "_FLIPBOOKBLENDING_ON"),
+            new KeywordToggleBinding("_BumpMapToggle", "_NORMALMAP"),
+            new KeywordToggleBinding("_MatCapToggle", "_MATCAP"),
+            new KeywordToggleBinding("_BlinnPhongSpecularToggle", "_SPECULAR_COLOR"),
+            new KeywordToggleBinding("_SixWayColorAbsorptionToggle", "VFX_SIX_WAY_ABSORPTION"),
+            new KeywordToggleBinding("_DepthDecal_Toggle", "_DEPTH_DECAL"),
+            new KeywordToggleBinding("_DepthOutline_Toggle", "_DEPTH_OUTLINE"),
+            new KeywordToggleBinding("_Mask2_Toggle", "_MASKMAP2_ON"),
+            new KeywordToggleBinding("_Mask3_Toggle", "_MASKMAP3_ON"),
+            new KeywordToggleBinding("_noiseMaskMap_Toggle", "_NOISE_MASKMAP"),
+            new KeywordToggleBinding("_Distortion_Choraticaberrat_Toggle", "_CHROMATIC_ABERRATION"),
+            new KeywordToggleBinding("_DissolveMask_Toggle", "_DISSOLVE_MASK"),
+            new KeywordToggleBinding("_ProgramNoise_Simple_Toggle", "_PROGRAM_NOISE_SIMPLE"),
+            new KeywordToggleBinding("_ProgramNoise_Voronoi_Toggle", "_PROGRAM_NOISE_VORONOI"),
+            new KeywordToggleBinding("_VertexOffset_Mask_Toggle", "_VERTEX_OFFSET_MASKMAP")
+        };
+
         public NBShaderSyncService(NBShaderRootItem rootItem)
         {
             _rootItem = rootItem;
@@ -33,7 +65,7 @@ namespace NBShaderEditor
                     foreach (Material mat in _rootItem.Mats)
                     {
                         mat.renderQueue = 2000 + queueBias;
-                        mat.DisableKeyword("_ALPHATEST_ON");
+                        SetKeyword(mat, "_ALPHATEST_ON", false);
                     }
                     break;
 
@@ -43,7 +75,7 @@ namespace NBShaderEditor
                     {
                         bool uiEffect = IsUIEffectMode(mat);
                         mat.renderQueue = 3000 + queueBias;
-                        mat.DisableKeyword("_ALPHATEST_ON");
+                        SetKeyword(mat, "_ALPHATEST_ON", false);
                     }
                     break;
 
@@ -52,7 +84,7 @@ namespace NBShaderEditor
                     foreach (Material mat in _rootItem.Mats)
                     {
                         mat.renderQueue = 2450 + queueBias;
-                        mat.EnableKeyword("_ALPHATEST_ON");
+                        SetKeyword(mat, "_ALPHATEST_ON", true);
                     }
                     break;
             }
@@ -76,6 +108,8 @@ namespace NBShaderEditor
                 SyncBlendMode(mat);
                 SyncLightMode(mat);
                 SyncTimeMode(mat, flags);
+                SyncTogglePropertyKeywords(mat);
+                SyncModePropertyKeywords(mat, flags);
                 SyncFlagBackedKeywords(mat, flags);
                 SyncScreenDistortPasses(mat);
                 SyncVatKeywords(mat);
@@ -218,11 +252,11 @@ namespace NBShaderEditor
                 if (enabled)
                 {
                     DisableVat(mat);
-                    mat.EnableKeyword("_FLIPBOOKBLENDING_ON");
+                    SetKeyword(mat, "_FLIPBOOKBLENDING_ON", true);
                 }
                 else
                 {
-                    mat.DisableKeyword("_FLIPBOOKBLENDING_ON");
+                    SetKeyword(mat, "_FLIPBOOKBLENDING_ON", false);
                 }
             }
         }
@@ -236,32 +270,32 @@ namespace NBShaderEditor
                     case BlendMode.Alpha:
                         mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                         mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                        mat.DisableKeyword("_ALPHAMODULATE_ON");
+                        SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
+                        SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                         break;
                     case BlendMode.Premultiply:
                         mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                         mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                        mat.DisableKeyword("_ALPHAMODULATE_ON");
+                        SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
+                        SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                         break;
                     case BlendMode.Additive:
                         mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                         mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                        mat.DisableKeyword("_ALPHAMODULATE_ON");
+                        SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
+                        SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                         break;
                     case BlendMode.Multiply:
                         mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
                         mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                        mat.EnableKeyword("_ALPHAMODULATE_ON");
+                        SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
+                        SetKeyword(mat, "_ALPHAMODULATE_ON", true);
                         break;
                     case BlendMode.Opaque:
                         mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                         mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-                        mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                        mat.DisableKeyword("_ALPHAMODULATE_ON");
+                        SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
+                        SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                         break;
                 }
             }
@@ -279,14 +313,7 @@ namespace NBShaderEditor
         {
             foreach (Material mat in _rootItem.Mats)
             {
-                if (enabled)
-                {
-                    mat.EnableKeyword(keyword);
-                }
-                else
-                {
-                    mat.DisableKeyword(keyword);
-                }
+                SetKeyword(mat, keyword, enabled);
             }
         }
 
@@ -426,11 +453,13 @@ namespace NBShaderEditor
 
             if (isParticle)
             {
-                mat.EnableKeyword("_CUSTOMDATA");
+                SetKeyword(mat, "_CUSTOMDATA", true);
+                SetKeyword(mat, "_PARCUSTOMDATA_ON", true);
             }
             else
             {
-                mat.DisableKeyword("_CUSTOMDATA");
+                SetKeyword(mat, "_CUSTOMDATA", false);
+                SetKeyword(mat, "_PARCUSTOMDATA_ON", false);
                 SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA1_ON, false, 0);
                 SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA2_ON, false, 0);
             }
@@ -446,6 +475,57 @@ namespace NBShaderEditor
             TimeMode mode = (TimeMode)Mathf.RoundToInt(mat.GetFloat("_TimeMode"));
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON, mode == TimeMode.UnScaleTime, 0);
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON, mode == TimeMode.ScriptableTime, 0);
+            SetKeyword(mat, "_UNSCALETIME", mode == TimeMode.UnScaleTime);
+            SetKeyword(mat, "_SCRIPTABLETIME", mode == TimeMode.ScriptableTime);
+        }
+
+        private void SyncTogglePropertyKeywords(Material mat)
+        {
+            for (int i = 0; i < ToggleKeywordBindings.Length; i++)
+            {
+                var binding = ToggleKeywordBindings[i];
+                if (!mat.HasProperty(binding.propertyName))
+                {
+                    continue;
+                }
+
+                SetKeyword(mat, binding.keyword, mat.GetFloat(binding.propertyName) > 0.5f);
+            }
+        }
+
+        private void SyncModePropertyKeywords(Material mat, NBShaderFlags flags)
+        {
+            if (mat.HasProperty("_DistortMode"))
+            {
+                SetKeyword(mat, "_DISTORT_REFRACTION", Mathf.RoundToInt(mat.GetFloat("_DistortMode")) == 1);
+            }
+
+            if (mat.HasProperty("_RampColorSourceMode"))
+            {
+                bool useRampMap = Mathf.RoundToInt(mat.GetFloat("_RampColorSourceMode")) == 1;
+                if (flags != null)
+                {
+                    SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON, useRampMap, 0);
+                }
+
+                SetKeyword(mat, "_COLOR_RAMP_MAP", useRampMap);
+            }
+
+            if (mat.HasProperty("_DissolveRampSourceMode"))
+            {
+                bool useDissolveRampMap = Mathf.RoundToInt(mat.GetFloat("_DissolveRampSourceMode")) == 1;
+                if (flags != null)
+                {
+                    SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, useDissolveRampMap, 0);
+                }
+
+                SetKeyword(mat, "_DISSOLVE_RAMP_MAP", useDissolveRampMap);
+            }
+
+            if (mat.HasProperty("_ScreenDistortModeToggle"))
+            {
+                SetKeyword(mat, "_SCREEN_DISTORT_MODE", Mathf.RoundToInt(mat.GetFloat("_ScreenDistortModeToggle")) != 0);
+            }
         }
 
         private void SyncFlagBackedKeywords(Material mat, NBShaderFlags flags)
@@ -474,7 +554,7 @@ namespace NBShaderEditor
 
         private void SetFlagBackedKeyword(Material mat, NBShaderFlags flags, string keyword, int flagBits, int flagIndex)
         {
-            SetKeyword(mat, keyword, flags.CheckFlagBits(flagBits, index: flagIndex) && IsKeywordAllowed(keyword));
+            SetKeyword(mat, keyword, flags.CheckFlagBits(flagBits, index: flagIndex));
         }
 
         private bool IsKeywordAllowed(string keyword)
@@ -482,9 +562,14 @@ namespace NBShaderEditor
             return _rootItem.Context == null || _rootItem.Context.IsKeywordAllowed(keyword);
         }
 
-        private static void SetKeyword(Material mat, string keyword, bool enabled)
+        private void SetKeyword(Material mat, string keyword, bool enabled)
         {
-            if (enabled)
+            if (mat == null || string.IsNullOrEmpty(keyword))
+            {
+                return;
+            }
+
+            if (enabled && IsKeywordAllowed(keyword))
             {
                 mat.EnableKeyword(keyword);
             }
@@ -572,7 +657,7 @@ namespace NBShaderEditor
                     mat.SetInt("_ZWrite", 1);
                     mat.renderQueue = 2100 + queueBias;
                     mat.SetFloat("_Blend", (float)BlendMode.Opaque);
-                    mat.DisableKeyword("_ALPHATEST_ON");
+                    SetKeyword(mat, "_ALPHATEST_ON", false);
                     break;
                 case TransparentMode.Transparent:
                     mat.SetInt("_ZWrite", 0);
@@ -582,13 +667,13 @@ namespace NBShaderEditor
                         mat.SetFloat("_Blend", (float)BlendMode.Alpha);
                     }
 
-                    mat.DisableKeyword("_ALPHATEST_ON");
+                    SetKeyword(mat, "_ALPHATEST_ON", false);
                     break;
                 case TransparentMode.CutOff:
                     mat.SetInt("_ZWrite", 1);
                     mat.renderQueue = 2450 + queueBias;
                     mat.SetFloat("_Blend", (float)BlendMode.Opaque);
-                    mat.EnableKeyword("_ALPHATEST_ON");
+                    SetKeyword(mat, "_ALPHATEST_ON", true);
                     break;
             }
 
@@ -650,32 +735,32 @@ namespace NBShaderEditor
                 case BlendMode.Alpha:
                     mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                     mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                    mat.DisableKeyword("_ALPHAMODULATE_ON");
+                    SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
+                    SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
                 case BlendMode.Premultiply:
                     mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                     mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                    mat.DisableKeyword("_ALPHAMODULATE_ON");
+                    SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
+                    SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
                 case BlendMode.Additive:
                     mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                     mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                    mat.DisableKeyword("_ALPHAMODULATE_ON");
+                    SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
+                    SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
                 case BlendMode.Multiply:
                     mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
                     mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                    mat.EnableKeyword("_ALPHAMODULATE_ON");
+                    SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
+                    SetKeyword(mat, "_ALPHAMODULATE_ON", true);
                     break;
                 case BlendMode.Opaque:
                     mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                     mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-                    mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                    mat.DisableKeyword("_ALPHAMODULATE_ON");
+                    SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
+                    SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
             }
         }
@@ -690,32 +775,32 @@ namespace NBShaderEditor
             SetLightModeKeyword(mat, (FxLightMode)Mathf.RoundToInt(mat.GetFloat("_FxLightMode")));
         }
 
-        private static void SetLightModeKeyword(Material mat, FxLightMode mode)
+        private void SetLightModeKeyword(Material mat, FxLightMode mode)
         {
-            mat.DisableKeyword("_FX_LIGHT_MODE_UNLIT");
-            mat.DisableKeyword("_FX_LIGHT_MODE_BLINN_PHONG");
-            mat.DisableKeyword("_FX_LIGHT_MODE_HALF_LAMBERT");
-            mat.DisableKeyword("_FX_LIGHT_MODE_PBR");
-            mat.DisableKeyword("_FX_LIGHT_MODE_SIX_WAY");
-            mat.DisableKeyword("EVALUATE_SH_VERTEX");
+            SetKeyword(mat, "_FX_LIGHT_MODE_UNLIT", false);
+            SetKeyword(mat, "_FX_LIGHT_MODE_BLINN_PHONG", false);
+            SetKeyword(mat, "_FX_LIGHT_MODE_HALF_LAMBERT", false);
+            SetKeyword(mat, "_FX_LIGHT_MODE_PBR", false);
+            SetKeyword(mat, "_FX_LIGHT_MODE_SIX_WAY", false);
+            SetKeyword(mat, "EVALUATE_SH_VERTEX", false);
 
             switch (mode)
             {
                 case FxLightMode.UnLit:
-                    mat.EnableKeyword("_FX_LIGHT_MODE_UNLIT");
+                    SetKeyword(mat, "_FX_LIGHT_MODE_UNLIT", true);
                     break;
                 case FxLightMode.BlinnPhong:
-                    mat.EnableKeyword("_FX_LIGHT_MODE_BLINN_PHONG");
+                    SetKeyword(mat, "_FX_LIGHT_MODE_BLINN_PHONG", true);
                     break;
                 case FxLightMode.HalfLambert:
-                    mat.EnableKeyword("_FX_LIGHT_MODE_HALF_LAMBERT");
+                    SetKeyword(mat, "_FX_LIGHT_MODE_HALF_LAMBERT", true);
                     break;
                 case FxLightMode.PBR:
-                    mat.EnableKeyword("_FX_LIGHT_MODE_PBR");
+                    SetKeyword(mat, "_FX_LIGHT_MODE_PBR", true);
                     break;
                 case FxLightMode.SixWay:
-                    mat.EnableKeyword("_FX_LIGHT_MODE_SIX_WAY");
-                    mat.EnableKeyword("EVALUATE_SH_VERTEX");
+                    SetKeyword(mat, "_FX_LIGHT_MODE_SIX_WAY", true);
+                    SetKeyword(mat, "EVALUATE_SH_VERTEX", true);
                     break;
             }
         }
@@ -729,25 +814,25 @@ namespace NBShaderEditor
             }
 
             DisableFlipbook(mat);
-            mat.EnableKeyword("_VAT");
+            SetKeyword(mat, "_VAT", true);
             int vatMode = mat.HasProperty("_VATMode") ? Mathf.RoundToInt(mat.GetFloat("_VATMode")) : 0;
             if (vatMode == (int)VATMode.Tyflow)
             {
-                mat.DisableKeyword("_VAT_HOUDINI");
-                mat.EnableKeyword("_VAT_TYFLOW");
+                SetKeyword(mat, "_VAT_HOUDINI", false);
+                SetKeyword(mat, "_VAT_TYFLOW", true);
                 SetHoudiniVATKeyword(mat, -1);
                 SetTyflowVATKeyword(mat, mat.HasProperty("_TyFlowVATSubMode") ? Mathf.RoundToInt(mat.GetFloat("_TyFlowVATSubMode")) : 0);
             }
             else
             {
-                mat.EnableKeyword("_VAT_HOUDINI");
-                mat.DisableKeyword("_VAT_TYFLOW");
+                SetKeyword(mat, "_VAT_HOUDINI", true);
+                SetKeyword(mat, "_VAT_TYFLOW", false);
                 SetHoudiniVATKeyword(mat, mat.HasProperty("_HoudiniVATSubMode") ? Mathf.RoundToInt(mat.GetFloat("_HoudiniVATSubMode")) : 0);
                 SetTyflowVATKeyword(mat, -1);
             }
         }
 
-        private static void DisableVat(Material mat)
+        private void DisableVat(Material mat)
         {
             if (mat.HasProperty("_VAT_Toggle"))
             {
@@ -757,26 +842,26 @@ namespace NBShaderEditor
             ClearVatKeywords(mat);
         }
 
-        private static void DisableFlipbook(Material mat)
+        private void DisableFlipbook(Material mat)
         {
             if (mat.HasProperty("_FlipbookBlending"))
             {
                 mat.SetFloat("_FlipbookBlending", 0f);
             }
 
-            mat.DisableKeyword("_FLIPBOOKBLENDING_ON");
+            SetKeyword(mat, "_FLIPBOOKBLENDING_ON", false);
         }
 
-        private static void ClearVatKeywords(Material mat)
+        private void ClearVatKeywords(Material mat)
         {
-            mat.DisableKeyword("_VAT");
-            mat.DisableKeyword("_VAT_HOUDINI");
-            mat.DisableKeyword("_VAT_TYFLOW");
+            SetKeyword(mat, "_VAT", false);
+            SetKeyword(mat, "_VAT_HOUDINI", false);
+            SetKeyword(mat, "_VAT_TYFLOW", false);
             SetHoudiniVATKeyword(mat, -1);
             SetTyflowVATKeyword(mat, -1);
         }
 
-        private static void SetHoudiniVATKeyword(Material mat, int enabledIndex)
+        private void SetHoudiniVATKeyword(Material mat, int enabledIndex)
         {
             string[] keywords =
             {
@@ -789,7 +874,7 @@ namespace NBShaderEditor
             SetExclusiveKeyword(mat, keywords, enabledIndex);
         }
 
-        private static void SetTyflowVATKeyword(Material mat, int enabledIndex)
+        private void SetTyflowVATKeyword(Material mat, int enabledIndex)
         {
             string[] keywords =
             {
@@ -804,16 +889,16 @@ namespace NBShaderEditor
             SetExclusiveKeyword(mat, keywords, enabledIndex);
         }
 
-        private static void SetExclusiveKeyword(Material mat, string[] keywords, int enabledIndex)
+        private void SetExclusiveKeyword(Material mat, string[] keywords, int enabledIndex)
         {
             for (int i = 0; i < keywords.Length; i++)
             {
-                mat.DisableKeyword(keywords[i]);
+                SetKeyword(mat, keywords[i], false);
             }
 
             if (enabledIndex >= 0 && enabledIndex < keywords.Length)
             {
-                mat.EnableKeyword(keywords[enabledIndex]);
+                SetKeyword(mat, keywords[enabledIndex], true);
             }
         }
 
@@ -826,6 +911,18 @@ namespace NBShaderEditor
             else
             {
                 flags.ClearFlagBits(flagBits, index: index);
+            }
+        }
+
+        private struct KeywordToggleBinding
+        {
+            public readonly string propertyName;
+            public readonly string keyword;
+
+            public KeywordToggleBinding(string propertyName, string keyword)
+            {
+                this.propertyName = propertyName;
+                this.keyword = keyword;
             }
         }
     }

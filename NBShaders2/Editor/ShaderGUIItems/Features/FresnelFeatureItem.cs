@@ -12,7 +12,13 @@ namespace NBShaderEditor
         public FresnelFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(rootItem, parentItem, "_FresnelBlockFoldOut", "_fresnelEnabled", "菲涅尔", NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_ON, keyword: "_FRESNEL")
         {
-            new ToggleItem(rootItem, this, "_NB_Debug_Fresnel", () => Content("菲涅尔测试颜色"), enabled => rootItem.SyncService.ApplyToggleKeyword("NB_DEBUG_FRESNEL", enabled));
+            new NBShaderKeywordToggleItem(
+                rootItem,
+                this,
+                "_NB_Debug_Fresnel",
+                "NB_DEBUG_FRESNEL",
+                () => Content("菲涅尔测试颜色"),
+                isVisible: null);
             new FeaturePopupItem(rootItem, this, "_FresnelMode", () => Content("菲涅尔模式"), FresnelModeNames,
                 property => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON, property.floatValue > 0.5f));
             Func<bool> isFresnelColorMode = () => IsPropertyMode(rootItem, "_FresnelMode", 0);

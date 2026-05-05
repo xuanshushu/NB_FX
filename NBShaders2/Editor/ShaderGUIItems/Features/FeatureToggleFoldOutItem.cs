@@ -199,6 +199,19 @@ namespace NBShaderEditor
         {
             return LocalizedOptions(LocalizationTableName, "feature.popup." + propertyName, fallback);
         }
+
+        internal static bool IsTierKeywordAllowed(NBShaderRootItem rootItem, string keyword)
+        {
+            return string.IsNullOrEmpty(keyword) ||
+                   rootItem == null ||
+                   rootItem.Context == null ||
+                   rootItem.Context.IsKeywordAllowed(keyword);
+        }
+
+        internal static Func<bool> TierVisible(NBShaderRootItem rootItem, string keyword, Func<bool> isVisible = null)
+        {
+            return () => IsTierKeywordAllowed(rootItem, keyword) && (isVisible == null || isVisible());
+        }
     }
 
     internal sealed class FeaturePopupItem : ShaderGUIPopUpItem
@@ -210,7 +223,8 @@ namespace NBShaderEditor
             Func<GUIContent> contentProvider,
             string[] popupNames,
             Action<MaterialProperty> onValueChanged = null,
-            Func<bool> isVisible = null)
+            Func<bool> isVisible = null,
+            string keyword = null)
             : base(
                 rootItem,
                 parentItem,
@@ -218,7 +232,9 @@ namespace NBShaderEditor
                 contentProvider,
                 () => FeatureToggleFoldOutItem.PopupOptions(propertyName, popupNames),
                 onValueChanged,
-                isVisible)
+                string.IsNullOrEmpty(keyword)
+                    ? isVisible
+                    : FeatureToggleFoldOutItem.TierVisible(rootItem as NBShaderRootItem, keyword, isVisible))
         {
         }
     }

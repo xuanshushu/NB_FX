@@ -232,10 +232,11 @@ namespace NBShaderEditor
                 isVisible: Is3DMode);
             _softParticleFadeItem = new Vector2LineItem(rootItem, _softParticlesBlock, "_SoftParticleFadeParams", true, () => Content("base.softParticles.range", "Near/Far Fade"));
 
-            _stencilWithoutPlayerItem = new ToggleItem(
+            _stencilWithoutPlayerItem = new NBShaderKeywordToggleItem(
                 rootItem,
                 this,
                 "_StencilWithoutPlayerToggle",
+                "_STENCIL_WITHOUT_PLAYER",
                 () => Content("base.stencilWithoutPlayer", "Stencil Without Player"),
                 OnStencilWithoutPlayerChanged,
                 Is3DMode);
@@ -329,7 +330,6 @@ namespace NBShaderEditor
 
         private void OnStencilWithoutPlayerChanged(bool enabled)
         {
-            _nbRootItem.SyncService.ApplyToggleKeyword("_STENCIL_WITHOUT_PLAYER", enabled);
             _nbRootItem.SyncService.ApplyStencilPreset(enabled ? "ParticleWithoutPlayer" : "ParticleBaseDefault");
             if (_nbRootItem.PropertyInfoDic.ContainsKey("_CustomStencilTest"))
             {

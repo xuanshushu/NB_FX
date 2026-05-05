@@ -10,7 +10,13 @@ namespace NBShaderEditor
         public ProgramNoiseFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(rootItem, parentItem, "_ProgramNoiseBlockFoldOut", "_ProgramNoise_Toggle", "程序化噪波", keyword: "_PROGRAM_NOISE")
         {
-            new ToggleItem(rootItem, this, "_NB_Debug_PNoise", () => Content("程序化噪波测试颜色"), enabled => rootItem.SyncService.ApplyToggleKeyword("NB_DEBUG_PNOISE", enabled));
+            new NBShaderKeywordToggleItem(
+                rootItem,
+                this,
+                "_NB_Debug_PNoise",
+                "NB_DEBUG_PNOISE",
+                () => Content("程序化噪波测试颜色"),
+                isVisible: null);
             new UVModeSelectItem(rootItem, this, "_ProgramNoiseUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE, 0, () => Content("程序噪波UV来源"), forceEnable: true);
             ShaderGUIFloatItem programNoiseRotateItem = new ShaderGUIFloatItem(rootItem, this)
             {

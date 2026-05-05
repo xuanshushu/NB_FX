@@ -26,7 +26,7 @@ namespace NBShaderEditor
         };
 
         public VatFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_VATBlockFoldOut", "_VAT_Toggle", "VAT顶点动画图", onValueChanged: rootItem.SyncService.ApplyVatEnabled)
+            : base(rootItem, parentItem, "_VATBlockFoldOut", "_VAT_Toggle", "VAT顶点动画图", keyword: "_VAT", onValueChanged: rootItem.SyncService.ApplyVatEnabled)
         {
             new FeaturePopupItem(rootItem, this, "_VATMode", () => Content("VAT模式"), VatModeNames, _ => rootItem.SyncService.SyncMaterialState());
             Func<bool> isHoudini = () => IsPropertyMode(rootItem, "_VATMode", (int)VATMode.Houdini);

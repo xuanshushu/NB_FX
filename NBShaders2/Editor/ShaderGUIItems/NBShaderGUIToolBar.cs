@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using NBShader;
+using NBShaders2.Editor.FeatureLevel;
 
 namespace NBShaderEditor
 {
@@ -200,20 +201,34 @@ namespace NBShaderEditor
                     mat.SetFloat(FeatureTierPropertyName, (float)tier);
                 }
 
-                ApplyFeatureTierRuntime(mat, tier);
+                ApplyFeatureTierProjectSettings(mat, tier);
             }
 
             FinishMaterialMutation();
         }
 
-        private static void ApplyFeatureTierRuntime(Material material, NBShaderFeatureTier tier)
+        private static void ApplyFeatureTierProjectSettings(Material material, NBShaderFeatureTier tier)
         {
             if (material == null)
             {
                 return;
             }
 
-            NBShaderFeatureRuntime.ApplyTier(material, tier);
+            var allowedKeywords = NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSet(tier);
+            string[] materialKeywords = material.shaderKeywords;
+            if (materialKeywords == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < materialKeywords.Length; i++)
+            {
+                string keyword = materialKeywords[i];
+                if (NBShaderFeatureCatalog.IsManagedKeyword(keyword) && !allowedKeywords.Contains(keyword))
+                {
+                    material.DisableKeyword(keyword);
+                }
+            }
         }
 
         private void ShowResetPopupMenu()
@@ -257,6 +272,7 @@ namespace NBShaderEditor
 
             EditorUtility.SetDirty(material);
             _rootItem.IsInit = true;
+            _rootItem.Context?.Refresh();
             _rootItem.SyncService?.SyncMaterialState();
             _rootItem.Context?.Refresh();
             UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
@@ -394,6 +410,7 @@ namespace NBShaderEditor
 
         private void FinishMaterialMutation()
         {
+            _rootItem.Context?.Refresh();
             _rootItem.SyncService?.SyncMaterialState();
             _rootItem.Context?.Refresh();
             MarkAllMaterialsDirty();

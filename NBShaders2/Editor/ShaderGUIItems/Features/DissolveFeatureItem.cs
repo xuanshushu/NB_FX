@@ -14,7 +14,13 @@ namespace NBShaderEditor
         public DissolveFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(rootItem, parentItem, "_DissolveBlockFoldOut", "_Dissolve_Toggle", "溶解", keyword: "_DISSOLVE")
         {
-            new ToggleItem(rootItem, this, "_NB_Debug_Dissolve", () => Content("溶解度黑白值测试"), enabled => rootItem.SyncService.ApplyToggleKeyword("NB_DEBUG_DISSOLVE", enabled));
+            new NBShaderKeywordToggleItem(
+                rootItem,
+                this,
+                "_NB_Debug_Dissolve",
+                "NB_DEBUG_DISSOLVE",
+                () => Content("溶解度黑白值测试"),
+                isVisible: null);
             TextureRelatedFoldOutItem dissolveMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, this, "_DissolveMap", "溶解贴图", "_DissolveMapFoldOut", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MAP);
             new ColorChannelSelectItem(rootItem, dissolveMapRelatedFoldOut, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP, 0, () => Content("溶解贴图通道选择"));
             new CustomDataSelectItem(rootItem, dissolveMapRelatedFoldOut, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X, 1, () => Content("溶解贴图X轴偏移自定义曲线"));
@@ -39,10 +45,12 @@ namespace NBShaderEditor
 
             PropertyToggleBlockItem rampBlock = ToggleBlock(rootItem, "_DissolveRampFoldOut", "_Dissolve_useRampMap_Toggle", "溶解Ramp图功能",
                 NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP, 1, parent: this);
+            Func<bool> isDissolveRampMapVisible = TierVisible(rootItem, "_DISSOLVE_RAMP_MAP", () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 1));
             new FeaturePopupItem(rootItem, rampBlock, "_DissolveRampSourceMode", () => Content("溶解Ramp模式"), RampSourceNames,
-                property => rootItem.SyncService.ApplyToggleFlagAndKeyword(NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, 0, "_DISSOLVE_RAMP_MAP", property.floatValue > 0.5f));
+                property => rootItem.SyncService.ApplyToggleFlagAndKeyword(NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, 0, "_DISSOLVE_RAMP_MAP", property.floatValue > 0.5f),
+                keyword: "_DISSOLVE_RAMP_MAP");
             AddTextureWithWrap(rootItem, rampBlock, "_DissolveRampMap", "溶解Ramp图", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP, "_DissolveRampColor",
-                () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 1));
+                isDissolveRampMapVisible);
             AddGradient(rootItem, rampBlock, "Ramp颜色", "_DissolveRampCount", "_DissolveRampColor", "_DissolveRampAlpha", hdr: true,
                 isVisible: () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 0));
             new TextureScaleOffsetItem(rootItem, rampBlock, "_DissolveRampMap", false, () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 0), TillingContent, OffsetContent);

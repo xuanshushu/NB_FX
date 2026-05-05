@@ -12,7 +12,13 @@ namespace NBShaderEditor
         public MaskFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(rootItem, parentItem, "_MaskBlockFoldOut", "_Mask_Toggle", "遮罩", keyword: "_MASKMAP_ON")
         {
-            new ToggleItem(rootItem, this, "_NB_Debug_Mask", () => Content("测试遮罩颜色"), enabled => rootItem.SyncService.ApplyToggleKeyword("NB_DEBUG_MASK", enabled));
+            new NBShaderKeywordToggleItem(
+                rootItem,
+                this,
+                "_NB_Debug_Mask",
+                "NB_DEBUG_MASK",
+                () => Content("测试遮罩颜色"),
+                isVisible: null);
             new VectorComponentItem(rootItem, this, "_MaskMapVec", 0, () => Content("遮罩强度"), true);
 
             PropertyToggleBlockItem refineBlock = ToggleBlock(

@@ -51,6 +51,11 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
+            if (!FeatureToggleFoldOutItem.IsTierKeywordAllowed(RootItem as NBShaderRootItem, _keyword))
+            {
+                return;
+            }
+
             if (_isVisible != null && !_isVisible())
             {
                 return;
@@ -138,6 +143,31 @@ namespace NBShaderEditor
             }
 
             _onValueChanged?.Invoke(enabled);
+        }
+    }
+
+    public class NBShaderKeywordToggleItem : ToggleItem
+    {
+        public NBShaderKeywordToggleItem(
+            NBShaderRootItem rootItem,
+            ShaderGUIItem parentItem,
+            string propertyName,
+            string keyword,
+            Func<GUIContent> contentProvider,
+            Action<bool> onValueChanged = null,
+            Func<bool> isVisible = null)
+            : base(
+                rootItem,
+                parentItem,
+                propertyName,
+                contentProvider,
+                enabled =>
+                {
+                    rootItem.SyncService.ApplyToggleKeyword(keyword, enabled);
+                    onValueChanged?.Invoke(enabled);
+                },
+                FeatureToggleFoldOutItem.TierVisible(rootItem, keyword, isVisible))
+        {
         }
     }
 
