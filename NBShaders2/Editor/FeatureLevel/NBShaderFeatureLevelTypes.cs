@@ -3,7 +3,7 @@ using NBShader;
 
 namespace NBShaders2.Editor.FeatureLevel
 {
-    public enum NBShader2BuildStripPolicy
+    public enum NBShaderBuildStripPolicy
     {
         Disabled = 0,
         ExplicitTier = 1,
@@ -11,16 +11,16 @@ namespace NBShaders2.Editor.FeatureLevel
     }
 
     [Serializable]
-    public sealed class NBShader2FeatureTierKeywordSet
+    public sealed class NBShaderFeatureTierKeywordSet
     {
-        public NBShader2FeatureTier tier;
+        public NBShaderFeatureTier tier;
         public string[] allowedKeywords = new string[0];
     }
 
     [Serializable]
-    public sealed class NBShader2QualityTierMapping
+    public sealed class NBShaderQualityTierMapping
     {
         public string qualityName;
-        public NBShader2FeatureTier tier;
+        public NBShaderFeatureTier tier;
     }
 }

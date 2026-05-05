@@ -8,7 +8,7 @@ namespace NBShaderEditor
 {
     public class NBShaderGUIContext
     {
-        private const string FeatureTierPropertyName = "_NBShader2FeatureTier";
+        private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
 
         private readonly NBShaderRootItem _rootItem;
 
@@ -27,12 +27,12 @@ namespace NBShaderEditor
         public MixedBool VatEnabled { get; private set; } = MixedBool.Mixed;
         public MixedBool FlipbookEnabled { get; private set; } = MixedBool.Mixed;
         public FxLightMode FxLightMode { get; private set; } = FxLightMode.UnKnownOrMixedValue;
-        public NBShader2FeatureTier CurrentTier { get; private set; } = NBShader2FeatureTier.Ultra;
+        public NBShaderFeatureTier CurrentTier { get; private set; } = NBShaderFeatureTier.Ultra;
         public bool CurrentTierMixed { get; private set; }
 
         public bool IsKeywordAllowed(string keyword)
         {
-            if (!NBShader2FeatureCatalog.IsManagedKeyword(keyword))
+            if (!NBShaderFeatureCatalog.IsManagedKeyword(keyword))
             {
                 return true;
             }
@@ -42,7 +42,7 @@ namespace NBShaderEditor
                 return true;
             }
 
-            return NBShader2FeatureLevelProjectSettings.instance.GetAllowedKeywordSet(CurrentTier).Contains(keyword);
+            return NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSet(CurrentTier).Contains(keyword);
         }
 
         public bool AreKeywordsAllowed(params string[] keywords)
@@ -83,7 +83,7 @@ namespace NBShaderEditor
 
         public static bool IsCatalogKeyword(string keyword)
         {
-            return NBShader2FeatureCatalog.IsManagedKeyword(keyword);
+            return NBShaderFeatureCatalog.IsManagedKeyword(keyword);
         }
 
         public bool HasProperty(string propertyName)
@@ -151,7 +151,7 @@ namespace NBShaderEditor
         {
             if (!HasProperty(FeatureTierPropertyName))
             {
-                CurrentTier = NBShader2FeatureTier.Ultra;
+                CurrentTier = NBShaderFeatureTier.Ultra;
                 CurrentTierMixed = false;
                 return;
             }
@@ -159,15 +159,15 @@ namespace NBShaderEditor
             MaterialProperty tierProperty = GetProperty(FeatureTierPropertyName);
             CurrentTierMixed = tierProperty.hasMixedValue;
             CurrentTier = CurrentTierMixed
-                ? NBShader2FeatureTier.Ultra
+                ? NBShaderFeatureTier.Ultra
                 : ToFeatureTier(Mathf.RoundToInt(tierProperty.floatValue));
         }
 
-        private static NBShader2FeatureTier ToFeatureTier(int value)
+        private static NBShaderFeatureTier ToFeatureTier(int value)
         {
-            return Enum.IsDefined(typeof(NBShader2FeatureTier), value) && value >= 0
-                ? (NBShader2FeatureTier)value
-                : NBShader2FeatureTier.Ultra;
+            return Enum.IsDefined(typeof(NBShaderFeatureTier), value) && value >= 0
+                ? (NBShaderFeatureTier)value
+                : NBShaderFeatureTier.Ultra;
         }
 
         public MixedBool GetToggleState(string propertyName)

@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace NBShaders2.Editor.FeatureLevel
 {
-    public static class NBShader2FeatureLevelSettingsProvider
+    public static class NBShaderFeatureLevelSettingsProvider
     {
-        private const string SettingsPath = "Project/NB_FX/NBShader2 Feature Levels";
+        private const string SettingsPath = "Project/NB_FX/NBShader Feature Levels";
         private const float FeatureColumnWidth = 240f;
         private const float TierColumnWidth = 92f;
         private const float DescriptionColumnWidth = 230f;
@@ -18,14 +18,14 @@ namespace NBShaders2.Editor.FeatureLevel
         private const float TableMaxHeight = 640f;
         private const float TableWidth = FeatureColumnWidth + TierColumnWidth * 4f + DescriptionColumnWidth;
         private const float RowIndentWidth = 14f;
-        private const string FoldoutSessionPrefix = "NBShader2FeatureLevelSettingsProvider.Foldout.";
+        private const string FoldoutSessionPrefix = "NBShaderFeatureLevelSettingsProvider.Foldout.";
 
-        private static readonly NBShader2FeatureTier[] Tiers =
+        private static readonly NBShaderFeatureTier[] Tiers =
         {
-            NBShader2FeatureTier.Low,
-            NBShader2FeatureTier.Medium,
-            NBShader2FeatureTier.High,
-            NBShader2FeatureTier.Ultra
+            NBShaderFeatureTier.Low,
+            NBShaderFeatureTier.Medium,
+            NBShaderFeatureTier.High,
+            NBShaderFeatureTier.Ultra
         };
 
         private static readonly string[] BuildStripPolicyFallbackOptions =
@@ -42,11 +42,11 @@ namespace NBShaders2.Editor.FeatureLevel
         {
             return new SettingsProvider(SettingsPath, SettingsScope.Project)
             {
-                label = Text("featureLevel.providerLabel", "NBShader2 Feature Levels"),
+                label = Text("featureLevel.providerLabel", "NBShader Feature Levels"),
                 keywords = new[]
                 {
                     "NB_FX",
-                    "NBShader2",
+                    "NBShader",
                     "Feature",
                     "Tier",
                     "Strip",
@@ -62,7 +62,7 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static void OnGUI(string searchContext)
         {
-            var settings = NBShader2FeatureLevelProjectSettings.instance;
+            var settings = NBShaderFeatureLevelProjectSettings.instance;
             settings.EnsureInitialized();
 
             var changed = false;
@@ -70,7 +70,7 @@ namespace NBShaders2.Editor.FeatureLevel
             EditorGUILayout.HelpBox(
                 Text(
                     "featureLevel.help.message",
-                    "Configure NBShader2 managed Catalog keywords per tier, bind Unity Quality levels, and choose build-time shader variant stripping. Catalog-external keywords are ignored."),
+                    "Configure NBShader managed Catalog keywords per tier, bind Unity Quality levels, and choose build-time shader variant stripping. Catalog-external keywords are ignored."),
                 MessageType.Info);
 
             changed |= DrawBuildStripPolicy(settings);
@@ -85,7 +85,7 @@ namespace NBShaders2.Editor.FeatureLevel
                 settings.SaveProjectSettings();
         }
 
-        private static bool DrawBuildStripPolicy(NBShader2FeatureLevelProjectSettings settings)
+        private static bool DrawBuildStripPolicy(NBShaderFeatureLevelProjectSettings settings)
         {
             var options = NBShaderInspectorLocalization.GetInspectorOptions(
                 "featureLevel.buildStripPolicy",
@@ -97,19 +97,19 @@ namespace NBShaders2.Editor.FeatureLevel
                 Content(
                     "featureLevel.buildStripPolicy",
                     "Build Strip Policy",
-                    "Controls how NBShader2 Catalog keyword variants are stripped during build."),
+                    "Controls how NBShader Catalog keyword variants are stripped during build."),
                 current,
                 options);
 
             if (!EditorGUI.EndChangeCheck())
                 return false;
 
-            Undo.RecordObject(settings, Text("featureLevel.undo.changeBuildStripPolicy", "Change NBShader2 Build Strip Policy"));
-            settings.buildStripPolicy = (NBShader2BuildStripPolicy)selected;
+            Undo.RecordObject(settings, Text("featureLevel.undo.changeBuildStripPolicy", "Change NBShader Build Strip Policy"));
+            settings.buildStripPolicy = (NBShaderBuildStripPolicy)selected;
             return true;
         }
 
-        private static bool DrawFeatureLevelTable(NBShader2FeatureLevelProjectSettings settings)
+        private static bool DrawFeatureLevelTable(NBShaderFeatureLevelProjectSettings settings)
         {
             var changed = false;
 
@@ -166,7 +166,7 @@ namespace NBShaders2.Editor.FeatureLevel
             GUILayout.Label(content, EditorStyles.toolbarButton, GUILayout.Width(width), GUILayout.Height(HeaderHeight));
         }
 
-        private static void DrawQualityBindingRow(NBShader2FeatureLevelProjectSettings settings)
+        private static void DrawQualityBindingRow(NBShaderFeatureLevelProjectSettings settings)
         {
             using (new EditorGUILayout.HorizontalScope(GUILayout.Height(RowHeight)))
             {
@@ -174,7 +174,7 @@ namespace NBShaders2.Editor.FeatureLevel
                     Content(
                         "featureLevel.row.quality",
                         "Quality Binding",
-                        "Each Unity Quality Level belongs to exactly one NBShader2 tier."),
+                        "Each Unity Quality Level belongs to exactly one NBShader tier."),
                     GUILayout.Width(FeatureColumnWidth),
                     GUILayout.Height(RowHeight));
 
@@ -185,7 +185,7 @@ namespace NBShaders2.Editor.FeatureLevel
                     if (GUILayout.Button(
                             new GUIContent(
                                 summary,
-                                Text("featureLevel.quality.menuTip", "Click to move Unity Quality levels to this NBShader2 tier.")),
+                                Text("featureLevel.quality.menuTip", "Click to move Unity Quality levels to this NBShader tier.")),
                             EditorStyles.popup,
                             GUILayout.Width(TierColumnWidth),
                             GUILayout.Height(RowHeight)))
@@ -202,10 +202,10 @@ namespace NBShaders2.Editor.FeatureLevel
             }
         }
 
-        private static bool DrawBuildTargetRow(NBShader2FeatureLevelProjectSettings settings)
+        private static bool DrawBuildTargetRow(NBShaderFeatureLevelProjectSettings settings)
         {
             var changed = false;
-            var isExplicitPolicy = settings.buildStripPolicy == NBShader2BuildStripPolicy.ExplicitTier;
+            var isExplicitPolicy = settings.buildStripPolicy == NBShaderBuildStripPolicy.ExplicitTier;
 
             using (new EditorGUILayout.HorizontalScope(GUILayout.Height(RowHeight)))
             {
@@ -227,7 +227,7 @@ namespace NBShaders2.Editor.FeatureLevel
                         if (!isExplicitPolicy || !newSelected || isSelected)
                             continue;
 
-                        Undo.RecordObject(settings, Text("featureLevel.undo.changeExplicitTier", "Change NBShader2 Explicit Tier"));
+                        Undo.RecordObject(settings, Text("featureLevel.undo.changeExplicitTier", "Change NBShader Explicit Tier"));
                         settings.explicitTier = tier;
                         changed = true;
                     }
@@ -245,10 +245,10 @@ namespace NBShaders2.Editor.FeatureLevel
             return changed;
         }
 
-        private static bool DrawFeatureRows(NBShader2FeatureLevelProjectSettings settings)
+        private static bool DrawFeatureRows(NBShaderFeatureLevelProjectSettings settings)
         {
             var changed = false;
-            var rows = NBShader2FeatureLevelRowCatalog.Rows;
+            var rows = NBShaderFeatureLevelRowCatalog.Rows;
             var allowedSets = new HashSet<string>[Tiers.Length];
             for (var i = 0; i < Tiers.Length; i++)
                 allowedSets[i] = settings.GetAllowedKeywordSet(Tiers[i]);
@@ -274,7 +274,7 @@ namespace NBShaders2.Editor.FeatureLevel
                             if (newAllowed == isAllowed)
                                 continue;
 
-                            Undo.RecordObject(settings, Text("featureLevel.undo.changeKeyword", "Change NBShader2 Feature Keyword"));
+                            Undo.RecordObject(settings, Text("featureLevel.undo.changeKeyword", "Change NBShader Feature Keyword"));
                             settings.SetKeywordAllowed(tier, row.keyword, newAllowed);
                             if (newAllowed)
                                 allowedSets[tierIndex].Add(row.keyword);
@@ -299,7 +299,7 @@ namespace NBShaders2.Editor.FeatureLevel
             return changed;
         }
 
-        private static void DrawFeatureNameCell(NBShader2FeatureLevelRow row)
+        private static void DrawFeatureNameCell(NBShaderFeatureLevelRow row)
         {
             var rect = EditorGUILayout.GetControlRect(
                 false,
@@ -307,7 +307,7 @@ namespace NBShaders2.Editor.FeatureLevel
                 GUILayout.Width(FeatureColumnWidth),
                 GUILayout.Height(RowHeight));
 
-            var hasChildren = NBShader2FeatureLevelRowCatalog.HasChildren(row);
+            var hasChildren = NBShaderFeatureLevelRowCatalog.HasChildren(row);
             var indent = row.depth * RowIndentWidth;
             var foldoutRect = new Rect(rect.x + indent, rect.y, 14f, rect.height);
             var labelRect = new Rect(
@@ -328,7 +328,7 @@ namespace NBShaders2.Editor.FeatureLevel
             EditorGUI.LabelField(labelRect, GetRowContent(row), style);
         }
 
-        private static void DrawFeatureRowBackground(Rect rowRect, NBShader2FeatureLevelRow row)
+        private static void DrawFeatureRowBackground(Rect rowRect, NBShaderFeatureLevelRow row)
         {
             if (row == null || row.isKeyword || Event.current.type != EventType.Repaint)
                 return;
@@ -343,7 +343,7 @@ namespace NBShaders2.Editor.FeatureLevel
                 GUILayout.Space(TierColumnWidth);
         }
 
-        private static bool DrawButtons(NBShader2FeatureLevelProjectSettings settings)
+        private static bool DrawButtons(NBShaderFeatureLevelProjectSettings settings)
         {
             var changed = false;
 
@@ -354,7 +354,7 @@ namespace NBShaders2.Editor.FeatureLevel
                         "Reset Tier Keywords",
                         "Reset the keyword matrix to the built-in defaults.")))
                 {
-                    Undo.RecordObject(settings, Text("featureLevel.undo.resetTierKeywords", "Reset NBShader2 Tier Keywords"));
+                    Undo.RecordObject(settings, Text("featureLevel.undo.resetTierKeywords", "Reset NBShader Tier Keywords"));
                     settings.ResetTierKeywordSetsToDefault();
                     changed = true;
                 }
@@ -364,7 +364,7 @@ namespace NBShaders2.Editor.FeatureLevel
                         "Reset Quality Mapping",
                         "Reset Unity Quality bindings using the default quality-index rule.")))
                 {
-                    Undo.RecordObject(settings, Text("featureLevel.undo.resetQualityMapping", "Reset NBShader2 Quality Mapping"));
+                    Undo.RecordObject(settings, Text("featureLevel.undo.resetQualityMapping", "Reset NBShader Quality Mapping"));
                     settings.ResetQualityMappingsToDefault();
                     changed = true;
                 }
@@ -374,14 +374,14 @@ namespace NBShaders2.Editor.FeatureLevel
                         "Sync Runtime Asset",
                         "Write the current ProjectSettings data into the runtime Resources settings asset.")))
                 {
-                    NBShader2RuntimeSettingsSynchronizer.SyncFromProjectSettings();
+                    NBShaderRuntimeSettingsSynchronizer.SyncFromProjectSettings();
                 }
             }
 
             return changed;
         }
 
-        private static void ShowQualityBindingMenu(NBShader2FeatureLevelProjectSettings settings, NBShader2FeatureTier targetTier)
+        private static void ShowQualityBindingMenu(NBShaderFeatureLevelProjectSettings settings, NBShaderFeatureTier targetTier)
         {
             var menu = new GenericMenu();
             var mappings = settings.qualityTierMappings;
@@ -399,7 +399,7 @@ namespace NBShaders2.Editor.FeatureLevel
                     continue;
 
                 var qualityName = mapping.qualityName;
-                NBShader2FeatureTier currentTier;
+                NBShaderFeatureTier currentTier;
                 var isCurrentTier = settings.TryGetTierForQualityName(qualityName, out currentTier) && currentTier == targetTier;
                 if (isCurrentTier)
                 {
@@ -409,7 +409,7 @@ namespace NBShaders2.Editor.FeatureLevel
 
                 menu.AddItem(new GUIContent(qualityName), false, () =>
                 {
-                    Undo.RecordObject(settings, Text("featureLevel.undo.changeQualityBinding", "Change NBShader2 Quality Binding"));
+                    Undo.RecordObject(settings, Text("featureLevel.undo.changeQualityBinding", "Change NBShader Quality Binding"));
                     settings.MoveQualityToTier(qualityName, targetTier);
                     settings.SaveProjectSettings();
                     UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
@@ -443,7 +443,7 @@ namespace NBShaders2.Editor.FeatureLevel
             EditorGUI.DrawRect(rect, new Color(0f, 0f, 0f, 0.25f));
         }
 
-        private static string GetQualitySummary(NBShader2FeatureLevelProjectSettings settings, NBShader2FeatureTier tier)
+        private static string GetQualitySummary(NBShaderFeatureLevelProjectSettings settings, NBShaderFeatureTier tier)
         {
             var names = settings.GetQualityNamesForTier(tier);
             if (names == null || names.Length == 0)
@@ -452,7 +452,7 @@ namespace NBShaders2.Editor.FeatureLevel
             return string.Join(", ", names);
         }
 
-        private static bool IsRowVisible(NBShader2FeatureLevelRow row)
+        private static bool IsRowVisible(NBShaderFeatureLevelRow row)
         {
             var parentKey = row.parentKey;
             while (!string.IsNullOrEmpty(parentKey))
@@ -460,8 +460,8 @@ namespace NBShaders2.Editor.FeatureLevel
                 if (!IsExpanded(parentKey))
                     return false;
 
-                NBShader2FeatureLevelRow parent;
-                parentKey = NBShader2FeatureLevelRowCatalog.TryGetRow(parentKey, out parent) ? parent.parentKey : null;
+                NBShaderFeatureLevelRow parent;
+                parentKey = NBShaderFeatureLevelRowCatalog.TryGetRow(parentKey, out parent) ? parent.parentKey : null;
             }
 
             return true;
@@ -477,38 +477,38 @@ namespace NBShaders2.Editor.FeatureLevel
             SessionState.SetBool(FoldoutSessionPrefix + key, expanded);
         }
 
-        private static GUIContent GetTierContent(NBShader2FeatureTier tier)
+        private static GUIContent GetTierContent(NBShaderFeatureTier tier)
         {
             switch (tier)
             {
-                case NBShader2FeatureTier.Low:
+                case NBShaderFeatureTier.Low:
                     return NBShaderInspectorLocalization.MakeContent(
                         "inspector.toolbar.tierLow.label",
                         "Low",
                         "inspector.toolbar.tier.tip",
-                        "NBShader2 feature tier");
-                case NBShader2FeatureTier.Medium:
+                        "NBShader feature tier");
+                case NBShaderFeatureTier.Medium:
                     return NBShaderInspectorLocalization.MakeContent(
                         "inspector.toolbar.tierMedium.label",
                         "Medium",
                         "inspector.toolbar.tier.tip",
-                        "NBShader2 feature tier");
-                case NBShader2FeatureTier.High:
+                        "NBShader feature tier");
+                case NBShaderFeatureTier.High:
                     return NBShaderInspectorLocalization.MakeContent(
                         "inspector.toolbar.tierHigh.label",
                         "High",
                         "inspector.toolbar.tier.tip",
-                        "NBShader2 feature tier");
+                        "NBShader feature tier");
                 default:
                     return NBShaderInspectorLocalization.MakeContent(
                         "inspector.toolbar.tierUltra.label",
                         "Ultra",
                         "inspector.toolbar.tier.tip",
-                        "NBShader2 feature tier");
+                        "NBShader feature tier");
             }
         }
 
-        private static GUIContent GetRowContent(NBShader2FeatureLevelRow row)
+        private static GUIContent GetRowContent(NBShaderFeatureLevelRow row)
         {
             if (row.isKeyword)
                 return GetKeywordContent(row.keyword, row.labelFallback);
@@ -531,7 +531,7 @@ namespace NBShaders2.Editor.FeatureLevel
             return new GUIContent(label, string.Format(tooltipFormat, keyword));
         }
 
-        private static GUIContent GetDescriptionContent(NBShader2FeatureLevelRow row)
+        private static GUIContent GetDescriptionContent(NBShaderFeatureLevelRow row)
         {
             if (row.isKeyword)
                 return new GUIContent(row.keyword, row.keyword);

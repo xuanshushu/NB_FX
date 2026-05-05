@@ -8,22 +8,17 @@ using UnityEngine;
 namespace NBShaders2.Editor.FeatureLevel
 {
     [InitializeOnLoad]
-    public static class NBShader2RuntimeSettingsSynchronizer
+    public static class NBShaderRuntimeSettingsSynchronizer
     {
-        public const string RuntimeSettingsAssetPath = "Assets/NBShaders2/Runtime/Resources/NBShader2FeatureRuntimeSettings.asset";
+        public const string RuntimeSettingsAssetPath = "Assets/NBShaders2/Runtime/Resources/NBShaderFeatureRuntimeSettings.asset";
 
         private static readonly string[] RuntimeTypeNames =
         {
-            // Current runtime worker API assumption. Resources.Load path is NBShader2FeatureRuntimeSettings.
-            "NBShader.NBShader2FeatureRuntimeSettings, com.xuanxuan.nb.shaders2",
-            // Forward-compatible fallbacks if the runtime type is renamed during integration.
-            "NBShader2FeatureRuntimeSettings, com.xuanxuan.nb.shaders2",
-            "NBShaders2.NBShader2FeatureRuntimeSettings, com.xuanxuan.nb.shaders2",
-            "NBShader2FeatureLevelRuntimeSettings, com.xuanxuan.nb.shaders2",
-            "NBShaders2.NBShader2FeatureLevelRuntimeSettings, com.xuanxuan.nb.shaders2",
+            // Current runtime worker API assumption. Resources.Load path is NBShaderFeatureRuntimeSettings.
+            "NBShader.NBShaderFeatureRuntimeSettings, com.xuanxuan.nb.shaders2",
         };
 
-        static NBShader2RuntimeSettingsSynchronizer()
+        static NBShaderRuntimeSettingsSynchronizer()
         {
             EditorApplication.delayCall += SyncFromProjectSettingsIfRuntimeTypeExists;
         }
@@ -33,13 +28,13 @@ namespace NBShaders2.Editor.FeatureLevel
             var runtimeType = FindRuntimeSettingsType();
             if (runtimeType == null)
             {
-                Debug.Log("NBShader2 feature level runtime settings type was not found yet; Project Settings were saved and will sync after runtime type lands.");
+                Debug.Log("NBShader feature level runtime settings type was not found yet; Project Settings were saved and will sync after runtime type lands.");
                 return false;
             }
 
             if (!typeof(ScriptableObject).IsAssignableFrom(runtimeType))
             {
-                Debug.LogWarning("NBShader2 feature level runtime settings type must derive from ScriptableObject: " + runtimeType.FullName);
+                Debug.LogWarning("NBShader feature level runtime settings type must derive from ScriptableObject: " + runtimeType.FullName);
                 return false;
             }
 
@@ -65,7 +60,7 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static void ApplyProjectSettingsToRuntimeObject(ScriptableObject asset)
         {
-            var settings = NBShader2FeatureLevelProjectSettings.instance;
+            var settings = NBShaderFeatureLevelProjectSettings.instance;
             settings.EnsureInitialized();
             var type = asset.GetType();
 
@@ -74,10 +69,10 @@ namespace NBShaders2.Editor.FeatureLevel
             SetMember(type, asset, "explicitTier", (int)settings.explicitTier);
             SetMember(type, asset, "ExplicitTier", (int)settings.explicitTier);
 
-            SetMember(type, asset, "lowAllowedKeywords", settings.GetAllowedKeywordSet(NBShader2FeatureTier.Low));
-            SetMember(type, asset, "mediumAllowedKeywords", settings.GetAllowedKeywordSet(NBShader2FeatureTier.Medium));
-            SetMember(type, asset, "highAllowedKeywords", settings.GetAllowedKeywordSet(NBShader2FeatureTier.High));
-            SetMember(type, asset, "ultraAllowedKeywords", settings.GetAllowedKeywordSet(NBShader2FeatureTier.Ultra));
+            SetMember(type, asset, "lowAllowedKeywords", settings.GetAllowedKeywordSet(NBShaderFeatureTier.Low));
+            SetMember(type, asset, "mediumAllowedKeywords", settings.GetAllowedKeywordSet(NBShaderFeatureTier.Medium));
+            SetMember(type, asset, "highAllowedKeywords", settings.GetAllowedKeywordSet(NBShaderFeatureTier.High));
+            SetMember(type, asset, "ultraAllowedKeywords", settings.GetAllowedKeywordSet(NBShaderFeatureTier.Ultra));
 
             SetMember(type, asset, "tierKeywordSets", settings.tierKeywordSets);
             SetMember(type, asset, "TierKeywordSets", settings.tierKeywordSets);
@@ -88,7 +83,7 @@ namespace NBShaders2.Editor.FeatureLevel
             if (method != null)
             {
                 var parameters = method.GetParameters();
-                if (parameters.Length == 1 && parameters[0].ParameterType == typeof(NBShader2FeatureLevelProjectSettings))
+                if (parameters.Length == 1 && parameters[0].ParameterType == typeof(NBShaderFeatureLevelProjectSettings))
                     method.Invoke(asset, new object[] { settings });
             }
         }
@@ -134,9 +129,9 @@ namespace NBShaders2.Editor.FeatureLevel
                     return true;
                 }
 
-                if (destinationType.IsArray && destinationType.GetElementType() != null && value is NBShader2QualityTierMapping[])
+                if (destinationType.IsArray && destinationType.GetElementType() != null && value is NBShaderQualityTierMapping[])
                 {
-                    var converted = ConvertQualityMappings(destinationType.GetElementType(), (NBShader2QualityTierMapping[])value);
+                    var converted = ConvertQualityMappings(destinationType.GetElementType(), (NBShaderQualityTierMapping[])value);
                     if (converted != null)
                     {
                         setter(converted);
@@ -158,12 +153,12 @@ namespace NBShaders2.Editor.FeatureLevel
             }
             catch (Exception ex)
             {
-                Debug.LogWarning("Failed to sync NBShader2 runtime setting: " + ex.Message);
+                Debug.LogWarning("Failed to sync NBShader runtime setting: " + ex.Message);
             }
             return false;
         }
 
-        private static Array ConvertQualityMappings(Type elementType, NBShader2QualityTierMapping[] source)
+        private static Array ConvertQualityMappings(Type elementType, NBShaderQualityTierMapping[] source)
         {
             if (elementType == null || source == null)
                 return null;
@@ -175,8 +170,8 @@ namespace NBShaders2.Editor.FeatureLevel
                 var item = Activator.CreateInstance(elementType);
                 SetMember(elementType, item, "qualityName", src != null ? src.qualityName : string.Empty);
                 SetMember(elementType, item, "QualityName", src != null ? src.qualityName : string.Empty);
-                SetMember(elementType, item, "tier", src != null ? (int)src.tier : (int)NBShader2FeatureTier.Ultra);
-                SetMember(elementType, item, "Tier", src != null ? (int)src.tier : (int)NBShader2FeatureTier.Ultra);
+                SetMember(elementType, item, "tier", src != null ? (int)src.tier : (int)NBShaderFeatureTier.Ultra);
+                SetMember(elementType, item, "Tier", src != null ? (int)src.tier : (int)NBShaderFeatureTier.Ultra);
                 result.SetValue(item, i);
             }
             return result;

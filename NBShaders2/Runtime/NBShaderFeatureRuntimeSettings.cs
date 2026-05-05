@@ -5,19 +5,19 @@ using UnityEngine;
 namespace NBShader
 {
     /// <summary>
-    /// Runtime settings for NBShader2 feature tiering. Store one asset named
-    /// "NBShader2FeatureRuntimeSettings" in a Resources folder so runtime code can load it.
-    /// If the asset cannot be loaded, <see cref="NBShader2FeatureRuntime"/> falls back to Ultra with all
+    /// Runtime settings for NBShader feature tiering. Store one asset named
+    /// "NBShaderFeatureRuntimeSettings" in a Resources folder so runtime code can load it.
+    /// If the asset cannot be loaded, <see cref="NBShaderFeatureRuntime"/> falls back to Ultra with all
     /// catalog keywords allowed.
     /// </summary>
-    [CreateAssetMenu(fileName = NBShader2FeatureCatalog.RuntimeSettingsResourcePath, menuName = "NBShader2/Feature Runtime Settings")]
-    public sealed class NBShader2FeatureRuntimeSettings : ScriptableObject
+    [CreateAssetMenu(fileName = NBShaderFeatureCatalog.RuntimeSettingsResourcePath, menuName = "NBShader/Feature Runtime Settings")]
+    public sealed class NBShaderFeatureRuntimeSettings : ScriptableObject
     {
         [Serializable]
         public sealed class QualityTierMapping
         {
             public string qualityName;
-            public NBShader2FeatureTier tier = NBShader2FeatureTier.Ultra;
+            public NBShaderFeatureTier tier = NBShaderFeatureTier.Ultra;
         }
 
         [Header("Allowed Raw Shader Feature Keywords")]
@@ -29,24 +29,24 @@ namespace NBShader
         [Header("QualitySettings Name To Tier")]
         public QualityTierMapping[] qualityTierMappings = new QualityTierMapping[0];
 
-        public string[] GetAllowedKeywords(NBShader2FeatureTier tier)
+        public string[] GetAllowedKeywords(NBShaderFeatureTier tier)
         {
             switch (tier)
             {
-                case NBShader2FeatureTier.Low:
-                    return lowAllowedKeywords ?? NBShader2FeatureCatalog.RawKeywords;
-                case NBShader2FeatureTier.Medium:
-                    return mediumAllowedKeywords ?? NBShader2FeatureCatalog.RawKeywords;
-                case NBShader2FeatureTier.High:
-                    return highAllowedKeywords ?? NBShader2FeatureCatalog.RawKeywords;
+                case NBShaderFeatureTier.Low:
+                    return lowAllowedKeywords ?? NBShaderFeatureCatalog.RawKeywords;
+                case NBShaderFeatureTier.Medium:
+                    return mediumAllowedKeywords ?? NBShaderFeatureCatalog.RawKeywords;
+                case NBShaderFeatureTier.High:
+                    return highAllowedKeywords ?? NBShaderFeatureCatalog.RawKeywords;
                 default:
-                    return ultraAllowedKeywords ?? NBShader2FeatureCatalog.RawKeywords;
+                    return ultraAllowedKeywords ?? NBShaderFeatureCatalog.RawKeywords;
             }
         }
 
-        public bool TryGetTierForQualityName(string qualityName, out NBShader2FeatureTier tier)
+        public bool TryGetTierForQualityName(string qualityName, out NBShaderFeatureTier tier)
         {
-            tier = NBShader2FeatureTier.Ultra;
+            tier = NBShaderFeatureTier.Ultra;
             if (string.IsNullOrEmpty(qualityName) || qualityTierMappings == null)
             {
                 return false;
@@ -65,14 +65,14 @@ namespace NBShader
             return false;
         }
 
-        internal HashSet<string> BuildAllowedSet(NBShader2FeatureTier tier)
+        internal HashSet<string> BuildAllowedSet(NBShaderFeatureTier tier)
         {
             string[] keywords = GetAllowedKeywords(tier);
             HashSet<string> allowed = new HashSet<string>();
             for (int i = 0; i < keywords.Length; i++)
             {
                 string keyword = keywords[i];
-                if (NBShader2FeatureCatalog.IsManagedKeyword(keyword))
+                if (NBShaderFeatureCatalog.IsManagedKeyword(keyword))
                 {
                     allowed.Add(keyword);
                 }
@@ -83,7 +83,7 @@ namespace NBShader
 
         private static string[] CloneCatalogKeywords()
         {
-            return (string[])NBShader2FeatureCatalog.RawKeywords.Clone();
+            return (string[])NBShaderFeatureCatalog.RawKeywords.Clone();
         }
     }
 }

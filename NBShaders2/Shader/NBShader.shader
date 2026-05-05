@@ -1,5 +1,5 @@
-Shader "Effects/NBShader2"
-//Shader "Effects/NBShader2开发中"
+Shader "Effects/NBShader"
+//Shader "Effects/NBShader开发中"
 {
     Properties
     {
@@ -9,7 +9,7 @@ Shader "Effects/NBShader2"
     	_LightBigBlockItemFoldOut("_LightBigBlockItemFoldOut",Float) = 0
     	_FeatureBigBlockItemFoldOut("_FeatureBigBlockItemFoldOut",Float) = 0
         _TABigBlockItemFoldOut("_TABigBlockItemFoldOut",Float) = 0
-        [HideInInspector] _NBShader2FeatureTier("NBShader2 Feature Tier", Float) = 3
+        [HideInInspector] _NBShaderFeatureTier("NBShader Feature Tier", Float) = 3
         _BaseColorAdjustmentFoldOut("_BaseColorAdjustmentFoldOut",Float) = 0
         _HueShiftFoldOut("_HueShiftFoldOut",Float) = 0
         _SaturabilityFoldOut("_SaturabilityFoldOut",Float) = 0

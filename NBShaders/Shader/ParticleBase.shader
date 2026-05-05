@@ -1,4 +1,4 @@
-﻿Shader "Effects/NBShader"
+﻿Shader "Effects/NBShader(Legacy)"
 {
     Properties
     {

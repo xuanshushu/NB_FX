@@ -85,7 +85,7 @@ NBShader-specific labels should be passed into shared items through `GUIContent`
 
 ## Localization Rules
 
-NBShader2 Inspector user-facing text must go through `NBShaderInspectorLocalization`.
+NBShader Inspector user-facing text must go through `NBShaderInspectorLocalization`.
 
 - Use CSV keys in `NBShaders2/Editor/Localization/NBShaderInspectorLocalization.csv`.
 - CSV format is `key,zh-CN,en-US,zh-CN-tip,en-US-tip`.
@@ -115,7 +115,7 @@ Code conventions:
 - HelpBox/message strings should call `NBShaderInspectorLocalization.GetInspectorText(key, fallback)`.
 - Popup options should call `NBShaderInspectorLocalization.GetInspectorOptions(key, fallbackArray)` or update `PopUpNames` from an options provider.
 - Shared `XuanXuanRenderUtility/Editor/ShaderGUIItems` must not reference `NBShaderInspectorLocalization`.
-- Shared items that draw visible labels should expose `GUIContent` providers; NBShader2 call sites provide localized content.
+- Shared items that draw visible labels should expose `GUIContent` providers; NBShader call sites provide localized content.
 - Technical identifiers stay untranslated unless they are deliberately shown as UI copy: shader property names, keyword names, pass names, enum protocol values, render queue numbers, and stencil config keys remain stable.
 
 ## NBShaders2 Item Rules

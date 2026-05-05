@@ -6,7 +6,7 @@ namespace NBShaderEditor
     [InitializeOnLoad]
     internal static class NBShaderInspectorLocalization
     {
-        internal const string TableName = "NBShader2";
+        internal const string TableName = "NBShader";
 
         private const string CsvAssetPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Editor/Localization/NBShaderInspectorLocalization.csv";
 

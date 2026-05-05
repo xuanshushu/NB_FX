@@ -3,24 +3,24 @@ using System.Collections.Generic;
 namespace NBShader
 {
     /// <summary>
-    /// Hard-coded catalog of raw shader feature keywords managed by the NBShader2 runtime tier system.
-    /// Keywords not listed here are never changed by <see cref="NBShader2FeatureRuntime"/>.
+    /// Hard-coded catalog of raw shader feature keywords managed by the NBShader runtime tier system.
+    /// Keywords not listed here are never changed by <see cref="NBShaderFeatureRuntime"/>.
     /// </summary>
-    public static class NBShader2FeatureCatalog
+    public static class NBShaderFeatureCatalog
     {
         /// <summary>
-        /// Shader name used by NBShader2 materials.
+        /// Shader name used by NBShader materials.
         /// </summary>
-        public const string ShaderName = "Effects/NBShader2";
+        public const string ShaderName = "Effects/NBShader";
 
         /// <summary>
-        /// Resources path used to load <see cref="NBShader2FeatureRuntimeSettings"/>.
-        /// Place the asset at any Resources folder as "NBShader2FeatureRuntimeSettings.asset".
+        /// Resources path used to load <see cref="NBShaderFeatureRuntimeSettings"/>.
+        /// Place the asset at any Resources folder as "NBShaderFeatureRuntimeSettings.asset".
         /// </summary>
-        public const string RuntimeSettingsResourcePath = "NBShader2FeatureRuntimeSettings";
+        public const string RuntimeSettingsResourcePath = "NBShaderFeatureRuntimeSettings";
 
         /// <summary>
-        /// Raw shader_feature keywords currently managed by NBShader2 tiering. The '_' placeholder and
+        /// Raw shader_feature keywords currently managed by NBShader tiering. The '_' placeholder and
         /// multi_compile keywords are intentionally excluded.
         /// </summary>
         public static readonly string[] RawKeywords =
@@ -84,7 +84,7 @@ namespace NBShader
         internal static readonly HashSet<string> RawKeywordSet = new HashSet<string>(RawKeywords);
 
         /// <summary>
-        /// Returns true when the keyword is explicitly managed by the NBShader2 feature tier system.
+        /// Returns true when the keyword is explicitly managed by the NBShader feature tier system.
         /// Catalog-external keywords must be ignored by tier application and build stripping.
         /// </summary>
         public static bool IsManagedKeyword(string keyword)

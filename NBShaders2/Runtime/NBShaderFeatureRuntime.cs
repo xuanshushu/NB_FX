@@ -4,16 +4,16 @@ using UnityEngine;
 namespace NBShader
 {
     /// <summary>
-    /// Runtime API for applying NBShader2 feature tiers to materials.
+    /// Runtime API for applying NBShader feature tiers to materials.
     /// </summary>
-    public static class NBShader2FeatureRuntime
+    public static class NBShaderFeatureRuntime
     {
-        private static NBShader2FeatureRuntimeSettings s_Settings;
+        private static NBShaderFeatureRuntimeSettings s_Settings;
         private static bool s_SettingsLoaded;
 
         /// <summary>
-        /// Applies an NBShader2 feature tier to one material in place. Only materials whose shader name is
-        /// "Effects/NBShader2" are processed. The method disables Catalog keywords that are not allowed by
+        /// Applies an NBShader feature tier to one material in place. Only materials whose shader name is
+        /// "Effects/NBShader" are processed. The method disables Catalog keywords that are not allowed by
         /// the target tier; Catalog-external keywords are left unchanged.
         /// </summary>
         /// <param name="material">Material to process. Null materials are ignored.</param>
@@ -25,15 +25,15 @@ namespace NBShader
         /// If lower-tier shader variants have been stripped from the build, call this API before the material is
         /// used for rendering. Otherwise Unity can request a missing variant and select a similar available variant.
         /// </remarks>
-        public static void ApplyTier(Material material, NBShader2FeatureTier? tier = null)
+        public static void ApplyTier(Material material, NBShaderFeatureTier? tier = null)
         {
-            if (!IsNBShader2Material(material))
+            if (!IsNBShaderMaterial(material))
             {
                 return;
             }
 
-            NBShader2FeatureRuntimeSettings settings = GetSettings();
-            NBShader2FeatureTier resolvedTier = tier.HasValue ? tier.Value : ResolveTierFromQuality(settings);
+            NBShaderFeatureRuntimeSettings settings = GetSettings();
+            NBShaderFeatureTier resolvedTier = tier.HasValue ? tier.Value : ResolveTierFromQuality(settings);
             HashSet<string> allowed = settings != null
                 ? settings.BuildAllowedSet(resolvedTier)
                 : BuildAllowAllCatalogKeywordSet();
@@ -47,7 +47,7 @@ namespace NBShader
             for (int i = 0; i < materialKeywords.Length; i++)
             {
                 string keyword = materialKeywords[i];
-                if (NBShader2FeatureCatalog.IsManagedKeyword(keyword) && !allowed.Contains(keyword))
+                if (NBShaderFeatureCatalog.IsManagedKeyword(keyword) && !allowed.Contains(keyword))
                 {
                     material.DisableKeyword(keyword);
                 }
@@ -55,8 +55,8 @@ namespace NBShader
         }
 
         /// <summary>
-        /// Applies an NBShader2 feature tier to multiple materials in place. Only materials whose shader name is
-        /// "Effects/NBShader2" are processed. Catalog-external keywords are left unchanged.
+        /// Applies an NBShader feature tier to multiple materials in place. Only materials whose shader name is
+        /// "Effects/NBShader" are processed. Catalog-external keywords are left unchanged.
         /// </summary>
         /// <param name="materials">Materials to process. Null collections and null entries are ignored.</param>
         /// <param name="tier">
@@ -67,7 +67,7 @@ namespace NBShader
         /// If lower-tier shader variants have been stripped from the build, call this API before the materials are
         /// used for rendering. Otherwise Unity can request a missing variant and select a similar available variant.
         /// </remarks>
-        public static void ApplyTier(IEnumerable<Material> materials, NBShader2FeatureTier? tier = null)
+        public static void ApplyTier(IEnumerable<Material> materials, NBShaderFeatureTier? tier = null)
         {
             if (materials == null)
             {
@@ -80,34 +80,34 @@ namespace NBShader
             }
         }
 
-        private static bool IsNBShader2Material(Material material)
+        private static bool IsNBShaderMaterial(Material material)
         {
             return material != null
                 && material.shader != null
-                && material.shader.name == NBShader2FeatureCatalog.ShaderName;
+                && material.shader.name == NBShaderFeatureCatalog.ShaderName;
         }
 
-        private static NBShader2FeatureRuntimeSettings GetSettings()
+        private static NBShaderFeatureRuntimeSettings GetSettings()
         {
             if (!s_SettingsLoaded)
             {
-                s_Settings = Resources.Load<NBShader2FeatureRuntimeSettings>(NBShader2FeatureCatalog.RuntimeSettingsResourcePath);
+                s_Settings = Resources.Load<NBShaderFeatureRuntimeSettings>(NBShaderFeatureCatalog.RuntimeSettingsResourcePath);
                 s_SettingsLoaded = true;
             }
 
             return s_Settings;
         }
 
-        private static NBShader2FeatureTier ResolveTierFromQuality(NBShader2FeatureRuntimeSettings settings)
+        private static NBShaderFeatureTier ResolveTierFromQuality(NBShaderFeatureRuntimeSettings settings)
         {
             if (settings == null)
             {
-                return NBShader2FeatureTier.Ultra;
+                return NBShaderFeatureTier.Ultra;
             }
 
             string qualityName = GetCurrentQualityName();
-            NBShader2FeatureTier tier;
-            return settings.TryGetTierForQualityName(qualityName, out tier) ? tier : NBShader2FeatureTier.Ultra;
+            NBShaderFeatureTier tier;
+            return settings.TryGetTierForQualityName(qualityName, out tier) ? tier : NBShaderFeatureTier.Ultra;
         }
 
         private static string GetCurrentQualityName()
@@ -124,7 +124,7 @@ namespace NBShader
 
         private static HashSet<string> BuildAllowAllCatalogKeywordSet()
         {
-            return new HashSet<string>(NBShader2FeatureCatalog.RawKeywords);
+            return new HashSet<string>(NBShaderFeatureCatalog.RawKeywords);
         }
     }
 }

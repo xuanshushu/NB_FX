@@ -51,7 +51,7 @@ namespace NBShaderEditor
                     "NB_FX",
                     "Language",
                     "语言",
-                    "NBShader2"
+                    "NBShader"
                 }
             };
 

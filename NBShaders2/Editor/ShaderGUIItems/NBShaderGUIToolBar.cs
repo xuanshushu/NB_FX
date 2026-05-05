@@ -10,7 +10,7 @@ namespace NBShaderEditor
     {
         private const float ButtonWidth = 30f;
         private const float TierButtonWidth = 105f;
-        private const string FeatureTierPropertyName = "_NBShader2FeatureTier";
+        private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
         private const string HelpUrl = "https://owejt9diz2c.feishu.cn/wiki/BHz8wHHSjiYJagk7WrmcAcconlb?from=from_copylink";
 
         private readonly NBShaderRootItem _rootItem;
@@ -140,53 +140,53 @@ namespace NBShaderEditor
             string label = _rootItem.Context != null && _rootItem.Context.CurrentTierMixed
                 ? Label("tierMixed", "Tier: Mixed")
                 : string.Format(Label("tierFormat", "Tier: {0}"), GetTierLabel(CurrentTier));
-            return new GUIContent(label, Tip("tier", "NBShader2 feature tier"));
+            return new GUIContent(label, Tip("tier", "NBShader feature tier"));
         }
 
-        private NBShader2FeatureTier CurrentTier
+        private NBShaderFeatureTier CurrentTier
         {
             get
             {
-                return _rootItem.Context != null ? _rootItem.Context.CurrentTier : NBShader2FeatureTier.Ultra;
+                return _rootItem.Context != null ? _rootItem.Context.CurrentTier : NBShaderFeatureTier.Ultra;
             }
         }
 
         private void ShowTierPopupMenu()
         {
             GenericMenu menu = new GenericMenu();
-            AddTierMenuItem(menu, NBShader2FeatureTier.Low);
-            AddTierMenuItem(menu, NBShader2FeatureTier.Medium);
-            AddTierMenuItem(menu, NBShader2FeatureTier.High);
-            AddTierMenuItem(menu, NBShader2FeatureTier.Ultra);
+            AddTierMenuItem(menu, NBShaderFeatureTier.Low);
+            AddTierMenuItem(menu, NBShaderFeatureTier.Medium);
+            AddTierMenuItem(menu, NBShaderFeatureTier.High);
+            AddTierMenuItem(menu, NBShaderFeatureTier.Ultra);
             menu.DropDown(new Rect(Event.current.mousePosition, Vector2.zero));
         }
 
-        private void AddTierMenuItem(GenericMenu menu, NBShader2FeatureTier tier)
+        private void AddTierMenuItem(GenericMenu menu, NBShaderFeatureTier tier)
         {
             bool isChecked = (_rootItem.Context == null || !_rootItem.Context.CurrentTierMixed) && CurrentTier == tier;
             menu.AddItem(new GUIContent(GetTierLabel(tier)), isChecked, () => SetFeatureTier(tier));
         }
 
-        private static string GetTierLabel(NBShader2FeatureTier tier)
+        private static string GetTierLabel(NBShaderFeatureTier tier)
         {
             switch (tier)
             {
-                case NBShader2FeatureTier.Low:
+                case NBShaderFeatureTier.Low:
                     return Label("tierLow", "Low");
-                case NBShader2FeatureTier.Medium:
+                case NBShaderFeatureTier.Medium:
                     return Label("tierMedium", "Medium");
-                case NBShader2FeatureTier.High:
+                case NBShaderFeatureTier.High:
                     return Label("tierHigh", "High");
-                case NBShader2FeatureTier.Ultra:
+                case NBShaderFeatureTier.Ultra:
                     return Label("tierUltra", "Ultra");
                 default:
                     return tier.ToString();
             }
         }
 
-        private void SetFeatureTier(NBShader2FeatureTier tier)
+        private void SetFeatureTier(NBShaderFeatureTier tier)
         {
-            RecordAllMaterials(UndoText("setTier", "Set NBShader2 Feature Tier"));
+            RecordAllMaterials(UndoText("setTier", "Set NBShader Feature Tier"));
 
             if (_rootItem.PropertyInfoDic.TryGetValue(FeatureTierPropertyName, out ShaderPropertyInfo info))
             {
@@ -206,14 +206,14 @@ namespace NBShaderEditor
             FinishMaterialMutation();
         }
 
-        private static void ApplyFeatureTierRuntime(Material material, NBShader2FeatureTier tier)
+        private static void ApplyFeatureTierRuntime(Material material, NBShaderFeatureTier tier)
         {
             if (material == null)
             {
                 return;
             }
 
-            NBShader2FeatureRuntime.ApplyTier(material, tier);
+            NBShaderFeatureRuntime.ApplyTier(material, tier);
         }
 
         private void ShowResetPopupMenu()

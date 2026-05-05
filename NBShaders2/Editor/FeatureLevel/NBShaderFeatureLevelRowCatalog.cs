@@ -2,23 +2,23 @@ using System.Collections.Generic;
 
 namespace NBShaders2.Editor.FeatureLevel
 {
-    internal enum NBShader2FeatureLevelRowKind
+    internal enum NBShaderFeatureLevelRowKind
     {
         Group,
         Keyword
     }
 
-    internal sealed class NBShader2FeatureLevelRow
+    internal sealed class NBShaderFeatureLevelRow
     {
-        public readonly NBShader2FeatureLevelRowKind kind;
+        public readonly NBShaderFeatureLevelRowKind kind;
         public readonly string key;
         public readonly string parentKey;
         public readonly string keyword;
         public readonly string labelFallback;
         public readonly int depth;
 
-        public NBShader2FeatureLevelRow(
-            NBShader2FeatureLevelRowKind kind,
+        public NBShaderFeatureLevelRow(
+            NBShaderFeatureLevelRowKind kind,
             string key,
             string parentKey,
             string keyword,
@@ -35,13 +35,13 @@ namespace NBShaders2.Editor.FeatureLevel
 
         public bool isKeyword
         {
-            get { return kind == NBShader2FeatureLevelRowKind.Keyword; }
+            get { return kind == NBShaderFeatureLevelRowKind.Keyword; }
         }
     }
 
-    internal static class NBShader2FeatureLevelRowCatalog
+    internal static class NBShaderFeatureLevelRowCatalog
     {
-        public static readonly NBShader2FeatureLevelRow[] Rows =
+        public static readonly NBShaderFeatureLevelRow[] Rows =
         {
             Group("mode", null, "Mode", 0),
             Group("transparent", "mode", "Transparent Mode", 1),
@@ -117,26 +117,26 @@ namespace NBShaders2.Editor.FeatureLevel
         };
 
         private static readonly HashSet<string> ParentKeys = BuildParentKeys();
-        private static readonly Dictionary<string, NBShader2FeatureLevelRow> RowsByKey = BuildRowsByKey();
+        private static readonly Dictionary<string, NBShaderFeatureLevelRow> RowsByKey = BuildRowsByKey();
 
-        public static bool HasChildren(NBShader2FeatureLevelRow row)
+        public static bool HasChildren(NBShaderFeatureLevelRow row)
         {
             return row != null && ParentKeys.Contains(row.key);
         }
 
-        public static bool TryGetRow(string key, out NBShader2FeatureLevelRow row)
+        public static bool TryGetRow(string key, out NBShaderFeatureLevelRow row)
         {
             return RowsByKey.TryGetValue(key, out row);
         }
 
-        private static NBShader2FeatureLevelRow Group(string key, string parentKey, string labelFallback, int depth)
+        private static NBShaderFeatureLevelRow Group(string key, string parentKey, string labelFallback, int depth)
         {
-            return new NBShader2FeatureLevelRow(NBShader2FeatureLevelRowKind.Group, key, parentKey, null, labelFallback, depth);
+            return new NBShaderFeatureLevelRow(NBShaderFeatureLevelRowKind.Group, key, parentKey, null, labelFallback, depth);
         }
 
-        private static NBShader2FeatureLevelRow Keyword(string keyword, string parentKey, string labelFallback, int depth)
+        private static NBShaderFeatureLevelRow Keyword(string keyword, string parentKey, string labelFallback, int depth)
         {
-            return new NBShader2FeatureLevelRow(NBShader2FeatureLevelRowKind.Keyword, keyword, parentKey, keyword, labelFallback, depth);
+            return new NBShaderFeatureLevelRow(NBShaderFeatureLevelRowKind.Keyword, keyword, parentKey, keyword, labelFallback, depth);
         }
 
         private static HashSet<string> BuildParentKeys()
@@ -151,9 +151,9 @@ namespace NBShaders2.Editor.FeatureLevel
             return result;
         }
 
-        private static Dictionary<string, NBShader2FeatureLevelRow> BuildRowsByKey()
+        private static Dictionary<string, NBShaderFeatureLevelRow> BuildRowsByKey()
         {
-            var result = new Dictionary<string, NBShader2FeatureLevelRow>();
+            var result = new Dictionary<string, NBShaderFeatureLevelRow>();
             for (var i = 0; i < Rows.Length; i++)
                 result[Rows[i].key] = Rows[i];
             return result;

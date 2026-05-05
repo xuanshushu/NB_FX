@@ -6,8 +6,8 @@ namespace NBShader
     [ExecuteAlways]
     public class NBShaderSpriteHelper : MonoBehaviour
     {
-        private const string ParticleBaseShaderName = "Effects/NBShader";
-        private const string NBShader2ShaderName = "Effects/NBShader2";
+        private const string NBShaderName = "Effects/NBShader";
+        private const string LegacyShaderName = "Effects/NBShader(Legacy)";
 
         public Sprite sprite;
 
@@ -93,7 +93,7 @@ namespace NBShader
 
         private static bool IsSupportedShader(Shader shader)
         {
-            return shader && (shader.name == ParticleBaseShaderName || shader.name == NBShader2ShaderName);
+            return shader && (shader.name == NBShaderName || shader.name == LegacyShaderName);
         }
     }
 }

@@ -6,18 +6,18 @@ using UnityEngine;
 
 namespace NBShaders2.Editor.FeatureLevel
 {
-    [CreateAssetMenu(fileName = "NBShader2DefaultFeatureLevels", menuName = "NBShader2/Feature Level Preset")]
-    public sealed class NBShader2FeatureLevelPreset : ScriptableObject
+    [CreateAssetMenu(fileName = "NBShaderDefaultFeatureLevels", menuName = "NBShader/Feature Level Preset")]
+    public sealed class NBShaderFeatureLevelPreset : ScriptableObject
     {
-        [SerializeField] private NBShader2FeatureTierKeywordSet[] m_TierKeywordSets = new NBShader2FeatureTierKeywordSet[0];
+        [SerializeField] private NBShaderFeatureTierKeywordSet[] m_TierKeywordSets = new NBShaderFeatureTierKeywordSet[0];
 
-        public NBShader2FeatureTierKeywordSet[] CreateTierKeywordSets()
+        public NBShaderFeatureTierKeywordSet[] CreateTierKeywordSets()
         {
-            var result = new NBShader2FeatureTierKeywordSet[4];
+            var result = new NBShaderFeatureTierKeywordSet[4];
             for (var i = 0; i < result.Length; i++)
             {
-                var tier = (NBShader2FeatureTier)i;
-                result[i] = new NBShader2FeatureTierKeywordSet
+                var tier = (NBShaderFeatureTier)i;
+                result[i] = new NBShaderFeatureTierKeywordSet
                 {
                     tier = tier,
                     allowedKeywords = GetAllowedKeywords(tier)
@@ -27,7 +27,7 @@ namespace NBShaders2.Editor.FeatureLevel
             return result;
         }
 
-        public string[] GetAllowedKeywords(NBShader2FeatureTier tier)
+        public string[] GetAllowedKeywords(NBShaderFeatureTier tier)
         {
             if (m_TierKeywordSets == null)
                 return new string[0];
@@ -51,12 +51,12 @@ namespace NBShaders2.Editor.FeatureLevel
             for (var i = 0; i < keywords.Length; i++)
             {
                 var keyword = keywords[i];
-                if (NBShader2FeatureLevelCatalog.IsManagedKeyword(keyword))
+                if (NBShaderFeatureLevelCatalog.IsManagedKeyword(keyword))
                     allowed.Add(keyword);
             }
 
             var result = new List<string>();
-            var catalog = NBShader2FeatureLevelCatalog.ManagedKeywords;
+            var catalog = NBShaderFeatureLevelCatalog.ManagedKeywords;
             for (var i = 0; i < catalog.Length; i++)
             {
                 if (allowed.Contains(catalog[i]))
@@ -67,25 +67,25 @@ namespace NBShaders2.Editor.FeatureLevel
         }
     }
 
-    internal static class NBShader2FeatureLevelPresetLoader
+    internal static class NBShaderFeatureLevelPresetLoader
     {
         public const string DefaultPresetAssetPath =
-            "Packages/com.xuanxuan.nb.fx/NBShaders2/Editor/FeatureLevel/LevelAssets/NBShader2DefaultFeatureLevels.asset";
+            "Packages/com.xuanxuan.nb.fx/NBShaders2/Editor/FeatureLevel/LevelAssets/NBShaderDefaultFeatureLevels.asset";
 
-        public static NBShader2FeatureTierKeywordSet[] LoadDefaultTierKeywordSets()
+        public static NBShaderFeatureTierKeywordSet[] LoadDefaultTierKeywordSets()
         {
-            var preset = AssetDatabase.LoadAssetAtPath<NBShader2FeatureLevelPreset>(DefaultPresetAssetPath);
+            var preset = AssetDatabase.LoadAssetAtPath<NBShaderFeatureLevelPreset>(DefaultPresetAssetPath);
             if (preset != null)
                 return preset.CreateTierKeywordSets();
 
             Debug.LogWarning(
-                "NBShader2 default feature level preset was not found at " +
+                "NBShader default feature level preset was not found at " +
                 DefaultPresetAssetPath +
                 ". Falling back to allowing all Catalog keywords for every tier.");
             return CreateAllowAllTierKeywordSets();
         }
 
-        public static string[] LoadDefaultAllowedKeywords(NBShader2FeatureTier tier)
+        public static string[] LoadDefaultAllowedKeywords(NBShaderFeatureTier tier)
         {
             var sets = LoadDefaultTierKeywordSets();
             for (var i = 0; i < sets.Length; i++)
@@ -98,15 +98,15 @@ namespace NBShaders2.Editor.FeatureLevel
             return new string[0];
         }
 
-        private static NBShader2FeatureTierKeywordSet[] CreateAllowAllTierKeywordSets()
+        private static NBShaderFeatureTierKeywordSet[] CreateAllowAllTierKeywordSets()
         {
-            var result = new NBShader2FeatureTierKeywordSet[4];
+            var result = new NBShaderFeatureTierKeywordSet[4];
             for (var i = 0; i < result.Length; i++)
             {
-                result[i] = new NBShader2FeatureTierKeywordSet
+                result[i] = new NBShaderFeatureTierKeywordSet
                 {
-                    tier = (NBShader2FeatureTier)i,
-                    allowedKeywords = (string[])NBShader2FeatureLevelCatalog.ManagedKeywords.Clone()
+                    tier = (NBShaderFeatureTier)i,
+                    allowedKeywords = (string[])NBShaderFeatureLevelCatalog.ManagedKeywords.Clone()
                 };
             }
 
