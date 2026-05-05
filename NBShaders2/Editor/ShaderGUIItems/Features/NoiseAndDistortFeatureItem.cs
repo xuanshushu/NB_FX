@@ -143,24 +143,6 @@ namespace NBShaderEditor
             new ColorChannelSelectItem(rootItem, noiseMaskBlock, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK, 0, () => Content("扭曲遮罩图通道选择"));
             new UVModeSelectItem(rootItem, noiseMaskBlock, "_NoiseMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP, 0, () => Content("扭曲遮罩贴图UV来源"), "_NoiseMaskMap");
 
-            PropertyToggleBlockItem chromaticBlock = ToggleBlock(
-                rootItem,
-                "_ChromaticAberrationFoldOut",
-                "_Distortion_Choraticaberrat_Toggle",
-                "扭曲色散",
-                NBShaderFlags.FLAG_BIT_PARTICLE_CHORATICABERRAT,
-                parent: this,
-                keyword: "_CHROMATIC_ABERRATION",
-                bold: true);
-            ShaderGUIItem chromaticNoiseAffect = new NoiseAffectItem(rootItem, chromaticBlock);
-            new ToggleItem(
-                rootItem,
-                chromaticNoiseAffect,
-                "_Distortion_Choraticaberrat_WithNoise_Toggle",
-                () => Content("色散强度受扭曲强度影响"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE, enabled));
-            new VectorComponentItem(rootItem, chromaticBlock, "_DistortionDirection", 2, () => Content("色散强度"), false);
-            new CustomDataSelectItem(rootItem, chromaticBlock, NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY, 0, () => Content("色散强度自定义曲线"));
             InitTriggerByChild();
         }
 

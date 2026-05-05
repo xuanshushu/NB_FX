@@ -15,6 +15,7 @@ namespace NBShaderEditor
         {
             new MaskFeatureItem(rootItem, this);
             new NoiseAndDistortFeatureItem(rootItem, this);
+            new ChromaticAberrationFeatureItem(rootItem, this);
             new EmissionFeatureItem(rootItem, this);
             new ColorBlendFeatureItem(rootItem, this);
             new RampColorFeatureItem(rootItem, this);
@@ -67,6 +68,11 @@ namespace NBShaderEditor
             if (item is NoiseAndDistortFeatureItem)
             {
                 return "_NOISEMAP";
+            }
+
+            if (item is ChromaticAberrationFeatureItem)
+            {
+                return "_CHROMATIC_ABERRATION";
             }
 
             if (item is EmissionFeatureItem)
