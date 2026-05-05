@@ -1,16 +1,16 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &1
+--- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 53
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac3a7eef1342b4895b4c1a6bf2669486, type: 3}
-  m_Name: 
+  m_Script: {fileID: 11500000, guid: a320954bde0b436381c4aef9f96ac237, type: 3}
+  m_Name: NBShaderDefaultFeatureLevels
   m_EditorClassIdentifier: 
   m_TierKeywordSets:
   - tier: 0
@@ -43,6 +43,7 @@ MonoBehaviour:
     - _DISSOLVE_MASK
     - _EMISSION
     - _FLIPBOOKBLENDING_ON
+    - _FRESNEL
     - _FX_LIGHT_MODE_HALF_LAMBERT
     - _FX_LIGHT_MODE_UNLIT
     - _MASKMAP_ON
@@ -74,6 +75,7 @@ MonoBehaviour:
     - _DISTORT_REFRACTION
     - _EMISSION
     - _FLIPBOOKBLENDING_ON
+    - _FRESNEL
     - _FX_LIGHT_MODE_BLINN_PHONG
     - _FX_LIGHT_MODE_HALF_LAMBERT
     - _FX_LIGHT_MODE_UNLIT
@@ -95,6 +97,8 @@ MonoBehaviour:
     - _SPECULAR_COLOR
     - _STENCIL_WITHOUT_PLAYER
     - _UNSCALETIME
+    - _VERTEX_OFFSET
+    - _VERTEX_OFFSET_MASKMAP
   - tier: 3
     allowedKeywords:
     - FRESNEL_CUBEMAP
@@ -165,12 +169,3 @@ MonoBehaviour:
     - _VAT_TYFLOW
     - _VERTEX_OFFSET
     - _VERTEX_OFFSET_MASKMAP
-  m_QualityTierMappings:
-  - qualityName: Performant
-    tier: 1
-  - qualityName: Balanced
-    tier: 2
-  - qualityName: High Fidelity
-    tier: 3
-  m_BuildStripPolicy: 2
-  m_ExplicitTier: 2

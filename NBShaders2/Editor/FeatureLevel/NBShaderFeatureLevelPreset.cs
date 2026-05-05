@@ -42,6 +42,20 @@ namespace NBShaders2.Editor.FeatureLevel
             return new string[0];
         }
 
+        public void SetTierKeywordSets(NBShaderFeatureTierKeywordSet[] tierKeywordSets)
+        {
+            m_TierKeywordSets = new NBShaderFeatureTierKeywordSet[4];
+            for (var i = 0; i < m_TierKeywordSets.Length; i++)
+            {
+                var tier = (NBShaderFeatureTier)i;
+                m_TierKeywordSets[i] = new NBShaderFeatureTierKeywordSet
+                {
+                    tier = tier,
+                    allowedKeywords = GetAllowedKeywords(tierKeywordSets, tier)
+                };
+            }
+        }
+
         private static string[] SanitizeKeywords(string[] keywords)
         {
             if (keywords == null || keywords.Length == 0)
@@ -64,6 +78,21 @@ namespace NBShaders2.Editor.FeatureLevel
             }
 
             return result.ToArray();
+        }
+
+        private static string[] GetAllowedKeywords(NBShaderFeatureTierKeywordSet[] sets, NBShaderFeatureTier tier)
+        {
+            if (sets == null)
+                return new string[0];
+
+            for (var i = 0; i < sets.Length; i++)
+            {
+                var set = sets[i];
+                if (set != null && set.tier == tier)
+                    return SanitizeKeywords(set.allowedKeywords);
+            }
+
+            return new string[0];
         }
     }
 
@@ -96,6 +125,30 @@ namespace NBShaders2.Editor.FeatureLevel
             }
 
             return new string[0];
+        }
+
+        public static bool SaveDefaultTierKeywordSets(NBShaderFeatureTierKeywordSet[] tierKeywordSets)
+        {
+            try
+            {
+                var preset = AssetDatabase.LoadAssetAtPath<NBShaderFeatureLevelPreset>(DefaultPresetAssetPath);
+                if (preset == null)
+                {
+                    preset = ScriptableObject.CreateInstance<NBShaderFeatureLevelPreset>();
+                    AssetDatabase.CreateAsset(preset, DefaultPresetAssetPath);
+                }
+
+                preset.SetTierKeywordSets(tierKeywordSets);
+                EditorUtility.SetDirty(preset);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.ImportAsset(DefaultPresetAssetPath);
+                return AssetDatabase.LoadAssetAtPath<NBShaderFeatureLevelPreset>(DefaultPresetAssetPath) != null;
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError("Failed to save NBShader default feature level preset: " + exception);
+                return false;
+            }
         }
 
         private static NBShaderFeatureTierKeywordSet[] CreateAllowAllTierKeywordSets()

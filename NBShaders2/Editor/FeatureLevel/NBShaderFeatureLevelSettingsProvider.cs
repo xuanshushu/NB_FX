@@ -433,6 +433,20 @@ namespace NBShaders2.Editor.FeatureLevel
                 {
                     NBShaderRuntimeSettingsSynchronizer.SyncFromProjectSettings();
                 }
+
+                if (GUILayout.Button(ButtonContent(
+                        "featureLevel.saveCurrentAsDefault",
+                        "Save Current Config as Default",
+                        "Write the current tier keyword matrix into the package default LevelAsset.")))
+                {
+                    if (!NBShaderFeatureLevelPresetLoader.SaveDefaultTierKeywordSets(settings.tierKeywordSets))
+                    {
+                        EditorUtility.DisplayDialog(
+                            Text("featureLevel.saveCurrentAsDefault.failedTitle", "Save Default Config Failed"),
+                            Text("featureLevel.saveCurrentAsDefault.failedMessage", "Could not write the package default LevelAsset."),
+                            Text("featureLevel.dialog.ok", "OK"));
+                    }
+                }
             }
 
             return changed;
