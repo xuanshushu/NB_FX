@@ -768,7 +768,7 @@
             #endif
 
             alpha  *= dissolveValue;
-            if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP))
+            #if defined(_DISSOLVE_RAMP)
             {
                 // half rampRange = (dissolveValueBeforeSoftStep - _Dissolve_Vec2.x)*_Dissolve_Vec2.y;
                 half rampRange = dissolveValueBeforeSoftStep;
@@ -810,6 +810,7 @@
                     result = lerp(result,rampSample.rgb*_DissolveRampColor.rgb,rampSample.a*_DissolveRampColor.a);
                 }
             }
+            #endif
 
 
 

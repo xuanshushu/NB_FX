@@ -612,6 +612,7 @@ Shader "Effects/NBShader"
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
             #pragma shader_feature_local _DISSOLVE_MASK
+            #pragma shader_feature_local_fragment _DISSOLVE_RAMP
             #pragma shader_feature_local_fragment _DISSOLVE_RAMP_MAP
             #pragma shader_feature_local _PROGRAM_NOISE
             #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
@@ -747,6 +748,7 @@ Shader "Effects/NBShader"
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
             #pragma shader_feature_local _DISSOLVE_MASK
+            #pragma shader_feature_local_fragment _DISSOLVE_RAMP
             #pragma shader_feature_local_fragment _DISSOLVE_RAMP_MAP
             #pragma shader_feature_local _PROGRAM_NOISE
             #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
@@ -875,6 +877,7 @@ Shader "Effects/NBShader"
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
             #pragma shader_feature_local _DISSOLVE_MASK
+            #pragma shader_feature_local_fragment _DISSOLVE_RAMP
             #pragma shader_feature_local_fragment _DISSOLVE_RAMP_MAP
             #pragma shader_feature_local _PROGRAM_NOISE
             #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
@@ -1000,6 +1003,7 @@ Shader "Effects/NBShader"
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
             #pragma shader_feature_local _DISSOLVE_MASK
+            #pragma shader_feature_local_fragment _DISSOLVE_RAMP
             #pragma shader_feature_local_fragment _DISSOLVE_RAMP_MAP
             #pragma shader_feature_local _PROGRAM_NOISE
             #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
@@ -1123,6 +1127,7 @@ Shader "Effects/NBShader"
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
             #pragma shader_feature_local _DISSOLVE_MASK
+            #pragma shader_feature_local_fragment _DISSOLVE_RAMP
             #pragma shader_feature_local_fragment _DISSOLVE_RAMP_MAP
             #pragma shader_feature_local _PROGRAM_NOISE
             #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE

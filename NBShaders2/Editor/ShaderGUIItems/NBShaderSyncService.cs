@@ -37,6 +37,7 @@ namespace NBShaderEditor
             new KeywordToggleBinding("_noiseMaskMap_Toggle", "_NOISE_MASKMAP"),
             new KeywordToggleBinding("_Distortion_Choraticaberrat_Toggle", "_CHROMATIC_ABERRATION"),
             new KeywordToggleBinding("_DissolveMask_Toggle", "_DISSOLVE_MASK"),
+            new KeywordToggleBinding("_Dissolve_useRampMap_Toggle", "_DISSOLVE_RAMP"),
             new KeywordToggleBinding("_ProgramNoise_Simple_Toggle", "_PROGRAM_NOISE_SIMPLE"),
             new KeywordToggleBinding("_ProgramNoise_Voronoi_Toggle", "_PROGRAM_NOISE_VORONOI"),
             new KeywordToggleBinding("_VertexOffset_Mask_Toggle", "_VERTEX_OFFSET_MASKMAP")
@@ -514,12 +515,13 @@ namespace NBShaderEditor
             if (mat.HasProperty("_DissolveRampSourceMode"))
             {
                 bool useDissolveRampMap = Mathf.RoundToInt(mat.GetFloat("_DissolveRampSourceMode")) == 1;
+                bool dissolveRampEnabled = IsDissolveRampEnabled(mat, flags);
                 if (flags != null)
                 {
                     SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, useDissolveRampMap, 0);
                 }
 
-                SetKeyword(mat, "_DISSOLVE_RAMP_MAP", useDissolveRampMap);
+                SetKeyword(mat, "_DISSOLVE_RAMP_MAP", dissolveRampEnabled && useDissolveRampMap);
             }
 
             if (mat.HasProperty("_ScreenDistortModeToggle"))
@@ -538,7 +540,9 @@ namespace NBShaderEditor
             SetFlagBackedKeyword(mat, flags, "_DISTANCE_FADE", NBShaderFlags.FLAG_BIT_PARTICLE_DISTANCEFADE_ON, 0);
             SetFlagBackedKeyword(mat, flags, "_FRESNEL", NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_ON, 0);
             SetFlagBackedKeyword(mat, flags, "_CHROMATIC_ABERRATION", NBShaderFlags.FLAG_BIT_PARTICLE_CHORATICABERRAT, 0);
-            SetFlagBackedKeyword(mat, flags, "_DISSOLVE_RAMP_MAP", NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, 0);
+            bool dissolveRampEnabled = flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP, index: 1);
+            SetKeyword(mat, "_DISSOLVE_RAMP", dissolveRampEnabled);
+            SetKeyword(mat, "_DISSOLVE_RAMP_MAP", dissolveRampEnabled && flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, index: 0));
             SetFlagBackedKeyword(mat, flags, "_DISSOLVE_MASK", NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_MASK, 0);
             SetFlagBackedKeyword(mat, flags, "_COLOR_RAMP_MAP", NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON, 0);
             SetFlagBackedKeyword(mat, flags, "_VERTEX_OFFSET", NBShaderFlags.FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON, 0);
@@ -550,6 +554,16 @@ namespace NBShaderEditor
             SetFlagBackedKeyword(mat, flags, "_PROGRAM_NOISE_SIMPLE", NBShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE, 1);
             SetFlagBackedKeyword(mat, flags, "_PROGRAM_NOISE_VORONOI", NBShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI, 1);
             SetFlagBackedKeyword(mat, flags, "_VERTEX_OFFSET_MASKMAP", NBShaderFlags.FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP, 1);
+        }
+
+        private static bool IsDissolveRampEnabled(Material mat, NBShaderFlags flags)
+        {
+            if (mat != null && mat.HasProperty("_Dissolve_useRampMap_Toggle"))
+            {
+                return mat.GetFloat("_Dissolve_useRampMap_Toggle") > 0.5f;
+            }
+
+            return flags != null && flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP, index: 1);
         }
 
         private void SetFlagBackedKeyword(Material mat, NBShaderFlags flags, string keyword, int flagBits, int flagIndex)

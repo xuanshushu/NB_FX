@@ -44,7 +44,8 @@ namespace NBShaderEditor
             new VectorComponentRangeSliderItem(rootItem, lineBlock, "_Dissolve_Vec2", 1, "Dissolve2YRangeVec", () => Content("描边软硬"));
 
             PropertyToggleBlockItem rampBlock = ToggleBlock(rootItem, "_DissolveRampFoldOut", "_Dissolve_useRampMap_Toggle", "溶解Ramp图功能",
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP, 1, parent: this);
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP, 1, parent: this, keyword: "_DISSOLVE_RAMP",
+                onValueChanged: _ => rootItem.SyncService.SyncMaterialState());
             Func<bool> isDissolveRampMapVisible = TierVisible(rootItem, "_DISSOLVE_RAMP_MAP", () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 1));
             new FeaturePopupItem(rootItem, rampBlock, "_DissolveRampSourceMode", () => Content("溶解Ramp模式"), RampSourceNames,
                 property => rootItem.SyncService.ApplyToggleFlagAndKeyword(NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, 0, "_DISSOLVE_RAMP_MAP", property.floatValue > 0.5f),

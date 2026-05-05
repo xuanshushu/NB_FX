@@ -47,6 +47,7 @@ namespace NBShader
             "_DISSOLVE",
             "_DISSOLVE_EDITOR_TEST",
             "_DISSOLVE_MASK",
+            "_DISSOLVE_RAMP",
             "_DISSOLVE_RAMP_MAP",
             "_DISTANCE_FADE",
             "_DISTORT_REFRACTION",
