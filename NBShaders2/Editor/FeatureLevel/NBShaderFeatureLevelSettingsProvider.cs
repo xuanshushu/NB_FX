@@ -11,12 +11,14 @@ namespace NBShaders2.Editor.FeatureLevel
         private const string SettingsPath = "Project/NB_FX/NBShader Feature Levels";
         private const float FeatureColumnWidth = 240f;
         private const float TierColumnWidth = 92f;
+        private const float CostColumnWidth = 84f;
+        private const float EffectColumnWidth = 280f;
         private const float DescriptionColumnWidth = 230f;
         private const float RowHeight = 22f;
         private const float HeaderHeight = 24f;
         private const float TableMinHeight = 360f;
         private const float TableMaxHeight = 640f;
-        private const float TableWidth = FeatureColumnWidth + TierColumnWidth * 4f + DescriptionColumnWidth;
+        private const float TableWidth = FeatureColumnWidth + TierColumnWidth * 4f + CostColumnWidth + EffectColumnWidth + DescriptionColumnWidth;
         private const float RowIndentWidth = 14f;
         private const string FoldoutSessionPrefix = "NBShaderFeatureLevelSettingsProvider.Foldout.";
 
@@ -154,6 +156,20 @@ namespace NBShaders2.Editor.FeatureLevel
 
                 DrawHeaderCell(
                     Content(
+                        "featureLevel.column.cost",
+                        "Performance Cost",
+                        "Estimated shader cost when this feature is enabled."),
+                    CostColumnWidth);
+
+                DrawHeaderCell(
+                    Content(
+                        "featureLevel.column.effect",
+                        "Feature Effect",
+                        "Short description of what this keyword enables."),
+                    EffectColumnWidth);
+
+                DrawHeaderCell(
+                    Content(
                         "featureLevel.column.description",
                         "Raw Keyword / Note",
                         "Raw shader keyword or configuration note."),
@@ -194,11 +210,16 @@ namespace NBShaders2.Editor.FeatureLevel
                     }
                 }
 
-                GUILayout.Label(
-                    Text("featureLevel.desc.quality", "Unity Quality Level"),
-                    EditorStyles.miniLabel,
-                    GUILayout.Width(DescriptionColumnWidth),
-                    GUILayout.Height(RowHeight));
+                DrawCostPlaceholderCell();
+                DrawInfoCell(
+                    Content(
+                        "featureLevel.effect.quality",
+                        "Bind Unity Quality Levels to NBShader tiers.",
+                        "Each Unity Quality Level belongs to exactly one NBShader tier."),
+                    EffectColumnWidth);
+                DrawInfoCell(
+                    new GUIContent(Text("featureLevel.desc.quality", "Unity Quality Level")),
+                    DescriptionColumnWidth);
             }
         }
 
@@ -233,13 +254,16 @@ namespace NBShaders2.Editor.FeatureLevel
                     }
                 }
 
-                GUILayout.Label(
-                    isExplicitPolicy
-                        ? Text("featureLevel.desc.buildTarget.active", "Used by Explicit Tier stripping.")
-                        : Text("featureLevel.desc.buildTarget.inactive", "Only active when policy is Explicit Tier."),
-                    EditorStyles.miniLabel,
-                    GUILayout.Width(DescriptionColumnWidth),
-                    GUILayout.Height(RowHeight));
+                DrawCostPlaceholderCell();
+                DrawInfoCell(
+                    new GUIContent(
+                        isExplicitPolicy
+                            ? Text("featureLevel.desc.buildTarget.active", "Used by Explicit Tier stripping.")
+                            : Text("featureLevel.desc.buildTarget.inactive", "Only active when policy is Explicit Tier.")),
+                    EffectColumnWidth);
+                DrawInfoCell(
+                    new GUIContent(Text("featureLevel.desc.config", "Config")),
+                    DescriptionColumnWidth);
             }
 
             return changed;
@@ -288,11 +312,12 @@ namespace NBShaders2.Editor.FeatureLevel
                         DrawEmptyTierCells();
                     }
 
-                    GUILayout.Label(
+                    DrawCostCell(row);
+                    DrawInfoCell(GetEffectContent(row), EffectColumnWidth);
+                    DrawInfoCell(
                         GetDescriptionContent(row),
-                        row.isKeyword ? EditorStyles.miniLabel : EditorStyles.centeredGreyMiniLabel,
-                        GUILayout.Width(DescriptionColumnWidth),
-                        GUILayout.Height(RowHeight));
+                        DescriptionColumnWidth,
+                        row.isKeyword ? EditorStyles.miniLabel : EditorStyles.centeredGreyMiniLabel);
                 }
             }
 
@@ -348,6 +373,31 @@ namespace NBShaders2.Editor.FeatureLevel
         {
             for (var i = 0; i < Tiers.Length; i++)
                 GUILayout.Space(TierColumnWidth);
+        }
+
+        private static void DrawCostCell(NBShaderFeatureLevelRow row)
+        {
+            if (row != null && row.isKeyword)
+            {
+                DrawInfoCell(GetCostContent(row.performanceCost), CostColumnWidth, EditorStyles.centeredGreyMiniLabel);
+                return;
+            }
+
+            DrawCostPlaceholderCell();
+        }
+
+        private static void DrawCostPlaceholderCell()
+        {
+            DrawInfoCell(GetNoValueContent(), CostColumnWidth, EditorStyles.centeredGreyMiniLabel);
+        }
+
+        private static void DrawInfoCell(GUIContent content, float width, GUIStyle style = null)
+        {
+            GUILayout.Label(
+                content,
+                style ?? EditorStyles.miniLabel,
+                GUILayout.Width(width),
+                GUILayout.Height(RowHeight));
         }
 
         private static bool DrawButtons(NBShaderFeatureLevelProjectSettings settings)
@@ -538,6 +588,52 @@ namespace NBShaders2.Editor.FeatureLevel
             return new GUIContent(label, string.Format(tooltipFormat, keyword));
         }
 
+        private static GUIContent GetCostContent(NBShaderFeaturePerformanceCost cost)
+        {
+            string key;
+            string fallback;
+            switch (cost)
+            {
+                case NBShaderFeaturePerformanceCost.Low:
+                    key = "featureLevel.cost.low";
+                    fallback = "Low";
+                    break;
+                case NBShaderFeaturePerformanceCost.Medium:
+                    key = "featureLevel.cost.medium";
+                    fallback = "Medium";
+                    break;
+                case NBShaderFeaturePerformanceCost.High:
+                    key = "featureLevel.cost.high";
+                    fallback = "High";
+                    break;
+                default:
+                    key = "featureLevel.cost.ultra";
+                    fallback = "Ultra";
+                    break;
+            }
+
+            return new GUIContent(
+                Text(key, fallback),
+                Text("featureLevel.cost.tooltip", "Estimated shader performance cost for this keyword."));
+        }
+
+        private static GUIContent GetEffectContent(NBShaderFeatureLevelRow row)
+        {
+            if (row.isKeyword)
+            {
+                var effect = NBShaderInspectorLocalization.Get(
+                    "inspector.featureLevel.keyword." + row.keyword + ".effect",
+                    string.IsNullOrEmpty(row.effectFallback) ? row.keyword : row.effectFallback);
+                return new GUIContent(effect, effect);
+            }
+
+            var groupTip = NBShaderInspectorLocalization.GetTooltip(
+                "inspector.featureLevel.group." + row.key + ".label",
+                "inspector.featureLevel.group." + row.key + ".tip",
+                Text("featureLevel.group.tooltip", "Click the foldout to show or hide child rows."));
+            return new GUIContent(groupTip, groupTip);
+        }
+
         private static GUIContent GetDescriptionContent(NBShaderFeatureLevelRow row)
         {
             if (row.isKeyword)
@@ -546,6 +642,12 @@ namespace NBShaders2.Editor.FeatureLevel
             return new GUIContent(
                 Text("featureLevel.desc.group", "Group"),
                 Text("featureLevel.group.tooltip", "Click the foldout to show or hide child rows."));
+        }
+
+        private static GUIContent GetNoValueContent()
+        {
+            var text = Text("featureLevel.desc.none", "—");
+            return new GUIContent(text, text);
         }
 
         private static GUIContent Content(string key, string fallback, string tip = "")
