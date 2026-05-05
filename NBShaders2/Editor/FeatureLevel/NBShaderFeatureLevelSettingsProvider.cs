@@ -330,11 +330,18 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static void DrawFeatureRowBackground(Rect rowRect, NBShaderFeatureLevelRow row)
         {
-            if (row == null || row.isKeyword || Event.current.type != EventType.Repaint)
+            if (!IsSectionRow(row) || Event.current.type != EventType.Repaint)
                 return;
 
             rowRect.width = TableWidth;
             EditorGUI.DrawRect(rowRect, new Color(0f, 0f, 0f, EditorGUIUtility.isProSkin ? 0.22f : 0.08f));
+        }
+
+        private static bool IsSectionRow(NBShaderFeatureLevelRow row)
+        {
+            return row != null &&
+                   row.kind == NBShaderFeatureLevelRowKind.Group &&
+                   string.IsNullOrEmpty(row.parentKey);
         }
 
         private static void DrawEmptyTierCells()
