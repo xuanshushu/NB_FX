@@ -150,7 +150,7 @@ void HVAT_ComputeFrameSelection(AttributesParticle input, out float selectedFram
 
     if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM))
     {
-        float frameCustomData = GetCustomData(_W9ParticleCustomDataFlag2, FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME, -1.0, input.Custom1, input.Custom2);
+        float frameCustomData = GetCustomData(NB_CUSTOM_DATA_FLAG_2, FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME, -1.0, input.Custom1, input.Custom2);
         if (frameCustomData >= 0.0)
         {
             float customFrame = saturate(frameCustomData) * max(totalFrames - 1.0, 0.0) + 1.0;

@@ -17,10 +17,5 @@ namespace NBShaders2.Editor.FeatureLevel
         {
             return NBShader2FeatureCatalog.IsManagedKeyword(keyword);
         }
-
-        public static string[] GetDefaultAllowedKeywords(NBShader2FeatureTier tier)
-        {
-            return NBShader2FeatureCatalog.GetDefaultAllowedKeywords(tier);
-        }
     }
 }

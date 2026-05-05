@@ -36,7 +36,7 @@ namespace NBShader
             NBShader2FeatureTier resolvedTier = tier.HasValue ? tier.Value : ResolveTierFromQuality(settings);
             HashSet<string> allowed = settings != null
                 ? settings.BuildAllowedSet(resolvedTier)
-                : NBShader2FeatureCatalog.BuildDefaultAllowedSet(resolvedTier);
+                : BuildAllowAllCatalogKeywordSet();
 
             string[] materialKeywords = material.shaderKeywords;
             if (materialKeywords == null)
@@ -120,6 +120,11 @@ namespace NBShader
             }
 
             return string.Empty;
+        }
+
+        private static HashSet<string> BuildAllowAllCatalogKeywordSet()
+        {
+            return new HashSet<string>(NBShader2FeatureCatalog.RawKeywords);
         }
     }
 }

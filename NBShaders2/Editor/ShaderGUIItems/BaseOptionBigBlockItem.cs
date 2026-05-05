@@ -93,7 +93,7 @@ namespace NBShaderEditor
                 "_ColorAdjustmentOnlyAffectMainTex",
                 () => Content("base.colorAdjustment.onlyMainTex", "Only Affect Main Texture"),
                 enabled => rootItem.SyncService.ApplyToggleFlag(
-                    W9ParticleShaderFlags.FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX,
+                    NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX,
                     enabled));
 
             _hueShiftBlock = new PropertyToggleBlockItem(
@@ -102,7 +102,7 @@ namespace NBShaderEditor
                 "_HueShiftFoldOut",
                 "_HueShift_Toggle",
                 () => Content("base.hueShift", "Hue Shift"),
-                W9ParticleShaderFlags.FLAG_BIT_HUESHIFT_ON);
+                NBShaderFlags.FLAG_BIT_HUESHIFT_ON);
             _hueShiftSlider = new ShaderGUISliderItem(rootItem, _hueShiftBlock)
             {
                 PropertyName = "_HueShift",
@@ -114,7 +114,7 @@ namespace NBShaderEditor
             _hueShiftCustomDataItem = new CustomDataSelectItem(
                 rootItem,
                 _hueShiftBlock,
-                W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,
+                NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,
                 0,
                 () => Content("base.hueShift.customData", "Hue Custom Data"),
                 IsParticleMode);
@@ -125,7 +125,7 @@ namespace NBShaderEditor
                 "_SaturabilityFoldOut",
                 "_ChangeSaturability_Toggle",
                 () => Content("base.saturability", "Saturation"),
-                W9ParticleShaderFlags.FLAG_BIT_SATURABILITY_ON);
+                NBShaderFlags.FLAG_BIT_SATURABILITY_ON);
             _saturabilitySlider = new ShaderGUISliderItem(rootItem, _saturabilityBlock)
             {
                 PropertyName = "_Saturability",
@@ -136,7 +136,7 @@ namespace NBShaderEditor
             _saturabilityCustomDataItem = new CustomDataSelectItem(
                 rootItem,
                 _saturabilityBlock,
-                W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_SATURATE,
+                NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_SATURATE,
                 1,
                 () => Content("base.saturability.customData", "Saturation Custom Data"),
                 IsParticleMode);
@@ -147,7 +147,7 @@ namespace NBShaderEditor
                 "_ContrastFoldOut",
                 "_Contrast_Toggle",
                 () => Content("base.contrast", "Contrast"),
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST,
                 1);
             _contrastMidColorItem = new ColorItem(rootItem, _contrastBlock, "_ContrastMidColor", () => Content("base.contrast.mid", "Contrast Mid Color"));
             _contrastSlider = new ShaderGUISliderItem(rootItem, _contrastBlock)
@@ -161,7 +161,7 @@ namespace NBShaderEditor
             _contrastCustomDataItem = new CustomDataSelectItem(
                 rootItem,
                 _contrastBlock,
-                W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,
+                NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,
                 2,
                 () => Content("base.contrast.customData", "Contrast Custom Data"),
                 IsParticleMode);
@@ -172,7 +172,7 @@ namespace NBShaderEditor
                 "_BaseMapColorRefineFoldOut",
                 "_BaseMapColorRefine_Toggle",
                 () => Content("base.colorRefine", "Color Refine"),
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE,
                 1);
             _baseMapColorRefineA = new VectorComponentItem(rootItem, _baseMapColorRefineBlock, "_BaseMapColorRefine", 0, () => Content("base.colorRefine.a", "A Main Color Multiply"), false);
             _baseMapColorRefineBPower = new VectorComponentItem(rootItem, _baseMapColorRefineBlock, "_BaseMapColorRefine", 1, () => Content("base.colorRefine.bPower", "B Main Color Power"), false);
@@ -184,7 +184,7 @@ namespace NBShaderEditor
                 _colorAdjustmentBlock,
                 "_ColorMultiAlpha",
                 () => Content("base.colorMultiAlpha", "Color Multiply Alpha"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA, enabled));
+                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA, enabled));
 
             _zTestItem = new ZTestItem(rootItem, this);
             _cullItem = new CullModeItem(rootItem, this);
@@ -205,7 +205,7 @@ namespace NBShaderEditor
                 "_BaseBackColorFoldOut",
                 "_BaseBackColor_Toggle",
                 () => Content("base.backColor", "Back Color"),
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_BACKCOLOR,
+                NBShaderFlags.FLAG_BIT_PARTICLE_BACKCOLOR,
                 0,
                 isVisible: Is3DMode);
             _baseBackColorItem = new ColorItem(rootItem, _baseBackColorBlock, "_BaseBackColor", () => Content("base.backColor.color", "Back Color"));
@@ -216,7 +216,7 @@ namespace NBShaderEditor
                 "_DistanceFadeFoldOut",
                 "_DistanceFade_Toggle",
                 () => Content("base.distanceFade", "Distance Fade"),
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_DISTANCEFADE_ON,
+                NBShaderFlags.FLAG_BIT_PARTICLE_DISTANCEFADE_ON,
                 0,
                 isVisible: Is3DMode);
             _fadeRangeItem = new Vector2LineItem(rootItem, _distanceFadeBlock, "_Fade", true, () => Content("base.distanceFade.range", "Fade Range"));
@@ -244,7 +244,7 @@ namespace NBShaderEditor
                 this,
                 "_IgnoreVetexColor_Toggle",
                 () => Content("base.ignoreVertexColor", "Ignore Vertex Color"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR, enabled, 1),
+                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR, enabled, 1),
                 Is3DMode);
 
             _fogIntensityItem = new ShaderGUISliderItem(rootItem, this)

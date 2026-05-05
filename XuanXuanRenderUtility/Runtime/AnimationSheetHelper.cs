@@ -4,7 +4,6 @@ using UnityEngine;
 // using Unity.Mathematics;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using NBShader;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -20,7 +19,13 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
     private int _propertyID;
     private int _particleBaseAniBlendStPropertyID = Shader.PropertyToID("_BaseMap_AnimationSheetBlend_ST");
     private int _particleBaseAniBlendIntensityPropertyID = Shader.PropertyToID("_AnimationSheetHelperBlendIntensity");
-    private  W9ParticleShaderFlags _flags = new W9ParticleShaderFlags();
+    private static readonly int ParticleShaderFlagsId = Shader.PropertyToID("_W9ParticleShaderFlags");
+    private static readonly int ParticleShaderFlags1Id = Shader.PropertyToID("_W9ParticleShaderFlags1");
+    private static readonly int NBShaderFlagsId = Shader.PropertyToID("_NBShaderFlags");
+    private static readonly int NBShaderFlags1Id = Shader.PropertyToID("_NBShaderFlags1");
+    private const int FlagBitUIEffectOn = 1 << 14;
+    private const int FlagBitAnimationSheetHelper = 1 << 15;
+    private const int FlagBitUIEffectBaseMapMode = 1 << 22;
     
 
 
@@ -86,8 +91,8 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         {
             if (mat)
             {
-                _flags.SetMaterial(mat);
-                _flags.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER,index:1);
+                GetShaderFlagIds(mat, out _, out int flags1Id);
+                ClearFlagBits(mat, flags1Id, FlagBitAnimationSheetHelper);
             }
         }
 
@@ -170,9 +175,9 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
     {
         if (isParticleBaseShader)
         {
-            _flags.SetMaterial(mat);
-            // Debug.Log(_flags.CheckFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE,index:1));
-            if(_flags.CheckFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UIEFFECT_ON) && !_flags.CheckFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE,index:1))
+            GetShaderFlagIds(mat, out int flagsId, out int flags1Id);
+            // Debug.Log(CheckFlagBits(mat, ParticleShaderFlags1Id, FlagBitUIEffectBaseMapMode));
+            if(CheckFlagBits(mat, flagsId, FlagBitUIEffectOn) && !CheckFlagBits(mat, flags1Id, FlagBitUIEffectBaseMapMode))
             {
                 propertyName = "_UI_MainTex_ST";
             }
@@ -182,9 +187,7 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
             }
             if (mat)
             {
-                
-                _flags.SetMaterial(mat);
-                _flags.SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER,index:1);
+                SetFlagBits(mat, flags1Id, FlagBitAnimationSheetHelper);
             }
         }
         // else
@@ -306,6 +309,45 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         float yOffset = (ySize - index / xSize -1)*_yScale;
         return new Vector4(_xScale, _yScale, xOffset, yOffset);
     }
+
+    private static void SetFlagBits(Material material, int propertyId, int bits)
+    {
+        if (!material)
+        {
+            return;
+        }
+
+        material.SetInteger(propertyId, material.GetInteger(propertyId) | bits);
+    }
+
+    private static void ClearFlagBits(Material material, int propertyId, int bits)
+    {
+        if (!material)
+        {
+            return;
+        }
+
+        material.SetInteger(propertyId, material.GetInteger(propertyId) & ~bits);
+    }
+
+    private static bool CheckFlagBits(Material material, int propertyId, int bits)
+    {
+        return material && (material.GetInteger(propertyId) & bits) != 0;
+    }
+
+    private static void GetShaderFlagIds(Material material, out int flagsId, out int flags1Id)
+    {
+        if (material && (material.HasProperty(NBShaderFlagsId) || material.HasProperty(NBShaderFlags1Id)))
+        {
+            flagsId = NBShaderFlagsId;
+            flags1Id = NBShaderFlags1Id;
+            return;
+        }
+
+        flagsId = ParticleShaderFlagsId;
+        flags1Id = ParticleShaderFlags1Id;
+    }
+
 #if UNITY_EDITOR
     private double editorDeltaTime = 0;
     private double lastEditorTime = 0;

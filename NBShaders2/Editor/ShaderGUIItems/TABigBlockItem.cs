@@ -7,7 +7,7 @@ namespace NBShaderEditor
 {
     public class TABigBlockItem : BigBlockItem
     {
-        private const string StencilConfigAssetPath = "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/StencilConfig.asset";
+        private const string StencilConfigAssetPath = "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/StencilConfig.asset";
 
         private readonly NBShaderRootItem _nbRootItem;
         private readonly PropertyToggleBlockItem _zOffsetBlock;

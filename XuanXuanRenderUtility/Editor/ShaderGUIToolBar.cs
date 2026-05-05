@@ -77,7 +77,7 @@ namespace NBShaderEditor
             {
                 for (int i = 0;i<Helper.shaderFlags.Length;i++)
                 {
-                    W9ParticleShaderFlags shaderFlags = (W9ParticleShaderFlags)Helper.shaderFlags[i];
+                    ShaderFlagsBase shaderFlags = Helper.shaderFlags[i];
                     for (int j = 3; j <= 5; j++)
                     {
                         Helper.mats[i].SetInteger(shaderFlags.GetShaderFlagsId(j),0);

@@ -35,10 +35,10 @@ namespace NBShaderEditor
                 return;
             }
 
-            W9ParticleShaderFlags flags = _nbRootItem.ShaderFlags.Count > 0
-                ? _nbRootItem.ShaderFlags[0] as W9ParticleShaderFlags
+            NBShaderFlags flags = _nbRootItem.ShaderFlags.Count > 0
+                ? _nbRootItem.ShaderFlags[0] as NBShaderFlags
                 : null;
-            flags?.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER, index: 1);
+            flags?.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER, index: 1);
 
             if (_nbRootItem.Context.ParticleMode != MixedBool.True)
             {
@@ -94,7 +94,7 @@ namespace NBShaderEditor
 
         private static void BuildExpectedStreams(
             Material material,
-            W9ParticleShaderFlags flags,
+            NBShaderFlags flags,
             out List<ParticleSystemVertexStream> streams,
             out List<string> streamNames)
         {
@@ -105,10 +105,10 @@ namespace NBShaderEditor
 
             bool useFlipbookBlending = material.IsKeywordEnabled("_FLIPBOOKBLENDING_ON") ||
                                        GetFloat(material, "_FlipbookBlending") > 0.5f;
-            bool useSpecialUVChannel = flags.CheckIsUVModeOn(W9ParticleShaderFlags.UVMode.SpecialUVChannel);
-            bool useUV3ForSpecialUV = flags.CheckFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
-            bool customData1 = flags.CheckFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA1_ON);
-            bool customData2 = flags.CheckFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA2_ON);
+            bool useSpecialUVChannel = flags.CheckIsUVModeOn(NBShaderFlags.UVMode.SpecialUVChannel);
+            bool useUV3ForSpecialUV = flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
+            bool customData1 = flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA1_ON);
+            bool customData2 = flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA2_ON);
 
             bool needNormal = GetFloat(material, "_VertexOffset_NormalDir_Toggle") > 0.5f ||
                               GetFloat(material, "_fresnelEnabled") > 0.5f ||

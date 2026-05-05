@@ -21,7 +21,7 @@ namespace NBShaderEditor
                 RangePropertyName = "_NoiseIntensityRangeVec"
             };
             noiseIntensityItem.InitTriggerByChild();
-            new CustomDataSelectItem(rootItem, this, W9ParticleShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY, 1, () => Content("扭曲强度自定义曲线"));
+            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY, 1, () => Content("扭曲强度自定义曲线"));
             new FeaturePopupItem(rootItem, this, "_ScreenDistortModeToggle", () => Content("屏幕扰动模式"), ScreenDistortModeNames,
                 property => rootItem.SyncService.ApplyScreenDistortMode(Mathf.RoundToInt(property.floatValue)),
                 () => rootItem.Context.UIEffectEnabled != MixedBool.True);
@@ -48,7 +48,7 @@ namespace NBShaderEditor
                 "_ScreenDistortAlphaFoldOut",
                 "_ScreenDistortAlphaRefineToggle",
                 "屏幕扭曲Alpha整体调整",
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE,
                 1,
                 parent: this,
                 isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f));
@@ -73,13 +73,13 @@ namespace NBShaderEditor
 
             new FeaturePopupItem(rootItem, this, "_DistortMode", () => Content("扭曲模式"), DistortModeNames,
                 property => rootItem.SyncService.ApplyToggleKeyword("_DISTORT_REFRACTION", property.floatValue > 0.5f));
-            TextureRelatedFoldOutItem noiseMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, this, "_NoiseMap", "扭曲贴图", "_NoiseMapFoldOut", W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_NOISEMAP,
+            TextureRelatedFoldOutItem noiseMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, this, "_NoiseMap", "扭曲贴图", "_NoiseMapFoldOut", NBShaderFlags.FLAG_BIT_WRAPMODE_NOISEMAP,
                 isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            new UVModeSelectItem(rootItem, noiseMapRelatedFoldOut, "_NoiseUVModeFoldOut", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MAP, 0, () => Content("扭曲贴图UV来源"), "_NoiseMap",
+            new UVModeSelectItem(rootItem, noiseMapRelatedFoldOut, "_NoiseUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MAP, 0, () => Content("扭曲贴图UV来源"), "_NoiseMap",
                 isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
             new Vector2LineItem(rootItem, noiseMapRelatedFoldOut, "_DistortionDirection", true, () => Content("扭曲方向强度"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            new CustomDataSelectItem(rootItem, noiseMapRelatedFoldOut, W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X, 2, () => Content("扭曲方向强度X自定义曲线"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
-            new CustomDataSelectItem(rootItem, noiseMapRelatedFoldOut, W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y, 2, () => Content("扭曲方向强度Y自定义曲线"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
+            new CustomDataSelectItem(rootItem, noiseMapRelatedFoldOut, NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X, 2, () => Content("扭曲方向强度X自定义曲线"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
+            new CustomDataSelectItem(rootItem, noiseMapRelatedFoldOut, NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y, 2, () => Content("扭曲方向强度Y自定义曲线"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
             ShaderGUISliderItem noiseMapUVRotationItem = new ShaderGUISliderItem(rootItem, noiseMapRelatedFoldOut, () => IsPropertyMode(rootItem, "_DistortMode", 0))
             {
                 PropertyName = "_NoiseMapUVRotation",
@@ -94,7 +94,7 @@ namespace NBShaderEditor
                 noiseMapRelatedFoldOut,
                 "_DistortionBothDirection_Toggle",
                 () => Content("0.5为中值，双向扭曲"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON, enabled),
+                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON, enabled),
                 () => IsPropertyMode(rootItem, "_DistortMode", 0));
             ShaderGUISliderItem refractionIorItem = new ShaderGUISliderItem(rootItem, this, () => IsPropertyMode(rootItem, "_DistortMode", 1))
             {
@@ -104,7 +104,7 @@ namespace NBShaderEditor
                 Max = 5f
             };
             refractionIorItem.InitTriggerByChild();
-            new PNoiseBlendModeItem(rootItem, this, W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT, "_DistortPNoiseBlendOpacity", () => Content("扭曲程序噪波混合"),
+            new PNoiseBlendModeItem(rootItem, this, NBShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT, "_DistortPNoiseBlendOpacity", () => Content("扭曲程序噪波混合"),
                 () => rootItem.Context.ProgramNoiseEnabled == MixedBool.True);
 
             PropertyToggleBlockItem noiseMaskBlock = ToggleBlock(
@@ -112,19 +112,19 @@ namespace NBShaderEditor
                 "_NoiseMaskBlockFoldOut",
                 "_noiseMaskMap_Toggle",
                 "扭曲遮罩",
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_NOISE_MASKMAP,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_NOISE_MASKMAP,
                 1,
                 parent: this);
-            AddTextureWithWrap(rootItem, noiseMaskBlock, "_NoiseMaskMap", "扭曲遮罩贴图", W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_NOISE_MASKMAP);
-            new ColorChannelSelectItem(rootItem, noiseMaskBlock, W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK, 0, () => Content("扭曲遮罩图通道选择"));
-            new UVModeSelectItem(rootItem, noiseMaskBlock, "_NoiseMaskUVModeFoldOut", W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP, 0, () => Content("扭曲遮罩贴图UV来源"), "_NoiseMaskMap");
+            AddTextureWithWrap(rootItem, noiseMaskBlock, "_NoiseMaskMap", "扭曲遮罩贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_NOISE_MASKMAP);
+            new ColorChannelSelectItem(rootItem, noiseMaskBlock, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK, 0, () => Content("扭曲遮罩图通道选择"));
+            new UVModeSelectItem(rootItem, noiseMaskBlock, "_NoiseMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP, 0, () => Content("扭曲遮罩贴图UV来源"), "_NoiseMaskMap");
 
             PropertyToggleBlockItem chromaticBlock = ToggleBlock(
                 rootItem,
                 "_ChromaticAberrationFoldOut",
                 "_Distortion_Choraticaberrat_Toggle",
                 "扭曲色散",
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_CHORATICABERRAT,
+                NBShaderFlags.FLAG_BIT_PARTICLE_CHORATICABERRAT,
                 parent: this,
                 bold: true);
             ShaderGUIItem chromaticNoiseAffect = new NoiseAffectItem(rootItem, chromaticBlock);
@@ -133,9 +133,9 @@ namespace NBShaderEditor
                 chromaticNoiseAffect,
                 "_Distortion_Choraticaberrat_WithNoise_Toggle",
                 () => Content("色散强度受扭曲强度影响"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE, enabled));
+                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE, enabled));
             new VectorComponentItem(rootItem, chromaticBlock, "_DistortionDirection", 2, () => Content("色散强度"), false);
-            new CustomDataSelectItem(rootItem, chromaticBlock, W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY, 0, () => Content("色散强度自定义曲线"));
+            new CustomDataSelectItem(rootItem, chromaticBlock, NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY, 0, () => Content("色散强度自定义曲线"));
             InitTriggerByChild();
         }
 

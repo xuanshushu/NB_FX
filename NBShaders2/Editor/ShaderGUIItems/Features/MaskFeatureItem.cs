@@ -20,24 +20,24 @@ namespace NBShaderEditor
                 "_MaskRefineFoldOut",
                 "_MaskRefineToggle",
                 "遮罩整体调整",
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MASK_REFINE,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_REFINE,
                 1,
                 parent: this);
             new VectorComponentItem(rootItem, refineBlock, "_MaskRefineVec", 0, () => Content("范围(Pow)"), false);
             new VectorComponentItem(rootItem, refineBlock, "_MaskRefineVec", 1, () => Content("相乘"), false);
             new VectorComponentItem(rootItem, refineBlock, "_MaskRefineVec", 2, () => Content("偏移(相加)"), false);
 
-            new PNoiseBlendModeItem(rootItem, this, W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_MASK, "_MaskPNoiseBlendOpacity", () => Content("遮罩程序噪波混合"),
+            new PNoiseBlendModeItem(rootItem, this, NBShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_MASK, "_MaskPNoiseBlendOpacity", () => Content("遮罩程序噪波混合"),
                 () => rootItem.Context.ProgramNoiseEnabled == MixedBool.True);
             AddMaskMap(rootItem, this, "_MaskMap", "_MaskMapGradientToggle", "_MaskUVModeFoldOut", "遮罩",
-                W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP,
-                W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1,
-                W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_MASKMAP,
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT,
+                NBShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP,
+                NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1,
+                NBShaderFlags.FLAG_BIT_UVMODE_POS_0_MASKMAP,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT,
                 1,
                 "_MaskMapFoldOut");
-            new CustomDataSelectItem(rootItem, this, W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X, 0, () => Content("Mask图X轴偏移自定义曲线"));
-            new CustomDataSelectItem(rootItem, this, W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y, 0, () => Content("Mask图Y轴偏移自定义曲线"));
+            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X, 0, () => Content("Mask图X轴偏移自定义曲线"));
+            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y, 0, () => Content("Mask图Y轴偏移自定义曲线"));
             new Vector2LineItem(rootItem, this, "_MaskMapOffsetAnition", true, () => Content("遮罩偏移速度"));
             ShaderGUISliderItem maskMapUVRotationItem = new ShaderGUISliderItem(rootItem, this)
             {
@@ -52,7 +52,7 @@ namespace NBShaderEditor
                 "_MaskRotationFoldOut",
                 "_Mask_RotationToggle",
                 "遮罩旋转速度",
-                W9ParticleShaderFlags.FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON,
+                NBShaderFlags.FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON,
                 parent: this);
             ShaderGUIFloatItem maskMapRotationSpeedItem = new ShaderGUIFloatItem(rootItem, rotateBlock)
             {
@@ -74,14 +74,14 @@ namespace NBShaderEditor
                 "_Mask2BlockFoldOut",
                 "_Mask2_Toggle",
                 "遮罩2",
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP2,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP2,
                 1,
                 parent: this);
             AddMaskMap(rootItem, mask2Block, "_MaskMap2", "_MaskMap2GradientToggle", "_Mask2UVModeFoldOut", "遮罩2",
-                W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP2,
-                W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2,
-                W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_MASKMAP_2,
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT,
+                NBShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP2,
+                NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2,
+                NBShaderFlags.FLAG_BIT_UVMODE_POS_0_MASKMAP_2,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT,
                 1);
             new VectorComponentItem(rootItem, mask2Block, "_MaskMapVec", 1, () => Content("遮罩2旋转"), false);
             new Vector2LineItem(rootItem, mask2Block, "_MaskMapOffsetAnition", false, () => Content("遮罩2偏移速度"));
@@ -91,14 +91,14 @@ namespace NBShaderEditor
                 "_Mask3BlockFoldOut",
                 "_Mask3_Toggle",
                 "遮罩3",
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP3,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP3,
                 1,
                 parent: this);
             AddMaskMap(rootItem, mask3Block, "_MaskMap3", "_MaskMap3GradientToggle", "_Mask3UVModeFoldOut", "遮罩3",
-                W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP3,
-                W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3,
-                W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_MASKMAP_3,
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT,
+                NBShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP3,
+                NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3,
+                NBShaderFlags.FLAG_BIT_UVMODE_POS_0_MASKMAP_3,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT,
                 1);
             new VectorComponentItem(rootItem, mask3Block, "_MaskMapVec", 2, () => Content("遮罩3旋转"), false);
             new Vector2LineItem(rootItem, mask3Block, "_MaskMap3OffsetAnition", true, () => Content("遮罩3偏移速度"));

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEditorInternal;
@@ -49,7 +49,7 @@ namespace NBShaderEditor
             {
                 _stencilValuesConfig =
                     AssetDatabase.LoadAssetAtPath<StencilValuesConfig>(
-                        "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/StencilConfig.asset");
+                        "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/StencilConfig.asset");
             }
 
             matEditor = materialEditor;

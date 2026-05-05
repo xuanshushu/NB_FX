@@ -112,12 +112,12 @@ namespace NBShaderEditor
                 "_BumpTexFoldOut",
                 "_BumpTex",
                 () => Content("light.bump.related", "Normal Map Related"));
-            new WrapModeItem(rootItem, bumpTexRelatedFoldOut, W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_BUMPTEX, () => Content("light.bump.wrap", "Normal Map Wrap"));
+            new WrapModeItem(rootItem, bumpTexRelatedFoldOut, NBShaderFlags.FLAG_BIT_WRAPMODE_BUMPTEX, () => Content("light.bump.wrap", "Normal Map Wrap"));
             new UVModeSelectItem(
                 rootItem,
                 bumpTexRelatedFoldOut,
                 "_BumpUVModeFoldOut",
-                W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_BUMPMAP,
+                NBShaderFlags.FLAG_BIT_UVMODE_POS_0_BUMPMAP,
                 0,
                 () => Content("light.bump.uvmode", "Normal Map UV Source"),
                 "_BumpTex");
@@ -126,7 +126,7 @@ namespace NBShaderEditor
                 bumpTexRelatedFoldOut,
                 "_BumpMapMaskMode",
                 () => Content("light.bump.maskMode", "Normal Map Multi Channel"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE, enabled));
+                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE, enabled));
             ShaderGUISliderItem bumpScaleItem = new ShaderGUISliderItem(rootItem, bumpTexRelatedFoldOut)
             {
                 PropertyName = "_BumpScale",
@@ -299,7 +299,7 @@ namespace NBShaderEditor
             }
 
             _nbRootItem.SyncService.ApplyToggleFlag(
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP,
                 rampProperty.textureValue != null,
                 1);
         }

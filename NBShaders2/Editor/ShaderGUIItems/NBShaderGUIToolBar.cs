@@ -305,13 +305,13 @@ namespace NBShaderEditor
                 ShaderFlagsBase flags = _rootItem.ShaderFlags[i];
                 if (useTexcoord1)
                 {
-                    flags.SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
-                    flags.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
+                    flags.SetFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
+                    flags.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
                 }
                 else
                 {
-                    flags.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
-                    flags.SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
+                    flags.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
+                    flags.SetFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
                 }
             }
         }
@@ -322,7 +322,7 @@ namespace NBShaderEditor
             SetFloatProperty("_UTwirlEnabled", enabled);
             SetVectorProperty("_TWParameter", GetDefaultVector("_TWParameter", new Vector4(0.5f, 0.5f, 0f, 0f)));
             SetFloatProperty("_TWStrength", GetDefaultFloat("_TWStrength", 1f));
-            ApplyFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON, enabled > 0.5f, 0);
+            ApplyFlag(NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON, enabled > 0.5f, 0);
         }
 
         private void ResetPolarValues()
@@ -330,7 +330,7 @@ namespace NBShaderEditor
             float enabled = GetDefaultFloat("_PolarCoordinatesEnabled", 0f);
             SetFloatProperty("_PolarCoordinatesEnabled", enabled);
             SetVectorProperty("_PCCenter", GetDefaultVector("_PCCenter", new Vector4(0.5f, 0.5f, 1f, 0f)));
-            ApplyFlag(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON, enabled > 0.5f, 0);
+            ApplyFlag(NBShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON, enabled > 0.5f, 0);
         }
 
         private void CollapseAll()

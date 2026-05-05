@@ -1,6 +1,6 @@
-#ifndef PARTICLESUNLITFORWARDPASS
-    #define PARTICLESUNLITFORWARDPASS
-    #include "ParticlesUnlitInputNew.hlsl"
+#ifndef NBSHADER_FORWARD_PASS
+    #define NBSHADER_FORWARD_PASS
+    #include "NBShaderInput.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
 
@@ -181,14 +181,14 @@
             
             //因为极坐标和旋转会强制到Frag计算，所以顶点在这边特殊处理一遍。
             
-            _VertexOffset_Map_ST.z += GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X,0,input.Custom1,input.Custom2);
-            _VertexOffset_Map_ST.w += GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_Y,0,input.Custom1,input.Custom2);
-            _VertexOffset_Vec.z = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_VERTEXOFFSET_INTENSITY,_VertexOffset_Vec.z,input.Custom1,input.Custom2);
+            _VertexOffset_Map_ST.z += GetCustomData(_NBShaderCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X,0,input.Custom1,input.Custom2);
+            _VertexOffset_Map_ST.w += GetCustomData(_NBShaderCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_Y,0,input.Custom1,input.Custom2);
+            _VertexOffset_Vec.z = GetCustomData(_NBShaderCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_VERTEXOFFSET_INTENSITY,_VertexOffset_Vec.z,input.Custom1,input.Custom2);
 
             if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP))
             {
-                _VertexOffset_MaskMap_ST.z += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X,0,input.Custom1,input.Custom2);
-                _VertexOffset_MaskMap_ST.w += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y,0,input.Custom1,input.Custom2);
+                _VertexOffset_MaskMap_ST.z += GetCustomData(_NBShaderCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X,0,input.Custom1,input.Custom2);
+                _VertexOffset_MaskMap_ST.w += GetCustomData(_NBShaderCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y,0,input.Custom1,input.Custom2);
             }
             
             float2 vertexOffsetUVs = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MAP,baseUVsForVertexOffset);
@@ -393,7 +393,7 @@
         
         if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE)&CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI))
         {
-            programNoise =  BlendPNoise(_W9ParticleShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND,programSimpleNoise,programVoronoiNoise,_ProgramNoiseBaseBlendOpacity);
+            programNoise =  BlendPNoise(_NBShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND,programSimpleNoise,programVoronoiNoise,_ProgramNoiseBaseBlendOpacity);
             // Unity_Blend_HardLight_half(programSimpleNoise,programVoronoiNoise,_DissolveVoronoi_Vec2.x,programNoise);
         }
                         
@@ -455,8 +455,8 @@
                     cum_noise = cum_noise * 2 - 1;
                 }
                 noiseMask *= noiseSample.a;
-                _DistortionDirection.x += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
-                _DistortionDirection.y += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+                _DistortionDirection.x += GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+                _DistortionDirection.y += GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
             #endif
             UNITY_BRANCH
             if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_NOISE_MASKMAP))
@@ -464,12 +464,12 @@
                 half4 noiseMaskSample = SampleTexture2DWithWrapFlags(_NoiseMaskMap,noiseMaskMap_uv,FLAG_BIT_WRAPMODE_NOISE_MASKMAP);
                 noiseMask *= GetColorChannel(noiseMaskSample,FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK);
             }
-            _NoiseIntensity = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY,_NoiseIntensity,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+            _NoiseIntensity = GetCustomData(_NBShaderCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY,_NoiseIntensity,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
     
             cum_noise = cum_noise *_DistortionDirection.xy*_NoiseIntensity;
 
             #ifdef _PROGRAM_NOISE
-                cum_noise =  BlendPNoise(_W9ParticleShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT,cum_noise,programNoise,_DistortPNoiseBlendOpacity);
+                cum_noise =  BlendPNoise(_NBShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT,cum_noise,programNoise,_DistortPNoiseBlendOpacity);
             #endif
         
 
@@ -517,7 +517,7 @@
         else if (CheckLocalFlags(FLAG_BIT_PARTICLE_CHORATICABERRAT))
         {
            
-            _DistortionDirection.z = GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY,_DistortionDirection.z,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+            _DistortionDirection.z = GetCustomData(_NBShaderCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY,_DistortionDirection.z,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
             _DistortionDirection.z *= 0.1;
             albedo = DistortionChoraticaberrat(baseMap,originUV,MainTex_UV,_DistortionDirection.z,FLAG_BIT_WRAPMODE_BASEMAP);
         }
@@ -720,7 +720,7 @@
             half dissolveValue = GetColorChannel(dissolveMapSample,FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP);
 
             #ifdef _PROGRAM_NOISE
-                dissolveValue =  BlendPNoise(_W9ParticleShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE,dissolveValue,programNoise,_DissolvePNoiseBlendOpacity);
+                dissolveValue =  BlendPNoise(_NBShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE,dissolveValue,programNoise,_DissolvePNoiseBlendOpacity);
             #endif
         
         
@@ -736,7 +736,7 @@
             {
                 half4 dissolveMaskSample = SampleTexture2DWithWrapFlags(_DissolveMaskMap,dissolve_mask_uv,FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP);
                 dissolveMaskValue = GetColorChannel(dissolveMaskSample,FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP);
-                dissolveMaskStrength = _Dissolve.z + GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+                dissolveMaskStrength = _Dissolve.z + GetCustomData(_NBShaderCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
               
                 if (_DissolveMaskMode < 0.5)
                 {
@@ -748,7 +748,7 @@
             #ifdef NB_DEBUG_DISSOLVE      //后续Test类的关键字要找机会排除
                 return half4(dissolveValue.rrr,1);
             #endif
-            half dissolveStrenth = _Dissolve.x + GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
+            half dissolveStrenth = _Dissolve.x + GetCustomData(_NBShaderCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
         
             half invSoftStep = 1/_Dissolve.w;
             half dissolveValueBeforeSoftStep = dissolveValue - ((dissolveStrenth)*(invSoftStep + 1)-1)*_Dissolve.w ;
@@ -939,7 +939,7 @@
             }
 
             #ifdef _PROGRAM_NOISE
-                mask1 =  BlendPNoise(_W9ParticleShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_MASK,mask1,programNoise,_MaskPNoiseBlendOpacity);
+                mask1 =  BlendPNoise(_NBShaderPNoiseBlendFlag,FLAG_BIT_PNOISE_BLEND_POS_0_MASK,mask1,programNoise,_MaskPNoiseBlendOpacity);
             #endif
         
 
@@ -975,7 +975,7 @@
                 fresnelValue =  dotNV;
 
        
-                _FresnelUnit.x += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);;
+                _FresnelUnit.x += GetCustomData(_NBShaderCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);;
                         
                 // half fresnelHardness =  - _FresnelUnit.w*0.5 +0.5;
                 fresnelValue = NB_Remap(fresnelValue,_FresnelUnit.x,_FresnelUnit.x + 1.01 - _FresnelUnit.w,0,1);

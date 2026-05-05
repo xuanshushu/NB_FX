@@ -87,7 +87,7 @@ namespace NBShaderEditor
             _alphaChannelItem = new ColorChannelSelectItem(
                 rootItem,
                 _baseMapRelatedFoldOutItem,
-                W9ParticleShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA,
+                NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA,
                 3,
                 () => NBShaderInspectorLocalization.MakeContent(
                     "inspector.maintex.alphaChannel.label",
@@ -96,7 +96,7 @@ namespace NBShaderEditor
             _baseMapWrapModeItem = new WrapModeItem(
                 rootItem,
                 _baseMapRelatedFoldOutItem,
-                W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_BASEMAP,
+                NBShaderFlags.FLAG_BIT_WRAPMODE_BASEMAP,
                 () => NBShaderInspectorLocalization.MakeContent(
                     "inspector.maintex.wrap.label",
                     "Main Texture Wrap"),
@@ -107,7 +107,7 @@ namespace NBShaderEditor
                 rootItem,
                 _baseMapRelatedFoldOutItem,
                 "_MainTexUVModeFoldOut",
-                W9ParticleShaderFlags.FLAG_BIT_UVMODE_POS_0_MAINTEX,
+                NBShaderFlags.FLAG_BIT_UVMODE_POS_0_MAINTEX,
                 0,
                 () => NBShaderInspectorLocalization.MakeContent(
                     "inspector.maintex.uvmode.label",
@@ -118,7 +118,7 @@ namespace NBShaderEditor
             _offsetXCustomDataItem = new CustomDataSelectItem(
                 rootItem,
                 _baseMapRelatedFoldOutItem,
-                W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X,
+                NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X,
                 0,
                 () => NBShaderInspectorLocalization.MakeContent(
                     "inspector.maintex.customdata.offsetx.label",
@@ -128,7 +128,7 @@ namespace NBShaderEditor
             _offsetYCustomDataItem = new CustomDataSelectItem(
                 rootItem,
                 _baseMapRelatedFoldOutItem,
-                W9ParticleShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y,
+                NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y,
                 0,
                 () => NBShaderInspectorLocalization.MakeContent(
                     "inspector.maintex.customdata.offsety.label",
@@ -178,7 +178,7 @@ namespace NBShaderEditor
             _pNoiseBlendModeItem = new PNoiseBlendModeItem(
                 rootItem,
                 _baseMapRelatedFoldOutItem,
-                W9ParticleShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_MAINTEX,
+                NBShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_MAINTEX,
                 "_MainTexPNoiseBlendOpacity",
                 () => NBShaderInspectorLocalization.MakeContent(
                     "inspector.maintex.pnoiseBlend.label",

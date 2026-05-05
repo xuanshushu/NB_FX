@@ -287,7 +287,7 @@ namespace NBShaderEditor
 
         private int GetFirstChannel()
         {
-            W9ParticleShaderFlags flags = GetFlags(0);
+            NBShaderFlags flags = GetFlags(0);
             return flags == null ? _defaultChannel : (int)flags.GetColorChanel(_colorChannelFlagPos);
         }
 
@@ -296,7 +296,7 @@ namespace NBShaderEditor
             int first = GetFirstChannel();
             for (int i = 1; i < RootItem.ShaderFlags.Count; i++)
             {
-                W9ParticleShaderFlags flags = GetFlags(i);
+                NBShaderFlags flags = GetFlags(i);
                 if (flags != null && (int)flags.GetColorChanel(_colorChannelFlagPos) != first)
                 {
                     return true;
@@ -310,15 +310,15 @@ namespace NBShaderEditor
         {
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
             {
-                GetFlags(i)?.SetColorChanel((W9ParticleShaderFlags.ColorChannel)channel, _colorChannelFlagPos);
+                GetFlags(i)?.SetColorChanel((NBShaderFlags.ColorChannel)channel, _colorChannelFlagPos);
             }
         }
 
-        private W9ParticleShaderFlags GetFlags(int index)
+        private NBShaderFlags GetFlags(int index)
         {
             return index >= 0 &&
                    index < RootItem.ShaderFlags.Count &&
-                   RootItem.ShaderFlags[index] is W9ParticleShaderFlags flags
+                   RootItem.ShaderFlags[index] is NBShaderFlags flags
                 ? flags
                 : null;
         }
@@ -372,7 +372,7 @@ namespace NBShaderEditor
                 EditorGUI.LabelField(LabelRect, _contentProvider());
             }
 
-            W9ParticleShaderFlags.CutomDataComponent component = GetFirstComponent();
+            NBShaderFlags.CutomDataComponent component = GetFirstComponent();
             using (ParentControlDisabledScope())
             {
                 EditorGUI.showMixedValue = HasMixedValue();
@@ -388,7 +388,7 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    SetComponent((W9ParticleShaderFlags.CutomDataComponent)index);
+                    SetComponent((NBShaderFlags.CutomDataComponent)index);
                     CheckIsPropertyModified();
                     if (RootItem is NBShaderRootItem nbRootItem)
                     {
@@ -402,14 +402,14 @@ namespace NBShaderEditor
 
         public override void CheckIsPropertyModified(bool isCallByChild = false)
         {
-            PropertyIsDefaultValue = !HasMixedValue() && GetFirstComponent() == W9ParticleShaderFlags.CutomDataComponent.Off;
+            PropertyIsDefaultValue = !HasMixedValue() && GetFirstComponent() == NBShaderFlags.CutomDataComponent.Off;
             HasModified = !PropertyIsDefaultValue;
             ParentItem?.CheckIsPropertyModified(true);
         }
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
-            SetComponent(W9ParticleShaderFlags.CutomDataComponent.Off);
+            SetComponent(NBShaderFlags.CutomDataComponent.Off);
             if (RootItem is NBShaderRootItem nbRootItem)
             {
                 nbRootItem.SyncService.SyncMaterialState();
@@ -423,18 +423,18 @@ namespace NBShaderEditor
             }
         }
 
-        private W9ParticleShaderFlags.CutomDataComponent GetFirstComponent()
+        private NBShaderFlags.CutomDataComponent GetFirstComponent()
         {
-            W9ParticleShaderFlags flags = GetFlags(0);
-            return flags == null ? W9ParticleShaderFlags.CutomDataComponent.Off : flags.GetCustomDataFlag(_dataBitPos, _dataIndex);
+            NBShaderFlags flags = GetFlags(0);
+            return flags == null ? NBShaderFlags.CutomDataComponent.Off : flags.GetCustomDataFlag(_dataBitPos, _dataIndex);
         }
 
         private bool HasMixedValue()
         {
-            W9ParticleShaderFlags.CutomDataComponent first = GetFirstComponent();
+            NBShaderFlags.CutomDataComponent first = GetFirstComponent();
             for (int i = 1; i < RootItem.ShaderFlags.Count; i++)
             {
-                W9ParticleShaderFlags flags = GetFlags(i);
+                NBShaderFlags flags = GetFlags(i);
                 if (flags != null && flags.GetCustomDataFlag(_dataBitPos, _dataIndex) != first)
                 {
                     return true;
@@ -444,7 +444,7 @@ namespace NBShaderEditor
             return false;
         }
 
-        private void SetComponent(W9ParticleShaderFlags.CutomDataComponent component)
+        private void SetComponent(NBShaderFlags.CutomDataComponent component)
         {
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
             {
@@ -452,11 +452,11 @@ namespace NBShaderEditor
             }
         }
 
-        private W9ParticleShaderFlags GetFlags(int index)
+        private NBShaderFlags GetFlags(int index)
         {
             return index >= 0 &&
                    index < RootItem.ShaderFlags.Count &&
-                   RootItem.ShaderFlags[index] is W9ParticleShaderFlags flags
+                   RootItem.ShaderFlags[index] is NBShaderFlags flags
                 ? flags
                 : null;
         }
@@ -650,7 +650,7 @@ namespace NBShaderEditor
                 EditorGUI.LabelField(LabelRect, _contentProvider());
             }
 
-            W9ParticleShaderFlags.PNoiseBlendMode mode = GetFirstMode();
+            NBShaderFlags.PNoiseBlendMode mode = GetFirstMode();
             using (ParentControlDisabledScope())
             {
                 EditorGUI.showMixedValue = HasMixedValue();
@@ -666,7 +666,7 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    SetMode((W9ParticleShaderFlags.PNoiseBlendMode)index);
+                    SetMode((NBShaderFlags.PNoiseBlendMode)index);
                     CheckIsPropertyModified();
                 }
             }
@@ -678,7 +678,7 @@ namespace NBShaderEditor
 
         public override void CheckIsPropertyModified(bool isCallByChild = false)
         {
-            PropertyIsDefaultValue = !HasMixedValue() && GetFirstMode() == W9ParticleShaderFlags.PNoiseBlendMode.NotUse;
+            PropertyIsDefaultValue = !HasMixedValue() && GetFirstMode() == NBShaderFlags.PNoiseBlendMode.NotUse;
             HasModified = !PropertyIsDefaultValue;
             foreach (ShaderGUIItem childItem in ChildrenItemList)
             {
@@ -689,7 +689,7 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
-            SetMode(W9ParticleShaderFlags.PNoiseBlendMode.NotUse);
+            SetMode(NBShaderFlags.PNoiseBlendMode.NotUse);
             PropertyIsDefaultValue = true;
             foreach (ShaderGUIItem childItem in ChildrenItemList)
             {
@@ -702,18 +702,18 @@ namespace NBShaderEditor
             }
         }
 
-        private W9ParticleShaderFlags.PNoiseBlendMode GetFirstMode()
+        private NBShaderFlags.PNoiseBlendMode GetFirstMode()
         {
-            W9ParticleShaderFlags flags = GetFlags(0);
-            return flags == null ? W9ParticleShaderFlags.PNoiseBlendMode.NotUse : flags.GetPNoiseBlendMode(_pNoiseBlendModeFlagPos);
+            NBShaderFlags flags = GetFlags(0);
+            return flags == null ? NBShaderFlags.PNoiseBlendMode.NotUse : flags.GetPNoiseBlendMode(_pNoiseBlendModeFlagPos);
         }
 
         private bool HasMixedValue()
         {
-            W9ParticleShaderFlags.PNoiseBlendMode first = GetFirstMode();
+            NBShaderFlags.PNoiseBlendMode first = GetFirstMode();
             for (int i = 1; i < RootItem.ShaderFlags.Count; i++)
             {
-                W9ParticleShaderFlags flags = GetFlags(i);
+                NBShaderFlags flags = GetFlags(i);
                 if (flags != null && flags.GetPNoiseBlendMode(_pNoiseBlendModeFlagPos) != first)
                 {
                     return true;
@@ -723,7 +723,7 @@ namespace NBShaderEditor
             return false;
         }
 
-        private void SetMode(W9ParticleShaderFlags.PNoiseBlendMode mode)
+        private void SetMode(NBShaderFlags.PNoiseBlendMode mode)
         {
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
             {
@@ -731,11 +731,11 @@ namespace NBShaderEditor
             }
         }
 
-        private W9ParticleShaderFlags GetFlags(int index)
+        private NBShaderFlags GetFlags(int index)
         {
             return index >= 0 &&
                    index < RootItem.ShaderFlags.Count &&
-                   RootItem.ShaderFlags[index] is W9ParticleShaderFlags flags
+                   RootItem.ShaderFlags[index] is NBShaderFlags flags
                 ? flags
                 : null;
         }
@@ -807,7 +807,7 @@ namespace NBShaderEditor
                 "_GlobalTwirlFoldOut",
                 "_UTwirlEnabled",
                 () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.twirl", "Twirl"),
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON,
+                NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON,
                 0);
             _twirlCenterItem = new Vector2LineItem(rootItem, _twirlBlock, "_TWParameter", true, () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.twirlCenter", "Twirl Center"));
             _twirlStrengthItem = new ShaderGUIFloatItem(rootItem, _twirlBlock)
@@ -823,7 +823,7 @@ namespace NBShaderEditor
                 "_GlobalPolarFoldOut",
                 "_PolarCoordinatesEnabled",
                 () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.polar", "Polar Coordinates"),
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON,
+                NBShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON,
                 0);
             _polarCenterItem = new Vector2LineItem(rootItem, _polarBlock, "_PCCenter", true, () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.polarCenter", "Polar Center"));
             _polarStrengthItem = new VectorComponentItem(rootItem, _polarBlock, "_PCCenter", 2, () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.polarStrength", "Polar Strength"), true, 0f, 1f);
@@ -864,7 +864,7 @@ namespace NBShaderEditor
                 EditorGUI.LabelField(LabelRect, _contentProvider());
             }
 
-            W9ParticleShaderFlags.UVMode mode = GetFirstMode();
+            NBShaderFlags.UVMode mode = GetFirstMode();
             using (ParentControlDisabledScope(controlDisabled))
             {
                 EditorGUI.showMixedValue = HasMixedValue();
@@ -880,7 +880,7 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    mode = (W9ParticleShaderFlags.UVMode)index;
+                    mode = (NBShaderFlags.UVMode)index;
                     SetMode(mode);
                     _foldOutHelper.SetOpen(NeedsFoldOut(mode));
                     CheckIsPropertyModified();
@@ -912,14 +912,14 @@ namespace NBShaderEditor
                     {
                         switch (mode)
                         {
-                            case W9ParticleShaderFlags.UVMode.SpecialUVChannel:
+                            case NBShaderFlags.UVMode.SpecialUVChannel:
                                 _specialUVChannelItem.OnGUI();
                                 break;
-                            case W9ParticleShaderFlags.UVMode.PolarOrTwirl:
+                            case NBShaderFlags.UVMode.PolarOrTwirl:
                                 _twirlBlock.OnGUI();
                                 _polarBlock.OnGUI();
                                 break;
-                            case W9ParticleShaderFlags.UVMode.Cylinder:
+                            case NBShaderFlags.UVMode.Cylinder:
                                 using (ParentControlDisabledScope())
                                 {
                                     EditorGUILayout.LabelField(
@@ -932,12 +932,12 @@ namespace NBShaderEditor
                                 _cylinderOffsetItem.OnGUI();
                                 UpdateCylinderMatrix(RootItem);
                                 break;
-                            case W9ParticleShaderFlags.UVMode.WorldPos:
+                            case NBShaderFlags.UVMode.WorldPos:
                                 _worldSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
                                 _worldSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
                                 _worldSpaceItem.OnGUI();
                                 break;
-                            case W9ParticleShaderFlags.UVMode.ObjectPos:
+                            case NBShaderFlags.UVMode.ObjectPos:
                                 _objectSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
                                 _objectSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
                                 _objectSpaceItem.OnGUI();
@@ -954,7 +954,7 @@ namespace NBShaderEditor
 
         public override void CheckIsPropertyModified(bool isCallByChild = false)
         {
-            PropertyIsDefaultValue = !HasMixedValue() && GetFirstMode() == W9ParticleShaderFlags.UVMode.DefaultUVChannel;
+            PropertyIsDefaultValue = !HasMixedValue() && GetFirstMode() == NBShaderFlags.UVMode.DefaultUVChannel;
             HasModified = !PropertyIsDefaultValue;
             foreach (ShaderGUIItem childItem in ChildrenItemList)
             {
@@ -965,7 +965,7 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
-            SetMode(W9ParticleShaderFlags.UVMode.DefaultUVChannel);
+            SetMode(NBShaderFlags.UVMode.DefaultUVChannel);
             PropertyIsDefaultValue = true;
             HasModified = false;
             if (!isCallByParent)
@@ -974,12 +974,12 @@ namespace NBShaderEditor
             }
         }
 
-        private static bool NeedsFoldOut(W9ParticleShaderFlags.UVMode mode)
+        private static bool NeedsFoldOut(NBShaderFlags.UVMode mode)
         {
-            return mode != W9ParticleShaderFlags.UVMode.DefaultUVChannel &&
-                   mode != W9ParticleShaderFlags.UVMode.CommonUV &&
-                   mode != W9ParticleShaderFlags.UVMode.ScreenUV &&
-                   mode != W9ParticleShaderFlags.UVMode.MainTex;
+            return mode != NBShaderFlags.UVMode.DefaultUVChannel &&
+                   mode != NBShaderFlags.UVMode.CommonUV &&
+                   mode != NBShaderFlags.UVMode.ScreenUV &&
+                   mode != NBShaderFlags.UVMode.MainTex;
         }
 
         private bool HasTexture()
@@ -993,18 +993,18 @@ namespace NBShaderEditor
             return info.Property.hasMixedValue || info.Property.textureValue != null;
         }
 
-        private W9ParticleShaderFlags.UVMode GetFirstMode()
+        private NBShaderFlags.UVMode GetFirstMode()
         {
-            W9ParticleShaderFlags flags = GetFlags(0);
-            return flags == null ? W9ParticleShaderFlags.UVMode.DefaultUVChannel : flags.GetUVMode(_uvModeBitPos, _uvModeFlagIndex);
+            NBShaderFlags flags = GetFlags(0);
+            return flags == null ? NBShaderFlags.UVMode.DefaultUVChannel : flags.GetUVMode(_uvModeBitPos, _uvModeFlagIndex);
         }
 
         private bool HasMixedValue()
         {
-            W9ParticleShaderFlags.UVMode first = GetFirstMode();
+            NBShaderFlags.UVMode first = GetFirstMode();
             for (int i = 1; i < RootItem.ShaderFlags.Count; i++)
             {
-                W9ParticleShaderFlags flags = GetFlags(i);
+                NBShaderFlags flags = GetFlags(i);
                 if (flags != null && flags.GetUVMode(_uvModeBitPos, _uvModeFlagIndex) != first)
                 {
                     return true;
@@ -1014,7 +1014,7 @@ namespace NBShaderEditor
             return false;
         }
 
-        private void SetMode(W9ParticleShaderFlags.UVMode mode)
+        private void SetMode(NBShaderFlags.UVMode mode)
         {
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
             {
@@ -1022,11 +1022,11 @@ namespace NBShaderEditor
             }
         }
 
-        private W9ParticleShaderFlags GetFlags(int index)
+        private NBShaderFlags GetFlags(int index)
         {
             return index >= 0 &&
                    index < RootItem.ShaderFlags.Count &&
-                   RootItem.ShaderFlags[index] is W9ParticleShaderFlags flags
+                   RootItem.ShaderFlags[index] is NBShaderFlags flags
                 ? flags
                 : null;
         }
@@ -1081,13 +1081,13 @@ namespace NBShaderEditor
                     ShaderFlagsBase flags = RootItem.ShaderFlags[i];
                     if (useTexcoord1)
                     {
-                        flags.SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
-                        flags.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
+                        flags.SetFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
+                        flags.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
                     }
                     else
                     {
-                        flags.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
-                        flags.SetFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
+                        flags.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
+                        flags.SetFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
                     }
                 }
             }

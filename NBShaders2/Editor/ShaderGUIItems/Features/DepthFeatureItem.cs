@@ -50,7 +50,7 @@ namespace NBShaderEditor
                 "_DepthOutlineBlockFoldOut",
                 "_DepthOutline_Toggle",
                 "深度描边",
-                W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE,
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE,
                 1,
                 isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True)
         {

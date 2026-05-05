@@ -111,8 +111,8 @@ namespace NBShaderEditor
         {
             for (int i = 0; i < _nbRootItem.ShaderFlags.Count; i++)
             {
-                if (_nbRootItem.ShaderFlags[i] is W9ParticleShaderFlags flags &&
-                    flags.CheckIsUVModeOn(W9ParticleShaderFlags.UVMode.SpecialUVChannel))
+                if (_nbRootItem.ShaderFlags[i] is NBShaderFlags flags &&
+                    flags.CheckIsUVModeOn(NBShaderFlags.UVMode.SpecialUVChannel))
                 {
                     return true;
                 }
@@ -133,7 +133,7 @@ namespace NBShaderEditor
             Func<GUIContent> contentProvider,
             Func<bool> isVisible,
             Func<bool> anyVatFrameCustomDataVisible)
-            : base(rootItem, parentItem, W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME, 2, contentProvider)
+            : base(rootItem, parentItem, NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME, 2, contentProvider)
         {
             _isVisible = isVisible;
             _anyVatFrameCustomDataVisible = anyVatFrameCustomDataVisible;
@@ -158,11 +158,11 @@ namespace NBShaderEditor
         {
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
             {
-                if (RootItem.ShaderFlags[i] is W9ParticleShaderFlags flags)
+                if (RootItem.ShaderFlags[i] is NBShaderFlags flags)
                 {
                     flags.SetCustomDataFlag(
-                        W9ParticleShaderFlags.CutomDataComponent.Off,
-                        W9ParticleShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME,
+                        NBShaderFlags.CutomDataComponent.Off,
+                        NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME,
                         2);
                 }
             }

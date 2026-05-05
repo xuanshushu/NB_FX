@@ -3,7 +3,6 @@
 //这部分尽量借鉴 UnityEditor.VFX.HDRP.SixWaySmokeLit
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-#include "ParticlesUnlitInputNew.hlsl"
 
 // Generated from UnityEditor.VFX.HDRP.SixWaySmokeLit+BSDFData
 // PackingRules = Exact

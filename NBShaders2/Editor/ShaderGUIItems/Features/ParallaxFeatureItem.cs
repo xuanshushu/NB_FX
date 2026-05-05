@@ -8,9 +8,9 @@ namespace NBShaderEditor
     internal sealed class ParallaxFeatureItem : FeatureToggleFoldOutItem
     {
         public ParallaxFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_ParallaxBlockFoldOut", "_ParallaxMapping_Toggle", "遮蔽视差", W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_PARALLAX_MAPPING, 1, keyword: "_PARALLAX_MAPPING", isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True)
+            : base(rootItem, parentItem, "_ParallaxBlockFoldOut", "_ParallaxMapping_Toggle", "遮蔽视差", NBShaderFlags.FLAG_BIT_PARTICLE_1_PARALLAX_MAPPING, 1, keyword: "_PARALLAX_MAPPING", isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True)
         {
-            AddTextureWithWrap(rootItem, this, "_ParallaxMapping_Map", "视差贴图", W9ParticleShaderFlags.FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP);
+            AddTextureWithWrap(rootItem, this, "_ParallaxMapping_Map", "视差贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP);
             ShaderGUISliderItem parallaxMappingIntensityItem = new ShaderGUISliderItem(rootItem, this)
             {
                 PropertyName = "_ParallaxMapping_Intensity",

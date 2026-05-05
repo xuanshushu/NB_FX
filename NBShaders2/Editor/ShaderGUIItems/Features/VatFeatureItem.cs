@@ -298,14 +298,14 @@ namespace NBShaderEditor
             {
                 Material mat = rootItem.Mats[i];
                 if (!IsTyflowParticleModeEnabled(mat) ||
-                    !(rootItem.ShaderFlags[i] is W9ParticleShaderFlags flags))
+                    !(rootItem.ShaderFlags[i] is NBShaderFlags flags))
                 {
                     continue;
                 }
 
                 bool flipbook = mat.IsKeywordEnabled("_FLIPBOOKBLENDING_ON");
-                bool specialUVUsesUV2 = flags.CheckIsUVModeOn(W9ParticleShaderFlags.UVMode.SpecialUVChannel) &&
-                                         !flags.CheckFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
+                bool specialUVUsesUV2 = flags.CheckIsUVModeOn(NBShaderFlags.UVMode.SpecialUVChannel) &&
+                                         !flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
                 if (flipbook || specialUVUsesUV2)
                 {
                     return true;

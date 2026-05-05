@@ -41,7 +41,7 @@ namespace NBShaderEditor
             ShaderFlags = new System.Collections.Generic.List<ShaderFlagsBase>();
             foreach (Material mat in mats)
             {
-                ShaderFlags.Add(new W9ParticleShaderFlags(mat));
+                ShaderFlags.Add(new NBShaderFlags(mat));
             }
         }
 

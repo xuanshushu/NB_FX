@@ -6,7 +6,7 @@ namespace NBShaderEditor
 {
     public class NBShaderSyncService
     {
-        private const string StencilConfigAssetPath = "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/StencilConfig.asset";
+        private const string StencilConfigAssetPath = "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/StencilConfig.asset";
         private readonly NBShaderRootItem _rootItem;
         private StencilValuesConfig _stencilValuesConfig;
 
@@ -68,7 +68,7 @@ namespace NBShaderEditor
                     continue;
                 }
 
-                W9ParticleShaderFlags flags = GetFlags(i);
+                NBShaderFlags flags = GetFlags(i);
                 SyncMeshSourceMode(mat, flags);
                 SyncCustomData(mat, flags);
                 SyncUVDerivedFlags(flags);
@@ -315,11 +315,11 @@ namespace NBShaderEditor
             return false;
         }
 
-        private W9ParticleShaderFlags GetFlags(int index)
+        private NBShaderFlags GetFlags(int index)
         {
             return index >= 0 &&
                    index < _rootItem.ShaderFlags.Count &&
-                   _rootItem.ShaderFlags[index] is W9ParticleShaderFlags flags
+                   _rootItem.ShaderFlags[index] is NBShaderFlags flags
                 ? flags
                 : null;
         }
@@ -394,7 +394,7 @@ namespace NBShaderEditor
             }
         }
 
-        private void SyncMeshSourceMode(Material mat, W9ParticleShaderFlags flags)
+        private void SyncMeshSourceMode(Material mat, NBShaderFlags flags)
         {
             if (flags == null || !mat.HasProperty("_MeshSourceMode"))
             {
@@ -408,14 +408,14 @@ namespace NBShaderEditor
                               mode == MeshSourceMode.UIEffectBaseMap ||
                               mode == MeshSourceMode.UIParticle;
 
-            SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM, isParticle, 1);
-            SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_UV_FROM_MESH, mode == MeshSourceMode.Mesh, 1);
-            SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UIEFFECT_ON, isUIEffect, 0);
-            SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE, mode == MeshSourceMode.UIEffectSprite, 1);
-            SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE, mode == MeshSourceMode.UIEffectBaseMap, 1);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM, isParticle, 1);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_UV_FROM_MESH, mode == MeshSourceMode.Mesh, 1);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_UIEFFECT_ON, isUIEffect, 0);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE, mode == MeshSourceMode.UIEffectSprite, 1);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE, mode == MeshSourceMode.UIEffectBaseMap, 1);
             if (mode == MeshSourceMode.Particle)
             {
-                SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER, false, 1);
+                SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER, false, 1);
             }
 
             if (mat.HasProperty("_CustomData"))
@@ -430,12 +430,12 @@ namespace NBShaderEditor
             else
             {
                 mat.DisableKeyword("_CUSTOMDATA");
-                SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA1_ON, false, 0);
-                SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA2_ON, false, 0);
+                SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA1_ON, false, 0);
+                SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA2_ON, false, 0);
             }
         }
 
-        private void SyncTimeMode(Material mat, W9ParticleShaderFlags flags)
+        private void SyncTimeMode(Material mat, NBShaderFlags flags)
         {
             if (flags == null || !mat.HasProperty("_TimeMode"))
             {
@@ -443,8 +443,8 @@ namespace NBShaderEditor
             }
 
             TimeMode mode = (TimeMode)Mathf.RoundToInt(mat.GetFloat("_TimeMode"));
-            SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON, mode == TimeMode.UnScaleTime, 0);
-            SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON, mode == TimeMode.ScriptableTime, 0);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON, mode == TimeMode.UnScaleTime, 0);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON, mode == TimeMode.ScriptableTime, 0);
         }
 
         private static void SyncScreenDistortPasses(Material mat)
@@ -470,7 +470,7 @@ namespace NBShaderEditor
             }
         }
 
-        private void SyncCustomData(Material mat, W9ParticleShaderFlags flags)
+        private void SyncCustomData(Material mat, NBShaderFlags flags)
         {
             if (flags == null || !mat.HasProperty("_MeshSourceMode"))
             {
@@ -484,24 +484,24 @@ namespace NBShaderEditor
                 return;
             }
 
-            SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA1_ON, flags.IsCustomData1On(), 0);
-            SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA2_ON, flags.IsCustomData2On(), 0);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA1_ON, flags.IsCustomData1On(), 0);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA2_ON, flags.IsCustomData2On(), 0);
         }
 
-        private static void SyncUVDerivedFlags(W9ParticleShaderFlags flags)
+        private static void SyncUVDerivedFlags(NBShaderFlags flags)
         {
             if (flags == null)
             {
                 return;
             }
 
-            if (!flags.CheckIsUVModeOn(W9ParticleShaderFlags.UVMode.SpecialUVChannel))
+            if (!flags.CheckIsUVModeOn(NBShaderFlags.UVMode.SpecialUVChannel))
             {
-                flags.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
-                flags.ClearFlagBits(W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
+                flags.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
+                flags.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
             }
 
-            SetFlag(flags, W9ParticleShaderFlags.FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE, flags.CheckIsUVModeOn(W9ParticleShaderFlags.UVMode.Cylinder), 1);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE, flags.CheckIsUVModeOn(NBShaderFlags.UVMode.Cylinder), 1);
         }
 
         private void SyncTransparentMode(Material mat)

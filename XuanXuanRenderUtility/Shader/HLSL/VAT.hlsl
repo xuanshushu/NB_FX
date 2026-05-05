@@ -1,8 +1,8 @@
 #ifndef PARTICLE_VAT_INCLUDED
 #define PARTICLE_VAT_INCLUDED
 
-#include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/HoudiniVAT.hlsl"
-#include "Packages/com.xuanxuan.nb.fx/NBShaders/Shader/HLSL/TyflowVAT.hlsl"
+#include "HoudiniVAT.hlsl"
+#include "TyflowVAT.hlsl"
 
 void ApplyVAT(AttributesParticle input, inout float4 positionOS, inout float3 normalOS)
 {

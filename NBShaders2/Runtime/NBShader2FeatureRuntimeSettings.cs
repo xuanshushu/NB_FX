@@ -21,10 +21,10 @@ namespace NBShader
         }
 
         [Header("Allowed Raw Shader Feature Keywords")]
-        public string[] lowAllowedKeywords = NBShader2FeatureCatalog.GetDefaultAllowedKeywords(NBShader2FeatureTier.Low);
-        public string[] mediumAllowedKeywords = NBShader2FeatureCatalog.GetDefaultAllowedKeywords(NBShader2FeatureTier.Medium);
-        public string[] highAllowedKeywords = NBShader2FeatureCatalog.GetDefaultAllowedKeywords(NBShader2FeatureTier.High);
-        public string[] ultraAllowedKeywords = NBShader2FeatureCatalog.GetDefaultAllowedKeywords(NBShader2FeatureTier.Ultra);
+        public string[] lowAllowedKeywords = CloneCatalogKeywords();
+        public string[] mediumAllowedKeywords = CloneCatalogKeywords();
+        public string[] highAllowedKeywords = CloneCatalogKeywords();
+        public string[] ultraAllowedKeywords = CloneCatalogKeywords();
 
         [Header("QualitySettings Name To Tier")]
         public QualityTierMapping[] qualityTierMappings = new QualityTierMapping[0];
@@ -34,11 +34,11 @@ namespace NBShader
             switch (tier)
             {
                 case NBShader2FeatureTier.Low:
-                    return lowAllowedKeywords ?? new string[0];
+                    return lowAllowedKeywords ?? NBShader2FeatureCatalog.RawKeywords;
                 case NBShader2FeatureTier.Medium:
-                    return mediumAllowedKeywords ?? new string[0];
+                    return mediumAllowedKeywords ?? NBShader2FeatureCatalog.RawKeywords;
                 case NBShader2FeatureTier.High:
-                    return highAllowedKeywords ?? new string[0];
+                    return highAllowedKeywords ?? NBShader2FeatureCatalog.RawKeywords;
                 default:
                     return ultraAllowedKeywords ?? NBShader2FeatureCatalog.RawKeywords;
             }
@@ -79,6 +79,11 @@ namespace NBShader
             }
 
             return allowed;
+        }
+
+        private static string[] CloneCatalogKeywords()
+        {
+            return (string[])NBShader2FeatureCatalog.RawKeywords.Clone();
         }
     }
 }
