@@ -4,6 +4,10 @@
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
     #include "NBShaderFlags.hlsl"
    
+    #if defined(_PROGRAM_NOISE) && (defined(_PROGRAM_NOISE_SIMPLE) || defined(_PROGRAM_NOISE_VORONOI))
+        #define _PROGRAM_NOISE_ACTIVE
+    #endif
+
 
   //---------------particleInput-------------------
     CBUFFER_START(UnityPerMaterial)
@@ -990,8 +994,7 @@
             MaskMapuv = UVOffsetAnimaiton(MaskMapuv,_MaskMapOffsetAnition.xy);
             particleUVs.maskMapUV = MaskMapuv;
 
-            UNITY_BRANCH
-            if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MASK_MAP2))
+            #if defined(_MASKMAP2_ON)
             {
                 float2 maskMap2UV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_MASKMAP_2,baseUVs);
                 maskMap2UV = Rotate_Radians_float(maskMap2UV,half2(0.5,0.5),_MaskMapVec.y);
@@ -1000,9 +1003,9 @@
                 maskMap2UV = UVOffsetAnimaiton(maskMap2UV,_MaskMapOffsetAnition.zw);
                 particleUVs.maskMap2UV = maskMap2UV;
             }
+            #endif
 
-            UNITY_BRANCH
-            if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MASK_MAP3))
+            #if defined(_MASKMAP3_ON)
             {
                 float2 maskMap3UV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_MASKMAP_3,baseUVs);
                 maskMap3UV = Rotate_Radians_float(maskMap3UV,half2(0.5,0.5),_MaskMapVec.z);
@@ -1012,6 +1015,7 @@
                 maskMap3UV = UVOffsetAnimaiton(maskMap3UV,_MaskMap3OffsetAnition.xy);
                 particleUVs.maskMap3UV = maskMap3UV;
             }
+            #endif
         
         #endif
 
@@ -1029,29 +1033,32 @@
         
             float2 dissolveUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP,baseUVs);
             particleUVs.dissolve_uv = ParticleUVCommonProcess(dissolveUV,_DissolveMap_ST,_DissolveOffsetRotateDistort.xy,_DissolveOffsetRotateDistort.z);
-            if(CheckLocalFlags(FLAG_BIT_PARTICLE_DISSOLVE_MASK))
+            #if defined(_DISSOLVE_MASK)
             {
                 float2 dissolveMaskUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP,baseUVs);
                 particleUVs.dissolve_mask_uv = ParticleUVCommonProcess(dissolveMaskUV,_DissolveMaskMap_ST,float2(0,0),_DissolveOffsetRotateDistort.z);
             }
+            #endif
         #endif
 
-        #ifdef _PROGRAM_NOISE
+        #ifdef _PROGRAM_NOISE_ACTIVE
             float2 programNoiseUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE,baseUVs);
             programNoiseUV = Rotate_Radians_float(programNoiseUV,half2(0.5,0.5),_ProgramNoise_Rotate);
-            if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE))
+            #if defined(_PROGRAM_NOISE_SIMPLE)
             {
                 _DissolveVoronoi_Vec4.x += GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
                 _DissolveVoronoi_Vec4.y += GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
                 particleUVs.dissolve_noise1_UV = programNoiseUV * _DissolveVoronoi_Vec.xy + _DissolveVoronoi_Vec4.xy + time*_DissolveVoronoi_Vec3.xy;
                 
             }
-            if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI))
+            #endif
+            #if defined(_PROGRAM_NOISE_VORONOI)
             {
                 _DissolveVoronoi_Vec4.z += GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
                 _DissolveVoronoi_Vec4.w += GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
                 particleUVs.dissolve_noise2_UV = programNoiseUV * _DissolveVoronoi_Vec.zw + _DissolveVoronoi_Vec4.zw + time*_DissolveVoronoi_Vec3.zw;
             }
+            #endif
         #endif
         
         
@@ -1076,21 +1083,24 @@
             float2 noiseMapUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_NOISE_MAP,baseUVs);
             particleUVs.noiseMapUV = ParticleUVCommonProcess(noiseMapUV,_NoiseMap_ST,half2(0,0),_NoiseMapUVRotation);
 
-            UNITY_BRANCH
-            if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_NOISE_MASKMAP))
+            #if defined(_NOISE_MASKMAP)
             {
                 float2 noiseMaskMapUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP,baseUVs);
                 particleUVs.noiseMaskMapUV = ParticleUVCommonProcess(noiseMaskMapUV,_NoiseMaskMap_ST,half2(0,0),0);
                
             }
+            #endif
         #endif
 
    
         
     }
 
+    #if defined(_VERTEX_OFFSET)
     Texture2D _VertexOffset_Map;
+    #if defined(_VERTEX_OFFSET_MASKMAP)
     Texture2D _VertexOffset_MaskMap;
+    #endif
     
     // half3  _VertexOffset_Vec;
     // half3 _VertexOffset_CustomDir;
@@ -1118,13 +1128,14 @@
         }
 
         half vertexOffsetMask = 1;
-        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP))
+        #if defined(_VERTEX_OFFSET_MASKMAP)
         {
             half2 maskUV = TRANSFORM_TEX(originMaskUV,_VertexOffset_MaskMap);
             maskUV = UVOffsetAnimaiton(maskUV,_VertexOffset_MaskMap_Vec.xy);
             half vertexOffsetMaskSample = SampleTexture2DWithWrapFlags(_VertexOffset_MaskMap,maskUV,FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP,true,0);
             vertexOffsetMask = lerp(1,vertexOffsetMaskSample,_VertexOffset_MaskMap_Vec.z);
         }
+        #endif
      
         UNITY_BRANCH
         if(CheckLocalFlags(FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR))
@@ -1139,8 +1150,10 @@
         return positionOS + offsetOS;
         
     }
+    #endif
 
     //向UV横向两边的色散。
+    #if defined(_CHROMATIC_ABERRATION)
     half4 DistortionChoraticaberrat(Texture2D baseTexture,half2 originUV, half2 uvAfterNoise,half ChoraticaberratIntensity,uint bits)
     {
         half2 delta = half2(originUV.x *2-1,0);
@@ -1165,32 +1178,23 @@
         ba.r *= ba.y;
         return half4(ra.r,ga.r,ba.r,clamp(ra.y*0.5+ga.y*0.5+ba.y*0.5,0,1));
     }
+    #endif
 
     bool needSceneDepth()
     {
-        #if defined(_DEPTH_DECAL) || defined(_SOFTPARTICLES_ON)
+        #if defined(_DEPTH_DECAL) || defined(_SOFTPARTICLES_ON) || defined(_DEPTH_OUTLINE)
             return true;
         #endif
-
-        if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE))
-        {
-            return true;
-        }
 
         return  false;
     }
 
     bool needEyeDepth()
     {
-        #if defined(_SOFTPARTICLES_ON)
+        #if defined(_SOFTPARTICLES_ON) || defined(_DEPTH_OUTLINE) || defined(_DISTANCE_FADE)
             return true;
         #endif
 
-        if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE)||CheckLocalFlags(FLAG_BIT_PARTICLE_DISTANCEFADE_ON))
-        {
-            return true;
-        }
-        
         return  false;
     }
 
@@ -1371,7 +1375,7 @@
             float4 dissolveTexcoord:TEXCOORD15;
 
         #endif
-        #ifdef _PROGRAM_NOISE
+        #ifdef _PROGRAM_NOISE_ACTIVE
             float4 dissolveNoiseTexcoord: TEXCOORD5;
         #endif
         
@@ -1393,7 +1397,9 @@
         // float3 fresnelViewDir :TEXCOORD11;
         
         // float3 viewDirWS :TEXCOORD13;
-        float4 texcoordMaskMap2 : TEXCOORD14;
+        #if defined(_MASKMAP2_ON) || defined(_MASKMAP3_ON)
+            float4 texcoordMaskMap2 : TEXCOORD14;
+        #endif
 
         #ifdef _PARALLAX_MAPPING
             half3  tangentViewDir : TEXCOORD16;

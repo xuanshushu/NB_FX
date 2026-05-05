@@ -218,6 +218,7 @@ namespace NBShaderEditor
                 () => Content("base.distanceFade", "Distance Fade"),
                 NBShaderFlags.FLAG_BIT_PARTICLE_DISTANCEFADE_ON,
                 0,
+                keyword: "_DISTANCE_FADE",
                 isVisible: Is3DMode);
             _fadeRangeItem = new Vector2LineItem(rootItem, _distanceFadeBlock, "_Fade", true, () => Content("base.distanceFade.range", "Fade Range"));
 

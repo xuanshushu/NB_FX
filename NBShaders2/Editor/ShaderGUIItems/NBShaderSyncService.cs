@@ -76,6 +76,7 @@ namespace NBShaderEditor
                 SyncBlendMode(mat);
                 SyncLightMode(mat);
                 SyncTimeMode(mat, flags);
+                SyncFlagBackedKeywords(mat, flags);
                 SyncScreenDistortPasses(mat);
                 SyncVatKeywords(mat);
                 SyncParallaxLayerCount(mat);
@@ -445,6 +446,52 @@ namespace NBShaderEditor
             TimeMode mode = (TimeMode)Mathf.RoundToInt(mat.GetFloat("_TimeMode"));
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON, mode == TimeMode.UnScaleTime, 0);
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON, mode == TimeMode.ScriptableTime, 0);
+        }
+
+        private void SyncFlagBackedKeywords(Material mat, NBShaderFlags flags)
+        {
+            if (flags == null || mat == null)
+            {
+                return;
+            }
+
+            SetFlagBackedKeyword(mat, flags, "_DISTANCE_FADE", NBShaderFlags.FLAG_BIT_PARTICLE_DISTANCEFADE_ON, 0);
+            SetFlagBackedKeyword(mat, flags, "_FRESNEL", NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_ON, 0);
+            SetFlagBackedKeyword(mat, flags, "_CHROMATIC_ABERRATION", NBShaderFlags.FLAG_BIT_PARTICLE_CHORATICABERRAT, 0);
+            SetFlagBackedKeyword(mat, flags, "_DISSOLVE_RAMP_MAP", NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, 0);
+            SetFlagBackedKeyword(mat, flags, "_DISSOLVE_MASK", NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_MASK, 0);
+            SetFlagBackedKeyword(mat, flags, "_COLOR_RAMP_MAP", NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON, 0);
+            SetFlagBackedKeyword(mat, flags, "_VERTEX_OFFSET", NBShaderFlags.FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON, 0);
+
+            SetFlagBackedKeyword(mat, flags, "_DEPTH_OUTLINE", NBShaderFlags.FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE, 1);
+            SetFlagBackedKeyword(mat, flags, "_MASKMAP2_ON", NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP2, 1);
+            SetFlagBackedKeyword(mat, flags, "_MASKMAP3_ON", NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP3, 1);
+            SetFlagBackedKeyword(mat, flags, "_NOISE_MASKMAP", NBShaderFlags.FLAG_BIT_PARTICLE_1_NOISE_MASKMAP, 1);
+            SetFlagBackedKeyword(mat, flags, "_PROGRAM_NOISE_SIMPLE", NBShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE, 1);
+            SetFlagBackedKeyword(mat, flags, "_PROGRAM_NOISE_VORONOI", NBShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI, 1);
+            SetFlagBackedKeyword(mat, flags, "_VERTEX_OFFSET_MASKMAP", NBShaderFlags.FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP, 1);
+        }
+
+        private void SetFlagBackedKeyword(Material mat, NBShaderFlags flags, string keyword, int flagBits, int flagIndex)
+        {
+            SetKeyword(mat, keyword, flags.CheckFlagBits(flagBits, index: flagIndex) && IsKeywordAllowed(keyword));
+        }
+
+        private bool IsKeywordAllowed(string keyword)
+        {
+            return _rootItem.Context == null || _rootItem.Context.IsKeywordAllowed(keyword);
+        }
+
+        private static void SetKeyword(Material mat, string keyword, bool enabled)
+        {
+            if (enabled)
+            {
+                mat.EnableKeyword(keyword);
+            }
+            else
+            {
+                mat.DisableKeyword(keyword);
+            }
         }
 
         private static void SyncScreenDistortPasses(Material mat)

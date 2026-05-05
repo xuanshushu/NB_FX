@@ -52,6 +52,7 @@ namespace NBShaderEditor
                 "深度描边",
                 NBShaderFlags.FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE,
                 1,
+                keyword: "_DEPTH_OUTLINE",
                 isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True)
         {
             new ColorItem(rootItem, this, "_DepthOutline_Color", () => Content("深度描边颜色"));

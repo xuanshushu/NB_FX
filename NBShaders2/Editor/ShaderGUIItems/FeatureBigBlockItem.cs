@@ -92,6 +92,11 @@ namespace NBShaderEditor
                 return "_SHARED_UV";
             }
 
+            if (item is FresnelFeatureItem)
+            {
+                return "_FRESNEL";
+            }
+
             if (item is ParallaxFeatureItem)
             {
                 return "_PARALLAX_MAPPING";

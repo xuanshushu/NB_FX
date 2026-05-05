@@ -114,7 +114,8 @@ namespace NBShaderEditor
                 "扭曲遮罩",
                 NBShaderFlags.FLAG_BIT_PARTICLE_1_NOISE_MASKMAP,
                 1,
-                parent: this);
+                parent: this,
+                keyword: "_NOISE_MASKMAP");
             AddTextureWithWrap(rootItem, noiseMaskBlock, "_NoiseMaskMap", "扭曲遮罩贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_NOISE_MASKMAP);
             new ColorChannelSelectItem(rootItem, noiseMaskBlock, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK, 0, () => Content("扭曲遮罩图通道选择"));
             new UVModeSelectItem(rootItem, noiseMaskBlock, "_NoiseMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP, 0, () => Content("扭曲遮罩贴图UV来源"), "_NoiseMaskMap");
@@ -126,6 +127,7 @@ namespace NBShaderEditor
                 "扭曲色散",
                 NBShaderFlags.FLAG_BIT_PARTICLE_CHORATICABERRAT,
                 parent: this,
+                keyword: "_CHROMATIC_ABERRATION",
                 bold: true);
             ShaderGUIItem chromaticNoiseAffect = new NoiseAffectItem(rootItem, chromaticBlock);
             new ToggleItem(

@@ -14,7 +14,7 @@ namespace NBShaderEditor
             : base(rootItem, parentItem, "_RampColorBlockFoldOut", "_RampColorToggle", "颜色映射(Ramp)", keyword: "_COLOR_RAMP")
         {
             new FeaturePopupItem(rootItem, this, "_RampColorSourceMode", () => Content("Ramp来源模式"), RampSourceNames,
-                property => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON, property.floatValue > 0.5f));
+                property => rootItem.SyncService.ApplyToggleFlagAndKeyword(NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON, 0, "_COLOR_RAMP_MAP", property.floatValue > 0.5f));
             AddTextureWithWrap(rootItem, this, "_RampColorMap", "颜色映射黑白图", NBShaderFlags.FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP,
                 isVisible: () => IsPropertyMode(rootItem, "_RampColorSourceMode", 1));
             new TextureScaleOffsetItem(rootItem, this, "_RampColorMap", false, () => IsPropertyMode(rootItem, "_RampColorSourceMode", 0), TillingContent, OffsetContent);

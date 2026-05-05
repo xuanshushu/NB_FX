@@ -8,7 +8,7 @@ namespace NBShaderEditor
     internal sealed class VertexOffsetFeatureItem : FeatureToggleFoldOutItem
     {
         public VertexOffsetFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_VertexOffsetBlockFoldOut", "_VertexOffset_Toggle", "顶点偏移", NBShaderFlags.FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON)
+            : base(rootItem, parentItem, "_VertexOffsetBlockFoldOut", "_VertexOffset_Toggle", "顶点偏移", NBShaderFlags.FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON, keyword: "_VERTEX_OFFSET")
         {
             new ToggleItem(rootItem, this, "_NB_Debug_VertexOffset", () => Content("顶点偏移方向测试"), enabled => rootItem.SyncService.ApplyToggleKeyword("NB_DEBUG_VERTEX_OFFSET", enabled));
             AddTextureWithWrap(rootItem, this, "_VertexOffset_Map", "顶点偏移贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP);
@@ -36,7 +36,7 @@ namespace NBShaderEditor
             new VectorComponentItem(rootItem, this, "_VertexOffset_CustomDir", 2, () => Content("顶点偏移本地方向Z"), false, isVisible: showCustomDirection);
 
             PropertyToggleBlockItem maskBlock = ToggleBlock(rootItem, "_VertexOffsetMaskBlockFoldOut", "_VertexOffset_Mask_Toggle", "顶点偏移遮罩",
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP, 1, parent: this);
+                NBShaderFlags.FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP, 1, parent: this, keyword: "_VERTEX_OFFSET_MASKMAP");
             AddTextureWithWrap(rootItem, maskBlock, "_VertexOffset_MaskMap", "顶点偏移遮罩图", NBShaderFlags.FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP);
             new UVModeSelectItem(rootItem, maskBlock, "_VertexOffsetMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP, 0, () => Content("顶点偏移遮罩图UV来源"), "_VertexOffset_MaskMap");
             new CustomDataSelectItem(rootItem, maskBlock, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X, 3, () => Content("顶点扰动遮罩X轴偏移自定义曲线"));

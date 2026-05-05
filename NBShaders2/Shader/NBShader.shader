@@ -599,19 +599,28 @@ Shader "Effects/NBShader"
             // #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _DISTORT_REFRACTION
             #pragma shader_feature_local _ _MASKMAP_ON
+            #pragma shader_feature_local _MASKMAP2_ON
+            #pragma shader_feature_local _MASKMAP3_ON
             // #pragma shader_feature_local _MASKMAP
             // #pragma shader_feature_local _MASKMAP2
             //#pragma shader_feature_local _NOISEMAP
             #pragma shader_feature_local _NOISEMAP
+            #pragma shader_feature_local _NOISE_MASKMAP
+            #pragma shader_feature_local_fragment _CHROMATIC_ABERRATION
             //#pragma shader_feature_local _EMISSION   //流光
             #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _DISSOLVE_MASK
+            #pragma shader_feature_local_fragment _DISSOLVE_RAMP_MAP
             #pragma shader_feature_local _PROGRAM_NOISE
+            #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
+            #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
             //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma  shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
+            #pragma shader_feature_local_fragment _COLOR_RAMP_MAP
             #pragma shader_feature_local _SHARED_UV//公共UV
             #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
             #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
@@ -628,8 +637,11 @@ Shader "Effects/NBShader"
             //用于特效层关键字
             // #pragma shader_feature_local  _UIEFFECT_ON
             #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
+            #pragma shader_feature_local_vertex _VERTEX_OFFSET
+            #pragma shader_feature_local_vertex _VERTEX_OFFSET_MASKMAP
             
             #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
+            #pragma shader_feature_local_fragment _FRESNEL
            
             
             // -------------------------------------
@@ -646,9 +658,10 @@ Shader "Effects/NBShader"
             //scriptableTime用于程序每帧传值
             #pragma shader_feature_local _SCRIPTABLETIME
             //#pragma shader_feature_local _DISTORTION_ON
-            #pragma shader_feature_local _NOISEMAP_NORMALIZEED
 
             #pragma shader_feature_local _DEPTH_DECAL
+            #pragma shader_feature_local _DEPTH_OUTLINE
+            #pragma shader_feature_local _DISTANCE_FADE
             #pragma shader_feature_local _PARALLAX_MAPPING
 
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
@@ -721,19 +734,28 @@ Shader "Effects/NBShader"
             // #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _DISTORT_REFRACTION
             #pragma shader_feature_local _ _MASKMAP_ON
+            #pragma shader_feature_local _MASKMAP2_ON
+            #pragma shader_feature_local _MASKMAP3_ON
             // #pragma shader_feature_local _MASKMAP
             // #pragma shader_feature_local _MASKMAP2
             //#pragma shader_feature_local _NOISEMAP
             #pragma shader_feature_local _NOISEMAP
+            #pragma shader_feature_local _NOISE_MASKMAP
+            #pragma shader_feature_local_fragment _CHROMATIC_ABERRATION
             //#pragma shader_feature_local _EMISSION   //流光
             #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _DISSOLVE_MASK
+            #pragma shader_feature_local_fragment _DISSOLVE_RAMP_MAP
             #pragma shader_feature_local _PROGRAM_NOISE
+            #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
+            #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
+            #pragma shader_feature_local_fragment _COLOR_RAMP_MAP
             #pragma shader_feature_local _SHARED_UV//公共UV
             #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
             #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
@@ -748,8 +770,11 @@ Shader "Effects/NBShader"
             //用于特效层关键字
             // #pragma shader_feature_local  _UIEFFECT_ON
             #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
+            #pragma shader_feature_local_vertex _VERTEX_OFFSET
+            #pragma shader_feature_local_vertex _VERTEX_OFFSET_MASKMAP
             
             #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
+            #pragma shader_feature_local_fragment _FRESNEL
 
             
             // #pragma multi_compile _ _UIPARTICLE_ON//用于UIParticle组件动态更改参数//暂时注释掉，觉得没什么意义
@@ -768,9 +793,10 @@ Shader "Effects/NBShader"
             //scriptableTime用于程序每帧传值
             #pragma shader_feature_local _SCRIPTABLETIME
             //#pragma shader_feature_local _DISTORTION_ON
-            #pragma shader_feature_local _NOISEMAP_NORMALIZEED
 
             #pragma shader_feature_local _DEPTH_DECAL
+            #pragma shader_feature_local _DEPTH_OUTLINE
+            #pragma shader_feature_local _DISTANCE_FADE
             #pragma shader_feature_local _PARALLAX_MAPPING
 
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
@@ -836,15 +862,23 @@ Shader "Effects/NBShader"
             #define _CAMERA_OPAQUE_DISTORT_PASS
             #pragma shader_feature_local _ _DISTORT_REFRACTION
             #pragma shader_feature_local _ _MASKMAP_ON
+            #pragma shader_feature_local _MASKMAP2_ON
+            #pragma shader_feature_local _MASKMAP3_ON
             // #pragma shader_feature_local _MASKMAP
             // #pragma shader_feature_local _MASKMAP2
             //#pragma shader_feature_local _NOISEMAP
             #pragma shader_feature_local _NOISEMAP
+            #pragma shader_feature_local _NOISE_MASKMAP
+            #pragma shader_feature_local_fragment _CHROMATIC_ABERRATION
             //#pragma shader_feature_local _EMISSION   //流光
             // #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _DISSOLVE_MASK
+            #pragma shader_feature_local_fragment _DISSOLVE_RAMP_MAP
             #pragma shader_feature_local _PROGRAM_NOISE
+            #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
+            #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
@@ -859,8 +893,11 @@ Shader "Effects/NBShader"
             //用于特效层关键字
             // #pragma shader_feature_local  _UIEFFECT_ON
             #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
+            #pragma shader_feature_local_vertex _VERTEX_OFFSET
+            #pragma shader_feature_local_vertex _VERTEX_OFFSET_MASKMAP
             
             #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
+            #pragma shader_feature_local_fragment _FRESNEL
 
             
             // #pragma multi_compile _ _UIPARTICLE_ON//用于UIParticle组件动态更改参数//暂时注释掉，觉得没什么意义
@@ -880,9 +917,10 @@ Shader "Effects/NBShader"
             //scriptableTime用于程序每帧传值
             #pragma shader_feature_local _SCRIPTABLETIME
             //#pragma shader_feature_local _DISTORTION_ON
-            #pragma shader_feature_local _NOISEMAP_NORMALIZEED
 
             #pragma shader_feature_local _DEPTH_DECAL
+            #pragma shader_feature_local _DEPTH_OUTLINE
+            #pragma shader_feature_local _DISTANCE_FADE
             // #pragma shader_feature_local _PARALLAX_MAPPING
 
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
@@ -949,15 +987,23 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local _ _DISTORT_REFRACTION
             
             #pragma shader_feature_local _ _MASKMAP_ON
+            #pragma shader_feature_local _MASKMAP2_ON
+            #pragma shader_feature_local _MASKMAP3_ON
             // #pragma shader_feature_local _MASKMAP
             // #pragma shader_feature_local _MASKMAP2
             //#pragma shader_feature_local _NOISEMAP
             #pragma shader_feature_local _NOISEMAP
+            #pragma shader_feature_local _NOISE_MASKMAP
+            #pragma shader_feature_local_fragment _CHROMATIC_ABERRATION
             //#pragma shader_feature_local _EMISSION   //流光
             // #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _DISSOLVE_MASK
+            #pragma shader_feature_local_fragment _DISSOLVE_RAMP_MAP
             #pragma shader_feature_local _PROGRAM_NOISE
+            #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
+            #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
@@ -972,8 +1018,11 @@ Shader "Effects/NBShader"
             //用于特效层关键字
             // #pragma shader_feature_local  _UIEFFECT_ON
             #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
+            #pragma shader_feature_local_vertex _VERTEX_OFFSET
+            #pragma shader_feature_local_vertex _VERTEX_OFFSET_MASKMAP
             
             #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
+            #pragma shader_feature_local_fragment _FRESNEL
 
             
             // #pragma multi_compile _ _UIPARTICLE_ON//用于UIParticle组件动态更改参数//暂时注释掉，觉得没什么意义
@@ -993,9 +1042,10 @@ Shader "Effects/NBShader"
             //scriptableTime用于程序每帧传值
             #pragma shader_feature_local _SCRIPTABLETIME
             //#pragma shader_feature_local _DISTORTION_ON
-            #pragma shader_feature_local _NOISEMAP_NORMALIZEED
 
             #pragma shader_feature_local _DEPTH_DECAL
+            #pragma shader_feature_local _DEPTH_OUTLINE
+            #pragma shader_feature_local _DISTANCE_FADE
             // #pragma shader_feature_local _PARALLAX_MAPPING
 
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
@@ -1060,19 +1110,28 @@ Shader "Effects/NBShader"
             
             #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _MASKMAP_ON
+            #pragma shader_feature_local _MASKMAP2_ON
+            #pragma shader_feature_local _MASKMAP3_ON
             // #pragma shader_feature_local _MASKMAP
             // #pragma shader_feature_local _MASKMAP2
             //#pragma shader_feature_local _NOISEMAP
             #pragma shader_feature_local _NOISEMAP
+            #pragma shader_feature_local _NOISE_MASKMAP
+            #pragma shader_feature_local_fragment _CHROMATIC_ABERRATION
             //#pragma shader_feature_local _EMISSION   //流光
             #pragma shader_feature_local _EMISSION
             //#pragma shader_feature_local _ _DISSOLVE    //溶解
             #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _DISSOLVE_MASK
+            #pragma shader_feature_local_fragment _DISSOLVE_RAMP_MAP
             #pragma shader_feature_local _PROGRAM_NOISE
+            #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
+            #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
                         //后续Test类的关键字要找机会排除
             #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
+            #pragma shader_feature_local_fragment _COLOR_RAMP_MAP
             #pragma shader_feature_local _SHARED_UV//公共UV
             
             
@@ -1084,8 +1143,11 @@ Shader "Effects/NBShader"
             //用于特效层关键字
             // #pragma shader_feature_local  _UIEFFECT_ON
             #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
+            #pragma shader_feature_local_vertex _VERTEX_OFFSET
+            #pragma shader_feature_local_vertex _VERTEX_OFFSET_MASKMAP
             
             #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
+            #pragma shader_feature_local_fragment _FRESNEL
 
             
             // #pragma multi_compile _ _UIPARTICLE_ON//用于UIParticle组件动态更改参数//暂时注释掉，觉得没什么意义
@@ -1105,7 +1167,6 @@ Shader "Effects/NBShader"
             //scriptableTime用于程序每帧传值
             #pragma shader_feature_local _SCRIPTABLETIME
             //#pragma shader_feature_local _DISTORTION_ON
-            #pragma shader_feature_local _NOISEMAP_NORMALIZEED
 
             // #pragma shader_feature_local _DEPTH_DECAL
             // #pragma shader_feature_local _PARALLAX_MAPPING
