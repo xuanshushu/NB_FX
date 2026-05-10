@@ -115,12 +115,14 @@ namespace NBShader
             canvasRenderer.SetTexture(mainTexture);
         }
 
+        #if UNITY_EDITOR
         protected override void OnValidate()
         {
             base.OnValidate();
             SetMaterialDirty();
             SetVerticesDirty();
         }
+        #endif
 
         protected override void OnDidApplyAnimationProperties()
         {
