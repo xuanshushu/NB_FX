@@ -108,6 +108,7 @@
     half4 _DepthOutline_Color;
     half4 _FresnelColor;
     half4 _ColorA;
+    float _TransparentMode;
     float4 _ClipRect;
 
     float4 _CylinderMatrix0;
@@ -198,6 +199,7 @@
     float _LinearToGamma;
     float _VATIncludesNormals;
     float _AffectsShadows;
+    float _TransparentShadowDitherToggle;
     float _Frame;
     float _Frames;
     float _FrameInterpolation;
