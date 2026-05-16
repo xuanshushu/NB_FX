@@ -46,6 +46,7 @@ namespace NBShaderEditor
                 fontStyle = bold ? FontStyle.Bold : FontStyle.Normal
             };
             _foldOutHelper = new ShaderGUIFoldOutHelper(rootItem, foldOutPropertyName);
+            GuiContent = _contentProvider();
             InitTriggerByChild();
         }
 
@@ -61,7 +62,6 @@ namespace NBShaderEditor
                 return;
             }
 
-            GuiContent = _contentProvider();
             GetRect();
             MaterialProperty property = PropertyInfo.Property;
 
@@ -190,6 +190,7 @@ namespace NBShaderEditor
             _texturePropertyName = texturePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             CheckIsPropertyModified();
         }
 
@@ -204,7 +205,7 @@ namespace NBShaderEditor
             _foldOutHelper.DrawFoldOut(LabelRect);
             using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider(), EditorStyles.boldLabel);
+                EditorGUI.LabelField(LabelRect, GuiContent, EditorStyles.boldLabel);
             }
 
             DrawResetButton();
@@ -258,6 +259,7 @@ namespace NBShaderEditor
             _defaultChannel = Mathf.Clamp(defaultChannel, 0, 3);
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             CheckIsPropertyModified();
         }
 
@@ -271,7 +273,7 @@ namespace NBShaderEditor
             GetRect();
             using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider());
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
             int channel = GetFirstChannel();
@@ -386,6 +388,7 @@ namespace NBShaderEditor
             _dataIndex = dataIndex;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             CheckIsPropertyModified();
         }
 
@@ -399,7 +402,7 @@ namespace NBShaderEditor
             GetRect();
             using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider());
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
             NBShaderFlags.CutomDataComponent component = GetFirstComponent();
@@ -519,6 +522,7 @@ namespace NBShaderEditor
             _flagIndex = flagIndex;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             CheckIsPropertyModified();
         }
 
@@ -532,7 +536,7 @@ namespace NBShaderEditor
             GetRect();
             using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider());
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
             int mode = GetFirstMode();
@@ -656,6 +660,7 @@ namespace NBShaderEditor
             _pNoiseBlendModeFlagPos = pNoiseBlendModeFlagPos;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             _opacitySlider = new ShaderGUISliderItem(rootItem, this)
             {
                 PropertyName = opacityPropertyName,
@@ -677,7 +682,7 @@ namespace NBShaderEditor
             GetRect();
             using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider());
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
             NBShaderFlags.PNoiseBlendMode mode = GetFirstMode();
@@ -702,7 +707,6 @@ namespace NBShaderEditor
             }
 
             DrawResetButton();
-            _opacitySlider.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.pnoise.opacity", "Program Noise Blend Opacity");
             _opacitySlider.OnGUI();
         }
 
@@ -829,6 +833,7 @@ namespace NBShaderEditor
             _forceEnable = forceEnable;
             _isVisible = isVisible;
             _foldOutHelper = new ShaderGUIFoldOutHelper(rootItem, foldOutPropertyName);
+            GuiContent = _contentProvider();
 
             _specialUVChannelItem = new SpecialUVChannelModeItem(rootItem, this);
             _twirlBlock = new PropertyToggleBlockItem(
@@ -891,7 +896,7 @@ namespace NBShaderEditor
             GetRect();
             using (ParentControlDisabledScope(controlDisabled))
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider());
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
             NBShaderFlags.UVMode mode = GetFirstMode();
@@ -932,7 +937,8 @@ namespace NBShaderEditor
                     EditorGUI.indentLevel++;
                     using (ParentControlDisabledScope(controlDisabled))
                     {
-                        EditorGUILayout.LabelField(
+                        EditorGUI.LabelField(
+                            ApplyGlobalRectCompensation(LayoutRect()),
                             NBShaderInspectorLocalization.GetInspectorText(
                                 "protocol.uv.sharedMaterial.message",
                                 "The following settings are shared in the material:"),
@@ -952,7 +958,8 @@ namespace NBShaderEditor
                             case NBShaderFlags.UVMode.Cylinder:
                                 using (ParentControlDisabledScope())
                                 {
-                                    EditorGUILayout.LabelField(
+                                    EditorGUI.LabelField(
+                                        ApplyGlobalRectCompensation(LayoutRect()),
                                         NBShaderInspectorLocalization.GetInspectorText(
                                             "protocol.uv.cylinderWarning.message",
                                             "Cylinder mode is expensive. Use it carefully."));
@@ -963,13 +970,9 @@ namespace NBShaderEditor
                                 UpdateCylinderMatrix(RootItem);
                                 break;
                             case NBShaderFlags.UVMode.WorldPos:
-                                _worldSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
-                                _worldSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
                                 _worldSpaceItem.OnGUI();
                                 break;
                             case NBShaderFlags.UVMode.ObjectPos:
-                                _objectSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
-                                _objectSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
                                 _objectSpaceItem.OnGUI();
                                 break;
                         }
@@ -1097,8 +1100,6 @@ namespace NBShaderEditor
 
             public override void OnGUI()
             {
-                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.specialChannel", "Special UV Channel");
-                PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.specialChannel", SpecialUVChannelNames);
                 base.OnGUI();
             }
 
@@ -1127,18 +1128,22 @@ namespace NBShaderEditor
     public class KeywordListItem : ShaderGUIItem
     {
         private readonly Func<GUIContent> _contentProvider;
+        private Material _cachedMaterial;
+        private int _cachedKeywordVersion = -1;
+        private string[] _cachedKeywords = Array.Empty<string>();
 
         public KeywordListItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem, Func<GUIContent> contentProvider) : base(rootItem, parentItem)
         {
             _contentProvider = contentProvider ?? (() => GUIContent.none);
+            GuiContent = _contentProvider();
         }
 
         public override void OnGUI()
         {
-            EditorGUILayout.Space();
+            LayoutSpace();
             using (ParentControlDisabledScope())
             {
-                EditorGUILayout.LabelField(_contentProvider(), EditorStyles.boldLabel);
+                EditorGUI.LabelField(ApplyGlobalRectCompensation(LayoutRect()), GuiContent, EditorStyles.boldLabel);
             }
 
             if (RootItem.Mats == null || RootItem.Mats.Count == 0 || RootItem.Mats[0] == null)
@@ -1146,12 +1151,14 @@ namespace NBShaderEditor
                 return;
             }
 
-            string[] keywords = RootItem.Mats[0].shaderKeywords;
+            string[] keywords = GetCachedKeywords(RootItem.Mats[0]);
             if (keywords == null || keywords.Length == 0)
             {
                 using (ParentControlDisabledScope())
                 {
-                    EditorGUILayout.LabelField(NBShaderInspectorLocalization.GetInspectorText("common.none", "None"));
+                    EditorGUI.LabelField(
+                        ApplyGlobalRectCompensation(LayoutRect()),
+                        NBShaderInspectorLocalization.GetInspectorText("common.none", "None"));
                 }
 
                 return;
@@ -1161,9 +1168,25 @@ namespace NBShaderEditor
             {
                 using (ParentControlDisabledScope())
                 {
-                    EditorGUILayout.LabelField(keywords[i]);
+                    EditorGUI.LabelField(ApplyGlobalRectCompensation(LayoutRect()), keywords[i]);
                 }
             }
+        }
+
+        private string[] GetCachedKeywords(Material material)
+        {
+            int keywordVersion = RootItem is NBShaderRootItem nbRootItem && nbRootItem.SyncService != null
+                ? nbRootItem.SyncService.KeywordVersion
+                : 0;
+
+            if (_cachedMaterial != material || _cachedKeywordVersion != keywordVersion)
+            {
+                _cachedMaterial = material;
+                _cachedKeywordVersion = keywordVersion;
+                _cachedKeywords = material != null ? material.shaderKeywords ?? Array.Empty<string>() : Array.Empty<string>();
+            }
+
+            return _cachedKeywords;
         }
     }
 }

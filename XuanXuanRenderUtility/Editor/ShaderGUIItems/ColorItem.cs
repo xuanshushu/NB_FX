@@ -21,6 +21,7 @@ namespace NBShaderEditor
             PropertyName = propertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             InitTriggerByChild();
         }
 
@@ -31,7 +32,6 @@ namespace NBShaderEditor
                 return;
             }
 
-            GuiContent = _contentProvider();
             GetRect(false);
             using (ParentControlDisabledScope())
             {
@@ -97,6 +97,7 @@ namespace NBShaderEditor
             _showLabel = showLabel;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _showLabel ? _contentProvider() : GUIContent.none;
             InitTriggerByChild();
         }
 
@@ -107,14 +108,13 @@ namespace NBShaderEditor
                 return;
             }
 
-            Draw(ApplyGlobalRectCompensation(EditorGUILayout.GetControlRect()));
+            Draw(ApplyGlobalRectCompensation(LayoutRect()));
             DrawBlock();
         }
 
         public void Draw(Rect rect)
         {
             BaseRect = rect;
-            GuiContent = _showLabel ? _contentProvider() : GUIContent.none;
 
             if (_showLabel)
             {

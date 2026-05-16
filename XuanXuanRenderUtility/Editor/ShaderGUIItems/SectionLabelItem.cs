@@ -17,6 +17,7 @@ namespace NBShaderEditor
         {
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
         }
 
         public override void OnGUI()
@@ -26,10 +27,10 @@ namespace NBShaderEditor
                 return;
             }
 
-            EditorGUILayout.Space();
+            LayoutSpace();
             using (ParentControlDisabledScope())
             {
-                EditorGUILayout.LabelField(_contentProvider(), EditorStyles.boldLabel);
+                EditorGUI.LabelField(ApplyGlobalRectCompensation(LayoutRect()), GuiContent, EditorStyles.boldLabel);
             }
         }
     }

@@ -22,6 +22,7 @@ namespace NBShaderEditor
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _onQueueChanged = onQueueChanged;
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             InitTriggerByChild();
         }
 
@@ -32,7 +33,6 @@ namespace NBShaderEditor
                 return;
             }
 
-            GuiContent = _contentProvider();
             base.OnGUI();
         }
 

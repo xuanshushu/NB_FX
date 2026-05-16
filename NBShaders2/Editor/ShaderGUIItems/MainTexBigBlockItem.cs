@@ -192,7 +192,7 @@ namespace NBShaderEditor
         {
             if (_nbRootItem.Context.UseGraphicMainTex == MixedBool.Mixed)
             {
-                EditorGUILayout.HelpBox(
+                DrawLayoutHelpBox(
                     NBShaderInspectorLocalization.GetInspectorText(
                         "maintex.mixedMeshSource.message",
                         "Mixed mesh-source modes will show the matching texture controls per material state."),

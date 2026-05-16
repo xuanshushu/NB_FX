@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using NBShader;
 using UnityEditor;
 using UnityEngine;
@@ -9,6 +9,13 @@ namespace NBShaderEditor
     public class ParticleVertexStreamsItem : ShaderGUIItem
     {
         private readonly NBShaderRootItem _nbRootItem;
+        private readonly List<ParticleSystemVertexStream> _streams = new List<ParticleSystemVertexStream>();
+        private readonly List<string> _streamNames = new List<string>();
+        private readonly List<string> _warnings = new List<string>();
+        private readonly List<ParticleSystemVertexStream> _rendererStreams = new List<ParticleSystemVertexStream>();
+        private readonly List<UnityEngine.Object> _undoRenderers = new List<UnityEngine.Object>();
+        private WarningMessageCache _rendererWarningMessageCache;
+        private WarningMessageCache _trailWarningMessageCache;
 
         public ParticleVertexStreamsItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
         {
@@ -29,8 +36,8 @@ namespace NBShaderEditor
                 return;
             }
 
-            List<ParticleSystemRenderer> renderers = FindParticleRenderers(material);
-            if (renderers.Count == 0)
+            List<ParticleSystemRenderer> renderers = _nbRootItem.ParticleRenderersUsingThisMaterial;
+            if (renderers == null || renderers.Count == 0)
             {
                 return;
             }
@@ -38,7 +45,6 @@ namespace NBShaderEditor
             NBShaderFlags flags = _nbRootItem.ShaderFlags.Count > 0
                 ? _nbRootItem.ShaderFlags[0] as NBShaderFlags
                 : null;
-            flags?.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER, index: 1);
 
             if (_nbRootItem.Context.ParticleMode != MixedBool.True)
             {
@@ -50,56 +56,41 @@ namespace NBShaderEditor
                 return;
             }
 
-            BuildExpectedStreams(material, flags, out List<ParticleSystemVertexStream> streams, out List<string> streamNames);
+            if (flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER, index: 1))
+            {
+                flags.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER, index: 1);
+            }
 
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField(
+            BuildExpectedStreams(material, flags, _streams, _streamNames);
+
+            LayoutSpace();
+            EditorGUI.LabelField(
+                ApplyGlobalRectCompensation(LayoutRect()),
                 NBShaderInspectorLocalization.MakeInspectorContent("vertexStreams.title", "Particle Vertex Streams"),
                 EditorStyles.boldLabel);
             using (new EditorGUI.DisabledScope(true))
             {
-                for (int i = 0; i < streamNames.Count; i++)
+                for (int i = 0; i < _streamNames.Count; i++)
                 {
-                    EditorGUILayout.TextField(streamNames[i]);
+                    EditorGUI.TextField(ApplyGlobalRectCompensation(LayoutRect()), _streamNames[i]);
                 }
             }
 
-            DrawRendererWarnings(renderers, streams, false);
+            DrawRendererWarnings(renderers, _streams, false);
 
 #if UNITY_2022_3_OR_NEWER && !(UNITY_2022_3_0 || UNITY_2022_3_1 || UNITY_2022_3_2 || UNITY_2022_3_3 || UNITY_2022_3_4 || UNITY_2022_3_5 || UNITY_2022_3_6 || UNITY_2022_3_7 || UNITY_2022_3_8 || UNITY_2022_3_9 || UNITY_2022_3_10)
-            DrawRendererWarnings(renderers, streams, true);
+            DrawRendererWarnings(renderers, _streams, true);
 #endif
-        }
-
-        private static List<ParticleSystemRenderer> FindParticleRenderers(Material material)
-        {
-            Renderer[] renderers = Object.FindObjectsOfType(typeof(Renderer)) as Renderer[];
-            List<ParticleSystemRenderer> result = new List<ParticleSystemRenderer>();
-            if (renderers == null)
-            {
-                return result;
-            }
-
-            foreach (Renderer renderer in renderers)
-            {
-                if (renderer is ParticleSystemRenderer psr &&
-                    (psr.sharedMaterial == material || psr.trailMaterial == material))
-                {
-                    result.Add(psr);
-                }
-            }
-
-            return result;
         }
 
         private static void BuildExpectedStreams(
             Material material,
             NBShaderFlags flags,
-            out List<ParticleSystemVertexStream> streams,
-            out List<string> streamNames)
+            List<ParticleSystemVertexStream> streams,
+            List<string> streamNames)
         {
-            streams = new List<ParticleSystemVertexStream>();
-            streamNames = new List<string>();
+            streams.Clear();
+            streamNames.Clear();
 
             AddStream(streams, streamNames, ParticleSystemVertexStream.Position, "POSITION.xyz");
 
@@ -270,31 +261,35 @@ namespace NBShaderEditor
             return meshSourceMode == MeshSourceMode.Particle || meshSourceMode == MeshSourceMode.UIParticle;
         }
 
-        private static void DrawRendererWarnings(List<ParticleSystemRenderer> renderers, List<ParticleSystemVertexStream> streams, bool trail)
+        private void DrawRendererWarnings(List<ParticleSystemRenderer> renderers, List<ParticleSystemVertexStream> streams, bool trail)
         {
-            List<string> warnings = new List<string>();
-            List<ParticleSystemVertexStream> rendererStreams = new List<ParticleSystemVertexStream>();
+            _warnings.Clear();
             foreach (ParticleSystemRenderer renderer in renderers)
             {
-                rendererStreams.Clear();
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                _rendererStreams.Clear();
                 if (trail)
                 {
 #if UNITY_2022_3_OR_NEWER && !(UNITY_2022_3_0 || UNITY_2022_3_1 || UNITY_2022_3_2 || UNITY_2022_3_3 || UNITY_2022_3_4 || UNITY_2022_3_5 || UNITY_2022_3_6 || UNITY_2022_3_7 || UNITY_2022_3_8 || UNITY_2022_3_9 || UNITY_2022_3_10)
-                    renderer.GetActiveTrailVertexStreams(rendererStreams);
+                    renderer.GetActiveTrailVertexStreams(_rendererStreams);
 #endif
                 }
                 else
                 {
-                    renderer.GetActiveVertexStreams(rendererStreams);
+                    renderer.GetActiveVertexStreams(_rendererStreams);
                 }
 
-                if (!rendererStreams.SequenceEqual(streams))
+                if (!StreamsEqual(_rendererStreams, streams))
                 {
-                    warnings.Add(renderer.name);
+                    _warnings.Add(renderer.name);
                 }
             }
 
-            if (warnings.Count == 0)
+            if (_warnings.Count == 0)
             {
                 return;
             }
@@ -302,17 +297,31 @@ namespace NBShaderEditor
             string mismatchText = trail
                 ? NBShaderInspectorLocalization.GetInspectorText("vertexStreams.trailMismatch", "Particle trail renderers with mismatched vertex streams:")
                 : NBShaderInspectorLocalization.GetInspectorText("vertexStreams.mismatch", "Particle renderers with mismatched vertex streams:");
-            EditorGUILayout.HelpBox(mismatchText + "\n-" + string.Join("\n-", warnings), MessageType.Error, true);
+            DrawLayoutHelpBox(GetWarningMessage(trail, mismatchText), MessageType.Error);
             GUIContent buttonContent = trail
                 ? NBShaderInspectorLocalization.MakeContent("inspector.vertexStreams.applyTrail.button", "Apply Trail Vertex Streams")
                 : NBShaderInspectorLocalization.MakeContent("inspector.vertexStreams.apply.button", "Apply Vertex Streams");
-            if (GUILayout.Button(buttonContent, EditorStyles.miniButton))
+            if (GUI.Button(ApplyGlobalRectCompensation(LayoutRect()), buttonContent, EditorStyles.miniButton))
             {
+                _undoRenderers.Clear();
+                for (int i = 0; i < renderers.Count; i++)
+                {
+                    if (renderers[i] != null)
+                    {
+                        _undoRenderers.Add(renderers[i]);
+                    }
+                }
+
                 Undo.RecordObjects(
-                    renderers.Where(r => r != null).ToArray(),
+                    _undoRenderers.ToArray(),
                     NBShaderInspectorLocalization.GetInspectorText("vertexStreams.apply.undo", "Apply custom vertex streams from material"));
                 foreach (ParticleSystemRenderer renderer in renderers)
                 {
+                    if (renderer == null)
+                    {
+                        continue;
+                    }
+
                     if (trail)
                     {
 #if UNITY_2022_3_OR_NEWER && !(UNITY_2022_3_0 || UNITY_2022_3_1 || UNITY_2022_3_2 || UNITY_2022_3_3 || UNITY_2022_3_4 || UNITY_2022_3_5 || UNITY_2022_3_6 || UNITY_2022_3_7 || UNITY_2022_3_8 || UNITY_2022_3_9 || UNITY_2022_3_10)
@@ -325,6 +334,68 @@ namespace NBShaderEditor
                     }
                 }
             }
+        }
+
+        private static bool StreamsEqual(List<ParticleSystemVertexStream> lhs, List<ParticleSystemVertexStream> rhs)
+        {
+            if (lhs == null || rhs == null || lhs.Count != rhs.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < lhs.Count; i++)
+            {
+                if (lhs[i] != rhs[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private string GetWarningMessage(bool trail, string mismatchText)
+        {
+            return trail
+                ? GetWarningMessage(ref _trailWarningMessageCache, mismatchText)
+                : GetWarningMessage(ref _rendererWarningMessageCache, mismatchText);
+        }
+
+        private string GetWarningMessage(ref WarningMessageCache cache, string mismatchText)
+        {
+            int hash = ComputeWarningsHash();
+            if (cache.Message != null &&
+                cache.Count == _warnings.Count &&
+                cache.Hash == hash)
+            {
+                return cache.Message;
+            }
+
+            cache.Count = _warnings.Count;
+            cache.Hash = hash;
+            cache.Message = mismatchText + "\n-" + string.Join("\n-", _warnings);
+            return cache.Message;
+        }
+
+        private int ComputeWarningsHash()
+        {
+            unchecked
+            {
+                int hash = 17;
+                for (int i = 0; i < _warnings.Count; i++)
+                {
+                    hash = hash * 31 + (_warnings[i] == null ? 0 : StringComparer.Ordinal.GetHashCode(_warnings[i]));
+                }
+
+                return hash;
+            }
+        }
+
+        private struct WarningMessageCache
+        {
+            public int Count;
+            public int Hash;
+            public string Message;
         }
     }
 }

@@ -22,6 +22,7 @@ namespace NBShaderEditor
             _firstLine = firstLine;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             InitTriggerByChild();
         }
 
@@ -36,7 +37,7 @@ namespace NBShaderEditor
             MaterialProperty property = PropertyInfo.Property;
             using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider());
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
             using (ParentControlDisabledScope())
@@ -157,6 +158,7 @@ namespace NBShaderEditor
             _min = min;
             _max = max;
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             InitTriggerByChild();
         }
 
@@ -171,7 +173,7 @@ namespace NBShaderEditor
             MaterialProperty property = PropertyInfo.Property;
             using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider());
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
             using (ParentControlDisabledScope())
@@ -315,6 +317,7 @@ namespace NBShaderEditor
             _rangePropertyName = rangePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             InitTriggerByChild();
         }
 
@@ -338,7 +341,7 @@ namespace NBShaderEditor
             GetRect();
             using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider());
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
             using (ParentControlDisabledScope())
@@ -392,7 +395,7 @@ namespace NBShaderEditor
 
             range.x = min;
             range.y = max;
-            _rangePropertyInfo.Property.vectorValue = range;
+            SetVectorIfDifferent(_rangePropertyInfo.Property, range);
 
             sliderMin = Mathf.Min(min, max);
             sliderMax = Mathf.Max(min, max);
@@ -408,7 +411,7 @@ namespace NBShaderEditor
             EndAnimatedPropertyBackground(sliderAnimatedScope);
 
             SetValue(ref vector, Mathf.Clamp(value, sliderMin, sliderMax));
-            PropertyInfo.Property.vectorValue = vector;
+            SetVectorIfDifferent(PropertyInfo.Property, vector);
             EditorGUI.showMixedValue = false;
         }
 
@@ -550,6 +553,7 @@ namespace NBShaderEditor
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _onValueChanged = onValueChanged;
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             InitTriggerByChild();
         }
 
@@ -564,7 +568,7 @@ namespace NBShaderEditor
             MaterialProperty property = PropertyInfo.Property;
             using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider());
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
             using (ParentControlDisabledScope())

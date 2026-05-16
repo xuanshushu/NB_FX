@@ -77,8 +77,6 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
-            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("mode.meshSource", MeshSourceOptions);
-            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.meshSource", "Mesh Source Mode", "Matches the current object type.");
             base.OnGUI();
             if (PropertyInfo.Property.hasMixedValue)
             {
@@ -111,42 +109,17 @@ namespace NBShaderEditor
             if (!(RootItem is NBShaderRootItem nbRootItem) ||
                 nbRootItem.Mats == null ||
                 nbRootItem.Mats.Count == 0 ||
-                !IsUsedByParticleSystem(nbRootItem.Mats[0]) ||
-                nbRootItem.Context.ParticleMode == MixedBool.True)
+                nbRootItem.Context.ParticleMode == MixedBool.True ||
+                !nbRootItem.IsUsedByParticleSystem)
             {
                 return;
             }
 
-            EditorGUILayout.HelpBox(
+            DrawLayoutHelpBox(
                 NBShaderInspectorLocalization.GetInspectorText(
                     "mode.meshSource.particleModeMismatch",
                     "检测到材质用在粒子系统上，和设置不匹配"),
                 MessageType.Error);
-        }
-
-        private static bool IsUsedByParticleSystem(Material material)
-        {
-            if (material == null)
-            {
-                return false;
-            }
-
-            Renderer[] renderers = UnityEngine.Object.FindObjectsOfType(typeof(Renderer)) as Renderer[];
-            if (renderers == null)
-            {
-                return false;
-            }
-
-            foreach (Renderer renderer in renderers)
-            {
-                if (renderer is ParticleSystemRenderer psr &&
-                    (psr.sharedMaterial == material || psr.trailMaterial == material))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private static readonly string[] MeshSourceOptions =
@@ -196,9 +169,6 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
-            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("mode.transparent", TransparentOptions);
-            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.transparent", "Transparent Mode", "Controls opaque, transparent, and cutoff rendering.");
-            _cutOffSlider.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.cutoff", "Cutoff", "0 keeps everything, 1 clips everything.");
             base.OnGUI();
             if (PropertyInfo.Property.hasMixedValue)
             {
@@ -306,8 +276,6 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
-            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("mode.blend", BlendOptions);
-            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.blend", "Blend Mode");
             base.OnGUI();
             if (PropertyInfo.Property.hasMixedValue)
             {
@@ -376,7 +344,6 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
-            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.additiveToPremultiply", "Additive To Premultiply", "0 is additive, 1 is premultiply.");
             base.OnGUI();
         }
 

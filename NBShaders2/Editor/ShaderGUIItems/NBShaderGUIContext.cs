@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NBShader;
 using NBShaders2.Editor.FeatureLevel;
 using UnityEditor;
@@ -11,6 +12,7 @@ namespace NBShaderEditor
         private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
 
         private readonly NBShaderRootItem _rootItem;
+        private HashSet<string> _currentTierAllowedKeywords;
 
         public NBShaderGUIContext(NBShaderRootItem rootItem)
         {
@@ -42,7 +44,7 @@ namespace NBShaderEditor
                 return true;
             }
 
-            return NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSet(CurrentTier).Contains(keyword);
+            return _currentTierAllowedKeywords != null && _currentTierAllowedKeywords.Contains(keyword);
         }
 
         public bool AreKeywordsAllowed(params string[] keywords)
@@ -79,6 +81,25 @@ namespace NBShaderEditor
             }
 
             return false;
+        }
+
+        public bool IsAnyKeywordAllowed(string keyword0, string keyword1)
+        {
+            return IsKeywordAllowed(keyword0) || IsKeywordAllowed(keyword1);
+        }
+
+        public bool IsAnyKeywordAllowed(
+            string keyword0,
+            string keyword1,
+            string keyword2,
+            string keyword3,
+            string keyword4)
+        {
+            return IsKeywordAllowed(keyword0) ||
+                   IsKeywordAllowed(keyword1) ||
+                   IsKeywordAllowed(keyword2) ||
+                   IsKeywordAllowed(keyword3) ||
+                   IsKeywordAllowed(keyword4);
         }
 
         public static bool IsCatalogKeyword(string keyword)
@@ -153,6 +174,8 @@ namespace NBShaderEditor
             {
                 CurrentTier = NBShaderFeatureTier.Ultra;
                 CurrentTierMixed = false;
+                _currentTierAllowedKeywords =
+                    NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForReadOnlyUse(CurrentTier);
                 return;
             }
 
@@ -161,6 +184,9 @@ namespace NBShaderEditor
             CurrentTier = CurrentTierMixed
                 ? NBShaderFeatureTier.Ultra
                 : ToFeatureTier(Mathf.RoundToInt(tierProperty.floatValue));
+            _currentTierAllowedKeywords = CurrentTierMixed
+                ? null
+                : NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForReadOnlyUse(CurrentTier);
         }
 
         private static NBShaderFeatureTier ToFeatureTier(int value)

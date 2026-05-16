@@ -22,6 +22,7 @@ namespace NBShaderEditor
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _onValueChanged = onValueChanged;
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             InitTriggerByChild();
         }
 
@@ -32,7 +33,6 @@ namespace NBShaderEditor
                 return;
             }
 
-            GuiContent = _contentProvider();
             base.OnGUI();
         }
 
@@ -40,7 +40,7 @@ namespace NBShaderEditor
         {
             bool value = PropertyInfo.Property.floatValue > 0.5f;
             value = EditorGUI.Toggle(ControlRect, value);
-            PropertyInfo.Property.floatValue = value ? 1f : 0f;
+            SetFloatIfDifferent(PropertyInfo.Property, value ? 1f : 0f);
         }
 
         public override void OnEndChange()

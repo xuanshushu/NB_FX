@@ -102,7 +102,7 @@ namespace NBShaderEditor
             float textureFieldHeight = 3f * singleLineHeight + 2f * rowGap;
             float textureContentGap = EditorGUIUtility.standardVerticalSpacing;
 
-            Rect textureGroupRect = ApplyGlobalRectCompensation(EditorGUILayout.GetControlRect(false, textureFieldHeight));
+            Rect textureGroupRect = ApplyGlobalRectCompensation(LayoutRect(textureFieldHeight));
             Rect textureLabelRow = new Rect(textureGroupRect.x, textureGroupRect.y, textureGroupRect.width, singleLineHeight);
             Rect tillingRow = new Rect(textureGroupRect.x, textureGroupRect.y + singleLineHeight + rowGap, textureGroupRect.width, singleLineHeight);
             Rect offsetRow = new Rect(textureGroupRect.x, tillingRow.y + singleLineHeight + rowGap, textureGroupRect.width, singleLineHeight);
@@ -172,6 +172,7 @@ namespace NBShaderEditor
             PropertyName = texturePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             InitTriggerByChild();
         }
 
@@ -208,7 +209,7 @@ namespace NBShaderEditor
 
             using (ParentControlDisabledScope())
             {
-                GUI.Label(LabelRect, _contentProvider(), EditorStyles.boldLabel);
+                GUI.Label(LabelRect, GuiContent, EditorStyles.boldLabel);
             }
 
             using (ParentControlDisabledScope())
@@ -299,6 +300,8 @@ namespace NBShaderEditor
         private readonly Func<bool> _isVisible;
         private readonly Func<GUIContent> _tillingContentProvider;
         private readonly Func<GUIContent> _offsetContentProvider;
+        private readonly GUIContent _tillingContent;
+        private readonly GUIContent _offsetContent;
 
         public TextureScaleOffsetItem(
             ShaderGUIRootItem rootItem,
@@ -314,6 +317,8 @@ namespace NBShaderEditor
             _isVisible = isVisible;
             _tillingContentProvider = tillingContentProvider ?? (() => TillingContent);
             _offsetContentProvider = offsetContentProvider ?? (() => OffsetContent);
+            _tillingContent = _tillingContentProvider();
+            _offsetContent = _offsetContentProvider();
             InitTriggerByChild();
         }
 
@@ -350,7 +355,7 @@ namespace NBShaderEditor
             MaterialProperty property = PropertyInfo.Property;
             Vector4 scaleOffset = GetScaleOffset(property);
 
-            DrawLabel(tillingLabelRect, _tillingContentProvider(), useEditorLabelField);
+            DrawLabel(tillingLabelRect, _tillingContent, useEditorLabelField);
             using (ParentControlDisabledScope())
             {
                 Vector2 tilling = new Vector2(scaleOffset.x, scaleOffset.y);
@@ -379,7 +384,7 @@ namespace NBShaderEditor
                 }
             }
 
-            DrawLabel(offsetLabelRect, _offsetContentProvider(), useEditorLabelField);
+            DrawLabel(offsetLabelRect, _offsetContent, useEditorLabelField);
             using (ParentControlDisabledScope())
             {
                 Vector2 offset = new Vector2(scaleOffset.z, scaleOffset.w);

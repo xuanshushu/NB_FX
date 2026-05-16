@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NBShader;
 using UnityEditor;
 using UnityEngine;
@@ -8,6 +9,11 @@ namespace NBShaderEditor
     internal abstract class FeatureToggleFoldOutItem : PropertyToggleBlockItem
     {
         private const string LocalizationTableName = NBShaderInspectorLocalization.TableName;
+        private static readonly Dictionary<string, GUIContent> ContentCache =
+            new Dictionary<string, GUIContent>(StringComparer.Ordinal);
+        private static readonly Dictionary<string, string[]> PopupOptionsCache =
+            new Dictionary<string, string[]>(StringComparer.Ordinal);
+        private static string s_CacheLanguage;
 
         protected FeatureToggleFoldOutItem(
             NBShaderRootItem rootItem,
@@ -177,7 +183,15 @@ namespace NBShaderEditor
 
         internal static GUIContent Content(string label)
         {
-            return LocalizedContent(LocalizationTableName, "inspector.feature." + label + ".label", label);
+            EnsureCacheLanguage();
+            if (ContentCache.TryGetValue(label, out GUIContent cachedContent))
+            {
+                return cachedContent;
+            }
+
+            cachedContent = NBShaderInspectorLocalization.MakeInspectorContent("feature." + label, label);
+            ContentCache[label] = cachedContent;
+            return cachedContent;
         }
 
         protected static GUIContent TillingContent()
@@ -197,7 +211,28 @@ namespace NBShaderEditor
 
         internal static string[] PopupOptions(string propertyName, string[] fallback)
         {
-            return LocalizedOptions(LocalizationTableName, "feature.popup." + propertyName, fallback);
+            EnsureCacheLanguage();
+            if (PopupOptionsCache.TryGetValue(propertyName, out string[] cachedOptions))
+            {
+                return cachedOptions;
+            }
+
+            cachedOptions = NBShaderInspectorLocalization.GetInspectorOptions("feature.popup." + propertyName, fallback);
+            PopupOptionsCache[propertyName] = cachedOptions;
+            return cachedOptions;
+        }
+
+        private static void EnsureCacheLanguage()
+        {
+            string currentLanguage = NBShaderInspectorLocalization.CurrentLanguage;
+            if (string.Equals(s_CacheLanguage, currentLanguage, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            s_CacheLanguage = currentLanguage;
+            ContentCache.Clear();
+            PopupOptionsCache.Clear();
         }
 
         internal static bool IsTierKeywordAllowed(NBShaderRootItem rootItem, string keyword)

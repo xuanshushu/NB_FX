@@ -13,8 +13,28 @@ namespace NBShaderEditor
         private const float TierButtonWidth = 105f;
         private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
         private const string HelpUrl = "https://owejt9diz2c.feishu.cn/wiki/BHz8wHHSjiYJagk7WrmcAcconlb?from=from_copylink";
+        private static readonly string[] SettingsIconNames =
+        {
+            "SettingsIcon",
+            "d_SettingsIcon",
+            "Settings",
+            "d_Settings"
+        };
 
         private readonly NBShaderRootItem _rootItem;
+        private readonly GUIContent _tierContent = new GUIContent();
+        private readonly string _tierMixedLabel;
+        private readonly string _tierFormat;
+        private readonly string _tierTooltip;
+        private NBShaderFeatureTier _tierContentTier;
+        private bool _tierContentMixed;
+        private bool _tierContentInitialized;
+        private static readonly Dictionary<string, GUIContent> IconContentCache =
+            new Dictionary<string, GUIContent>(StringComparer.Ordinal);
+        private static readonly Dictionary<string, GUIContent> TextContentCache =
+            new Dictionary<string, GUIContent>(StringComparer.Ordinal);
+        private static GUIContent s_SettingsContent;
+        private static string s_ToolbarContentLanguage;
 
         private static Material copiedMaterialSnapshot;
         private static Shader copiedShader;
@@ -22,12 +42,15 @@ namespace NBShaderEditor
         public NBShaderGUIToolBar(NBShaderRootItem rootItem)
         {
             _rootItem = rootItem;
+            _tierMixedLabel = Label("tierMixed", "Tier: Mixed");
+            _tierFormat = Label("tierFormat", "Tier: {0}");
+            _tierTooltip = Tip("tier", "NBShader feature tier");
         }
 
         public void DrawToolbar()
         {
             Rect toolbarRect = ShaderGUIItem.ApplyGlobalRectCompensation(
-                EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight));
+                _rootItem.GetControlRect(EditorGUIUtility.singleLineHeight));
             GUI.Box(toolbarRect, GUIContent.none, EditorStyles.toolbar);
 
             Material material = MainMaterial;
@@ -62,14 +85,6 @@ namespace NBShaderEditor
 
             using (new EditorGUI.DisabledScope(!hasMaterial))
             {
-                if (ToolbarButton(toolbarRect, ref buttonX, TierContent(), TierButtonWidth))
-                {
-                    ShowTierPopupMenu();
-                }
-            }
-
-            using (new EditorGUI.DisabledScope(!hasMaterial))
-            {
                 if (ToolbarButton(toolbarRect, ref buttonX, TextContent("specialReset", "R", "特殊重置功能")))
                 {
                     ShowResetPopupMenu();
@@ -81,10 +96,30 @@ namespace NBShaderEditor
                 }
             }
 
-            Rect helpRect = MakeToolbarButtonRect(toolbarRect, toolbarRect.xMax - ButtonWidth);
+            float rightX = toolbarRect.xMax;
+
+            rightX -= ButtonWidth;
+            Rect helpRect = MakeToolbarButtonRect(toolbarRect, rightX);
             if (GUI.Button(helpRect, IconContent("d__Help@2x", "help", "说明文档"), EditorStyles.toolbarButton))
             {
                 Application.OpenURL(HelpUrl);
+            }
+
+            rightX -= ButtonWidth;
+            Rect settingsRect = MakeToolbarButtonRect(toolbarRect, rightX);
+            if (GUI.Button(settingsRect, SettingsContent(), EditorStyles.toolbarButton))
+            {
+                OpenProjectSettings();
+            }
+
+            rightX -= TierButtonWidth;
+            Rect tierRect = MakeToolbarButtonRect(toolbarRect, rightX, TierButtonWidth);
+            using (new EditorGUI.DisabledScope(!hasMaterial))
+            {
+                if (GUI.Button(tierRect, TierContent(), EditorStyles.toolbarButton))
+                {
+                    ShowTierPopupMenu();
+                }
             }
         }
 
@@ -108,6 +143,34 @@ namespace NBShaderEditor
         private static Rect MakeToolbarButtonRect(Rect toolbarRect, float x, float width)
         {
             return new Rect(x, toolbarRect.y, width, toolbarRect.height);
+        }
+
+        private static GUIContent SettingsContent()
+        {
+            EnsureToolbarContentLanguage();
+            if (s_SettingsContent != null)
+            {
+                return s_SettingsContent;
+            }
+
+            Texture image = null;
+            for (int i = 0; i < SettingsIconNames.Length; i++)
+            {
+                GUIContent icon = EditorGUIUtility.IconContent(SettingsIconNames[i]);
+                if (icon != null && icon.image != null)
+                {
+                    image = icon.image;
+                    break;
+                }
+            }
+
+            s_SettingsContent = new GUIContent(image, Tip("settings", "NBShader Project Settings"));
+            return s_SettingsContent;
+        }
+
+        private static void OpenProjectSettings()
+        {
+            SettingsService.OpenProjectSettings(NBShaderFeatureLevelSettingsProvider.SettingsPath);
         }
 
         private static bool HasCopiedMaterial()
@@ -138,10 +201,20 @@ namespace NBShaderEditor
 
         private GUIContent TierContent()
         {
-            string label = _rootItem.Context != null && _rootItem.Context.CurrentTierMixed
-                ? Label("tierMixed", "Tier: Mixed")
-                : string.Format(Label("tierFormat", "Tier: {0}"), GetTierLabel(CurrentTier));
-            return new GUIContent(label, Tip("tier", "NBShader feature tier"));
+            bool mixed = _rootItem.Context != null && _rootItem.Context.CurrentTierMixed;
+            NBShaderFeatureTier tier = CurrentTier;
+            if (!_tierContentInitialized || _tierContentMixed != mixed || _tierContentTier != tier)
+            {
+                _tierContent.text = mixed
+                    ? _tierMixedLabel
+                    : string.Format(_tierFormat, GetTierLabel(tier));
+                _tierContent.tooltip = _tierTooltip;
+                _tierContentTier = tier;
+                _tierContentMixed = mixed;
+                _tierContentInitialized = true;
+            }
+
+            return _tierContent;
         }
 
         private NBShaderFeatureTier CurrentTier
@@ -412,6 +485,7 @@ namespace NBShaderEditor
         {
             _rootItem.Context?.Refresh();
             _rootItem.SyncService?.SyncMaterialState();
+            _rootItem.SyncService?.NotifyKeywordsMayHaveChanged();
             _rootItem.Context?.Refresh();
             MarkAllMaterialsDirty();
             UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
@@ -531,13 +605,43 @@ namespace NBShaderEditor
 
         private static GUIContent IconContent(string iconName, string key, string fallbackTooltip)
         {
+            EnsureToolbarContentLanguage();
+            if (IconContentCache.TryGetValue(key, out GUIContent cachedContent))
+            {
+                return cachedContent;
+            }
+
             GUIContent icon = EditorGUIUtility.IconContent(iconName);
-            return new GUIContent(icon.image, Tip(key, fallbackTooltip));
+            var content = new GUIContent(icon != null ? icon.image : null, Tip(key, fallbackTooltip));
+            IconContentCache[key] = content;
+            return content;
+        }
+
+        private static void EnsureToolbarContentLanguage()
+        {
+            string currentLanguage = NBShaderInspectorLocalization.CurrentLanguage;
+            if (string.Equals(s_ToolbarContentLanguage, currentLanguage, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            s_ToolbarContentLanguage = currentLanguage;
+            s_SettingsContent = null;
+            IconContentCache.Clear();
+            TextContentCache.Clear();
         }
 
         private static GUIContent TextContent(string key, string fallbackLabel, string fallbackTooltip)
         {
-            return NBShaderInspectorLocalization.MakeInspectorContent("toolbar." + key, fallbackLabel, fallbackTooltip);
+            EnsureToolbarContentLanguage();
+            if (TextContentCache.TryGetValue(key, out GUIContent cachedContent))
+            {
+                return cachedContent;
+            }
+
+            cachedContent = NBShaderInspectorLocalization.MakeInspectorContent("toolbar." + key, fallbackLabel, fallbackTooltip);
+            TextContentCache[key] = cachedContent;
+            return cachedContent;
         }
 
         private static string Label(string key, string fallback)

@@ -141,7 +141,7 @@ namespace NBShaderEditor
 
         private static GUIContent Content(string key, string fallback, string tip = "")
         {
-            return NBShaderInspectorLocalization.MakeContent("inspector." + key + ".label", fallback, "inspector." + key + ".tip", tip);
+            return NBShaderInspectorLocalization.MakeInspectorContent(key, fallback, tip);
         }
 
         private sealed class StencilConfigKeyItem : ShaderGUIItem
@@ -173,7 +173,8 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = hasMixedValue;
                 using (new EditorGUI.DisabledScope(true))
                 {
-                    EditorGUILayout.TextField(
+                    EditorGUI.TextField(
+                        ApplyGlobalRectCompensation(LayoutRect()),
                         NBShaderInspectorLocalization.GetInspectorText("ta.stencil.currentConfig", "当前Config:"),
                         key);
                 }

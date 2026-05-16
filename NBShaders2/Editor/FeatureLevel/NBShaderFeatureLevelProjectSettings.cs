@@ -9,18 +9,29 @@ namespace NBShaders2.Editor.FeatureLevel
     [FilePath("ProjectSettings/NBShaderFeatureLevels.asset", FilePathAttribute.Location.ProjectFolder)]
     public sealed class NBShaderFeatureLevelProjectSettings : ScriptableSingleton<NBShaderFeatureLevelProjectSettings>
     {
+        private static readonly string[] DefaultQualityNames = { "Default" };
+
         [SerializeField] private NBShaderFeatureTierKeywordSet[] m_TierKeywordSets;
         [SerializeField] private NBShaderQualityTierMapping[] m_QualityTierMappings;
         [SerializeField] private NBShaderBuildStripPolicy m_BuildStripPolicy = NBShaderBuildStripPolicy.Disabled;
         [SerializeField] private NBShaderFeatureTier m_ExplicitTier = NBShaderFeatureTier.Ultra;
 
-        public NBShaderFeatureTierKeywordSet[] tierKeywordSets { get { EnsureInitialized(); return m_TierKeywordSets; } }
+        [NonSerialized] private bool m_Initialized;
+        [NonSerialized] private HashSet<string>[] m_AllowedKeywordSetCache;
+        [NonSerialized] private bool m_AllowedKeywordSetCacheValid;
+
+        public NBShaderFeatureTierKeywordSet[] tierKeywordSets { get { EnsureInitialized(); InvalidateAllowedKeywordSetCache(); return m_TierKeywordSets; } }
         public NBShaderQualityTierMapping[] qualityTierMappings { get { EnsureInitialized(); return m_QualityTierMappings; } }
         public NBShaderBuildStripPolicy buildStripPolicy { get { return m_BuildStripPolicy; } set { m_BuildStripPolicy = value; } }
         public NBShaderFeatureTier explicitTier { get { return m_ExplicitTier; } set { m_ExplicitTier = value; } }
 
         public void EnsureInitialized()
         {
+            if (m_Initialized && HasValidTierKeywordSets() && HasValidQualityMappings() && AreQualityMappingsCurrent())
+            {
+                return;
+            }
+
             var changed = false;
             if (m_TierKeywordSets == null || m_TierKeywordSets.Length != 4)
             {
@@ -47,18 +58,21 @@ namespace NBShaders2.Editor.FeatureLevel
                 Save(true);
                 NBShaderRuntimeSettingsSynchronizer.SyncFromProjectSettings();
             }
+
+            m_Initialized = true;
         }
 
         public void ResetTierKeywordSetsToDefault()
         {
             m_TierKeywordSets = NBShaderFeatureLevelPresetLoader.LoadDefaultTierKeywordSets();
+            InvalidateAllowedKeywordSetCache();
         }
 
         public void ResetQualityMappingsToDefault()
         {
             var names = QualitySettings.names;
             if (names == null || names.Length == 0)
-                names = new[] { "Default" };
+                names = DefaultQualityNames;
 
             m_QualityTierMappings = new NBShaderQualityTierMapping[names.Length];
             for (var i = 0; i < names.Length; i++)
@@ -73,27 +87,19 @@ namespace NBShaders2.Editor.FeatureLevel
 
         public HashSet<string> GetAllowedKeywordSet(NBShaderFeatureTier tier)
         {
-            EnsureInitialized();
-            var result = new HashSet<string>(StringComparer.Ordinal);
-            for (var i = 0; i < m_TierKeywordSets.Length; i++)
-            {
-                var set = m_TierKeywordSets[i];
-                if (set == null || set.tier != tier || set.allowedKeywords == null)
-                    continue;
-
-                for (var k = 0; k < set.allowedKeywords.Length; k++)
-                {
-                    var keyword = set.allowedKeywords[k];
-                    if (NBShaderFeatureLevelCatalog.IsManagedKeyword(keyword))
-                        result.Add(keyword);
-                }
-            }
-            return result;
+            return new HashSet<string>(GetAllowedKeywordSetForReadOnlyUse(tier), StringComparer.Ordinal);
         }
 
         public bool IsKeywordAllowed(NBShaderFeatureTier tier, string keyword)
         {
-            return GetAllowedKeywordSet(tier).Contains(keyword);
+            return GetAllowedKeywordSetForReadOnlyUse(tier).Contains(keyword);
+        }
+
+        internal HashSet<string> GetAllowedKeywordSetForReadOnlyUse(NBShaderFeatureTier tier)
+        {
+            EnsureInitialized();
+            EnsureAllowedKeywordSetCache();
+            return m_AllowedKeywordSetCache[ToTierIndex(tier)];
         }
 
         public void SetKeywordAllowed(NBShaderFeatureTier tier, string keyword, bool allowed)
@@ -127,6 +133,7 @@ namespace NBShaders2.Editor.FeatureLevel
                 keywords.Remove(keyword);
 
             target.allowedKeywords = ToCatalogOrderedArray(keywords);
+            InvalidateAllowedKeywordSetCache();
         }
 
         public bool TryGetTierForQualityName(string qualityName, out NBShaderFeatureTier tier)
@@ -200,7 +207,7 @@ namespace NBShaders2.Editor.FeatureLevel
             {
                 if (m_QualityTierMappings[i] == null)
                     continue;
-                result.UnionWith(GetAllowedKeywordSet(m_QualityTierMappings[i].tier));
+                result.UnionWith(GetAllowedKeywordSetForReadOnlyUse(m_QualityTierMappings[i].tier));
             }
             return result;
         }
@@ -252,7 +259,100 @@ namespace NBShaders2.Editor.FeatureLevel
             }
 
             m_TierKeywordSets = normalized;
+            if (changed)
+                InvalidateAllowedKeywordSetCache();
             return changed;
+        }
+
+        private bool HasValidTierKeywordSets()
+        {
+            if (m_TierKeywordSets == null || m_TierKeywordSets.Length != 4)
+                return false;
+
+            for (var i = 0; i < m_TierKeywordSets.Length; i++)
+            {
+                var set = m_TierKeywordSets[i];
+                if (set == null || set.tier != (NBShaderFeatureTier)i || set.allowedKeywords == null)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool HasValidQualityMappings()
+        {
+            return m_QualityTierMappings != null && m_QualityTierMappings.Length > 0;
+        }
+
+        private bool AreQualityMappingsCurrent()
+        {
+            var names = QualitySettings.names;
+            if (names == null || names.Length == 0)
+                names = DefaultQualityNames;
+
+            if (m_QualityTierMappings == null || m_QualityTierMappings.Length != names.Length)
+                return false;
+
+            for (var i = 0; i < names.Length; i++)
+            {
+                var mapping = m_QualityTierMappings[i];
+                if (mapping == null || !string.Equals(mapping.qualityName, names[i], StringComparison.Ordinal))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private void EnsureAllowedKeywordSetCache()
+        {
+            if (m_AllowedKeywordSetCacheValid &&
+                m_AllowedKeywordSetCache != null &&
+                m_AllowedKeywordSetCache.Length == 4)
+            {
+                return;
+            }
+
+            if (m_AllowedKeywordSetCache == null || m_AllowedKeywordSetCache.Length != 4)
+                m_AllowedKeywordSetCache = new HashSet<string>[4];
+
+            for (var i = 0; i < m_AllowedKeywordSetCache.Length; i++)
+                m_AllowedKeywordSetCache[i] = BuildAllowedKeywordSet((NBShaderFeatureTier)i);
+
+            m_AllowedKeywordSetCacheValid = true;
+        }
+
+        private void InvalidateAllowedKeywordSetCache()
+        {
+            m_AllowedKeywordSetCacheValid = false;
+        }
+
+        private HashSet<string> BuildAllowedKeywordSet(NBShaderFeatureTier tier)
+        {
+            var result = new HashSet<string>(StringComparer.Ordinal);
+            if (m_TierKeywordSets == null)
+                return result;
+
+            for (var i = 0; i < m_TierKeywordSets.Length; i++)
+            {
+                var set = m_TierKeywordSets[i];
+                if (set == null || set.tier != tier || set.allowedKeywords == null)
+                    continue;
+
+                for (var k = 0; k < set.allowedKeywords.Length; k++)
+                {
+                    var keyword = set.allowedKeywords[k];
+                    if (NBShaderFeatureLevelCatalog.IsManagedKeyword(keyword))
+                        result.Add(keyword);
+                }
+            }
+
+            return result;
+        }
+
+        private static int ToTierIndex(NBShaderFeatureTier tier)
+        {
+            var index = (int)tier;
+            return index >= 0 && index < 4 ? index : (int)NBShaderFeatureTier.Ultra;
         }
 
         private NBShaderFeatureTierKeywordSet FindTierKeywordSet(NBShaderFeatureTier tier)
@@ -274,7 +374,7 @@ namespace NBShaders2.Editor.FeatureLevel
         {
             var names = QualitySettings.names;
             if (names == null || names.Length == 0)
-                names = new[] { "Default" };
+                names = DefaultQualityNames;
 
             var previous = new Dictionary<string, NBShaderFeatureTier>(StringComparer.Ordinal);
             if (m_QualityTierMappings != null)

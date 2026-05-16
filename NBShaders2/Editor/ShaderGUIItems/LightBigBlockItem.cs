@@ -284,7 +284,7 @@ namespace NBShaderEditor
                 return;
             }
 
-            EditorGUILayout.HelpBox(
+            DrawLayoutHelpBox(
                 NBShaderInspectorLocalization.GetInspectorText(
                     "light.sixway.uvWarning.message",
                     "六路UV跟随主贴图UV及颜色"),
@@ -317,7 +317,7 @@ namespace NBShaderEditor
 
         private static GUIContent Content(string key, string fallback, string tip = "")
         {
-            return NBShaderInspectorLocalization.MakeContent("inspector." + key + ".label", fallback, "inspector." + key + ".tip", tip);
+            return NBShaderInspectorLocalization.MakeInspectorContent(key, fallback, tip);
         }
     }
 
@@ -345,8 +345,6 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
-            GuiContent = NBShaderInspectorLocalization.MakeContent("inspector.light.mode.label", "Light Mode");
-            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("light.mode", LightModeOptions);
             base.OnGUI();
         }
 

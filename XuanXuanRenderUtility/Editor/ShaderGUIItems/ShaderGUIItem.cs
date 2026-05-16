@@ -53,10 +53,11 @@ namespace NBShaderEditor
         public Rect LabelRect;
         public Rect ControlRect;
         public Rect ResetRect;
+        private static readonly GUIContent TempHelpContent = new GUIContent();
         public static float ResetButtonSize => EditorGUIUtility.singleLineHeight;
         public virtual void GetRect(bool applyControlIndentCompensation = true)
         {
-            BaseRect = ApplyGlobalRectCompensation(EditorGUILayout.GetControlRect());
+            BaseRect = ApplyGlobalRectCompensation(RootItem.GetControlRect());
             SplitLineRect(BaseRect, out LabelRect, out ControlRect, out ResetRect, applyControlIndentCompensation);
         }
 
@@ -153,6 +154,28 @@ namespace NBShaderEditor
             controlRect.width = Mathf.Max(0f, baseRect.width - ResetButtonSize - ControlResetGap + controlIndentCompensation);
         }
 
+        protected Rect LayoutRect(float height = -1f)
+        {
+            return RootItem.GetControlRect(height);
+        }
+
+        protected void LayoutSpace(float height = -1f)
+        {
+            RootItem.Space(height);
+        }
+
+        protected void DrawLayoutHelpBox(string message, MessageType messageType)
+        {
+            TempHelpContent.text = message;
+            float width = Mathf.Max(1f, EditorGUIUtility.currentViewWidth + GlobalRectWidthExpansion + GlobalRectXOffset);
+            float height = Mathf.Max(
+                EditorGUIUtility.singleLineHeight * 2f,
+                EditorStyles.helpBox.CalcHeight(TempHelpContent, width));
+            Rect rect = ApplyGlobalRectCompensation(LayoutRect(height));
+            EditorGUI.HelpBox(rect, message, messageType);
+            TempHelpContent.text = string.Empty;
+        }
+
         
         public virtual void OnGUI()
         {
@@ -200,6 +223,48 @@ namespace NBShaderEditor
         public virtual void DrawController()
         {
             
+        }
+
+        protected static bool SetFloatIfDifferent(MaterialProperty property, float value)
+        {
+            if (property == null || Mathf.Approximately(property.floatValue, value))
+            {
+                return false;
+            }
+
+            property.floatValue = value;
+            return true;
+        }
+
+        protected static bool SetVectorIfDifferent(MaterialProperty property, Vector4 value)
+        {
+            if (property == null || Approximately(property.vectorValue, value))
+            {
+                return false;
+            }
+
+            property.vectorValue = value;
+            return true;
+        }
+
+        protected static bool SetColorIfDifferent(MaterialProperty property, Color value)
+        {
+            if (property == null)
+            {
+                return false;
+            }
+
+            Color current = property.colorValue;
+            if (Mathf.Approximately(current.r, value.r) &&
+                Mathf.Approximately(current.g, value.g) &&
+                Mathf.Approximately(current.b, value.b) &&
+                Mathf.Approximately(current.a, value.a))
+            {
+                return false;
+            }
+
+            property.colorValue = value;
+            return true;
         }
 
         protected readonly struct EditorGUIIndentLevelScope : System.IDisposable
@@ -407,7 +472,7 @@ namespace NBShaderEditor
             }
         }
 
-        private static bool Approximately(Vector4 a, Vector4 b)
+        protected static bool Approximately(Vector4 a, Vector4 b)
         {
             return Mathf.Approximately(a.x, b.x) &&
                    Mathf.Approximately(a.y, b.y) &&

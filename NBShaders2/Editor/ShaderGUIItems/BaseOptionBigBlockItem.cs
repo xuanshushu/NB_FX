@@ -312,7 +312,7 @@ namespace NBShaderEditor
                 return;
             }
 
-            EditorGUILayout.HelpBox(
+            DrawLayoutHelpBox(
                 NBShaderInspectorLocalization.GetInspectorText(
                     "base.backFirstPass.warning",
                     "预渲染反面会导致打断动态合批，请谨慎使用。"),
@@ -339,7 +339,7 @@ namespace NBShaderEditor
 
         private static GUIContent Content(string key, string fallback, string tip = "")
         {
-            return NBShaderInspectorLocalization.MakeContent("inspector." + key + ".label", fallback, "inspector." + key + ".tip", tip);
+            return NBShaderInspectorLocalization.MakeInspectorContent(key, fallback, tip);
         }
     }
 
@@ -355,7 +355,6 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
-            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.ztest", "ZTest");
             if (RootItem is NBShaderRootItem nbRootItem)
             {
                 if (nbRootItem.Context.UIEffectEnabled == MixedBool.True)
@@ -390,7 +389,6 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
-            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.cull", "Cull");
             base.OnGUI();
         }
     }
@@ -409,8 +407,6 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
-            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.forceZWrite", "Force ZWrite");
-            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("base.forceZWrite", Options);
             base.OnGUI();
         }
 

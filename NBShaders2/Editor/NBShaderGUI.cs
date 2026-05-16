@@ -67,6 +67,9 @@ namespace NBShaderEditor
                 _particleVertexStreamsItem = new ParticleVertexStreamsItem(this, null);
             }
 
+            bool syncMaterialState = IsInit;
+            EditorGUI.BeginChangeCheck();
+
             _toolBar ??= new NBShaderGUIToolBar(this);
             _toolBar.DrawToolbar();
 
@@ -80,7 +83,17 @@ namespace NBShaderEditor
 
             _featureBlock.OnGUI();
             _taBlock.OnGUI();
-            SyncService.SyncMaterialState();
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                syncMaterialState = true;
+            }
+
+            if (syncMaterialState)
+            {
+                SyncService.SyncMaterialState();
+            }
+
             _particleVertexStreamsItem.OnGUI();
         }
 

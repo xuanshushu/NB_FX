@@ -24,12 +24,12 @@ namespace NBShaderEditor
             SharedRootItem = rootItem;
             FoldOutPropertyName = foldOutPropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
+            GuiContent = _contentProvider();
             _foldOutHelper = new ShaderGUIFoldOutHelper(rootItem, foldOutPropertyName);
         }
 
         public override void OnGUI()
         {
-            GuiContent = _contentProvider();
             DrawLeadingSpace();
             GetRect();
             _foldOutHelper.DrawFoldOut(LabelRect);
@@ -48,7 +48,7 @@ namespace NBShaderEditor
             EditorGUI.indentLevel--;
             if (DrawSeparatorLine)
             {
-                Rect rect = ApplyGlobalRectCompensation(EditorGUILayout.GetControlRect(false, 1));
+                Rect rect = ApplyGlobalRectCompensation(LayoutRect(1));
                 EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 0.5f));
             }
         }
@@ -81,7 +81,7 @@ namespace NBShaderEditor
 
         protected override void DrawLeadingSpace()
         {
-            EditorGUILayout.Space();
+            LayoutSpace();
         }
     }
 

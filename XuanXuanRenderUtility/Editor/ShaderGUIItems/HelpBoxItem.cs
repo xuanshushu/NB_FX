@@ -30,7 +30,7 @@ namespace NBShaderEditor
 
             using (ParentControlDisabledScope())
             {
-                EditorGUILayout.HelpBox(_messageProvider(), _messageType);
+                DrawLayoutHelpBox(_messageProvider(), _messageType);
             }
         }
     }

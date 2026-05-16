@@ -72,7 +72,7 @@ namespace NBShaderEditor
                 {
                     using (ParentControlDisabledScope())
                     {
-                        EditorGUILayout.HelpBox(
+                        DrawLayoutHelpBox(
                             FeatureToggleFoldOutItem.Text(
                                 "feature.flipbook.specialUvWarning.message",
                                 "序列帧融帧和特殊UV通道同时开启，粒子序列帧应该影响UV0和UV1两个通道，特殊通道只能使用UV3（原始UV）"),
@@ -83,7 +83,7 @@ namespace NBShaderEditor
                 {
                     using (ParentControlDisabledScope())
                     {
-                        EditorGUILayout.HelpBox(
+                        DrawLayoutHelpBox(
                             FeatureToggleFoldOutItem.Text(
                                 "feature.flipbook.particleInfo.message",
                                 "AnimationSheet的AffectUVChannel需要有UV0和UV1"),
@@ -98,7 +98,7 @@ namespace NBShaderEditor
             {
                 using (ParentControlDisabledScope())
                 {
-                    EditorGUILayout.HelpBox(
+                    DrawLayoutHelpBox(
                         FeatureToggleFoldOutItem.Text(
                             "feature.flipbook.meshInfo.message",
                             "需要添加AnimationSheetHelper脚本"),
@@ -158,12 +158,16 @@ namespace NBShaderEditor
         {
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
             {
-                if (RootItem.ShaderFlags[i] is NBShaderFlags flags)
+                if (RootItem.ShaderFlags[i] is NBShaderFlags flags && flags.material != null)
                 {
-                    flags.SetCustomDataFlag(
-                        NBShaderFlags.CutomDataComponent.Off,
-                        NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME,
-                        2);
+                    if (flags.GetCustomDataFlag(NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME, 2) !=
+                        NBShaderFlags.CutomDataComponent.Off)
+                    {
+                        flags.SetCustomDataFlag(
+                            NBShaderFlags.CutomDataComponent.Off,
+                            NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME,
+                            2);
+                    }
                 }
             }
         }

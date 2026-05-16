@@ -27,8 +27,9 @@ namespace NBShaderEditor
 
         public override void DrawController()
         {
-            PropertyInfo.Property.floatValue = DraggableLabelFloat.Handle(LabelRect, PropertyInfo.Property.floatValue, sensitivity: -1f);//拖动Label控件可以操作Float参数
-            PropertyInfo.Property.floatValue = EditorGUI.FloatField(ControlRect, PropertyInfo.Property.floatValue);
+            float value = DraggableLabelFloat.Handle(LabelRect, PropertyInfo.Property.floatValue, sensitivity: -1f);//拖动Label控件可以操作Float参数
+            value = EditorGUI.FloatField(ControlRect, value);
+            SetFloatIfDifferent(PropertyInfo.Property, value);
         }
         
     }
@@ -126,7 +127,7 @@ namespace NBShaderEditor
                 EndAnimatedPropertyBackground(maxAnimatedScope);
                 rangeVector.x = min;
                 rangeVector.y = max;
-                _rangePropertyInfo.Property.vectorValue = rangeVector;
+                SetVectorIfDifferent(_rangePropertyInfo.Property, rangeVector);
 
                 float sliderMin = Mathf.Min(min, max);
                 float sliderMax = Mathf.Max(min, max);
@@ -141,7 +142,7 @@ namespace NBShaderEditor
                 value = SliderNoIndent(sliderRect, value, sliderMin, sliderMax);
                 EndAnimatedPropertyBackground(sliderAnimatedScope);
 
-                PropertyInfo.Property.floatValue = Mathf.Clamp(value, sliderMin, sliderMax);
+                SetFloatIfDifferent(PropertyInfo.Property, Mathf.Clamp(value, sliderMin, sliderMax));
                 EditorGUI.showMixedValue = false;
 
             }
@@ -153,7 +154,8 @@ namespace NBShaderEditor
                     DraggableLabelFloat.GetSensitivityByRange(Min, Max),
                     Min,
                     Max);
-                PropertyInfo.Property.floatValue = EditorGUI.Slider(ControlRect, value,Min,Max);
+                value = EditorGUI.Slider(ControlRect, value,Min,Max);
+                SetFloatIfDifferent(PropertyInfo.Property, value);
             }
         }
 

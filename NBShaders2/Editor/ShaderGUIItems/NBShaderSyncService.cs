@@ -10,6 +10,8 @@ namespace NBShaderEditor
         private readonly NBShaderRootItem _rootItem;
         private StencilValuesConfig _stencilValuesConfig;
 
+        public int KeywordVersion { get; private set; }
+
         private static readonly KeywordToggleBinding[] ToggleKeywordBindings =
         {
             new KeywordToggleBinding("_SoftParticlesEnabled", "_SOFTPARTICLES_ON"),
@@ -43,9 +45,32 @@ namespace NBShaderEditor
             new KeywordToggleBinding("_VertexOffset_Mask_Toggle", "_VERTEX_OFFSET_MASKMAP")
         };
 
+        private static readonly string[] HoudiniVatKeywords =
+        {
+            "_HOUDINI_VAT_SOFTBODY",
+            "_HOUDINI_VAT_RIGIDBODY",
+            "_HOUDINI_VAT_DYNAMIC_REMESH",
+            "_HOUDINI_VAT_PARTICLE_SPRITE"
+        };
+
+        private static readonly string[] TyflowVatKeywords =
+        {
+            "_TYFLOW_VAT_ABSOLUTE",
+            "_TYFLOW_VAT_RELATIVE",
+            "_TYFLOW_VAT_SKIN_R",
+            "_TYFLOW_VAT_SKIN_PR",
+            "_TYFLOW_VAT_SKIN_PRSAVE",
+            "_TYFLOW_VAT_SKIN_PRSXYZ"
+        };
+
         public NBShaderSyncService(NBShaderRootItem rootItem)
         {
             _rootItem = rootItem;
+        }
+
+        public void NotifyKeywordsMayHaveChanged()
+        {
+            KeywordVersion++;
         }
 
         public void ApplyTransparentMode(TransparentMode mode)
@@ -65,7 +90,7 @@ namespace NBShaderEditor
                     zWriteProperty.floatValue = 1;
                     foreach (Material mat in _rootItem.Mats)
                     {
-                        mat.renderQueue = 2000 + queueBias;
+                        SetRenderQueueIfNeeded(mat, 2000 + queueBias);
                         SetKeyword(mat, "_ALPHATEST_ON", false);
                     }
                     break;
@@ -75,7 +100,7 @@ namespace NBShaderEditor
                     foreach (Material mat in _rootItem.Mats)
                     {
                         bool uiEffect = IsUIEffectMode(mat);
-                        mat.renderQueue = 3000 + queueBias;
+                        SetRenderQueueIfNeeded(mat, 3000 + queueBias);
                         SetKeyword(mat, "_ALPHATEST_ON", false);
                     }
                     break;
@@ -84,7 +109,7 @@ namespace NBShaderEditor
                     zWriteProperty.floatValue = 1;
                     foreach (Material mat in _rootItem.Mats)
                     {
-                        mat.renderQueue = 2450 + queueBias;
+                        SetRenderQueueIfNeeded(mat, 2450 + queueBias);
                         SetKeyword(mat, "_ALPHATEST_ON", true);
                     }
                     break;
@@ -124,11 +149,11 @@ namespace NBShaderEditor
             {
                 if (enabled)
                 {
-                    flagBase.SetFlagBits(flagBits, index: flagIndex);
+                    SetFlag(flagBase, flagBits, true, flagIndex);
                 }
                 else
                 {
-                    flagBase.ClearFlagBits(flagBits, index: flagIndex);
+                    SetFlag(flagBase, flagBits, false, flagIndex);
                 }
             }
         }
@@ -143,7 +168,7 @@ namespace NBShaderEditor
         {
             foreach (Material mat in _rootItem.Mats)
             {
-                mat.SetShaderPassEnabled(passName, enabled);
+                SetShaderPassEnabledIfNeeded(mat, passName, enabled);
             }
         }
 
@@ -156,13 +181,13 @@ namespace NBShaderEditor
                 bool disableMainPass = mat.HasProperty("_DisableMainPassToggle") &&
                                        mat.GetFloat("_DisableMainPassToggle") > 0.5f;
 
-                mat.SetShaderPassEnabled("NBCameraOpaqueDistortPass", cameraOpaque);
-                mat.SetShaderPassEnabled("NBDeferredDistortPass", deferred);
-                mat.SetShaderPassEnabled("UniversalForward", mode == 0 || !disableMainPass);
+                SetShaderPassEnabledIfNeeded(mat, "NBCameraOpaqueDistortPass", cameraOpaque);
+                SetShaderPassEnabledIfNeeded(mat, "NBDeferredDistortPass", deferred);
+                SetShaderPassEnabledIfNeeded(mat, "UniversalForward", mode == 0 || !disableMainPass);
 
                 if (mode == 0 && mat.HasProperty("_DisableMainPassToggle"))
                 {
-                    mat.SetFloat("_DisableMainPassToggle", 0f);
+                    SetFloatIfExists(mat, "_DisableMainPassToggle", 0f);
                 }
             }
         }
@@ -212,7 +237,7 @@ namespace NBShaderEditor
                     if (mat.HasProperty("_TransparentMode") &&
                         Mathf.RoundToInt(mat.GetFloat("_TransparentMode")) == (int)TransparentMode.Transparent)
                     {
-                        mat.SetFloat("_TransparentMode", (float)TransparentMode.CutOff);
+                        SetFloatIfExists(mat, "_TransparentMode", (float)TransparentMode.CutOff);
                     }
 
                     SetFloatIfExists(mat, "_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);
@@ -232,10 +257,7 @@ namespace NBShaderEditor
         {
             foreach (Material mat in _rootItem.Mats)
             {
-                if (mat.HasProperty("_VAT_Toggle"))
-                {
-                    mat.SetFloat("_VAT_Toggle", enabled ? 1f : 0f);
-                }
+                SetFloatIfExists(mat, "_VAT_Toggle", enabled ? 1f : 0f);
 
                 SyncVatKeywords(mat);
             }
@@ -245,10 +267,7 @@ namespace NBShaderEditor
         {
             foreach (Material mat in _rootItem.Mats)
             {
-                if (mat.HasProperty("_FlipbookBlending"))
-                {
-                    mat.SetFloat("_FlipbookBlending", enabled ? 1f : 0f);
-                }
+                SetFloatIfExists(mat, "_FlipbookBlending", enabled ? 1f : 0f);
 
                 if (enabled)
                 {
@@ -269,32 +288,32 @@ namespace NBShaderEditor
                 switch (mode)
                 {
                     case BlendMode.Alpha:
-                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                        SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                        SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                         SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
                         SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                         break;
                     case BlendMode.Premultiply:
-                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                        SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                        SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                         SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
                         SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                         break;
                     case BlendMode.Additive:
-                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                        SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                        SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                         SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
                         SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                         break;
                     case BlendMode.Multiply:
-                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
-                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                        SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
+                        SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                         SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
                         SetKeyword(mat, "_ALPHAMODULATE_ON", true);
                         break;
                     case BlendMode.Opaque:
-                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                        SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                        SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
                         SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
                         SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                         break;
@@ -417,9 +436,47 @@ namespace NBShaderEditor
 
         private static void SetFloatIfExists(Material mat, string propertyName, float value)
         {
-            if (mat.HasProperty(propertyName))
+            if (mat != null &&
+                mat.HasProperty(propertyName) &&
+                !Mathf.Approximately(mat.GetFloat(propertyName), value))
             {
                 mat.SetFloat(propertyName, value);
+            }
+        }
+
+        private static void SetIntIfExists(Material mat, string propertyName, int value)
+        {
+            if (mat != null &&
+                mat.HasProperty(propertyName) &&
+                Mathf.RoundToInt(mat.GetFloat(propertyName)) != value)
+            {
+                mat.SetInt(propertyName, value);
+            }
+        }
+
+        private static void SetVectorIfExists(Material mat, string propertyName, Vector4 value)
+        {
+            if (mat != null &&
+                mat.HasProperty(propertyName) &&
+                mat.GetVector(propertyName) != value)
+            {
+                mat.SetVector(propertyName, value);
+            }
+        }
+
+        private static void SetRenderQueueIfNeeded(Material mat, int renderQueue)
+        {
+            if (mat != null && mat.renderQueue != renderQueue)
+            {
+                mat.renderQueue = renderQueue;
+            }
+        }
+
+        private static void SetShaderPassEnabledIfNeeded(Material mat, string passName, bool enabled)
+        {
+            if (mat != null && mat.GetShaderPassEnabled(passName) != enabled)
+            {
+                mat.SetShaderPassEnabled(passName, enabled);
             }
         }
 
@@ -449,7 +506,7 @@ namespace NBShaderEditor
 
             if (mat.HasProperty("_CustomData"))
             {
-                mat.SetFloat("_CustomData", isParticle ? 1f : 0f);
+                SetFloatIfExists(mat, "_CustomData", isParticle ? 1f : 0f);
             }
 
             if (isParticle)
@@ -583,7 +640,13 @@ namespace NBShaderEditor
                 return;
             }
 
-            if (enabled && IsKeywordAllowed(keyword))
+            bool shouldEnable = enabled && IsKeywordAllowed(keyword);
+            if (mat.IsKeywordEnabled(keyword) == shouldEnable)
+            {
+                return;
+            }
+
+            if (shouldEnable)
             {
                 mat.EnableKeyword(keyword);
             }
@@ -591,6 +654,8 @@ namespace NBShaderEditor
             {
                 mat.DisableKeyword(keyword);
             }
+
+            KeywordVersion++;
         }
 
         private static void SyncScreenDistortPasses(Material mat)
@@ -606,13 +671,13 @@ namespace NBShaderEditor
             bool disableMainPass = mat.HasProperty("_DisableMainPassToggle") &&
                                    mat.GetFloat("_DisableMainPassToggle") > 0.5f;
 
-            mat.SetShaderPassEnabled("NBCameraOpaqueDistortPass", cameraOpaque);
-            mat.SetShaderPassEnabled("NBDeferredDistortPass", deferred);
-            mat.SetShaderPassEnabled("UniversalForward", mode == 0 || !disableMainPass);
+            SetShaderPassEnabledIfNeeded(mat, "NBCameraOpaqueDistortPass", cameraOpaque);
+            SetShaderPassEnabledIfNeeded(mat, "NBDeferredDistortPass", deferred);
+            SetShaderPassEnabledIfNeeded(mat, "UniversalForward", mode == 0 || !disableMainPass);
 
             if (mode == 0 && mat.HasProperty("_DisableMainPassToggle"))
             {
-                mat.SetFloat("_DisableMainPassToggle", 0f);
+                SetFloatIfExists(mat, "_DisableMainPassToggle", 0f);
             }
         }
 
@@ -643,8 +708,8 @@ namespace NBShaderEditor
 
             if (!flags.CheckIsUVModeOn(NBShaderFlags.UVMode.SpecialUVChannel))
             {
-                flags.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
-                flags.ClearFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1);
+                SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, false, 1);
+                SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, false, 1);
             }
 
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE, flags.CheckIsUVModeOn(NBShaderFlags.UVMode.Cylinder), 1);
@@ -668,25 +733,25 @@ namespace NBShaderEditor
             switch (mode)
             {
                 case TransparentMode.Opaque:
-                    mat.SetInt("_ZWrite", 1);
-                    mat.renderQueue = 2100 + queueBias;
-                    mat.SetFloat("_Blend", (float)BlendMode.Opaque);
+                    SetIntIfExists(mat, "_ZWrite", 1);
+                    SetRenderQueueIfNeeded(mat, 2100 + queueBias);
+                    SetFloatIfExists(mat, "_Blend", (float)BlendMode.Opaque);
                     SetKeyword(mat, "_ALPHATEST_ON", false);
                     break;
                 case TransparentMode.Transparent:
-                    mat.SetInt("_ZWrite", 0);
-                    mat.renderQueue = (uiEffect ? 3000 : 3100) + queueBias;
+                    SetIntIfExists(mat, "_ZWrite", 0);
+                    SetRenderQueueIfNeeded(mat, (uiEffect ? 3000 : 3100) + queueBias);
                     if (mat.HasProperty("_Blend") && (BlendMode)Mathf.RoundToInt(mat.GetFloat("_Blend")) == BlendMode.Opaque)
                     {
-                        mat.SetFloat("_Blend", (float)BlendMode.Alpha);
+                        SetFloatIfExists(mat, "_Blend", (float)BlendMode.Alpha);
                     }
 
                     SetKeyword(mat, "_ALPHATEST_ON", false);
                     break;
                 case TransparentMode.CutOff:
-                    mat.SetInt("_ZWrite", 1);
-                    mat.renderQueue = 2450 + queueBias;
-                    mat.SetFloat("_Blend", (float)BlendMode.Opaque);
+                    SetIntIfExists(mat, "_ZWrite", 1);
+                    SetRenderQueueIfNeeded(mat, 2450 + queueBias);
+                    SetFloatIfExists(mat, "_Blend", (float)BlendMode.Opaque);
                     SetKeyword(mat, "_ALPHATEST_ON", true);
                     break;
             }
@@ -696,11 +761,11 @@ namespace NBShaderEditor
                 float forceZWrite = mat.GetFloat("_ForceZWriteToggle");
                 if (forceZWrite > 0.5f && forceZWrite < 1.5f)
                 {
-                    mat.SetInt("_ZWrite", 1);
+                    SetIntIfExists(mat, "_ZWrite", 1);
                 }
                 else if (forceZWrite > 1.5f)
                 {
-                    mat.SetInt("_ZWrite", 0);
+                    SetIntIfExists(mat, "_ZWrite", 0);
                 }
             }
         }
@@ -733,7 +798,7 @@ namespace NBShaderEditor
             if (value.y < value.x + 1f)
             {
                 value.y = value.x + 1f;
-                mat.SetVector("_ParallaxMapping_Vec", value);
+                SetVectorIfExists(mat, "_ParallaxMapping_Vec", value);
             }
         }
 
@@ -747,32 +812,32 @@ namespace NBShaderEditor
             switch ((BlendMode)Mathf.RoundToInt(mat.GetFloat("_Blend")))
             {
                 case BlendMode.Alpha:
-                    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                    SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                     SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
                     SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
                 case BlendMode.Premultiply:
-                    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                     SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
                     SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
                 case BlendMode.Additive:
-                    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                     SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
                     SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
                 case BlendMode.Multiply:
-                    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
-                    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
+                    SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                     SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
                     SetKeyword(mat, "_ALPHAMODULATE_ON", true);
                     break;
                 case BlendMode.Opaque:
-                    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                    SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
                     SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
                     SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
@@ -848,20 +913,14 @@ namespace NBShaderEditor
 
         private void DisableVat(Material mat)
         {
-            if (mat.HasProperty("_VAT_Toggle"))
-            {
-                mat.SetFloat("_VAT_Toggle", 0f);
-            }
+            SetFloatIfExists(mat, "_VAT_Toggle", 0f);
 
             ClearVatKeywords(mat);
         }
 
         private void DisableFlipbook(Material mat)
         {
-            if (mat.HasProperty("_FlipbookBlending"))
-            {
-                mat.SetFloat("_FlipbookBlending", 0f);
-            }
+            SetFloatIfExists(mat, "_FlipbookBlending", 0f);
 
             SetKeyword(mat, "_FLIPBOOKBLENDING_ON", false);
         }
@@ -877,30 +936,12 @@ namespace NBShaderEditor
 
         private void SetHoudiniVATKeyword(Material mat, int enabledIndex)
         {
-            string[] keywords =
-            {
-                "_HOUDINI_VAT_SOFTBODY",
-                "_HOUDINI_VAT_RIGIDBODY",
-                "_HOUDINI_VAT_DYNAMIC_REMESH",
-                "_HOUDINI_VAT_PARTICLE_SPRITE"
-            };
-
-            SetExclusiveKeyword(mat, keywords, enabledIndex);
+            SetExclusiveKeyword(mat, HoudiniVatKeywords, enabledIndex);
         }
 
         private void SetTyflowVATKeyword(Material mat, int enabledIndex)
         {
-            string[] keywords =
-            {
-                "_TYFLOW_VAT_ABSOLUTE",
-                "_TYFLOW_VAT_RELATIVE",
-                "_TYFLOW_VAT_SKIN_R",
-                "_TYFLOW_VAT_SKIN_PR",
-                "_TYFLOW_VAT_SKIN_PRSAVE",
-                "_TYFLOW_VAT_SKIN_PRSXYZ"
-            };
-
-            SetExclusiveKeyword(mat, keywords, enabledIndex);
+            SetExclusiveKeyword(mat, TyflowVatKeywords, enabledIndex);
         }
 
         private void SetExclusiveKeyword(Material mat, string[] keywords, int enabledIndex)
@@ -918,6 +959,13 @@ namespace NBShaderEditor
 
         private static void SetFlag(ShaderFlagsBase flags, int flagBits, bool enabled, int index)
         {
+            if (flags == null ||
+                flags.material == null ||
+                flags.CheckFlagBits(flagBits, index: index) == enabled)
+            {
+                return;
+            }
+
             if (enabled)
             {
                 flags.SetFlagBits(flagBits, index: index);

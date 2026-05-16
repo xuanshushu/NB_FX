@@ -31,6 +31,7 @@ namespace NBShaderEditor
             _popupNamesProvider = popupNamesProvider;
             _onValueChanged = onValueChanged;
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             PopUpNames = _popupNamesProvider?.Invoke();
             InitTriggerByChild();
         }
@@ -44,22 +45,13 @@ namespace NBShaderEditor
                 return;
             }
 
-            if (_contentProvider != null)
-            {
-                GuiContent = _contentProvider();
-            }
-
-            if (_popupNamesProvider != null)
-            {
-                PopUpNames = _popupNamesProvider();
-            }
-
             base.OnGUI();
         }
 
         public override void DrawController()
         {
-            PropertyInfo.Property.floatValue = EditorGUI.Popup(ControlRect,(int)PropertyInfo.Property.floatValue,PopUpNames);
+            int value = EditorGUI.Popup(ControlRect, (int)PropertyInfo.Property.floatValue, PopUpNames);
+            SetFloatIfDifferent(PropertyInfo.Property, value);
         }
 
         public override void OnEndChange()

@@ -16,6 +16,9 @@ namespace NBShaderEditor
 
         private ShaderPropertyInfo[] _colorPropertyInfos;
         private ShaderPropertyInfo[] _alphaPropertyInfos;
+        private readonly Gradient _gradient = new Gradient();
+        private GradientColorKey[] _colorKeys = Array.Empty<GradientColorKey>();
+        private GradientAlphaKey[] _alphaKeys = Array.Empty<GradientAlphaKey>();
 
         public GradientItem(
             ShaderGUIRootItem rootItem,
@@ -37,6 +40,7 @@ namespace NBShaderEditor
             _hdr = hdr;
             _colorSpace = colorSpace;
             _isVisible = isVisible;
+            GuiContent = _contentProvider();
             CacheProperties();
             InitTriggerByChild();
         }
@@ -69,11 +73,10 @@ namespace NBShaderEditor
                 return;
             }
 
-            CacheProperties();
             GetRect();
             using (ParentControlDisabledScope())
             {
-                EditorGUI.LabelField(LabelRect, _contentProvider());
+                EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
             Gradient gradient = ReadGradient();
@@ -103,8 +106,15 @@ namespace NBShaderEditor
             bool isBlackAndWhiteGradient = !hasColorProperties && hasAlphaProperties;
             GetGradientKeyCounts(out int colorKeyCount, out int alphaKeyCount);
 
-            GradientColorKey[] colorKeys = new GradientColorKey[colorKeyCount];
-            GradientAlphaKey[] alphaKeys = new GradientAlphaKey[alphaKeyCount];
+            if (_colorKeys.Length != colorKeyCount)
+            {
+                _colorKeys = new GradientColorKey[colorKeyCount];
+            }
+
+            if (_alphaKeys.Length != alphaKeyCount)
+            {
+                _alphaKeys = new GradientAlphaKey[alphaKeyCount];
+            }
 
             for (int i = 0; i < colorKeyCount; i++)
             {
@@ -121,7 +131,7 @@ namespace NBShaderEditor
                     colorTime = Mathf.Clamp01(packed.a);
                 }
 
-                colorKeys[i] = new GradientColorKey(color, colorTime);
+                _colorKeys[i] = new GradientColorKey(color, colorTime);
             }
 
             for (int i = 0; i < alphaKeyCount; i++)
@@ -133,12 +143,11 @@ namespace NBShaderEditor
                     TryReadAlphaKey(i, ref alpha, ref alphaTime);
                 }
 
-                alphaKeys[i] = new GradientAlphaKey(alpha, alphaTime);
+                _alphaKeys[i] = new GradientAlphaKey(alpha, alphaTime);
             }
 
-            Gradient gradient = new Gradient();
-            gradient.SetKeys(colorKeys, alphaKeys);
-            return gradient;
+            _gradient.SetKeys(_colorKeys, _alphaKeys);
+            return _gradient;
         }
 
         private void GetGradientKeyCounts(out int colorKeyCount, out int alphaKeyCount)

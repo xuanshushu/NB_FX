@@ -17,6 +17,9 @@ namespace NBShaderEditor
 
         private static readonly Dictionary<string, LocalizationTable> Tables =
             new Dictionary<string, LocalizationTable>(StringComparer.OrdinalIgnoreCase);
+        private static NBFXLanguageMode s_CachedLanguageMode;
+        private static string s_CachedPreferredLanguage;
+        private static bool s_CachedPreferredLanguageValid;
 
         public static void RegisterCsv(string tableName, string csvAssetPath)
         {
@@ -40,7 +43,11 @@ namespace NBShaderEditor
         {
             LocalizationTable table = GetTable(tableName);
             table.EnsureLoaded();
+            return GetCurrentLanguage(table);
+        }
 
+        private static string GetCurrentLanguage(LocalizationTable table)
+        {
             string preferred = GetPreferredLanguageName();
             foreach (string language in table.Languages)
             {
@@ -60,24 +67,83 @@ namespace NBShaderEditor
             string tooltipKey = null,
             string tooltipFallback = "")
         {
-            return new GUIContent(
-                Get(tableName, labelKey, labelFallback),
-                GetTooltip(tableName, labelKey, tooltipKey, tooltipFallback));
+            LocalizationTable table = GetTable(tableName);
+            table.EnsureLoaded();
+            string language = GetCurrentLanguage(table);
+            var cacheKey = new ContentCacheKey(language, labelKey, labelFallback, tooltipKey, tooltipFallback);
+            if (table.ContentCache.TryGetValue(cacheKey, out GUIContent cachedContent))
+            {
+                return cachedContent;
+            }
+
+            var content = new GUIContent(
+                GetLocalizedValue(table, labelKey, labelFallback, language),
+                GetTooltip(table, labelKey, tooltipKey, tooltipFallback, language));
+            table.ContentCache[cacheKey] = content;
+            return content;
         }
 
         public static GUIContent MakeInspectorContent(string tableName, string key, string fallback, string tip = "")
         {
-            return MakeContent(tableName, "inspector." + key + ".label", fallback, "inspector." + key + ".tip", tip);
+            LocalizationTable table = GetTable(tableName);
+            table.EnsureLoaded();
+            string language = GetCurrentLanguage(table);
+            var cacheKey = new InspectorContentCacheKey(language, key, fallback, tip);
+            if (table.InspectorContentCache.TryGetValue(cacheKey, out GUIContent cachedContent))
+            {
+                return cachedContent;
+            }
+
+            string labelKey = "inspector." + key + ".label";
+            string tooltipKey = "inspector." + key + ".tip";
+            var content = new GUIContent(
+                GetLocalizedValue(table, labelKey, fallback, language),
+                GetTooltip(table, labelKey, tooltipKey, tip, language));
+            table.InspectorContentCache[cacheKey] = content;
+            return content;
         }
 
         public static string GetInspectorText(string tableName, string key, string fallback = "")
         {
-            return Get(tableName, "inspector." + key, fallback);
+            LocalizationTable table = GetTable(tableName);
+            table.EnsureLoaded();
+            string language = GetCurrentLanguage(table);
+            var cacheKey = new InspectorTextCacheKey(language, key, fallback);
+            if (table.InspectorTextCache.TryGetValue(cacheKey, out string cachedText))
+            {
+                return cachedText;
+            }
+
+            cachedText = GetLocalizedValue(table, "inspector." + key, fallback, language);
+            table.InspectorTextCache[cacheKey] = cachedText;
+            return cachedText;
         }
 
         public static string[] GetInspectorOptions(string tableName, string key, string[] fallback)
         {
-            return GetOptions(tableName, "inspector." + key + ".option", fallback);
+            if (fallback == null)
+            {
+                return Array.Empty<string>();
+            }
+
+            LocalizationTable table = GetTable(tableName);
+            table.EnsureLoaded();
+            string language = GetCurrentLanguage(table);
+            var cacheKey = new OptionsCacheKey(language, key, fallback);
+            if (table.InspectorOptionsCache.TryGetValue(cacheKey, out string[] cachedValues))
+            {
+                return cachedValues;
+            }
+
+            string keyPrefix = "inspector." + key + ".option";
+            string[] values = new string[fallback.Length];
+            for (int i = 0; i < fallback.Length; i++)
+            {
+                values[i] = GetLocalizedValue(table, keyPrefix + "." + i, fallback[i], language);
+            }
+
+            table.InspectorOptionsCache[cacheKey] = values;
+            return values;
         }
 
         public static string[] GetOptions(string tableName, string keyPrefix, string[] fallback)
@@ -87,12 +153,22 @@ namespace NBShaderEditor
                 return Array.Empty<string>();
             }
 
+            LocalizationTable table = GetTable(tableName);
+            table.EnsureLoaded();
+            string language = GetCurrentLanguage(table);
+            var cacheKey = new OptionsCacheKey(language, keyPrefix, fallback);
+            if (table.OptionsCache.TryGetValue(cacheKey, out string[] cachedValues))
+            {
+                return cachedValues;
+            }
+
             string[] values = new string[fallback.Length];
             for (int i = 0; i < fallback.Length; i++)
             {
-                values[i] = Get(tableName, $"{keyPrefix}.{i}", fallback[i]);
+                values[i] = GetLocalizedValue(table, keyPrefix + "." + i, fallback[i], language);
             }
 
+            table.OptionsCache[cacheKey] = values;
             return values;
         }
 
@@ -100,6 +176,11 @@ namespace NBShaderEditor
         {
             LocalizationTable table = GetTable(tableName);
             table.EnsureLoaded();
+            return GetLocalizedValue(table, key, fallback, GetCurrentLanguage(table));
+        }
+
+        private static string GetLocalizedValue(LocalizationTable table, string key, string fallback, string language)
+        {
             if (string.IsNullOrEmpty(key))
             {
                 return fallback;
@@ -107,7 +188,6 @@ namespace NBShaderEditor
 
             if (table.Rows.TryGetValue(key, out Dictionary<string, string> row))
             {
-                string language = GetCurrentLanguage(tableName);
                 if (row.TryGetValue(language, out string localizedValue) && !string.IsNullOrEmpty(localizedValue))
                 {
                     return localizedValue;
@@ -126,10 +206,19 @@ namespace NBShaderEditor
         {
             LocalizationTable table = GetTable(tableName);
             table.EnsureLoaded();
+            return GetTooltip(table, labelKey, tooltipKey, fallback, GetCurrentLanguage(table));
+        }
+
+        private static string GetTooltip(
+            LocalizationTable table,
+            string labelKey,
+            string tooltipKey,
+            string fallback,
+            string language)
+        {
             if (!string.IsNullOrEmpty(labelKey) &&
                 table.Rows.TryGetValue(labelKey, out Dictionary<string, string> row))
             {
-                string language = GetCurrentLanguage(tableName);
                 if (TryGetTooltip(row, language, out string localizedTooltip))
                 {
                     return localizedTooltip;
@@ -143,7 +232,7 @@ namespace NBShaderEditor
 
             if (!string.IsNullOrEmpty(tooltipKey))
             {
-                return Get(tableName, tooltipKey, fallback);
+                return GetLocalizedValue(table, tooltipKey, fallback, language);
             }
 
             return fallback;
@@ -158,10 +247,17 @@ namespace NBShaderEditor
                     table.Reload();
                 }
 
+                InvalidatePreferredLanguageCache();
                 return;
             }
 
             GetTable(tableName).Reload();
+            InvalidatePreferredLanguageCache();
+        }
+
+        private static void InvalidatePreferredLanguageCache()
+        {
+            s_CachedPreferredLanguageValid = false;
         }
 
         private static LocalizationTable GetTable(string tableName)
@@ -211,16 +307,31 @@ namespace NBShaderEditor
 
         private static string GetPreferredLanguageName()
         {
-            switch (NBFXProjectSettings.LanguageMode)
+            NBFXLanguageMode languageMode = NBFXProjectSettings.LanguageMode;
+            if (s_CachedPreferredLanguageValid && s_CachedLanguageMode == languageMode)
+            {
+                return s_CachedPreferredLanguage;
+            }
+
+            string language;
+            switch (languageMode)
             {
                 case NBFXLanguageMode.Chinese:
-                    return DefaultLanguage;
+                    language = DefaultLanguage;
+                    break;
                 case NBFXLanguageMode.English:
-                    return EnglishLanguage;
+                    language = EnglishLanguage;
+                    break;
                 case NBFXLanguageMode.FollowEditor:
                 default:
-                    return GetLanguageFromEditor();
+                    language = GetLanguageFromEditor();
+                    break;
             }
+
+            s_CachedLanguageMode = languageMode;
+            s_CachedPreferredLanguage = language;
+            s_CachedPreferredLanguageValid = true;
+            return language;
         }
 
         private static string GetLanguageFromEditor()
@@ -340,6 +451,205 @@ namespace NBShaderEditor
             }
         }
 
+        private readonly struct ContentCacheKey : IEquatable<ContentCacheKey>
+        {
+            private readonly string _language;
+            private readonly string _labelKey;
+            private readonly string _labelFallback;
+            private readonly string _tooltipKey;
+            private readonly string _tooltipFallback;
+
+            public ContentCacheKey(
+                string language,
+                string labelKey,
+                string labelFallback,
+                string tooltipKey,
+                string tooltipFallback)
+            {
+                _language = language;
+                _labelKey = labelKey;
+                _labelFallback = labelFallback;
+                _tooltipKey = tooltipKey;
+                _tooltipFallback = tooltipFallback;
+            }
+
+            public bool Equals(ContentCacheKey other)
+            {
+                return StringEquals(_language, other._language) &&
+                       StringEquals(_labelKey, other._labelKey) &&
+                       StringEquals(_labelFallback, other._labelFallback) &&
+                       StringEquals(_tooltipKey, other._tooltipKey) &&
+                       StringEquals(_tooltipFallback, other._tooltipFallback);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is ContentCacheKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hash = 17;
+                    hash = hash * 31 + StringHash(_language);
+                    hash = hash * 31 + StringHash(_labelKey);
+                    hash = hash * 31 + StringHash(_labelFallback);
+                    hash = hash * 31 + StringHash(_tooltipKey);
+                    hash = hash * 31 + StringHash(_tooltipFallback);
+                    return hash;
+                }
+            }
+        }
+
+        private readonly struct InspectorContentCacheKey : IEquatable<InspectorContentCacheKey>
+        {
+            private readonly string _language;
+            private readonly string _key;
+            private readonly string _fallback;
+            private readonly string _tip;
+
+            public InspectorContentCacheKey(string language, string key, string fallback, string tip)
+            {
+                _language = language;
+                _key = key;
+                _fallback = fallback;
+                _tip = tip;
+            }
+
+            public bool Equals(InspectorContentCacheKey other)
+            {
+                return StringEquals(_language, other._language) &&
+                       StringEquals(_key, other._key) &&
+                       StringEquals(_fallback, other._fallback) &&
+                       StringEquals(_tip, other._tip);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is InspectorContentCacheKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hash = 17;
+                    hash = hash * 31 + StringHash(_language);
+                    hash = hash * 31 + StringHash(_key);
+                    hash = hash * 31 + StringHash(_fallback);
+                    hash = hash * 31 + StringHash(_tip);
+                    return hash;
+                }
+            }
+        }
+
+        private readonly struct OptionsCacheKey : IEquatable<OptionsCacheKey>
+        {
+            private readonly string _language;
+            private readonly string _keyPrefix;
+            private readonly string[] _fallback;
+            private readonly int _fallbackLength;
+
+            public OptionsCacheKey(string language, string keyPrefix, string[] fallback)
+            {
+                _language = language;
+                _keyPrefix = keyPrefix;
+                _fallback = fallback;
+                _fallbackLength = fallback != null ? fallback.Length : 0;
+            }
+
+            public bool Equals(OptionsCacheKey other)
+            {
+                if (!StringEquals(_language, other._language) ||
+                    !StringEquals(_keyPrefix, other._keyPrefix) ||
+                    _fallbackLength != other._fallbackLength)
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < _fallbackLength; i++)
+                {
+                    if (!StringEquals(_fallback[i], other._fallback[i]))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is OptionsCacheKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hash = 17;
+                    hash = hash * 31 + StringHash(_language);
+                    hash = hash * 31 + StringHash(_keyPrefix);
+                    hash = hash * 31 + _fallbackLength;
+                    for (int i = 0; i < _fallbackLength; i++)
+                    {
+                        hash = hash * 31 + StringHash(_fallback[i]);
+                    }
+
+                    return hash;
+                }
+            }
+        }
+
+        private readonly struct InspectorTextCacheKey : IEquatable<InspectorTextCacheKey>
+        {
+            private readonly string _language;
+            private readonly string _key;
+            private readonly string _fallback;
+
+            public InspectorTextCacheKey(string language, string key, string fallback)
+            {
+                _language = language;
+                _key = key;
+                _fallback = fallback;
+            }
+
+            public bool Equals(InspectorTextCacheKey other)
+            {
+                return StringEquals(_language, other._language) &&
+                       StringEquals(_key, other._key) &&
+                       StringEquals(_fallback, other._fallback);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is InspectorTextCacheKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hash = 17;
+                    hash = hash * 31 + StringHash(_language);
+                    hash = hash * 31 + StringHash(_key);
+                    hash = hash * 31 + StringHash(_fallback);
+                    return hash;
+                }
+            }
+        }
+
+        private static bool StringEquals(string a, string b)
+        {
+            return string.Equals(a, b, StringComparison.Ordinal);
+        }
+
+        private static int StringHash(string value)
+        {
+            return value == null ? 0 : StringComparer.Ordinal.GetHashCode(value);
+        }
+
         private sealed class LocalizationTable
         {
             private bool _loaded;
@@ -350,11 +660,21 @@ namespace NBShaderEditor
                 CsvAssetPath = csvAssetPath;
                 Rows = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
                 Languages = Array.Empty<string>();
+                ContentCache = new Dictionary<ContentCacheKey, GUIContent>();
+                InspectorContentCache = new Dictionary<InspectorContentCacheKey, GUIContent>();
+                InspectorTextCache = new Dictionary<InspectorTextCacheKey, string>();
+                OptionsCache = new Dictionary<OptionsCacheKey, string[]>();
+                InspectorOptionsCache = new Dictionary<OptionsCacheKey, string[]>();
             }
 
             public string CsvAssetPath { get; set; }
             public Dictionary<string, Dictionary<string, string>> Rows { get; private set; }
             public string[] Languages { get; private set; }
+            public Dictionary<ContentCacheKey, GUIContent> ContentCache { get; }
+            public Dictionary<InspectorContentCacheKey, GUIContent> InspectorContentCache { get; }
+            public Dictionary<InspectorTextCacheKey, string> InspectorTextCache { get; }
+            public Dictionary<OptionsCacheKey, string[]> OptionsCache { get; }
+            public Dictionary<OptionsCacheKey, string[]> InspectorOptionsCache { get; }
 
             public void Reload()
             {
@@ -362,6 +682,11 @@ namespace NBShaderEditor
                 _warningLogged = false;
                 Rows = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
                 Languages = Array.Empty<string>();
+                ContentCache.Clear();
+                InspectorContentCache.Clear();
+                InspectorTextCache.Clear();
+                OptionsCache.Clear();
+                InspectorOptionsCache.Clear();
             }
 
             public void EnsureLoaded()

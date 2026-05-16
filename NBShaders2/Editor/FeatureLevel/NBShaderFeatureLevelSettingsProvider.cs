@@ -8,7 +8,7 @@ namespace NBShaders2.Editor.FeatureLevel
 {
     public static class NBShaderFeatureLevelSettingsProvider
     {
-        private const string SettingsPath = "Project/NB_FX/NBShader Feature Levels";
+        internal const string SettingsPath = "Project/NB_FX/NBShader Feature Levels";
         private const float FeatureColumnWidth = 240f;
         private const float TierColumnWidth = 92f;
         private const float CostColumnWidth = 84f;
