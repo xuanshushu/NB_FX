@@ -345,11 +345,13 @@ namespace NBShaderEditor
 
     public class ZTestItem : ShaderGUIPopUpItem
     {
+        private static readonly string[] Options = Enum.GetNames(typeof(CompareFunction));
+
         public ZTestItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem: parentItem)
         {
             PropertyName = "_ZTest";
             GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.ztest", "ZTest");
-            PopUpNames = Enum.GetNames(typeof(CompareFunction));
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("base.ztest", Options);
             InitTriggerByChild();
         }
 
@@ -379,11 +381,13 @@ namespace NBShaderEditor
 
     public class CullModeItem : ShaderGUIPopUpItem
     {
+        private static readonly string[] Options = { "Both", "Back", "Front" };
+
         public CullModeItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
         {
             PropertyName = "_Cull";
             GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("base.cull", "Cull");
-            PopUpNames = Enum.GetNames(typeof(RenderFace));
+            PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("base.cull", Options);
             InitTriggerByChild();
         }
 

@@ -182,14 +182,16 @@ namespace NBShaderEditor
                 EditorGUI.BeginChangeCheck();
                 Vector4 vector = property.vectorValue;
                 float value = GetValue(vector);
-                if (_isSlider)
-                {
-                    value = DraggableLabelFloat.Handle(
+                value = _isSlider
+                    ? DraggableLabelFloat.Handle(
                         LabelRect,
                         value,
                         DraggableLabelFloat.GetSensitivityByRange(_min, _max),
                         _min,
-                        _max);
+                        _max)
+                    : DraggableLabelFloat.Handle(LabelRect, value);
+                if (_isSlider)
+                {
                     bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
                     using (new EditorGUIIndentLevelScope(0))
                     {

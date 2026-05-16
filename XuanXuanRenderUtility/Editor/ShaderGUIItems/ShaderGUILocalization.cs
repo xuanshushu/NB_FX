@@ -46,6 +46,11 @@ namespace NBShaderEditor
             return GetCurrentLanguage(table);
         }
 
+        public static string GetEditorLanguageName()
+        {
+            return GetLanguageFromEditor();
+        }
+
         private static string GetCurrentLanguage(LocalizationTable table)
         {
             string preferred = GetPreferredLanguageName();
@@ -108,6 +113,18 @@ namespace NBShaderEditor
             LocalizationTable table = GetTable(tableName);
             table.EnsureLoaded();
             string language = GetCurrentLanguage(table);
+            return GetInspectorText(table, key, fallback, language);
+        }
+
+        public static string GetInspectorText(string tableName, string key, string fallback, string language)
+        {
+            LocalizationTable table = GetTable(tableName);
+            table.EnsureLoaded();
+            return GetInspectorText(table, key, fallback, language);
+        }
+
+        private static string GetInspectorText(LocalizationTable table, string key, string fallback, string language)
+        {
             var cacheKey = new InspectorTextCacheKey(language, key, fallback);
             if (table.InspectorTextCache.TryGetValue(cacheKey, out string cachedText))
             {
@@ -121,14 +138,26 @@ namespace NBShaderEditor
 
         public static string[] GetInspectorOptions(string tableName, string key, string[] fallback)
         {
+            LocalizationTable table = GetTable(tableName);
+            table.EnsureLoaded();
+            string language = GetCurrentLanguage(table);
+            return GetInspectorOptions(table, key, fallback, language);
+        }
+
+        public static string[] GetInspectorOptions(string tableName, string key, string[] fallback, string language)
+        {
+            LocalizationTable table = GetTable(tableName);
+            table.EnsureLoaded();
+            return GetInspectorOptions(table, key, fallback, language);
+        }
+
+        private static string[] GetInspectorOptions(LocalizationTable table, string key, string[] fallback, string language)
+        {
             if (fallback == null)
             {
                 return Array.Empty<string>();
             }
 
-            LocalizationTable table = GetTable(tableName);
-            table.EnsureLoaded();
-            string language = GetCurrentLanguage(table);
             var cacheKey = new OptionsCacheKey(language, key, fallback);
             if (table.InspectorOptionsCache.TryGetValue(cacheKey, out string[] cachedValues))
             {

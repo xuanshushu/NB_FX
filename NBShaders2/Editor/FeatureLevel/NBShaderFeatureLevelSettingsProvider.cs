@@ -6,9 +6,10 @@ using UnityEngine;
 
 namespace NBShaders2.Editor.FeatureLevel
 {
+    [InitializeOnLoad]
     public static class NBShaderFeatureLevelSettingsProvider
     {
-        internal const string SettingsPath = "Project/NB_FX/NBShader Feature Levels";
+        internal const string SettingsPath = NBFXProjectSettings.SettingsPath;
         private const float FeatureColumnWidth = 240f;
         private const float TierColumnWidth = 92f;
         private const float CostColumnWidth = 84f;
@@ -39,15 +40,14 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static Vector2 s_TableScrollPosition;
 
-        [SettingsProvider]
-        public static SettingsProvider CreateProvider()
+        static NBShaderFeatureLevelSettingsProvider()
         {
-            return new SettingsProvider(SettingsPath, SettingsScope.Project)
-            {
-                label = Text("featureLevel.providerLabel", "NBShader Feature Levels"),
-                keywords = new[]
+            NBFXProjectSettings.RegisterSettingsSection(
+                "NBShaderFeatureLevels",
+                () => new GUIContent(Text("featureLevel.providerLabel", "NBShader Feature Levels")),
+                OnGUI,
+                new[]
                 {
-                    "NB_FX",
                     "NBShader",
                     "Feature",
                     "Tier",
@@ -58,8 +58,7 @@ namespace NBShaders2.Editor.FeatureLevel
                     "分级",
                     "剔除"
                 },
-                guiHandler = OnGUI
-            };
+                100);
         }
 
         private static void OnGUI(string searchContext)
