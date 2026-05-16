@@ -62,7 +62,8 @@
         [HideInInspector][NoScaleOffset] _rotTexture("Houdini Rotation Texture", 2D) = "black" {}
         [HideInInspector][NoScaleOffset] _colTexture("Houdini Color Texture", 2D) = "white" {}
         [HideInInspector][NoScaleOffset] _lookupTable("Houdini Lookup Table", 2D) = "white" {}
-        _AffectsShadows("Affects shadows", Float) = 1
+        _AffectsShadows("Affects shadows", Float) = 0
+        _TransparentShadowDitherToggle("半透明Dither阴影", Float) = 0
         _Frame("Frame", Float) = 0
         _Frames("Frames", Float) = 10
         _FrameInterpolation("Frame interpolation", Float) = 1
@@ -740,6 +741,110 @@
             
             ENDHLSL
             
+        }
+
+        Pass
+        {
+            Name "DepthOnly"
+            Tags
+            {
+                "LightMode" = "DepthOnly"
+            }
+
+            Blend One Zero
+            ZWrite On
+            ZTest LEqual
+            ColorMask R
+            Cull[_Cull]
+
+            HLSLPROGRAM
+            #define PARTICLE
+            #define _FX_LIGHT_MODE_UNLIT
+            #define NB_DEPTH_ONLY_PASS
+
+            #if defined ( SHADER_API_GLES)||defined(SHADER_API_GLES3)
+            #pragma target 3.0
+            #else
+            #pragma target 4.5
+            #endif
+
+            #pragma vertex vertParticleUnlit
+            #pragma fragment fragParticleUnlit
+
+            #pragma shader_feature_local _ _MASKMAP_ON
+            #pragma shader_feature_local _NOISEMAP
+            #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
+            #pragma shader_feature_local _SHARED_UV
+            #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
+            #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+            #pragma shader_feature_local_vertex _ _HOUDINI_VAT_SOFTBODY _HOUDINI_VAT_RIGIDBODY _HOUDINI_VAT_DYNAMIC_REMESH _HOUDINI_VAT_PARTICLE_SPRITE
+            #pragma shader_feature_local_vertex _ _TYFLOW_VAT_ABSOLUTE _TYFLOW_VAT_RELATIVE _TYFLOW_VAT_SKIN_R _TYFLOW_VAT_SKIN_PR _TYFLOW_VAT_SKIN_PRSAVE _TYFLOW_VAT_SKIN_PRSXYZ
+            #pragma shader_feature_local _ALPHATEST_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
+            #pragma shader_feature_local _UNSCALETIME
+            #pragma shader_feature_local _SCRIPTABLETIME
+            #pragma shader_feature_local _NOISEMAP_NORMALIZEED
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
+            #include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
+            #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
+
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "ShadowCaster"
+            Tags
+            {
+                "LightMode" = "ShadowCaster"
+            }
+
+            Blend One Zero
+            ZWrite On
+            ZTest LEqual
+            ColorMask 0
+            Cull[_Cull]
+
+            HLSLPROGRAM
+            #define PARTICLE
+            #define _FX_LIGHT_MODE_UNLIT
+            #define NB_SHADOW_CASTER_PASS
+
+            #if defined ( SHADER_API_GLES)||defined(SHADER_API_GLES3)
+            #pragma target 3.0
+            #else
+            #pragma target 4.5
+            #endif
+
+            #pragma vertex vertParticleUnlit
+            #pragma fragment fragParticleUnlit
+
+            #pragma shader_feature_local _ _MASKMAP_ON
+            #pragma shader_feature_local _NOISEMAP
+            #pragma shader_feature_local _DISSOLVE
+            #pragma shader_feature_local _PROGRAM_NOISE
+            #pragma shader_feature_local _SHARED_UV
+            #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
+            #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+            #pragma shader_feature_local_vertex _ _HOUDINI_VAT_SOFTBODY _HOUDINI_VAT_RIGIDBODY _HOUDINI_VAT_DYNAMIC_REMESH _HOUDINI_VAT_PARTICLE_SPRITE
+            #pragma shader_feature_local_vertex _ _TYFLOW_VAT_ABSOLUTE _TYFLOW_VAT_RELATIVE _TYFLOW_VAT_SKIN_R _TYFLOW_VAT_SKIN_PR _TYFLOW_VAT_SKIN_PRSAVE _TYFLOW_VAT_SKIN_PRSXYZ
+            #pragma shader_feature_local _ALPHATEST_ON
+            #pragma shader_feature_local _CUSTOM_LOCAL_TRANSFORM
+            #pragma shader_feature_local _UNSCALETIME
+            #pragma shader_feature_local _SCRIPTABLETIME
+            #pragma shader_feature_local _NOISEMAP_NORMALIZEED
+
+            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
+            #include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
+            #include "HLSL/ParticlesUnlitForwardPassNew.hlsl"
+
+            ENDHLSL
         }
 
  // ------------------------------------------------------------------

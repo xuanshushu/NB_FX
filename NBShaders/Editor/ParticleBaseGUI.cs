@@ -364,6 +364,15 @@ namespace NBShaderEditor
                 }
                 _helper.DrawPopUp("深度写入强制控制", "_ForceZWriteToggle",_ForceZWriteToggleNames);
 
+                _helper.DrawToggle("投射阴影", "_AffectsShadows", drawBlock: isToggle =>
+                {
+                    if (!isToggle.hasMixedValue && isToggle.floatValue > 0.5f &&
+                        _transparentMode == TransparentMode.Transparent)
+                    {
+                        _helper.DrawToggle("半透明 Dither 阴影", "_TransparentShadowDitherToggle");
+                    }
+                });
+
 
                 
                 _helper.DrawToggleFoldOut(W9ParticleShaderFlags.foldOutBit2BaseBackColor,5,GetAnimBoolIndex(5),"背面颜色", "_BaseBackColor_Toggle", W9ParticleShaderFlags.FLAG_BIT_PARTICLE_BACKCOLOR,
@@ -2072,6 +2081,14 @@ namespace NBShaderEditor
             "Tyflow"
         };
 
+        private static bool IsUIMeshSourceMode(MeshSourceMode mode)
+        {
+            return mode == MeshSourceMode.UIEffectRawImage ||
+                   mode == MeshSourceMode.UIEffectSprite ||
+                   mode == MeshSourceMode.UIEffectBaseMap ||
+                   mode == MeshSourceMode.UIParticle;
+        }
+
         void DoAfterDraw()
         {
             // Debug.Log(mats[0].name + " MaterialEditorDoAfterDraw!");
@@ -2216,6 +2233,10 @@ namespace NBShaderEditor
 
 
                 TransparentMode transparentMode = (TransparentMode)mats[i].GetFloat("_TransparentMode");
+                if (transparentMode != TransparentMode.Transparent)
+                {
+                    mats[i].SetFloat("_TransparentShadowDitherToggle", 0);
+                }
                 int queueBias = (int)mats[i].GetFloat("_QueueBias");
                 switch (transparentMode)
                 {
@@ -2266,6 +2287,18 @@ namespace NBShaderEditor
                 {
                     mats[i].DisableKeyword("_ALPHATEST_ON");
                 }
+
+                MeshSourceMode materialMeshSourceMode = (MeshSourceMode)mats[i].GetFloat("_MeshSourceMode");
+                bool isUIMode = IsUIMeshSourceMode(materialMeshSourceMode);
+                bool depthOnlyEnabled = !isUIMode && mats[i].GetInt("_ZWrite") == 1;
+                bool shadowCasterEnabled = !isUIMode &&
+                                           mats[i].GetFloat("_AffectsShadows") > 0.5f &&
+                                           (transparentMode == TransparentMode.Opaque ||
+                                            transparentMode == TransparentMode.CutOff ||
+                                            transparentMode == TransparentMode.Transparent);
+
+                mats[i].SetShaderPassEnabled("DepthOnly", depthOnlyEnabled);
+                mats[i].SetShaderPassEnabled("ShadowCaster", shadowCasterEnabled);
 
 
 

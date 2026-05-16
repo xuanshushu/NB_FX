@@ -4,6 +4,16 @@
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
 
+    #if defined(NB_DEPTH_ONLY_PASS) || defined(NB_SHADOW_CASTER_PASS)
+        #define NB_DEPTH_SHADOW_PASS
+    #endif
+
+    #if defined(NB_SHADOW_CASTER_PASS)
+        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+        float3 _LightDirection;
+        float3 _LightPosition;
+    #endif
+
     
     ///////////////////////////////////////////////////////////////////////////////
     //                  Vertex and Fragment functions                            //
@@ -207,7 +217,24 @@
             output.positionOS.xyz = positionOS;
             output.clipPos = TransformObjectToHClip_NB(positionOS.xyz);
         }
+
+        #if defined(NB_SHADOW_CASTER_PASS)
+            #if _CASTING_PUNCTUAL_LIGHT_SHADOW
+                float3 lightDirectionWS = normalize(_LightPosition - output.positionWS.xyz);
+            #else
+                float3 lightDirectionWS = _LightDirection;
+            #endif
+
+            output.clipPos = TransformWorldToHClip(ApplyShadowBias(output.positionWS.xyz, output.normalWSAndAnimBlend.xyz, lightDirectionWS));
+
+            #if UNITY_REVERSED_Z
+                output.clipPos.z = min(output.clipPos.z, UNITY_NEAR_CLIP_VALUE);
+            #else
+                output.clipPos.z = max(output.clipPos.z, UNITY_NEAR_CLIP_VALUE);
+            #endif
+        #endif
         
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         UNITY_BRANCH
         if(needEyeDepth())
         {
@@ -215,28 +242,51 @@
             output.positionNDC.xy = float2(ndc.x, ndc.y * _ProjectionParams.x) + ndc.w;
             output.positionNDC.zw = output.clipPos.zw;
         }
+        #endif
  
         return output;
     }
 
 
+    #if defined(NB_SHADOW_CASTER_PASS)
+    uint NBShadowBayer2(uint x, uint y)
+    {
+        return (((x ^ y) & 1u) << 1) | (y & 1u);
+    }
+
+    half NBShadowDitherMaskClip(float4 positionCS, half alpha)
+    {
+        // Built-in Standard Particle uses a 4x4x16 dither mask texture.
+        uint x = (uint)positionCS.x & 3u;
+        uint y = (uint)positionCS.y & 3u;
+        uint bayer = NBShadowBayer2(x & 1u, y & 1u) * 4u + NBShadowBayer2((x >> 1) & 1u, (y >> 1) & 1u);
+        half coverage = floor(saturate(alpha) * 16.0);
+        return coverage - (half)bayer - 0.01;
+    }
+    #endif
+
     ///////////////////////Fragment functions  ////////////////////////
     
     half4 fragParticleUnlit(VaryingsParticle input, half facing : VFACE): SV_Target
     {
-        
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         half3 viewDirWS = GetWorldSpaceNormalizeViewDir(input.positionWS.xyz);
         input.normalWSAndAnimBlend.xyz = facing > 0 ? input.normalWSAndAnimBlend.xyz : -input.normalWSAndAnimBlend.xyz;
+        #endif
         
         
         UNITY_SETUP_INSTANCE_ID(input);
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         #ifdef NB_DEBUG_VERTEX_OFFSET
         return input.color;
+        #endif
         #endif
 
         time = _Time.y;
 
         float2 screenUV = input.clipPos.xy / _ScaledScreenParams.xy;
+
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         
         real sceneZBufferDepth = 0;
         real sceneZ = 0;
@@ -281,10 +331,13 @@
             decalAlpha *= clipValue;
             float2 decalUV = fragobjectPos.xz + 0.5;
         #endif
+        #endif
 
         float4 uv = input.texcoord;
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         #ifdef _DEPTH_DECAL
             uv.xy = decalUV;
+        #endif
         #endif
 
         float2 MainTex_UV;
@@ -492,11 +545,13 @@
         // SampleAlbedo--------------------
         half4 albedo = 0;
         
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         UNITY_FLATTEN
         if(CheckLocalFlags(FLAG_BIT_PARTICLE_BACKCOLOR))
         {
             _BaseColor = facing > 0 ? _BaseColor : _BaseBackColor;
         }
+        #endif
 
 
         Texture2D baseMap = _BaseMap;
@@ -514,6 +569,7 @@
         {
             albedo = BlendTexture(_MainTex, MainTex_UV, blendUv) * _Color;
         }
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         else if (CheckLocalFlags(FLAG_BIT_PARTICLE_CHORATICABERRAT))
         {
            
@@ -521,6 +577,7 @@
             _DistortionDirection.z *= 0.1;
             albedo = DistortionChoraticaberrat(baseMap,originUV,MainTex_UV,_DistortionDirection.z,FLAG_BIT_WRAPMODE_BASEMAP);
         }
+        #endif
         else
         {
             albedo = BlendTexture(baseMap, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP);
@@ -531,7 +588,9 @@
         albedo.a = GetColorChannel(albedo,FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA);
     
         albedo *= _BaseColor ;
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         albedo.rgb *= _BaseColorIntensityForTimeline;
+        #endif
             // #endif
         
 
@@ -539,11 +598,13 @@
         
         half alpha = albedo.a;
         half3 result = albedo.rgb;
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         UNITY_BRANCH
         if (CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX))
         {
             ColorAdjustment(result,alpha,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
         }
+        #endif
         
         #ifdef _FX_LIGHT_MODE_SIX_WAY
             float4 rigRTBkSample  = BlendTexture(_RigRTBk, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP);
@@ -765,6 +826,7 @@
             }
 
             alpha  *= dissolveValue;
+            #if !defined(NB_DEPTH_SHADOW_PASS)
             if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP))
             {
                 // half rampRange = (dissolveValueBeforeSoftStep - _Dissolve_Vec2.x)*_Dissolve_Vec2.y;
@@ -810,9 +872,11 @@
                     result = lerp(result,rampSample.rgb*_DissolveRampColor.rgb,rampSample.a*_DissolveRampColor.a);
                 }
             }
+            #endif
            
         
 
+            #if !defined(NB_DEPTH_SHADOW_PASS)
             if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK))
             {
                 half lineMask = dissolveValueBeforeSoftStep;//SmoothStep要优化
@@ -821,6 +885,7 @@
                 
                 result = lerp(result,_DissolveLineColor.rgb,lineMask*_DissolveLineColor.a);
             }
+            #endif
             //
             
         
@@ -963,6 +1028,7 @@
         
         //菲涅
         
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         UNITY_BRANCH
         if(CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_ON))
         {
@@ -1053,6 +1119,7 @@
         alpha *= softAlpha;
         
         #endif
+        #endif
         
         
         
@@ -1063,15 +1130,20 @@
         //和粒子颜色信息运算。雨轩：乘顶点色。
         if(!CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR))
         {
+            #if !defined(NB_DEPTH_SHADOW_PASS)
             result *= input.color.rgb;
+            #endif
             alpha *= input.color.a;
         }
         // 程序额外的颜色
-        result *= _ColorA.rgb;
+        #if !defined(NB_DEPTH_SHADOW_PASS)
+            result *= _ColorA.rgb;
+        #endif
         alpha *= _ColorA.a;
         // // alpha *= _ColorA * 0.8;
 
 
+        #if !defined(NB_DEPTH_SHADOW_PASS)
         #ifdef _DEPTH_DECAL
         alpha *= decalAlpha;
         #endif
@@ -1091,10 +1163,36 @@
         {
             result.rgb = LinearToGammaSpace(result.rgb);
         }
+        #endif
         
 
         alpha *= _AlphaAll;
         alpha = saturate(alpha);
+
+        #if defined(NB_DEPTH_ONLY_PASS)
+            #ifdef _ALPHATEST_ON
+                clip(alpha - _Cutoff);
+            #endif
+            return half4(input.clipPos.z, 0, 0, 0);
+        #elif defined(NB_SHADOW_CASTER_PASS)
+            #ifdef _ALPHATEST_ON
+                clip(alpha - _Cutoff);
+            #endif
+
+            if (_TransparentMode > 0.5f && _TransparentMode < 1.5f)
+            {
+                if (_TransparentShadowDitherToggle > 0.5f)
+                {
+                    clip(NBShadowDitherMaskClip(input.clipPos, alpha));
+                }
+                else
+                {
+                    clip(alpha - 0.5);
+                }
+            }
+
+            return 0;
+        #endif
 
         #if defined  (_ALPHAPREMULTIPLY_ON) || defined(_ALPHAMODULATE_ON)
             result *= alpha;
