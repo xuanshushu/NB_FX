@@ -308,6 +308,7 @@ namespace NBShaderEditor
         {
             GenericMenu menu = new GenericMenu();
             menu.AddItem(new GUIContent(Label("resetAll", "重置所有")), false, ResetAll);
+            menu.AddItem(new GUIContent(Label("resetDisabledFeatureChildren", "重置关闭功能子属性")), false, ResetDisabledFeatureChildren);
             menu.AddSeparator(string.Empty);
             menu.AddItem(new GUIContent(Label("resetSpecialUV", "重置特殊UV通道")), false, ResetSpecialUVChannel);
             menu.AddItem(new GUIContent(Label("resetTwirl", "重置旋转扭曲")), false, ResetTwirl);
@@ -381,6 +382,71 @@ namespace NBShaderEditor
             ResetTwirlValues();
             ResetPolarValues();
             FinishMaterialMutation();
+        }
+
+        private void ResetDisabledFeatureChildren()
+        {
+            RecordAllMaterials(UndoText("resetDisabledFeatureChildren", "重置关闭功能子属性"));
+            foreach (ShaderGUIItem item in _rootItem.GetToolbarResetRootItems())
+            {
+                ResetDisabledFeatureChildren(item);
+            }
+
+            FinishMaterialMutation();
+        }
+
+        private static void ResetDisabledFeatureChildren(ShaderGUIItem item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            if (item is PropertyToggleBlockItem && IsExplicitlyDisabled(item))
+            {
+                ExecuteResetChildren(item);
+                item.CheckIsPropertyModified(true);
+                return;
+            }
+
+            for (int i = 0; i < item.ChildrenItemList.Count; i++)
+            {
+                ResetDisabledFeatureChildren(item.ChildrenItemList[i]);
+            }
+
+            item.CheckIsPropertyModified(true);
+        }
+
+        private static bool IsExplicitlyDisabled(ShaderGUIItem item)
+        {
+            MaterialProperty property = item.PropertyInfo?.Property;
+            return property != null &&
+                   !property.hasMixedValue &&
+                   property.floatValue <= 0.5f;
+        }
+
+        private static void ExecuteResetChildren(ShaderGUIItem item)
+        {
+            for (int i = 0; i < item.ChildrenItemList.Count; i++)
+            {
+                ExecuteResetSubtree(item.ChildrenItemList[i]);
+            }
+        }
+
+        private static void ExecuteResetSubtree(ShaderGUIItem item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            item.ExecuteReset(true);
+            for (int i = 0; i < item.ChildrenItemList.Count; i++)
+            {
+                ExecuteResetSubtree(item.ChildrenItemList[i]);
+            }
+
+            item.CheckIsPropertyModified(true);
         }
 
         private void ResetSpecialUVChannelValues()

@@ -106,5 +106,33 @@ namespace NBShaderEditor
             _featureBlock?.ExecuteReset(true);
             _taBlock?.ExecuteReset(true);
         }
+
+        public System.Collections.Generic.IEnumerable<ShaderGUIItem> GetToolbarResetRootItems()
+        {
+            if (_baseBlock != null)
+            {
+                yield return _baseBlock;
+            }
+
+            if (_mainTexBlock != null)
+            {
+                yield return _mainTexBlock;
+            }
+
+            if (_lightBlock != null)
+            {
+                yield return _lightBlock;
+            }
+
+            if (_featureBlock != null)
+            {
+                yield return _featureBlock;
+            }
+
+            if (_taBlock != null)
+            {
+                yield return _taBlock;
+            }
+        }
     }
 }
