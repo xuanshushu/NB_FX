@@ -152,7 +152,7 @@ namespace NBShaderEditor
 
         private void GetGradientKeyCounts(out int colorKeyCount, out int alphaKeyCount)
         {
-            int countValue = Mathf.RoundToInt(PropertyInfo.Property.floatValue);
+            int countValue = PropertyInfo.Property.intValue;
             bool hasColorProperties = _colorPropertyInfos.Length > 0;
             bool hasAlphaProperties = _alphaPropertyInfos.Length > 0;
 
@@ -219,7 +219,7 @@ namespace NBShaderEditor
             if (isBlackAndWhiteGradient)
             {
                 WriteBlackAndWhiteGradient(gradient, colorKeyCount);
-                PropertyInfo.Property.floatValue = colorKeyCount;
+                PropertyInfo.Property.intValue = colorKeyCount;
                 return;
             }
 
@@ -237,7 +237,7 @@ namespace NBShaderEditor
                 WriteAlphaKeys(gradient, alphaKeyCount);
             }
 
-            PropertyInfo.Property.floatValue = hasColorProperties && hasAlphaProperties
+            PropertyInfo.Property.intValue = hasColorProperties && hasAlphaProperties
                 ? colorKeyCount | (alphaKeyCount << 16)
                 : colorKeyCount;
         }
@@ -276,7 +276,7 @@ namespace NBShaderEditor
         {
             if (!isCallByChild)
             {
-                bool isDefaultValue = IsDefault(PropertyInfo);
+                bool isDefaultValue = IsCountDefault();
                 for (int i = 0; i < _colorPropertyInfos.Length; i++)
                 {
                     isDefaultValue &= IsDefault(_colorPropertyInfos[i]);
@@ -301,7 +301,7 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
-            ResetProperty(PropertyInfo);
+            ResetCountProperty();
             for (int i = 0; i < _colorPropertyInfos.Length; i++)
             {
                 ResetProperty(_colorPropertyInfos[i]);
@@ -318,6 +318,33 @@ namespace NBShaderEditor
             {
                 ParentItem?.CheckIsPropertyModified(true);
             }
+        }
+
+        private bool IsCountDefault()
+        {
+            if (PropertyInfo == null || PropertyInfo.Property == null || PropertyInfo.Property.hasMixedValue)
+            {
+                return false;
+            }
+
+            return PropertyInfo.Property.intValue == GetDefaultCount();
+        }
+
+        private void ResetCountProperty()
+        {
+            if (PropertyInfo?.Property == null)
+            {
+                return;
+            }
+
+            PropertyInfo.Property.intValue = GetDefaultCount();
+        }
+
+        private int GetDefaultCount()
+        {
+            bool hasColorProperties = _colorPropertyInfos.Length > 0;
+            bool hasAlphaProperties = _alphaPropertyInfos.Length > 0;
+            return hasColorProperties && hasAlphaProperties ? 2 | (2 << 16) : 2;
         }
 
         private bool IsDefault(ShaderPropertyInfo info)

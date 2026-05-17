@@ -349,7 +349,7 @@ Shader "Effects/NBShader"
     	_RampColorAlpha0("x:RampColorAlpha0,y:Pos0,z:RampColorAlpha1,w:Pos1",Vector) = (1,0,1,1)
     	_RampColorAlpha1("x:RampColorAlpha2,y:Pos2,z:RampColorAlpha3,w:Pos3",Vector) = (1,0,1,1)
     	_RampColorAlpha2("x:RampColorAlpha4,y:Pos4,z:RampColorAlpha5,w:Pos5",Vector) = (1,0,1,1)
-    	_RampColorCount("颜色映射数量",Integer) = 2
+    	_RampColorCount("颜色映射数量",Integer) = 131074
     	[HDR]_RampColorBlendColor("颜色映射叠加颜色_hdr",Color) = (1,1,1,1)
 	    _RampColorMapOffset("xy:颜色映射贴图偏移动画,w:旋转",Vector) = (0,0,0,0)
 
@@ -383,7 +383,7 @@ Shader "Effects/NBShader"
     	_DissolveRampAlpha0("x:DissolveRampAlpha0,y:Pos0,z:DissolveRampAlpha1,w:Pos1",Vector) = (1,0,1,1)
     	_DissolveRampAlpha1("x:DissolveRampAlpha2,y:Pos2,z:DissolveRampAlpha3,w:Pos3",Vector) = (1,0,1,1)
     	_DissolveRampAlpha2("x:DissolveRampAlpha4,y:Pos4,z:DissolveRampAlpha5,w:Pos5",Vector) = (1,0,1,1)
-    	_DissolveRampCount("溶解Ramp映射数量",Integer) = 2
+    	_DissolveRampCount("溶解Ramp映射数量",Integer) = 131074
         _DissolvePNoiseBlendOpacity("溶解噪波图混合强度",Float) = 1
 
         _SharedUVToggle("公共UV开关",Float) = 0
