@@ -15,6 +15,7 @@ namespace NBShaders2.Editor.FeatureLevel
         [SerializeField] private NBShaderQualityTierMapping[] m_QualityTierMappings;
         [SerializeField] private NBShaderBuildStripPolicy m_BuildStripPolicy = NBShaderBuildStripPolicy.Disabled;
         [SerializeField] private NBShaderFeatureTier m_ExplicitTier = NBShaderFeatureTier.Ultra;
+        [SerializeField] private bool m_EnableDebugSymbols;
 
         [NonSerialized] private bool m_Initialized;
         [NonSerialized] private HashSet<string>[] m_AllowedKeywordSetCache;
@@ -24,6 +25,7 @@ namespace NBShaders2.Editor.FeatureLevel
         public NBShaderQualityTierMapping[] qualityTierMappings { get { EnsureInitialized(); return m_QualityTierMappings; } }
         public NBShaderBuildStripPolicy buildStripPolicy { get { return m_BuildStripPolicy; } set { m_BuildStripPolicy = value; } }
         public NBShaderFeatureTier explicitTier { get { return m_ExplicitTier; } set { m_ExplicitTier = value; } }
+        public bool enableDebugSymbols { get { return m_EnableDebugSymbols; } }
 
         public void EnsureInitialized()
         {
@@ -217,6 +219,16 @@ namespace NBShaders2.Editor.FeatureLevel
             EnsureInitialized();
             Save(true);
             NBShaderRuntimeSettingsSynchronizer.SyncFromProjectSettings();
+        }
+
+        public void SetDebugSymbolsEnabled(bool enabled)
+        {
+            m_EnableDebugSymbols = enabled;
+        }
+
+        public void SaveDebugSymbolsProjectSettings()
+        {
+            Save(true);
         }
 
         private static NBShaderFeatureTier GuessTierForQualityIndex(int index, int count)

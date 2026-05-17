@@ -592,7 +592,7 @@ Shader "Effects/NBShader"
             #pragma exclude_renderers d3d11_9x
             #pragma exclude_renderers d3d9
             
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #include_with_pragmas "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl"
             
             // -------------------------------------
             // Material Keywords
@@ -730,7 +730,7 @@ Shader "Effects/NBShader"
             // -------------------------------------
             // Material Keywords
  
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #include_with_pragmas "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl"
             
             // #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _DISTORT_REFRACTION
@@ -858,7 +858,7 @@ Shader "Effects/NBShader"
             // -------------------------------------
             // Material Keywords
  
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #include_with_pragmas "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl"
 
             #define _SCREEN_DISTORT_MODE
             #define _CAMERA_OPAQUE_DISTORT_PASS
@@ -983,7 +983,7 @@ Shader "Effects/NBShader"
             // -------------------------------------
             // Material Keywords
  
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #include_with_pragmas "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl"
 
 			#define _SCREEN_DISTORT_MODE
             #define _DEFERRED_DISTORT_PASS
@@ -1110,7 +1110,7 @@ Shader "Effects/NBShader"
             // -------------------------------------
             // Material Keywords
  
-            // #pragma enable_d3d11_debug_symbols  // 保留D3D11调试符号
+            #include_with_pragmas "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl"
             
             #pragma shader_feature_local _ _SCREEN_DISTORT_MODE
             #pragma shader_feature_local _ _MASKMAP_ON
