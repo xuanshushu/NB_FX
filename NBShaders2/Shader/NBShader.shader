@@ -194,7 +194,7 @@ Shader "Effects/NBShader"
         _ContrastMidColor ("对比度中值颜色", Color) = (0.5, 0.5, 0.5, 1)//HDR颜色不需要做Gamma Linear转换，Unity默认用Linear颜色
         _HueShift("色相",Range(0,1)) = 0
 		_BaseMapColorRefine_Toggle ("__BaseMapColorRefine_Toggle",Float) = 0
-        _BaseMapColorRefine("主贴图颜色Refine",Vector) = (1,1,2,1)
+        _BaseMapColorRefine("主贴图颜色Refine",Vector) = (1,1,2,0.5)
         _AlphaAll("整体透明度",Range(0,1)) = 1
         _IgnoreVetexColor_Toggle("_IgnoreVetexColor_Toggle",Float) = 0
         _MainTexPNoiseBlendOpacity("主贴图噪波图混合强度",Float) = 1
