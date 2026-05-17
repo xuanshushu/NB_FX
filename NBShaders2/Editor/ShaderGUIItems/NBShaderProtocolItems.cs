@@ -987,12 +987,10 @@ namespace NBShaderEditor
 
         public override void CheckIsPropertyModified(bool isCallByChild = false)
         {
-            PropertyIsDefaultValue = !HasMixedValue() && GetFirstMode() == NBShaderFlags.UVMode.DefaultUVChannel;
-            HasModified = !PropertyIsDefaultValue;
-            foreach (ShaderGUIItem childItem in ChildrenItemList)
-            {
-                HasModified |= childItem.HasModified;
-            }
+            bool hasMixedValue = HasMixedValue();
+            NBShaderFlags.UVMode mode = GetFirstMode();
+            PropertyIsDefaultValue = !hasMixedValue && mode == NBShaderFlags.UVMode.DefaultUVChannel;
+            HasModified = !PropertyIsDefaultValue || (!hasMixedValue && HasActiveChildModified(mode));
             ParentItem?.CheckIsPropertyModified(true);
         }
 
@@ -1013,6 +1011,25 @@ namespace NBShaderEditor
                    mode != NBShaderFlags.UVMode.CommonUV &&
                    mode != NBShaderFlags.UVMode.ScreenUV &&
                    mode != NBShaderFlags.UVMode.MainTex;
+        }
+
+        private bool HasActiveChildModified(NBShaderFlags.UVMode mode)
+        {
+            switch (mode)
+            {
+                case NBShaderFlags.UVMode.SpecialUVChannel:
+                    return _specialUVChannelItem?.HasModified == true;
+                case NBShaderFlags.UVMode.PolarOrTwirl:
+                    return _twirlBlock?.HasModified == true || _polarBlock?.HasModified == true;
+                case NBShaderFlags.UVMode.Cylinder:
+                    return _cylinderRotateItem?.HasModified == true || _cylinderOffsetItem?.HasModified == true;
+                case NBShaderFlags.UVMode.WorldPos:
+                    return _worldSpaceItem?.HasModified == true;
+                case NBShaderFlags.UVMode.ObjectPos:
+                    return _objectSpaceItem?.HasModified == true;
+                default:
+                    return false;
+            }
         }
 
         private bool HasTexture()
