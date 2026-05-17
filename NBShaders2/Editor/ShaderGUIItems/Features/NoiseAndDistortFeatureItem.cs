@@ -135,8 +135,6 @@ namespace NBShaderEditor
                 "_NoiseMaskBlockFoldOut",
                 "_noiseMaskMap_Toggle",
                 "扭曲遮罩",
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_NOISE_MASKMAP,
-                1,
                 parent: this,
                 keyword: "_NOISE_MASKMAP");
             AddTextureWithWrap(rootItem, noiseMaskBlock, "_NoiseMaskMap", "扭曲遮罩贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_NOISE_MASKMAP);

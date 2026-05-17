@@ -45,6 +45,41 @@ namespace NBShaderEditor
             new KeywordToggleBinding("_VertexOffset_Mask_Toggle", "_VERTEX_OFFSET_MASKMAP")
         };
 
+        private static readonly FlagToggleBinding[] ToggleFlagBindings =
+        {
+            new FlagToggleBinding("_ColorAdjustmentOnlyAffectMainTex", NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX, 0),
+            new FlagToggleBinding("_HueShift_Toggle", NBShaderFlags.FLAG_BIT_HUESHIFT_ON, 0),
+            new FlagToggleBinding("_ChangeSaturability_Toggle", NBShaderFlags.FLAG_BIT_SATURABILITY_ON, 0),
+            new FlagToggleBinding("_Contrast_Toggle", NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST, 1),
+            new FlagToggleBinding("_BaseMapColorRefine_Toggle", NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE, 1),
+            new FlagToggleBinding("_ColorMultiAlpha", NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA, 0),
+            new FlagToggleBinding("_BaseBackColor_Toggle", NBShaderFlags.FLAG_BIT_PARTICLE_BACKCOLOR, 0),
+            new FlagToggleBinding("_IgnoreVetexColor_Toggle", NBShaderFlags.FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR, 1),
+            new FlagToggleBinding("_BumpMapMaskMode", NBShaderFlags.FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE, 0),
+            new FlagToggleBinding("_DistortionBothDirection_Toggle", NBShaderFlags.FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON, 0),
+            new FlagToggleBinding("_Distortion_Choraticaberrat_WithNoise_Toggle", NBShaderFlags.FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE, 0),
+            new FlagToggleBinding("_DissolveLineMaskToggle", NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK, 1),
+            new FlagToggleBinding("_MaskRefineToggle", NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_REFINE, 1),
+            new FlagToggleBinding("_MaskMapGradientToggle", NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT, 1),
+            new FlagToggleBinding("_MaskMap2GradientToggle", NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT, 1),
+            new FlagToggleBinding("_MaskMap3GradientToggle", NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT, 1),
+            new FlagToggleBinding("_ScreenDistortAlphaRefineToggle", NBShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE, 1),
+            new FlagToggleBinding("_InvertFresnel_Toggle", NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON, 0),
+            new FlagToggleBinding("_FresnelColorAffectByAlpha", NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA, 0),
+            new FlagToggleBinding("_VertexOffset_StartFromZero", NBShaderFlags.FLAG_BIT_PARTICLE_1_VERTEXOFFSET_START_FROM_ZERO, 1),
+            new FlagToggleBinding("_VertexOffset_NormalDir_Toggle", NBShaderFlags.FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR, 0),
+            new FlagToggleBinding("_UTwirlEnabled", NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON, 0),
+            new FlagToggleBinding("_PolarCoordinatesEnabled", NBShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON, 0)
+        };
+
+        private static readonly FlagModeBinding[] ModeFlagBindings =
+        {
+            new FlagModeBinding("_ColorBlendAlphaMultiplyMode", NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE, 0, 1),
+            new FlagModeBinding("_RampColorBlendMode", NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD, 0, 1),
+            new FlagModeBinding("_DissolveRampColorBlendMode", NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY, 1, 1),
+            new FlagModeBinding("_FresnelMode", NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON, 0, 1)
+        };
+
         private static readonly string[] HoudiniVatKeywords =
         {
             "_HOUDINI_VAT_SOFTBODY",
@@ -134,9 +169,9 @@ namespace NBShaderEditor
                 SyncBlendMode(mat);
                 SyncLightMode(mat);
                 SyncTimeMode(mat, flags);
+                SyncTogglePropertyFlags(mat, flags);
                 SyncTogglePropertyKeywords(mat);
-                SyncModePropertyKeywords(mat, flags);
-                SyncFlagBackedKeywords(mat, flags);
+                SyncModePropertyKeywords(mat);
                 SyncScreenDistortPasses(mat);
                 SyncVatKeywords(mat);
                 SyncParallaxLayerCount(mat);
@@ -156,12 +191,6 @@ namespace NBShaderEditor
                     SetFlag(flagBase, flagBits, false, flagIndex);
                 }
             }
-        }
-
-        public void ApplyToggleFlagAndKeyword(int flagBits, int flagIndex, string keyword, bool enabled)
-        {
-            ApplyToggleFlag(flagBits, enabled, flagIndex);
-            ApplyToggleKeyword(keyword, enabled);
         }
 
         public void ApplyShaderPass(string passName, bool enabled)
@@ -551,7 +580,37 @@ namespace NBShaderEditor
             }
         }
 
-        private void SyncModePropertyKeywords(Material mat, NBShaderFlags flags)
+        private void SyncTogglePropertyFlags(Material mat, NBShaderFlags flags)
+        {
+            if (flags == null || mat == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < ToggleFlagBindings.Length; i++)
+            {
+                var binding = ToggleFlagBindings[i];
+                if (!mat.HasProperty(binding.propertyName))
+                {
+                    continue;
+                }
+
+                SetFlag(flags, binding.flagBits, mat.GetFloat(binding.propertyName) > 0.5f, binding.flagIndex);
+            }
+
+            for (int i = 0; i < ModeFlagBindings.Length; i++)
+            {
+                var binding = ModeFlagBindings[i];
+                if (!mat.HasProperty(binding.propertyName))
+                {
+                    continue;
+                }
+
+                SetFlag(flags, binding.flagBits, Mathf.RoundToInt(mat.GetFloat(binding.propertyName)) == binding.enabledMode, binding.flagIndex);
+            }
+        }
+
+        private void SyncModePropertyKeywords(Material mat)
         {
             if (mat.HasProperty("_DistortMode"))
             {
@@ -561,23 +620,13 @@ namespace NBShaderEditor
             if (mat.HasProperty("_RampColorSourceMode"))
             {
                 bool useRampMap = Mathf.RoundToInt(mat.GetFloat("_RampColorSourceMode")) == 1;
-                if (flags != null)
-                {
-                    SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON, useRampMap, 0);
-                }
-
                 SetKeyword(mat, "_COLOR_RAMP_MAP", useRampMap);
             }
 
             if (mat.HasProperty("_DissolveRampSourceMode"))
             {
                 bool useDissolveRampMap = Mathf.RoundToInt(mat.GetFloat("_DissolveRampSourceMode")) == 1;
-                bool dissolveRampEnabled = IsDissolveRampEnabled(mat, flags);
-                if (flags != null)
-                {
-                    SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, useDissolveRampMap, 0);
-                }
-
+                bool dissolveRampEnabled = IsToggleEnabled(mat, "_Dissolve_useRampMap_Toggle");
                 SetKeyword(mat, "_DISSOLVE_RAMP_MAP", dissolveRampEnabled && useDissolveRampMap);
             }
 
@@ -587,45 +636,9 @@ namespace NBShaderEditor
             }
         }
 
-        private void SyncFlagBackedKeywords(Material mat, NBShaderFlags flags)
+        private static bool IsToggleEnabled(Material mat, string propertyName)
         {
-            if (flags == null || mat == null)
-            {
-                return;
-            }
-
-            SetFlagBackedKeyword(mat, flags, "_DISTANCE_FADE", NBShaderFlags.FLAG_BIT_PARTICLE_DISTANCEFADE_ON, 0);
-            SetFlagBackedKeyword(mat, flags, "_FRESNEL", NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_ON, 0);
-            SetFlagBackedKeyword(mat, flags, "_CHROMATIC_ABERRATION", NBShaderFlags.FLAG_BIT_PARTICLE_CHORATICABERRAT, 0);
-            bool dissolveRampEnabled = flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP, index: 1);
-            SetKeyword(mat, "_DISSOLVE_RAMP", dissolveRampEnabled);
-            SetKeyword(mat, "_DISSOLVE_RAMP_MAP", dissolveRampEnabled && flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, index: 0));
-            SetFlagBackedKeyword(mat, flags, "_DISSOLVE_MASK", NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_MASK, 0);
-            SetFlagBackedKeyword(mat, flags, "_COLOR_RAMP_MAP", NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON, 0);
-            SetFlagBackedKeyword(mat, flags, "_VERTEX_OFFSET", NBShaderFlags.FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON, 0);
-
-            SetFlagBackedKeyword(mat, flags, "_DEPTH_OUTLINE", NBShaderFlags.FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE, 1);
-            SetFlagBackedKeyword(mat, flags, "_MASKMAP2_ON", NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP2, 1);
-            SetFlagBackedKeyword(mat, flags, "_MASKMAP3_ON", NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP3, 1);
-            SetFlagBackedKeyword(mat, flags, "_NOISE_MASKMAP", NBShaderFlags.FLAG_BIT_PARTICLE_1_NOISE_MASKMAP, 1);
-            SetFlagBackedKeyword(mat, flags, "_PROGRAM_NOISE_SIMPLE", NBShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE, 1);
-            SetFlagBackedKeyword(mat, flags, "_PROGRAM_NOISE_VORONOI", NBShaderFlags.FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI, 1);
-            SetFlagBackedKeyword(mat, flags, "_VERTEX_OFFSET_MASKMAP", NBShaderFlags.FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP, 1);
-        }
-
-        private static bool IsDissolveRampEnabled(Material mat, NBShaderFlags flags)
-        {
-            if (mat != null && mat.HasProperty("_Dissolve_useRampMap_Toggle"))
-            {
-                return mat.GetFloat("_Dissolve_useRampMap_Toggle") > 0.5f;
-            }
-
-            return flags != null && flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP, index: 1);
-        }
-
-        private void SetFlagBackedKeyword(Material mat, NBShaderFlags flags, string keyword, int flagBits, int flagIndex)
-        {
-            SetKeyword(mat, keyword, flags.CheckFlagBits(flagBits, index: flagIndex));
+            return mat != null && mat.HasProperty(propertyName) && mat.GetFloat(propertyName) > 0.5f;
         }
 
         private bool IsKeywordAllowed(string keyword)
@@ -985,6 +998,36 @@ namespace NBShaderEditor
             {
                 this.propertyName = propertyName;
                 this.keyword = keyword;
+            }
+        }
+
+        private struct FlagToggleBinding
+        {
+            public readonly string propertyName;
+            public readonly int flagBits;
+            public readonly int flagIndex;
+
+            public FlagToggleBinding(string propertyName, int flagBits, int flagIndex)
+            {
+                this.propertyName = propertyName;
+                this.flagBits = flagBits;
+                this.flagIndex = flagIndex;
+            }
+        }
+
+        private struct FlagModeBinding
+        {
+            public readonly string propertyName;
+            public readonly int flagBits;
+            public readonly int flagIndex;
+            public readonly int enabledMode;
+
+            public FlagModeBinding(string propertyName, int flagBits, int flagIndex, int enabledMode)
+            {
+                this.propertyName = propertyName;
+                this.flagBits = flagBits;
+                this.flagIndex = flagIndex;
+                this.enabledMode = enabledMode;
             }
         }
     }

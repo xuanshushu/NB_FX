@@ -90,7 +90,7 @@
 
 
         // UNITY_FLATTEN
-        // if(CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_ON))
+        // Fresnel enable is keyword-driven by _FRESNEL.
         // {
         //     output.fresnelViewDir = output.viewDirWS;
         // }

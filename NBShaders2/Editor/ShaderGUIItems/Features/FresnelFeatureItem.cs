@@ -10,7 +10,7 @@ namespace NBShaderEditor
         private static readonly string[] FresnelModeNames = { "颜色", "透明" };
 
         public FresnelFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_FresnelBlockFoldOut", "_fresnelEnabled", "菲涅尔", NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_ON, keyword: "_FRESNEL")
+            : base(rootItem, parentItem, "_FresnelBlockFoldOut", "_fresnelEnabled", "菲涅尔", keyword: "_FRESNEL")
         {
             new NBShaderKeywordToggleItem(
                 rootItem,

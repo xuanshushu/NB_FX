@@ -80,8 +80,6 @@ namespace NBShaderEditor
                 "_Mask2BlockFoldOut",
                 "_Mask2_Toggle",
                 "遮罩2",
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP2,
-                1,
                 parent: this,
                 keyword: "_MASKMAP2_ON");
             AddMaskMap(rootItem, mask2Block, "_MaskMap2", "_MaskMap2GradientToggle", "_Mask2UVModeFoldOut", "遮罩2",
@@ -98,8 +96,6 @@ namespace NBShaderEditor
                 "_Mask3BlockFoldOut",
                 "_Mask3_Toggle",
                 "遮罩3",
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_MAP3,
-                1,
                 parent: this,
                 keyword: "_MASKMAP3_ON");
             AddMaskMap(rootItem, mask3Block, "_MaskMap3", "_MaskMap3GradientToggle", "_Mask3UVModeFoldOut", "遮罩3",

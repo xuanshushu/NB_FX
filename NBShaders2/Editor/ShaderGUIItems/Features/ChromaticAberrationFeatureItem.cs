@@ -11,7 +11,6 @@ namespace NBShaderEditor
                 "_ChromaticAberrationFoldOut",
                 "_Distortion_Choraticaberrat_Toggle",
                 "色散",
-                NBShaderFlags.FLAG_BIT_PARTICLE_CHORATICABERRAT,
                 keyword: "_CHROMATIC_ABERRATION")
         {
             ShaderGUIItem chromaticNoiseAffect = new NoiseAffectItem(rootItem, this);

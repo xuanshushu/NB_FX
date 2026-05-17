@@ -44,11 +44,11 @@ namespace NBShaderEditor
             new VectorComponentRangeSliderItem(rootItem, lineBlock, "_Dissolve_Vec2", 1, "Dissolve2YRangeVec", () => Content("描边软硬"));
 
             PropertyToggleBlockItem rampBlock = ToggleBlock(rootItem, "_DissolveRampFoldOut", "_Dissolve_useRampMap_Toggle", "溶解Ramp图功能",
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP, 1, parent: this, keyword: "_DISSOLVE_RAMP",
+                parent: this, keyword: "_DISSOLVE_RAMP",
                 onValueChanged: _ => rootItem.SyncService.SyncMaterialState());
             Func<bool> isDissolveRampMapVisible = TierVisible(rootItem, "_DISSOLVE_RAMP_MAP", () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 1));
             new FeaturePopupItem(rootItem, rampBlock, "_DissolveRampSourceMode", () => Content("溶解Ramp模式"), RampSourceNames,
-                property => rootItem.SyncService.ApplyToggleFlagAndKeyword(NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP, 0, "_DISSOLVE_RAMP_MAP", property.floatValue > 0.5f),
+                _ => rootItem.SyncService.SyncMaterialState(),
                 keyword: "_DISSOLVE_RAMP_MAP");
             AddTextureWithWrap(rootItem, rampBlock, "_DissolveRampMap", "溶解Ramp图", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP, "_DissolveRampColor",
                 isDissolveRampMapVisible);
@@ -62,7 +62,7 @@ namespace NBShaderEditor
                 property => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY, property.floatValue > 0.5f, 1));
 
             PropertyToggleBlockItem maskBlock = ToggleBlock(rootItem, "_DissolveMaskFoldOut", "_DissolveMask_Toggle", "溶解遮罩图(过程溶解)",
-                NBShaderFlags.FLAG_BIT_PARTICLE_DISSOLVE_MASK, parent: this, keyword: "_DISSOLVE_MASK");
+                parent: this, keyword: "_DISSOLVE_MASK");
             new FeaturePopupItem(rootItem, maskBlock, "_DissolveMaskMode", () => Content("溶解遮罩模式"), DissolveMaskModeNames);
             AddTextureWithWrap(rootItem, maskBlock, "_DissolveMaskMap", "溶解遮罩图", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP);
             new UVModeSelectItem(rootItem, maskBlock, "_DissolveMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP, 0, () => Content("溶解遮罩图UV来源"), "_DissolveMaskMap");

@@ -15,7 +15,7 @@ namespace NBShaderEditor
         {
             Func<bool> isRampMapVisible = TierVisible(rootItem, "_COLOR_RAMP_MAP", () => IsPropertyMode(rootItem, "_RampColorSourceMode", 1));
             new FeaturePopupItem(rootItem, this, "_RampColorSourceMode", () => Content("Ramp来源模式"), RampSourceNames,
-                property => rootItem.SyncService.ApplyToggleFlagAndKeyword(NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON, 0, "_COLOR_RAMP_MAP", property.floatValue > 0.5f),
+                _ => rootItem.SyncService.SyncMaterialState(),
                 keyword: "_COLOR_RAMP_MAP");
             AddTextureWithWrap(rootItem, this, "_RampColorMap", "颜色映射黑白图", NBShaderFlags.FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP,
                 isVisible: isRampMapVisible);

@@ -6,13 +6,13 @@
     #define FLAG_BIT_PARTICLE_FRESNEL_FADE_ON (1 << 2)
     #define FLAG_BIT_PARTICLE_FRESNEL_COLOR_ON (1 << 3)
     #define FLAG_BIT_PARTICLE_USETEXCOORD2 (1 << 4)
-    #define FLAG_BIT_PARTICLE_DISTANCEFADE_ON (1 << 5)
-    #define FLAG_BIT_PARTICLE_CHORATICABERRAT (1 << 6)
+    // #define FLAG_BIT_PARTICLE_DISTANCEFADE_ON (1 << 5) // Obsolete/reserved: keyword-driven (_DISTANCE_FADE).
+    // #define FLAG_BIT_PARTICLE_CHORATICABERRAT (1 << 6) // Obsolete/reserved: keyword-driven (_CHROMATIC_ABERRATION).
     #define FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON (1 << 7)
     #define FLAG_BIT_PARTICLE_POLARCOORDINATES_ON (1 << 8)
     #define FLAG_BIT_PARTICLE_UTWIRL_ON (1 << 9)
     #define FLAG_BIT_PARTICLE_LINEARTOGAMMA_ON (1 << 10)
-    #define FLAG_BIT_PARTICLE_FRESNEL_ON (1 << 11)
+    // #define FLAG_BIT_PARTICLE_FRESNEL_ON (1 << 11) // Obsolete/reserved: keyword-driven (_FRESNEL).
     #define FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON (1 << 12)
     #define FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA (1 << 13)
     #define FLAG_BIT_PARTICLE_UIEFFECT_ON (1 << 14)
@@ -24,19 +24,19 @@
     #define FLAG_BIT_PARTICLE_CUSTOMDATA2_ON (1 << 20)
     #define FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE (1 << 21)
     #define FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX (1 << 22)
-    #define FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON (1 << 23)
+    // #define FLAG_BIT_PARTICLE_RAMP_COLOR_MAP_MODE_ON (1 << 23) // Obsolete/reserved: keyword-driven (_COLOR_RAMP_MAP).
     #define FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD (1 << 24)
     #define FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE (1 << 25)
-    #define FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP (1 << 26)
-    #define FLAG_BIT_PARTICLE_DISSOLVE_MASK (1 << 27)
+    // #define FLAG_BIT_PARTICLE_DISSOLVE_RAMP_MAP (1 << 26) // Obsolete/reserved: keyword-driven (_DISSOLVE_RAMP_MAP).
+    // #define FLAG_BIT_PARTICLE_DISSOLVE_MASK (1 << 27) // Obsolete/reserved: keyword-driven (_DISSOLVE_MASK).
     #define FLAG_BIT_PARTICLE_BACKCOLOR (1 << 28)
     #define FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA (1 << 29)
-    #define FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON (1 << 30)
+    // #define FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON (1 << 30) // Obsolete/reserved: keyword-driven (_VERTEX_OFFSET).
     #define FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR (1 << 31)
     // uint _NBShaderFlags;
 
-    #define FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE (1 << 0)
-    #define FLAG_BIT_PARTICLE_1_PARALLAX_MAPPING (1 << 1)
+    // #define FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE (1 << 0) // Obsolete/reserved: keyword-driven (_DEPTH_OUTLINE).
+    // #define FLAG_BIT_PARTICLE_1_PARALLAX_MAPPING (1 << 1) // Obsolete/reserved: keyword-driven (_PARALLAX_MAPPING).
     #define FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT (1 << 2)
     #define FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT (1 << 3)
     #define FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT (1 << 4)
@@ -45,13 +45,13 @@
     #define FLAG_BIT_PARTICLE_1_MASK_REFINE (1 << 7)
     #define FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE (1 << 8)
     #define FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR (1 << 9)
-    #define FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE (1 << 10)
-    #define FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP (1 << 11)
-    #define FLAG_BIT_PARTICLE_1_MASK_MAP2 (1 << 12)
-    #define FLAG_BIT_PARTICLE_1_MASK_MAP3 (1 << 13)
-    #define FLAG_BIT_PARTICLE_1_NOISE_MASKMAP (1 << 14)
+    // #define FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_SIMPLE (1 << 10) // Obsolete/reserved: keyword-driven (_PROGRAM_NOISE_SIMPLE).
+    // #define FLAG_BIT_PARTICLE_1_DISSOVLE_USE_RAMP (1 << 11) // Obsolete/reserved: keyword-driven (_DISSOLVE_RAMP).
+    // #define FLAG_BIT_PARTICLE_1_MASK_MAP2 (1 << 12) // Obsolete/reserved: keyword-driven (_MASKMAP2_ON).
+    // #define FLAG_BIT_PARTICLE_1_MASK_MAP3 (1 << 13) // Obsolete/reserved: keyword-driven (_MASKMAP3_ON).
+    // #define FLAG_BIT_PARTICLE_1_NOISE_MASKMAP (1 << 14) // Obsolete/reserved: keyword-driven (_NOISE_MASKMAP).
     #define FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER (1 << 15)
-    #define FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI (1 << 16)
+    // #define FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI (1 << 16) // Obsolete/reserved: keyword-driven (_PROGRAM_NOISE_VORONOI).
     #define FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE (1 << 17)
     #define FLAG_BIT_PARTICLE_1_USE_TEXCOORD1 (1 << 18)
     #define FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 (1 << 19)
@@ -61,7 +61,7 @@
     #define FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM (1 << 23)
     #define FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST (1 << 24)
     #define FLAG_BIT_PARTICLE_1_VERTEXOFFSET_START_FROM_ZERO (1 << 25)
-    #define FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP (1 << 26)
+    // #define FLAG_BIT_PARTICLE_1_VERTEXOFFSET_MASKMAP (1 << 26) // Obsolete/reserved: keyword-driven (_VERTEX_OFFSET_MASKMAP).
     #define FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE (1 << 27)
     #define FLAG_BIT_PARTICLE_1_BUMP_TEX_UV_FOLLOW_MAINTEX (1 << 28)
     #define FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP (1 << 29)
