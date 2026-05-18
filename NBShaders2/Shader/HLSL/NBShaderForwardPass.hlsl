@@ -8,6 +8,47 @@
     ///////////////////////////////////////////////////////////////////////////////
     //                  Vertex and Fragment functions                            //
 
+    struct ParticleFragmentOutput
+    {
+        half4 color : SV_Target;
+        #if defined(_OVERRIDE_Z)
+            float depth : SV_Depth;
+        #endif
+    };
+
+    #if defined(_OVERRIDE_Z)
+        float OverrideZToDeviceDepth()
+        {
+            float nearClip = _ProjectionParams.y;
+            float farClip = _ProjectionParams.z;
+            float eyeDepth = clamp(_OverrideZValue, nearClip, farClip);
+
+            if (unity_OrthoParams.w == 0)
+            {
+                float reciprocalEyeDepth = rcp(max(eyeDepth, 1e-6));
+                return saturate((reciprocalEyeDepth - _ZBufferParams.w) / _ZBufferParams.z);
+            }
+
+            float linearDepth = saturate((eyeDepth - nearClip) / max(farClip - nearClip, 1e-6));
+            #if UNITY_REVERSED_Z
+                return 1.0 - linearDepth;
+            #else
+                return linearDepth;
+            #endif
+        }
+    #endif
+
+    ParticleFragmentOutput MakeParticleFragmentOutput(half4 color)
+    {
+        ParticleFragmentOutput output;
+        output.color = color;
+        #if defined(_OVERRIDE_Z)
+            output.depth = OverrideZToDeviceDepth();
+        #endif
+        return output;
+    }
+
+
 
     VaryingsParticle vertParticleUnlit(AttributesParticle input)
     {
@@ -224,7 +265,7 @@
 
     ///////////////////////Fragment functions  ////////////////////////
 
-    half4 fragParticleUnlit(VaryingsParticle input, half facing : VFACE): SV_Target
+    ParticleFragmentOutput fragParticleUnlit(VaryingsParticle input, half facing : VFACE)
     {
 
         half3 viewDirWS = GetWorldSpaceNormalizeViewDir(input.positionWS.xyz);
@@ -233,7 +274,7 @@
 
         UNITY_SETUP_INSTANCE_ID(input);
         #ifdef NB_DEBUG_VERTEX_OFFSET
-        return input.color;
+        return MakeParticleFragmentOutput(input.color);
         #endif
 
         time = _Time.y;
@@ -407,7 +448,7 @@
         // half dissolveSample = dissolveValue;
         // Unity_Blend_HardLight_half(overlayVoroni,dissolveSample,_DissolveVoronoi_Vec2.y,dissolveValue);
         #ifdef NB_DEBUG_PNOISE
-        return half4(programNoise.xxx,1);
+        return MakeParticleFragmentOutput(half4(programNoise.xxx,1));
         #endif
 
         #endif
@@ -492,7 +533,7 @@
             cum_noise *= noiseMask;
 
             #ifdef NB_DEBUG_DISTORT
-                return half4(cum_noise,0,1);
+                return MakeParticleFragmentOutput(half4(cum_noise,0,1));
             #endif
         #endif
 
@@ -747,7 +788,7 @@
             #endif
 
             #ifdef NB_DEBUG_DISSOLVE      //后续Test类的关键字要找机会排除
-                return half4(dissolveValue.rrr,1);
+                return MakeParticleFragmentOutput(half4(dissolveValue.rrr,1));
             #endif
             half dissolveStrenth = _Dissolve.x + GetCustomData(_NBShaderCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
 
@@ -955,7 +996,7 @@
             mask1 = saturate(mask1);
 
             #ifdef NB_DEBUG_MASK
-                return half4(mask1.rrr,1);
+                return MakeParticleFragmentOutput(half4(mask1.rrr,1));
             #endif
 
 
@@ -991,7 +1032,7 @@
             }
 
             #ifdef NB_DEBUG_FRESNEL
-                return half4(fresnelValue.rrr*_FresnelUnit.z,1);
+                return MakeParticleFragmentOutput(half4(fresnelValue.rrr*_FresnelUnit.z,1));
             #endif
 
 
@@ -1146,7 +1187,7 @@
         color = min(color,1000);
 
 
-        return color;
+        return MakeParticleFragmentOutput(color);
     }
 
 #endif
