@@ -625,8 +625,6 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local _PROGRAM_NOISE
             #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
             #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
-            //后续Test类的关键字要找机会排除
-            #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma  shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local_fragment _COLOR_RAMP_MAP
@@ -649,7 +647,6 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local_vertex _VERTEX_OFFSET
             #pragma shader_feature_local_vertex _VERTEX_OFFSET_MASKMAP
             
-            #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
             #pragma shader_feature_local_fragment _FRESNEL
            
             
@@ -762,8 +759,6 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local _PROGRAM_NOISE
             #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
             #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
-                        //后续Test类的关键字要找机会排除
-            #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local_fragment _COLOR_RAMP_MAP
@@ -784,7 +779,6 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local_vertex _VERTEX_OFFSET
             #pragma shader_feature_local_vertex _VERTEX_OFFSET_MASKMAP
             
-            #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
             #pragma shader_feature_local_fragment _FRESNEL
 
             
@@ -1010,8 +1004,6 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local _PROGRAM_NOISE
             #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
             #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
-                        //后续Test类的关键字要找机会排除
-            #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             // #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local _SHARED_UV//公共UV
@@ -1027,7 +1019,6 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local_vertex _VERTEX_OFFSET
             #pragma shader_feature_local_vertex _VERTEX_OFFSET_MASKMAP
             
-            #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
             #pragma shader_feature_local_fragment _FRESNEL
 
             
@@ -1136,8 +1127,6 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local _PROGRAM_NOISE
             #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
             #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
-                        //后续Test类的关键字要找机会排除
-            #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             // #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             // #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local _SHARED_UV//公共UV
@@ -1153,7 +1142,6 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local_vertex _VERTEX_OFFSET
             #pragma shader_feature_local_vertex _VERTEX_OFFSET_MASKMAP
             
-            #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
             #pragma shader_feature_local_fragment _FRESNEL
 
             
@@ -1260,8 +1248,6 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local _PROGRAM_NOISE
             #pragma shader_feature_local _PROGRAM_NOISE_SIMPLE
             #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
-                        //后续Test类的关键字要找机会排除
-            #pragma shader_feature_local _DISSOLVE_EDITOR_TEST
             #pragma shader_feature_local  _COLORMAPBLEND//颜色渐变
             #pragma  shader_feature_local  _COLOR_RAMP//颜色映射
             #pragma shader_feature_local_fragment _COLOR_RAMP_MAP
@@ -1279,7 +1265,6 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local_vertex _VERTEX_OFFSET
             #pragma shader_feature_local_vertex _VERTEX_OFFSET_MASKMAP
             
-            #pragma shader_feature_local _ FRESNEL_CUBEMAP FRESNEL_REFLECTIONPROBE
             #pragma shader_feature_local_fragment _FRESNEL
 
             

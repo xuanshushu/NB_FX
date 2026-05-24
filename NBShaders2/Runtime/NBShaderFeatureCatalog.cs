@@ -25,8 +25,6 @@ namespace NBShader
         /// </summary>
         public static readonly string[] RawKeywords =
         {
-            "FRESNEL_CUBEMAP",
-            "FRESNEL_REFLECTIONPROBE",
             "NB_DEBUG_DISSOLVE",
             "NB_DEBUG_DISTORT",
             "NB_DEBUG_FRESNEL",
@@ -41,11 +39,9 @@ namespace NBShader
             "_COLORMAPBLEND",
             "_COLOR_RAMP",
             "_COLOR_RAMP_MAP",
-            "_CUSTOM_LOCAL_TRANSFORM",
             "_DEPTH_DECAL",
             "_DEPTH_OUTLINE",
             "_DISSOLVE",
-            "_DISSOLVE_EDITOR_TEST",
             "_DISSOLVE_MASK",
             "_DISSOLVE_RAMP",
             "_DISSOLVE_RAMP_MAP",
