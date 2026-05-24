@@ -167,6 +167,8 @@ namespace NBShaderEditor
                 SyncCustomData(mat, flags);
                 SyncUVDerivedFlags(flags);
                 SyncTransparentMode(mat);
+                SyncTransparentShadowFlags(mat, flags);
+                SyncDepthShadowPasses(mat);
                 SyncBlendMode(mat);
                 SyncLightMode(mat);
                 SyncTimeMode(mat, flags);
@@ -746,6 +748,11 @@ namespace NBShaderEditor
                              (MeshSourceMode)Mathf.RoundToInt(mat.GetFloat("_MeshSourceMode")) == MeshSourceMode.UIEffectBaseMap ||
                              (MeshSourceMode)Mathf.RoundToInt(mat.GetFloat("_MeshSourceMode")) == MeshSourceMode.UIParticle);
 
+            if (mode != TransparentMode.Transparent)
+            {
+                SetFloatIfExists(mat, "_TransparentShadowDitherToggle", 0f);
+            }
+
             switch (mode)
             {
                 case TransparentMode.Opaque:
@@ -784,6 +791,45 @@ namespace NBShaderEditor
                     SetIntIfExists(mat, "_ZWrite", 0);
                 }
             }
+        }
+
+        private static void SyncTransparentShadowFlags(Material mat, NBShaderFlags flags)
+        {
+            TransparentMode mode = mat != null && mat.HasProperty("_TransparentMode")
+                ? (TransparentMode)Mathf.RoundToInt(mat.GetFloat("_TransparentMode"))
+                : TransparentMode.UnKnowOrMixed;
+            bool isTransparent = mode == TransparentMode.Transparent;
+            bool useTransparentShadowDither = isTransparent &&
+                                              mat.HasProperty("_TransparentShadowDitherToggle") &&
+                                              mat.GetFloat("_TransparentShadowDitherToggle") > 0.5f;
+
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_TRANSPARENT_MODE, isTransparent, 1);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_TRANSPARENT_SHADOW_DITHER, useTransparentShadowDither, 1);
+        }
+
+        private static void SyncDepthShadowPasses(Material mat)
+        {
+            if (mat == null)
+            {
+                return;
+            }
+
+            TransparentMode transparentMode = mat.HasProperty("_TransparentMode")
+                ? (TransparentMode)Mathf.RoundToInt(mat.GetFloat("_TransparentMode"))
+                : TransparentMode.UnKnowOrMixed;
+            bool isUIMode = IsUIEffectMode(mat);
+            bool depthOnlyEnabled = !isUIMode &&
+                                    mat.HasProperty("_ZWrite") &&
+                                    Mathf.RoundToInt(mat.GetFloat("_ZWrite")) == 1;
+            bool shadowCasterEnabled = !isUIMode &&
+                                       mat.HasProperty("_AffectsShadows") &&
+                                       mat.GetFloat("_AffectsShadows") > 0.5f &&
+                                       (transparentMode == TransparentMode.Opaque ||
+                                        transparentMode == TransparentMode.CutOff ||
+                                        transparentMode == TransparentMode.Transparent);
+
+            SetShaderPassEnabledIfNeeded(mat, "DepthOnly", depthOnlyEnabled);
+            SetShaderPassEnabledIfNeeded(mat, "ShadowCaster", shadowCasterEnabled);
         }
 
         private static bool IsUIEffectMode(Material mat)

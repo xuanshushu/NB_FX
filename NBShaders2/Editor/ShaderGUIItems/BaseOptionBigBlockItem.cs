@@ -47,6 +47,8 @@ namespace NBShaderEditor
         private readonly CullModeItem _cullItem;
         private readonly ToggleItem _backFirstPassItem;
         private readonly ForceZWriteItem _forceZWriteItem;
+        private readonly ToggleItem _affectsShadowsItem;
+        private readonly ToggleItem _transparentShadowDitherItem;
         private readonly PropertyToggleBlockItem _baseBackColorBlock;
         private readonly ColorItem _baseBackColorItem;
         private readonly PropertyToggleBlockItem _distanceFadeBlock;
@@ -198,6 +200,20 @@ namespace NBShaderEditor
                 () => Is3DTransparent());
 
             _forceZWriteItem = new ForceZWriteItem(rootItem, this);
+            _affectsShadowsItem = new ToggleItem(
+                rootItem,
+                this,
+                "_AffectsShadows",
+                () => Content("base.affectsShadows", "Affects Shadows"),
+                _ => rootItem.SyncService.SyncMaterialState(),
+                Is3DMode);
+            _transparentShadowDitherItem = new ToggleItem(
+                rootItem,
+                this,
+                "_TransparentShadowDitherToggle",
+                () => Content("base.transparentShadowDither", "Transparent Dither Shadows"),
+                _ => rootItem.SyncService.SyncMaterialState(),
+                ShouldDrawTransparentShadowDither);
 
             _baseBackColorBlock = new PropertyToggleBlockItem(
                 rootItem,
@@ -269,6 +285,8 @@ namespace NBShaderEditor
             _backFirstPassItem.OnGUI();
             DrawBackFirstPassWarning();
             _forceZWriteItem.OnGUI();
+            _affectsShadowsItem.OnGUI();
+            _transparentShadowDitherItem.OnGUI();
             _baseBackColorBlock.OnGUI();
             _distanceFadeBlock.OnGUI();
             _softParticlesBlock.OnGUI();
@@ -298,6 +316,14 @@ namespace NBShaderEditor
         private bool IsParticleMode()
         {
             return _nbRootItem.Context.ParticleMode == MixedBool.True;
+        }
+
+        private bool ShouldDrawTransparentShadowDither()
+        {
+            return Is3DTransparent() &&
+                   _nbRootItem.PropertyInfoDic.TryGetValue("_AffectsShadows", out ShaderPropertyInfo info) &&
+                   !info.Property.hasMixedValue &&
+                   info.Property.floatValue > 0.5f;
         }
 
         private void DrawBackFirstPassWarning()

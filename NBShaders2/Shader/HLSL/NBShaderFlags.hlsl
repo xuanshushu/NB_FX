@@ -35,8 +35,8 @@
     #define FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR (1 << 31)
     // uint _W9ParticleShaderFlags;
 
-    // #define FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE (1 << 0) // Obsolete/reserved: keyword-driven (_DEPTH_OUTLINE).
-    // #define FLAG_BIT_PARTICLE_1_PARALLAX_MAPPING (1 << 1) // Obsolete/reserved: keyword-driven (_PARALLAX_MAPPING).
+    #define FLAG_BIT_PARTICLE_1_TRANSPARENT_MODE (1 << 0)
+    #define FLAG_BIT_PARTICLE_1_TRANSPARENT_SHADOW_DITHER (1 << 1)
     #define FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT (1 << 2)
     #define FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT (1 << 3)
     #define FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT (1 << 4)

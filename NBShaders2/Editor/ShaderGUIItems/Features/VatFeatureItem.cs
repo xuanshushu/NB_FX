@@ -209,7 +209,6 @@ namespace NBShaderEditor
             new ToggleItem(rootItem, this, "_RGBAHalf", () => Content("RGBA half"), isVisible: isTyflow);
             new ToggleItem(rootItem, this, "_LinearToGamma", () => Content("Gamma correction"), isVisible: isTyflow);
             new ToggleItem(rootItem, this, "_VATIncludesNormals", () => Content("VAT includes normals"), isVisible: isTyflow);
-            new ToggleItem(rootItem, this, "_AffectsShadows", () => Content("Affects shadows"), isVisible: isTyflow);
             floatItem = new ShaderGUIFloatItem(rootItem, this, isTyflow)
             {
                 PropertyName = "_Frame",
