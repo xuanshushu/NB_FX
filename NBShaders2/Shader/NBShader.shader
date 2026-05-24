@@ -73,6 +73,7 @@ Shader "Effects/NBShader"
         _PortalBlockFoldOut("_PortalBlockFoldOut",Float) = 0
         _VATBlockFoldOut("_VATBlockFoldOut",Float) = 0
         _ZOffsetBlockFoldOut("_ZOffsetBlockFoldOut",Float) = 0
+        _OverrideZBlockFoldOut("_OverrideZBlockFoldOut",Float) = 0
         _CustomStencilTestFoldOut("_CustomStencilTestFoldOut",Float) = 0
         _ShaderKeywordFoldOut("_ShaderKeywordFoldOut",Float) = 0
     	_MeshSourceMode("Mesh来源模式",Float) = 0
@@ -424,6 +425,8 @@ Shader "Effects/NBShader"
         [Enum(UnityEngine.Rendering.CompareFunction)] _StencilComp ("__StencilComp-ignore", Float) = 8
         _Stencil("Stencil ID-ignore", Float) = 0
         [Enum(UnityEngine.Rendering.StencilOp)]_StencilOp("Stencil Operation-ignore", Float) = 0
+        [Enum(UnityEngine.Rendering.StencilOp)]_StencilFail("Stencil Fail-ignore", Float) = 0
+        [Enum(UnityEngine.Rendering.StencilOp)]_StencilZFail("Stencil ZFail-ignore", Float) = 0
         _StencilWriteMask ("Stencil Write Mask-ignore", Float) = 255
         _StencilReadMask ("Stencil Read Mask-ignore", Float) = 255
         _ColorMask("Color Mask-ignore", Float) = 15
@@ -501,6 +504,8 @@ Shader "Effects/NBShader"
         _ZOffset_Toggle("深度偏移_Toggle",Float) = 0
         _offsetFactor("深度偏移Sacle-ignore", range(-2000,2000)) = 0
         _offsetUnits("深度偏移单位距离-ignore", range(-2000,2000)) = 0
+        _OverrideZ_Toggle("Override Z Toggle-ignore",Float) = 0
+        _OverrideZValue("Override Z Value-ignore",Float) = 1000
     	
     	_WorldSpaceUVModeSelector("_WordSpaceUVModeSelector",Float) = 1
     	_ObjectSpaceUVModeSelector("_ObjectSpaceUVModeSelector",Float) = 1
@@ -551,6 +556,8 @@ Shader "Effects/NBShader"
             Ref [_Stencil]
             Comp [_StencilComp]
             Pass [_StencilOp]
+            Fail [_StencilFail]
+            ZFail [_StencilZFail]
             ReadMask [_StencilReadMask]
             WriteMask [_StencilWriteMask]
         }
@@ -664,6 +671,7 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local _DEPTH_OUTLINE
             #pragma shader_feature_local _DISTANCE_FADE
             #pragma shader_feature_local _PARALLAX_MAPPING
+            #pragma shader_feature_local_fragment _OVERRIDE_Z
 
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
 
@@ -800,6 +808,7 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local _DEPTH_OUTLINE
             #pragma shader_feature_local _DISTANCE_FADE
             #pragma shader_feature_local _PARALLAX_MAPPING
+            #pragma shader_feature_local_fragment _OVERRIDE_Z
 
             #pragma shader_feature_local _STENCIL_WITHOUT_PLAYER
 

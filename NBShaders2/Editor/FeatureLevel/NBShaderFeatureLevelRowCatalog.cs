@@ -122,6 +122,7 @@ namespace NBShaders2.Editor.FeatureLevel
             Group("depth", "feature", "Depth", 1),
             Keyword("_DEPTH_DECAL", "depth", "Depth Decal", 2, NBShaderFeaturePerformanceCost.High, "Projects decal effect using scene depth."),
             Keyword("_DEPTH_OUTLINE", "depth", "Depth Outline", 2, NBShaderFeaturePerformanceCost.High, "Creates outline effect using depth difference."),
+            Keyword("_OVERRIDE_Z", "depth", "Override Z", 2, NBShaderFeaturePerformanceCost.Medium, "Writes a fixed camera eye depth through SV_Depth."),
             Keyword("_PARALLAX_MAPPING", "feature", "Parallax Mapping", 1, NBShaderFeaturePerformanceCost.High, "Offsets UVs for parallax depth."),
             Keyword("_FLIPBOOKBLENDING_ON", "feature", "Flipbook Blending", 1, NBShaderFeaturePerformanceCost.Medium, "Blends between flipbook frames."),
             Keyword("_VAT", "feature", "VAT", 1, NBShaderFeaturePerformanceCost.Ultra, "Enables vertex animation texture playback."),

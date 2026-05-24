@@ -70,6 +70,7 @@ namespace NBShader
             "_NOISEMAP",
             "_NOISE_MASKMAP",
             "_NORMALMAP",
+            "_OVERRIDE_Z",
             "_PARALLAX_MAPPING",
             "_PARCUSTOMDATA_ON",
             "_PROGRAM_NOISE",

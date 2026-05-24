@@ -11,10 +11,14 @@ namespace NBShaderEditor
 
         private readonly NBShaderRootItem _nbRootItem;
         private readonly PropertyToggleBlockItem _zOffsetBlock;
+        private readonly PropertyToggleBlockItem _overrideZBlock;
         private readonly RenderQueueItem _renderQueueItem;
+        private readonly ShaderGUIBitMaskItem _rgbaMaskItem;
         private readonly PropertyToggleBlockItem _customStencilBlock;
         private readonly BlockItem _keywordBlock;
         private StencilValuesConfig _stencilValuesConfig;
+
+        private static readonly string[] RgbaMaskOptions = { "R", "G", "B", "A" };
 
         public TABigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(
@@ -37,12 +41,33 @@ namespace NBShaderEditor
             AddFloat(rootItem, _zOffsetBlock, "_offsetFactor", "Offset Factor");
             AddFloat(rootItem, _zOffsetBlock, "_offsetUnits", "Offset Units");
 
+            _overrideZBlock = new PropertyToggleBlockItem(
+                rootItem,
+                this,
+                "_OverrideZBlockFoldOut",
+                "_OverrideZ_Toggle",
+                () => Content("ta.overrideZ", "Override Z"),
+                keyword: "_OVERRIDE_Z",
+                isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True,
+                bold: true);
+            AddFloat(rootItem, _overrideZBlock, "_OverrideZValue", "Override Z Value");
+
             _renderQueueItem = new RenderQueueItem(
                 rootItem,
                 this,
                 "_QueueBias",
                 () => Content("ta.renderQueue", "Queue Bias"),
                 rootItem.SyncService.SyncMaterialState);
+
+            _rgbaMaskItem = new ShaderGUIBitMaskItem(
+                rootItem,
+                this,
+                "_ColorMask",
+                () => Content("ta.property._ColorMask", "RGBA Mask"),
+                () => NBShaderInspectorLocalization.GetInspectorOptions("ta.colorMask", RgbaMaskOptions))
+            {
+                ValidMask = 0xF
+            };
 
             _customStencilBlock = new PropertyToggleBlockItem(
                 rootItem,
@@ -57,6 +82,10 @@ namespace NBShaderEditor
             AddFloat(rootItem, _customStencilBlock, "_Stencil", "Stencil Value");
             AddPopup(rootItem, _customStencilBlock, "_StencilComp", "Stencil Compare", Enum.GetNames(typeof(CompareFunction)));
             AddPopup(rootItem, _customStencilBlock, "_StencilOp", "Stencil Operation", Enum.GetNames(typeof(StencilOp)));
+            AddPopup(rootItem, _customStencilBlock, "_StencilFail", "Stencil Fail", Enum.GetNames(typeof(StencilOp)));
+            AddPopup(rootItem, _customStencilBlock, "_StencilZFail", "Stencil ZFail", Enum.GetNames(typeof(StencilOp)));
+            AddFloat(rootItem, _customStencilBlock, "_StencilReadMask", "Stencil Read Mask");
+            AddFloat(rootItem, _customStencilBlock, "_StencilWriteMask", "Stencil Write Mask");
 
             _keywordBlock = new BlockItem(
                 rootItem,
@@ -71,7 +100,9 @@ namespace NBShaderEditor
         public override void DrawBlock()
         {
             _zOffsetBlock.OnGUI();
+            _overrideZBlock.OnGUI();
             _renderQueueItem.OnGUI();
+            _rgbaMaskItem.OnGUI();
             _customStencilBlock.OnGUI();
             if (_nbRootItem.Mats.Count == 1)
             {

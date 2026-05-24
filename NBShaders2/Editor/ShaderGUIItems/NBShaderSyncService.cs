@@ -34,6 +34,7 @@ namespace NBShaderEditor
             new KeywordToggleBinding("_SixWayColorAbsorptionToggle", "VFX_SIX_WAY_ABSORPTION"),
             new KeywordToggleBinding("_DepthDecal_Toggle", "_DEPTH_DECAL"),
             new KeywordToggleBinding("_DepthOutline_Toggle", "_DEPTH_OUTLINE"),
+            new KeywordToggleBinding("_OverrideZ_Toggle", "_OVERRIDE_Z"),
             new KeywordToggleBinding("_Mask2_Toggle", "_MASKMAP2_ON"),
             new KeywordToggleBinding("_Mask3_Toggle", "_MASKMAP3_ON"),
             new KeywordToggleBinding("_noiseMaskMap_Toggle", "_NOISE_MASKMAP"),
@@ -458,6 +459,8 @@ namespace NBShaderEditor
             SetFloatIfExists(mat, "_Stencil", stencil);
             SetFloatIfExists(mat, "_StencilComp", comp);
             SetFloatIfExists(mat, "_StencilOp", pass);
+            SetFloatIfExists(mat, "_StencilFail", (int)UnityEngine.Rendering.StencilOp.Keep);
+            SetFloatIfExists(mat, "_StencilZFail", (int)UnityEngine.Rendering.StencilOp.Keep);
             SetFloatIfExists(mat, "_StencilReadMask", 255f);
             SetFloatIfExists(mat, "_StencilWriteMask", 255f);
             SetFloatIfExists(mat, "_StencilKeyIndex", keyIndex);
