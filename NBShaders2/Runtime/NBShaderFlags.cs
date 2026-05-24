@@ -4,14 +4,14 @@ namespace NBShader
 {
     public class NBShaderFlags : ShaderFlagsBase
     {
-        public const string FlagsName = "_NBShaderFlags";
+        public const string FlagsName = "_W9ParticleShaderFlags";
         public static int FlagsId = Shader.PropertyToID(FlagsName);
 
 
-        public const string Flags1Name = "_NBShaderFlags1";
+        public const string Flags1Name = "_W9ParticleShaderFlags1";
         public static int Flags1Id = Shader.PropertyToID(Flags1Name);
 
-        public const string WrapFlagsName = "_NBShaderWrapFlags";
+        public const string WrapFlagsName = "_W9ParticleShaderWrapFlags";
         public static int WrapFlagsId = Shader.PropertyToID(WrapFlagsName);
 
         public const string foldOutFlagName = "_NBShaderGUIFoldToggle";
@@ -23,13 +23,13 @@ namespace NBShader
         public const string foldOutFlagName2 = "_NBShaderGUIFoldToggle2";
         public static int foldOutFlagId2 = Shader.PropertyToID(foldOutFlagName2);
 
-        public const string colorChannelFlagName = "_NBShaderColorChannelFlag";
+        public const string colorChannelFlagName = "_W9ParticleShaderColorChannelFlag";
         public static int colorChannelFlagId = Shader.PropertyToID(colorChannelFlagName);
 
-        public const string pNoiseBlendFlagName = "_NBShaderPNoiseBlendFlag";
+        public const string pNoiseBlendFlagName = "_W9ParticleShaderPNoiseBlendFlag";
         public static int pNoiseBlendFlagId = Shader.PropertyToID(pNoiseBlendFlagName);
         
-        // public const string WrapFlags2Name = "_NBShaderWrapFlags2";
+        // public const string WrapFlags2Name = "_W9ParticleShaderWrapFlags2";
         // public static int WrapFlags2Id = Shader.PropertyToID(WrapFlags2Name);
 
         public override int GetShaderFlagsId(int index = 0)
@@ -269,10 +269,10 @@ namespace NBShader
 
         #region CustomDataCodes
 
-        public const string CustomDataFlag0Name = "_NBShaderCustomDataFlag0";
-        public const string CustomDataFlag1Name = "_NBShaderCustomDataFlag1";
-        public const string CustomDataFlag2Name = "_NBShaderCustomDataFlag2";
-        public const string CustomDataFlag3Name = "_NBShaderCustomDataFlag3";
+        public const string CustomDataFlag0Name = "_W9ParticleCustomDataFlag0";
+        public const string CustomDataFlag1Name = "_W9ParticleCustomDataFlag1";
+        public const string CustomDataFlag2Name = "_W9ParticleCustomDataFlag2";
+        public const string CustomDataFlag3Name = "_W9ParticleCustomDataFlag3";
         public static int CustomDataFlag0Id = Shader.PropertyToID(CustomDataFlag0Name);
         public static int CustomDataFlag1Id = Shader.PropertyToID(CustomDataFlag1Name);
         public static int CustomDataFlag2Id = Shader.PropertyToID(CustomDataFlag2Name);

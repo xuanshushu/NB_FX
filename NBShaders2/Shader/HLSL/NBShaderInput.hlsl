@@ -217,23 +217,23 @@
     half _WorldSpaceUVModeSelector;
     half _ObjectSpaceUVModeSelector;
 
-    uint _NBShaderFlags;
+    uint _W9ParticleShaderFlags;
 
-    uint _NBShaderFlags1;
+    uint _W9ParticleShaderFlags1;
 
-    uint _NBShaderWrapFlags;
+    uint _W9ParticleShaderWrapFlags;
 
-    uint _NBShaderCustomDataFlag0;
-    uint _NBShaderCustomDataFlag1;
-    uint _NBShaderCustomDataFlag2;
-    uint _NBShaderCustomDataFlag3;
+    uint _W9ParticleCustomDataFlag0;
+    uint _W9ParticleCustomDataFlag1;
+    uint _W9ParticleCustomDataFlag2;
+    uint _W9ParticleCustomDataFlag3;
 
     uint _UVModeFlag0;
     uint _UVModeFlagType0;
   
 
-    uint _NBShaderColorChannelFlag;
-    uint _NBShaderPNoiseBlendFlag;
+    uint _W9ParticleShaderColorChannelFlag;
+    uint _W9ParticleShaderPNoiseBlendFlag;
     half _ProgramNoiseBaseBlendOpacity;
     half _MaskPNoiseBlendOpacity;
     half _DissolvePNoiseBlendOpacity;
@@ -243,15 +243,15 @@
 
     CBUFFER_END
 
-    #define NB_SHADER_FLAGS _NBShaderFlags
-    #define NB_SHADER_FLAGS1 _NBShaderFlags1
-    #define NB_SHADER_WRAP_FLAGS _NBShaderWrapFlags
-    #define NB_SHADER_COLOR_CHANNEL_FLAG _NBShaderColorChannelFlag
-    #define NB_SHADER_PNOISE_BLEND_FLAG _NBShaderPNoiseBlendFlag
-    #define NB_CUSTOM_DATA_FLAG_0 _NBShaderCustomDataFlag0
-    #define NB_CUSTOM_DATA_FLAG_1 _NBShaderCustomDataFlag1
-    #define NB_CUSTOM_DATA_FLAG_2 _NBShaderCustomDataFlag2
-    #define NB_CUSTOM_DATA_FLAG_3 _NBShaderCustomDataFlag3
+    #define NB_SHADER_FLAGS _W9ParticleShaderFlags
+    #define NB_SHADER_FLAGS1 _W9ParticleShaderFlags1
+    #define NB_SHADER_WRAP_FLAGS _W9ParticleShaderWrapFlags
+    #define NB_SHADER_COLOR_CHANNEL_FLAG _W9ParticleShaderColorChannelFlag
+    #define NB_SHADER_PNOISE_BLEND_FLAG _W9ParticleShaderPNoiseBlendFlag
+    #define NB_CUSTOM_DATA_FLAG_0 _W9ParticleCustomDataFlag0
+    #define NB_CUSTOM_DATA_FLAG_1 _W9ParticleCustomDataFlag1
+    #define NB_CUSTOM_DATA_FLAG_2 _W9ParticleCustomDataFlag2
+    #define NB_CUSTOM_DATA_FLAG_3 _W9ParticleCustomDataFlag3
 
     float3x3 GetCustomLocalToWorld3x3()
     {
@@ -351,16 +351,16 @@
 
     bool CheckLocalFlags(uint bits)
     {
-        return (_NBShaderFlags&bits) != 0;
+        return (_W9ParticleShaderFlags&bits) != 0;
     }
     bool CheckLocalFlags1(uint bits)
     {
-        return (_NBShaderFlags1&bits) != 0;
+        return (_W9ParticleShaderFlags1&bits) != 0;
     }
     int CheckLocalWrapFlags(uint bits)
     {
-        bool bit0 = (_NBShaderWrapFlags&bits) != 0;
-        bool bit1 = (_NBShaderWrapFlags&(bits<<16)) != 0;
+        bool bit0 = (_W9ParticleShaderWrapFlags&bits) != 0;
+        bool bit1 = (_W9ParticleShaderWrapFlags&(bits<<16)) != 0;
         if(!bit0 && !bit1)
         {
             return 0;
@@ -466,7 +466,7 @@
 
     half GetColorChannel(half4 color, int bitPos)
     {
-        uint bits = _NBShaderColorChannelFlag >> bitPos;
+        uint bits = _W9ParticleShaderColorChannelFlag >> bitPos;
         bits = bits & 3;
         if (bits == 0) return color.x;
         if (bits == 1) return color.y;
@@ -906,8 +906,8 @@
             _SharedUV_Vec.z += time * _SharedUV_Vec.w;
             sharedUV = Rotate_Radians_float(sharedUV, half2(0.5, 0.5), _SharedUV_Vec.z);  //主贴图旋转
   
-            sharedUV.x += GetCustomData(_NBShaderCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-            sharedUV.y += GetCustomData(_NBShaderCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            sharedUV.x += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            sharedUV.y += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
             sharedUV = sharedUV *_SharedUV_ST.xy +_SharedUV_ST.zw ;  //主帖图UV重复和偏移
         
             sharedUV = UVOffsetAnimaiton(sharedUV,_SharedUV_Vec.xy);
@@ -934,8 +934,8 @@
             }
             else
             {
-                baseMapUV.x += GetCustomData(_NBShaderCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-                baseMapUV.y += GetCustomData(_NBShaderCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
+                baseMapUV.x += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+                baseMapUV.y += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
                 mainTexUV = TRANSFORM_TEX(baseMapUV, _BaseMap);  //主帖图UV重复和偏移
             }
             mainTexUV = UVOffsetAnimaiton(mainTexUV,_BaseMapMaskMapOffset.xy);
@@ -989,8 +989,8 @@
         
             MaskMapuv = TRANSFORM_TEX(MaskMapuv, _MaskMap);
         
-            MaskMapuv.x += GetCustomData(_NBShaderCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-            MaskMapuv.y += GetCustomData(_NBShaderCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            MaskMapuv.x += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            MaskMapuv.y += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
 
             MaskMapuv = UVOffsetAnimaiton(MaskMapuv,_MaskMapOffsetAnition.xy);
             particleUVs.maskMapUV = MaskMapuv;
@@ -1023,14 +1023,14 @@
         
         #if defined(_EMISSION)
             float2 emissionUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_EMISSION_MAP,baseUVs);
-            emissionUV.x += GetCustomData(_NBShaderCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-            emissionUV.y += GetCustomData(_NBShaderCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            emissionUV.x += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            emissionUV.y += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
             particleUVs.emissionUV = ParticleUVCommonProcess(emissionUV,_EmissionMap_ST,_EmissionMapUVOffset.xy,_EmissionMapUVRotation);
         #endif
 
         #if defined(_DISSOLVE)
-            _DissolveMap_ST.z += GetCustomData(_NBShaderCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-            _DissolveMap_ST.w += GetCustomData(_NBShaderCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            _DissolveMap_ST.z += GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            _DissolveMap_ST.w += GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
         
             float2 dissolveUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP,baseUVs);
             particleUVs.dissolve_uv = ParticleUVCommonProcess(dissolveUV,_DissolveMap_ST,_DissolveOffsetRotateDistort.xy,_DissolveOffsetRotateDistort.z);
@@ -1047,16 +1047,16 @@
             programNoiseUV = Rotate_Radians_float(programNoiseUV,half2(0.5,0.5),_ProgramNoise_Rotate);
             #if defined(_PROGRAM_NOISE_SIMPLE)
             {
-                _DissolveVoronoi_Vec4.x += GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-                _DissolveVoronoi_Vec4.y += GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
+                _DissolveVoronoi_Vec4.x += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+                _DissolveVoronoi_Vec4.y += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
                 particleUVs.dissolve_noise1_UV = programNoiseUV * _DissolveVoronoi_Vec.xy + _DissolveVoronoi_Vec4.xy + time*_DissolveVoronoi_Vec3.xy;
                 
             }
             #endif
             #if defined(_PROGRAM_NOISE_VORONOI)
             {
-                _DissolveVoronoi_Vec4.z += GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-                _DissolveVoronoi_Vec4.w += GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
+                _DissolveVoronoi_Vec4.z += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+                _DissolveVoronoi_Vec4.w += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
                 particleUVs.dissolve_noise2_UV = programNoiseUV * _DissolveVoronoi_Vec.zw + _DissolveVoronoi_Vec4.zw + time*_DissolveVoronoi_Vec3.zw;
             }
             #endif
@@ -1065,8 +1065,8 @@
         
         #ifdef _COLORMAPBLEND
             float2 colorBlendUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP,baseUVs);
-            colorBlendUV.x += GetCustomData(_NBShaderCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-            colorBlendUV.y += GetCustomData(_NBShaderCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            colorBlendUV.x += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
+            colorBlendUV.y += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
             particleUVs.colorBlendUV = ParticleUVCommonProcess(colorBlendUV,_ColorBlendMap_ST,_ColorBlendMapOffset.xy,_ColorBlendVec.w);
         
         #endif
@@ -1592,7 +1592,7 @@
         if(CheckLocalFlags(FLAG_BIT_HUESHIFT_ON))
         {
             half3 hsv = RgbToHsv(result);
-            _HueShift = GetCustomData(_NBShaderCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,_HueShift,customData1,customData2);
+            _HueShift = GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,_HueShift,customData1,customData2);
             hsv.r += _HueShift;
             result = HsvToRgb(hsv);
         }
@@ -1600,7 +1600,7 @@
         UNITY_BRANCH
         if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST))
         {
-            _Contrast = GetCustomData(_NBShaderCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,_Contrast,customData1,customData2);
+            _Contrast = GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,_Contrast,customData1,customData2);
             result.rgb = lerp(_ContrastMidColor,result.rgb,_Contrast);
         }
 
@@ -1608,7 +1608,7 @@
         if(CheckLocalFlags(FLAG_BIT_SATURABILITY_ON))
         {
             half3 resultWB = luminance(result);
-            _Saturability = GetCustomData(_NBShaderCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_SATURATE,_Saturability,customData1,customData2);
+            _Saturability = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_SATURATE,_Saturability,customData1,customData2);
             result.rgb = lerp(resultWB.rgb, result.rgb, _Saturability);
         }
         

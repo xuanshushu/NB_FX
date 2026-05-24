@@ -510,21 +510,21 @@ Shader "Effects/NBShader"
     	_WorldSpaceUVModeSelector("_WordSpaceUVModeSelector",Float) = 1
     	_ObjectSpaceUVModeSelector("_ObjectSpaceUVModeSelector",Float) = 1
         
-        [HideInInspector] _NBShaderFlags("_NBShaderFlags", Integer) = 0
-        [HideInInspector] _NBShaderFlags1("_NBShaderFlags1", Integer) = 0
-        [HideInInspector] _NBShaderWrapFlags("_NBShaderWrapFlags", Integer) = 0
-        [HideInInspector] _NBShaderWrapFlags2("_NBShaderWrapFlags2", Integer) = 0
-        [HideInInspector] _NBShaderCustomDataFlag0("_NBShaderCustomDataFlag0", Integer) = 0
-        [HideInInspector] _NBShaderCustomDataFlag1("_NBShaderCustomDataFlag1", Integer) = 0
-        [HideInInspector] _NBShaderCustomDataFlag2("_NBShaderCustomDataFlag2", Integer) = 0
-        [HideInInspector] _NBShaderCustomDataFlag3("_NBShaderCustomDataFlag3", Integer) = 0
+        [HideInInspector] _W9ParticleShaderFlags("_W9ParticleShaderFlags", Integer) = 0
+        [HideInInspector] _W9ParticleShaderFlags1("_W9ParticleShaderFlags1", Integer) = 0
+        [HideInInspector] _W9ParticleShaderWrapFlags("_W9ParticleShaderWrapFlags", Integer) = 0
+        [HideInInspector] _W9ParticleShaderWrapFlags2("_W9ParticleShaderWrapFlags2", Integer) = 0
+        [HideInInspector] _W9ParticleCustomDataFlag0("_W9ParticleCustomDataFlag0", Integer) = 0
+        [HideInInspector] _W9ParticleCustomDataFlag1("_W9ParticleCustomDataFlag1", Integer) = 0
+        [HideInInspector] _W9ParticleCustomDataFlag2("_W9ParticleCustomDataFlag2", Integer) = 0
+        [HideInInspector] _W9ParticleCustomDataFlag3("_W9ParticleCustomDataFlag3", Integer) = 0
         [HideInInspector] _UVModeFlag0("_UVModeFlag0", Integer) = 0
         [HideInInspector] _UVModeFlagType0("_UVModeFlagType0", Integer) = 0
         [HideInInspector] _NBShaderGUIFoldToggle("_NBShaderGUIFoldToggle", Integer) = 3//前2个开关默认打开
         [HideInInspector] _NBShaderGUIFoldToggle1("_NBShaderGUIFoldToggle1", Integer) = 255//这边默认全开
         [HideInInspector] _NBShaderGUIFoldToggle2("_NBShaderGUIFoldToggle2", Integer) = 255//这边默认全开
-        [HideInInspector] _NBShaderColorChannelFlag("_NBShaderColorChannelFlag", Integer) = 3//默认主贴图开A通道
-        [HideInInspector] _NBShaderPNoiseBlendFlag("_NBShaderPNoiseBlendFlag", Integer) = 0
+        [HideInInspector] _W9ParticleShaderColorChannelFlag("_W9ParticleShaderColorChannelFlag", Integer) = 3//默认主贴图开A通道
+        [HideInInspector] _W9ParticleShaderPNoiseBlendFlag("_W9ParticleShaderPNoiseBlendFlag", Integer) = 0
 	    
     	
     	SaturabilityRangeVec("_Saturability",Vector) = (0,1,0,0)

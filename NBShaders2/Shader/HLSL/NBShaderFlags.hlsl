@@ -33,7 +33,7 @@
     #define FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA (1 << 29)
     // #define FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON (1 << 30) // Obsolete/reserved: keyword-driven (_VERTEX_OFFSET).
     #define FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR (1 << 31)
-    // uint _NBShaderFlags;
+    // uint _W9ParticleShaderFlags;
 
     // #define FLAG_BIT_PARTICLE_1_DEPTH_OUTLINE (1 << 0) // Obsolete/reserved: keyword-driven (_DEPTH_OUTLINE).
     // #define FLAG_BIT_PARTICLE_1_PARALLAX_MAPPING (1 << 1) // Obsolete/reserved: keyword-driven (_PARALLAX_MAPPING).
