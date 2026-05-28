@@ -1,201 +1,93 @@
-using System;
-using System.IO;
-using System.Reflection;
+using System.Collections.Generic;
 using NBShader;
 using UnityEditor;
 using UnityEngine;
 
 namespace NBShaders2.Editor.FeatureLevel
 {
-    [InitializeOnLoad]
     public static class NBShaderRuntimeSettingsSynchronizer
     {
-        public const string RuntimeSettingsAssetPath = "Assets/NBShaders2/Runtime/Resources/NBShaderFeatureRuntimeSettings.asset";
-
-        private static readonly string[] RuntimeTypeNames =
+        public static bool WriteConfiguredRuntimeSettingsAsset()
         {
-            // Current runtime worker API assumption. Resources.Load path is NBShaderFeatureRuntimeSettings.
-            "NBShader.NBShaderFeatureRuntimeSettings, com.xuanxuan.nb.shaders2",
-        };
-
-        static NBShaderRuntimeSettingsSynchronizer()
-        {
-            EditorApplication.delayCall += SyncFromProjectSettingsIfRuntimeTypeExists;
+            return WriteProjectSettingsToRuntimeAsset(NBShaderFeatureLevelProjectSettings.instance.runtimeSettingsAsset);
         }
 
-        public static bool SyncFromProjectSettings()
+        public static bool WriteProjectSettingsToRuntimeAsset(NBShaderFeatureRuntimeSettings asset)
         {
-            var runtimeType = FindRuntimeSettingsType();
-            if (runtimeType == null)
-            {
-                Debug.Log("NBShader feature level runtime settings type was not found yet; Project Settings were saved and will sync after runtime type lands.");
-                return false;
-            }
-
-            if (!typeof(ScriptableObject).IsAssignableFrom(runtimeType))
-            {
-                Debug.LogWarning("NBShader feature level runtime settings type must derive from ScriptableObject: " + runtimeType.FullName);
-                return false;
-            }
-
-            EnsureResourcesFolder();
-            var asset = AssetDatabase.LoadAssetAtPath(RuntimeSettingsAssetPath, runtimeType) as ScriptableObject;
             if (asset == null)
             {
-                asset = ScriptableObject.CreateInstance(runtimeType);
-                AssetDatabase.CreateAsset(asset, RuntimeSettingsAssetPath);
+                Debug.LogWarning("NBShader runtime settings asset is not configured. Assign a Runtime Settings Asset before writing.");
+                return false;
             }
 
-            ApplyProjectSettingsToRuntimeObject(asset);
+            var settings = NBShaderFeatureLevelProjectSettings.instance;
+            settings.EnsureInitialized();
+            ApplyProjectSettingsToRuntimeObject(asset, settings);
             EditorUtility.SetDirty(asset);
-            AssetDatabase.SaveAssets();
+            AssetDatabase.SaveAssetIfDirty(asset);
             return true;
         }
 
-        public static void SyncFromProjectSettingsIfRuntimeTypeExists()
+        private static void ApplyProjectSettingsToRuntimeObject(
+            NBShaderFeatureRuntimeSettings asset,
+            NBShaderFeatureLevelProjectSettings settings)
         {
-            if (FindRuntimeSettingsType() != null)
-                SyncFromProjectSettings();
+            asset.lowAllowedKeywords = ToCatalogOrderedKeywords(settings.GetAllowedKeywordSet(NBShaderFeatureTier.Low));
+            asset.mediumAllowedKeywords = ToCatalogOrderedKeywords(settings.GetAllowedKeywordSet(NBShaderFeatureTier.Medium));
+            asset.highAllowedKeywords = ToCatalogOrderedKeywords(settings.GetAllowedKeywordSet(NBShaderFeatureTier.High));
+            asset.ultraAllowedKeywords = ToCatalogOrderedKeywords(settings.GetAllowedKeywordSet(NBShaderFeatureTier.Ultra));
+
+            asset.lowAllowedPassFeatures = ToCatalogOrderedPassFeatures(settings.GetAllowedPassFeatureSet(NBShaderFeatureTier.Low));
+            asset.mediumAllowedPassFeatures = ToCatalogOrderedPassFeatures(settings.GetAllowedPassFeatureSet(NBShaderFeatureTier.Medium));
+            asset.highAllowedPassFeatures = ToCatalogOrderedPassFeatures(settings.GetAllowedPassFeatureSet(NBShaderFeatureTier.High));
+            asset.ultraAllowedPassFeatures = ToCatalogOrderedPassFeatures(settings.GetAllowedPassFeatureSet(NBShaderFeatureTier.Ultra));
+
+            asset.qualityTierMappings = ConvertQualityMappings(settings.qualityTierMappings);
         }
 
-        private static void ApplyProjectSettingsToRuntimeObject(ScriptableObject asset)
+        private static NBShaderFeatureRuntimeSettings.QualityTierMapping[] ConvertQualityMappings(NBShaderQualityTierMapping[] source)
         {
-            var settings = NBShaderFeatureLevelProjectSettings.instance;
-            settings.EnsureInitialized();
-            var type = asset.GetType();
+            if (source == null || source.Length == 0)
+                return new NBShaderFeatureRuntimeSettings.QualityTierMapping[0];
 
-            SetMember(type, asset, "buildStripPolicy", (int)settings.buildStripPolicy);
-            SetMember(type, asset, "BuildStripPolicy", (int)settings.buildStripPolicy);
-            SetMember(type, asset, "explicitTier", (int)settings.explicitTier);
-            SetMember(type, asset, "ExplicitTier", (int)settings.explicitTier);
-
-            SetMember(type, asset, "lowAllowedKeywords", settings.GetAllowedKeywordSet(NBShaderFeatureTier.Low));
-            SetMember(type, asset, "mediumAllowedKeywords", settings.GetAllowedKeywordSet(NBShaderFeatureTier.Medium));
-            SetMember(type, asset, "highAllowedKeywords", settings.GetAllowedKeywordSet(NBShaderFeatureTier.High));
-            SetMember(type, asset, "ultraAllowedKeywords", settings.GetAllowedKeywordSet(NBShaderFeatureTier.Ultra));
-
-            SetMember(type, asset, "tierKeywordSets", settings.tierKeywordSets);
-            SetMember(type, asset, "TierKeywordSets", settings.tierKeywordSets);
-            SetMember(type, asset, "qualityTierMappings", settings.qualityTierMappings);
-            SetMember(type, asset, "QualityTierMappings", settings.qualityTierMappings);
-
-            var method = type.GetMethod("ApplyEditorSettings", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (method != null)
-            {
-                var parameters = method.GetParameters();
-                if (parameters.Length == 1 && parameters[0].ParameterType == typeof(NBShaderFeatureLevelProjectSettings))
-                    method.Invoke(asset, new object[] { settings });
-            }
-        }
-
-        private static bool SetMember(Type type, object target, string name, object value)
-        {
-            var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            var field = type.GetField(name, flags);
-            if (field != null)
-            {
-                if (TrySetValue(field.FieldType, delegate(object converted) { field.SetValue(target, converted); }, value))
-                    return true;
-            }
-
-            var property = type.GetProperty(name, flags);
-            if (property != null && property.CanWrite)
-            {
-                if (TrySetValue(property.PropertyType, delegate(object converted) { property.SetValue(target, converted, null); }, value))
-                    return true;
-            }
-
-            return false;
-        }
-
-        private delegate void ValueSetter(object converted);
-
-        private static bool TrySetValue(Type destinationType, ValueSetter setter, object value)
-        {
-            try
-            {
-                if (value == null || destinationType.IsInstanceOfType(value))
-                {
-                    setter(value);
-                    return true;
-                }
-
-                if (destinationType == typeof(string[]) && value is System.Collections.Generic.HashSet<string>)
-                {
-                    var set = (System.Collections.Generic.HashSet<string>)value;
-                    var array = new string[set.Count];
-                    set.CopyTo(array);
-                    setter(array);
-                    return true;
-                }
-
-                if (destinationType.IsArray && destinationType.GetElementType() != null && value is NBShaderQualityTierMapping[])
-                {
-                    var converted = ConvertQualityMappings(destinationType.GetElementType(), (NBShaderQualityTierMapping[])value);
-                    if (converted != null)
-                    {
-                        setter(converted);
-                        return true;
-                    }
-                }
-
-                if (destinationType.IsEnum && value is int)
-                {
-                    setter(Enum.ToObject(destinationType, (int)value));
-                    return true;
-                }
-
-                if (destinationType == typeof(int) && value.GetType().IsEnum)
-                {
-                    setter((int)value);
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning("Failed to sync NBShader runtime setting: " + ex.Message);
-            }
-            return false;
-        }
-
-        private static Array ConvertQualityMappings(Type elementType, NBShaderQualityTierMapping[] source)
-        {
-            if (elementType == null || source == null)
-                return null;
-
-            var result = Array.CreateInstance(elementType, source.Length);
+            var result = new NBShaderFeatureRuntimeSettings.QualityTierMapping[source.Length];
             for (var i = 0; i < source.Length; i++)
             {
-                var src = source[i];
-                var item = Activator.CreateInstance(elementType);
-                SetMember(elementType, item, "qualityName", src != null ? src.qualityName : string.Empty);
-                SetMember(elementType, item, "QualityName", src != null ? src.qualityName : string.Empty);
-                SetMember(elementType, item, "tier", src != null ? (int)src.tier : (int)NBShaderFeatureTier.Ultra);
-                SetMember(elementType, item, "Tier", src != null ? (int)src.tier : (int)NBShaderFeatureTier.Ultra);
-                result.SetValue(item, i);
+                var item = source[i];
+                result[i] = new NBShaderFeatureRuntimeSettings.QualityTierMapping
+                {
+                    qualityName = item != null ? item.qualityName : string.Empty,
+                    tier = item != null ? item.tier : NBShaderFeatureTier.Ultra
+                };
             }
+
             return result;
         }
 
-        private static Type FindRuntimeSettingsType()
+        private static string[] ToCatalogOrderedKeywords(HashSet<string> allowed)
         {
-            for (var i = 0; i < RuntimeTypeNames.Length; i++)
-            {
-                var type = Type.GetType(RuntimeTypeNames[i]);
-                if (type != null)
-                    return type;
-            }
-            return null;
+            return ToCatalogOrderedArray(allowed, NBShaderFeatureCatalog.RawKeywords);
         }
 
-        private static void EnsureResourcesFolder()
+        private static string[] ToCatalogOrderedPassFeatures(HashSet<string> allowed)
         {
-            var folder = Path.GetDirectoryName(RuntimeSettingsAssetPath);
-            if (!string.IsNullOrEmpty(folder) && !AssetDatabase.IsValidFolder(folder))
+            return ToCatalogOrderedArray(allowed, NBShaderPassFeatureCatalog.RawPassFeatureIds);
+        }
+
+        private static string[] ToCatalogOrderedArray(HashSet<string> allowed, string[] catalogOrder)
+        {
+            if (allowed == null || catalogOrder == null)
+                return new string[0];
+
+            var result = new List<string>();
+            for (var i = 0; i < catalogOrder.Length; i++)
             {
-                Directory.CreateDirectory(folder);
-                AssetDatabase.Refresh();
+                var value = catalogOrder[i];
+                if (allowed.Contains(value))
+                    result.Add(value);
             }
+
+            return result.ToArray();
         }
     }
 }

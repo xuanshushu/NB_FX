@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NBShader;
 using UnityEditor.Build;
 using UnityEditor.Rendering;
 using UnityEngine;
@@ -19,19 +20,64 @@ namespace NBShaders2.Editor.FeatureLevel
             if (buildSettings.policy == NBShaderBuildStripPolicy.Disabled)
                 return;
 
+            HashSet<string> allowedKeywords;
+            HashSet<string> allowedPassFeatures;
             var projectSettings = NBShaderFeatureLevelProjectSettings.instance;
-            projectSettings.EnsureInitialized();
-
-            HashSet<string> allowed;
             if (buildSettings.policy == NBShaderBuildStripPolicy.QualityMappedUnion)
-                allowed = projectSettings.GetQualityMappedUnionAllowedKeywordSet();
+            {
+                allowedKeywords = projectSettings.GetQualityMappedUnionAllowedKeywordSetForBuildInfoNoSave();
+                allowedPassFeatures = projectSettings.GetQualityMappedUnionAllowedPassFeatureSetForBuildInfoNoSave();
+            }
             else
-                allowed = projectSettings.GetAllowedKeywordSet(buildSettings.explicitTier);
+            {
+                allowedKeywords = projectSettings.GetAllowedKeywordSetForBuildInfoNoSave(buildSettings.explicitTier);
+                allowedPassFeatures = projectSettings.GetAllowedPassFeatureSetForBuildInfoNoSave(buildSettings.explicitTier);
+            }
+
+            if (IsDisallowedManagedPass(snippet, allowedPassFeatures))
+            {
+                data.Clear();
+                return;
+            }
 
             for (var i = data.Count - 1; i >= 0; i--)
             {
-                if (ContainsDisallowedManagedKeyword(shader, data[i], allowed))
+                if (ContainsDisallowedManagedKeyword(shader, data[i], allowedKeywords))
                     data.RemoveAt(i);
+            }
+        }
+
+        private static bool IsDisallowedManagedPass(ShaderSnippetData snippet, HashSet<string> allowedPassFeatures)
+        {
+            if (allowedPassFeatures == null)
+                return false;
+
+            string passFeatureId;
+            if (!TryResolveManagedPassFeature(snippet, out passFeatureId))
+                return false;
+
+            return !allowedPassFeatures.Contains(passFeatureId);
+        }
+
+        private static bool TryResolveManagedPassFeature(ShaderSnippetData snippet, out string passFeatureId)
+        {
+            if (!string.IsNullOrEmpty(snippet.passName) &&
+                NBShaderFeatureLevelCatalog.TryGetManagedPassFeatureByPassName(snippet.passName, out passFeatureId))
+            {
+                return true;
+            }
+
+            switch (snippet.passType)
+            {
+                case PassType.ScriptableRenderPipelineDefaultUnlit:
+                    passFeatureId = NBShaderPassFeatureCatalog.BackFirstPassId;
+                    return true;
+                case PassType.ShadowCaster:
+                    passFeatureId = NBShaderPassFeatureCatalog.ShadowCasterPassId;
+                    return true;
+                default:
+                    passFeatureId = string.Empty;
+                    return false;
             }
         }
 
@@ -46,7 +92,7 @@ namespace NBShaders2.Editor.FeatureLevel
                 if (!NBShaderFeatureLevelCatalog.IsManagedKeyword(keywordName))
                     continue;
 
-                if (allowed == null || !allowed.Contains(keywordName))
+                if (allowed != null && !allowed.Contains(keywordName))
                     return true;
             }
             return false;

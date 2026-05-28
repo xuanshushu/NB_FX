@@ -1,50 +1,20 @@
+using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using NBShader;
+using NBShaders2.Editor.FeatureLevel;
 
 namespace NBShaderEditor
 {
     public class NBShaderSyncService
     {
+        private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
         private const string StencilConfigAssetPath = "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/StencilConfig.asset";
         private readonly NBShaderRootItem _rootItem;
         private StencilValuesConfig _stencilValuesConfig;
 
         public int KeywordVersion { get; private set; }
-
-        private static readonly KeywordToggleBinding[] ToggleKeywordBindings =
-        {
-            new KeywordToggleBinding("_SoftParticlesEnabled", "_SOFTPARTICLES_ON"),
-            new KeywordToggleBinding("_StencilWithoutPlayerToggle", "_STENCIL_WITHOUT_PLAYER"),
-            new KeywordToggleBinding("_Mask_Toggle", "_MASKMAP_ON"),
-            new KeywordToggleBinding("_noisemapEnabled", "_NOISEMAP"),
-            new KeywordToggleBinding("_EmissionEnabled", "_EMISSION"),
-            new KeywordToggleBinding("_ColorBlendMap_Toggle", "_COLORMAPBLEND"),
-            new KeywordToggleBinding("_RampColorToggle", "_COLOR_RAMP"),
-            new KeywordToggleBinding("_Dissolve_Toggle", "_DISSOLVE"),
-            new KeywordToggleBinding("_ProgramNoise_Toggle", "_PROGRAM_NOISE"),
-            new KeywordToggleBinding("_SharedUVToggle", "_SHARED_UV"),
-            new KeywordToggleBinding("_fresnelEnabled", "_FRESNEL"),
-            new KeywordToggleBinding("_ParallaxMapping_Toggle", "_PARALLAX_MAPPING"),
-            new KeywordToggleBinding("_VertexOffset_Toggle", "_VERTEX_OFFSET"),
-            new KeywordToggleBinding("_FlipbookBlending", "_FLIPBOOKBLENDING_ON"),
-            new KeywordToggleBinding("_BumpMapToggle", "_NORMALMAP"),
-            new KeywordToggleBinding("_MatCapToggle", "_MATCAP"),
-            new KeywordToggleBinding("_BlinnPhongSpecularToggle", "_SPECULAR_COLOR"),
-            new KeywordToggleBinding("_SixWayColorAbsorptionToggle", "VFX_SIX_WAY_ABSORPTION"),
-            new KeywordToggleBinding("_DepthDecal_Toggle", "_DEPTH_DECAL"),
-            new KeywordToggleBinding("_DepthOutline_Toggle", "_DEPTH_OUTLINE"),
-            new KeywordToggleBinding("_OverrideZ_Toggle", "_OVERRIDE_Z"),
-            new KeywordToggleBinding("_Mask2_Toggle", "_MASKMAP2_ON"),
-            new KeywordToggleBinding("_Mask3_Toggle", "_MASKMAP3_ON"),
-            new KeywordToggleBinding("_noiseMaskMap_Toggle", "_NOISE_MASKMAP"),
-            new KeywordToggleBinding("_Distortion_Choraticaberrat_Toggle", "_CHROMATIC_ABERRATION"),
-            new KeywordToggleBinding("_DissolveMask_Toggle", "_DISSOLVE_MASK"),
-            new KeywordToggleBinding("_Dissolve_useRampMap_Toggle", "_DISSOLVE_RAMP"),
-            new KeywordToggleBinding("_ProgramNoise_Simple_Toggle", "_PROGRAM_NOISE_SIMPLE"),
-            new KeywordToggleBinding("_ProgramNoise_Voronoi_Toggle", "_PROGRAM_NOISE_VORONOI"),
-            new KeywordToggleBinding("_VertexOffset_Mask_Toggle", "_VERTEX_OFFSET_MASKMAP")
-        };
 
         private static readonly FlagToggleBinding[] ToggleFlagBindings =
         {
@@ -128,6 +98,7 @@ namespace NBShaderEditor
                     {
                         SetRenderQueueIfNeeded(mat, 2000 + queueBias);
                         SetKeyword(mat, "_ALPHATEST_ON", false);
+                        SyncResolvedIntentStateIfNBShader(mat);
                     }
                     break;
 
@@ -135,9 +106,9 @@ namespace NBShaderEditor
                     zWriteProperty.floatValue = 0;
                     foreach (Material mat in _rootItem.Mats)
                     {
-                        bool uiEffect = IsUIEffectMode(mat);
                         SetRenderQueueIfNeeded(mat, 3000 + queueBias);
                         SetKeyword(mat, "_ALPHATEST_ON", false);
+                        SyncResolvedIntentStateIfNBShader(mat);
                     }
                     break;
 
@@ -147,6 +118,7 @@ namespace NBShaderEditor
                     {
                         SetRenderQueueIfNeeded(mat, 2450 + queueBias);
                         SetKeyword(mat, "_ALPHATEST_ON", true);
+                        SyncResolvedIntentStateIfNBShader(mat);
                     }
                     break;
             }
@@ -168,16 +140,11 @@ namespace NBShaderEditor
                 SyncUVDerivedFlags(flags);
                 SyncTransparentMode(mat);
                 SyncTransparentShadowFlags(mat, flags);
-                SyncDepthShadowPasses(mat);
                 SyncBlendMode(mat);
-                SyncLightMode(mat);
                 SyncTimeMode(mat, flags);
                 SyncTogglePropertyFlags(mat, flags);
-                SyncTogglePropertyKeywords(mat);
-                SyncModePropertyKeywords(mat);
-                SyncScreenDistortPasses(mat);
-                SyncVatKeywords(mat);
                 SyncParallaxLayerCount(mat);
+                SyncResolvedIntentState(mat);
             }
         }
 
@@ -200,7 +167,10 @@ namespace NBShaderEditor
         {
             foreach (Material mat in _rootItem.Mats)
             {
-                SetShaderPassEnabledIfNeeded(mat, passName, enabled);
+                if (IsResolvedIntentPass(passName) && NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat))
+                    SyncResolvedIntentState(mat);
+                else
+                    SetShaderPassEnabledIfNeeded(mat, passName, enabled);
             }
         }
 
@@ -208,19 +178,16 @@ namespace NBShaderEditor
         {
             foreach (Material mat in _rootItem.Mats)
             {
-                bool deferred = mode == 1;
-                bool cameraOpaque = mode == 2;
-                bool disableMainPass = mat.HasProperty("_DisableMainPassToggle") &&
-                                       mat.GetFloat("_DisableMainPassToggle") > 0.5f;
-
-                SetShaderPassEnabledIfNeeded(mat, "NBCameraOpaqueDistortPass", cameraOpaque);
-                SetShaderPassEnabledIfNeeded(mat, "NBDeferredDistortPass", deferred);
-                SetShaderPassEnabledIfNeeded(mat, "UniversalForward", mode == 0 || !disableMainPass);
+                if (mat == null)
+                    continue;
 
                 if (mode == 0 && mat.HasProperty("_DisableMainPassToggle"))
                 {
                     SetFloatIfExists(mat, "_DisableMainPassToggle", 0f);
                 }
+
+                if (NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat))
+                    SyncResolvedIntentState(mat);
             }
         }
 
@@ -291,7 +258,13 @@ namespace NBShaderEditor
             {
                 SetFloatIfExists(mat, "_VAT_Toggle", enabled ? 1f : 0f);
 
-                SyncVatKeywords(mat);
+                if (enabled)
+                    DisableFlipbook(mat);
+
+                if (NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat))
+                    SyncResolvedIntentState(mat);
+                else
+                    SyncVatKeywords(mat);
             }
         }
 
@@ -304,12 +277,12 @@ namespace NBShaderEditor
                 if (enabled)
                 {
                     DisableVat(mat);
-                    SetKeyword(mat, "_FLIPBOOKBLENDING_ON", true);
                 }
+
+                if (NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat))
+                    SyncResolvedIntentState(mat);
                 else
-                {
-                    SetKeyword(mat, "_FLIPBOOKBLENDING_ON", false);
-                }
+                    SetKeyword(mat, "_FLIPBOOKBLENDING_ON", enabled);
             }
         }
 
@@ -317,39 +290,58 @@ namespace NBShaderEditor
         {
             foreach (Material mat in _rootItem.Mats)
             {
+                bool nbShaderMaterial = NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat);
                 switch (mode)
                 {
                     case BlendMode.Alpha:
                         SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                         SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
-                        SetKeyword(mat, "_ALPHAMODULATE_ON", false);
+                        if (!nbShaderMaterial)
+                        {
+                            SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
+                            SetKeyword(mat, "_ALPHAMODULATE_ON", false);
+                        }
                         break;
                     case BlendMode.Premultiply:
                         SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                         SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
-                        SetKeyword(mat, "_ALPHAMODULATE_ON", false);
+                        if (!nbShaderMaterial)
+                        {
+                            SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
+                            SetKeyword(mat, "_ALPHAMODULATE_ON", false);
+                        }
                         break;
                     case BlendMode.Additive:
                         SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                         SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
-                        SetKeyword(mat, "_ALPHAMODULATE_ON", false);
+                        if (!nbShaderMaterial)
+                        {
+                            SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
+                            SetKeyword(mat, "_ALPHAMODULATE_ON", false);
+                        }
                         break;
                     case BlendMode.Multiply:
                         SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
                         SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                        SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
-                        SetKeyword(mat, "_ALPHAMODULATE_ON", true);
+                        if (!nbShaderMaterial)
+                        {
+                            SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
+                            SetKeyword(mat, "_ALPHAMODULATE_ON", true);
+                        }
                         break;
                     case BlendMode.Opaque:
                         SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                         SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-                        SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
-                        SetKeyword(mat, "_ALPHAMODULATE_ON", false);
+                        if (!nbShaderMaterial)
+                        {
+                            SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
+                            SetKeyword(mat, "_ALPHAMODULATE_ON", false);
+                        }
                         break;
                 }
+
+                if (nbShaderMaterial)
+                    SyncResolvedIntentState(mat);
             }
         }
 
@@ -357,7 +349,10 @@ namespace NBShaderEditor
         {
             foreach (Material mat in _rootItem.Mats)
             {
-                SetLightModeKeyword(mat, mode);
+                if (NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat))
+                    SyncResolvedIntentState(mat);
+                else
+                    SetLightModeKeyword(mat, mode);
             }
         }
 
@@ -365,7 +360,11 @@ namespace NBShaderEditor
         {
             foreach (Material mat in _rootItem.Mats)
             {
-                SetKeyword(mat, keyword, enabled);
+                if (NBShaderFeatureCatalog.IsManagedKeyword(keyword) &&
+                    NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat))
+                    SyncResolvedIntentState(mat);
+                else
+                    SetKeyword(mat, keyword, enabled);
             }
         }
 
@@ -508,7 +507,7 @@ namespace NBShaderEditor
 
         private static void SetShaderPassEnabledIfNeeded(Material mat, string passName, bool enabled)
         {
-            if (mat != null && mat.GetShaderPassEnabled(passName) != enabled)
+            if (mat != null && !string.IsNullOrEmpty(passName) && mat.GetShaderPassEnabled(passName) != enabled)
             {
                 mat.SetShaderPassEnabled(passName, enabled);
             }
@@ -546,12 +545,10 @@ namespace NBShaderEditor
             if (isParticle)
             {
                 SetKeyword(mat, "_CUSTOMDATA", true);
-                SetKeyword(mat, "_PARCUSTOMDATA_ON", true);
             }
             else
             {
                 SetKeyword(mat, "_CUSTOMDATA", false);
-                SetKeyword(mat, "_PARCUSTOMDATA_ON", false);
                 SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA1_ON, false, 0);
                 SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA2_ON, false, 0);
             }
@@ -567,22 +564,6 @@ namespace NBShaderEditor
             TimeMode mode = (TimeMode)Mathf.RoundToInt(mat.GetFloat("_TimeMode"));
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_UNSCALETIME_ON, mode == TimeMode.UnScaleTime, 0);
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON, mode == TimeMode.ScriptableTime, 0);
-            SetKeyword(mat, "_UNSCALETIME", mode == TimeMode.UnScaleTime);
-            SetKeyword(mat, "_SCRIPTABLETIME", mode == TimeMode.ScriptableTime);
-        }
-
-        private void SyncTogglePropertyKeywords(Material mat)
-        {
-            for (int i = 0; i < ToggleKeywordBindings.Length; i++)
-            {
-                var binding = ToggleKeywordBindings[i];
-                if (!mat.HasProperty(binding.propertyName))
-                {
-                    continue;
-                }
-
-                SetKeyword(mat, binding.keyword, mat.GetFloat(binding.propertyName) > 0.5f);
-            }
         }
 
         private void SyncTogglePropertyFlags(Material mat, NBShaderFlags flags)
@@ -615,37 +596,6 @@ namespace NBShaderEditor
             }
         }
 
-        private void SyncModePropertyKeywords(Material mat)
-        {
-            if (mat.HasProperty("_DistortMode"))
-            {
-                SetKeyword(mat, "_DISTORT_REFRACTION", Mathf.RoundToInt(mat.GetFloat("_DistortMode")) == 1);
-            }
-
-            if (mat.HasProperty("_RampColorSourceMode"))
-            {
-                bool useRampMap = Mathf.RoundToInt(mat.GetFloat("_RampColorSourceMode")) == 1;
-                SetKeyword(mat, "_COLOR_RAMP_MAP", useRampMap);
-            }
-
-            if (mat.HasProperty("_DissolveRampSourceMode"))
-            {
-                bool useDissolveRampMap = Mathf.RoundToInt(mat.GetFloat("_DissolveRampSourceMode")) == 1;
-                bool dissolveRampEnabled = IsToggleEnabled(mat, "_Dissolve_useRampMap_Toggle");
-                SetKeyword(mat, "_DISSOLVE_RAMP_MAP", dissolveRampEnabled && useDissolveRampMap);
-            }
-
-            if (mat.HasProperty("_ScreenDistortModeToggle"))
-            {
-                SetKeyword(mat, "_SCREEN_DISTORT_MODE", Mathf.RoundToInt(mat.GetFloat("_ScreenDistortModeToggle")) != 0);
-            }
-        }
-
-        private static bool IsToggleEnabled(Material mat, string propertyName)
-        {
-            return mat != null && mat.HasProperty(propertyName) && mat.GetFloat(propertyName) > 0.5f;
-        }
-
         private bool IsKeywordAllowed(string keyword)
         {
             return _rootItem.Context == null || _rootItem.Context.IsKeywordAllowed(keyword);
@@ -676,27 +626,67 @@ namespace NBShaderEditor
             KeywordVersion++;
         }
 
-        private static void SyncScreenDistortPasses(Material mat)
+        private void SyncResolvedIntentState(Material mat)
         {
-            if (!mat.HasProperty("_ScreenDistortModeToggle"))
+            var tier = ResolveMaterialTier(mat);
+            var allowedKeywords = NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForReadOnlyUse(tier);
+            var allowedPassFeatures = NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForReadOnlyUse(tier);
+            var result = NBShaderMaterialIntentResolver.Resolve(mat, tier, allowedKeywords, allowedPassFeatures);
+            var effectiveKeywords = new HashSet<string>(result.effectiveKeywords);
+
+            for (int i = 0; i < NBShaderFeatureCatalog.RawKeywords.Length; i++)
             {
-                return;
+                string keyword = NBShaderFeatureCatalog.RawKeywords[i];
+                SetKeyword(mat, keyword, effectiveKeywords.Contains(keyword));
             }
 
-            int mode = Mathf.RoundToInt(mat.GetFloat("_ScreenDistortModeToggle"));
-            bool deferred = mode == 1;
-            bool cameraOpaque = mode == 2;
-            bool disableMainPass = mat.HasProperty("_DisableMainPassToggle") &&
-                                   mat.GetFloat("_DisableMainPassToggle") > 0.5f;
-
-            SetShaderPassEnabledIfNeeded(mat, "NBCameraOpaqueDistortPass", cameraOpaque);
-            SetShaderPassEnabledIfNeeded(mat, "NBDeferredDistortPass", deferred);
-            SetShaderPassEnabledIfNeeded(mat, "UniversalForward", mode == 0 || !disableMainPass);
-
-            if (mode == 0 && mat.HasProperty("_DisableMainPassToggle"))
+            for (int i = 0; i < result.passes.Length; i++)
             {
-                SetFloatIfExists(mat, "_DisableMainPassToggle", 0f);
+                NBShaderPassIntent pass = result.passes[i];
+                if (!string.IsNullOrEmpty(pass.passName))
+                {
+                    SetShaderPassEnabledIfNeeded(mat, pass.passName, pass.included);
+                }
             }
+
+            SetKeyword(mat, "EVALUATE_SH_VERTEX", effectiveKeywords.Contains("_FX_LIGHT_MODE_SIX_WAY"));
+        }
+
+        private void SyncResolvedIntentStateIfNBShader(Material mat)
+        {
+            if (NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat))
+                SyncResolvedIntentState(mat);
+        }
+
+        private NBShaderFeatureTier ResolveMaterialTier(Material mat)
+        {
+            if (mat != null && mat.HasProperty(FeatureTierPropertyName))
+            {
+                int value = Mathf.RoundToInt(mat.GetFloat(FeatureTierPropertyName));
+                if (value >= (int)NBShaderFeatureTier.Low && value <= (int)NBShaderFeatureTier.Ultra)
+                {
+                    return (NBShaderFeatureTier)value;
+                }
+            }
+
+            if (_rootItem.Context != null && !_rootItem.Context.CurrentTierMixed)
+            {
+                return _rootItem.Context.CurrentTier;
+            }
+
+            return NBShaderFeatureTier.Ultra;
+        }
+
+        private static bool IsResolvedIntentPass(string passName)
+        {
+            if (string.IsNullOrEmpty(passName))
+                return false;
+
+            if (string.Equals(passName, NBShaderPassFeatureCatalog.MainForwardPassName, StringComparison.Ordinal))
+                return true;
+
+            string passFeatureId;
+            return NBShaderFeatureLevelCatalog.TryGetManagedPassFeatureByPassName(passName, out passFeatureId);
         }
 
         private void SyncCustomData(Material mat, NBShaderFlags flags)
@@ -759,7 +749,6 @@ namespace NBShaderEditor
                     SetIntIfExists(mat, "_ZWrite", 1);
                     SetRenderQueueIfNeeded(mat, 2100 + queueBias);
                     SetFloatIfExists(mat, "_Blend", (float)BlendMode.Opaque);
-                    SetKeyword(mat, "_ALPHATEST_ON", false);
                     break;
                 case TransparentMode.Transparent:
                     SetIntIfExists(mat, "_ZWrite", 0);
@@ -769,13 +758,11 @@ namespace NBShaderEditor
                         SetFloatIfExists(mat, "_Blend", (float)BlendMode.Alpha);
                     }
 
-                    SetKeyword(mat, "_ALPHATEST_ON", false);
                     break;
                 case TransparentMode.CutOff:
                     SetIntIfExists(mat, "_ZWrite", 1);
                     SetRenderQueueIfNeeded(mat, 2450 + queueBias);
                     SetFloatIfExists(mat, "_Blend", (float)BlendMode.Opaque);
-                    SetKeyword(mat, "_ALPHATEST_ON", true);
                     break;
             }
 
@@ -805,31 +792,6 @@ namespace NBShaderEditor
 
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_TRANSPARENT_MODE, isTransparent, 1);
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_TRANSPARENT_SHADOW_DITHER, useTransparentShadowDither, 1);
-        }
-
-        private static void SyncDepthShadowPasses(Material mat)
-        {
-            if (mat == null)
-            {
-                return;
-            }
-
-            TransparentMode transparentMode = mat.HasProperty("_TransparentMode")
-                ? (TransparentMode)Mathf.RoundToInt(mat.GetFloat("_TransparentMode"))
-                : TransparentMode.UnKnowOrMixed;
-            bool isUIMode = IsUIEffectMode(mat);
-            bool depthOnlyEnabled = !isUIMode &&
-                                    mat.HasProperty("_ZWrite") &&
-                                    Mathf.RoundToInt(mat.GetFloat("_ZWrite")) == 1;
-            bool shadowCasterEnabled = !isUIMode &&
-                                       mat.HasProperty("_AffectsShadows") &&
-                                       mat.GetFloat("_AffectsShadows") > 0.5f &&
-                                       (transparentMode == TransparentMode.Opaque ||
-                                        transparentMode == TransparentMode.CutOff ||
-                                        transparentMode == TransparentMode.Transparent);
-
-            SetShaderPassEnabledIfNeeded(mat, "DepthOnly", depthOnlyEnabled);
-            SetShaderPassEnabledIfNeeded(mat, "ShadowCaster", shadowCasterEnabled);
         }
 
         private static bool IsUIEffectMode(Material mat)
@@ -876,44 +838,24 @@ namespace NBShaderEditor
                 case BlendMode.Alpha:
                     SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                     SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
-                    SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
                 case BlendMode.Premultiply:
                     SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                     SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
-                    SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
                 case BlendMode.Additive:
                     SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                     SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", true);
-                    SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
                 case BlendMode.Multiply:
                     SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.DstColor);
                     SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
-                    SetKeyword(mat, "_ALPHAMODULATE_ON", true);
                     break;
                 case BlendMode.Opaque:
                     SetIntIfExists(mat, "_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                     SetIntIfExists(mat, "_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-                    SetKeyword(mat, "_ALPHAPREMULTIPLY_ON", false);
-                    SetKeyword(mat, "_ALPHAMODULATE_ON", false);
                     break;
             }
-        }
-
-        private void SyncLightMode(Material mat)
-        {
-            if (!mat.HasProperty("_FxLightMode"))
-            {
-                return;
-            }
-
-            SetLightModeKeyword(mat, (FxLightMode)Mathf.RoundToInt(mat.GetFloat("_FxLightMode")));
         }
 
         private void SetLightModeKeyword(Material mat, FxLightMode mode)
@@ -1035,18 +977,6 @@ namespace NBShaderEditor
             else
             {
                 flags.ClearFlagBits(flagBits, index: index);
-            }
-        }
-
-        private struct KeywordToggleBinding
-        {
-            public readonly string propertyName;
-            public readonly string keyword;
-
-            public KeywordToggleBinding(string propertyName, string keyword)
-            {
-                this.propertyName = propertyName;
-                this.keyword = keyword;
             }
         }
 

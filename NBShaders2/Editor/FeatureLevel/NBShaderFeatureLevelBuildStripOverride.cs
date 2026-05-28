@@ -30,7 +30,6 @@ namespace NBShaders2.Editor.FeatureLevel
                     return s_OverrideStack.Peek();
 
                 var settings = NBShaderFeatureLevelProjectSettings.instance;
-                settings.EnsureInitialized();
                 return new NBShaderBuildStripSettings(settings.buildStripPolicy, settings.explicitTier);
             }
         }

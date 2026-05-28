@@ -274,34 +274,10 @@ namespace NBShaderEditor
                     mat.SetFloat(FeatureTierPropertyName, (float)tier);
                 }
 
-                ApplyFeatureTierProjectSettings(mat, tier);
+                NBShaderFeatureLevelMaterialApplier.Apply(mat, tier, false, true);
             }
 
-            FinishMaterialMutation();
-        }
-
-        private static void ApplyFeatureTierProjectSettings(Material material, NBShaderFeatureTier tier)
-        {
-            if (material == null)
-            {
-                return;
-            }
-
-            var allowedKeywords = NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSet(tier);
-            string[] materialKeywords = material.shaderKeywords;
-            if (materialKeywords == null)
-            {
-                return;
-            }
-
-            for (int i = 0; i < materialKeywords.Length; i++)
-            {
-                string keyword = materialKeywords[i];
-                if (NBShaderFeatureCatalog.IsManagedKeyword(keyword) && !allowedKeywords.Contains(keyword))
-                {
-                    material.DisableKeyword(keyword);
-                }
-            }
+            FinishFeatureTierMutation();
         }
 
         private void ShowResetPopupMenu()
@@ -551,6 +527,15 @@ namespace NBShaderEditor
         {
             _rootItem.Context?.Refresh();
             _rootItem.SyncService?.SyncMaterialState();
+            _rootItem.SyncService?.NotifyKeywordsMayHaveChanged();
+            _rootItem.Context?.Refresh();
+            MarkAllMaterialsDirty();
+            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+        }
+
+        private void FinishFeatureTierMutation()
+        {
+            _rootItem.Context?.Refresh();
             _rootItem.SyncService?.NotifyKeywordsMayHaveChanged();
             _rootItem.Context?.Refresh();
             MarkAllMaterialsDirty();

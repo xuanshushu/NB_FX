@@ -717,6 +717,7 @@ Shader "Effects/NBShader"
         //  Forward pass.
         Pass
         {
+            Name "UniversalForward"
             Tags
         {
               "LightMode" = "UniversalForward" 
@@ -962,6 +963,7 @@ Shader "Effects/NBShader"
         //  Distort pass.
         Pass
         {
+            Name "NBCameraOpaqueDistortPass"
             Tags{
               "LightMode" = "NBCameraOpaqueDistortPass" 
 			} //Queue设置是希望特效渲染在场景透明物体前面
@@ -1084,6 +1086,7 @@ Shader "Effects/NBShader"
         //  Distort pass.
         Pass
         {
+            Name "NBDeferredDistortPass"
             Tags{
               "LightMode" = "NBDeferredDistortPass" 
 			} //Queue设置是希望特效渲染在场景透明物体前面
@@ -1207,6 +1210,7 @@ Shader "Effects/NBShader"
         //  Forward pass.
         Pass
         {
+            Name "Universal2D"
             Tags
         {
               "LightMode" = "Universal2D" 

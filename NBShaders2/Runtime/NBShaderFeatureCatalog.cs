@@ -14,10 +14,10 @@ namespace NBShader
         public const string ShaderName = "Effects/NBShader";
 
         /// <summary>
-        /// Resources path used to load <see cref="NBShaderFeatureRuntimeSettings"/>.
-        /// Place the asset at any Resources folder as "NBShaderFeatureRuntimeSettings.asset".
+        /// Default file name for optional NBShader runtime settings assets.
+        /// User projects decide how those assets are loaded at runtime.
         /// </summary>
-        public const string RuntimeSettingsResourcePath = "NBShaderFeatureRuntimeSettings";
+        public const string RuntimeSettingsAssetName = "NBShaderFeatureRuntimeSettings";
 
         /// <summary>
         /// Raw shader_feature keywords currently managed by NBShader tiering. The '_' placeholder and

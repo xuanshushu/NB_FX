@@ -10,6 +10,7 @@ namespace NBShaders2.Editor.FeatureLevel
     public sealed class NBShaderFeatureLevelPreset : ScriptableObject
     {
         [SerializeField] private NBShaderFeatureTierKeywordSet[] m_TierKeywordSets = new NBShaderFeatureTierKeywordSet[0];
+        [SerializeField] private NBShaderFeatureTierPassSet[] m_TierPassSets = new NBShaderFeatureTierPassSet[0];
 
         public NBShaderFeatureTierKeywordSet[] CreateTierKeywordSets()
         {
@@ -21,6 +22,22 @@ namespace NBShaders2.Editor.FeatureLevel
                 {
                     tier = tier,
                     allowedKeywords = GetAllowedKeywords(tier)
+                };
+            }
+
+            return result;
+        }
+
+        public NBShaderFeatureTierPassSet[] CreateTierPassSets()
+        {
+            var result = new NBShaderFeatureTierPassSet[4];
+            for (var i = 0; i < result.Length; i++)
+            {
+                var tier = (NBShaderFeatureTier)i;
+                result[i] = new NBShaderFeatureTierPassSet
+                {
+                    tier = tier,
+                    allowedPassFeatures = GetAllowedPassFeatures(tier)
                 };
             }
 
@@ -42,6 +59,21 @@ namespace NBShaders2.Editor.FeatureLevel
             return new string[0];
         }
 
+        public string[] GetAllowedPassFeatures(NBShaderFeatureTier tier)
+        {
+            if (m_TierPassSets == null || m_TierPassSets.Length == 0)
+                return NBShaderPassFeatureCatalog.GetDefaultAllowedPassFeatures(tier);
+
+            for (var i = 0; i < m_TierPassSets.Length; i++)
+            {
+                var set = m_TierPassSets[i];
+                if (set != null && set.tier == tier)
+                    return SanitizePassFeatures(set.allowedPassFeatures);
+            }
+
+            return NBShaderPassFeatureCatalog.GetDefaultAllowedPassFeatures(tier);
+        }
+
         public void SetTierKeywordSets(NBShaderFeatureTierKeywordSet[] tierKeywordSets)
         {
             m_TierKeywordSets = new NBShaderFeatureTierKeywordSet[4];
@@ -52,6 +84,20 @@ namespace NBShaders2.Editor.FeatureLevel
                 {
                     tier = tier,
                     allowedKeywords = GetAllowedKeywords(tierKeywordSets, tier)
+                };
+            }
+        }
+
+        public void SetTierPassSets(NBShaderFeatureTierPassSet[] tierPassSets)
+        {
+            m_TierPassSets = new NBShaderFeatureTierPassSet[4];
+            for (var i = 0; i < m_TierPassSets.Length; i++)
+            {
+                var tier = (NBShaderFeatureTier)i;
+                m_TierPassSets[i] = new NBShaderFeatureTierPassSet
+                {
+                    tier = tier,
+                    allowedPassFeatures = GetAllowedPassFeatures(tierPassSets, tier)
                 };
             }
         }
@@ -80,6 +126,30 @@ namespace NBShaders2.Editor.FeatureLevel
             return result.ToArray();
         }
 
+        private static string[] SanitizePassFeatures(string[] passFeatures)
+        {
+            if (passFeatures == null || passFeatures.Length == 0)
+                return new string[0];
+
+            var allowed = new HashSet<string>(StringComparer.Ordinal);
+            for (var i = 0; i < passFeatures.Length; i++)
+            {
+                var passFeature = passFeatures[i];
+                if (NBShaderFeatureLevelCatalog.IsManagedPassFeature(passFeature))
+                    allowed.Add(passFeature);
+            }
+
+            var result = new List<string>();
+            var catalog = NBShaderFeatureLevelCatalog.ManagedPassFeatures;
+            for (var i = 0; i < catalog.Length; i++)
+            {
+                if (allowed.Contains(catalog[i]))
+                    result.Add(catalog[i]);
+            }
+
+            return result.ToArray();
+        }
+
         private static string[] GetAllowedKeywords(NBShaderFeatureTierKeywordSet[] sets, NBShaderFeatureTier tier)
         {
             if (sets == null)
@@ -93,6 +163,21 @@ namespace NBShaders2.Editor.FeatureLevel
             }
 
             return new string[0];
+        }
+
+        private static string[] GetAllowedPassFeatures(NBShaderFeatureTierPassSet[] sets, NBShaderFeatureTier tier)
+        {
+            if (sets == null || sets.Length == 0)
+                return NBShaderPassFeatureCatalog.GetDefaultAllowedPassFeatures(tier);
+
+            for (var i = 0; i < sets.Length; i++)
+            {
+                var set = sets[i];
+                if (set != null && set.tier == tier)
+                    return SanitizePassFeatures(set.allowedPassFeatures);
+            }
+
+            return NBShaderPassFeatureCatalog.GetDefaultAllowedPassFeatures(tier);
         }
     }
 
@@ -114,6 +199,15 @@ namespace NBShaders2.Editor.FeatureLevel
             return CreateAllowAllTierKeywordSets();
         }
 
+        public static NBShaderFeatureTierPassSet[] LoadDefaultTierPassSets()
+        {
+            var preset = AssetDatabase.LoadAssetAtPath<NBShaderFeatureLevelPreset>(DefaultPresetAssetPath);
+            if (preset != null)
+                return preset.CreateTierPassSets();
+
+            return CreateAllowAllTierPassSets();
+        }
+
         public static string[] LoadDefaultAllowedKeywords(NBShaderFeatureTier tier)
         {
             var sets = LoadDefaultTierKeywordSets();
@@ -127,7 +221,27 @@ namespace NBShaders2.Editor.FeatureLevel
             return new string[0];
         }
 
+        public static string[] LoadDefaultAllowedPassFeatures(NBShaderFeatureTier tier)
+        {
+            var sets = LoadDefaultTierPassSets();
+            for (var i = 0; i < sets.Length; i++)
+            {
+                var set = sets[i];
+                if (set != null && set.tier == tier)
+                    return set.allowedPassFeatures ?? new string[0];
+            }
+
+            return NBShaderPassFeatureCatalog.GetDefaultAllowedPassFeatures(tier);
+        }
+
         public static bool SaveDefaultTierKeywordSets(NBShaderFeatureTierKeywordSet[] tierKeywordSets)
+        {
+            return SaveDefaultFeatureSets(tierKeywordSets, null);
+        }
+
+        public static bool SaveDefaultFeatureSets(
+            NBShaderFeatureTierKeywordSet[] tierKeywordSets,
+            NBShaderFeatureTierPassSet[] tierPassSets)
         {
             try
             {
@@ -139,8 +253,10 @@ namespace NBShaders2.Editor.FeatureLevel
                 }
 
                 preset.SetTierKeywordSets(tierKeywordSets);
+                if (tierPassSets != null)
+                    preset.SetTierPassSets(tierPassSets);
                 EditorUtility.SetDirty(preset);
-                AssetDatabase.SaveAssets();
+                AssetDatabase.SaveAssetIfDirty(preset);
                 AssetDatabase.ImportAsset(DefaultPresetAssetPath);
                 return AssetDatabase.LoadAssetAtPath<NBShaderFeatureLevelPreset>(DefaultPresetAssetPath) != null;
             }
@@ -160,6 +276,22 @@ namespace NBShaders2.Editor.FeatureLevel
                 {
                     tier = (NBShaderFeatureTier)i,
                     allowedKeywords = (string[])NBShaderFeatureLevelCatalog.ManagedKeywords.Clone()
+                };
+            }
+
+            return result;
+        }
+
+        private static NBShaderFeatureTierPassSet[] CreateAllowAllTierPassSets()
+        {
+            var result = new NBShaderFeatureTierPassSet[4];
+            for (var i = 0; i < result.Length; i++)
+            {
+                var tier = (NBShaderFeatureTier)i;
+                result[i] = new NBShaderFeatureTierPassSet
+                {
+                    tier = tier,
+                    allowedPassFeatures = NBShaderPassFeatureCatalog.GetDefaultAllowedPassFeatures(tier)
                 };
             }
 

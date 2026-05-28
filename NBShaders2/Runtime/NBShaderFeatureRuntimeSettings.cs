@@ -5,12 +5,10 @@ using UnityEngine;
 namespace NBShader
 {
     /// <summary>
-    /// Runtime settings for NBShader feature tiering. Store one asset named
-    /// "NBShaderFeatureRuntimeSettings" in a Resources folder so runtime code can load it.
-    /// If the asset cannot be loaded, <see cref="NBShaderFeatureRuntime"/> falls back to Ultra with all
-    /// catalog keywords allowed.
+    /// Optional runtime settings for NBShader feature tiering. User projects own asset creation and
+    /// runtime loading; pass the loaded asset to <see cref="NBShaderFeatureRuntime"/> when tier gating is required.
     /// </summary>
-    [CreateAssetMenu(fileName = NBShaderFeatureCatalog.RuntimeSettingsResourcePath, menuName = "NBShader/Feature Runtime Settings")]
+    [CreateAssetMenu(fileName = NBShaderFeatureCatalog.RuntimeSettingsAssetName, menuName = "NBShader/Feature Runtime Settings")]
     public sealed class NBShaderFeatureRuntimeSettings : ScriptableObject
     {
         [Serializable]
@@ -25,6 +23,12 @@ namespace NBShader
         public string[] mediumAllowedKeywords = CloneCatalogKeywords();
         public string[] highAllowedKeywords = CloneCatalogKeywords();
         public string[] ultraAllowedKeywords = CloneCatalogKeywords();
+
+        [Header("Allowed Shader Pass Features")]
+        public string[] lowAllowedPassFeatures = CloneCatalogPassFeatures();
+        public string[] mediumAllowedPassFeatures = CloneCatalogPassFeatures();
+        public string[] highAllowedPassFeatures = CloneCatalogPassFeatures();
+        public string[] ultraAllowedPassFeatures = CloneCatalogPassFeatures();
 
         [Header("QualitySettings Name To Tier")]
         public QualityTierMapping[] qualityTierMappings = new QualityTierMapping[0];
@@ -41,6 +45,21 @@ namespace NBShader
                     return highAllowedKeywords ?? NBShaderFeatureCatalog.RawKeywords;
                 default:
                     return ultraAllowedKeywords ?? NBShaderFeatureCatalog.RawKeywords;
+            }
+        }
+
+        public string[] GetAllowedPassFeatures(NBShaderFeatureTier tier)
+        {
+            switch (tier)
+            {
+                case NBShaderFeatureTier.Low:
+                    return lowAllowedPassFeatures ?? NBShaderPassFeatureCatalog.RawPassFeatureIds;
+                case NBShaderFeatureTier.Medium:
+                    return mediumAllowedPassFeatures ?? NBShaderPassFeatureCatalog.RawPassFeatureIds;
+                case NBShaderFeatureTier.High:
+                    return highAllowedPassFeatures ?? NBShaderPassFeatureCatalog.RawPassFeatureIds;
+                default:
+                    return ultraAllowedPassFeatures ?? NBShaderPassFeatureCatalog.RawPassFeatureIds;
             }
         }
 
@@ -81,9 +100,30 @@ namespace NBShader
             return allowed;
         }
 
+        internal HashSet<string> BuildAllowedPassFeatureSet(NBShaderFeatureTier tier)
+        {
+            string[] passFeatures = GetAllowedPassFeatures(tier);
+            HashSet<string> allowed = new HashSet<string>();
+            for (int i = 0; i < passFeatures.Length; i++)
+            {
+                string passFeature = passFeatures[i];
+                if (NBShaderPassFeatureCatalog.IsManagedPassFeature(passFeature))
+                {
+                    allowed.Add(passFeature);
+                }
+            }
+
+            return allowed;
+        }
+
         private static string[] CloneCatalogKeywords()
         {
             return (string[])NBShaderFeatureCatalog.RawKeywords.Clone();
+        }
+
+        private static string[] CloneCatalogPassFeatures()
+        {
+            return (string[])NBShaderPassFeatureCatalog.RawPassFeatureIds.Clone();
         }
     }
 }

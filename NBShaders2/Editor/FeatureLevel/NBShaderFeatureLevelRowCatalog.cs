@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using NBShader;
 
 namespace NBShaders2.Editor.FeatureLevel
 {
     internal enum NBShaderFeatureLevelRowKind
     {
         Group,
-        Keyword
+        Keyword,
+        Pass
     }
 
     internal enum NBShaderFeaturePerformanceCost
@@ -22,6 +24,7 @@ namespace NBShaders2.Editor.FeatureLevel
         public readonly string key;
         public readonly string parentKey;
         public readonly string keyword;
+        public readonly string passFeatureId;
         public readonly string labelFallback;
         public readonly NBShaderFeaturePerformanceCost performanceCost;
         public readonly string effectFallback;
@@ -32,6 +35,7 @@ namespace NBShaders2.Editor.FeatureLevel
             string key,
             string parentKey,
             string keyword,
+            string passFeatureId,
             string labelFallback,
             NBShaderFeaturePerformanceCost performanceCost,
             string effectFallback,
@@ -41,6 +45,7 @@ namespace NBShaders2.Editor.FeatureLevel
             this.key = key;
             this.parentKey = parentKey;
             this.keyword = keyword;
+            this.passFeatureId = passFeatureId;
             this.labelFallback = labelFallback;
             this.performanceCost = performanceCost;
             this.effectFallback = effectFallback;
@@ -50,6 +55,11 @@ namespace NBShaders2.Editor.FeatureLevel
         public bool isKeyword
         {
             get { return kind == NBShaderFeatureLevelRowKind.Keyword; }
+        }
+
+        public bool isPass
+        {
+            get { return kind == NBShaderFeatureLevelRowKind.Pass; }
         }
     }
 
@@ -136,7 +146,15 @@ namespace NBShaders2.Editor.FeatureLevel
             Keyword("_TYFLOW_VAT_SKIN_R", "tyflowVat", "TyFlow VAT Skin R", 3, NBShaderFeaturePerformanceCost.Ultra, "Uses TyFlow skin R VAT mode."),
             Keyword("_TYFLOW_VAT_SKIN_PR", "tyflowVat", "TyFlow VAT Skin PR", 3, NBShaderFeaturePerformanceCost.Ultra, "Uses TyFlow skin PR VAT mode."),
             Keyword("_TYFLOW_VAT_SKIN_PRSAVE", "tyflowVat", "TyFlow VAT Skin PR Save", 3, NBShaderFeaturePerformanceCost.Ultra, "Uses TyFlow skin PR save VAT mode."),
-            Keyword("_TYFLOW_VAT_SKIN_PRSXYZ", "tyflowVat", "TyFlow VAT Skin PRSXYZ", 3, NBShaderFeaturePerformanceCost.Ultra, "Uses TyFlow skin PRSXYZ VAT mode.")
+            Keyword("_TYFLOW_VAT_SKIN_PRSXYZ", "tyflowVat", "TyFlow VAT Skin PRSXYZ", 3, NBShaderFeaturePerformanceCost.Ultra, "Uses TyFlow skin PRSXYZ VAT mode."),
+
+            Group("passes", null, "Passes", 0),
+            Pass(NBShaderPassFeatureCatalog.BackFirstPassId, "passes", "Back First Pass", 1, NBShaderFeaturePerformanceCost.Medium, "Renders the optional back-face pre-pass."),
+            Pass(NBShaderPassFeatureCatalog.CameraOpaqueDistortPassId, "passes", "Camera Opaque Distort Pass", 1, NBShaderFeaturePerformanceCost.Ultra, "Renders the camera opaque texture screen distort pass."),
+            Pass(NBShaderPassFeatureCatalog.DeferredDistortPassId, "passes", "Deferred Distort Pass", 1, NBShaderFeaturePerformanceCost.Ultra, "Renders the deferred screen distort pass."),
+            Pass(NBShaderPassFeatureCatalog.DepthOnlyPassId, "passes", "Depth Only Pass", 1, NBShaderFeaturePerformanceCost.Medium, "Writes material depth for URP depth prepass usage."),
+            Pass(NBShaderPassFeatureCatalog.ShadowCasterPassId, "passes", "Shadow Caster Pass", 1, NBShaderFeaturePerformanceCost.High, "Renders the material into shadow maps."),
+            Pass(NBShaderPassFeatureCatalog.Universal2DPassId, "passes", "Universal 2D Pass", 1, NBShaderFeaturePerformanceCost.Medium, "Allows the material to render through URP 2D renderer.")
         };
 
         private static readonly HashSet<string> ParentKeys = BuildParentKeys();
@@ -159,6 +177,7 @@ namespace NBShaders2.Editor.FeatureLevel
                 key,
                 parentKey,
                 null,
+                null,
                 labelFallback,
                 NBShaderFeaturePerformanceCost.Low,
                 null,
@@ -178,6 +197,27 @@ namespace NBShaders2.Editor.FeatureLevel
                 keyword,
                 parentKey,
                 keyword,
+                null,
+                labelFallback,
+                performanceCost,
+                effectFallback,
+                depth);
+        }
+
+        private static NBShaderFeatureLevelRow Pass(
+            string passFeatureId,
+            string parentKey,
+            string labelFallback,
+            int depth,
+            NBShaderFeaturePerformanceCost performanceCost,
+            string effectFallback)
+        {
+            return new NBShaderFeatureLevelRow(
+                NBShaderFeatureLevelRowKind.Pass,
+                passFeatureId,
+                parentKey,
+                null,
+                passFeatureId,
                 labelFallback,
                 performanceCost,
                 effectFallback,

@@ -71,10 +71,13 @@ namespace NBShaders2.Editor.FeatureLevel
             EditorGUILayout.HelpBox(
                 Text(
                     "featureLevel.help.message",
-                    "Configure NBShader managed Catalog keywords per tier, bind Unity Quality levels, and choose build-time shader variant stripping. Catalog-external keywords are ignored."),
+                    "Configure NBShader managed Catalog keywords and shader passes per tier, bind Unity Quality levels, and choose build-time shader variant stripping. Catalog-external features are ignored."),
                 MessageType.Info);
 
             changed |= DrawBuildStripPolicy(settings);
+
+            EditorGUILayout.Space();
+            changed |= DrawRuntimeSettingsAsset(settings);
 
             EditorGUILayout.Space();
             changed |= DrawFeatureLevelTable(settings);
@@ -107,6 +110,26 @@ namespace NBShaders2.Editor.FeatureLevel
 
             Undo.RecordObject(settings, Text("featureLevel.undo.changeBuildStripPolicy", "Change NBShader Build Strip Policy"));
             settings.buildStripPolicy = (NBShaderBuildStripPolicy)selected;
+            return true;
+        }
+
+        private static bool DrawRuntimeSettingsAsset(NBShaderFeatureLevelProjectSettings settings)
+        {
+            EditorGUI.BeginChangeCheck();
+            var asset = (NBShaderFeatureRuntimeSettings)EditorGUILayout.ObjectField(
+                Content(
+                    "featureLevel.runtimeSettingsAsset",
+                    "Runtime Settings Asset",
+                    "Optional user-owned asset that can receive the current NBShader feature level config. Runtime loading is owned by the user project."),
+                settings.runtimeSettingsAsset,
+                typeof(NBShaderFeatureRuntimeSettings),
+                false);
+
+            if (!EditorGUI.EndChangeCheck())
+                return false;
+
+            Undo.RecordObject(settings, Text("featureLevel.undo.changeRuntimeSettingsAsset", "Change NBShader Runtime Settings Asset"));
+            settings.runtimeSettingsAsset = asset;
             return true;
         }
 
@@ -272,9 +295,13 @@ namespace NBShaders2.Editor.FeatureLevel
         {
             var changed = false;
             var rows = NBShaderFeatureLevelRowCatalog.Rows;
-            var allowedSets = new HashSet<string>[Tiers.Length];
+            var allowedKeywordSets = new HashSet<string>[Tiers.Length];
+            var allowedPassFeatureSets = new HashSet<string>[Tiers.Length];
             for (var i = 0; i < Tiers.Length; i++)
-                allowedSets[i] = settings.GetAllowedKeywordSet(Tiers[i]);
+            {
+                allowedKeywordSets[i] = settings.GetAllowedKeywordSet(Tiers[i]);
+                allowedPassFeatureSets[i] = settings.GetAllowedPassFeatureSet(Tiers[i]);
+            }
 
             for (var rowIndex = 0; rowIndex < rows.Length; rowIndex++)
             {
@@ -292,7 +319,7 @@ namespace NBShaders2.Editor.FeatureLevel
                         for (var tierIndex = 0; tierIndex < Tiers.Length; tierIndex++)
                         {
                             var tier = Tiers[tierIndex];
-                            var isAllowed = allowedSets[tierIndex].Contains(row.keyword);
+                            var isAllowed = allowedKeywordSets[tierIndex].Contains(row.keyword);
                             var newAllowed = DrawCellToggle(isAllowed, GUI.skin.toggle);
                             if (newAllowed == isAllowed)
                                 continue;
@@ -300,9 +327,28 @@ namespace NBShaders2.Editor.FeatureLevel
                             Undo.RecordObject(settings, Text("featureLevel.undo.changeKeyword", "Change NBShader Feature Keyword"));
                             settings.SetKeywordAllowed(tier, row.keyword, newAllowed);
                             if (newAllowed)
-                                allowedSets[tierIndex].Add(row.keyword);
+                                allowedKeywordSets[tierIndex].Add(row.keyword);
                             else
-                                allowedSets[tierIndex].Remove(row.keyword);
+                                allowedKeywordSets[tierIndex].Remove(row.keyword);
+                            changed = true;
+                        }
+                    }
+                    else if (row.isPass)
+                    {
+                        for (var tierIndex = 0; tierIndex < Tiers.Length; tierIndex++)
+                        {
+                            var tier = Tiers[tierIndex];
+                            var isAllowed = allowedPassFeatureSets[tierIndex].Contains(row.passFeatureId);
+                            var newAllowed = DrawCellToggle(isAllowed, GUI.skin.toggle);
+                            if (newAllowed == isAllowed)
+                                continue;
+
+                            Undo.RecordObject(settings, Text("featureLevel.undo.changePassFeature", "Change NBShader Pass Feature"));
+                            settings.SetPassFeatureAllowed(tier, row.passFeatureId, newAllowed);
+                            if (newAllowed)
+                                allowedPassFeatureSets[tierIndex].Add(row.passFeatureId);
+                            else
+                                allowedPassFeatureSets[tierIndex].Remove(row.passFeatureId);
                             changed = true;
                         }
                     }
@@ -376,7 +422,7 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static void DrawCostCell(NBShaderFeatureLevelRow row)
         {
-            if (row != null && row.isKeyword)
+            if (row != null && (row.isKeyword || row.isPass))
             {
                 DrawInfoCell(GetCostContent(row.performanceCost), CostColumnWidth, EditorStyles.centeredGreyMiniLabel);
                 return;
@@ -407,11 +453,12 @@ namespace NBShaders2.Editor.FeatureLevel
             {
                 if (GUILayout.Button(ButtonContent(
                         "featureLevel.resetTierKeywords",
-                        "Reset Tier Keywords",
-                        "Reset the keyword matrix to the built-in defaults.")))
+                        "Reset Tier Features",
+                        "Reset the keyword and pass matrix to the built-in defaults.")))
                 {
-                    Undo.RecordObject(settings, Text("featureLevel.undo.resetTierKeywords", "Reset NBShader Tier Keywords"));
+                    Undo.RecordObject(settings, Text("featureLevel.undo.resetTierKeywords", "Reset NBShader Tier Features"));
                     settings.ResetTierKeywordSetsToDefault();
+                    settings.ResetTierPassSetsToDefault();
                     changed = true;
                 }
 
@@ -426,19 +473,32 @@ namespace NBShaders2.Editor.FeatureLevel
                 }
 
                 if (GUILayout.Button(ButtonContent(
-                        "featureLevel.syncRuntimeAsset",
-                        "Sync Runtime Asset",
-                        "Write the current ProjectSettings data into the runtime Resources settings asset.")))
+                        "featureLevel.writeRuntimeAsset",
+                        "Write Current Config To Runtime Asset",
+                        "Write the current Project Settings data into the explicitly assigned runtime settings asset.")))
                 {
-                    NBShaderRuntimeSettingsSynchronizer.SyncFromProjectSettings();
+                    if (settings.runtimeSettingsAsset == null)
+                    {
+                        EditorUtility.DisplayDialog(
+                            Text("featureLevel.writeRuntimeAsset.missingTitle", "Runtime Settings Asset Missing"),
+                            Text("featureLevel.writeRuntimeAsset.missingMessage", "Assign a Runtime Settings Asset before writing the current NBShader feature level config."),
+                            Text("featureLevel.dialog.ok", "OK"));
+                    }
+                    else if (NBShaderRuntimeSettingsSynchronizer.WriteConfiguredRuntimeSettingsAsset())
+                    {
+                        EditorUtility.DisplayDialog(
+                            Text("featureLevel.writeRuntimeAsset.successTitle", "Runtime Settings Asset Written"),
+                            Text("featureLevel.writeRuntimeAsset.successMessage", "The current NBShader feature level config was written to the assigned runtime settings asset."),
+                            Text("featureLevel.dialog.ok", "OK"));
+                    }
                 }
 
                 if (GUILayout.Button(ButtonContent(
                         "featureLevel.saveCurrentAsDefault",
                         "Save Current Config as Default",
-                        "Write the current tier keyword matrix into the package default LevelAsset.")))
+                        "Write the current tier keyword and pass matrix into the package default LevelAsset.")))
                 {
-                    if (!NBShaderFeatureLevelPresetLoader.SaveDefaultTierKeywordSets(settings.tierKeywordSets))
+                    if (!NBShaderFeatureLevelPresetLoader.SaveDefaultFeatureSets(settings.tierKeywordSets, settings.tierPassSets))
                     {
                         EditorUtility.DisplayDialog(
                             Text("featureLevel.saveCurrentAsDefault.failedTitle", "Save Default Config Failed"),
@@ -583,6 +643,9 @@ namespace NBShaders2.Editor.FeatureLevel
             if (row.isKeyword)
                 return GetKeywordContent(row.keyword, row.labelFallback);
 
+            if (row.isPass)
+                return GetPassContent(row.passFeatureId, row.labelFallback);
+
             return NBShaderInspectorLocalization.MakeContent(
                 "inspector.featureLevel.group." + row.key + ".label",
                 row.labelFallback,
@@ -599,6 +662,25 @@ namespace NBShaders2.Editor.FeatureLevel
                 "featureLevel.keyword.tooltip",
                 "Raw keyword: {0}. Unchecked in a tier strips variants using this Catalog keyword.");
             return new GUIContent(label, string.Format(tooltipFormat, keyword));
+        }
+
+        private static GUIContent GetPassContent(string passFeatureId, string fallback)
+        {
+            string passName;
+            string displayName;
+            if (!NBShaderFeatureLevelCatalog.TryGetManagedPassFeatureInfo(passFeatureId, out passName, out displayName))
+            {
+                passName = passFeatureId;
+                displayName = string.IsNullOrEmpty(fallback) ? passFeatureId : fallback;
+            }
+
+            var label = NBShaderInspectorLocalization.Get(
+                "inspector.featureLevel.pass." + passFeatureId + ".label",
+                string.IsNullOrEmpty(fallback) ? displayName : fallback);
+            var tooltipFormat = Text(
+                "featureLevel.pass.tooltip",
+                "Shader pass: {0}. Unchecked in a tier strips or gates this pass when material intent requires it.");
+            return new GUIContent(label, string.Format(tooltipFormat, passName));
         }
 
         private static GUIContent GetCostContent(NBShaderFeaturePerformanceCost cost)
@@ -627,7 +709,7 @@ namespace NBShaders2.Editor.FeatureLevel
 
             return new GUIContent(
                 Text(key, fallback),
-                Text("featureLevel.cost.tooltip", "Estimated shader performance cost for this keyword."));
+                Text("featureLevel.cost.tooltip", "Estimated shader performance cost for this feature."));
         }
 
         private static GUIContent GetEffectContent(NBShaderFeatureLevelRow row)
@@ -637,6 +719,14 @@ namespace NBShaders2.Editor.FeatureLevel
                 var effect = NBShaderInspectorLocalization.Get(
                     "inspector.featureLevel.keyword." + row.keyword + ".effect",
                     string.IsNullOrEmpty(row.effectFallback) ? row.keyword : row.effectFallback);
+                return new GUIContent(effect, effect);
+            }
+
+            if (row.isPass)
+            {
+                var effect = NBShaderInspectorLocalization.Get(
+                    "inspector.featureLevel.pass." + row.passFeatureId + ".effect",
+                    string.IsNullOrEmpty(row.effectFallback) ? row.passFeatureId : row.effectFallback);
                 return new GUIContent(effect, effect);
             }
 
@@ -651,6 +741,16 @@ namespace NBShaders2.Editor.FeatureLevel
         {
             if (row.isKeyword)
                 return new GUIContent(row.keyword, row.keyword);
+
+            if (row.isPass)
+            {
+                string passName;
+                string displayName;
+                if (NBShaderFeatureLevelCatalog.TryGetManagedPassFeatureInfo(row.passFeatureId, out passName, out displayName))
+                    return new GUIContent(passName, row.passFeatureId);
+
+                return new GUIContent(row.passFeatureId, row.passFeatureId);
+            }
 
             return new GUIContent(
                 Text("featureLevel.desc.group", "Group"),
