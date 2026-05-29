@@ -207,6 +207,11 @@ namespace NBShaders2.Editor.FeatureLevel
             return NBShaderRuntimeSettingsSynchronizer.WriteProjectSettingsToRuntimeAsset(asset);
         }
 
+        public static bool WriteRuntimeSettingsAssetNoSave(NBShaderFeatureRuntimeSettings asset)
+        {
+            return NBShaderRuntimeSettingsSynchronizer.WriteProjectSettingsSnapshotToRuntimeAssetNoSave(asset);
+        }
+
         private static NBShaderPassBuildInfo[] BuildPassInfo(NBShaderPassIntent[] passes)
         {
             if (passes == null || passes.Length == 0)

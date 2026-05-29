@@ -28,6 +28,20 @@ namespace NBShaders2.Editor.FeatureLevel
             return true;
         }
 
+        public static bool WriteProjectSettingsSnapshotToRuntimeAssetNoSave(NBShaderFeatureRuntimeSettings asset)
+        {
+            if (asset == null)
+            {
+                Debug.LogWarning("NBShader runtime settings asset is not configured. Assign a Runtime Settings Asset before writing.");
+                return false;
+            }
+
+            ApplyProjectSettingsSnapshotToRuntimeObjectNoSave(asset, NBShaderFeatureLevelProjectSettings.instance);
+            EditorUtility.SetDirty(asset);
+            AssetDatabase.SaveAssetIfDirty(asset);
+            return true;
+        }
+
         private static void ApplyProjectSettingsToRuntimeObject(
             NBShaderFeatureRuntimeSettings asset,
             NBShaderFeatureLevelProjectSettings settings)
@@ -45,6 +59,23 @@ namespace NBShaders2.Editor.FeatureLevel
             asset.qualityTierMappings = ConvertQualityMappings(settings.qualityTierMappings);
         }
 
+        private static void ApplyProjectSettingsSnapshotToRuntimeObjectNoSave(
+            NBShaderFeatureRuntimeSettings asset,
+            NBShaderFeatureLevelProjectSettings settings)
+        {
+            asset.lowAllowedKeywords = ToCatalogOrderedKeywords(settings.GetAllowedKeywordSetForBuildInfoNoSave(NBShaderFeatureTier.Low));
+            asset.mediumAllowedKeywords = ToCatalogOrderedKeywords(settings.GetAllowedKeywordSetForBuildInfoNoSave(NBShaderFeatureTier.Medium));
+            asset.highAllowedKeywords = ToCatalogOrderedKeywords(settings.GetAllowedKeywordSetForBuildInfoNoSave(NBShaderFeatureTier.High));
+            asset.ultraAllowedKeywords = ToCatalogOrderedKeywords(settings.GetAllowedKeywordSetForBuildInfoNoSave(NBShaderFeatureTier.Ultra));
+
+            asset.lowAllowedPassFeatures = ToCatalogOrderedPassFeatures(settings.GetAllowedPassFeatureSetForBuildInfoNoSave(NBShaderFeatureTier.Low));
+            asset.mediumAllowedPassFeatures = ToCatalogOrderedPassFeatures(settings.GetAllowedPassFeatureSetForBuildInfoNoSave(NBShaderFeatureTier.Medium));
+            asset.highAllowedPassFeatures = ToCatalogOrderedPassFeatures(settings.GetAllowedPassFeatureSetForBuildInfoNoSave(NBShaderFeatureTier.High));
+            asset.ultraAllowedPassFeatures = ToCatalogOrderedPassFeatures(settings.GetAllowedPassFeatureSetForBuildInfoNoSave(NBShaderFeatureTier.Ultra));
+
+            asset.qualityTierMappings = ConvertQualityMappingsNoSave(settings);
+        }
+
         private static NBShaderFeatureRuntimeSettings.QualityTierMapping[] ConvertQualityMappings(NBShaderQualityTierMapping[] source)
         {
             if (source == null || source.Length == 0)
@@ -58,6 +89,30 @@ namespace NBShaders2.Editor.FeatureLevel
                 {
                     qualityName = item != null ? item.qualityName : string.Empty,
                     tier = item != null ? item.tier : NBShaderFeatureTier.Ultra
+                };
+            }
+
+            return result;
+        }
+
+        private static NBShaderFeatureRuntimeSettings.QualityTierMapping[] ConvertQualityMappingsNoSave(NBShaderFeatureLevelProjectSettings settings)
+        {
+            var qualityNames = QualitySettings.names;
+            if (qualityNames == null || qualityNames.Length == 0)
+                qualityNames = new[] { "Default" };
+
+            var result = new NBShaderFeatureRuntimeSettings.QualityTierMapping[qualityNames.Length];
+            for (var i = 0; i < qualityNames.Length; i++)
+            {
+                var qualityName = qualityNames[i];
+                NBShaderFeatureTier tier;
+                if (!settings.TryGetTierForQualityNameNoSave(qualityName, out tier))
+                    tier = NBShaderFeatureTier.Ultra;
+
+                result[i] = new NBShaderFeatureRuntimeSettings.QualityTierMapping
+                {
+                    qualityName = qualityName,
+                    tier = tier
                 };
             }
 

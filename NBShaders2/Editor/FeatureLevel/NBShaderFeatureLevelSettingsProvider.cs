@@ -492,6 +492,17 @@ namespace NBShaders2.Editor.FeatureLevel
                             Text("featureLevel.dialog.ok", "OK"));
                     }
                 }
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button(ButtonContent(
+                        "featureLevel.openVariantCollectionBuilder",
+                        "Open Variant Collection Builder",
+                        "Open the NBShader variant collection builder.")))
+                {
+                    NBShaderSVCBuilderWindow.Open();
+                }
 
                 if (GUILayout.Button(ButtonContent(
                         "featureLevel.saveCurrentAsDefault",
