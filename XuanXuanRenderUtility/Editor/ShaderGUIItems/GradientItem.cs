@@ -6,6 +6,9 @@ namespace NBShaderEditor
 {
     public class GradientItem : ShaderGUIItem
     {
+        private static bool s_UndoRedoRegistered;
+        private static int s_UndoRedoVersion;
+
         private readonly Func<GUIContent> _contentProvider;
         private readonly string[] _colorPropertyNames;
         private readonly string[] _alphaPropertyNames;
@@ -19,6 +22,8 @@ namespace NBShaderEditor
         private readonly Gradient _gradient = new Gradient();
         private GradientColorKey[] _colorKeys = Array.Empty<GradientColorKey>();
         private GradientAlphaKey[] _alphaKeys = Array.Empty<GradientAlphaKey>();
+        private bool _gradientCacheDirty = true;
+        private int _lastUndoRedoVersion = -1;
 
         public GradientItem(
             ShaderGUIRootItem rootItem,
@@ -41,8 +46,25 @@ namespace NBShaderEditor
             _colorSpace = colorSpace;
             _isVisible = isVisible;
             GuiContent = _contentProvider();
+            EnsureUndoRedoRegistered();
             CacheProperties();
             InitTriggerByChild();
+        }
+
+        private static void EnsureUndoRedoRegistered()
+        {
+            if (s_UndoRedoRegistered)
+            {
+                return;
+            }
+
+            Undo.undoRedoPerformed += OnUndoRedoPerformed;
+            s_UndoRedoRegistered = true;
+        }
+
+        private static void OnUndoRedoPerformed()
+        {
+            s_UndoRedoVersion++;
         }
 
         private void CacheProperties()
@@ -79,19 +101,22 @@ namespace NBShaderEditor
                 EditorGUI.LabelField(LabelRect, GuiContent);
             }
 
-            Gradient gradient = ReadGradient();
+            Gradient gradient = GetCachedGradient();
             using (ParentControlDisabledScope())
             {
                 EditorGUI.BeginChangeCheck();
+                EditorGUI.showMixedValue = GradientPropertyHasMixedValue();
                 bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, PropertyInfo.Property);
                 using (new EditorGUIIndentLevelScope(0))
                 {
                     gradient = EditorGUI.GradientField(ControlRect, GUIContent.none, gradient, _hdr, _colorSpace);
                 }
                 EndAnimatedPropertyBackground(animatedScope);
+                EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
                     WriteGradient(gradient);
+                    MarkGradientCacheDirty();
                     OnEndChange();
                 }
             }
@@ -99,7 +124,30 @@ namespace NBShaderEditor
             DrawResetButton();
         }
 
-        private Gradient ReadGradient()
+        private Gradient GetCachedGradient()
+        {
+            if (_lastUndoRedoVersion != s_UndoRedoVersion)
+            {
+                _lastUndoRedoVersion = s_UndoRedoVersion;
+                MarkGradientCacheDirty();
+            }
+
+            if (_gradientCacheDirty)
+            {
+                ReadGradient();
+                _gradientCacheDirty = false;
+                GradientReflectionHelper.RefreshGradientData();
+            }
+
+            return _gradient;
+        }
+
+        private void MarkGradientCacheDirty()
+        {
+            _gradientCacheDirty = true;
+        }
+
+        private void ReadGradient()
         {
             bool hasColorProperties = _colorPropertyInfos.Length > 0;
             bool hasAlphaProperties = _alphaPropertyInfos.Length > 0;
@@ -127,8 +175,8 @@ namespace NBShaderEditor
                 else if (i < _colorPropertyInfos.Length && _colorPropertyInfos[i] != null)
                 {
                     Color packed = _colorPropertyInfos[i].Property.colorValue;
-                    color = new Color(packed.r, packed.g, packed.b, 1f);
-                    colorTime = Mathf.Clamp01(packed.a);
+                    color = packed;
+                    colorTime = packed.a;
                 }
 
                 _colorKeys[i] = new GradientColorKey(color, colorTime);
@@ -147,7 +195,6 @@ namespace NBShaderEditor
             }
 
             _gradient.SetKeys(_colorKeys, _alphaKeys);
-            return _gradient;
         }
 
         private void GetGradientKeyCounts(out int colorKeyCount, out int alphaKeyCount)
@@ -167,8 +214,6 @@ namespace NBShaderEditor
                 alphaKeyCount = 2;
             }
 
-            colorKeyCount = Mathf.Clamp(colorKeyCount <= 0 ? 2 : colorKeyCount, 2, _maxCount);
-            alphaKeyCount = Mathf.Clamp(alphaKeyCount <= 0 ? 2 : alphaKeyCount, 2, _maxCount);
         }
 
         private void TryReadBlackAndWhiteKey(int index, ref Color color, ref float time)
@@ -182,7 +227,7 @@ namespace NBShaderEditor
 
             Vector4 packed = _alphaPropertyInfos[vectorIndex].Property.vectorValue;
             float value = componentIndex == 0 ? packed.x : packed.z;
-            time = Mathf.Clamp01(componentIndex == 0 ? packed.y : packed.w);
+            time = componentIndex == 0 ? packed.y : packed.w;
             color = new Color(value, value, value, 1f);
         }
 
@@ -199,12 +244,12 @@ namespace NBShaderEditor
             if (componentIndex == 0)
             {
                 alpha = packed.x;
-                time = Mathf.Clamp01(packed.y);
+                time = packed.y;
             }
             else
             {
                 alpha = packed.z;
-                time = Mathf.Clamp01(packed.w);
+                time = packed.w;
             }
         }
 
@@ -213,63 +258,130 @@ namespace NBShaderEditor
             bool hasColorProperties = _colorPropertyInfos.Length > 0;
             bool hasAlphaProperties = _alphaPropertyInfos.Length > 0;
             bool isBlackAndWhiteGradient = !hasColorProperties && hasAlphaProperties;
-            int colorKeyCount = Mathf.Clamp(gradient.colorKeys.Length, 2, _maxCount);
-            int alphaKeyCount = Mathf.Clamp(gradient.alphaKeys.Length, 2, _maxCount);
+            int countPropertyValue = PropertyInfo.Property.intValue;
 
             if (isBlackAndWhiteGradient)
             {
-                WriteBlackAndWhiteGradient(gradient, colorKeyCount);
-                PropertyInfo.Property.intValue = colorKeyCount;
+                int finalColorKeyCount = gradient.colorKeys.Length;
+                if (finalColorKeyCount <= _maxCount)
+                {
+                    WriteBlackAndWhiteGradient(gradient, finalColorKeyCount);
+                    PropertyInfo.Property.intValue = finalColorKeyCount;
+                }
+
                 return;
             }
 
-            for (int i = 0; i < Mathf.Min(colorKeyCount, _colorPropertyInfos.Length); i++)
+            if (hasColorProperties)
             {
-                GradientColorKey key = gradient.colorKeys[i];
-                if (_colorPropertyInfos[i] != null)
+                int finalColorKeyCount = gradient.colorKeys.Length;
+                if (finalColorKeyCount <= _maxCount)
                 {
-                    _colorPropertyInfos[i].Property.colorValue = new Color(key.color.r, key.color.g, key.color.b, key.time);
+                    WriteColorKeys(gradient, finalColorKeyCount);
+                    countPropertyValue &= 0xFFFF << 16;
+                    countPropertyValue |= finalColorKeyCount;
                 }
             }
 
-            if (hasAlphaProperties)
+            if (!isBlackAndWhiteGradient && hasAlphaProperties)
             {
-                WriteAlphaKeys(gradient, alphaKeyCount);
+                int finalAlphaKeyCount = gradient.alphaKeys.Length;
+                if (finalAlphaKeyCount <= _maxCount)
+                {
+                    WriteAlphaKeys(gradient, finalAlphaKeyCount);
+                    countPropertyValue &= 0xFFFF;
+                    countPropertyValue |= finalAlphaKeyCount << 16;
+                }
             }
 
-            PropertyInfo.Property.intValue = hasColorProperties && hasAlphaProperties
-                ? colorKeyCount | (alphaKeyCount << 16)
-                : colorKeyCount;
+            PropertyInfo.Property.intValue = countPropertyValue;
+        }
+
+        private void WriteColorKeys(Gradient gradient, int colorKeyCount)
+        {
+            for (int i = 0; i < colorKeyCount && i < _colorPropertyInfos.Length; i++)
+            {
+                if (_colorPropertyInfos[i] == null)
+                {
+                    continue;
+                }
+
+                GradientColorKey key = gradient.colorKeys[i];
+                _colorPropertyInfos[i].Property.colorValue = new Color(key.color.r, key.color.g, key.color.b, key.time);
+            }
         }
 
         private void WriteBlackAndWhiteGradient(Gradient gradient, int colorKeyCount)
         {
-            for (int i = 0; i < _alphaPropertyInfos.Length; i++)
+            int vectorCount = Mathf.CeilToInt(colorKeyCount / 2f);
+            for (int i = 0; i < vectorCount && i < _alphaPropertyInfos.Length; i++)
             {
                 if (_alphaPropertyInfos[i] == null)
                 {
                     continue;
                 }
 
-                GradientColorKey key0 = gradient.colorKeys[Mathf.Min(i * 2, colorKeyCount - 1)];
-                GradientColorKey key1 = gradient.colorKeys[Mathf.Min(i * 2 + 1, colorKeyCount - 1)];
-                _alphaPropertyInfos[i].Property.vectorValue = new Vector4(key0.color.r, key0.time, key1.color.r, key1.time);
+                Vector4 value = Vector4.zero;
+                GradientColorKey key0 = gradient.colorKeys[i * 2];
+                value.x = key0.color.r;
+                value.y = key0.time;
+                if (i * 2 + 1 < colorKeyCount)
+                {
+                    GradientColorKey key1 = gradient.colorKeys[i * 2 + 1];
+                    value.z = key1.color.r;
+                    value.w = key1.time;
+                }
+
+                _alphaPropertyInfos[i].Property.vectorValue = value;
             }
         }
 
         private void WriteAlphaKeys(Gradient gradient, int alphaKeyCount)
         {
-            for (int i = 0; i < _alphaPropertyInfos.Length; i++)
+            int vectorCount = Mathf.CeilToInt(alphaKeyCount / 2f);
+            for (int i = 0; i < vectorCount && i < _alphaPropertyInfos.Length; i++)
             {
                 if (_alphaPropertyInfos[i] == null)
                 {
                     continue;
                 }
 
-                GradientAlphaKey key0 = gradient.alphaKeys[Mathf.Min(i * 2, alphaKeyCount - 1)];
-                GradientAlphaKey key1 = gradient.alphaKeys[Mathf.Min(i * 2 + 1, alphaKeyCount - 1)];
-                _alphaPropertyInfos[i].Property.vectorValue = new Vector4(key0.alpha, key0.time, key1.alpha, key1.time);
+                Vector4 value = Vector4.zero;
+                GradientAlphaKey key0 = gradient.alphaKeys[i * 2];
+                value.x = key0.alpha;
+                value.y = key0.time;
+                if (i * 2 + 1 < alphaKeyCount)
+                {
+                    GradientAlphaKey key1 = gradient.alphaKeys[i * 2 + 1];
+                    value.z = key1.alpha;
+                    value.w = key1.time;
+                }
+
+                _alphaPropertyInfos[i].Property.vectorValue = value;
             }
+        }
+
+        private bool GradientPropertyHasMixedValue()
+        {
+            if (PropertyInfo == null || PropertyInfo.Property == null)
+            {
+                return false;
+            }
+
+            GetGradientKeyCounts(out int colorKeyCount, out int alphaKeyCount);
+            bool hasMixedValue = PropertyInfo.Property.hasMixedValue;
+            for (int i = 0; i < colorKeyCount && i < _colorPropertyInfos.Length; i++)
+            {
+                hasMixedValue |= _colorPropertyInfos[i]?.Property.hasMixedValue == true;
+            }
+
+            int alphaPropertyCount = Mathf.CeilToInt(alphaKeyCount / 2f);
+            for (int i = 0; i < alphaPropertyCount && i < _alphaPropertyInfos.Length; i++)
+            {
+                hasMixedValue |= _alphaPropertyInfos[i]?.Property.hasMixedValue == true;
+            }
+
+            return hasMixedValue;
         }
 
         public override void CheckIsPropertyModified(bool isCallByChild = false)
@@ -314,6 +426,7 @@ namespace NBShaderEditor
 
             PropertyIsDefaultValue = true;
             HasModified = false;
+            MarkGradientCacheDirty();
             if (!isCallByParent)
             {
                 ParentItem?.CheckIsPropertyModified(true);
@@ -327,7 +440,7 @@ namespace NBShaderEditor
                 return false;
             }
 
-            return PropertyInfo.Property.intValue == GetDefaultCount();
+            return PropertyInfo.Property.intValue == GetDefaultInt(PropertyInfo);
         }
 
         private void ResetCountProperty()
@@ -337,14 +450,7 @@ namespace NBShaderEditor
                 return;
             }
 
-            PropertyInfo.Property.intValue = GetDefaultCount();
-        }
-
-        private int GetDefaultCount()
-        {
-            bool hasColorProperties = _colorPropertyInfos.Length > 0;
-            bool hasAlphaProperties = _alphaPropertyInfos.Length > 0;
-            return hasColorProperties && hasAlphaProperties ? 2 | (2 << 16) : 2;
+            PropertyInfo.Property.intValue = GetDefaultInt(PropertyInfo);
         }
 
         private bool IsDefault(ShaderPropertyInfo info)
@@ -359,6 +465,8 @@ namespace NBShaderEditor
                 case MaterialProperty.PropType.Float:
                 case MaterialProperty.PropType.Range:
                     return Mathf.Approximately(info.Property.floatValue, RootItem.Shader.GetPropertyDefaultFloatValue(info.Index));
+                case MaterialProperty.PropType.Int:
+                    return info.Property.intValue == GetDefaultInt(info);
                 case MaterialProperty.PropType.Color:
                     return Approximately(info.Property.colorValue, RootItem.Shader.GetPropertyDefaultVectorValue(info.Index));
                 case MaterialProperty.PropType.Vector:
@@ -381,6 +489,9 @@ namespace NBShaderEditor
                 case MaterialProperty.PropType.Range:
                     info.Property.floatValue = RootItem.Shader.GetPropertyDefaultFloatValue(info.Index);
                     break;
+                case MaterialProperty.PropType.Int:
+                    info.Property.intValue = GetDefaultInt(info);
+                    break;
                 case MaterialProperty.PropType.Color:
                     info.Property.colorValue = RootItem.Shader.GetPropertyDefaultVectorValue(info.Index);
                     break;
@@ -402,6 +513,18 @@ namespace NBShaderEditor
             catch (ArgumentException)
             {
                 return 2f;
+            }
+        }
+
+        private int GetDefaultInt(ShaderPropertyInfo info)
+        {
+            try
+            {
+                return RootItem.Shader.GetPropertyDefaultIntValue(info.Index);
+            }
+            catch (ArgumentException)
+            {
+                return Mathf.RoundToInt(GetDefaultScalar(info));
             }
         }
 

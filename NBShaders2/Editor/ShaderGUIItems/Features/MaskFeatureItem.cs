@@ -144,7 +144,7 @@ namespace NBShaderEditor
             new TextureScaleOffsetItem(rootItem, parent, texturePropertyName, false, () => IsPropertyMode(rootItem, modePropertyName, 1), TillingContent, OffsetContent);
             new WrapModeItem(rootItem, parent, wrapFlag, () => Content(label + "UV Wrap"), 2,
                 () => IsPropertyMode(rootItem, modePropertyName, 1));
-            new UVModeSelectItem(rootItem, parent, uvFoldOutPropertyName, uvModeFlagPos, 0, () => Content(label + "UV来源"), texturePropertyName);
+            new UVModeSelectItem(rootItem, parent, uvFoldOutPropertyName, uvModeFlagPos, 0, () => Content(label + "UV来源"), texturePropertyName, forceEnable: true);
         }
 
         private static void AddAlphaGradient(
