@@ -782,17 +782,13 @@
                 }
             #endif
 
-            half3 colorRampColorArr[] = {_RampColor0.rgb,_RampColor1.rgb,_RampColor2.rgb,_RampColor3.rgb,_RampColor4.rgb,_RampColor5.rgb};
-            half colorRampColorTimeArr[] = {_RampColor0.a,_RampColor1.a,_RampColor2.a,_RampColor3.a,_RampColor4.a,_RampColor5.a};
             int colorRampColorCount = _RampColorCount & 0xFFFF;
 
-            half colorRampAlphaArr[] = {_RampColorAlpha0.x,_RampColorAlpha0.z,_RampColorAlpha1.x,_RampColorAlpha1.z,_RampColorAlpha2.x,_RampColorAlpha2.z};
-            half colorRampAlphaTimeArr[] = {_RampColorAlpha0.y,_RampColorAlpha0.w,_RampColorAlpha1.y,_RampColorAlpha1.w,_RampColorAlpha2.y,_RampColorAlpha2.w};
             int colorRampAlphaCount = _RampColorCount >> 16;
 
             half4 rampColor;
-            rampColor.rgb = GetGradientColorValue(colorRampColorArr,colorRampColorTimeArr,colorRampColorCount,rampValue);
-            rampColor.a = GetGradientAlphaValue(colorRampAlphaArr,colorRampAlphaTimeArr,colorRampAlphaCount,rampValue);
+            rampColor.rgb = SamplePackedGradientColor(_RampColor0, _RampColor1, _RampColor2, _RampColor3, _RampColor4, _RampColor5, colorRampColorCount, rampValue);
+            rampColor.a = SamplePackedGradientAlpha(_RampColorAlpha0, _RampColorAlpha1, _RampColorAlpha2, colorRampAlphaCount, rampValue);
 
             rampColor *= _RampColorBlendColor;
 
@@ -883,12 +879,8 @@
                 #if defined(_DISSOLVE_RAMP_MAP)
                 rampSample = SampleTexture2DWithWrapFlags(_DissolveRampMap,half2(rampRange,0.5),FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP);
                 #else
-                    half3 dissolveRampColorArr[] = {_DissolveRampColor0.rgb,_DissolveRampColor1.rgb,_DissolveRampColor2.rgb,_DissolveRampColor3.rgb,_DissolveRampColor4.rgb,_DissolveRampColor5.rgb};
-                    half dissolveRampColorTimeArr[] = {_DissolveRampColor0.a,_DissolveRampColor1.a,_DissolveRampColor2.a,_DissolveRampColor3.a,_DissolveRampColor4.a,_DissolveRampColor5.a};
                     int dissolveRampColorCount = _DissolveRampCount & 0xFFFF;
 
-                    half dissolveRampAlphaArr[] = {_DissolveRampAlpha0.x,_DissolveRampAlpha0.z,_DissolveRampAlpha1.x,_DissolveRampAlpha1.z,_DissolveRampAlpha2.x,_DissolveRampAlpha2.z};
-                    half dissolveRampAlphaTimeArr[] = {_DissolveRampAlpha0.y,_DissolveRampAlpha0.w,_DissolveRampAlpha1.y,_DissolveRampAlpha1.w,_DissolveRampAlpha2.y,_DissolveRampAlpha2.w};
                     int dissolveRampAlphaCount = _DissolveRampCount >> 16;
 
                     const int rampWrapMode = CheckLocalWrapFlags(FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP);
@@ -902,8 +894,8 @@
                     }
 
 
-                    rampSample.rgb = GetGradientColorValue(dissolveRampColorArr,dissolveRampColorTimeArr,dissolveRampColorCount,rampRange);
-                    rampSample.a = GetGradientAlphaValue(dissolveRampAlphaArr,dissolveRampAlphaTimeArr,dissolveRampAlphaCount,rampRange);
+                    rampSample.rgb = SamplePackedGradientColor(_DissolveRampColor0, _DissolveRampColor1, _DissolveRampColor2, _DissolveRampColor3, _DissolveRampColor4, _DissolveRampColor5, dissolveRampColorCount, rampRange);
+                    rampSample.a = SamplePackedGradientAlpha(_DissolveRampAlpha0, _DissolveRampAlpha1, _DissolveRampAlpha2, dissolveRampAlphaCount, rampRange);
                 #endif
 
                 if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY))
@@ -973,10 +965,8 @@
                     maskMapTimeValue = saturate(MaskMapuv.x);
                 }
 
-                half maskMapAlphaArr[] = {_MaskMapGradientFloat0.x,_MaskMapGradientFloat0.z,_MaskMapGradientFloat1.x,_MaskMapGradientFloat1.z,_MaskMapGradientFloat2.x,_MaskMapGradientFloat2.z};
-                half maskMapAlphaTimeArr[] = {_MaskMapGradientFloat0.y,_MaskMapGradientFloat0.w,_MaskMapGradientFloat1.y,_MaskMapGradientFloat1.w,_MaskMapGradientFloat2.y,_MaskMapGradientFloat2.w};
                 int maskMapAlphaCount = _MaskMapGradientCount;
-                mask1 = GetGradientAlphaValue(maskMapAlphaArr,maskMapAlphaTimeArr,maskMapAlphaCount,maskMapTimeValue);
+                mask1 = SamplePackedGradientAlpha(_MaskMapGradientFloat0, _MaskMapGradientFloat1, _MaskMapGradientFloat2, maskMapAlphaCount, maskMapTimeValue);
             }
             else
             {
@@ -1001,10 +991,8 @@
                         maskMap2TimeValue = saturate(MaskMapuv2.y);
                     }
 
-                    half maskMap2AlphaArr[] = {_MaskMap2GradientFloat0.x,_MaskMap2GradientFloat0.z,_MaskMap2GradientFloat1.x,_MaskMap2GradientFloat1.z,_MaskMap2GradientFloat2.x,_MaskMap2GradientFloat2.z};
-                    half maskMap2AlphaTimeArr[] = {_MaskMap2GradientFloat0.y,_MaskMap2GradientFloat0.w,_MaskMap2GradientFloat1.y,_MaskMap2GradientFloat1.w,_MaskMap2GradientFloat2.y,_MaskMap2GradientFloat2.w};
                     int maskMap2AlphaCount = _MaskMap2GradientCount;
-                    mask2 = GetGradientAlphaValue(maskMap2AlphaArr,maskMap2AlphaTimeArr,maskMap2AlphaCount,maskMap2TimeValue);
+                    mask2 = SamplePackedGradientAlpha(_MaskMap2GradientFloat0, _MaskMap2GradientFloat1, _MaskMap2GradientFloat2, maskMap2AlphaCount, maskMap2TimeValue);
                 }
                 else
                 {
@@ -1031,10 +1019,8 @@
                         maskMap3TimeValue = saturate(MaskMapuv3.x);
                     }
 
-                    half maskMap3AlphaArr[] = {_MaskMap3GradientFloat0.x,_MaskMap3GradientFloat0.z,_MaskMap3GradientFloat1.x,_MaskMap3GradientFloat1.z,_MaskMap3GradientFloat2.x,_MaskMap3GradientFloat2.z};
-                    half maskMap3AlphaTimeArr[] = {_MaskMap3GradientFloat0.y,_MaskMap3GradientFloat0.w,_MaskMap3GradientFloat1.y,_MaskMap3GradientFloat1.w,_MaskMap3GradientFloat2.y,_MaskMap3GradientFloat2.w};
                     int maskMap3AlphaCount = _MaskMap3GradientCount;
-                    mask3 = GetGradientAlphaValue(maskMap3AlphaArr,maskMap3AlphaTimeArr,maskMap3AlphaCount,maskMap3TimeValue);
+                    mask3 = SamplePackedGradientAlpha(_MaskMap3GradientFloat0, _MaskMap3GradientFloat1, _MaskMap3GradientFloat2, maskMap3AlphaCount, maskMap3TimeValue);
                 }
                 else
                 {
