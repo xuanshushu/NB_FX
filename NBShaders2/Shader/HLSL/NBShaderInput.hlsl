@@ -429,8 +429,8 @@
         {
             case 0: uv = frac(uv);break;
             case 1: uv = saturate(uv);break;
-            case 2: uv = float2(saturate(uv.x),frac(uv.y));break;
-            case 3: uv = float2(frac(uv.x),saturate(uv.y));break; 
+            case 2: uv = float2(frac(uv.x),saturate(uv.y));break;
+            case 3: uv = float2(saturate(uv.x),frac(uv.y));break;
         }
         if (sampleLOD)
         {
