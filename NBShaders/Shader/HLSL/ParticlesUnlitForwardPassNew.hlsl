@@ -51,17 +51,6 @@
 
         output.clipPos = TransformObjectToHClip_NB(positionOS.xyz);
         
-        #ifdef _PARALLAX_MAPPING
-            //视差贴图，需要在Tangent空间下计算。
-            float3x3 objectToTangent =
-                float3x3(
-                    tangentOS.xyz,
-                    cross(normalOS,tangentOS.xyz)  * tangentOS.w,//Bitangent
-                    normalOS
-                );
-            output.tangentViewDir = mul(objectToTangent, GetCustomLocalSpaceNormalizeViewDir(positionOS.xyz));
-        #endif
-        
         float unityFogFactor = ComputeFogFactor(output.clipPos.z);
 
         output.positionWS.w = unityFogFactor;
@@ -71,7 +60,7 @@
         // output.viewDirWS = GetWorldSpaceNormalizeViewDir(output.positionWS.xyz);
         output.normalWSAndAnimBlend.xyz = TransformObjectToWorldNormal_NB(normalOS.xyz);
 
-        #if defined(_NORMALMAP)||defined(_FX_LIGHT_MODE_SIX_WAY) 
+        #if defined(_PARALLAX_MAPPING)||defined(_NORMALMAP)||defined(_FX_LIGHT_MODE_SIX_WAY)
             real sign = tangentOS.w * GetCustomLocalOddNegativeScale();
             half3 tangentWS = TransformObjectToWorldDir_NB(tangentOS.xyz);
             output.tangentWS = half4(tangentWS,sign);
@@ -270,7 +259,7 @@
     half4 fragParticleUnlit(VaryingsParticle input, half facing : VFACE): SV_Target
     {
         #if !defined(NB_DEPTH_SHADOW_PASS)
-        half3 viewDirWS = GetWorldSpaceNormalizeViewDir(input.positionWS.xyz);
+        float3 viewDirWS = GetWorldSpaceNormalizeViewDir(input.positionWS.xyz);
         input.normalWSAndAnimBlend.xyz = facing > 0 ? input.normalWSAndAnimBlend.xyz : -input.normalWSAndAnimBlend.xyz;
         #endif
         
@@ -460,16 +449,20 @@
         
         half2 originUV = MainTex_UV;
 
-        #ifdef _PARALLAX_MAPPING
-        
-            MainTex_UV.xy = ParallaxOcclusionMapping(MainTex_UV,input.tangentViewDir);
-        #endif
-
         //预先处理好法线贴图部分
         half metallic = 1;
         half smoothness = 1;
         half3 normalTS = half3(0, 0, 1);//TODO
         half3x3 tangentToWorld = (half3x3)0;
+        #if defined(_PARALLAX_MAPPING) || defined(_NORMALMAP)
+            float sgn = input.tangentWS.w;      // should be either +1 or -1
+            float3 bitangent = sgn * cross(input.normalWSAndAnimBlend.xyz, input.tangentWS.xyz);
+            tangentToWorld = half3x3(input.tangentWS.xyz, bitangent.xyz, input.normalWSAndAnimBlend.xyz);
+        #endif
+        #ifdef _PARALLAX_MAPPING
+            float3 tangentViewDir = TransformWorldToTangentDir(viewDirWS, tangentToWorld, true);
+            MainTex_UV.xy = ParallaxOcclusionMapping(MainTex_UV, tangentViewDir);
+        #endif
         #ifdef _NORMALMAP
             half4 normalMapSample = SampleTexture2DWithWrapFlags(_BumpTex,BumpTex_uv,FLAG_BIT_WRAPMODE_BUMPTEX);
             if (CheckLocalFlags(FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE))
@@ -483,9 +476,6 @@
                 normalTS = UnpackNormalScale(half4(normalMapSample),_BumpScale);
             }
             
-            float sgn = input.tangentWS.w;      // should be either +1 or -1
-            float3 bitangent = sgn * cross(input.normalWSAndAnimBlend.xyz, input.tangentWS.xyz);
-            tangentToWorld = half3x3(input.tangentWS.xyz, bitangent.xyz, input.normalWSAndAnimBlend.xyz);
             input.normalWSAndAnimBlend.xyz =  normalize(TransformTangentToWorld(normalTS, tangentToWorld));
         #endif
         

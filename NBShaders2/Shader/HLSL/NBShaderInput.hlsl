@@ -1275,7 +1275,7 @@
         return  currentTexcoords;
         
     }
-    half2 ParallaxOcclusionMapping(half2 texCoords, half3 viewDir)
+    float2 ParallaxOcclusionMapping(float2 texCoords, float3 viewDir)
     {
         texCoords = texCoords * _ParallaxMapping_Map_ST + _ParallaxMapping_Map_ST.zw;
         // number of depth layers
@@ -1289,11 +1289,11 @@
         // depth of current layer
         float currentLayerDepth = 0.0;
         // the amount to shift the texture coordinates per layer (from vector P)
-        half2 P = viewDir.xy / viewDir.z * _ParallaxMapping_Intensity; 
-        half2 deltaTexCoords = P / numLayers;
+        float2 P = viewDir.xy / viewDir.z * _ParallaxMapping_Intensity;
+        float2 deltaTexCoords = P / numLayers;
       
         // get initial values
-        half2  currentTexCoords     = texCoords;
+        float2 currentTexCoords     = texCoords;
         float currentDepthMapValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map, currentTexCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP).r;
         currentLayerDepth = clamp(currentLayerDepth,0,1);
 
@@ -1312,7 +1312,7 @@
         
         // -- parallax occlusion mapping interpolation from here on
         // get texture coordinates before collision (reverse operations)
-        half2 prevTexCoords = currentTexCoords + deltaTexCoords;
+        float2 prevTexCoords = currentTexCoords + deltaTexCoords;
 
         // get depth after and before collision for linear interpolation
         float afterDepth  = currentDepthMapValue - currentLayerDepth;
@@ -1320,7 +1320,7 @@
      
         // interpolation of texture coordinates
         float weight = afterDepth / (afterDepth - beforeDepth);
-        half2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
+        float2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
 
         return finalTexCoords;
     }
@@ -1402,10 +1402,6 @@
             float4 texcoordMaskMap2 : TEXCOORD14;
         #endif
 
-        #ifdef _PARALLAX_MAPPING
-            half3  tangentViewDir : TEXCOORD16;
-        #endif
-
         #ifndef _FX_LIGHT_MODE_UNLIT
             #if !defined(_FX_LIGHT_MODE_SIX_WAY)
                 half3 vertexSH :TEXCOORD17;
@@ -1415,7 +1411,7 @@
             #endif
         #endif
 
-        #if defined(_NORMALMAP) && !defined(_FX_LIGHT_MODE_SIX_WAY)
+        #if (defined(_PARALLAX_MAPPING) || defined(_NORMALMAP)) && !defined(_FX_LIGHT_MODE_SIX_WAY)
             half4 tangentWS : TEXCOORD19;
         #endif
         #if defined (_NORMALMAP) || defined(_COLOR_RAMP) 
