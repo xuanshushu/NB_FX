@@ -115,20 +115,31 @@
         #if defined(_NORMALMAP)||defined(_FX_LIGHT_MODE_SIX_WAY)
             real sign = tangentOS.w * GetCustomLocalOddNegativeScale();
             half3 tangentWS = TransformObjectToWorldDir_NB(tangentOS.xyz);
-            output.tangentWS = half4(tangentWS,sign);
+            #if defined(_NORMALMAP) && !defined(_FX_LIGHT_MODE_SIX_WAY)
+                output.tangentWS = half4(tangentWS,sign);
+            #endif
         #endif
 
 
         #ifndef _FX_LIGHT_MODE_UNLIT
             #ifdef _FX_LIGHT_MODE_SIX_WAY
-                float3 bitangent = sign * cross(output.normalWSAndAnimBlend.xyz, output.tangentWS.xyz);
-                // GetSixWayBakeDiffuseLight(output.normalWSAndAnimBlend.xyz,output.tangentWS,bitangent,
-                //     output.bakeDiffuseLighting0,output.bakeDiffuseLighting1,output.bakeDiffuseLighting2,
-                //     output.backBakeDiffuseLighting0,output.backBakeDiffuseLighting1,output.backBakeDiffuseLighting2);
+                float3 bitangent = sign * cross(output.normalWSAndAnimBlend.xyz, tangentWS);
+                half3 bakeDiffuseLighting0;
+                half3 bakeDiffuseLighting1;
+                half3 bakeDiffuseLighting2;
+                half3 backBakeDiffuseLighting0;
+                half3 backBakeDiffuseLighting1;
+                half3 backBakeDiffuseLighting2;
+                GetSixWayBakeDiffuseLight(output.normalWSAndAnimBlend.xyz,tangentWS,bitangent,
+                    bakeDiffuseLighting0,bakeDiffuseLighting1,bakeDiffuseLighting2,
+                    backBakeDiffuseLighting0,backBakeDiffuseLighting1,backBakeDiffuseLighting2);
 
-                GetSixWayBakeDiffuseLight(output.normalWSAndAnimBlend.xyz,output.tangentWS,bitangent,
-                    output.bakeDiffuseLighting0,output.bakeDiffuseLighting1,output.bakeDiffuseLighting2,
-                    output.backBakeDiffuseLighting0,output.backBakeDiffuseLighting1,output.backBakeDiffuseLighting2);
+                output.bakeDiffuseLighting0 = half4(bakeDiffuseLighting0,tangentWS.x);
+                output.bakeDiffuseLighting1 = half4(bakeDiffuseLighting1,tangentWS.y);
+                output.bakeDiffuseLighting2 = half4(bakeDiffuseLighting2,tangentWS.z);
+                output.backBakeDiffuseLighting0 = half4(backBakeDiffuseLighting0,sign);
+                output.backBakeDiffuseLighting1 = half4(backBakeDiffuseLighting1,0);
+                output.backBakeDiffuseLighting2 = half4(backBakeDiffuseLighting2,0);
 
             #else
                 OUTPUT_SH(output.normalWSAndAnimBlend.xyz, output.vertexSH);
@@ -518,6 +529,14 @@
         half smoothness = 1;
         half3 normalTS = half3(0, 0, 1);//TODO
         half3x3 tangentToWorld = (half3x3)0;
+        #if defined(_NORMALMAP) || defined(_FX_LIGHT_MODE_SIX_WAY)
+            half4 tangentWS = 0;
+            #if defined(_FX_LIGHT_MODE_SIX_WAY)
+                tangentWS = half4(input.bakeDiffuseLighting0.w,input.bakeDiffuseLighting1.w,input.bakeDiffuseLighting2.w,input.backBakeDiffuseLighting0.w);
+            #else
+                tangentWS = input.tangentWS;
+            #endif
+        #endif
         #ifdef _NORMALMAP
             half4 normalMapSample = SampleTexture2DWithWrapFlags(_BumpTex,BumpTex_uv,FLAG_BIT_WRAPMODE_BUMPTEX);
             if (CheckLocalFlags(FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE))
@@ -531,9 +550,9 @@
                 normalTS = UnpackNormalScale(half4(normalMapSample),_BumpScale);
             }
 
-            float sgn = input.tangentWS.w;      // should be either +1 or -1
-            float3 bitangent = sgn * cross(input.normalWSAndAnimBlend.xyz, input.tangentWS.xyz);
-            tangentToWorld = half3x3(input.tangentWS.xyz, bitangent.xyz, input.normalWSAndAnimBlend.xyz);
+            float sgn = tangentWS.w;      // should be either +1 or -1
+            float3 bitangent = sgn * cross(input.normalWSAndAnimBlend.xyz, tangentWS.xyz);
+            tangentToWorld = half3x3(tangentWS.xyz, bitangent.xyz, input.normalWSAndAnimBlend.xyz);
             input.normalWSAndAnimBlend.xyz =  normalize(TransformTangentToWorld(normalTS, tangentToWorld));
         #endif
 
@@ -690,15 +709,15 @@
                 bsdfData.absorptionRange = GetAbsorptionRange(_SixWayInfo.x);
                 bsdfData.diffuseColor = albedo;
                 bsdfData.normalWS = inputData.normalWS;
-                bsdfData.tangentWS = input.tangentWS;//Check this
+                bsdfData.tangentWS = tangentWS;
                 bsdfData.rigRTBk = rigRTBkSample.xyz * INV_PI;//AccordingTo SixWayForwardPass
                 bsdfData.rigLBtF = rigLBtFSample.xyz * INV_PI;//AccordingTo SixWayForwardPass
-                bsdfData.bakeDiffuseLighting0 = input.bakeDiffuseLighting0;
-                bsdfData.bakeDiffuseLighting1 = input.bakeDiffuseLighting1;
-                bsdfData.bakeDiffuseLighting2 = input.bakeDiffuseLighting2;
-                bsdfData.backBakeDiffuseLighting0 = input.backBakeDiffuseLighting0;
-                bsdfData.backBakeDiffuseLighting1 = input.backBakeDiffuseLighting1;
-                bsdfData.backBakeDiffuseLighting2 = input.backBakeDiffuseLighting2;
+                bsdfData.bakeDiffuseLighting0 = input.bakeDiffuseLighting0.xyz;
+                bsdfData.bakeDiffuseLighting1 = input.bakeDiffuseLighting1.xyz;
+                bsdfData.bakeDiffuseLighting2 = input.bakeDiffuseLighting2.xyz;
+                bsdfData.backBakeDiffuseLighting0 = input.backBakeDiffuseLighting0.xyz;
+                bsdfData.backBakeDiffuseLighting1 = input.backBakeDiffuseLighting1.xyz;
+                bsdfData.backBakeDiffuseLighting2 = input.backBakeDiffuseLighting2.xyz;
                 bsdfData.emissionInput = rigLBtFSample.a;
                 GetSixWayEmission(bsdfData,_SixWayEmissionRamp,_SixWayEmissionColor,CheckLocalFlags1(FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP));//Init Emission
                 bsdfData.alpha = rigRTBkSample.a * _BaseColor.a;

@@ -1407,13 +1407,15 @@
         #endif
 
         #ifndef _FX_LIGHT_MODE_UNLIT
-            half3 vertexSH :TEXCOORD17;
+            #if !defined(_FX_LIGHT_MODE_SIX_WAY)
+                half3 vertexSH :TEXCOORD17;
+            #endif
             #ifdef _ADDITIONAL_LIGHTS_VERTEX
                 half3 vertexLight :TEXCOORD18;
             #endif
         #endif
 
-        #if defined(_NORMALMAP) || defined(_FX_LIGHT_MODE_SIX_WAY)
+        #if defined(_NORMALMAP) && !defined(_FX_LIGHT_MODE_SIX_WAY)
             half4 tangentWS : TEXCOORD19;
         #endif
         #if defined (_NORMALMAP) || defined(_COLOR_RAMP) 
@@ -1421,12 +1423,12 @@
         #endif
 
         #ifdef _FX_LIGHT_MODE_SIX_WAY
-            half3 bakeDiffuseLighting0 :TEXCOORD21;
-            half3 bakeDiffuseLighting1 :TEXCOORD22;
-            half3 bakeDiffuseLighting2 :TEXCOORD23;
-            half3 backBakeDiffuseLighting0 :TEXCOORD24;
-            half3 backBakeDiffuseLighting1 :TEXCOORD25;
-            half3 backBakeDiffuseLighting2 :TEXCOORD26;
+            half4 bakeDiffuseLighting0 :TEXCOORD21;
+            half4 bakeDiffuseLighting1 :TEXCOORD22;
+            half4 bakeDiffuseLighting2 :TEXCOORD23;
+            half4 backBakeDiffuseLighting0 :TEXCOORD24;
+            half4 backBakeDiffuseLighting1 :TEXCOORD25;
+            half4 backBakeDiffuseLighting2 :TEXCOORD26;
         #endif
         
         UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -1497,7 +1499,11 @@
     //     inputData.bakedGI = SAMPLE_GI(input.staticLightmapUV, input.vertexSH, inputData.normalWS);
     // #endif
 
-        inputData.bakedGI = SampleSHPixel(input.vertexSH, inputData.normalWS);
+        #if defined(_FX_LIGHT_MODE_SIX_WAY)
+            inputData.bakedGI = 0;
+        #else
+            inputData.bakedGI = SampleSHPixel(input.vertexSH, inputData.normalWS);
+        #endif
 
         inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(input.clipPos);
         inputData.shadowMask = SAMPLE_SHADOWMASK(input.staticLightmapUV);
@@ -1509,7 +1515,9 @@
             #if defined(LIGHTMAP_ON)
             inputData.staticLightmapUV = input.staticLightmapUV;
             #else
-            inputData.vertexSH = input.vertexSH;
+                #if !defined(_FX_LIGHT_MODE_SIX_WAY)
+                    inputData.vertexSH = input.vertexSH;
+                #endif
             #endif
         #endif
     }
