@@ -54,6 +54,12 @@ namespace NBShaders2.Editor.FeatureLevel
                     "Strip",
                     "Keyword",
                     "Quality",
+                    "Apply",
+                    "Material",
+                    "Loaded Materials",
+                    "Project Materials",
+                    "应用",
+                    "材质",
                     "等级",
                     "分级",
                     "剔除"
@@ -516,6 +522,25 @@ namespace NBShaders2.Editor.FeatureLevel
                             Text("featureLevel.saveCurrentAsDefault.failedMessage", "Could not write the package default LevelAsset."),
                             Text("featureLevel.dialog.ok", "OK"));
                     }
+                }
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button(ButtonContent(
+                        "featureLevel.applyCurrentQualityTierToLoadedMaterials",
+                        "Apply Current Quality Tier To Loaded Materials",
+                        "Apply the tier bound to the current Unity Quality Level to all loaded NBShader2 materials.")))
+                {
+                    NBShaderEditorQualityTierWatcher.ApplyCurrentQualityTierToLoadedMaterials();
+                }
+
+                if (GUILayout.Button(ButtonContent(
+                        "featureLevel.applyCurrentQualityTierToProjectMaterials",
+                        "Apply Current Quality Tier To Project Materials",
+                        "Scan Assets and apply the tier bound to the current Unity Quality Level to NBShader2 material assets.")))
+                {
+                    NBShaderEditorQualityTierWatcher.ApplyCurrentQualityTierToProjectMaterials();
                 }
             }
 

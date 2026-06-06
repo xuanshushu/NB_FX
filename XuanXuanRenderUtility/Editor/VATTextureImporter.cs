@@ -10,8 +10,11 @@ namespace NBShader.Editor
         private const string VatKeyword2 = "vertex_animation_textures";
         
         private const string ExrExtension = ".exr";
+        private const string PngExtension = ".png";
         private const string DefaultPlatformName = "DefaultTexturePlatform";
         private const string StandalonePlatformName = "Standalone";
+        private const string AndroidPlatformName = "Android";
+        private const int AndroidDataTextureMaxSize = 8192;
 
         private void OnPreprocessTexture()
         {
@@ -61,7 +64,8 @@ namespace NBShader.Editor
                 return false;
             }
 
-            return extension.Equals(ExrExtension, StringComparison.OrdinalIgnoreCase);
+            return extension.Equals(ExrExtension, StringComparison.OrdinalIgnoreCase) ||
+                   extension.Equals(PngExtension, StringComparison.OrdinalIgnoreCase);
         }
 
         private static void ApplyImportSettings(TextureImporter textureImporter)
@@ -69,13 +73,16 @@ namespace NBShader.Editor
             ApplyCommonDataSettings(textureImporter);
 
             string extension = Path.GetExtension(textureImporter.assetPath);
-            if (!extension.Equals(ExrExtension, StringComparison.OrdinalIgnoreCase))
+            if (extension.Equals(ExrExtension, StringComparison.OrdinalIgnoreCase))
             {
+                ApplyPlatformSettings(textureImporter, TextureImporterFormat.RGBAHalf);
                 return;
             }
 
-            ApplyHdrPlatformSettings(textureImporter, DefaultPlatformName, TextureImporterFormat.RGBAHalf);
-            ApplyHdrPlatformSettings(textureImporter, StandalonePlatformName, TextureImporterFormat.RGBAHalf);
+            if (extension.Equals(PngExtension, StringComparison.OrdinalIgnoreCase))
+            {
+                ApplyPlatformSettings(textureImporter, TextureImporterFormat.RGBA32);
+            }
         }
 
         private static void ApplyCommonDataSettings(TextureImporter textureImporter)
@@ -88,7 +95,14 @@ namespace NBShader.Editor
             textureImporter.textureCompression = TextureImporterCompression.Uncompressed;
         }
 
-        private static void ApplyHdrPlatformSettings(TextureImporter textureImporter, string platformName, TextureImporterFormat format)
+        private static void ApplyPlatformSettings(TextureImporter textureImporter, TextureImporterFormat format)
+        {
+            ApplyPlatformSettings(textureImporter, DefaultPlatformName, format);
+            ApplyPlatformSettings(textureImporter, StandalonePlatformName, format);
+            ApplyPlatformSettings(textureImporter, AndroidPlatformName, format);
+        }
+
+        private static void ApplyPlatformSettings(TextureImporter textureImporter, string platformName, TextureImporterFormat format)
         {
             TextureImporterPlatformSettings settings = textureImporter.GetPlatformTextureSettings(platformName);
             settings.name = platformName;
@@ -98,6 +112,12 @@ namespace NBShader.Editor
             settings.compressionQuality = 100;
             settings.crunchedCompression = false;
             settings.allowsAlphaSplitting = false;
+            if (platformName.Equals(AndroidPlatformName, StringComparison.Ordinal) &&
+                settings.maxTextureSize < AndroidDataTextureMaxSize)
+            {
+                settings.maxTextureSize = AndroidDataTextureMaxSize;
+            }
+
             textureImporter.SetPlatformTextureSettings(settings);
         }
     }

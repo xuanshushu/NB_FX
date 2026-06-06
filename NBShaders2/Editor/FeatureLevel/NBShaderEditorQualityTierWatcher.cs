@@ -21,8 +21,7 @@ namespace NBShaders2.Editor.FeatureLevel
             EditorApplication.update += WatchQualityLevel;
         }
 
-        [MenuItem("Tools/NBShader2/Feature Levels/Apply Current Quality Tier To Loaded Materials")]
-        private static void ApplyCurrentQualityTierToLoadedMaterialsMenu()
+        internal static void ApplyCurrentQualityTierToLoadedMaterials()
         {
             NBShaderFeatureTier tier;
             string qualityName;
@@ -35,8 +34,7 @@ namespace NBShaders2.Editor.FeatureLevel
                 count);
         }
 
-        [MenuItem("Tools/NBShader2/Feature Levels/Apply Current Quality Tier To Project Materials")]
-        private static void ApplyCurrentQualityTierToProjectMaterialsMenu()
+        internal static void ApplyCurrentQualityTierToProjectMaterials()
         {
             NBShaderFeatureTier tier;
             string qualityName;
