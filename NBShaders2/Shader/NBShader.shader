@@ -630,7 +630,7 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local_fragment _COLOR_RAMP_MAP
             #pragma shader_feature_local _SHARED_UV//公共UV
             #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
-            #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+            #pragma shader_feature_local _ _VAT_HOUDINI _VAT_TYFLOW
             #pragma shader_feature_local_vertex _ _HOUDINI_VAT_SOFTBODY _HOUDINI_VAT_RIGIDBODY _HOUDINI_VAT_DYNAMIC_REMESH _HOUDINI_VAT_PARTICLE_SPRITE
             #pragma shader_feature_local_vertex _ _TYFLOW_VAT_ABSOLUTE _TYFLOW_VAT_RELATIVE _TYFLOW_VAT_SKIN_R _TYFLOW_VAT_SKIN_PR _TYFLOW_VAT_SKIN_PRSAVE _TYFLOW_VAT_SKIN_PRSXYZ
 
@@ -765,7 +765,7 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local_fragment _COLOR_RAMP_MAP
             #pragma shader_feature_local _SHARED_UV//公共UV
             #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
-            #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+            #pragma shader_feature_local _ _VAT_HOUDINI _VAT_TYFLOW
             #pragma shader_feature_local_vertex _ _HOUDINI_VAT_SOFTBODY _HOUDINI_VAT_RIGIDBODY _HOUDINI_VAT_DYNAMIC_REMESH _HOUDINI_VAT_PARTICLE_SPRITE
             #pragma shader_feature_local_vertex _ _TYFLOW_VAT_ABSOLUTE _TYFLOW_VAT_RELATIVE _TYFLOW_VAT_SKIN_R _TYFLOW_VAT_SKIN_PR _TYFLOW_VAT_SKIN_PRSAVE _TYFLOW_VAT_SKIN_PRSXYZ
             
@@ -881,7 +881,7 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
             #pragma shader_feature_local _SHARED_UV
             #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
-            #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+            #pragma shader_feature_local _ _VAT_HOUDINI _VAT_TYFLOW
             #pragma shader_feature_local_vertex _ _HOUDINI_VAT_SOFTBODY _HOUDINI_VAT_RIGIDBODY _HOUDINI_VAT_DYNAMIC_REMESH _HOUDINI_VAT_PARTICLE_SPRITE
             #pragma shader_feature_local_vertex _ _TYFLOW_VAT_ABSOLUTE _TYFLOW_VAT_RELATIVE _TYFLOW_VAT_SKIN_R _TYFLOW_VAT_SKIN_PR _TYFLOW_VAT_SKIN_PRSAVE _TYFLOW_VAT_SKIN_PRSXYZ
             #pragma shader_feature_local _ALPHATEST_ON
@@ -939,7 +939,7 @@ Shader "Effects/NBShader"
             #pragma shader_feature_local _PROGRAM_NOISE_VORONOI
             #pragma shader_feature_local _SHARED_UV
             #pragma shader_feature_local _ _VAT _FLIPBOOKBLENDING_ON
-            #pragma shader_feature_local _VAT_HOUDINI _VAT_TYFLOW
+            #pragma shader_feature_local _ _VAT_HOUDINI _VAT_TYFLOW
             #pragma shader_feature_local_vertex _ _HOUDINI_VAT_SOFTBODY _HOUDINI_VAT_RIGIDBODY _HOUDINI_VAT_DYNAMIC_REMESH _HOUDINI_VAT_PARTICLE_SPRITE
             #pragma shader_feature_local_vertex _ _TYFLOW_VAT_ABSOLUTE _TYFLOW_VAT_RELATIVE _TYFLOW_VAT_SKIN_R _TYFLOW_VAT_SKIN_PR _TYFLOW_VAT_SKIN_PRSAVE _TYFLOW_VAT_SKIN_PRSXYZ
             #pragma shader_feature_local _ALPHATEST_ON
