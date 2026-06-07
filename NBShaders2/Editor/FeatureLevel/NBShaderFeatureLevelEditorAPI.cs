@@ -13,24 +13,9 @@ namespace NBShaders2.Editor.FeatureLevel
     /// </summary>
     public static class NBShaderFeatureLevelEditorAPI
     {
-        public static IDisposable OverrideBuildStripPolicy(NBShaderBuildStripPolicy policy, NBShaderFeatureTier explicitTier)
-        {
-            return NBShaderFeatureLevelBuildStripOverride.Push(policy, explicitTier);
-        }
-
         public static IDisposable OverrideBuildStripExplicitTier(NBShaderFeatureTier tier)
         {
             return NBShaderFeatureLevelBuildStripOverride.PushExplicitTier(tier);
-        }
-
-        public static IDisposable DisableBuildStripping()
-        {
-            return NBShaderFeatureLevelBuildStripOverride.PushDisabled();
-        }
-
-        public static void ClearBuildStripOverrides()
-        {
-            NBShaderFeatureLevelBuildStripOverride.ClearAll();
         }
 
         public static HashSet<string> GetAllowedManagedKeywords(NBShaderFeatureTier tier)

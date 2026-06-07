@@ -85,15 +85,24 @@ namespace NBShaders2.Editor
                     ApplySettingToInclude(settings, settings.enableDebugSymbols);
             }
 
-            EditorGUI.BeginChangeCheck();
-            var enabled = EditorGUILayout.Toggle(
-                Content(
-                    "debugSymbols.enable",
-                    "Enable NBShader2 Debug Symbols",
-                    "Writes #pragma enable_d3d11_debug_symbols into the NBShader2 debug pragma include."),
-                settings.enableDebugSymbols);
+            var enabled = settings.enableDebugSymbols;
+            var toggleChanged = false;
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUI.BeginChangeCheck();
+                enabled = EditorGUILayout.Toggle(
+                    Content(
+                        "debugSymbols.enable",
+                        "Enable NBShader2 Debug Symbols",
+                        "Writes #pragma enable_d3d11_debug_symbols into the NBShader2 debug pragma include."),
+                    settings.enableDebugSymbols);
+                toggleChanged = EditorGUI.EndChangeCheck();
 
-            if (EditorGUI.EndChangeCheck())
+                if (GUILayout.Button(ButtonContent("debugSymbols.pingInclude", "Select Debug Toggle Include"), GUILayout.Width(180f)))
+                    PingIncludeAsset();
+            }
+
+            if (toggleChanged)
             {
                 if (!enabled || ConfirmEnableDebugSymbols())
                     ApplySettingToInclude(settings, enabled);
@@ -105,14 +114,6 @@ namespace NBShaders2.Editor
                     "Enabling this option modifies NBShaderDebugPragmas.hlsl in the NB_FX package. Do not commit the enabled include unless shader debug symbols are deliberately required."),
                 MessageType.Warning);
 
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button(ButtonContent("debugSymbols.reimport", "Reimport NBShader")))
-                    ReimportShaderAssets();
-
-                if (GUILayout.Button(ButtonContent("debugSymbols.pingInclude", "Select Include")))
-                    PingIncludeAsset();
-            }
         }
 
         internal static bool WriteDebugInclude(bool enabled, out string error)

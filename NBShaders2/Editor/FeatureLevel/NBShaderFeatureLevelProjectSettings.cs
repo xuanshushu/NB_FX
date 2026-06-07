@@ -14,8 +14,6 @@ namespace NBShaders2.Editor.FeatureLevel
         [SerializeField] private NBShaderFeatureTierKeywordSet[] m_TierKeywordSets;
         [SerializeField] private NBShaderFeatureTierPassSet[] m_TierPassSets;
         [SerializeField] private NBShaderQualityTierMapping[] m_QualityTierMappings;
-        [SerializeField] private NBShaderBuildStripPolicy m_BuildStripPolicy = NBShaderBuildStripPolicy.Disabled;
-        [SerializeField] private NBShaderFeatureTier m_ExplicitTier = NBShaderFeatureTier.Ultra;
         [SerializeField] private bool m_EnableDebugSymbols;
         [SerializeField] private NBShaderFeatureRuntimeSettings m_RuntimeSettingsAsset;
 
@@ -28,8 +26,6 @@ namespace NBShaders2.Editor.FeatureLevel
         public NBShaderFeatureTierKeywordSet[] tierKeywordSets { get { EnsureInitialized(); InvalidateAllowedKeywordSetCache(); return m_TierKeywordSets; } }
         public NBShaderFeatureTierPassSet[] tierPassSets { get { EnsureInitialized(); InvalidateAllowedPassFeatureSetCache(); return m_TierPassSets; } }
         public NBShaderQualityTierMapping[] qualityTierMappings { get { EnsureInitialized(); return m_QualityTierMappings; } }
-        public NBShaderBuildStripPolicy buildStripPolicy { get { return m_BuildStripPolicy; } set { m_BuildStripPolicy = value; } }
-        public NBShaderFeatureTier explicitTier { get { return m_ExplicitTier; } set { m_ExplicitTier = value; } }
         public bool enableDebugSymbols { get { return m_EnableDebugSymbols; } }
         public NBShaderFeatureRuntimeSettings runtimeSettingsAsset { get { return m_RuntimeSettingsAsset; } set { m_RuntimeSettingsAsset = value; } }
 
@@ -315,54 +311,6 @@ namespace NBShaders2.Editor.FeatureLevel
                 tier = tier
             };
             m_QualityTierMappings = newMappings;
-        }
-
-        public HashSet<string> GetQualityMappedUnionAllowedKeywordSet()
-        {
-            EnsureInitialized();
-            var result = new HashSet<string>(StringComparer.Ordinal);
-            for (var i = 0; i < m_QualityTierMappings.Length; i++)
-            {
-                if (m_QualityTierMappings[i] == null)
-                    continue;
-                result.UnionWith(GetAllowedKeywordSetForReadOnlyUse(m_QualityTierMappings[i].tier));
-            }
-            return result;
-        }
-
-        public HashSet<string> GetQualityMappedUnionAllowedPassFeatureSet()
-        {
-            EnsureInitialized();
-            var result = new HashSet<string>(StringComparer.Ordinal);
-            for (var i = 0; i < m_QualityTierMappings.Length; i++)
-            {
-                if (m_QualityTierMappings[i] == null)
-                    continue;
-                result.UnionWith(GetAllowedPassFeatureSetForReadOnlyUse(m_QualityTierMappings[i].tier));
-            }
-            return result;
-        }
-
-        internal HashSet<string> GetQualityMappedUnionAllowedKeywordSetForBuildInfoNoSave()
-        {
-            var result = new HashSet<string>(StringComparer.Ordinal);
-            AddQualityMappedUnionNoSave(
-                delegate(NBShaderFeatureTier tier)
-                {
-                    result.UnionWith(GetAllowedKeywordSetForBuildInfoNoSave(tier));
-                });
-            return result;
-        }
-
-        internal HashSet<string> GetQualityMappedUnionAllowedPassFeatureSetForBuildInfoNoSave()
-        {
-            var result = new HashSet<string>(StringComparer.Ordinal);
-            AddQualityMappedUnionNoSave(
-                delegate(NBShaderFeatureTier tier)
-                {
-                    result.UnionWith(GetAllowedPassFeatureSetForBuildInfoNoSave(tier));
-                });
-            return result;
         }
 
         public void SaveProjectSettings()
@@ -680,32 +628,6 @@ namespace NBShaders2.Editor.FeatureLevel
             }
 
             return changed;
-        }
-
-        private delegate void TierAccumulator(NBShaderFeatureTier tier);
-
-        private void AddQualityMappedUnionNoSave(TierAccumulator accumulator)
-        {
-            if (accumulator == null)
-                return;
-
-            if (m_QualityTierMappings != null && m_QualityTierMappings.Length > 0)
-            {
-                for (var i = 0; i < m_QualityTierMappings.Length; i++)
-                {
-                    var mapping = m_QualityTierMappings[i];
-                    if (mapping != null)
-                        accumulator(mapping.tier);
-                }
-                return;
-            }
-
-            var names = QualitySettings.names;
-            if (names == null || names.Length == 0)
-                names = DefaultQualityNames;
-
-            for (var i = 0; i < names.Length; i++)
-                accumulator(GuessTierForQualityIndex(i, names.Length));
         }
 
         private static HashSet<string> BuildSanitizedAllowedSet(string[] keywords)

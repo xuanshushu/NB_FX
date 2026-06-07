@@ -4,55 +4,29 @@ using NBShader;
 
 namespace NBShaders2.Editor.FeatureLevel
 {
-    public struct NBShaderBuildStripSettings
-    {
-        public NBShaderBuildStripPolicy policy;
-        public NBShaderFeatureTier explicitTier;
-
-        public NBShaderBuildStripSettings(NBShaderBuildStripPolicy policy, NBShaderFeatureTier explicitTier)
-        {
-            this.policy = policy;
-            this.explicitTier = explicitTier;
-        }
-    }
-
     public static class NBShaderFeatureLevelBuildStripOverride
     {
-        private static readonly Stack<NBShaderBuildStripSettings> s_OverrideStack = new Stack<NBShaderBuildStripSettings>();
+        private static readonly Stack<NBShaderFeatureTier> s_OverrideStack = new Stack<NBShaderFeatureTier>();
 
         public static bool hasOverride { get { return s_OverrideStack.Count > 0; } }
 
-        public static NBShaderBuildStripSettings current
+        internal static bool TryGetCurrentTier(out NBShaderFeatureTier tier)
         {
-            get
+            if (s_OverrideStack.Count > 0)
             {
-                if (s_OverrideStack.Count > 0)
-                    return s_OverrideStack.Peek();
-
-                var settings = NBShaderFeatureLevelProjectSettings.instance;
-                return new NBShaderBuildStripSettings(settings.buildStripPolicy, settings.explicitTier);
+                tier = s_OverrideStack.Peek();
+                return true;
             }
-        }
 
-        public static IDisposable Push(NBShaderBuildStripPolicy policy, NBShaderFeatureTier explicitTier)
-        {
-            s_OverrideStack.Push(new NBShaderBuildStripSettings(policy, explicitTier));
-            return new Scope();
+            tier = NBShaderFeatureTier.Ultra;
+            return false;
         }
 
         public static IDisposable PushExplicitTier(NBShaderFeatureTier tier)
         {
-            return Push(NBShaderBuildStripPolicy.ExplicitTier, tier);
-        }
-
-        public static IDisposable PushDisabled()
-        {
-            return Push(NBShaderBuildStripPolicy.Disabled, NBShaderFeatureLevelProjectSettings.instance.explicitTier);
-        }
-
-        public static void ClearAll()
-        {
-            s_OverrideStack.Clear();
+            NBShaderVariantStripper.ResetMissingExplicitTierWarning();
+            s_OverrideStack.Push(tier);
+            return new Scope();
         }
 
         private sealed class Scope : IDisposable

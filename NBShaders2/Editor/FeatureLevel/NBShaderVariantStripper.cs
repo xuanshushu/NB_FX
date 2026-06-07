@@ -1,38 +1,36 @@
 using System.Collections.Generic;
 using NBShader;
 using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace NBShaders2.Editor.FeatureLevel
 {
-    public sealed class NBShaderVariantStripper : IPreprocessShaders
+    public sealed class NBShaderVariantStripper : IPreprocessShaders, IPreprocessBuildWithReport
     {
+        private static bool s_MissingExplicitTierWarningLogged;
+
         public int callbackOrder { get { return 0; } }
+
+        public void OnPreprocessBuild(BuildReport report)
+        {
+            ResetMissingExplicitTierWarning();
+        }
 
         public void OnProcessShader(Shader shader, ShaderSnippetData snippet, IList<ShaderCompilerData> data)
         {
             if (shader == null || shader.name != NBShaderFeatureLevelCatalog.ShaderName || data == null || data.Count == 0)
                 return;
 
-            var buildSettings = NBShaderFeatureLevelBuildStripOverride.current;
-            if (buildSettings.policy == NBShaderBuildStripPolicy.Disabled)
-                return;
+            NBShaderFeatureTier tier;
+            if (!NBShaderFeatureLevelBuildStripOverride.TryGetCurrentTier(out tier))
+                LogMissingExplicitTierWarning();
 
-            HashSet<string> allowedKeywords;
-            HashSet<string> allowedPassFeatures;
             var projectSettings = NBShaderFeatureLevelProjectSettings.instance;
-            if (buildSettings.policy == NBShaderBuildStripPolicy.QualityMappedUnion)
-            {
-                allowedKeywords = projectSettings.GetQualityMappedUnionAllowedKeywordSetForBuildInfoNoSave();
-                allowedPassFeatures = projectSettings.GetQualityMappedUnionAllowedPassFeatureSetForBuildInfoNoSave();
-            }
-            else
-            {
-                allowedKeywords = projectSettings.GetAllowedKeywordSetForBuildInfoNoSave(buildSettings.explicitTier);
-                allowedPassFeatures = projectSettings.GetAllowedPassFeatureSetForBuildInfoNoSave(buildSettings.explicitTier);
-            }
+            HashSet<string> allowedKeywords = projectSettings.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            HashSet<string> allowedPassFeatures = projectSettings.GetAllowedPassFeatureSetForBuildInfoNoSave(tier);
 
             if (IsDisallowedManagedPass(snippet, allowedPassFeatures))
             {
@@ -45,6 +43,23 @@ namespace NBShaders2.Editor.FeatureLevel
                 if (ContainsDisallowedManagedKeyword(shader, data[i], allowedKeywords))
                     data.RemoveAt(i);
             }
+        }
+
+        private static void LogMissingExplicitTierWarning()
+        {
+            if (s_MissingExplicitTierWarningLogged)
+                return;
+
+            s_MissingExplicitTierWarningLogged = true;
+            Debug.LogWarning(
+                "NBShader2 build stripping tier was not specified. Defaulting to Ultra. " +
+                "Wrap BuildPipeline.BuildPlayer or BuildPipeline.BuildAssetBundles in " +
+                "NBShaderFeatureLevelEditorAPI.OverrideBuildStripExplicitTier(tier) to build lower-tier NBShader variants intentionally.");
+        }
+
+        internal static void ResetMissingExplicitTierWarning()
+        {
+            s_MissingExplicitTierWarningLogged = false;
         }
 
         private static bool IsDisallowedManagedPass(ShaderSnippetData snippet, HashSet<string> allowedPassFeatures)

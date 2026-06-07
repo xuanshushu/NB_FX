@@ -31,13 +31,6 @@ namespace NBShaders2.Editor.FeatureLevel
             NBShaderFeatureTier.Ultra
         };
 
-        private static readonly string[] BuildStripPolicyFallbackOptions =
-        {
-            "Disabled",
-            "Explicit Tier",
-            "Quality Mapped Union"
-        };
-
         private static Vector2 s_TableScrollPosition;
 
         static NBShaderFeatureLevelSettingsProvider()
@@ -77,12 +70,9 @@ namespace NBShaders2.Editor.FeatureLevel
             EditorGUILayout.HelpBox(
                 Text(
                     "featureLevel.help.message",
-                    "Configure NBShader managed Catalog keywords and shader passes per tier, bind Unity Quality levels, and choose build-time shader variant stripping. Catalog-external features are ignored."),
+                    "Configure NBShader managed Catalog keywords and shader passes per tier, bind Unity Quality levels, and export runtime settings. Build scripts select the build stripping tier through NBShaderFeatureLevelEditorAPI.OverrideBuildStripExplicitTier. Catalog-external features are ignored."),
                 MessageType.Info);
 
-            changed |= DrawBuildStripPolicy(settings);
-
-            EditorGUILayout.Space();
             changed |= DrawRuntimeSettingsAsset(settings);
 
             EditorGUILayout.Space();
@@ -93,30 +83,6 @@ namespace NBShaders2.Editor.FeatureLevel
 
             if (changed)
                 settings.SaveProjectSettings();
-        }
-
-        private static bool DrawBuildStripPolicy(NBShaderFeatureLevelProjectSettings settings)
-        {
-            var options = NBShaderInspectorLocalization.GetInspectorOptions(
-                "featureLevel.buildStripPolicy",
-                BuildStripPolicyFallbackOptions);
-            var current = Mathf.Clamp((int)settings.buildStripPolicy, 0, options.Length - 1);
-
-            EditorGUI.BeginChangeCheck();
-            var selected = EditorGUILayout.Popup(
-                Content(
-                    "featureLevel.buildStripPolicy",
-                    "Build Strip Policy",
-                    "Controls how NBShader Catalog keyword variants are stripped during build."),
-                current,
-                options);
-
-            if (!EditorGUI.EndChangeCheck())
-                return false;
-
-            Undo.RecordObject(settings, Text("featureLevel.undo.changeBuildStripPolicy", "Change NBShader Build Strip Policy"));
-            settings.buildStripPolicy = (NBShaderBuildStripPolicy)selected;
-            return true;
         }
 
         private static bool DrawRuntimeSettingsAsset(NBShaderFeatureLevelProjectSettings settings)
@@ -158,7 +124,6 @@ namespace NBShaders2.Editor.FeatureLevel
             {
                 DrawTableHeader();
                 DrawQualityBindingRow(settings);
-                changed |= DrawBuildTargetRow(settings);
                 DrawTableSeparator();
                 changed |= DrawFeatureRows(settings);
             }
@@ -249,52 +214,6 @@ namespace NBShaders2.Editor.FeatureLevel
                     new GUIContent(Text("featureLevel.desc.quality", "Unity Quality Level")),
                     DescriptionColumnWidth);
             }
-        }
-
-        private static bool DrawBuildTargetRow(NBShaderFeatureLevelProjectSettings settings)
-        {
-            var changed = false;
-            var isExplicitPolicy = settings.buildStripPolicy == NBShaderBuildStripPolicy.ExplicitTier;
-
-            using (new EditorGUILayout.HorizontalScope(GUILayout.Height(RowHeight)))
-            {
-                GUILayout.Label(
-                    Content(
-                        "featureLevel.row.buildTarget",
-                        "Build Target Tier",
-                        "Explicit tier used by Build Strip Policy when set to Explicit Tier."),
-                    GUILayout.Width(FeatureColumnWidth),
-                    GUILayout.Height(RowHeight));
-
-                using (new EditorGUI.DisabledScope(!isExplicitPolicy))
-                {
-                    for (var i = 0; i < Tiers.Length; i++)
-                    {
-                        var tier = Tiers[i];
-                        var isSelected = settings.explicitTier == tier;
-                        var newSelected = DrawCellToggle(isSelected, EditorStyles.radioButton);
-                        if (!isExplicitPolicy || !newSelected || isSelected)
-                            continue;
-
-                        Undo.RecordObject(settings, Text("featureLevel.undo.changeExplicitTier", "Change NBShader Explicit Tier"));
-                        settings.explicitTier = tier;
-                        changed = true;
-                    }
-                }
-
-                DrawCostPlaceholderCell();
-                DrawInfoCell(
-                    new GUIContent(
-                        isExplicitPolicy
-                            ? Text("featureLevel.desc.buildTarget.active", "Used by Explicit Tier stripping.")
-                            : Text("featureLevel.desc.buildTarget.inactive", "Only active when policy is Explicit Tier.")),
-                    EffectColumnWidth);
-                DrawInfoCell(
-                    new GUIContent(Text("featureLevel.desc.config", "Config")),
-                    DescriptionColumnWidth);
-            }
-
-            return changed;
         }
 
         private static bool DrawFeatureRows(NBShaderFeatureLevelProjectSettings settings)

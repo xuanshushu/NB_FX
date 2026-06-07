@@ -3,13 +3,6 @@ using NBShader;
 
 namespace NBShaders2.Editor.FeatureLevel
 {
-    public enum NBShaderBuildStripPolicy
-    {
-        Disabled = 0,
-        ExplicitTier = 1,
-        QualityMappedUnion = 2,
-    }
-
     [Serializable]
     public sealed class NBShaderFeatureTierKeywordSet
     {
