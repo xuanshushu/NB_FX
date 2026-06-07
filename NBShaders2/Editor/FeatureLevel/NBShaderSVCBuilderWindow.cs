@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NBShader;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,10 +9,25 @@ namespace NBShaders2.Editor.FeatureLevel
     {
         [SerializeField] private List<string> m_SearchFolders = new List<string>();
         [SerializeField] private string m_OutputFolder = NBShaderVariantCollectionBuilder.DefaultOutputFolder;
+        [SerializeField] private int m_TierMask = AllTierMask;
 
         private Vector2 m_Scroll;
         private NBShaderVariantCollectionTierResult[] m_Previews = new NBShaderVariantCollectionTierResult[0];
         private string m_Status = string.Empty;
+
+        private const int AllTierMask =
+            (1 << (int)NBShaderFeatureTier.Low) |
+            (1 << (int)NBShaderFeatureTier.Medium) |
+            (1 << (int)NBShaderFeatureTier.High) |
+            (1 << (int)NBShaderFeatureTier.Ultra);
+
+        private static readonly NBShaderFeatureTier[] Tiers =
+        {
+            NBShaderFeatureTier.Low,
+            NBShaderFeatureTier.Medium,
+            NBShaderFeatureTier.High,
+            NBShaderFeatureTier.Ultra
+        };
 
         internal static void Open()
         {
@@ -28,6 +44,8 @@ namespace NBShaders2.Editor.FeatureLevel
                 m_SearchFolders.Add("Assets");
             if (string.IsNullOrEmpty(m_OutputFolder))
                 m_OutputFolder = NBShaderVariantCollectionBuilder.DefaultOutputFolder;
+            if (m_TierMask == 0)
+                m_TierMask = AllTierMask;
         }
 
         private void OnGUI()
@@ -36,6 +54,8 @@ namespace NBShaders2.Editor.FeatureLevel
             DrawSearchFolders();
             EditorGUILayout.Space(8f);
             DrawOutputFolder();
+            EditorGUILayout.Space(8f);
+            DrawTierSelection();
             EditorGUILayout.Space(8f);
             DrawActions();
             EditorGUILayout.Space(8f);
@@ -94,13 +114,47 @@ namespace NBShaders2.Editor.FeatureLevel
             EditorGUILayout.EndHorizontal();
         }
 
+        private void DrawTierSelection()
+        {
+            EditorGUILayout.LabelField("Build Tiers", EditorStyles.boldLabel);
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                for (var i = 0; i < Tiers.Length; i++)
+                    DrawTierToggle(Tiers[i]);
+
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("All", GUILayout.Width(56f)))
+                    SetTierMask(AllTierMask);
+            }
+
+            if (!HasSelectedTier())
+                EditorGUILayout.HelpBox("Select at least one tier before previewing or generating SVC assets.", MessageType.Warning);
+        }
+
+        private void DrawTierToggle(NBShaderFeatureTier tier)
+        {
+            var selected = IsTierSelected(tier);
+            var newSelected = EditorGUILayout.ToggleLeft(tier.ToString(), selected, GUILayout.Width(92f));
+            if (newSelected == selected)
+                return;
+
+            var mask = 1 << (int)tier;
+            if (newSelected)
+                SetTierMask(m_TierMask | mask);
+            else
+                SetTierMask(m_TierMask & ~mask);
+        }
+
         private void DrawActions()
         {
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Preview", GUILayout.Height(28f)))
-                Preview();
+            using (new EditorGUI.DisabledScope(!HasSelectedTier()))
+            {
+                if (GUILayout.Button("Preview", GUILayout.Height(28f)))
+                    Preview();
+            }
 
-            using (new EditorGUI.DisabledScope(m_Previews == null || m_Previews.Length == 0))
+            using (new EditorGUI.DisabledScope(!HasSelectedTier() || m_Previews == null || m_Previews.Length == 0))
             {
                 if (GUILayout.Button("Generate SVC", GUILayout.Height(28f)))
                     Generate();
@@ -147,17 +201,19 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private void Preview()
         {
-            var result = NBShaderVariantCollectionBuilder.Preview(m_SearchFolders, m_OutputFolder);
+            var selectedTiers = GetSelectedTiers();
+            var result = NBShaderVariantCollectionBuilder.Preview(m_SearchFolders, m_OutputFolder, selectedTiers);
             m_Previews = result.tiers;
             m_Status = string.Format(
-                "Found {0} NBShader materials in {1} valid folder(s). Preview did not write assets.",
+                "Found {0} NBShader materials in {1} valid folder(s). Previewed {2} tier(s) and did not write assets.",
                 result.materialCount,
-                result.validSearchFolderCount);
+                result.validSearchFolderCount,
+                selectedTiers.Length);
         }
 
         private void Generate()
         {
-            var result = NBShaderVariantCollectionBuilder.Generate(m_SearchFolders, m_OutputFolder);
+            var result = NBShaderVariantCollectionBuilder.Generate(m_SearchFolders, m_OutputFolder, GetSelectedTiers());
             if (result.hasError)
             {
                 EditorUtility.DisplayDialog("Generate NBShader SVC", result.firstErrorMessage, "OK");
@@ -195,6 +251,40 @@ namespace NBShaders2.Editor.FeatureLevel
             var absoluteStart = NBShaderVariantCollectionBuilder.ToAbsolutePath(start);
             var picked = EditorUtility.OpenFolderPanel("Select Project Folder", absoluteStart, string.Empty);
             return NBShaderVariantCollectionBuilder.NormalizeAssetPath(picked);
+        }
+
+        private bool HasSelectedTier()
+        {
+            return (m_TierMask & AllTierMask) != 0;
+        }
+
+        private bool IsTierSelected(NBShaderFeatureTier tier)
+        {
+            return (m_TierMask & (1 << (int)tier)) != 0;
+        }
+
+        private NBShaderFeatureTier[] GetSelectedTiers()
+        {
+            var result = new List<NBShaderFeatureTier>();
+            for (var i = 0; i < Tiers.Length; i++)
+            {
+                var tier = Tiers[i];
+                if (IsTierSelected(tier))
+                    result.Add(tier);
+            }
+
+            return result.ToArray();
+        }
+
+        private void SetTierMask(int tierMask)
+        {
+            tierMask &= AllTierMask;
+            if (m_TierMask == tierMask)
+                return;
+
+            m_TierMask = tierMask;
+            m_Previews = new NBShaderVariantCollectionTierResult[0];
+            m_Status = string.Empty;
         }
     }
 }

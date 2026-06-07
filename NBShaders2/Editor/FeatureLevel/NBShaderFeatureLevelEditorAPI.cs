@@ -18,6 +18,11 @@ namespace NBShaders2.Editor.FeatureLevel
             return NBShaderFeatureLevelBuildStripOverride.PushExplicitTier(tier);
         }
 
+        public static string DefaultGeneratedRuntimeSettingsAssetPath
+        {
+            get { return NBShaderRuntimeSettingsSynchronizer.DefaultGeneratedRuntimeSettingsAssetPath; }
+        }
+
         public static HashSet<string> GetAllowedManagedKeywords(NBShaderFeatureTier tier)
         {
             return NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
@@ -182,11 +187,6 @@ namespace NBShaders2.Editor.FeatureLevel
             return false;
         }
 
-        public static bool WriteConfiguredRuntimeSettingsAsset()
-        {
-            return NBShaderRuntimeSettingsSynchronizer.WriteConfiguredRuntimeSettingsAsset();
-        }
-
         public static bool WriteRuntimeSettingsAsset(NBShaderFeatureRuntimeSettings asset)
         {
             return NBShaderRuntimeSettingsSynchronizer.WriteProjectSettingsToRuntimeAsset(asset);
@@ -195,6 +195,18 @@ namespace NBShaders2.Editor.FeatureLevel
         public static bool WriteRuntimeSettingsAssetNoSave(NBShaderFeatureRuntimeSettings asset)
         {
             return NBShaderRuntimeSettingsSynchronizer.WriteProjectSettingsSnapshotToRuntimeAssetNoSave(asset);
+        }
+
+        public static NBShaderFeatureRuntimeSettings WriteDefaultRuntimeSettingsAsset(out string assetPath)
+        {
+            return NBShaderRuntimeSettingsSynchronizer.WriteDefaultGeneratedRuntimeSettingsAsset(out assetPath);
+        }
+
+        public static NBShaderFeatureRuntimeSettings WriteRuntimeSettingsAssetOrDefault(
+            NBShaderFeatureRuntimeSettings explicitAsset,
+            out string assetPath)
+        {
+            return NBShaderRuntimeSettingsSynchronizer.WriteRuntimeSettingsAssetOrDefault(explicitAsset, out assetPath);
         }
 
         private static NBShaderPassBuildInfo[] BuildPassInfo(NBShaderPassIntent[] passes)

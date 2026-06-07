@@ -70,12 +70,9 @@ namespace NBShaders2.Editor.FeatureLevel
             EditorGUILayout.HelpBox(
                 Text(
                     "featureLevel.help.message",
-                    "Configure NBShader managed Catalog keywords and shader passes per tier, bind Unity Quality levels, and export runtime settings. Build scripts select the build stripping tier through NBShaderFeatureLevelEditorAPI.OverrideBuildStripExplicitTier. Catalog-external features are ignored."),
+                    "Configure NBShader managed Catalog keywords and shader passes per tier, and bind Unity Quality levels. Build scripts select the build stripping tier through NBShaderFeatureLevelEditorAPI.OverrideBuildStripExplicitTier. Runtime settings assets can be updated from their own Inspector or Editor API. Catalog-external features are ignored."),
                 MessageType.Info);
 
-            changed |= DrawRuntimeSettingsAsset(settings);
-
-            EditorGUILayout.Space();
             changed |= DrawFeatureLevelTable(settings);
 
             EditorGUILayout.Space();
@@ -83,26 +80,6 @@ namespace NBShaders2.Editor.FeatureLevel
 
             if (changed)
                 settings.SaveProjectSettings();
-        }
-
-        private static bool DrawRuntimeSettingsAsset(NBShaderFeatureLevelProjectSettings settings)
-        {
-            EditorGUI.BeginChangeCheck();
-            var asset = (NBShaderFeatureRuntimeSettings)EditorGUILayout.ObjectField(
-                Content(
-                    "featureLevel.runtimeSettingsAsset",
-                    "Runtime Settings Asset",
-                    "Optional user-owned asset that can receive the current NBShader feature level config. Runtime loading is owned by the user project."),
-                settings.runtimeSettingsAsset,
-                typeof(NBShaderFeatureRuntimeSettings),
-                false);
-
-            if (!EditorGUI.EndChangeCheck())
-                return false;
-
-            Undo.RecordObject(settings, Text("featureLevel.undo.changeRuntimeSettingsAsset", "Change NBShader Runtime Settings Asset"));
-            settings.runtimeSettingsAsset = asset;
-            return true;
         }
 
         private static bool DrawFeatureLevelTable(NBShaderFeatureLevelProjectSettings settings)
@@ -395,27 +372,6 @@ namespace NBShaders2.Editor.FeatureLevel
                     Undo.RecordObject(settings, Text("featureLevel.undo.resetQualityMapping", "Reset NBShader Quality Mapping"));
                     settings.ResetQualityMappingsToDefault();
                     changed = true;
-                }
-
-                if (GUILayout.Button(ButtonContent(
-                        "featureLevel.writeRuntimeAsset",
-                        "Write Current Config To Runtime Asset",
-                        "Write the current Project Settings data into the explicitly assigned runtime settings asset.")))
-                {
-                    if (settings.runtimeSettingsAsset == null)
-                    {
-                        EditorUtility.DisplayDialog(
-                            Text("featureLevel.writeRuntimeAsset.missingTitle", "Runtime Settings Asset Missing"),
-                            Text("featureLevel.writeRuntimeAsset.missingMessage", "Assign a Runtime Settings Asset before writing the current NBShader feature level config."),
-                            Text("featureLevel.dialog.ok", "OK"));
-                    }
-                    else if (NBShaderRuntimeSettingsSynchronizer.WriteConfiguredRuntimeSettingsAsset())
-                    {
-                        EditorUtility.DisplayDialog(
-                            Text("featureLevel.writeRuntimeAsset.successTitle", "Runtime Settings Asset Written"),
-                            Text("featureLevel.writeRuntimeAsset.successMessage", "The current NBShader feature level config was written to the assigned runtime settings asset."),
-                            Text("featureLevel.dialog.ok", "OK"));
-                    }
                 }
             }
 

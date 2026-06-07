@@ -22,25 +22,45 @@ namespace NBShaders2.Editor.FeatureLevel
 
         public static NBShaderVariantCollectionBuildResult Preview(IEnumerable<string> searchFolders, string outputFolder)
         {
+            return Preview(searchFolders, outputFolder, null);
+        }
+
+        public static NBShaderVariantCollectionBuildResult Preview(
+            IEnumerable<string> searchFolders,
+            string outputFolder,
+            IEnumerable<NBShaderFeatureTier> tiers)
+        {
             var validFolders = GetValidSearchFolders(searchFolders);
             var materials = CollectMaterialsInValidFolders(validFolders);
-            return BuildResult(validFolders, materials, NormalizeOutputFolder(outputFolder), false);
+            return BuildResult(validFolders, materials, NormalizeOutputFolder(outputFolder), NormalizeTiers(tiers), false);
         }
 
         public static NBShaderVariantCollectionBuildResult Generate(IEnumerable<string> searchFolders, string outputFolder)
         {
+            return Generate(searchFolders, outputFolder, null);
+        }
+
+        public static NBShaderVariantCollectionBuildResult Generate(
+            IEnumerable<string> searchFolders,
+            string outputFolder,
+            IEnumerable<NBShaderFeatureTier> tiers)
+        {
             var validFolders = GetValidSearchFolders(searchFolders);
             var materials = CollectMaterialsInValidFolders(validFolders);
             var normalizedOutputFolder = NormalizeOutputFolder(outputFolder);
+            var normalizedTiers = NormalizeTiers(tiers);
+
+            if (normalizedTiers.Length == 0)
+                return BuildResult(validFolders, materials, normalizedOutputFolder, normalizedTiers, false, "No NBShader feature tiers were selected.");
 
             if (materials.Length == 0)
-                return BuildResult(validFolders, materials, normalizedOutputFolder, false, "No NBShader materials were found in the selected folders.");
+                return BuildResult(validFolders, materials, normalizedOutputFolder, normalizedTiers, false, "No NBShader materials were found in the selected folders.");
 
             string errorMessage;
             if (!EnsureOutputFolder(normalizedOutputFolder, out errorMessage))
-                return BuildResult(validFolders, materials, normalizedOutputFolder, false, errorMessage);
+                return BuildResult(validFolders, materials, normalizedOutputFolder, normalizedTiers, false, errorMessage);
 
-            return BuildResult(validFolders, materials, normalizedOutputFolder, true);
+            return BuildResult(validFolders, materials, normalizedOutputFolder, normalizedTiers, true);
         }
 
         public static Material[] CollectMaterials(IEnumerable<string> searchFolders)
@@ -132,13 +152,17 @@ namespace NBShaders2.Editor.FeatureLevel
             string[] validFolders,
             Material[] materials,
             string outputFolder,
+            NBShaderFeatureTier[] tiers,
             bool writeAssets,
             string errorMessage = null)
         {
-            var tierResults = new NBShaderVariantCollectionTierResult[Tiers.Length];
-            for (var i = 0; i < Tiers.Length; i++)
+            if (tiers == null)
+                tiers = CloneDefaultTiers();
+
+            var tierResults = new NBShaderVariantCollectionTierResult[tiers.Length];
+            for (var i = 0; i < tiers.Length; i++)
             {
-                var tier = Tiers[i];
+                var tier = tiers[i];
                 var buildInfo = NBShaderFeatureLevelEditorAPI.GetBuildInfo(
                     tier,
                     materials,
@@ -279,6 +303,42 @@ namespace NBShaders2.Editor.FeatureLevel
                 return DefaultOutputFolder;
 
             return NormalizeAssetPath(outputFolder);
+        }
+
+        private static NBShaderFeatureTier[] NormalizeTiers(IEnumerable<NBShaderFeatureTier> tiers)
+        {
+            if (tiers == null)
+                return CloneDefaultTiers();
+
+            var selected = new HashSet<NBShaderFeatureTier>();
+            foreach (var tier in tiers)
+            {
+                if (IsValidTier(tier))
+                    selected.Add(tier);
+            }
+
+            var result = new List<NBShaderFeatureTier>();
+            for (var i = 0; i < Tiers.Length; i++)
+            {
+                var tier = Tiers[i];
+                if (selected.Contains(tier))
+                    result.Add(tier);
+            }
+
+            return result.ToArray();
+        }
+
+        private static bool IsValidTier(NBShaderFeatureTier tier)
+        {
+            return tier == NBShaderFeatureTier.Low ||
+                   tier == NBShaderFeatureTier.Medium ||
+                   tier == NBShaderFeatureTier.High ||
+                   tier == NBShaderFeatureTier.Ultra;
+        }
+
+        private static NBShaderFeatureTier[] CloneDefaultTiers()
+        {
+            return (NBShaderFeatureTier[])Tiers.Clone();
         }
 
         private sealed class SvcVariant

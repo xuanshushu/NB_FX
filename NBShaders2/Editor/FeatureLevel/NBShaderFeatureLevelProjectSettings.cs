@@ -15,7 +15,6 @@ namespace NBShaders2.Editor.FeatureLevel
         [SerializeField] private NBShaderFeatureTierPassSet[] m_TierPassSets;
         [SerializeField] private NBShaderQualityTierMapping[] m_QualityTierMappings;
         [SerializeField] private bool m_EnableDebugSymbols;
-        [SerializeField] private NBShaderFeatureRuntimeSettings m_RuntimeSettingsAsset;
 
         [NonSerialized] private bool m_Initialized;
         [NonSerialized] private HashSet<string>[] m_AllowedKeywordSetCache;
@@ -27,7 +26,6 @@ namespace NBShaders2.Editor.FeatureLevel
         public NBShaderFeatureTierPassSet[] tierPassSets { get { EnsureInitialized(); InvalidateAllowedPassFeatureSetCache(); return m_TierPassSets; } }
         public NBShaderQualityTierMapping[] qualityTierMappings { get { EnsureInitialized(); return m_QualityTierMappings; } }
         public bool enableDebugSymbols { get { return m_EnableDebugSymbols; } }
-        public NBShaderFeatureRuntimeSettings runtimeSettingsAsset { get { return m_RuntimeSettingsAsset; } set { m_RuntimeSettingsAsset = value; } }
 
         public void EnsureInitialized()
         {

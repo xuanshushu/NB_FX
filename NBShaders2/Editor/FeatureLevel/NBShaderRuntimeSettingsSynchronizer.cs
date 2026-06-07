@@ -7,16 +7,16 @@ namespace NBShaders2.Editor.FeatureLevel
 {
     public static class NBShaderRuntimeSettingsSynchronizer
     {
-        public static bool WriteConfiguredRuntimeSettingsAsset()
-        {
-            return WriteProjectSettingsToRuntimeAsset(NBShaderFeatureLevelProjectSettings.instance.runtimeSettingsAsset);
-        }
+        public const string DefaultGeneratedRuntimeSettingsAssetPath =
+            "Assets/NBShaderGenerated/RuntimeSettings/NBShaderFeatureRuntimeSettings.asset";
+
+        private static bool s_DefaultGeneratedRuntimeSettingsWarningLogged;
 
         public static bool WriteProjectSettingsToRuntimeAsset(NBShaderFeatureRuntimeSettings asset)
         {
             if (asset == null)
             {
-                Debug.LogWarning("NBShader runtime settings asset is not configured. Assign a Runtime Settings Asset before writing.");
+                Debug.LogWarning("NBShader runtime settings asset is null. Pass an explicit NBShaderFeatureRuntimeSettings asset before writing.");
                 return false;
             }
 
@@ -32,7 +32,7 @@ namespace NBShaders2.Editor.FeatureLevel
         {
             if (asset == null)
             {
-                Debug.LogWarning("NBShader runtime settings asset is not configured. Assign a Runtime Settings Asset before writing.");
+                Debug.LogWarning("NBShader runtime settings asset is null. Pass an explicit NBShaderFeatureRuntimeSettings asset before writing.");
                 return false;
             }
 
@@ -40,6 +40,29 @@ namespace NBShaders2.Editor.FeatureLevel
             EditorUtility.SetDirty(asset);
             AssetDatabase.SaveAssetIfDirty(asset);
             return true;
+        }
+
+        public static NBShaderFeatureRuntimeSettings WriteDefaultGeneratedRuntimeSettingsAsset(out string assetPath)
+        {
+            assetPath = DefaultGeneratedRuntimeSettingsAssetPath;
+            LogDefaultGeneratedRuntimeSettingsWarningOnce(assetPath);
+
+            var asset = LoadOrCreateRuntimeSettingsAsset(assetPath);
+            if (asset == null)
+                return null;
+
+            return WriteProjectSettingsToRuntimeAsset(asset) ? asset : null;
+        }
+
+        public static NBShaderFeatureRuntimeSettings WriteRuntimeSettingsAssetOrDefault(
+            NBShaderFeatureRuntimeSettings explicitAsset,
+            out string assetPath)
+        {
+            if (explicitAsset == null)
+                return WriteDefaultGeneratedRuntimeSettingsAsset(out assetPath);
+
+            assetPath = AssetDatabase.GetAssetPath(explicitAsset);
+            return WriteProjectSettingsToRuntimeAsset(explicitAsset) ? explicitAsset : null;
         }
 
         private static void ApplyProjectSettingsToRuntimeObject(
@@ -143,6 +166,76 @@ namespace NBShaders2.Editor.FeatureLevel
             }
 
             return result.ToArray();
+        }
+
+        private static NBShaderFeatureRuntimeSettings LoadOrCreateRuntimeSettingsAsset(string assetPath)
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+            if (existing == null)
+            {
+                if (!EnsureAssetFolder(assetPath))
+                    return null;
+
+                var asset = ScriptableObject.CreateInstance<NBShaderFeatureRuntimeSettings>();
+                AssetDatabase.CreateAsset(asset, assetPath);
+                return asset;
+            }
+
+            var runtimeSettings = existing as NBShaderFeatureRuntimeSettings;
+            if (runtimeSettings != null)
+                return runtimeSettings;
+
+            Debug.LogError("NBShader default runtime settings output path is occupied by another asset type: " + assetPath);
+            return null;
+        }
+
+        private static bool EnsureAssetFolder(string assetPath)
+        {
+            var slashIndex = assetPath.LastIndexOf('/');
+            if (slashIndex <= 0)
+                return true;
+
+            var folderPath = assetPath.Substring(0, slashIndex);
+            var parts = folderPath.Split('/');
+            if (parts.Length == 0 || parts[0] != "Assets")
+            {
+                Debug.LogError("NBShader default runtime settings asset path must be under Assets: " + assetPath);
+                return false;
+            }
+
+            var current = "Assets";
+            for (var i = 1; i < parts.Length; i++)
+            {
+                var part = parts[i];
+                if (string.IsNullOrEmpty(part))
+                    continue;
+
+                var next = current + "/" + part;
+                if (!AssetDatabase.IsValidFolder(next))
+                    AssetDatabase.CreateFolder(current, part);
+
+                if (!AssetDatabase.IsValidFolder(next))
+                {
+                    Debug.LogError("Failed to create NBShader runtime settings folder: " + next);
+                    return false;
+                }
+
+                current = next;
+            }
+
+            return true;
+        }
+
+        private static void LogDefaultGeneratedRuntimeSettingsWarningOnce(string assetPath)
+        {
+            if (s_DefaultGeneratedRuntimeSettingsWarningLogged)
+                return;
+
+            s_DefaultGeneratedRuntimeSettingsWarningLogged = true;
+            Debug.LogWarning(
+                "NBShader runtime settings asset was not explicitly specified. Generated one from current Project Settings at " +
+                assetPath +
+                ". Include this asset in the player, Addressables, Resources, or shader AssetBundle before runtime code passes it to NBShaderFeatureRuntime.ApplyTier.");
         }
     }
 }
