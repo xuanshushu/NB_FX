@@ -527,7 +527,7 @@
             tangentToWorld = half3x3(tangentWS.xyz, bitangent.xyz, input.normalWSAndAnimBlend.xyz);
         #endif
         #ifdef _PARALLAX_MAPPING
-            float3 tangentViewDir = TransformWorldToTangentDir(viewDirWS, tangentToWorld, true);
+            float3 tangentViewDir = NBTransformWorldToTangentDir(viewDirWS, tangentToWorld, true);
             MainTex_UV.xy = ParallaxOcclusionMapping(MainTex_UV, tangentViewDir);
         #endif
         #ifdef _NORMALMAP

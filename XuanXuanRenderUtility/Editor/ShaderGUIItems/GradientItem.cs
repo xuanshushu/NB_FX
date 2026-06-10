@@ -520,7 +520,7 @@ namespace NBShaderEditor
         {
             try
             {
-                return RootItem.Shader.GetPropertyDefaultIntValue(info.Index);
+                return GetShaderPropertyDefaultIntValue(RootItem.Shader, info.Index);
             }
             catch (ArgumentException)
             {

@@ -55,6 +55,34 @@ namespace NBShaderEditor
         public Rect ResetRect;
         private static readonly GUIContent TempHelpContent = new GUIContent();
         public static float ResetButtonSize => EditorGUIUtility.singleLineHeight;
+#if !UNITY_2022_1_OR_NEWER
+        private static Material s_ShaderDefaultIntValueMaterial;
+#endif
+
+        public static int GetShaderPropertyDefaultIntValue(Shader shader, int propertyIndex)
+        {
+#if UNITY_2022_1_OR_NEWER
+            return shader.GetPropertyDefaultIntValue(propertyIndex);
+#else
+            if (s_ShaderDefaultIntValueMaterial == null ||
+                s_ShaderDefaultIntValueMaterial.shader != shader)
+            {
+                if (s_ShaderDefaultIntValueMaterial != null)
+                {
+                    UnityEngine.Object.DestroyImmediate(s_ShaderDefaultIntValueMaterial);
+                }
+
+                // Unity 2021.3 has no int default API; use one hidden material as the shader default-value reader.
+                s_ShaderDefaultIntValueMaterial = new Material(shader)
+                {
+                    hideFlags = HideFlags.HideAndDontSave
+                };
+            }
+
+            return s_ShaderDefaultIntValueMaterial.GetInteger(shader.GetPropertyName(propertyIndex));
+#endif
+        }
+
         public virtual void GetRect(bool applyControlIndentCompensation = true)
         {
             BaseRect = ApplyGlobalRectCompensation(RootItem.GetControlRect());

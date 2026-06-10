@@ -329,6 +329,13 @@
         #endif
     }
 
+    real3 NBTransformWorldToTangentDir(real3 dirWS, real3x3 tangentToWorld, bool doNormalize = false)
+    {
+        // Unity 2021 / URP 12 does not expose TransformWorldToTangentDir.
+        real3 result = mul(tangentToWorld, dirWS);
+        return doNormalize ? SafeNormalize(result) : result;
+    }
+
     float3 GetCustomLocalSpaceNormalizeViewDir(float3 positionOS)
     {
         #ifdef _CUSTOM_LOCAL_TRANSFORM
