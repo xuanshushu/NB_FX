@@ -25,8 +25,6 @@ namespace NBShader
             public TextureHandle activeColorTexture;
             public Material material;
             public Mesh fullscreenMesh;
-            public Matrix4x4 cameraViewMatrix;
-            public Matrix4x4 cameraProjectionMatrix;
         }
 
         private static bool IsSupportedCamera(CameraType cameraType)
@@ -44,26 +42,18 @@ namespace NBShader
             if (!resourceData.activeColorTexture.IsValid())
                 return;
 
-            using (var builder = renderGraph.AddUnsafePass<RenderGraphPassData>("NBPostProcess", out var passData))
+            using (var builder = renderGraph.AddRasterRenderPass<RenderGraphPassData>("NBPostProcess", out var passData))
             {
-                Camera camera = cameraData.camera;
                 passData.activeColorTexture = resourceData.activeColorTexture;
                 passData.material = _material;
                 passData.fullscreenMesh = _fullScreenMesh != null ? _fullScreenMesh : RenderingUtils.fullscreenMesh;
-                passData.cameraViewMatrix = camera.worldToCameraMatrix;
-                passData.cameraProjectionMatrix = camera.projectionMatrix;
 
-                builder.UseTexture(passData.activeColorTexture, AccessFlags.ReadWrite);
+                builder.SetRenderAttachment(passData.activeColorTexture, 0, AccessFlags.ReadWrite);
                 builder.UseGlobalTexture(ScreenColorCopy, AccessFlags.Read);
                 builder.UseGlobalTexture(DisturbanceMaskTex, AccessFlags.Read);
-                builder.AllowGlobalStateModification(true);
-                builder.SetRenderFunc(static (RenderGraphPassData data, UnsafeGraphContext context) =>
+                builder.SetRenderFunc(static (RenderGraphPassData data, RasterGraphContext context) =>
                 {
-                    CommandBuffer cmd = CommandBufferHelpers.GetNativeCommandBuffer(context.cmd);
-                    context.cmd.SetRenderTarget(data.activeColorTexture);
-                    cmd.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
-                    cmd.DrawMesh(data.fullscreenMesh, Matrix4x4.identity, data.material, 0, 0);
-                    cmd.SetViewProjectionMatrices(data.cameraViewMatrix, data.cameraProjectionMatrix);
+                    context.cmd.DrawMesh(data.fullscreenMesh, Matrix4x4.identity, data.material, 0, 0);
                 });
             }
         }
@@ -84,13 +74,8 @@ namespace NBShader
           
             using (new ProfilingScope(cmdBuffer,_profilingSampler))
             {
-                Camera camera = renderingData.cameraData.camera;
-                cmdBuffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
-             
-                cmdBuffer.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, _material, 0, 0);
-                
-                cmdBuffer.SetViewProjectionMatrices(camera.worldToCameraMatrix, camera.projectionMatrix);
-                
+                Mesh fullscreenMesh = _fullScreenMesh != null ? _fullScreenMesh : RenderingUtils.fullscreenMesh;
+                cmdBuffer.DrawMesh(fullscreenMesh, Matrix4x4.identity, _material, 0, 0);
             }
             
             context.ExecuteCommandBuffer(cmdBuffer);

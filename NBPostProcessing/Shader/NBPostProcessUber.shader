@@ -70,6 +70,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                 struct Attributes
                 {
                     float4 positionOS   : POSITION;
+                    UNITY_VERTEX_INPUT_INSTANCE_ID
                 };
     
                 struct Varyings
@@ -77,6 +78,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     // The positions in this struct must have the SV_POSITION semantic.
                     float4 positionHCS  : SV_POSITION;
                     half2 uv :TEXCOORD0;
+                    UNITY_VERTEX_OUTPUT_STEREO
                 };
     
                 TEXTURE2D(_ScreenColorCopy1);
@@ -158,7 +160,10 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                 {
                     // Declaring the output object (OUT) with the Varyings struct.
                     Varyings OUT;
-                    OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
+                    UNITY_SETUP_INSTANCE_ID(IN);
+                    UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
+
+                    OUT.positionHCS = float4(IN.positionOS.xyz, 1.0);
                     half4 clipVertex = OUT.positionHCS/OUT.positionHCS.w;
                     OUT.uv = ComputeScreenPos(clipVertex);
                     // Returning the output.
@@ -167,6 +172,8 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
     
                 half4 frag(Varyings IN) : SV_Target
                 {
+                    UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(IN);
+
                     half2 screenUV = IN.uv;
                     half2 distortUV = 0;
                     half2 distortUVWithoutIntensity=0;
