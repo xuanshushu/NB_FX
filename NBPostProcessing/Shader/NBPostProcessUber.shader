@@ -46,6 +46,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
     
             Pass
             {
+                Cull Off
                 Blend SrcAlpha OneMinusSrcAlpha
                 ZTest Off
                 HLSLPROGRAM

@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Reflection;
+#if UNITY_6000_0_OR_NEWER
+using UnityEngine.Rendering.RenderGraphModule;
+using UnityEngine.Rendering.RenderGraphModule.Util;
+#endif
 
 namespace NBShader
 {
@@ -21,12 +25,98 @@ namespace NBShader
         readonly Material _material;
         private static readonly int CameraTexture = Shader.PropertyToID("_CameraTexture");
         private static readonly int SampleOffset = Shader.PropertyToID("_SampleOffset");
+        private static readonly int ScreenColorCopy = Shader.PropertyToID("_ScreenColorCopy1");
 
         public ScreenColorRenderPass(Material material, Downsampling downSampling)
         {
             _material = material;
             _downSampling = downSampling;
+#if UNITY_6000_0_OR_NEWER
+            requiresIntermediateTexture = true;
+#endif
         }
+
+#if UNITY_6000_0_OR_NEWER
+        private class GlobalTexturePassData
+        {
+            public TextureHandle texture;
+            public int nameID;
+        }
+
+        private static bool IsSupportedCamera(CameraType cameraType)
+        {
+            return cameraType == CameraType.Game || cameraType == CameraType.SceneView;
+        }
+
+        private static void SetGlobalTextureAfterPass(RenderGraph renderGraph, TextureHandle texture, int nameID, string passName)
+        {
+            using (var builder = renderGraph.AddRasterRenderPass<GlobalTexturePassData>(passName, out var passData))
+            {
+                passData.texture = texture;
+                passData.nameID = nameID;
+                builder.UseTexture(texture, AccessFlags.Read);
+                builder.AllowPassCulling(false);
+                builder.AllowGlobalStateModification(true);
+                builder.SetGlobalTextureAfterPass(texture, nameID);
+                builder.SetRenderFunc(static (GlobalTexturePassData data, RasterGraphContext context) =>
+                {
+                });
+            }
+        }
+
+        private void ApplyDownsampling(ref TextureDesc descriptor)
+        {
+            switch (_downSampling)
+            {
+                case Downsampling._2xBilinear:
+                    descriptor.width = Mathf.Max(1, descriptor.width / 2);
+                    descriptor.height = Mathf.Max(1, descriptor.height / 2);
+                    break;
+                case Downsampling._4xBilinear:
+                case Downsampling._4xBox:
+                    descriptor.width = Mathf.Max(1, descriptor.width / 4);
+                    descriptor.height = Mathf.Max(1, descriptor.height / 4);
+                    break;
+            }
+        }
+
+        private int GetDownsamplePassIndex()
+        {
+            return _downSampling == Downsampling._4xBox ? 1 : 0;
+        }
+
+        public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
+        {
+            UniversalCameraData cameraData = frameData.Get<UniversalCameraData>();
+            if (!IsSupportedCamera(cameraData.cameraType) || _material == null)
+                return;
+
+            UniversalResourceData resourceData = frameData.Get<UniversalResourceData>();
+            TextureHandle source = resourceData.activeColorTexture;
+            if (!source.IsValid())
+                return;
+
+            TextureDesc descriptor = renderGraph.GetTextureDesc(source);
+            descriptor.name = "CopyColorRT";
+            descriptor.clearBuffer = false;
+            descriptor.depthBufferBits = DepthBits.None;
+            descriptor.autoGenerateMips = true;
+            descriptor.useMipMap = true;
+            ApplyDownsampling(ref descriptor);
+
+            TextureHandle destination = renderGraph.CreateTexture(descriptor);
+
+            if (_downSampling == Downsampling._4xBox)
+                _material.SetFloat(SampleOffset, 2);
+
+            RenderGraphUtils.BlitMaterialParameters blitParameters =
+                new RenderGraphUtils.BlitMaterialParameters(source, destination, _material, GetDownsamplePassIndex());
+            blitParameters.sourceTexturePropertyID = CameraTexture;
+
+            renderGraph.AddBlitPass(blitParameters, "ScreenColorRender");
+            SetGlobalTextureAfterPass(renderGraph, destination, ScreenColorCopy, "Set Screen Color Copy");
+        }
+#endif
         
 
 #if UNIVERSAL_RP_13_1_2_OR_NEWER
@@ -171,7 +261,7 @@ namespace NBShader
                 }
                 
 #endif
-                cmd.SetGlobalTexture("_ScreenColorCopy1", _tempRTHandle);
+                cmd.SetGlobalTexture(ScreenColorCopy, _tempRTHandle);
             }
             
             context.ExecuteCommandBuffer(cmd);
