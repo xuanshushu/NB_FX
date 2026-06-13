@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-#if UNITY_6000_0_OR_NEWER
+#if UNIVERSAL_RP_17_0_OR_NEWER
 using UnityEngine.Rendering.RenderGraphModule;
 #endif
 namespace NBShader
@@ -19,7 +19,7 @@ namespace NBShader
         private Vector4 _lastOutlineProps;
         public Vector4 outLinePorps = Vector4.one;
 
-#if UNITY_6000_0_OR_NEWER
+#if UNIVERSAL_RP_17_0_OR_NEWER
         private class RenderGraphPassData
         {
             public TextureHandle activeColorTexture;
@@ -35,7 +35,7 @@ namespace NBShader
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
         {
             UniversalCameraData cameraData = frameData.Get<UniversalCameraData>();
-            if (!IsSupportedCamera(cameraData.cameraType) || _material == null)
+            if (!IsSupportedCamera(cameraData.cameraType) || _material == null || _fullScreenMesh == null)
                 return;
 
             UniversalResourceData resourceData = frameData.Get<UniversalResourceData>();
@@ -46,7 +46,7 @@ namespace NBShader
             {
                 passData.activeColorTexture = resourceData.activeColorTexture;
                 passData.material = _material;
-                passData.fullscreenMesh = _fullScreenMesh != null ? _fullScreenMesh : RenderingUtils.fullscreenMesh;
+                passData.fullscreenMesh = _fullScreenMesh;
 
                 builder.SetRenderAttachment(passData.activeColorTexture, 0, AccessFlags.ReadWrite);
                 builder.UseGlobalTexture(ScreenColorCopy, AccessFlags.Read);
@@ -59,11 +59,14 @@ namespace NBShader
         }
 #endif
 
+#if !UNITY_6000_3_OR_NEWER || (URP_COMPATIBILITY_MODE && !UNITY_6000_4_OR_NEWER)
+#pragma warning disable CS0618, CS0672
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             if (!(renderingData.cameraData.cameraType == CameraType.Game || renderingData.cameraData.cameraType == CameraType.SceneView))
                 return;
             if(_material == null) return;
+            if(_fullScreenMesh == null) return;
    
             // if(!_shaderFlag.CheckFlagBits(NBPostProcessFlags.FLAG_BIT_NB_POSTPROCESS_ON))return;//Disturbance需要执行
             
@@ -74,20 +77,21 @@ namespace NBShader
           
             using (new ProfilingScope(cmdBuffer,_profilingSampler))
             {
-                Mesh fullscreenMesh = _fullScreenMesh != null ? _fullScreenMesh : RenderingUtils.fullscreenMesh;
-                cmdBuffer.DrawMesh(fullscreenMesh, Matrix4x4.identity, _material, 0, 0);
+                cmdBuffer.DrawMesh(_fullScreenMesh, Matrix4x4.identity, _material, 0, 0);
             }
             
             context.ExecuteCommandBuffer(cmdBuffer);
             CommandBufferPool.Release(cmdBuffer);
         }
+#pragma warning restore CS0618, CS0672
+#endif
 
         public  NBPostProcessRenderPass(Material mat,Mesh mesh)
         {
             _material = mat;
             _fullScreenMesh = mesh;
             _profilingSampler ??= new ProfilingSampler("NBPostProcess");
-#if UNITY_6000_0_OR_NEWER
+#if UNIVERSAL_RP_17_0_OR_NEWER
             requiresIntermediateTexture = true;
 #endif
 

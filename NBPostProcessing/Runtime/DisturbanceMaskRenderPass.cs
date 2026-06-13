@@ -2,7 +2,7 @@
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Collections.Generic;
-#if UNITY_6000_0_OR_NEWER
+#if UNIVERSAL_RP_17_0_OR_NEWER
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
@@ -34,6 +34,7 @@ namespace NBShader
         private static readonly int CameraTexture = Shader.PropertyToID("_CameraTexture");
         private static readonly int SampleOffset = Shader.PropertyToID("_SampleOffset");
         private static readonly int DisturbanceMaskTex = Shader.PropertyToID("_DisturbanceMaskTex");
+        private readonly Color _clearDisturbanceMaskColor = new Color(0f, 0f, 0f, 1f);
         
         private readonly List<ShaderTagId> _shaderTag = new List<ShaderTagId>()
         {
@@ -50,7 +51,7 @@ namespace NBShader
             _downSampling = downSampling;
         }
 
-#if UNITY_6000_0_OR_NEWER
+#if UNIVERSAL_RP_17_0_OR_NEWER
         private class RenderGraphMaskPassData
         {
             public RendererListHandle rendererListHandle;
@@ -181,6 +182,8 @@ namespace NBShader
         
         public void SetUp ( RTHandle cameraRTHandle )
         {
+#if !UNITY_6000_3_OR_NEWER || (URP_COMPATIBILITY_MODE && !UNITY_6000_4_OR_NEWER)
+#pragma warning disable CS0618
 
             RenderTextureDescriptor descrip = cameraRTHandle.rt.descriptor;
             
@@ -206,8 +209,11 @@ namespace NBShader
             }
             if (_downSampling != Downsampling.None)
                 RenderingUtils.ReAllocateIfNeeded(ref _DownRT, descrip, name:"MaskDownCopyRT");
+#pragma warning restore CS0618
+#endif
         }
     #else
+#if !UNITY_6000_3_OR_NEWER || (URP_COMPATIBILITY_MODE && !UNITY_6000_4_OR_NEWER)
         //在AddPass之前触发
 
         public void SetUpDisturbanceMask(RenderTextureDescriptor descrip ,CommandBuffer cmd)
@@ -235,8 +241,11 @@ namespace NBShader
             if (_downSampling != Downsampling.None)
                 cmd.GetTemporaryRT(_DownRTID, descrip,FilterMode.Bilinear);
         }
+#endif
     #endif
-        
+
+#if !UNITY_6000_3_OR_NEWER || (URP_COMPATIBILITY_MODE && !UNITY_6000_4_OR_NEWER)
+#pragma warning disable CS0618, CS0672
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             _Filtering = new FilteringSettings(RenderQueueRange.all);
@@ -249,8 +258,6 @@ namespace NBShader
             
         }
 
-        private readonly Color _clearDisturbanceMaskColor = new Color(0f, 0f, 0f, 1f);
-        
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
 #if UNIVERSAL_RP_13_1_2_OR_NEWER
@@ -352,8 +359,10 @@ namespace NBShader
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
+#pragma warning restore CS0618, CS0672
+#endif
 
-        #if !UNIVERSAL_RP_13_1_2_OR_NEWER
+        #if !UNIVERSAL_RP_13_1_2_OR_NEWER && (!UNITY_6000_3_OR_NEWER || (URP_COMPATIBILITY_MODE && !UNITY_6000_4_OR_NEWER))
         // Cleanup any allocated resources that were created during the execution of this render pass.
         public override void OnCameraCleanup(CommandBuffer cmd)
         {

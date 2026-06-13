@@ -1,8 +1,12 @@
+#if !UNITY_6000_3_OR_NEWER || (URP_COMPATIBILITY_MODE && !UNITY_6000_4_OR_NEWER)
+#define NB_URP_COMPATIBILITY_PATH
+#endif
+
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Reflection;
-#if UNITY_6000_0_OR_NEWER
+#if UNIVERSAL_RP_17_0_OR_NEWER
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
 #endif
@@ -31,12 +35,12 @@ namespace NBShader
         {
             _material = material;
             _downSampling = downSampling;
-#if UNITY_6000_0_OR_NEWER
+#if UNIVERSAL_RP_17_0_OR_NEWER
             requiresIntermediateTexture = true;
 #endif
         }
 
-#if UNITY_6000_0_OR_NEWER
+#if UNIVERSAL_RP_17_0_OR_NEWER
         private class GlobalTexturePassData
         {
             public TextureHandle texture;
@@ -120,14 +124,20 @@ namespace NBShader
         
 
 #if UNIVERSAL_RP_13_1_2_OR_NEWER
+#if NB_URP_COMPATIBILITY_PATH
+#pragma warning disable CS0618, CS0672
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             ConfigureTarget(_screenColorHandle);
            
         }
+#pragma warning restore CS0618, CS0672
+#endif
         
         public void SetUp(RTHandle colorHandle)
         {
+#if NB_URP_COMPATIBILITY_PATH
+#pragma warning disable CS0618
             _profilingSampler ??= new ProfilingSampler("ScreenColorRender");
             _screenColorHandle = colorHandle;
             RenderTextureDescriptor descriptor = _screenColorHandle.rt.descriptor;
@@ -149,14 +159,17 @@ namespace NBShader
                     break;
             }
             RenderingUtils.ReAllocateIfNeeded(ref _tempRTHandle, descriptor,name:"CopyColorRT");
+#pragma warning restore CS0618
+#endif
         }
         
         
 #else
-      
+#if NB_URP_COMPATIBILITY_PATH
+
         FieldInfo  cameraColorAttachment = typeof(UniversalRenderer).GetField("m_ActiveCameraColorAttachment", BindingFlags.NonPublic|BindingFlags.Instance);
             
-      
+#pragma warning disable CS0618, CS0672
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
           
@@ -171,6 +184,7 @@ namespace NBShader
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
         }
+#pragma warning restore CS0618, CS0672
 
         public void SetUp(ScriptableRenderer renderer)
         {
@@ -206,7 +220,10 @@ namespace NBShader
             cmd.ReleaseTemporaryRT(_tempRTID);
         }
 #endif
+#endif
 
+#if NB_URP_COMPATIBILITY_PATH
+#pragma warning disable CS0618, CS0672
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             if (!(renderingData.cameraData.cameraType == CameraType.Game || renderingData.cameraData.cameraType == CameraType.SceneView))
@@ -268,10 +285,12 @@ namespace NBShader
             cmd.Clear();
             CommandBufferPool.Release(cmd);
         }
+#pragma warning restore CS0618, CS0672
+#endif
 
         public void Dispose()
         {
-            #if UNIVERSAL_RP_13_1_2_OR_NEWER
+            #if UNIVERSAL_RP_13_1_2_OR_NEWER && NB_URP_COMPATIBILITY_PATH
                 _tempRTHandle?.Release();
             #endif
         }

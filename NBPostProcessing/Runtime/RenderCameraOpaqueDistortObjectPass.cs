@@ -2,7 +2,7 @@
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Collections.Generic;
-#if UNITY_6000_0_OR_NEWER
+#if UNIVERSAL_RP_17_0_OR_NEWER
 using UnityEngine.Rendering.RenderGraphModule;
 #endif
 
@@ -21,7 +21,7 @@ namespace NBShader
             new ShaderTagId("NBCameraOpaqueDistortPass")
         };
 
-#if UNITY_6000_0_OR_NEWER
+#if UNIVERSAL_RP_17_0_OR_NEWER
         private class RenderGraphPassData
         {
             public RendererListHandle rendererListHandle;
@@ -74,6 +74,8 @@ namespace NBShader
         }
 #endif
 
+#if !UNITY_6000_3_OR_NEWER || (URP_COMPATIBILITY_MODE && !UNITY_6000_4_OR_NEWER)
+#pragma warning disable CS0618, CS0672
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             _Filtering = new FilteringSettings(RenderQueueRange.all);
@@ -92,5 +94,7 @@ namespace NBShader
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
+#pragma warning restore CS0618, CS0672
+#endif
     }
 }

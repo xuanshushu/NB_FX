@@ -1,3 +1,7 @@
+#if !UNITY_6000_3_OR_NEWER || (URP_COMPATIBILITY_MODE && !UNITY_6000_4_OR_NEWER)
+#define NB_URP_COMPATIBILITY_PATH
+#endif
+
 // using ConfigSystem.MConfig;
 // using Sirenix.OdinInspector;
 using UnityEngine;
@@ -33,6 +37,14 @@ namespace NBShader
 
 
         private bool canFind = false;
+
+#if UNIVERSAL_RP_17_0_OR_NEWER
+        private static bool IsCompatibilityModeEnabled()
+        {
+            return GraphicsSettings.GetRenderPipelineSettings<RenderGraphSettings>().enableRenderCompatibilityMode;
+        }
+#endif
+
         public override void Create()
         {
             
@@ -92,10 +104,15 @@ namespace NBShader
            
         }
         
-        #if UNIVERSAL_RP_13_1_2_OR_NEWER
-        
+#if UNIVERSAL_RP_13_1_2_OR_NEWER && NB_URP_COMPATIBILITY_PATH
+#pragma warning disable CS0618, CS0672
         public override void SetupRenderPasses(ScriptableRenderer renderer, in RenderingData renderingData)
         {
+#if UNIVERSAL_RP_17_0_OR_NEWER
+            if (!IsCompatibilityModeEnabled())
+                return;
+#endif
+
             if ((renderingData.cameraData.cameraType == CameraType.Game ||
                 renderingData.cameraData.cameraType == CameraType.SceneView) && canFind)
             {
@@ -107,8 +124,9 @@ namespace NBShader
                 _screenColorRenderPass.SetUp(renderer.cameraColorTargetHandle);
             }
         }
+#pragma warning restore CS0618, CS0672
 
-        #endif
+#endif
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
