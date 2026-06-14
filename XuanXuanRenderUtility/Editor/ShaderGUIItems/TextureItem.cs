@@ -220,7 +220,7 @@ namespace NBShaderEditor
                 Texture texture;
                 using (new EditorGUIIndentLevelScope(0))
                 {
-                    texture = (Texture)EditorGUI.ObjectField(ControlRect, property.textureValue, typeof(Texture2D));
+                    texture = (Texture)EditorGUI.ObjectField(ControlRect, property.textureValue, typeof(Texture2D), false);
                 }
                 EndAnimatedPropertyBackground(animatedScope);
                 EditorGUI.showMixedValue = false;
@@ -494,12 +494,5 @@ namespace NBShaderEditor
             }
         }
 
-        private static bool Approximately(Vector4 a, Vector4 b)
-        {
-            return Mathf.Approximately(a.x, b.x) &&
-                   Mathf.Approximately(a.y, b.y) &&
-                   Mathf.Approximately(a.z, b.z) &&
-                   Mathf.Approximately(a.w, b.w);
-        }
     }
 }
