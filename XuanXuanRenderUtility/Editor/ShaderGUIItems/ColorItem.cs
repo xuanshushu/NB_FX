@@ -39,7 +39,7 @@ namespace NBShaderEditor
             }
 
             Color color = PropertyInfo.Property.colorValue;
-            bool hdr = (PropertyInfo.Property.flags & MaterialProperty.PropFlags.HDR) != 0;
+            bool hdr = ShaderGUIUnityCompat.HasHdrFlag(PropertyInfo.Property);
             using (ParentControlDisabledScope())
             {
                 EditorGUI.showMixedValue = PropertyInfo.Property.hasMixedValue;
@@ -132,7 +132,7 @@ namespace NBShaderEditor
 
             MaterialProperty property = PropertyInfo.Property;
             Color color = property.colorValue;
-            bool hdr = (property.flags & MaterialProperty.PropFlags.HDR) != 0;
+            bool hdr = ShaderGUIUnityCompat.HasHdrFlag(property);
             using (ParentControlDisabledScope())
             {
                 EditorGUI.showMixedValue = property.hasMixedValue;

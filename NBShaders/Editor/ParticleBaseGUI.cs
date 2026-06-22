@@ -2611,14 +2611,8 @@ namespace NBShaderEditor
             checkIsParicleSystem = false;
             m_ParticleRenderersUsingThisMaterial.Clear();
             m_RenderersUsingThisMaterial.Clear();
-            // #if UNITY_2022_1_OR_NEWER
-            // ParticleSystemRenderer[] renderers =
-            //     UnityEngine.Object.FindObjectsByType(typeof(ParticleSystemRenderer),FindObjectsSortMode.None) as ParticleSystemRenderer[];
-            // #else
-            Renderer[] renderers =
-                UnityEngine.Object.FindObjectsOfType(typeof(Renderer)) as Renderer[];//为了兼容性使用较慢版本
+            Renderer[] renderers = UnityObjectFindCompat.FindAll<Renderer>();
             m_RenderersUsingThisMaterial.Clear();
-            // #endif
             foreach (Renderer renderer in renderers)
             {
                 if (renderer is ParticleSystemRenderer)

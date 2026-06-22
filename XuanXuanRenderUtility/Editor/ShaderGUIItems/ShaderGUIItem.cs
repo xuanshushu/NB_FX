@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using System.Collections.Generic;
 namespace NBShaderEditor
 {
@@ -9,6 +10,7 @@ namespace NBShaderEditor
         True = 1,
         Mixed = -1
     }
+
     public class ShaderGUIItem
     {
         public const float MinLabelWidth = 120f;
@@ -427,18 +429,18 @@ namespace NBShaderEditor
                 bool isDefaultValue = true;
                 if (PropertyInfo != null)
                 {
-                    switch (PropertyInfo.Property.type)
+                    switch (ShaderGUIUnityCompat.GetPropertyType(PropertyInfo.Property))
                     {
-                        case MaterialProperty.PropType.Float:
-                        case MaterialProperty.PropType.Range:
+                        case ShaderPropertyType.Float:
+                        case ShaderPropertyType.Range:
                             float defaultValue = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index);
                             isDefaultValue = Mathf.Approximately(PropertyInfo.Property.floatValue, defaultValue);
                         break;
-                        case MaterialProperty.PropType.Color:
+                        case ShaderPropertyType.Color:
                             Vector4 defaultColor = RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index);
                             isDefaultValue = Approximately(PropertyInfo.Property.colorValue, defaultColor);
                             break;
-                        case MaterialProperty.PropType.Vector:
+                        case ShaderPropertyType.Vector:
                             Vector4 defaultVector = RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index);
                             isDefaultValue = Approximately(PropertyInfo.Property.vectorValue, defaultVector);
                             break;
@@ -472,17 +474,17 @@ namespace NBShaderEditor
         {
             if (PropertyInfo != null)
             {
-                switch (PropertyInfo.Property.type)
+                switch (ShaderGUIUnityCompat.GetPropertyType(PropertyInfo.Property))
                 {
-                    case MaterialProperty.PropType.Float:
-                    case MaterialProperty.PropType.Range:
+                    case ShaderPropertyType.Float:
+                    case ShaderPropertyType.Range:
                         float defaultValue = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index);
                         PropertyInfo.Property.floatValue = defaultValue;
                         break;
-                    case MaterialProperty.PropType.Color:
+                    case ShaderPropertyType.Color:
                         PropertyInfo.Property.colorValue = RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index);
                         break;
-                    case MaterialProperty.PropType.Vector:
+                    case ShaderPropertyType.Vector:
                         PropertyInfo.Property.vectorValue = RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index);
                         break;
                 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using NBShader;
 using NBShaders2.Editor.FeatureLevel;
 
@@ -475,8 +476,9 @@ namespace NBShaderEditor
                 }
 
                 MaterialProperty property = pair.Value.Property;
-                if (property.type == MaterialProperty.PropType.Float ||
-                    property.type == MaterialProperty.PropType.Range)
+                ShaderPropertyType propertyType = ShaderGUIUnityCompat.GetPropertyType(property);
+                if (propertyType == ShaderPropertyType.Float ||
+                    propertyType == ShaderPropertyType.Range)
                 {
                     property.floatValue = 0f;
                 }
@@ -495,12 +497,12 @@ namespace NBShaderEditor
 
             Shader shader = mat.shader;
             var shaderTexProps = new HashSet<string>();
-            int count = ShaderUtil.GetPropertyCount(shader);
+            int count = shader.GetPropertyCount();
             for (int i = 0; i < count; i++)
             {
-                if (ShaderUtil.GetPropertyType(shader, i) == ShaderUtil.ShaderPropertyType.TexEnv)
+                if (shader.GetPropertyType(i) == ShaderPropertyType.Texture)
                 {
-                    shaderTexProps.Add(ShaderUtil.GetPropertyName(shader, i));
+                    shaderTexProps.Add(shader.GetPropertyName(i));
                 }
             }
 

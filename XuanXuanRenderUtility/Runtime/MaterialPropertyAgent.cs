@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace NBShader
@@ -49,17 +50,17 @@ namespace NBShader
                     index = agent.getCanUsedIndex();
                 }
 
-                string propertyName = UnityEditor.ShaderUtil.GetPropertyName(shader, index);
+                string propertyName = shader.GetPropertyName(index);
                 id = Shader.PropertyToID(propertyName);
-                descripName = UnityEditor.ShaderUtil.GetPropertyDescription(shader, index);
-                type = (shaderPropertyType)UnityEditor.ShaderUtil.GetPropertyType(shader, index);
+                descripName = shader.GetPropertyDescription(index);
+                type = (shaderPropertyType)shader.GetPropertyType(index);
                 if (type == shaderPropertyType.TexEnv)
                 {
-                    propName = UnityEditor.ShaderUtil.GetPropertyName(shader, index) + "_ST";
+                    propName = propertyName + "_ST";
                 }
                 else
                 {
-                    propName = UnityEditor.ShaderUtil.GetPropertyName(shader, index);
+                    propName = propertyName;
                 }
 
                 switch (type)
@@ -71,15 +72,16 @@ namespace NBShader
                         floatValue = mat.GetFloat(id);
                         break;
                     case shaderPropertyType.Range:
-                        rangMin = UnityEditor.ShaderUtil.GetRangeLimits(shader, index, 1);
-                        rangMax = UnityEditor.ShaderUtil.GetRangeLimits(shader, index, 2);
+                        Vector2 rangeLimits = shader.GetPropertyRangeLimits(index);
+                        rangMin = rangeLimits.x;
+                        rangMax = rangeLimits.y;
                         floatValue = mat.GetFloat(id);
                         break;
                     case shaderPropertyType.Vector:
                         vecValue = mat.GetVector(id);
                         break;
                     case shaderPropertyType.TexEnv:
-                        string stName = UnityEditor.ShaderUtil.GetPropertyName(shader, index) + "_ST";
+                        string stName = propertyName + "_ST";
                         vecValue = mat.GetVector(stName);
                         break;
                 }
@@ -367,8 +369,7 @@ namespace NBShader
             for (int i = 0; i < shaderPropNameArr.Length; i++)
             {
                 string propertyName;
-                if (UnityEditor.ShaderUtil.GetPropertyType(shader, i) ==
-                    UnityEditor.ShaderUtil.ShaderPropertyType.TexEnv)
+                if (shader.GetPropertyType(i) == ShaderPropertyType.Texture)
                 {
                     propertyName = shaderPropNameArr[i] + "_ST";
                 }
@@ -388,7 +389,7 @@ namespace NBShader
         public bool isCanUsedIndex(int i)
         {
             string propertyName;
-            if (UnityEditor.ShaderUtil.GetPropertyType(shader, i) == UnityEditor.ShaderUtil.ShaderPropertyType.TexEnv)
+            if (shader.GetPropertyType(i) == ShaderPropertyType.Texture)
             {
                 propertyName = shaderPropNameArr[i] + "_ST";
             }
@@ -501,10 +502,10 @@ namespace NBShader
             shaderPropNameList.Clear();
             shaderPropDescripList.Clear();
             shaderPropDescripListForSerch.Clear();
-            for (int i = 0; i < UnityEditor.ShaderUtil.GetPropertyCount(shader); i++)
+            for (int i = 0; i < shader.GetPropertyCount(); i++)
             {
-                shaderPropNameList.Add(UnityEditor.ShaderUtil.GetPropertyName(shader, i));
-                string descript = UnityEditor.ShaderUtil.GetPropertyDescription(shader, i);
+                shaderPropNameList.Add(shader.GetPropertyName(i));
+                string descript = shader.GetPropertyDescription(i);
                 shaderPropDescripList.Add(descript);
                 string lowerDesc = descript.ToLower();
                 if (!(lowerDesc.Contains("ignore") || lowerDesc.Contains("mode") || lowerDesc.Contains("toggle") ||
@@ -549,7 +550,7 @@ public class PropertyAgentPropertyDataDrawer : PropertyDrawer
                 if (!agent.isCanUsedIndex(index.intValue))
                 {
                     //TODO给一个报错提示
-                    Debug.Log(ShaderUtil.GetPropertyDescription(agent.shader, index.intValue));
+                    Debug.Log(agent.shader.GetPropertyDescription(index.intValue));
                     index.intValue = agent.getCanUsedIndex();
                 }
                 //此处进行内容刷新

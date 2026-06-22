@@ -1,6 +1,7 @@
 using System;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace NBShaderEditor
 {
@@ -460,16 +461,16 @@ namespace NBShaderEditor
                 return false;
             }
 
-            switch (info.Property.type)
+            switch (ShaderGUIUnityCompat.GetPropertyType(info.Property))
             {
-                case MaterialProperty.PropType.Float:
-                case MaterialProperty.PropType.Range:
+                case ShaderPropertyType.Float:
+                case ShaderPropertyType.Range:
                     return Mathf.Approximately(info.Property.floatValue, RootItem.Shader.GetPropertyDefaultFloatValue(info.Index));
-                case MaterialProperty.PropType.Int:
+                case ShaderPropertyType.Int:
                     return info.Property.intValue == GetDefaultInt(info);
-                case MaterialProperty.PropType.Color:
+                case ShaderPropertyType.Color:
                     return Approximately(info.Property.colorValue, RootItem.Shader.GetPropertyDefaultVectorValue(info.Index));
-                case MaterialProperty.PropType.Vector:
+                case ShaderPropertyType.Vector:
                     return Approximately(info.Property.vectorValue, RootItem.Shader.GetPropertyDefaultVectorValue(info.Index));
                 default:
                     return Mathf.Approximately(info.Property.floatValue, GetDefaultScalar(info));
@@ -483,19 +484,19 @@ namespace NBShaderEditor
                 return;
             }
 
-            switch (info.Property.type)
+            switch (ShaderGUIUnityCompat.GetPropertyType(info.Property))
             {
-                case MaterialProperty.PropType.Float:
-                case MaterialProperty.PropType.Range:
+                case ShaderPropertyType.Float:
+                case ShaderPropertyType.Range:
                     info.Property.floatValue = RootItem.Shader.GetPropertyDefaultFloatValue(info.Index);
                     break;
-                case MaterialProperty.PropType.Int:
+                case ShaderPropertyType.Int:
                     info.Property.intValue = GetDefaultInt(info);
                     break;
-                case MaterialProperty.PropType.Color:
+                case ShaderPropertyType.Color:
                     info.Property.colorValue = RootItem.Shader.GetPropertyDefaultVectorValue(info.Index);
                     break;
-                case MaterialProperty.PropType.Vector:
+                case ShaderPropertyType.Vector:
                     info.Property.vectorValue = RootItem.Shader.GetPropertyDefaultVectorValue(info.Index);
                     break;
                 default:

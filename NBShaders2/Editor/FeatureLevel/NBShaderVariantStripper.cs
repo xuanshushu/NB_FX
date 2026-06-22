@@ -101,9 +101,7 @@ namespace NBShaders2.Editor.FeatureLevel
             var keywords = compilerData.shaderKeywordSet.GetShaderKeywords();
             for (var i = 0; i < keywords.Length; i++)
             {
-                #pragma warning disable 0618 // Unity 2021-compatible keyword name API.
-                var keywordName = ShaderKeyword.GetKeywordName(shader, keywords[i]);
-                #pragma warning restore 0618
+                var keywordName = keywords[i].name;
                 if (!NBShaderFeatureLevelCatalog.IsManagedKeyword(keywordName))
                     continue;
 

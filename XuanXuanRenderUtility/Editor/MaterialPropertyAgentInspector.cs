@@ -226,7 +226,7 @@ namespace NBShaderEditor
                 if (!agent.isCanUsedIndex(data.index))
                 {
                     //TODO给一个报错提示
-                    Debug.LogError("材质属性已经存在：" + ShaderUtil.GetPropertyDescription(agent.shader, data.index));
+                    Debug.LogError("材质属性已经存在：" + agent.shader.GetPropertyDescription(data.index));
                     data.index = agent.getCanUsedIndex();
                 }
 

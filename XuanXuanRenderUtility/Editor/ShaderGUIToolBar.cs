@@ -1,6 +1,7 @@
 ﻿
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.Rendering;
 using System.Collections.Generic;
 using NBShader;
 namespace NBShaderEditor
@@ -180,12 +181,12 @@ namespace NBShaderEditor
 
             // 收集 Shader 里声明过的贴图属性
             var shaderTexProps = new HashSet<string>();
-            int count = ShaderUtil.GetPropertyCount(shader);
+            int count = shader.GetPropertyCount();
             for (int i = 0; i < count; i++)
             {
-                if (ShaderUtil.GetPropertyType(shader, i) == ShaderUtil.ShaderPropertyType.TexEnv)
+                if (shader.GetPropertyType(i) == ShaderPropertyType.Texture)
                 {
-                    shaderTexProps.Add(ShaderUtil.GetPropertyName(shader, i));
+                    shaderTexProps.Add(shader.GetPropertyName(i));
                 }
             }
 

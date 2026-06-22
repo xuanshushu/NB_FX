@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 using ShaderPropertyPack = NBShaderEditor.ShaderGUIHelper.ShaderPropertyPack;
 using UnityEditor;
 namespace NBShaderEditor
@@ -248,19 +249,19 @@ namespace NBShaderEditor
         public void SetPropertyToDefaultValue(ShaderPropertyPack pack,VectorValeType vectorValeType = VectorValeType.Undefine)
         {
             MaterialProperty property = pack.property;
-            MaterialProperty.PropType propertyType = property.type;
-            if (pack.property.type == MaterialProperty.PropType.Texture && vectorValeType != VectorValeType.Undefine)
+            ShaderPropertyType propertyType = ShaderGUIUnityCompat.GetPropertyType(property);
+            if (propertyType == ShaderPropertyType.Texture && vectorValeType != VectorValeType.Undefine)
             {
-                propertyType = MaterialProperty.PropType.Vector;//Tilling or Offset
+                propertyType = ShaderPropertyType.Vector;//Tilling or Offset
             }
             switch (propertyType)
             {
-                case MaterialProperty.PropType.Color:
+                case ShaderPropertyType.Color:
                     Vector4 colorValue = _shader.GetPropertyDefaultVectorValue(pack.index);
                     property.colorValue = new Color(colorValue.x, colorValue.y, colorValue.z, colorValue.x);
                     break;
 
-                case MaterialProperty.PropType.Vector:
+                case ShaderPropertyType.Vector:
                     Vector4 defaultVecValue;
                     Vector4 vecValue;
                     if (vectorValeType == VectorValeType.Tilling || vectorValeType == VectorValeType.Offset)
@@ -284,7 +285,7 @@ namespace NBShaderEditor
                         case VectorValeType.XY:vecValue.x = defaultVecValue.x; vecValue.y = defaultVecValue.y;
                             property.vectorValue = vecValue;break;
                         case VectorValeType.Tilling:vecValue.x = defaultVecValue.x; vecValue.y = defaultVecValue.y;
-                            if (property.type == MaterialProperty.PropType.Texture)
+                            if (ShaderGUIUnityCompat.GetPropertyType(property) == ShaderPropertyType.Texture)
                             {
                                 property.textureScaleAndOffset = vecValue;
                             }
@@ -296,7 +297,7 @@ namespace NBShaderEditor
                         case VectorValeType.ZW:vecValue.z = defaultVecValue.z; vecValue.w = defaultVecValue.w;
                             property.vectorValue = vecValue;break;
                         case VectorValeType.Offset:vecValue.z = defaultVecValue.z; vecValue.w = defaultVecValue.w;
-                            if (property.type == MaterialProperty.PropType.Texture)
+                            if (ShaderGUIUnityCompat.GetPropertyType(property) == ShaderPropertyType.Texture)
                             {
                                 property.textureScaleAndOffset = vecValue;
                             }
@@ -311,12 +312,12 @@ namespace NBShaderEditor
                     }
                     break;
 
-                case MaterialProperty.PropType.Float or MaterialProperty.PropType.Range:
+                case ShaderPropertyType.Float or ShaderPropertyType.Range:
                     float value = _shader.GetPropertyDefaultFloatValue(pack.index);
                     property.floatValue = value;
                     break;
 
-                case MaterialProperty.PropType.Texture:
+                case ShaderPropertyType.Texture:
                     if (property.textureValue == null)
                     {
                         break;
@@ -338,26 +339,26 @@ namespace NBShaderEditor
         public bool IsPropertyModified(ShaderPropertyPack pack,VectorValeType vectorValeType = VectorValeType.Undefine)
         {
             MaterialProperty property = pack.property;
-            MaterialProperty.PropType propertyType = property.type;
-            if (pack.property.type == MaterialProperty.PropType.Texture && vectorValeType != VectorValeType.Undefine)
+            ShaderPropertyType propertyType = ShaderGUIUnityCompat.GetPropertyType(property);
+            if (propertyType == ShaderPropertyType.Texture && vectorValeType != VectorValeType.Undefine)
             {
-                propertyType = MaterialProperty.PropType.Vector;//Tilling or Offset
+                propertyType = ShaderPropertyType.Vector;//Tilling or Offset
             }
             switch (propertyType)
             {
-                case MaterialProperty.PropType.Color:
+                case ShaderPropertyType.Color:
                     Vector4 colorValue = _shader.GetPropertyDefaultVectorValue(pack.index);
                     Color color = new Color(colorValue.x, colorValue.y, colorValue.z, colorValue.w);
                     return property.colorValue == color ? false : true;
 
-                case MaterialProperty.PropType.Vector:
+                case ShaderPropertyType.Vector:
 
                     Vector4 defaultVecValue;
                     Vector4 vecValue;
                     if (vectorValeType == VectorValeType.Tilling || vectorValeType == VectorValeType.Offset)
                     {
                         defaultVecValue = new Vector4(1f, 1f, 0f, 0f);
-                        if (property.type == MaterialProperty.PropType.Texture)
+                        if (ShaderGUIUnityCompat.GetPropertyType(property) == ShaderPropertyType.Texture)
                         {
                             vecValue = property.textureScaleAndOffset;
                         }
@@ -399,10 +400,10 @@ namespace NBShaderEditor
                     }
                     return isVecModified;
 
-                case MaterialProperty.PropType.Float or MaterialProperty.PropType.Range:
+                case ShaderPropertyType.Float or ShaderPropertyType.Range:
                     return Mathf.Approximately(property.floatValue, _shader.GetPropertyDefaultFloatValue(pack.index)) ? false : true;
 
-                case MaterialProperty.PropType.Texture:
+                case ShaderPropertyType.Texture:
                     if (property.textureValue == null)
                     {
                         return false;

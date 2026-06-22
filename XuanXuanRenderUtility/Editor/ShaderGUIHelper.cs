@@ -65,10 +65,10 @@ namespace NBShaderEditor
             {
                 shader = mats[0].shader;
                 ShaderPropertyPacksDic.Clear();
-                for (int i = 0; i < ShaderUtil.GetPropertyCount(shader); i++)
+                for (int i = 0; i < shader.GetPropertyCount(); i++)
                 {
                     ShaderPropertyPack pack = new ShaderPropertyPack();
-                    pack.name = ShaderUtil.GetPropertyName(shader, i);
+                    pack.name = shader.GetPropertyName(i);
                     for (int index = 0; index < properties.Length; ++index)
                     {
                         if (properties[index] != null && properties[index].name == pack.name)
@@ -92,9 +92,9 @@ namespace NBShaderEditor
             }
             else
             {
-                for (int i = 0; i < ShaderUtil.GetPropertyCount(shader); i++)
+                for (int i = 0; i < shader.GetPropertyCount(); i++)
                 {
-                    string propertyName = ShaderUtil.GetPropertyName(shader, i);
+                    string propertyName = shader.GetPropertyName(i);
                     ShaderPropertyPacksDic[propertyName].property = properties[i];
                 }
 
@@ -219,7 +219,7 @@ namespace NBShaderEditor
             // MaterialEditor.BeginProperty(position, prop);
            
             EditorGUI.BeginChangeCheck();
-            bool hdr = (prop.flags & MaterialProperty.PropFlags.HDR) != 0;
+            bool hdr = ShaderGUIUnityCompat.HasHdrFlag(prop);
             if (IsPropertyAnimated(propertyName,"r","g","b","a"))
             {
                 GUI.backgroundColor = animatedBackgroundColor;

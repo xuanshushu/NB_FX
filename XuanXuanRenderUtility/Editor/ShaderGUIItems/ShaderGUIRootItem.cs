@@ -245,7 +245,7 @@ namespace NBShaderEditor
 
         void CacheRenderersUsingThisMaterial(Material material)
         {
-            Renderer[] renderers = UnityEngine.Object.FindObjectsOfType(typeof(Renderer)) as Renderer[];//为了兼容性使用较慢版本
+            Renderer[] renderers = UnityObjectFindCompat.FindAll<Renderer>();
             RenderersUsingThisMaterial.Clear();
             ParticleRenderersUsingThisMaterial.Clear();
             IsUsedByParticleSystem = false;
