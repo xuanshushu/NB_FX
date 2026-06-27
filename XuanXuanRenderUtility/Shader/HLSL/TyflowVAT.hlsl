@@ -569,8 +569,12 @@ void ApplyTyflowVAT(AttributesParticle input, inout float4 positionOS, inout flo
         if (_VATIncludesNormals > 0.5f)
         {
             float4 normal0 = TyflowVatGetVertexValueAtFrame(vertexIndex, vertexCount, frame0, (int)_Frames);
-            float4 normal1 = TyflowVatGetVertexValueAtFrame(vertexIndex, vertexCount, frame1, (int)_Frames);
-            float4 animatedNormal = lerp(normal0, normal1, frameInterp) * float4(-1, 1, 1, 1);
+            float4 animatedNormal = normal0;
+            if (_FrameInterpolation > 0.5f)
+            {
+                float4 normal1 = TyflowVatGetVertexValueAtFrame(vertexIndex, vertexCount, frame1, (int)_Frames);
+                animatedNormal = lerp(normal0, normal1, frameInterp) * float4(-1, 1, 1, 1);
+            }
             normalOS = normalize(animatedNormal.xyz);
         }
         #endif
