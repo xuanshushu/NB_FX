@@ -210,7 +210,7 @@ Shader "Effects/NBShader"
     	_CylinderMatrix2("圆柱偏移矩阵2",Vector) = (0,0,0,0)
     	_CylinderMatrix3("圆柱偏移矩阵3",Vector) = (0,0,0,0)
         
-        _Cutoff ("裁剪位置", float) = 0
+        _Cutoff ("裁剪位置", float) = 0.5
     	
     	//--------------光照部分-------------
     	_FxLightMode("灯光模式",Float) = 0
