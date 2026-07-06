@@ -40,6 +40,12 @@ namespace NBShader
 #endif
         }
 
+        private static void DisableMipMaps(ref RenderTextureDescriptor descriptor)
+        {
+            descriptor.autoGenerateMips = false;
+            descriptor.useMipMap = false;
+        }
+
 #if UNIVERSAL_RP_17_0_OR_NEWER
         private class GlobalTexturePassData
         {
@@ -89,6 +95,12 @@ namespace NBShader
             return _downSampling == Downsampling._4xBox ? 1 : 0;
         }
 
+        private static void DisableMipMaps(ref TextureDesc descriptor)
+        {
+            descriptor.autoGenerateMips = false;
+            descriptor.useMipMap = false;
+        }
+
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
         {
             UniversalCameraData cameraData = frameData.Get<UniversalCameraData>();
@@ -104,8 +116,7 @@ namespace NBShader
             descriptor.name = "CopyColorRT";
             descriptor.clearBuffer = false;
             descriptor.depthBufferBits = DepthBits.None;
-            descriptor.autoGenerateMips = true;
-            descriptor.useMipMap = true;
+            DisableMipMaps(ref descriptor);
             ApplyDownsampling(ref descriptor);
 
             TextureHandle destination = renderGraph.CreateTexture(descriptor);
@@ -141,8 +152,7 @@ namespace NBShader
             _profilingSampler ??= new ProfilingSampler("ScreenColorRender");
             _screenColorHandle = colorHandle;
             RenderTextureDescriptor descriptor = _screenColorHandle.rt.descriptor;
-            descriptor.autoGenerateMips = true;
-            descriptor.useMipMap = true;
+            DisableMipMaps(ref descriptor);
             switch (_downSampling)
             {
                 case Downsampling._2xBilinear:
@@ -195,8 +205,7 @@ namespace NBShader
 
         public void SetUpCopyColorRT(ScriptableRenderer renderer,RenderTextureDescriptor descriptor ,CommandBuffer cmd)
         {
-            descriptor.autoGenerateMips = true;
-            descriptor.useMipMap = true;
+            DisableMipMaps(ref descriptor);
             switch (_downSampling)
             {
                 case Downsampling._2xBilinear:

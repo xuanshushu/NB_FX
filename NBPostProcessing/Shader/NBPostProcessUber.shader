@@ -81,7 +81,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     UNITY_VERTEX_OUTPUT_STEREO
                 };
     
-                TEXTURE2D(_ScreenColorCopy1);
+                TEXTURE2D_X(_ScreenColorCopy1);
                 SAMPLER(_linear_clamp);
                 SAMPLER(sampler_ScreenColorCopy1);
                 
@@ -196,7 +196,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     UNITY_BRANCH
                     if (!CheckLocalFlags(FLAG_BIT_NB_POSTPROCESS_ON))
                     {
-                        color.rgb = SAMPLE_TEXTURE2D(_ScreenColorCopy1, _linear_clamp, screenUV).rgb;
+                        color.rgb = SAMPLE_TEXTURE2D_X(_ScreenColorCopy1, sampler_LinearClamp, screenUV).rgb;
                     }
                     
                     UNITY_BRANCH
@@ -297,11 +297,11 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                                 if(CheckLocalFlags(FLAG_BIT_CHORATICABERRAT))
                                 {
                                     //sample *3
-                                    acumulateColor += SAMPLE_TEXTURE2D_CHORATICABERRAT(screenUV,distortUV,choraticaBerratBlurVec,dist);
+                                    acumulateColor += SAMPLE_TEXTURE2D_CHORATICABERRAT(screenUV,distortUV,choraticaBerratBlurVec,dist).rgb;
                                 }
                                 else
                                 {
-                                    acumulateColor += SAMPLE_TEXTURE2D(_ScreenColorCopy1,_linear_clamp,screenUV + distortUV);
+                                    acumulateColor += SAMPLE_TEXTURE2D_X(_ScreenColorCopy1, sampler_LinearClamp, screenUV + distortUV).rgb;
                                 }
                                 screenUV += radialblurVec;
                             }
@@ -317,7 +317,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     }
                     else
                     {
-                        color.rgb = SAMPLE_TEXTURE2D(_ScreenColorCopy1,_linear_clamp,screenUV + distortUV);
+                        color.rgb = SAMPLE_TEXTURE2D_X(_ScreenColorCopy1, sampler_LinearClamp, screenUV + distortUV).rgb;
                     }
 
                     // return  half4(color.aaa,1);
