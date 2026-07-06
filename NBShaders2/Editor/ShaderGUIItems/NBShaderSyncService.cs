@@ -526,12 +526,14 @@ namespace NBShaderEditor
                               mode == MeshSourceMode.UIEffectSprite ||
                               mode == MeshSourceMode.UIEffectBaseMap ||
                               mode == MeshSourceMode.UIParticle;
+            bool useBaseMapTexture = mode == MeshSourceMode.UIEffectBaseMap ||
+                                     mode == MeshSourceMode.UIParticle;
 
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM, isParticle, 1);
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_UV_FROM_MESH, mode == MeshSourceMode.Mesh, 1);
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_UIEFFECT_ON, isUIEffect, 0);
             SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE, mode == MeshSourceMode.UIEffectSprite, 1);
-            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE, mode == MeshSourceMode.UIEffectBaseMap, 1);
+            SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE, useBaseMapTexture, 1);
             if (mode == MeshSourceMode.Particle)
             {
                 SetFlag(flags, NBShaderFlags.FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER, false, 1);

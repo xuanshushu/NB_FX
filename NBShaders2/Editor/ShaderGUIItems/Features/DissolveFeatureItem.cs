@@ -30,7 +30,7 @@ namespace NBShaderEditor
             new VectorComponentItem(rootItem, dissolveMapRelatedFoldOut, "_DissolveOffsetRotateDistort", 2, () => Content("溶解贴图旋转"), true, 0f, 360f);
             new PNoiseBlendModeItem(rootItem, this, NBShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE, "_DissolvePNoiseBlendOpacity", () => Content("溶解程序噪波混合"),
                 () => rootItem.Context.ProgramNoiseEnabled == MixedBool.True);
-            new VectorComponentItem(rootItem, this, "_Dissolve", 1, () => Content("溶解值Pow"), true, 0f, 10f);
+            new VectorComponentItem(rootItem, this, "_Dissolve", 1, () => Content("溶解值Pow"), true, 0.001f, 10f);
             new VectorComponentRangeSliderItem(rootItem, this, "_Dissolve", 0, "DissolveXRangeVec", () => Content("溶解强度"));
             new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY, 0, () => Content("溶解强度自定义曲线"));
             new VectorComponentItem(rootItem, this, "_Dissolve", 3, () => Content("溶解硬软度"), true, 0.001f, 1f);
