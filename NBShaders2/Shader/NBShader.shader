@@ -967,6 +967,7 @@ Shader "Effects/NBShader"
             Tags{
               "LightMode" = "NBCameraOpaqueDistortPass" 
 			} //Queue设置是希望特效渲染在场景透明物体前面
+            Blend SrcAlpha OneMinusSrcAlpha
             offset [_offsetFactor], [_offsetUnits]
             Cull[_Cull]
 
@@ -1090,6 +1091,7 @@ Shader "Effects/NBShader"
             Tags{
               "LightMode" = "NBDeferredDistortPass" 
 			} //Queue设置是希望特效渲染在场景透明物体前面
+            Blend SrcAlpha OneMinusSrcAlpha
             offset [_offsetFactor], [_offsetUnits]
             Cull[_Cull]
 

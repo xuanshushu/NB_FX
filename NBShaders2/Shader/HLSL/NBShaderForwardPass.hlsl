@@ -1231,6 +1231,7 @@
             return MakeParticleFragmentOutput(0);
         #endif
 
+        half alphaStrength = alpha;
         #if defined  (_ALPHAPREMULTIPLY_ON) || defined(_ALPHAMODULATE_ON)
             result *= alpha;
             #ifdef _ALPHAPREMULTIPLY_ON
@@ -1242,7 +1243,7 @@
         #ifdef _SCREEN_DISTORT_MODE
 
         //在这里可以进行Alpha的修改
-        half screenDistortAlpha = alpha * screenDistort_Noise.z;
+        half screenDistortAlpha = alphaStrength * screenDistort_Noise.z;
         if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE))
         {
             screenDistortAlpha = pow(screenDistortAlpha,_ScreenDistortAlphaPow);
