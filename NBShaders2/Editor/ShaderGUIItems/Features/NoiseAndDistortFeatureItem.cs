@@ -1,7 +1,9 @@
 using System;
+using System.Reflection;
 using NBShader;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace NBShaderEditor
 {
@@ -9,6 +11,19 @@ namespace NBShaderEditor
     {
         private static readonly string[] DistortModeNames = { "FlowMap/RG贴图", "折射率" };
         private static readonly string[] ScreenDistortModeNames = { "No Screen Distort", "Deferred Distort", "Camera Opaque Distort" };
+        private const int ScreenDistortModeDeferred = 1;
+        private const int ScreenDistortModeCameraOpaque = 2;
+        private const string ScreenDistortKeyword = "_SCREEN_DISTORT_MODE";
+        private const string ScreenDistortModePropertyName = "_ScreenDistortModeToggle";
+        private const string RendererDataListPropertyName = "m_RendererDataList";
+        private const string LegacyRendererDataPropertyName = "m_RendererData";
+        private const string RendererFeaturesPropertyName = "m_RendererFeatures";
+        private const string OpaqueTexturePropertyName = "supportsCameraOpaqueTexture";
+        private const string OpaqueTextureSerializedPropertyName = "m_RequireOpaqueTexture";
+        private const string RendererFeatureActivePropertyName = "isActive";
+        private const string RendererFeatureActiveSerializedPropertyName = "m_Active";
+        private const string NBPostProcessTypeFullName = "NBShader.NBPostProcess";
+        private const string NBPostProcessTypeName = "NBPostProcess";
 
         public NoiseAndDistortFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(rootItem, parentItem, "_NoiseBlockFoldOut", "_noisemapEnabled", "扭曲", keyword: "_NOISEMAP")
@@ -31,13 +46,44 @@ namespace NBShaderEditor
             new FeaturePopupItem(rootItem, this, "_ScreenDistortModeToggle", () => Content("屏幕扰动模式"), ScreenDistortModeNames,
                 property => rootItem.SyncService.ApplyScreenDistortMode(Mathf.RoundToInt(property.floatValue)),
                 () => rootItem.Context.UIEffectEnabled != MixedBool.True,
-                "_SCREEN_DISTORT_MODE");
+                ScreenDistortKeyword);
+            Func<bool> isDeferredDistortVisible = TierVisible(
+                rootItem,
+                ScreenDistortKeyword,
+                () => IsScreenDistortMode(rootItem, ScreenDistortModeDeferred));
+            Func<bool> isCameraOpaqueDistortVisible = TierVisible(
+                rootItem,
+                ScreenDistortKeyword,
+                () => IsScreenDistortMode(rootItem, ScreenDistortModeCameraOpaque));
+            Func<bool> isScreenDistortModeNeedsNBPostProcessVisible = () => isDeferredDistortVisible() || isCameraOpaqueDistortVisible();
+            Func<bool> isMissingNBPostProcessVisible = () => isScreenDistortModeNeedsNBPostProcessVisible() && !HasActiveNBPostProcessRendererFeature();
+            Func<bool> isMissingOpaqueTextureVisible = () => isCameraOpaqueDistortVisible() && !HasCameraOpaqueTextureCopyEnabled();
+            new PingableHelpBoxItem(
+                rootItem,
+                this,
+                () => Text(
+                    "feature.screenDistort.missingNbPostProcess.message",
+                    "Screen Distort requires an active NB Post Process Feature on at least one RendererData in the current URP Pipeline Asset."),
+                MessageType.Warning,
+                () => ButtonContent("feature.screenDistort.pingRendererData", "Ping Renderer"),
+                GetRendererDataForNBPostProcessPing,
+                isMissingNBPostProcessVisible);
+            new PingableHelpBoxItem(
+                rootItem,
+                this,
+                () => Text(
+                    "feature.screenDistort.missingOpaqueTextureCopy.message",
+                    "Camera Opaque Distort requires Opaque Texture to be enabled on the current URP Pipeline Asset."),
+                MessageType.Warning,
+                () => ButtonContent("feature.screenDistort.pingPipelineAsset", "Ping URP Asset"),
+                GetCurrentRenderPipelineAsset,
+                isMissingOpaqueTextureVisible);
             ShaderGUISliderItem screenDistortIntensityItem = new ShaderGUISliderItem(
                 rootItem,
                 this,
                 TierVisible(
                     rootItem,
-                    "_SCREEN_DISTORT_MODE",
+                    ScreenDistortKeyword,
                     () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f)))
             {
                 PropertyName = "_ScreenDistortIntensity",
@@ -56,7 +102,7 @@ namespace NBShaderEditor
                 },
                 TierVisible(
                     rootItem,
-                    "_SCREEN_DISTORT_MODE",
+                    ScreenDistortKeyword,
                     () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f)));
 
             PropertyToggleBlockItem screenAlphaBlock = ToggleBlock(
@@ -69,7 +115,7 @@ namespace NBShaderEditor
                 parent: this,
                 isVisible: TierVisible(
                     rootItem,
-                    "_SCREEN_DISTORT_MODE",
+                    ScreenDistortKeyword,
                     () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f)));
             ShaderGUIFloatItem screenDistortAlphaPowItem = new ShaderGUIFloatItem(rootItem, screenAlphaBlock)
             {
@@ -156,6 +202,318 @@ namespace NBShaderEditor
             return rootItem.PropertyInfoDic.TryGetValue(propertyName, out ShaderPropertyInfo info) &&
                    !info.Property.hasMixedValue &&
                    info.Property.floatValue > threshold;
+        }
+
+        private static bool IsScreenDistortMode(NBShaderRootItem rootItem, int mode)
+        {
+            return rootItem.Context.UIEffectEnabled != MixedBool.True &&
+                   IsPropertyMode(rootItem, ScreenDistortModePropertyName, mode);
+        }
+
+        private static bool HasActiveNBPostProcessRendererFeature()
+        {
+            try
+            {
+                RenderPipelineAsset pipelineAsset = GetCurrentRenderPipelineAsset();
+                if (pipelineAsset == null)
+                {
+                    return false;
+                }
+
+                SerializedObject pipelineObject = new SerializedObject(pipelineAsset);
+                SerializedProperty rendererDataList = pipelineObject.FindProperty(RendererDataListPropertyName);
+                if (rendererDataList != null && rendererDataList.isArray)
+                {
+                    for (int i = 0; i < rendererDataList.arraySize; i++)
+                    {
+                        UnityEngine.Object rendererData = rendererDataList.GetArrayElementAtIndex(i).objectReferenceValue;
+                        if (RendererDataHasNBPostProcess(rendererData, requireActive: true))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                SerializedProperty legacyRendererData = pipelineObject.FindProperty(LegacyRendererDataPropertyName);
+                return legacyRendererData != null && RendererDataHasNBPostProcess(legacyRendererData.objectReferenceValue, requireActive: true);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private static bool RendererDataHasNBPostProcess(UnityEngine.Object rendererData, bool requireActive)
+        {
+            if (rendererData == null)
+            {
+                return false;
+            }
+
+            SerializedObject rendererDataObject = new SerializedObject(rendererData);
+            SerializedProperty rendererFeatures = rendererDataObject.FindProperty(RendererFeaturesPropertyName);
+            if (rendererFeatures == null || !rendererFeatures.isArray)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < rendererFeatures.arraySize; i++)
+            {
+                UnityEngine.Object rendererFeature = rendererFeatures.GetArrayElementAtIndex(i).objectReferenceValue;
+                if (IsNBPostProcessFeature(rendererFeature) &&
+                    (!requireActive || IsRendererFeatureActive(rendererFeature)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsNBPostProcessFeature(UnityEngine.Object rendererFeature)
+        {
+            if (rendererFeature == null)
+            {
+                return false;
+            }
+
+            for (Type type = rendererFeature.GetType(); type != null; type = type.BaseType)
+            {
+                if (string.Equals(type.FullName, NBPostProcessTypeFullName, StringComparison.Ordinal) ||
+                    string.Equals(type.Name, NBPostProcessTypeName, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsRendererFeatureActive(UnityEngine.Object rendererFeature)
+        {
+            if (rendererFeature == null)
+            {
+                return false;
+            }
+
+            if (TryGetBoolProperty(rendererFeature, RendererFeatureActivePropertyName, out bool isActive))
+            {
+                return isActive;
+            }
+
+            try
+            {
+                SerializedObject rendererFeatureObject = new SerializedObject(rendererFeature);
+                SerializedProperty activeProperty = rendererFeatureObject.FindProperty(RendererFeatureActiveSerializedPropertyName);
+                return activeProperty != null &&
+                       activeProperty.propertyType == SerializedPropertyType.Boolean &&
+                       activeProperty.boolValue;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private static bool HasCameraOpaqueTextureCopyEnabled()
+        {
+            try
+            {
+                RenderPipelineAsset pipelineAsset = GetCurrentRenderPipelineAsset();
+                if (pipelineAsset == null)
+                {
+                    return false;
+                }
+
+                if (TryGetBoolProperty(pipelineAsset, OpaqueTexturePropertyName, out bool supportsCameraOpaqueTexture))
+                {
+                    return supportsCameraOpaqueTexture;
+                }
+
+                SerializedObject pipelineObject = new SerializedObject(pipelineAsset);
+                SerializedProperty opaqueTextureProperty = pipelineObject.FindProperty(OpaqueTextureSerializedPropertyName);
+                return opaqueTextureProperty != null &&
+                       opaqueTextureProperty.propertyType == SerializedPropertyType.Boolean &&
+                       opaqueTextureProperty.boolValue;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private static UnityEngine.Object GetRendererDataForNBPostProcessPing()
+        {
+            try
+            {
+                RenderPipelineAsset pipelineAsset = GetCurrentRenderPipelineAsset();
+                if (pipelineAsset == null)
+                {
+                    return null;
+                }
+
+                SerializedObject pipelineObject = new SerializedObject(pipelineAsset);
+                SerializedProperty rendererDataList = pipelineObject.FindProperty(RendererDataListPropertyName);
+                if (rendererDataList != null && rendererDataList.isArray)
+                {
+                    return GetRendererDataForNBPostProcessPing(rendererDataList);
+                }
+
+                SerializedProperty legacyRendererData = pipelineObject.FindProperty(LegacyRendererDataPropertyName);
+                return legacyRendererData != null ? legacyRendererData.objectReferenceValue : null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private static UnityEngine.Object GetRendererDataForNBPostProcessPing(SerializedProperty rendererDataList)
+        {
+            UnityEngine.Object firstRendererData = null;
+            UnityEngine.Object rendererDataWithInactiveFeature = null;
+            for (int i = 0; i < rendererDataList.arraySize; i++)
+            {
+                UnityEngine.Object rendererData = rendererDataList.GetArrayElementAtIndex(i).objectReferenceValue;
+                if (rendererData == null)
+                {
+                    continue;
+                }
+
+                if (firstRendererData == null)
+                {
+                    firstRendererData = rendererData;
+                }
+
+                if (RendererDataHasNBPostProcess(rendererData, requireActive: true))
+                {
+                    return rendererData;
+                }
+
+                if (rendererDataWithInactiveFeature == null &&
+                    RendererDataHasNBPostProcess(rendererData, requireActive: false))
+                {
+                    rendererDataWithInactiveFeature = rendererData;
+                }
+            }
+
+            return rendererDataWithInactiveFeature != null ? rendererDataWithInactiveFeature : firstRendererData;
+        }
+
+        private static RenderPipelineAsset GetCurrentRenderPipelineAsset()
+        {
+            return QualitySettings.renderPipeline != null
+                ? QualitySettings.renderPipeline
+                : GraphicsSettings.currentRenderPipeline;
+        }
+
+        private static bool TryGetBoolProperty(UnityEngine.Object target, string propertyName, out bool value)
+        {
+            value = false;
+            if (target == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                PropertyInfo propertyInfo = target.GetType().GetProperty(
+                    propertyName,
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (propertyInfo == null || propertyInfo.PropertyType != typeof(bool))
+                {
+                    return false;
+                }
+
+                value = (bool)propertyInfo.GetValue(target, null);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private static GUIContent ButtonContent(string key, string fallback)
+        {
+            return NBShaderInspectorLocalization.MakeContent("inspector." + key + ".button", fallback);
+        }
+
+        private sealed class PingableHelpBoxItem : ShaderGUIItem
+        {
+            private const float HelpBoxPadding = 6f;
+            private const float HelpBoxButtonGap = 4f;
+            private const float MaxButtonWidth = 160f;
+            private static readonly GUIContent TempHelpContent = new GUIContent();
+
+            private readonly Func<string> _messageProvider;
+            private readonly MessageType _messageType;
+            private readonly Func<GUIContent> _buttonContentProvider;
+            private readonly Func<UnityEngine.Object> _targetProvider;
+            private readonly Func<bool> _isVisible;
+
+            public PingableHelpBoxItem(
+                ShaderGUIRootItem rootItem,
+                ShaderGUIItem parentItem,
+                Func<string> messageProvider,
+                MessageType messageType,
+                Func<GUIContent> buttonContentProvider,
+                Func<UnityEngine.Object> targetProvider,
+                Func<bool> isVisible) : base(rootItem, parentItem)
+            {
+                _messageProvider = messageProvider ?? (() => string.Empty);
+                _messageType = messageType;
+                _buttonContentProvider = buttonContentProvider ?? (() => GUIContent.none);
+                _targetProvider = targetProvider ?? (() => null);
+                _isVisible = isVisible;
+            }
+
+            public override void OnGUI()
+            {
+                if (_isVisible != null && !_isVisible())
+                {
+                    return;
+                }
+
+                using (ParentControlDisabledScope())
+                {
+                    string message = _messageProvider();
+                    GUIContent buttonContent = _buttonContentProvider();
+                    TempHelpContent.text = message;
+                    float width = Mathf.Max(1f, EditorGUIUtility.currentViewWidth + GlobalRectWidthExpansion + GlobalRectXOffset);
+                    float messageHeight = Mathf.Max(
+                        EditorGUIUtility.singleLineHeight * 2f,
+                        EditorStyles.helpBox.CalcHeight(TempHelpContent, width));
+                    float buttonHeight = EditorGUIUtility.singleLineHeight;
+                    float height = messageHeight + HelpBoxButtonGap + buttonHeight + HelpBoxPadding;
+                    Rect rect = ApplyGlobalRectCompensation(LayoutRect(height));
+                    EditorGUI.HelpBox(rect, message, _messageType);
+
+                    float buttonWidth = Mathf.Min(
+                        MaxButtonWidth,
+                        Mathf.Max(90f, EditorStyles.miniButton.CalcSize(buttonContent).x + 18f));
+                    buttonWidth = Mathf.Min(buttonWidth, Mathf.Max(0f, rect.width - HelpBoxPadding * 2f));
+                    Rect buttonRect = new Rect(
+                        rect.xMax - HelpBoxPadding - buttonWidth,
+                        rect.yMax - HelpBoxPadding - buttonHeight,
+                        buttonWidth,
+                        buttonHeight);
+
+                    UnityEngine.Object target = _targetProvider();
+                    using (new EditorGUI.DisabledScope(target == null))
+                    {
+                        if (GUI.Button(buttonRect, buttonContent, EditorStyles.miniButton))
+                        {
+                            Selection.activeObject = target;
+                            EditorGUIUtility.PingObject(target);
+                        }
+                    }
+
+                    TempHelpContent.text = string.Empty;
+                }
+            }
         }
     }
 }
