@@ -74,6 +74,46 @@ namespace NBShaderEditor
             _rootItem = rootItem;
         }
 
+        public static void SyncMaterialState(Material material)
+        {
+            if (material == null)
+            {
+                return;
+            }
+
+            SyncMaterialState(new List<Material> { material });
+        }
+
+        public static void SyncMaterialState(IList<Material> materials)
+        {
+            if (materials == null || materials.Count == 0)
+            {
+                return;
+            }
+
+            var validMaterials = new List<Material>();
+            for (int i = 0; i < materials.Count; i++)
+            {
+                if (materials[i] != null)
+                {
+                    validMaterials.Add(materials[i]);
+                }
+            }
+
+            if (validMaterials.Count == 0)
+            {
+                return;
+            }
+
+            var rootItem = new NBShaderRootItem
+            {
+                Mats = validMaterials,
+                Shader = validMaterials[0].shader
+            };
+            rootItem.InitFlags(validMaterials);
+            new NBShaderSyncService(rootItem).SyncMaterialState();
+        }
+
         public void NotifyKeywordsMayHaveChanged()
         {
             KeywordVersion++;

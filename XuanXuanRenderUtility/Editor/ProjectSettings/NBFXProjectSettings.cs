@@ -19,6 +19,7 @@ namespace NBShaderEditor
 
         private const string LocalizationTableName = "NBShader";
         private const string LocalizationCsvAssetPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Editor/Localization/NBShaderInspectorLocalization.csv";
+        private const string FoldoutSessionPrefix = "NBFXProjectSettings.Foldout.";
 
         private sealed class SettingsSection
         {
@@ -42,6 +43,7 @@ namespace NBShaderEditor
             "English"
         };
         private static readonly List<SettingsSection> s_Sections = new List<SettingsSection>();
+        private static GUIStyle s_FoldoutHeaderStyle;
 
         [SerializeField]
         private NBFXLanguageMode languageMode = NBFXLanguageMode.FollowEditor;
@@ -112,17 +114,20 @@ namespace NBShaderEditor
 
         private static void DrawSettingsGUI(string searchContext)
         {
-            DrawSectionHeader(ProjectSettingsContent("projectSettings.generalSection", "基础设置", "General Settings"));
-
-            EditorGUI.BeginChangeCheck();
-            var selectedMode = (NBFXLanguageMode)EditorGUILayout.Popup(
-                ProjectSettingsContent("projectSettings.defaultLanguage", "默认语言", "Default Language"),
-                (int)LanguageMode,
-                ProjectSettingsLanguageOptions());
-
-            if (EditorGUI.EndChangeCheck())
+            if (DrawSectionFoldout(
+                    "General",
+                    ProjectSettingsContent("projectSettings.generalSection", "基础设置", "General Settings")))
             {
-                SetLanguageMode(selectedMode);
+                EditorGUI.BeginChangeCheck();
+                var selectedMode = (NBFXLanguageMode)EditorGUILayout.Popup(
+                    ProjectSettingsContent("projectSettings.defaultLanguage", "默认语言", "Default Language"),
+                    (int)LanguageMode,
+                    ProjectSettingsLanguageOptions());
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    SetLanguageMode(selectedMode);
+                }
             }
 
             DrawRegisteredSections(searchContext);
@@ -134,14 +139,41 @@ namespace NBShaderEditor
             {
                 SettingsSection section = s_Sections[i];
                 EditorGUILayout.Space(10f);
-                DrawSectionHeader(section.titleProvider?.Invoke() ?? new GUIContent(section.id));
-                section.guiHandler(searchContext);
+                if (DrawSectionFoldout(section.id, section.titleProvider?.Invoke() ?? new GUIContent(section.id)))
+                {
+                    section.guiHandler(searchContext);
+                }
             }
         }
 
-        private static void DrawSectionHeader(GUIContent content)
+        private static bool DrawSectionFoldout(string id, GUIContent content)
         {
-            EditorGUILayout.LabelField(content, EditorStyles.boldLabel);
+            string sessionKey = FoldoutSessionPrefix + id;
+            bool expanded = SessionState.GetBool(sessionKey, true);
+            EditorGUI.BeginChangeCheck();
+            bool nextExpanded = EditorGUILayout.Foldout(expanded, content, true, FoldoutHeaderStyle);
+            if (EditorGUI.EndChangeCheck())
+            {
+                SessionState.SetBool(sessionKey, nextExpanded);
+            }
+
+            return nextExpanded;
+        }
+
+        private static GUIStyle FoldoutHeaderStyle
+        {
+            get
+            {
+                if (s_FoldoutHeaderStyle == null)
+                {
+                    s_FoldoutHeaderStyle = new GUIStyle(EditorStyles.foldout)
+                    {
+                        fontStyle = FontStyle.Bold
+                    };
+                }
+
+                return s_FoldoutHeaderStyle;
+            }
         }
 
         private static GUIContent ProjectSettingsContent(string key, string chineseFallback, string englishFallback)
