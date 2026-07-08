@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Text;
 using NBShader;
 using NBShaderEditor;
 using UnityEditor;
@@ -23,6 +25,13 @@ namespace NBShaders2.Editor.FeatureLevel
         private const float RowIndentWidth = 14f;
         private const string FoldoutSessionPrefix = "NBShaderFeatureLevelSettingsProvider.Foldout.";
 
+        private sealed class RowContentCache
+        {
+            public GUIContent rowContent;
+            public GUIContent effectContent;
+            public GUIContent descriptionContent;
+        }
+
         private static readonly NBShaderFeatureTier[] Tiers =
         {
             NBShaderFeatureTier.Low,
@@ -31,13 +40,27 @@ namespace NBShaders2.Editor.FeatureLevel
             NBShaderFeatureTier.Ultra
         };
 
+        private static readonly Dictionary<string, RowContentCache> s_RowContentCache =
+            new Dictionary<string, RowContentCache>(StringComparer.Ordinal);
+        private static readonly Dictionary<NBShaderFeaturePerformanceCost, GUIContent> s_CostContentCache =
+            new Dictionary<NBShaderFeaturePerformanceCost, GUIContent>();
+        private static readonly GUIContent[] s_QualitySummaryContents = new GUIContent[Tiers.Length];
+        private static readonly string[] s_QualitySummaryTexts = new string[Tiers.Length];
+        private static readonly StringBuilder s_QualitySummaryBuilder = new StringBuilder(128);
+
         private static Vector2 s_TableScrollPosition;
+        private static string s_ContentCacheLanguage;
+        private static GUIContent s_ProviderLabelContent;
+        private static GUIContent s_QualityDescriptionContent;
+        private static GUIContent s_NoValueContent;
+        private static string s_QualityMenuTipText;
+        private static int s_QualitySummaryHash;
 
         static NBShaderFeatureLevelSettingsProvider()
         {
             NBFXProjectSettings.RegisterSettingsSection(
                 "NBShaderFeatureLevels",
-                () => new GUIContent(Text("featureLevel.providerLabel", "NBShader Feature Levels")),
+                GetProviderLabelContent,
                 OnGUI,
                 new[]
                 {
@@ -62,6 +85,8 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static void OnGUI(string searchContext)
         {
+            EnsureContentCacheForCurrentLanguage();
+
             var settings = NBShaderFeatureLevelProjectSettings.instance;
             settings.EnsureInitialized();
 
@@ -167,11 +192,8 @@ namespace NBShaders2.Editor.FeatureLevel
                 for (var i = 0; i < Tiers.Length; i++)
                 {
                     var tier = Tiers[i];
-                    var summary = GetQualitySummary(settings, tier);
                     if (GUILayout.Button(
-                            new GUIContent(
-                                summary,
-                                Text("featureLevel.quality.menuTip", "Click to move Unity Quality levels to this NBShader tier.")),
+                            GetQualitySummaryContent(settings, tier, i),
                             EditorStyles.popup,
                             GUILayout.Width(TierColumnWidth),
                             GUILayout.Height(RowHeight)))
@@ -188,7 +210,7 @@ namespace NBShaders2.Editor.FeatureLevel
                         "Each Unity Quality Level belongs to exactly one NBShader tier."),
                     EffectColumnWidth);
                 DrawInfoCell(
-                    new GUIContent(Text("featureLevel.desc.quality", "Unity Quality Level")),
+                    GetQualityDescriptionContent(),
                     DescriptionColumnWidth);
             }
         }
@@ -201,8 +223,8 @@ namespace NBShaders2.Editor.FeatureLevel
             var allowedPassFeatureSets = new HashSet<string>[Tiers.Length];
             for (var i = 0; i < Tiers.Length; i++)
             {
-                allowedKeywordSets[i] = settings.GetAllowedKeywordSet(Tiers[i]);
-                allowedPassFeatureSets[i] = settings.GetAllowedPassFeatureSet(Tiers[i]);
+                allowedKeywordSets[i] = settings.GetAllowedKeywordSetForReadOnlyUse(Tiers[i]);
+                allowedPassFeatureSets[i] = settings.GetAllowedPassFeatureSetForReadOnlyUse(Tiers[i]);
             }
 
             for (var rowIndex = 0; rowIndex < rows.Length; rowIndex++)
@@ -484,15 +506,6 @@ namespace NBShaders2.Editor.FeatureLevel
             EditorGUI.DrawRect(rect, new Color(0f, 0f, 0f, 0.25f));
         }
 
-        private static string GetQualitySummary(NBShaderFeatureLevelProjectSettings settings, NBShaderFeatureTier tier)
-        {
-            var names = settings.GetQualityNamesForTier(tier);
-            if (names == null || names.Length == 0)
-                return Text("featureLevel.quality.none", "—");
-
-            return string.Join(", ", names);
-        }
-
         private static bool IsRowVisible(NBShaderFeatureLevelRow row)
         {
             var parentKey = row.parentKey;
@@ -551,11 +564,16 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static GUIContent GetRowContent(NBShaderFeatureLevelRow row)
         {
+            return GetCachedRowContent(row).rowContent;
+        }
+
+        private static GUIContent BuildRowContent(NBShaderFeatureLevelRow row)
+        {
             if (row.isKeyword)
-                return GetKeywordContent(row.keyword, row.labelFallback);
+                return BuildKeywordContent(row.keyword, row.labelFallback);
 
             if (row.isPass)
-                return GetPassContent(row.passFeatureId, row.labelFallback);
+                return BuildPassContent(row.passFeatureId, row.labelFallback);
 
             return NBShaderInspectorLocalization.MakeContent(
                 "inspector.featureLevel.group." + row.key + ".label",
@@ -564,7 +582,7 @@ namespace NBShaders2.Editor.FeatureLevel
                 Text("featureLevel.group.tooltip", "Click the foldout to show or hide child rows."));
         }
 
-        private static GUIContent GetKeywordContent(string keyword, string fallback)
+        private static GUIContent BuildKeywordContent(string keyword, string fallback)
         {
             var label = NBShaderInspectorLocalization.Get(
                 "inspector.featureLevel.keyword." + keyword + ".label",
@@ -575,7 +593,7 @@ namespace NBShaders2.Editor.FeatureLevel
             return new GUIContent(label, string.Format(tooltipFormat, keyword));
         }
 
-        private static GUIContent GetPassContent(string passFeatureId, string fallback)
+        private static GUIContent BuildPassContent(string passFeatureId, string fallback)
         {
             string passName;
             string displayName;
@@ -596,6 +614,10 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static GUIContent GetCostContent(NBShaderFeaturePerformanceCost cost)
         {
+            GUIContent content;
+            if (s_CostContentCache.TryGetValue(cost, out content))
+                return content;
+
             string key;
             string fallback;
             switch (cost)
@@ -618,12 +640,19 @@ namespace NBShaders2.Editor.FeatureLevel
                     break;
             }
 
-            return new GUIContent(
+            content = new GUIContent(
                 Text(key, fallback),
                 Text("featureLevel.cost.tooltip", "Estimated shader performance cost for this feature."));
+            s_CostContentCache[cost] = content;
+            return content;
         }
 
         private static GUIContent GetEffectContent(NBShaderFeatureLevelRow row)
+        {
+            return GetCachedRowContent(row).effectContent;
+        }
+
+        private static GUIContent BuildEffectContent(NBShaderFeatureLevelRow row)
         {
             if (row.isKeyword)
             {
@@ -650,6 +679,11 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static GUIContent GetDescriptionContent(NBShaderFeatureLevelRow row)
         {
+            return GetCachedRowContent(row).descriptionContent;
+        }
+
+        private static GUIContent BuildDescriptionContent(NBShaderFeatureLevelRow row)
+        {
             if (row.isKeyword)
                 return new GUIContent(row.keyword, row.keyword);
 
@@ -670,8 +704,163 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static GUIContent GetNoValueContent()
         {
+            if (s_NoValueContent != null)
+                return s_NoValueContent;
+
             var text = Text("featureLevel.desc.none", "—");
-            return new GUIContent(text, text);
+            s_NoValueContent = new GUIContent(text, text);
+            return s_NoValueContent;
+        }
+
+        private static GUIContent GetProviderLabelContent()
+        {
+            EnsureContentCacheForCurrentLanguage();
+
+            if (s_ProviderLabelContent == null)
+                s_ProviderLabelContent = new GUIContent(Text("featureLevel.providerLabel", "NBShader Feature Levels"));
+
+            return s_ProviderLabelContent;
+        }
+
+        private static GUIContent GetQualityDescriptionContent()
+        {
+            if (s_QualityDescriptionContent == null)
+            {
+                var text = Text("featureLevel.desc.quality", "Unity Quality Level");
+                s_QualityDescriptionContent = new GUIContent(text, text);
+            }
+
+            return s_QualityDescriptionContent;
+        }
+
+        private static GUIContent GetQualitySummaryContent(
+            NBShaderFeatureLevelProjectSettings settings,
+            NBShaderFeatureTier tier,
+            int tierIndex)
+        {
+            EnsureQualitySummaryCache(settings);
+
+            var content = s_QualitySummaryContents[tierIndex];
+            if (content == null)
+            {
+                content = new GUIContent();
+                s_QualitySummaryContents[tierIndex] = content;
+            }
+
+            content.text = s_QualitySummaryTexts[tierIndex];
+            content.tooltip = GetQualityMenuTipText();
+            return content;
+        }
+
+        private static void EnsureQualitySummaryCache(NBShaderFeatureLevelProjectSettings settings)
+        {
+            var mappings = settings.qualityTierMappings;
+            var hash = GetQualitySummaryHash(mappings);
+            if (s_QualitySummaryTexts[0] != null && s_QualitySummaryHash == hash)
+                return;
+
+            s_QualitySummaryHash = hash;
+            var noneText = Text("featureLevel.quality.none", "—");
+            for (var tierIndex = 0; tierIndex < Tiers.Length; tierIndex++)
+            {
+                s_QualitySummaryBuilder.Length = 0;
+                if (mappings != null)
+                {
+                    var tier = Tiers[tierIndex];
+                    for (var i = 0; i < mappings.Length; i++)
+                    {
+                        var mapping = mappings[i];
+                        if (mapping == null ||
+                            mapping.tier != tier ||
+                            string.IsNullOrEmpty(mapping.qualityName))
+                        {
+                            continue;
+                        }
+
+                        if (s_QualitySummaryBuilder.Length > 0)
+                            s_QualitySummaryBuilder.Append(", ");
+                        s_QualitySummaryBuilder.Append(mapping.qualityName);
+                    }
+                }
+
+                s_QualitySummaryTexts[tierIndex] =
+                    s_QualitySummaryBuilder.Length == 0
+                        ? noneText
+                        : s_QualitySummaryBuilder.ToString();
+            }
+
+            s_QualitySummaryBuilder.Length = 0;
+        }
+
+        private static int GetQualitySummaryHash(NBShaderQualityTierMapping[] mappings)
+        {
+            unchecked
+            {
+                var hash = 17;
+                if (mappings == null)
+                    return hash;
+
+                for (var i = 0; i < mappings.Length; i++)
+                {
+                    var mapping = mappings[i];
+                    hash = hash * 31 + (mapping != null ? (int)mapping.tier : -1);
+                    hash = hash * 31 + (mapping != null && mapping.qualityName != null
+                        ? StringComparer.Ordinal.GetHashCode(mapping.qualityName)
+                        : 0);
+                }
+
+                return hash;
+            }
+        }
+
+        private static string GetQualityMenuTipText()
+        {
+            if (s_QualityMenuTipText == null)
+            {
+                s_QualityMenuTipText = Text(
+                    "featureLevel.quality.menuTip",
+                    "Click to move Unity Quality levels to this NBShader tier.");
+            }
+
+            return s_QualityMenuTipText;
+        }
+
+        private static RowContentCache GetCachedRowContent(NBShaderFeatureLevelRow row)
+        {
+            RowContentCache cache;
+            if (!s_RowContentCache.TryGetValue(row.key, out cache))
+            {
+                cache = new RowContentCache
+                {
+                    rowContent = BuildRowContent(row),
+                    effectContent = BuildEffectContent(row),
+                    descriptionContent = BuildDescriptionContent(row)
+                };
+                s_RowContentCache.Add(row.key, cache);
+            }
+
+            return cache;
+        }
+
+        private static void EnsureContentCacheForCurrentLanguage()
+        {
+            var language = NBShaderInspectorLocalization.CurrentLanguage;
+            if (string.Equals(s_ContentCacheLanguage, language, StringComparison.Ordinal))
+                return;
+
+            s_ContentCacheLanguage = language;
+            s_RowContentCache.Clear();
+            s_CostContentCache.Clear();
+            s_ProviderLabelContent = null;
+            s_QualityDescriptionContent = null;
+            s_NoValueContent = null;
+            s_QualityMenuTipText = null;
+            s_QualitySummaryHash = 0;
+            for (var i = 0; i < s_QualitySummaryContents.Length; i++)
+            {
+                s_QualitySummaryContents[i] = null;
+                s_QualitySummaryTexts[i] = null;
+            }
         }
 
         private static GUIContent Content(string key, string fallback, string tip = "")

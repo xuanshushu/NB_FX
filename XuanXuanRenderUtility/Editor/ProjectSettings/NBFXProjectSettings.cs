@@ -28,6 +28,8 @@ namespace NBShaderEditor
             public Action<string> guiHandler;
             public List<string> keywords;
             public int order;
+            public GUIContent titleContent;
+            public string titleLanguage;
         }
 
         private static readonly string[] LanguageOptionsChineseFallback =
@@ -43,7 +45,11 @@ namespace NBShaderEditor
             "English"
         };
         private static readonly List<SettingsSection> s_Sections = new List<SettingsSection>();
+        private static readonly Dictionary<string, GUIContent> s_ProjectSettingsContentCache =
+            new Dictionary<string, GUIContent>(StringComparer.Ordinal);
         private static GUIStyle s_FoldoutHeaderStyle;
+        private static string s_ProjectSettingsEditorLanguage;
+        private static string[] s_ProjectSettingsLanguageOptions;
 
         [SerializeField]
         private NBFXLanguageMode languageMode = NBFXLanguageMode.FollowEditor;
@@ -114,6 +120,8 @@ namespace NBShaderEditor
 
         private static void DrawSettingsGUI(string searchContext)
         {
+            EnsureProjectSettingsContentCacheForEditorLanguage();
+
             if (DrawSectionFoldout(
                     "General",
                     ProjectSettingsContent("projectSettings.generalSection", "基础设置", "General Settings")))
@@ -139,7 +147,7 @@ namespace NBShaderEditor
             {
                 SettingsSection section = s_Sections[i];
                 EditorGUILayout.Space(10f);
-                if (DrawSectionFoldout(section.id, section.titleProvider?.Invoke() ?? new GUIContent(section.id)))
+                if (DrawSectionFoldout(section.id, GetSectionTitleContent(section)))
                 {
                     section.guiHandler(searchContext);
                 }
@@ -178,29 +186,80 @@ namespace NBShaderEditor
 
         private static GUIContent ProjectSettingsContent(string key, string chineseFallback, string englishFallback)
         {
-            return new GUIContent(ProjectSettingsText(key, chineseFallback, englishFallback));
+            EnsureProjectSettingsContentCacheForEditorLanguage();
+
+            GUIContent content;
+            if (s_ProjectSettingsContentCache.TryGetValue(key, out content))
+                return content;
+
+            var text = ProjectSettingsText(key, chineseFallback, englishFallback, s_ProjectSettingsEditorLanguage);
+            content = new GUIContent(text, text);
+            s_ProjectSettingsContentCache.Add(key, content);
+            return content;
         }
 
-        private static string ProjectSettingsText(string key, string chineseFallback, string englishFallback)
+        private static string ProjectSettingsText(
+            string key,
+            string chineseFallback,
+            string englishFallback,
+            string editorLanguage)
         {
-            RegisterLocalization();
-            string editorLanguage = ShaderGUILocalization.GetEditorLanguageName();
             string fallback = IsEnglishLanguage(editorLanguage) ? englishFallback : chineseFallback;
             return ShaderGUILocalization.GetInspectorText(LocalizationTableName, key, fallback, editorLanguage);
         }
 
         private static string[] ProjectSettingsLanguageOptions()
         {
-            RegisterLocalization();
-            string editorLanguage = ShaderGUILocalization.GetEditorLanguageName();
-            string[] fallback = IsEnglishLanguage(editorLanguage)
+            EnsureProjectSettingsContentCacheForEditorLanguage();
+            if (s_ProjectSettingsLanguageOptions != null)
+                return s_ProjectSettingsLanguageOptions;
+
+            string[] fallback = IsEnglishLanguage(s_ProjectSettingsEditorLanguage)
                 ? LanguageOptionsEnglishFallback
                 : LanguageOptionsChineseFallback;
-            return ShaderGUILocalization.GetInspectorOptions(
+            s_ProjectSettingsLanguageOptions = ShaderGUILocalization.GetInspectorOptions(
                 LocalizationTableName,
                 "projectSettings.languageMode",
                 fallback,
-                editorLanguage);
+                s_ProjectSettingsEditorLanguage);
+            return s_ProjectSettingsLanguageOptions;
+        }
+
+        private static GUIContent GetSectionTitleContent(SettingsSection section)
+        {
+            if (section.titleProvider != null)
+            {
+                string language = ShaderGUILocalization.GetCurrentLanguage(LocalizationTableName);
+                if (section.titleContent != null &&
+                    string.Equals(section.titleLanguage, language, StringComparison.Ordinal))
+                {
+                    return section.titleContent;
+                }
+
+                section.titleLanguage = language;
+                section.titleContent = section.titleProvider();
+                return section.titleContent;
+            }
+
+            GUIContent content;
+            if (s_ProjectSettingsContentCache.TryGetValue(section.id, out content))
+                return content;
+
+            content = new GUIContent(section.id, section.id);
+            s_ProjectSettingsContentCache.Add(section.id, content);
+            return content;
+        }
+
+        private static void EnsureProjectSettingsContentCacheForEditorLanguage()
+        {
+            RegisterLocalization();
+            string editorLanguage = ShaderGUILocalization.GetEditorLanguageName();
+            if (string.Equals(s_ProjectSettingsEditorLanguage, editorLanguage, StringComparison.Ordinal))
+                return;
+
+            s_ProjectSettingsEditorLanguage = editorLanguage;
+            s_ProjectSettingsContentCache.Clear();
+            s_ProjectSettingsLanguageOptions = null;
         }
 
         private static bool IsEnglishLanguage(string language)
