@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using NBShader;
+using NBShaderEditor;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,9 +19,157 @@ namespace NBShaders2.Editor.FeatureLevel
     {
         private const string UndoApplyLoadedTier = "Apply NBShader Quality Tier";
         private const string UndoApplyProjectTier = "Apply NBShader Quality Tier To Project Materials";
+        private const float DialogWidth = 460f;
+        private const float DialogHeight = 220f;
+        private const float DialogMouseOffset = 12f;
+
+        private static readonly MethodInfo s_GetCurrentMousePositionMethod =
+            typeof(UnityEditor.Editor).GetMethod(
+                "GetCurrentMousePosition",
+                BindingFlags.NonPublic | BindingFlags.Static);
+
+        private enum QualityTierDialogResult
+        {
+            Skip,
+            SyncLoaded
+        }
+
+        private sealed class QualityTierSyncWindow : EditorWindow
+        {
+            private string _message;
+
+            internal void Initialize(string title, string message)
+            {
+                titleContent = new GUIContent(title);
+                _message = message;
+                minSize = new Vector2(DialogWidth, DialogHeight);
+                maxSize = minSize;
+                PositionNearMouse();
+            }
+
+            private void PositionNearMouse()
+            {
+                Vector2 mousePosition;
+                if (!TryGetCurrentMousePosition(out mousePosition))
+                    return;
+
+                var desktopBounds = UnityEditorInternal.InternalEditorUtility.GetBoundsOfDesktopAtPoint(mousePosition);
+                var maxX = Mathf.Max(desktopBounds.xMin, desktopBounds.xMax - DialogWidth);
+                var maxY = Mathf.Max(desktopBounds.yMin, desktopBounds.yMax - DialogHeight);
+                var x = Mathf.Clamp(mousePosition.x + DialogMouseOffset, desktopBounds.xMin, maxX);
+                var y = Mathf.Clamp(mousePosition.y + DialogMouseOffset, desktopBounds.yMin, maxY);
+                position = new Rect(x, y, DialogWidth, DialogHeight);
+            }
+
+            private void OnGUI()
+            {
+                EditorGUILayout.Space(10f);
+                EditorGUILayout.HelpBox(_message, MessageType.Warning);
+
+                EditorGUILayout.Space(8f);
+                DrawPermanentDisableToggle();
+
+                GUILayout.FlexibleSpace();
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button(
+                            Text("featureLevel.qualityWatcher.dialog.syncLoaded", "Sync Loaded"),
+                            GUILayout.Width(120f)))
+                    {
+                        s_DialogResult = QualityTierDialogResult.SyncLoaded;
+                        Close();
+                    }
+
+                    if (GUILayout.Button(
+                            Text("featureLevel.qualityWatcher.dialog.skip", "Skip"),
+                            GUILayout.Width(100f)))
+                    {
+                        s_DialogResult = QualityTierDialogResult.Skip;
+                        Close();
+                    }
+                }
+
+                EditorGUILayout.Space(10f);
+            }
+
+            private void DrawPermanentDisableToggle()
+            {
+                var settings = NBShaderFeatureLevelProjectSettings.instance;
+                var disabled = !settings.enableQualityTierWatcher;
+                var requestedDisabled = EditorGUILayout.ToggleLeft(
+                    Text(
+                        "featureLevel.qualityWatcher.dialog.disablePermanently",
+                        "Permanently disable this automatic prompt"),
+                    disabled);
+                if (requestedDisabled == disabled)
+                    return;
+
+                if (requestedDisabled && !ConfirmPermanentDisable())
+                    return;
+
+                settings.SetQualityTierWatcherEnabled(!requestedDisabled);
+                settings.SaveProjectSettings();
+                UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+            }
+
+            private static bool ConfirmPermanentDisable()
+            {
+                var message =
+                    "1. " +
+                    Text(
+                        "featureLevel.qualityWatcher.disableConfirm.settingsLocation",
+                        "You can re-enable this feature at Project Settings > NB_FX > NBShader Feature Levels.") +
+                    "\n\n" +
+                    "2. " +
+                    Text(
+                        "featureLevel.qualityWatcher.disableConfirm.materialWarning",
+                        "Warning: the current material configuration may no longer match the active Unity Quality Level.") +
+                    "\n\n" +
+                    Text(
+                        "featureLevel.qualityWatcher.disableConfirm.question",
+                        "Permanently disable the automatic prompt?");
+
+                return EditorUtility.DisplayDialog(
+                    Text(
+                        "featureLevel.qualityWatcher.disableConfirm.title",
+                        "Disable NBShader2 Quality Watcher"),
+                    message,
+                    Text(
+                        "featureLevel.qualityWatcher.disableConfirm.disable",
+                        "Disable Permanently"),
+                    Text("featureLevel.qualityWatcher.disableConfirm.cancel", "Cancel"));
+            }
+        }
 
         private static int s_LastQualityLevel;
         private static bool s_DialogQueued;
+        private static QualityTierDialogResult s_DialogResult;
+
+        private static bool TryGetCurrentMousePosition(out Vector2 mousePosition)
+        {
+            mousePosition = Vector2.zero;
+            if (s_GetCurrentMousePositionMethod == null)
+                return false;
+
+            try
+            {
+                var value = s_GetCurrentMousePositionMethod.Invoke(null, null);
+                if (value is Vector2)
+                {
+                    mousePosition = (Vector2)value;
+                    return true;
+                }
+            }
+            catch (TargetInvocationException)
+            {
+            }
+            catch (MethodAccessException)
+            {
+            }
+
+            return false;
+        }
 
         static NBShaderEditorQualityTierWatcher()
         {
@@ -55,6 +205,18 @@ namespace NBShaders2.Editor.FeatureLevel
 
         private static void WatchQualityLevel()
         {
+            var current = QualitySettings.GetQualityLevel();
+            if (!NBShaderFeatureLevelProjectSettings.instance.enableQualityTierWatcher)
+            {
+                s_LastQualityLevel = current;
+                if (s_DialogQueued)
+                {
+                    EditorApplication.delayCall -= PromptForQualityTierSync;
+                    s_DialogQueued = false;
+                }
+                return;
+            }
+
             if (Application.isBatchMode ||
                 EditorApplication.isCompiling ||
                 EditorApplication.isUpdating ||
@@ -64,7 +226,6 @@ namespace NBShaders2.Editor.FeatureLevel
                 return;
             }
 
-            var current = QualitySettings.GetQualityLevel();
             if (current == s_LastQualityLevel)
                 return;
 
@@ -76,7 +237,8 @@ namespace NBShaders2.Editor.FeatureLevel
         private static void PromptForQualityTierSync()
         {
             s_DialogQueued = false;
-            if (Application.isBatchMode ||
+            if (!NBShaderFeatureLevelProjectSettings.instance.enableQualityTierWatcher ||
+                Application.isBatchMode ||
                 EditorApplication.isCompiling ||
                 EditorApplication.isUpdating ||
                 EditorApplication.isPlayingOrWillChangePlaymode)
@@ -88,27 +250,46 @@ namespace NBShaders2.Editor.FeatureLevel
             string qualityName;
             ResolveCurrentQualityTier(out tier, out qualityName);
 
-            var syncLoaded = EditorUtility.DisplayDialog(
-                "NBShader2 Feature Tier",
+            var localizedTier = GetLocalizedTierName(tier);
+            var title = Text(
+                "featureLevel.qualityWatcher.dialog.title",
+                "NBShader2 Feature Tier");
+            var message =
                 string.Format(
-                    "Unity Quality has switched to '{0}'.\n\nSync currently loaded NBShader2 materials to tier {1}?",
-                    qualityName,
-                    tier),
-                "Sync Loaded",
-                "Skip");
-            if (!syncLoaded)
+                    Text(
+                        "featureLevel.qualityWatcher.dialog.qualityChanged",
+                        "Unity Quality has switched to '{0}'."),
+                    qualityName) +
+                "\n\n" +
+                string.Format(
+                    Text(
+                        "featureLevel.qualityWatcher.dialog.syncQuestion",
+                        "Sync currently loaded NBShader2 materials to tier {0}?"),
+                    localizedTier);
+
+            s_DialogResult = QualityTierDialogResult.Skip;
+            var window = ScriptableObject.CreateInstance<QualityTierSyncWindow>();
+            window.Initialize(title, message);
+            window.ShowModalUtility();
+            if (s_DialogResult != QualityTierDialogResult.SyncLoaded)
                 return;
 
             var loadedCount = ApplyTierToLoadedMaterials(tier);
 
             var syncProject = EditorUtility.DisplayDialog(
-                "NBShader2 Feature Tier",
+                title,
                 string.Format(
-                    "Applied tier {0} to {1} loaded NBShader2 material(s).\n\nScan Assets and write current keyword/pass state for all NBShader2 material assets?",
-                    tier,
-                    loadedCount),
-                "Scan Assets",
-                "Loaded Only");
+                    Text(
+                        "featureLevel.qualityWatcher.dialog.loadedApplied",
+                        "Applied tier {0} to {1} loaded NBShader2 material(s)."),
+                    localizedTier,
+                    loadedCount) +
+                "\n\n" +
+                Text(
+                    "featureLevel.qualityWatcher.dialog.scanQuestion",
+                    "Scan Assets and write current keyword/pass state for all NBShader2 material assets?"),
+                Text("featureLevel.qualityWatcher.dialog.scanAssets", "Scan Assets"),
+                Text("featureLevel.qualityWatcher.dialog.loadedOnly", "Loaded Only"));
             if (syncProject)
             {
                 var projectCount = ApplyTierToProjectMaterials(tier);
@@ -181,8 +362,15 @@ namespace NBShaders2.Editor.FeatureLevel
                 for (var i = 0; i < guids.Length; i++)
                 {
                     if (EditorUtility.DisplayCancelableProgressBar(
-                            "NBShader2 Feature Tier",
-                            string.Format("Scanning material {0}/{1}", i + 1, guids.Length),
+                            Text(
+                                "featureLevel.qualityWatcher.dialog.title",
+                                "NBShader2 Feature Tier"),
+                            string.Format(
+                                Text(
+                                    "featureLevel.qualityWatcher.dialog.scanProgress",
+                                    "Scanning material {0}/{1}"),
+                                i + 1,
+                                guids.Length),
                             guids.Length > 0 ? (float)i / guids.Length : 1f))
                     {
                         break;
@@ -242,6 +430,26 @@ namespace NBShaders2.Editor.FeatureLevel
                 EditorUtility.SetDirty(material);
 
             return changed;
+        }
+
+        private static string GetLocalizedTierName(NBShaderFeatureTier tier)
+        {
+            switch (tier)
+            {
+                case NBShaderFeatureTier.Low:
+                    return NBShaderInspectorLocalization.Get("inspector.toolbar.tierLow.label", "Low");
+                case NBShaderFeatureTier.Medium:
+                    return NBShaderInspectorLocalization.Get("inspector.toolbar.tierMedium.label", "Medium");
+                case NBShaderFeatureTier.High:
+                    return NBShaderInspectorLocalization.Get("inspector.toolbar.tierHigh.label", "High");
+                default:
+                    return NBShaderInspectorLocalization.Get("inspector.toolbar.tierUltra.label", "Ultra");
+            }
+        }
+
+        private static string Text(string key, string fallback)
+        {
+            return NBShaderInspectorLocalization.GetInspectorText(key, fallback);
         }
     }
 }

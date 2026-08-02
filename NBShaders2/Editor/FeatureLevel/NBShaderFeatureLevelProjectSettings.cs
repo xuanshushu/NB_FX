@@ -14,6 +14,7 @@ namespace NBShaders2.Editor.FeatureLevel
         [SerializeField] private NBShaderFeatureTierKeywordSet[] m_TierKeywordSets;
         [SerializeField] private NBShaderFeatureTierPassSet[] m_TierPassSets;
         [SerializeField] private NBShaderQualityTierMapping[] m_QualityTierMappings;
+        [SerializeField] private bool m_DisableQualityTierWatcher;
         [SerializeField] private bool m_EnableDebugSymbols;
 
         [NonSerialized] private bool m_Initialized;
@@ -25,6 +26,7 @@ namespace NBShaders2.Editor.FeatureLevel
         public NBShaderFeatureTierKeywordSet[] tierKeywordSets { get { EnsureInitialized(); InvalidateAllowedKeywordSetCache(); return m_TierKeywordSets; } }
         public NBShaderFeatureTierPassSet[] tierPassSets { get { EnsureInitialized(); InvalidateAllowedPassFeatureSetCache(); return m_TierPassSets; } }
         public NBShaderQualityTierMapping[] qualityTierMappings { get { EnsureInitialized(); return m_QualityTierMappings; } }
+        public bool enableQualityTierWatcher { get { return !m_DisableQualityTierWatcher; } }
         public bool enableDebugSymbols { get { return m_EnableDebugSymbols; } }
 
         public void EnsureInitialized()
@@ -315,6 +317,11 @@ namespace NBShaders2.Editor.FeatureLevel
         {
             EnsureInitialized();
             Save(true);
+        }
+
+        public void SetQualityTierWatcherEnabled(bool enabled)
+        {
+            m_DisableQualityTierWatcher = !enabled;
         }
 
         public void SetDebugSymbolsEnabled(bool enabled)

@@ -101,6 +101,9 @@ namespace NBShaders2.Editor.FeatureLevel
             changed |= DrawFeatureLevelTable(settings);
 
             EditorGUILayout.Space();
+            changed |= DrawQualityTierWatcherToggle(settings);
+
+            EditorGUILayout.Space();
             changed |= DrawButtons(settings);
 
             if (changed)
@@ -442,6 +445,24 @@ namespace NBShaders2.Editor.FeatureLevel
             }
 
             return changed;
+        }
+
+        private static bool DrawQualityTierWatcherToggle(NBShaderFeatureLevelProjectSettings settings)
+        {
+            var enabled = EditorGUILayout.ToggleLeft(
+                Content(
+                    "featureLevel.qualityWatcher.enabled",
+                    "Watch Unity Quality Changes",
+                    "Show a prompt to synchronize loaded NBShader2 materials when the active Unity Quality Level changes."),
+                settings.enableQualityTierWatcher);
+            if (enabled == settings.enableQualityTierWatcher)
+                return false;
+
+            Undo.RecordObject(
+                settings,
+                Text("featureLevel.undo.changeQualityWatcher", "Change NBShader Quality Watcher"));
+            settings.SetQualityTierWatcherEnabled(enabled);
+            return true;
         }
 
         private static void ShowQualityBindingMenu(NBShaderFeatureLevelProjectSettings settings, NBShaderFeatureTier targetTier)
