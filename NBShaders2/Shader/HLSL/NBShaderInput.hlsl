@@ -223,6 +223,8 @@
 
     uint _W9ParticleShaderWrapFlags;
 
+    uint _NBShaderForceNoMipFlags;
+
     uint _W9ParticleCustomDataFlag0;
     uint _W9ParticleCustomDataFlag1;
     uint _W9ParticleCustomDataFlag2;
@@ -246,6 +248,7 @@
     #define NB_SHADER_FLAGS _W9ParticleShaderFlags
     #define NB_SHADER_FLAGS1 _W9ParticleShaderFlags1
     #define NB_SHADER_WRAP_FLAGS _W9ParticleShaderWrapFlags
+    #define NB_SHADER_FORCE_NO_MIP_FLAGS _NBShaderForceNoMipFlags
     #define NB_SHADER_COLOR_CHANNEL_FLAG _W9ParticleShaderColorChannelFlag
     #define NB_SHADER_PNOISE_BLEND_FLAG _W9ParticleShaderPNoiseBlendFlag
     #define NB_CUSTOM_DATA_FLAG_0 _W9ParticleCustomDataFlag0
@@ -390,6 +393,11 @@
         }
     }
 
+    bool CheckForceNoMipFlags(uint bits)
+    {
+        return (_NBShaderForceNoMipFlags & bits) != 0;
+    }
+
 
     SamplerState sampler_linear_repeat;
     SamplerState sampler_linear_clamp;
@@ -399,21 +407,24 @@
 
 
 
-    half4 SampleTexture2D(Texture2D tex,float2 uv,SAMPLER( textureSampler),bool sampleLOD = false,int lod = 0)
+    half4 SampleTexture2D(Texture2D tex,float2 uv,SAMPLER(textureSampler),bool forceLod0)
     {
-        if (sampleLOD)
+        half4 sample;
+        UNITY_BRANCH
+        if (forceLod0)
         {
-            return SAMPLE_TEXTURE2D_LOD(tex,textureSampler,uv,lod);
-                    
+            sample = SAMPLE_TEXTURE2D_LOD(tex,textureSampler,uv,0);
         }
         else
         {
-            return SAMPLE_TEXTURE2D(tex,textureSampler,uv);
+            sample = SAMPLE_TEXTURE2D(tex,textureSampler,uv);
         }
+
+        return sample;
     }
     
 
-    half4 SampleTexture2DWithWrapFlags(Texture2D tex,float2 uv,uint bits,bool sampleLOD = false,int lod = 0)
+    half4 SampleTexture2DWithWrapFlags(Texture2D tex,float2 uv,uint bits,bool forceLod0)
     {
         #ifdef _CAMERA_OPAQUE_DISTORT_PASS
         int wrapMode;
@@ -439,33 +450,25 @@
             case 2: uv = float2(frac(uv.x),saturate(uv.y));break;
             case 3: uv = float2(saturate(uv.x),frac(uv.y));break;
         }
-        if (sampleLOD)
-        {
-            return SAMPLE_TEXTURE2D_LOD(tex,sampler_linear_clamp,uv,lod);//SamplerWillIgnore;需要在GLSL相关平台打包时强制设置为Clamp循环。
-                    
-        }
-        else
-        {
-            return SAMPLE_TEXTURE2D(tex,sampler_linear_clamp,uv);//SamplerWillIgnore;需要在GLSL相关平台打包时强制设置为Clamp循环。
-        }
+        return SampleTexture2D(tex,uv,sampler_linear_clamp,forceLod0);//SamplerWillIgnore;需要在GLSL相关平台打包时强制设置为Clamp循环。
 
         #else
         
         switch (wrapMode)
         {
             case 0:
-                return SampleTexture2D(tex,uv,sampler_linear_repeat,sampleLOD,lod);
+                return SampleTexture2D(tex,uv,sampler_linear_repeat,forceLod0);
                 break;
             case 1:
-                return SampleTexture2D(tex,uv,sampler_linear_clamp,sampleLOD,lod);
+                return SampleTexture2D(tex,uv,sampler_linear_clamp,forceLod0);
             case 2:
-                return SampleTexture2D(tex,uv,sampler_linear_RepeatU_ClampV,sampleLOD,lod);
+                return SampleTexture2D(tex,uv,sampler_linear_RepeatU_ClampV,forceLod0);
                 break;
             case 3:
-                return SampleTexture2D(tex,uv,sampler_linear_ClampU_RepeatV,sampleLOD,lod);
+                return SampleTexture2D(tex,uv,sampler_linear_ClampU_RepeatV,forceLod0);
                 break;
             default:
-                return SampleTexture2D(tex,uv,sampler_linear_repeat,sampleLOD,lod);
+                return SampleTexture2D(tex,uv,sampler_linear_repeat,forceLod0);
                 break;
         }
         #endif
@@ -549,19 +552,36 @@
 
     
 
-    half4 tex2D_TryLinearizeWithoutAlphaFX(sampler2D tex, float2 uv)
+    half4 SampleTexture2D(sampler2D tex,float2 uv,bool forceLod0)
+    {
+        half4 sample;
+        UNITY_BRANCH
+        if (forceLod0)
+        {
+            sample = tex2Dlod(tex,float4(uv,0,0));
+        }
+        else
+        {
+            sample = tex2D(tex,uv);
+        }
+
+        return sample;
+    }
+
+    half4 tex2D_TryLinearizeWithoutAlphaFX(sampler2D tex, float2 uv, bool forceLod0)
     {
         half4 outColor = 0;
+        half4 sample = SampleTexture2D(tex,uv,forceLod0);
             
         #if defined(PARTICLE)//UI下使用ParticleBase不需要做 Gamma2Linear 转换
         UNITY_FLATTEN
         if(CheckLocalFlags(FLAG_BIT_PARTICLE_UIEFFECT_ON))
         {
-            outColor = tex2D(tex, uv);
+            outColor = sample;
         }
         else
         {
-            outColor = TryLinearizeWithoutAlpha(tex2D(tex, uv));
+            outColor = TryLinearizeWithoutAlpha(sample);
         }
         #endif
         return outColor;
@@ -633,13 +653,13 @@
 
     
     // Sample a texture and do blending for texture sheet animation if needed
-    half4 BlendTexture(sampler2D _Texture, float2 uv, float3 blendUv)
+    half4 BlendTexture(sampler2D _Texture, float2 uv, float3 blendUv, bool forceLod0)
     {
-        half4 color = tex2D_TryLinearizeWithoutAlphaFX(_Texture, uv);
+        half4 color = tex2D_TryLinearizeWithoutAlphaFX(_Texture, uv, forceLod0);
     
         half4 color2;
         #ifdef _FLIPBOOKBLENDING_ON
-            color2 = tex2D_TryLinearizeWithoutAlphaFX(_Texture, blendUv.xy);
+            color2 = tex2D_TryLinearizeWithoutAlphaFX(_Texture, blendUv.xy, forceLod0);
             color = lerp(color, color2, blendUv.z);
         #endif
     
@@ -651,12 +671,12 @@
         return color;
     }
 
-    half4 BlendTexture(Texture2D _Texture, float2 uv, float3 blendUv,uint bits)
+    half4 BlendTexture(Texture2D _Texture, float2 uv, float3 blendUv,uint bits,bool forceLod0)
     {
-        half4 color = SampleTexture2DWithWrapFlags(_Texture,uv,bits);
+        half4 color = SampleTexture2DWithWrapFlags(_Texture,uv,bits,forceLod0);
         half4 color2;
         #ifdef _FLIPBOOKBLENDING_ON
-            color2 = SampleTexture2DWithWrapFlags(_Texture,blendUv.xy,bits);
+            color2 = SampleTexture2DWithWrapFlags(_Texture,blendUv.xy,bits,forceLod0);
             color = lerp(color, color2, blendUv.z);
         #endif
 
@@ -675,12 +695,12 @@
     }
     
     // 采样噪波
-    half4 SampleNoise(half4 NoiseOffset, Texture2D _Texture,float2 UV, half3 wordPos)
+    half4 SampleNoise(half4 NoiseOffset, Texture2D _Texture,float2 UV, half3 wordPos,bool forceLod0)
     {
         
         float2 UV2 = float2(NoiseOffset.x * time + UV.x, NoiseOffset.y * time + UV.y);    //_Time.y
 
-        half4 color = SampleTexture2DWithWrapFlags(_Texture, UV2 ,FLAG_BIT_WRAPMODE_NOISEMAP);
+        half4 color = SampleTexture2DWithWrapFlags(_Texture, UV2 ,FLAG_BIT_WRAPMODE_NOISEMAP,forceLod0);
         // color.xy *= color.a;
         
         return color;
@@ -1119,7 +1139,7 @@
         half2 uv = TRANSFORM_TEX(originUV,_VertexOffset_Map);
         uv = UVOffsetAnimaiton(uv,_VertexOffset_Vec.xy);
         // half vertexOffsetSample = tex2Dlod(_VertexOffset_Map,half4(uv,0,0));
-        half vertexOffsetSample = SampleTexture2DWithWrapFlags(_VertexOffset_Map,uv,FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP,true,0);
+        half vertexOffsetSample = SampleTexture2DWithWrapFlags(_VertexOffset_Map,uv,FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP,true);
         // UNITY_BRANCH
         // if(CheckLocalWrapFlags(FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP))
         // {
@@ -1140,7 +1160,7 @@
         {
             half2 maskUV = TRANSFORM_TEX(originMaskUV,_VertexOffset_MaskMap);
             maskUV = UVOffsetAnimaiton(maskUV,_VertexOffset_MaskMap_Vec.xy);
-            half vertexOffsetMaskSample = SampleTexture2DWithWrapFlags(_VertexOffset_MaskMap,maskUV,FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP,true,0);
+            half vertexOffsetMaskSample = SampleTexture2DWithWrapFlags(_VertexOffset_MaskMap,maskUV,FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP,true);
             vertexOffsetMask = lerp(1,vertexOffsetMaskSample,_VertexOffset_MaskMap_Vec.z);
         }
         #endif
@@ -1162,7 +1182,7 @@
 
     //向UV横向两边的色散。
     #if defined(_CHROMATIC_ABERRATION)
-    half4 DistortionChoraticaberrat(Texture2D baseTexture,half2 originUV, half2 uvAfterNoise,half ChoraticaberratIntensity,uint bits)
+    half4 DistortionChoraticaberrat(Texture2D baseTexture,half2 originUV, half2 uvAfterNoise,half ChoraticaberratIntensity,uint bits,bool forceLod0)
     {
         half2 delta = half2(originUV.x *2-1,0);
 
@@ -1178,11 +1198,11 @@
             delta *= ChoraticaberratIntensity;
         }
         
-        half2 ra = SampleTexture2DWithWrapFlags(baseTexture,uvAfterNoise,bits).xw;
+        half2 ra = SampleTexture2DWithWrapFlags(baseTexture,uvAfterNoise,bits,forceLod0).xw;
         ra.r *= ra.y;
-        half2 ga = SampleTexture2DWithWrapFlags(baseTexture,uvAfterNoise - delta,bits).yw;
+        half2 ga = SampleTexture2DWithWrapFlags(baseTexture,uvAfterNoise - delta,bits,forceLod0).yw;
         ga.r *= ga.y;
-        half2 ba = SampleTexture2DWithWrapFlags(baseTexture,uvAfterNoise - delta*2,bits).zw;
+        half2 ba = SampleTexture2DWithWrapFlags(baseTexture,uvAfterNoise - delta*2,bits,forceLod0).zw;
         ba.r *= ba.y;
         return half4(ra.r,ga.r,ba.r,clamp(ra.y*0.5+ga.y*0.5+ba.y*0.5,0,1));
     }
@@ -1247,9 +1267,9 @@
 
     Texture2D _ParallaxMapping_Map;
 
-    half2 ParallaxMappingSimple(half2 texCoords, half3 viewDir)
+    half2 ParallaxMappingSimple(half2 texCoords, half3 viewDir, bool forceLod0)
     {
-         float height = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map,texCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP).r;
+         float height = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map,texCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,forceLod0).r;
          height *= _ParallaxMapping_Intensity;
          viewDir = normalize(viewDir);
          viewDir.xy /= (viewDir.z);
@@ -1257,7 +1277,7 @@
          return  texCoords;
     }
 
-    half2 ParallaxMappingPeelDepth(half2 texCoords, half3 viewDir)
+    half2 ParallaxMappingPeelDepth(half2 texCoords, half3 viewDir, bool forceLod0)
     {
         const float minLayers = 2;
         const float maxLayers = 32;
@@ -1269,20 +1289,20 @@
         half2 deltaTexcoord = p/numLayers;
 
         half2 currentTexcoords = texCoords;
-        float currentMapDepthValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map,currentTexcoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP).r;
+        float currentMapDepthValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map,currentTexcoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,forceLod0).r;
 
         [loop]
         while (currentLayerDepth < currentMapDepthValue )
         {
             currentTexcoords -= deltaTexcoord;
-            currentMapDepthValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map,currentTexcoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP).r;
+            currentMapDepthValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map,currentTexcoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,forceLod0).r;
             currentLayerDepth += layerDepth;
         }
 
         return  currentTexcoords;
         
     }
-    float2 ParallaxOcclusionMapping(float2 texCoords, float3 viewDir)
+    float2 ParallaxOcclusionMapping(float2 texCoords, float3 viewDir, bool forceLod0)
     {
         texCoords = texCoords * _ParallaxMapping_Map_ST + _ParallaxMapping_Map_ST.zw;
         // number of depth layers
@@ -1301,7 +1321,7 @@
       
         // get initial values
         float2 currentTexCoords     = texCoords;
-        float currentDepthMapValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map, currentTexCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP).r;
+        float currentDepthMapValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map, currentTexCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,forceLod0).r;
         currentLayerDepth = clamp(currentLayerDepth,0,1);
 
         int i = 0;
@@ -1311,7 +1331,7 @@
             // shift texture coordinates along direction of P
             currentTexCoords -= deltaTexCoords;
             // get depthmap value at current texture coordinates
-            currentDepthMapValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map, currentTexCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP).r;  
+            currentDepthMapValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map, currentTexCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,forceLod0).r;
             // get depth of next layer
             currentLayerDepth += layerDepth;
             i++;
@@ -1323,7 +1343,7 @@
 
         // get depth after and before collision for linear interpolation
         float afterDepth  = currentDepthMapValue - currentLayerDepth;
-        float beforeDepth = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map, prevTexCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP).r - currentLayerDepth + layerDepth;
+        float beforeDepth = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map, prevTexCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,forceLod0).r - currentLayerDepth + layerDepth;
      
         // interpolation of texture coordinates
         float weight = afterDepth / (afterDepth - beforeDepth);

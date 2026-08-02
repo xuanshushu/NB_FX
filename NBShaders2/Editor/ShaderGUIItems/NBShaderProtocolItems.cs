@@ -641,6 +641,117 @@ namespace NBShaderEditor
         }
     }
 
+    public class ForceNoMipItem : ShaderGUIItem
+    {
+        private readonly int _forceNoMipFlagBits;
+        private readonly Func<bool> _isVisible;
+
+        public ForceNoMipItem(
+            ShaderGUIRootItem rootItem,
+            ShaderGUIItem parentItem,
+            int forceNoMipFlagBits,
+            Func<bool> isVisible = null) : base(rootItem, parentItem)
+        {
+            _forceNoMipFlagBits = forceNoMipFlagBits;
+            _isVisible = isVisible;
+            GuiContent = NBShaderInspectorLocalization.MakeInspectorContent(
+                "protocol.forceNoMip",
+                "Force Disable Mipmap",
+                "Uses automatic mipmap sampling by default. Enable to force sampling mip level 0 without changing the texture asset.");
+            CheckIsPropertyModified();
+        }
+
+        public override void OnGUI()
+        {
+            if (_isVisible != null && !_isVisible())
+            {
+                return;
+            }
+
+            GetRect();
+            using (ParentControlDisabledScope())
+            {
+                EditorGUI.LabelField(LabelRect, GuiContent);
+            }
+
+            bool enabled = GetFirstValue();
+            using (ParentControlDisabledScope())
+            {
+                EditorGUI.showMixedValue = HasMixedValue();
+                EditorGUI.BeginChangeCheck();
+                using (new EditorGUIIndentLevelScope(0))
+                {
+                    enabled = EditorGUI.Toggle(ControlRect, enabled);
+                }
+
+                EditorGUI.showMixedValue = false;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    SetValue(enabled);
+                    CheckIsPropertyModified();
+                }
+            }
+
+            DrawResetButton();
+        }
+
+        public override void CheckIsPropertyModified(bool isCallByChild = false)
+        {
+            PropertyIsDefaultValue = !HasMixedValue() && !GetFirstValue();
+            HasModified = !PropertyIsDefaultValue;
+            ParentItem?.CheckIsPropertyModified(true);
+        }
+
+        public override void ExecuteReset(bool isCallByParent = false)
+        {
+            SetValue(false);
+            PropertyIsDefaultValue = true;
+            HasModified = false;
+            if (!isCallByParent)
+            {
+                ParentItem?.CheckIsPropertyModified(true);
+            }
+        }
+
+        private bool GetFirstValue()
+        {
+            ShaderFlagsBase flags = RootItem.ShaderFlags.Count > 0 ? RootItem.ShaderFlags[0] : null;
+            return flags != null && flags.CheckFlagBits(_forceNoMipFlagBits, index: NBShaderFlags.ForceNoMipFlagsIndex);
+        }
+
+        private bool HasMixedValue()
+        {
+            bool first = GetFirstValue();
+            for (int i = 1; i < RootItem.ShaderFlags.Count; i++)
+            {
+                ShaderFlagsBase flags = RootItem.ShaderFlags[i];
+                bool value = flags.CheckFlagBits(_forceNoMipFlagBits, index: NBShaderFlags.ForceNoMipFlagsIndex);
+                if (value != first)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void SetValue(bool enabled)
+        {
+            for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
+            {
+                ShaderFlagsBase flags = RootItem.ShaderFlags[i];
+                if (enabled)
+                {
+                    flags.SetFlagBits(_forceNoMipFlagBits, index: NBShaderFlags.ForceNoMipFlagsIndex);
+                }
+                else
+                {
+                    flags.ClearFlagBits(_forceNoMipFlagBits, index: NBShaderFlags.ForceNoMipFlagsIndex);
+                }
+            }
+        }
+    }
+
     public class PNoiseBlendModeItem : ShaderGUIItem
     {
         private static readonly string[] Options = { "不使用", "Multiply", "Min", "HardLight" };

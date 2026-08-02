@@ -514,6 +514,7 @@ Shader "Effects/NBShader"
         [HideInInspector] _W9ParticleShaderFlags("_W9ParticleShaderFlags", Integer) = 0
         [HideInInspector] _W9ParticleShaderFlags1("_W9ParticleShaderFlags1", Integer) = 1
         [HideInInspector] _W9ParticleShaderWrapFlags("_W9ParticleShaderWrapFlags", Integer) = 0
+        [HideInInspector] _NBShaderForceNoMipFlags("_NBShaderForceNoMipFlags", Integer) = 0
         [HideInInspector] _W9ParticleShaderWrapFlags2("_W9ParticleShaderWrapFlags2", Integer) = 0
         [HideInInspector] _W9ParticleCustomDataFlag0("_W9ParticleCustomDataFlag0", Integer) = 0
         [HideInInspector] _W9ParticleCustomDataFlag1("_W9ParticleCustomDataFlag1", Integer) = 0

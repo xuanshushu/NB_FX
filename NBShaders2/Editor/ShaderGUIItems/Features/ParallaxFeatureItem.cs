@@ -10,7 +10,8 @@ namespace NBShaderEditor
         public ParallaxFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(rootItem, parentItem, "_ParallaxBlockFoldOut", "_ParallaxMapping_Toggle", "遮蔽视差", keyword: "_PARALLAX_MAPPING", isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True)
         {
-            AddTextureWithWrap(rootItem, this, "_ParallaxMapping_Map", "视差贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP);
+            AddTextureWithWrap(rootItem, this, "_ParallaxMapping_Map", "视差贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_PARALLAXMAPPINGMAP);
             ShaderGUISliderItem parallaxMappingIntensityItem = new ShaderGUISliderItem(rootItem, this)
             {
                 PropertyName = "_ParallaxMapping_Intensity",

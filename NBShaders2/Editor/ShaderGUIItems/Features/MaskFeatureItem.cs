@@ -37,6 +37,7 @@ namespace NBShaderEditor
                 () => rootItem.Context.ProgramNoiseEnabled == MixedBool.True);
             AddMaskMap(rootItem, this, "_MaskMap", "_MaskMapGradientToggle", "_MaskUVModeFoldOut", "遮罩",
                 NBShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_MASKMAP,
                 NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1,
                 NBShaderFlags.FLAG_BIT_UVMODE_POS_0_MASKMAP,
                 NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT,
@@ -84,6 +85,7 @@ namespace NBShaderEditor
                 keyword: "_MASKMAP2_ON");
             AddMaskMap(rootItem, mask2Block, "_MaskMap2", "_MaskMap2GradientToggle", "_Mask2UVModeFoldOut", "遮罩2",
                 NBShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP2,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_MASKMAP2,
                 NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2,
                 NBShaderFlags.FLAG_BIT_UVMODE_POS_0_MASKMAP_2,
                 NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT,
@@ -100,6 +102,7 @@ namespace NBShaderEditor
                 keyword: "_MASKMAP3_ON");
             AddMaskMap(rootItem, mask3Block, "_MaskMap3", "_MaskMap3GradientToggle", "_Mask3UVModeFoldOut", "遮罩3",
                 NBShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP3,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_MASKMAP3,
                 NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3,
                 NBShaderFlags.FLAG_BIT_UVMODE_POS_0_MASKMAP_3,
                 NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT,
@@ -117,6 +120,7 @@ namespace NBShaderEditor
             string uvFoldOutPropertyName,
             string label,
             int wrapFlag,
+            int forceNoMipFlag,
             int colorChannelFlagPos,
             int uvModeFlagPos,
             int gradientFlag,
@@ -128,12 +132,12 @@ namespace NBShaderEditor
             ShaderGUIItem textureParent = parent;
             if (string.IsNullOrEmpty(textureFoldOutPropertyName))
             {
-                AddTextureWithWrap(rootItem, parent, texturePropertyName, label + "贴图", wrapFlag,
+                AddTextureWithWrap(rootItem, parent, texturePropertyName, label + "贴图", wrapFlag, forceNoMipFlag,
                     isVisible: () => IsPropertyMode(rootItem, modePropertyName, 0));
             }
             else
             {
-                textureParent = AddTextureWithRelatedFoldOut(rootItem, parent, texturePropertyName, label + "贴图", textureFoldOutPropertyName, wrapFlag,
+                textureParent = AddTextureWithRelatedFoldOut(rootItem, parent, texturePropertyName, label + "贴图", textureFoldOutPropertyName, wrapFlag, forceNoMipFlag,
                     isVisible: () => IsPropertyMode(rootItem, modePropertyName, 0));
             }
 

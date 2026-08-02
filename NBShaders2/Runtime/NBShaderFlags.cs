@@ -28,6 +28,10 @@ namespace NBShader
 
         public const string pNoiseBlendFlagName = "_W9ParticleShaderPNoiseBlendFlag";
         public static int pNoiseBlendFlagId = Shader.PropertyToID(pNoiseBlendFlagName);
+
+        public const int ForceNoMipFlagsIndex = 8;
+        public const string ForceNoMipFlagsName = "_NBShaderForceNoMipFlags";
+        public static int ForceNoMipFlagsId = Shader.PropertyToID(ForceNoMipFlagsName);
         
         // public const string WrapFlags2Name = "_W9ParticleShaderWrapFlags2";
         // public static int WrapFlags2Id = Shader.PropertyToID(WrapFlags2Name);
@@ -60,8 +64,9 @@ namespace NBShader
 
                 case 7:
                     return pNoiseBlendFlagId;
-                // case 8:
-                //     return WrapFlags2Id;
+
+                case ForceNoMipFlagsIndex:
+                    return ForceNoMipFlagsId;
 
                 default:
                     return FlagsId;
@@ -89,6 +94,9 @@ namespace NBShader
 
                 case 5:
                     return colorChannelFlagName;
+
+                case ForceNoMipFlagsIndex:
+                    return ForceNoMipFlagsName;
 
                 default:
                     return FlagsName;
@@ -185,6 +193,25 @@ namespace NBShader
         public const int FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP = 1 << 13;
         public const int FLAG_BIT_WRAPMODE_BUMPTEX = 1 << 14;
         public const int FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP = 1 << 15; 
+
+        public const int FLAG_BIT_FORCE_NO_MIP_BASEMAP = 1 << 0;
+        public const int FLAG_BIT_FORCE_NO_MIP_BUMPTEX = 1 << 1;
+        public const int FLAG_BIT_FORCE_NO_MIP_RIG_RTBK = 1 << 2;
+        public const int FLAG_BIT_FORCE_NO_MIP_RIG_LBTF = 1 << 3;
+        public const int FLAG_BIT_FORCE_NO_MIP_SIX_WAY_EMISSION_RAMP = 1 << 4;
+        public const int FLAG_BIT_FORCE_NO_MIP_MATCAP = 1 << 5;
+        public const int FLAG_BIT_FORCE_NO_MIP_MASKMAP = 1 << 6;
+        public const int FLAG_BIT_FORCE_NO_MIP_MASKMAP2 = 1 << 7;
+        public const int FLAG_BIT_FORCE_NO_MIP_MASKMAP3 = 1 << 8;
+        public const int FLAG_BIT_FORCE_NO_MIP_NOISEMAP = 1 << 9;
+        public const int FLAG_BIT_FORCE_NO_MIP_NOISE_MASKMAP = 1 << 10;
+        public const int FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP = 1 << 11;
+        public const int FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP = 1 << 12;
+        public const int FLAG_BIT_FORCE_NO_MIP_RAMP_COLOR_MAP = 1 << 13;
+        public const int FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP = 1 << 14;
+        public const int FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP = 1 << 15;
+        public const int FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP = 1 << 16;
+        public const int FLAG_BIT_FORCE_NO_MIP_PARALLAXMAPPINGMAP = 1 << 17;
         
         // public const int FLAG_BIT_WRAPMODE2_SHAREDUV = 1 << 0; 
 

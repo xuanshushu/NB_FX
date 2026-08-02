@@ -10,7 +10,8 @@ namespace NBShaderEditor
         public EmissionFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(rootItem, parentItem, "_EmissionBlockFoldOut", "_EmissionEnabled", "流光(颜色相加)", keyword: "_EMISSION")
         {
-            AddTextureWithWrap(rootItem, this, "_EmissionMap", "流光贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_EMISSIONMAP, "_EmissionMapColor");
+            AddTextureWithWrap(rootItem, this, "_EmissionMap", "流光贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_EMISSIONMAP,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP, "_EmissionMapColor");
             new UVModeSelectItem(rootItem, this, "_EmissionUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_EMISSION_MAP, 0, () => Content("流光贴图UV来源"), "_EmissionMap");
             new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X, 3, () => Content("流光贴图X轴偏移自定义曲线"));
             new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y, 3, () => Content("流光贴图Y轴偏移自定义曲线"));

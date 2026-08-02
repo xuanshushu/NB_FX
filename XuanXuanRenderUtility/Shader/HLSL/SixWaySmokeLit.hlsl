@@ -153,13 +153,23 @@ LightingData CreateSixWayLightingData(InputData inputData, half3 emission)
     return lightingData;
 }
 
-void  GetSixWayEmission(inout  BSDFData bsdfData,Texture2D rampMap,half4 emissionColor,bool isRampMap)
+void  GetSixWayEmission(inout  BSDFData bsdfData,Texture2D rampMap,half4 emissionColor,bool isRampMap,bool forceLod0 = false)
 {
     float input = pow(bsdfData.emissionInput,_SixWayInfo.y);
     half3 emission =  emissionColor * emissionColor.a;
     if (isRampMap)
     {
-        half4 rampSample = rampMap.Sample(sampler_linear_clamp,half2(input,0.5));
+        half4 rampSample;
+        UNITY_BRANCH
+        if (forceLod0)
+        {
+            rampSample = SAMPLE_TEXTURE2D_LOD(rampMap,sampler_linear_clamp,half2(input,0.5),0);
+        }
+        else
+        {
+            rampSample = SAMPLE_TEXTURE2D(rampMap,sampler_linear_clamp,half2(input,0.5));
+        }
+
         emission = emission * rampSample * rampSample.a;
     }
     else

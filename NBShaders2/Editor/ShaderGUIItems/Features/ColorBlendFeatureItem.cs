@@ -12,7 +12,8 @@ namespace NBShaderEditor
         public ColorBlendFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(rootItem, parentItem, "_ColorBlendBlockFoldOut", "_ColorBlendMap_Toggle", "渐变(颜色相乘)", keyword: "_COLORMAPBLEND")
         {
-            AddTextureWithWrap(rootItem, this, "_ColorBlendMap", "颜色渐变贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_COLORBLENDMAP, "_ColorBlendColor");
+            AddTextureWithWrap(rootItem, this, "_ColorBlendMap", "颜色渐变贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_COLORBLENDMAP,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP, "_ColorBlendColor");
             new UVModeSelectItem(rootItem, this, "_ColorBlendUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP, 0, () => Content("颜色渐变贴图UV来源"), "_ColorBlendMap");
             new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X, 3, () => Content("颜色渐变贴图X轴偏移自定义曲线"));
             new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y, 3, () => Content("颜色渐变贴图Y轴偏移自定义曲线"));

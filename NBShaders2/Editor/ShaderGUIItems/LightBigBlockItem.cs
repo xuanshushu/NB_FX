@@ -26,10 +26,13 @@ namespace NBShaderEditor
         private readonly PropertyToggleBlockItem _bumpBlock;
         private readonly PropertyToggleBlockItem _matCapBlock;
         private readonly TextureItem _sixWayPositiveItem;
+        private readonly ForceNoMipItem _sixWayPositiveForceNoMipItem;
         private readonly TextureItem _sixWayNegativeItem;
+        private readonly ForceNoMipItem _sixWayNegativeForceNoMipItem;
         private readonly ToggleItem _sixWayAbsorptionToggleItem;
         private readonly VectorComponentItem _sixWayAbsorptionStrengthItem;
         private readonly TextureItem _sixWayEmissionRampItem;
+        private readonly ForceNoMipItem _sixWayEmissionRampForceNoMipItem;
         private readonly VectorComponentItem _sixWayEmissionPowItem;
         private readonly ColorItem _sixWayEmissionColorItem;
 
@@ -113,6 +116,7 @@ namespace NBShaderEditor
                 "_BumpTex",
                 () => Content("light.bump.related", "Normal Map Related"));
             new WrapModeItem(rootItem, bumpTexRelatedFoldOut, NBShaderFlags.FLAG_BIT_WRAPMODE_BUMPTEX, () => Content("light.bump.wrap", "Normal Map Wrap"));
+            new ForceNoMipItem(rootItem, bumpTexRelatedFoldOut, NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_BUMPTEX);
             new UVModeSelectItem(
                 rootItem,
                 bumpTexRelatedFoldOut,
@@ -144,6 +148,7 @@ namespace NBShaderEditor
                 keyword: "_MATCAP",
                 isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay);
             new TextureItem(rootItem, _matCapBlock, "_MatCapTex", () => Content("light.matcap.texture", "MatCap Texture"), "_MatCapColor", false);
+            new ForceNoMipItem(rootItem, _matCapBlock, NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_MATCAP);
             new VectorComponentItem(rootItem, _matCapBlock, "_MatCapInfo", 0, () => Content("light.matcap.blend", "Add/Multiply Blend"), true, 0f, 1f);
 
             _sixWayPositiveItem = new TextureItem(
@@ -153,6 +158,11 @@ namespace NBShaderEditor
                 () => Content("light.sixway.positive", "SixWay Positive"),
                 drawScaleOffset: false,
                 isVisible: IsSixWay);
+            _sixWayPositiveForceNoMipItem = new ForceNoMipItem(
+                rootItem,
+                this,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_RIG_RTBK,
+                IsSixWay);
 
             _sixWayNegativeItem = new TextureItem(
                 rootItem,
@@ -161,6 +171,11 @@ namespace NBShaderEditor
                 () => Content("light.sixway.negative", "SixWay Negative"),
                 drawScaleOffset: false,
                 isVisible: IsSixWay);
+            _sixWayNegativeForceNoMipItem = new ForceNoMipItem(
+                rootItem,
+                this,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_RIG_LBTF,
+                IsSixWay);
 
             _sixWayAbsorptionToggleItem = new NBShaderKeywordToggleItem(
                 rootItem,
@@ -189,6 +204,11 @@ namespace NBShaderEditor
                 drawScaleOffset: false,
                 afterDraw: SyncSixWayRampFlag,
                 isVisible: IsSixWay);
+            _sixWayEmissionRampForceNoMipItem = new ForceNoMipItem(
+                rootItem,
+                this,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_SIX_WAY_EMISSION_RAMP,
+                IsSixWay);
 
             _sixWayEmissionPowItem = new VectorComponentItem(
                 rootItem,
@@ -242,9 +262,12 @@ namespace NBShaderEditor
             if (IsTierAllowed("_FX_LIGHT_MODE_SIX_WAY"))
             {
                 _sixWayPositiveItem.OnGUI();
+                _sixWayPositiveForceNoMipItem.OnGUI();
                 _sixWayNegativeItem.OnGUI();
+                _sixWayNegativeForceNoMipItem.OnGUI();
                 DrawSixWayWarning();
                 _sixWayEmissionRampItem.OnGUI();
+                _sixWayEmissionRampForceNoMipItem.OnGUI();
                 _sixWayEmissionPowItem.OnGUI();
                 _sixWayEmissionColorItem.OnGUI();
             }

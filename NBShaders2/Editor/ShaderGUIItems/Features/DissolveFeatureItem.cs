@@ -21,7 +21,8 @@ namespace NBShaderEditor
                 "NB_DEBUG_DISSOLVE",
                 () => Content("溶解度黑白值测试"),
                 isVisible: null);
-            TextureRelatedFoldOutItem dissolveMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, this, "_DissolveMap", "溶解贴图", "_DissolveMapFoldOut", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MAP);
+            TextureRelatedFoldOutItem dissolveMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, this, "_DissolveMap", "溶解贴图", "_DissolveMapFoldOut",
+                NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MAP, NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP);
             new ColorChannelSelectItem(rootItem, dissolveMapRelatedFoldOut, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP, 0, () => Content("溶解贴图通道选择"));
             new CustomDataSelectItem(rootItem, dissolveMapRelatedFoldOut, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X, 1, () => Content("溶解贴图X轴偏移自定义曲线"));
             new CustomDataSelectItem(rootItem, dissolveMapRelatedFoldOut, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y, 1, () => Content("溶解贴图Y轴偏移自定义曲线"));
@@ -50,7 +51,8 @@ namespace NBShaderEditor
             new FeaturePopupItem(rootItem, rampBlock, "_DissolveRampSourceMode", () => Content("溶解Ramp模式"), RampSourceNames,
                 _ => rootItem.SyncService.SyncMaterialState(),
                 keyword: "_DISSOLVE_RAMP_MAP");
-            AddTextureWithWrap(rootItem, rampBlock, "_DissolveRampMap", "溶解Ramp图", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP, "_DissolveRampColor",
+            AddTextureWithWrap(rootItem, rampBlock, "_DissolveRampMap", "溶解Ramp图", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP, "_DissolveRampColor",
                 isDissolveRampMapVisible);
             AddGradient(rootItem, rampBlock, "Ramp颜色", "_DissolveRampCount", "_DissolveRampColor", "_DissolveRampAlpha", hdr: true,
                 isVisible: () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 0));
@@ -64,7 +66,8 @@ namespace NBShaderEditor
             PropertyToggleBlockItem maskBlock = ToggleBlock(rootItem, "_DissolveMaskFoldOut", "_DissolveMask_Toggle", "溶解遮罩图(过程溶解)",
                 parent: this, keyword: "_DISSOLVE_MASK");
             new FeaturePopupItem(rootItem, maskBlock, "_DissolveMaskMode", () => Content("溶解遮罩模式"), DissolveMaskModeNames);
-            AddTextureWithWrap(rootItem, maskBlock, "_DissolveMaskMap", "溶解遮罩图", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP);
+            AddTextureWithWrap(rootItem, maskBlock, "_DissolveMaskMap", "溶解遮罩图", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP);
             new UVModeSelectItem(rootItem, maskBlock, "_DissolveMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP, 0, () => Content("溶解遮罩图UV来源"), "_DissolveMaskMap");
             new ColorChannelSelectItem(rootItem, maskBlock, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP, 0, () => Content("溶解遮罩图通道选择"));
             new VectorComponentItem(rootItem, maskBlock, "_Dissolve", 2, () => Content("溶解遮罩强度"), false, isVisible: () => !IsDissolveMaskStrengthSlider(rootItem));

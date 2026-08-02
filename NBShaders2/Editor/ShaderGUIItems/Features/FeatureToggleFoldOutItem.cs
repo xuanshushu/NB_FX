@@ -49,6 +49,7 @@ namespace NBShaderEditor
             string label,
             string foldOutPropertyName,
             int wrapFlag,
+            int forceNoMipFlag,
             string colorPropertyName = null,
             Func<bool> isVisible = null)
         {
@@ -69,6 +70,11 @@ namespace NBShaderEditor
                 () => Content(label + "相关功能"),
                 isVisible);
             new WrapModeItem(rootItem, relatedFoldOut, wrapFlag, () => Content(label + " Wrap"), 2);
+            if (forceNoMipFlag != 0)
+            {
+                new ForceNoMipItem(rootItem, relatedFoldOut, forceNoMipFlag, isVisible);
+            }
+
             return relatedFoldOut;
         }
 
@@ -78,6 +84,7 @@ namespace NBShaderEditor
             string texturePropertyName,
             string label,
             int wrapFlag,
+            int forceNoMipFlag,
             string colorPropertyName = null,
             Func<bool> isVisible = null)
         {
@@ -91,6 +98,10 @@ namespace NBShaderEditor
                 tillingContentProvider: TillingContent,
                 offsetContentProvider: OffsetContent);
             new WrapModeItem(rootItem, parent, wrapFlag, () => Content(label + " Wrap"), 2, isVisible);
+            if (forceNoMipFlag != 0)
+            {
+                new ForceNoMipItem(rootItem, parent, forceNoMipFlag, isVisible);
+            }
         }
 
         protected PropertyToggleBlockItem ToggleBlock(

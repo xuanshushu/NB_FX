@@ -139,7 +139,8 @@ namespace NBShaderEditor
             new FeaturePopupItem(rootItem, this, "_DistortMode", () => Content("扭曲模式"), DistortModeNames,
                 property => rootItem.SyncService.ApplyToggleKeyword("_DISTORT_REFRACTION", property.floatValue > 0.5f),
                 keyword: "_DISTORT_REFRACTION");
-            TextureRelatedFoldOutItem noiseMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, this, "_NoiseMap", "扭曲贴图", "_NoiseMapFoldOut", NBShaderFlags.FLAG_BIT_WRAPMODE_NOISEMAP,
+            TextureRelatedFoldOutItem noiseMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, this, "_NoiseMap", "扭曲贴图", "_NoiseMapFoldOut",
+                NBShaderFlags.FLAG_BIT_WRAPMODE_NOISEMAP, NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_NOISEMAP,
                 isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
             new UVModeSelectItem(rootItem, noiseMapRelatedFoldOut, "_NoiseUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MAP, 0, () => Content("扭曲贴图UV来源"), "_NoiseMap",
                 isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
@@ -183,7 +184,8 @@ namespace NBShaderEditor
                 "扭曲遮罩",
                 parent: this,
                 keyword: "_NOISE_MASKMAP");
-            AddTextureWithWrap(rootItem, noiseMaskBlock, "_NoiseMaskMap", "扭曲遮罩贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_NOISE_MASKMAP);
+            AddTextureWithWrap(rootItem, noiseMaskBlock, "_NoiseMaskMap", "扭曲遮罩贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_NOISE_MASKMAP,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_NOISE_MASKMAP);
             new ColorChannelSelectItem(rootItem, noiseMaskBlock, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK, 0, () => Content("扭曲遮罩图通道选择"));
             new UVModeSelectItem(rootItem, noiseMaskBlock, "_NoiseMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP, 0, () => Content("扭曲遮罩贴图UV来源"), "_NoiseMaskMap");
 

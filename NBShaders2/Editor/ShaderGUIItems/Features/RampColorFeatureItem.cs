@@ -18,6 +18,7 @@ namespace NBShaderEditor
                 _ => rootItem.SyncService.SyncMaterialState(),
                 keyword: "_COLOR_RAMP_MAP");
             AddTextureWithWrap(rootItem, this, "_RampColorMap", "颜色映射黑白图", NBShaderFlags.FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_RAMP_COLOR_MAP,
                 isVisible: isRampMapVisible);
             new TextureScaleOffsetItem(rootItem, this, "_RampColorMap", false, () => IsPropertyMode(rootItem, "_RampColorSourceMode", 0), TillingContent, OffsetContent);
             new WrapModeItem(rootItem, this, NBShaderFlags.FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP, () => Content("颜色映射UV Wrap"), 2,

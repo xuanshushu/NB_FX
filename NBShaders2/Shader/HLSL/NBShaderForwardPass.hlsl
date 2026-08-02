@@ -528,10 +528,12 @@
         #endif
         #ifdef _PARALLAX_MAPPING
             float3 tangentViewDir = NBTransformWorldToTangentDir(viewDirWS, tangentToWorld, true);
-            MainTex_UV.xy = ParallaxOcclusionMapping(MainTex_UV, tangentViewDir);
+            bool forceParallaxLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_PARALLAXMAPPINGMAP);
+            MainTex_UV.xy = ParallaxOcclusionMapping(MainTex_UV, tangentViewDir, forceParallaxLod0);
         #endif
         #ifdef _NORMALMAP
-            half4 normalMapSample = SampleTexture2DWithWrapFlags(_BumpTex,BumpTex_uv,FLAG_BIT_WRAPMODE_BUMPTEX);
+            bool forceBumpLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_BUMPTEX);
+            half4 normalMapSample = SampleTexture2DWithWrapFlags(_BumpTex,BumpTex_uv,FLAG_BIT_WRAPMODE_BUMPTEX,forceBumpLod0);
             if (CheckLocalFlags(FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE))
             {
                 normalTS = UnpackNormalRGB(half4(normalMapSample.xy,1,1),_BumpScale);
@@ -557,7 +559,8 @@
                 cum_noise = refracVec.xy;
                 // distortFlow = refracVec.xy * props._NormalRefractionBias;
             #else
-                half4 noiseSample = SampleNoise(_NoiseOffset, _NoiseMap, noiseMap_uv, input.positionWS.xyz);
+                bool forceNoiseLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_NOISEMAP);
+                half4 noiseSample = SampleNoise(_NoiseOffset, _NoiseMap, noiseMap_uv, input.positionWS.xyz, forceNoiseLod0);
                 cum_noise = noiseSample.xy;
                 UNITY_FLATTEN
                 if(CheckLocalFlags(FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON))
@@ -570,7 +573,8 @@
             #endif
             #if defined(_NOISE_MASKMAP)
             {
-                half4 noiseMaskSample = SampleTexture2DWithWrapFlags(_NoiseMaskMap,noiseMaskMap_uv,FLAG_BIT_WRAPMODE_NOISE_MASKMAP);
+                bool forceNoiseMaskLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_NOISE_MASKMAP);
+                half4 noiseMaskSample = SampleTexture2DWithWrapFlags(_NoiseMaskMap,noiseMaskMap_uv,FLAG_BIT_WRAPMODE_NOISE_MASKMAP,forceNoiseMaskLod0);
                 noiseMask *= GetColorChannel(noiseMaskSample,FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK);
             }
             #endif
@@ -620,11 +624,13 @@
         MainTex_UV.xy += mainTexNoise;//主贴图纹理扭曲
         blendUv.xy += mainTexNoise;
 
+        bool forceBaseMapLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_BASEMAP);
+
 
         UNITY_BRANCH
         if (CheckLocalFlags(FLAG_BIT_PARTICLE_UIEFFECT_ON) & !CheckLocalFlags1(FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE))
         {
-            albedo = BlendTexture(_MainTex, MainTex_UV, blendUv) * _Color;
+            albedo = BlendTexture(_MainTex, MainTex_UV, blendUv, forceBaseMapLod0) * _Color;
         }
         else
         {
@@ -632,12 +638,12 @@
             #if !defined(NB_DEPTH_SHADOW_PASS)
             _DistortionDirection.z = GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY,_DistortionDirection.z,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
             _DistortionDirection.z *= 0.1;
-            albedo = DistortionChoraticaberrat(baseMap,originUV,MainTex_UV,_DistortionDirection.z,FLAG_BIT_WRAPMODE_BASEMAP);
+            albedo = DistortionChoraticaberrat(baseMap,originUV,MainTex_UV,_DistortionDirection.z,FLAG_BIT_WRAPMODE_BASEMAP,forceBaseMapLod0);
             #else
-            albedo = BlendTexture(baseMap, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP);
+            albedo = BlendTexture(baseMap, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP,forceBaseMapLod0);
             #endif
             #else
-            albedo = BlendTexture(baseMap, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP);
+            albedo = BlendTexture(baseMap, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP,forceBaseMapLod0);
             #endif
         }
 
@@ -665,8 +671,10 @@
         #endif
 
         #ifdef _FX_LIGHT_MODE_SIX_WAY
-            float4 rigRTBkSample  = BlendTexture(_RigRTBk, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP);
-            float4 rigLBtFSample  = BlendTexture(_RigLBtF, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP);
+            bool forceRigRTBkLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_RIG_RTBK);
+            bool forceRigLBtFLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_RIG_LBTF);
+            float4 rigRTBkSample  = BlendTexture(_RigRTBk, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP,forceRigRTBkLod0);
+            float4 rigLBtFSample  = BlendTexture(_RigLBtF, MainTex_UV, blendUv,FLAG_BIT_WRAPMODE_BASEMAP,forceRigLBtFLod0);
         #endif
 
 
@@ -709,7 +717,8 @@
                 bsdfData.backBakeDiffuseLighting1 = input.backBakeDiffuseLighting1.xyz;
                 bsdfData.backBakeDiffuseLighting2 = input.backBakeDiffuseLighting2.xyz;
                 bsdfData.emissionInput = rigLBtFSample.a;
-                GetSixWayEmission(bsdfData,_SixWayEmissionRamp,_SixWayEmissionColor,CheckLocalFlags1(FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP));//Init Emission
+                bool forceSixWayEmissionRampLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_SIX_WAY_EMISSION_RAMP);
+                GetSixWayEmission(bsdfData,_SixWayEmissionRamp,_SixWayEmissionColor,CheckLocalFlags1(FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP),forceSixWayEmissionRampLod0);//Init Emission
                 bsdfData.alpha = rigRTBkSample.a * _BaseColor.a;
 
                 ModifyBakedDiffuseLighting(bsdfData,inputData.bakedGI);
@@ -744,7 +753,8 @@
         r = normalize(r);
         float m = 2.828427f * sqrt(r.z + 1.0);
         float2 matCapUV = r.xy / m + 0.5;
-        half3 matCapSample = SAMPLE_TEXTURE2D(_MatCapTex,sampler_linear_clamp,matCapUV);
+        bool forceMatCapLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_MATCAP);
+        half3 matCapSample = SampleTexture2D(_MatCapTex,matCapUV,sampler_linear_clamp,forceMatCapLod0);
 
         matCapSample *= _MatCapColor.rgb;
 
@@ -764,7 +774,8 @@
                 emission_uv += cum_noise * _Emi_Distortion_intensity;
             #endif
             // emission = tex2D_TryLinearizeWithoutAlphaFX(_EmissionMap,emission_uv);
-            emission = SampleTexture2DWithWrapFlags(_EmissionMap,emission_uv,FLAG_BIT_WRAPMODE_EMISSIONMAP);
+            bool forceEmissionLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP);
+            emission = SampleTexture2DWithWrapFlags(_EmissionMap,emission_uv,FLAG_BIT_WRAPMODE_EMISSIONMAP,forceEmissionLod0);
             emission.xyz *= emission.a;
             _EmissionMapColor *=  _EmissionMapColorIntensity;
             emission.xyz *= _EmissionMapColor;
@@ -777,7 +788,8 @@
         #if defined(_COLOR_RAMP)
             half rampValue = 0;
             #if defined(_COLOR_RAMP_MAP)
-            half4 RampColorSample = SampleTexture2DWithWrapFlags(_RampColorMap,colorRamp_uv,FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP);
+            bool forceRampColorLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_RAMP_COLOR_MAP);
+            half4 RampColorSample = SampleTexture2DWithWrapFlags(_RampColorMap,colorRamp_uv,FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP,forceRampColorLod0);
             rampValue = GetColorChannel(RampColorSample,FLAG_BIT_COLOR_CHANNEL_POS_0_RAMP_COLOR_MAP);
             #else
                 const int rampColorWrapMode = CheckLocalWrapFlags(FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP);
@@ -825,7 +837,8 @@
                 #endif
             #endif
 
-            half4 dissolveMapSample  = SampleTexture2DWithWrapFlags(_DissolveMap,dissolve_uv,FLAG_BIT_WRAPMODE_DISSOLVE_MAP);
+            bool forceDissolveLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP);
+            half4 dissolveMapSample  = SampleTexture2DWithWrapFlags(_DissolveMap,dissolve_uv,FLAG_BIT_WRAPMODE_DISSOLVE_MAP,forceDissolveLod0);
 
             half dissolveValue = GetColorChannel(dissolveMapSample,FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP);
 
@@ -843,7 +856,8 @@
             half dissolveMaskStrength = 0;
             #if defined(_DISSOLVE_MASK)
             {
-                half4 dissolveMaskSample = SampleTexture2DWithWrapFlags(_DissolveMaskMap,dissolve_mask_uv,FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP);
+                bool forceDissolveMaskLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP);
+                half4 dissolveMaskSample = SampleTexture2DWithWrapFlags(_DissolveMaskMap,dissolve_mask_uv,FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP,forceDissolveMaskLod0);
                 dissolveMaskValue = GetColorChannel(dissolveMaskSample,FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP);
                 dissolveMaskStrength = _Dissolve.z + GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
 
@@ -886,7 +900,8 @@
 
                 half4 rampSample ;
                 #if defined(_DISSOLVE_RAMP_MAP)
-                rampSample = SampleTexture2DWithWrapFlags(_DissolveRampMap,half2(rampRange,0.5),FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP);
+                bool forceDissolveRampLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP);
+                rampSample = SampleTexture2DWithWrapFlags(_DissolveRampMap,half2(rampRange,0.5),FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP,forceDissolveRampLod0);
                 #else
                     int dissolveRampColorCount = _DissolveRampCount & 0xFFFF;
 
@@ -939,7 +954,8 @@
             #if defined(_NOISEMAP)
                 colorBlendMap_uv += cum_noise * _ColorBlendVec.x; //加入扭曲效果
             #endif
-            half4 colorBlend = SampleTexture2DWithWrapFlags(_ColorBlendMap,colorBlendMap_uv,FLAG_BIT_WRAPMODE_COLORBLENDMAP);
+            bool forceColorBlendLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP);
+            half4 colorBlend = SampleTexture2DWithWrapFlags(_ColorBlendMap,colorBlendMap_uv,FLAG_BIT_WRAPMODE_COLORBLENDMAP,forceColorBlendLod0);
             colorBlend.rgb = colorBlend.rgb * _ColorBlendColor.rgb;
             colorBlend.a = lerp(1,colorBlend.a*_ColorBlendColor.a,_ColorBlendVec.z);
             if (CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE))
@@ -979,7 +995,8 @@
             }
             else
             {
-                half4 maskmap1Sample = SampleTexture2DWithWrapFlags(_MaskMap, MaskMapuv,FLAG_BIT_WRAPMODE_MASKMAP);
+                bool forceMaskLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_MASKMAP);
+                half4 maskmap1Sample = SampleTexture2DWithWrapFlags(_MaskMap, MaskMapuv,FLAG_BIT_WRAPMODE_MASKMAP,forceMaskLod0);
                 mask1 = GetColorChannel(maskmap1Sample,FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1);
 
             }
@@ -1005,7 +1022,8 @@
                 }
                 else
                 {
-                    half4 maskMap2Sample = SampleTexture2DWithWrapFlags(_MaskMap2, MaskMapuv2,FLAG_BIT_WRAPMODE_MASKMAP2);
+                    bool forceMask2Lod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_MASKMAP2);
+                    half4 maskMap2Sample = SampleTexture2DWithWrapFlags(_MaskMap2, MaskMapuv2,FLAG_BIT_WRAPMODE_MASKMAP2,forceMask2Lod0);
                     mask2 = GetColorChannel(maskMap2Sample,FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2);
                 }
                 mask1 *= mask2;
@@ -1033,7 +1051,8 @@
                 }
                 else
                 {
-                    half4 maskMap3Sample = SampleTexture2DWithWrapFlags(_MaskMap3, MaskMapuv3,FLAG_BIT_WRAPMODE_MASKMAP3);
+                    bool forceMask3Lod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_MASKMAP3);
+                    half4 maskMap3Sample = SampleTexture2DWithWrapFlags(_MaskMap3, MaskMapuv3,FLAG_BIT_WRAPMODE_MASKMAP3,forceMask3Lod0);
                     mask3 = GetColorChannel(maskMap3Sample,FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3);
                 }
                 mask1 *= mask3;
@@ -1258,7 +1277,7 @@
         #ifdef _CAMERA_OPAQUE_DISTORT_PASS
             float2 screenDistortUV = screenUV;
             screenDistortUV = screenDistortUV + screenDistort_Noise.xy * screenDistortAlpha * _ScreenDistortIntensity;
-            half4 screenTexDistortSample = SampleTexture2DWithWrapFlags(_CameraOpaqueTexture,screenDistortUV,FLAG_BIT_WRAPMODE_BASEMAP);
+            half4 screenTexDistortSample = SampleTexture2DWithWrapFlags(_CameraOpaqueTexture,screenDistortUV,FLAG_BIT_WRAPMODE_BASEMAP,false);
             result = screenTexDistortSample.xyz;
             alpha = 1;
             // alpha = screenTexDistortSample.a;

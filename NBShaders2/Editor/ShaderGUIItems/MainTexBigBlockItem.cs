@@ -13,6 +13,7 @@ namespace NBShaderEditor
         private readonly TextureScaleOffsetItem _uiMainTexScaleOffsetItem;
         private readonly ColorChannelSelectItem _alphaChannelItem;
         private readonly WrapModeItem _baseMapWrapModeItem;
+        private readonly ForceNoMipItem _baseMapForceNoMipItem;
         private readonly UVModeSelectItem _uvModeItem;
         private readonly CustomDataSelectItem _offsetXCustomDataItem;
         private readonly CustomDataSelectItem _offsetYCustomDataItem;
@@ -102,6 +103,11 @@ namespace NBShaderEditor
                     "Main Texture Wrap"),
                 2,
                 () => rootItem.Context.UseGraphicMainTex == MixedBool.False);
+
+            _baseMapForceNoMipItem = new ForceNoMipItem(
+                rootItem,
+                _baseMapRelatedFoldOutItem,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_BASEMAP);
 
             _uvModeItem = new UVModeSelectItem(
                 rootItem,
@@ -222,6 +228,7 @@ namespace NBShaderEditor
         {
             _alphaChannelItem.OnGUI();
             _baseMapWrapModeItem.OnGUI();
+            _baseMapForceNoMipItem.OnGUI();
             _uvModeItem.OnGUI();
             _offsetXCustomDataItem.OnGUI();
             _offsetYCustomDataItem.OnGUI();
