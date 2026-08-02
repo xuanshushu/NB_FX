@@ -316,10 +316,11 @@ Shader "Effects/NBShader"
         _Distortion_Choraticaberrat_Toggle("扭曲色散开关_Toggle",Float) = 0 
         _Distortion_Choraticaberrat_WithNoise_Toggle("色散受扭曲影响_Toggle",Float) = 1
 	    
-        // 流光 ----------
+        // 叠加贴图 1（旧流光属性名保留） ----------
         //[Header(LiuGuang(Anima For CustomData.w).......)]
         //[Toggle(_EMISSION)]_N1 ("EMISSION?", float) = 0
         [HideInInspector] _EmissionEnabled ("__EmissionEnabled", Float) = 0.0
+        _EmissionBlendMode("叠加贴图1混合方式", Float) = 0
         _EmissionMap ("流光贴图 xy:UV缩放 zw:UV偏移", 2D) = "white" { }
         _EmissionMapUVRotation ("流光贴图旋转", Range(0, 360)) = 0
         _Emi_Distortion_intensity ("流光贴图扭转强度", float) = 0
@@ -328,13 +329,17 @@ Shader "Effects/NBShader"
         _uvRapSoft ("LiuuvRapSoft-ignore", Range(0, 1)) = 0
         [HDR]_EmissionMapColor ("流光贴图颜色_hdr", Color) = (1, 1, 1, 1)
         _EmissionMapColorIntensity("流光颜色强度", float) = 1
+        _EmissionAlphaMultiplyMode("叠加贴图1 Alpha作用", Float) = 0
+        _EmissionAlphaIntensity("叠加贴图1 Alpha强度", Range(0, 1)) = 1
     	
-    	//颜色渐变贴图--------
+        //叠加贴图 2（旧颜色渐变属性名保留）--------
     	_ColorBlendMap_Toggle("__ColorBlendMap_Toggle",Float) = 0
+        _ColorBlendMode("叠加贴图2混合方式", Float) = 1
         _ColorBlendMap("颜色渐变贴图 xy:UV缩放 zw:UV偏移",2D) = "white"{}
         [HDR]_ColorBlendColor("颜色渐变叠加_hdr",Color) = (1,1,1,1)
+        _ColorBlendColorIntensity("叠加贴图2颜色强度", Float) = 1
         _ColorBlendMapOffset("xy:颜色渐变贴图偏移动画",Vector) = (0,0,0,0)
-    	_ColorBlendAlphaMultiplyMode("颜色渐变Alpha相乘开关",Float) = 0
+		_ColorBlendAlphaMultiplyMode("叠加贴图2 Alpha作用",Float) = 0
     	_ColorBlendVec("x:颜色渐变扰动强度z:Alpha强度w:旋转",Vector) = (0,0,1,0)
     	
     	//颜色映射Ramp

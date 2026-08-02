@@ -17,9 +17,9 @@ namespace NBShaderEditor
             new NoiseAndDistortFeatureItem(rootItem, this);
             new ChromaticAberrationFeatureItem(rootItem, this);
             new EmissionFeatureItem(rootItem, this);
-            new ColorBlendFeatureItem(rootItem, this);
             new RampColorFeatureItem(rootItem, this);
             new DissolveFeatureItem(rootItem, this);
+            new ColorBlendFeatureItem(rootItem, this);
             new ProgramNoiseFeatureItem(rootItem, this);
             new SharedUVFeatureItem(rootItem, this);
             new FresnelFeatureItem(rootItem, this);

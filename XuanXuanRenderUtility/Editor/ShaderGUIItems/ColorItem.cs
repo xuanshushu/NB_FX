@@ -65,9 +65,7 @@ namespace NBShaderEditor
 
         internal static Rect GetNoLabelColorFieldRect(Rect rect)
         {
-            rect.x += ColorFieldLeftInset;
-            rect.width = Mathf.Max(0f, rect.width - ColorFieldLeftInset);
-            return rect;
+            return ApplyDirectLabelIndentWidth(rect);
         }
 
         internal static Rect GetLabeledColorFieldRect(Rect rect)

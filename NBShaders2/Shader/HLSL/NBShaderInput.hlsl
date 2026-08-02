@@ -243,6 +243,9 @@
     float4x4 _CustomLocalTransformLocalToWorld;
     float4x4 _CustomLocalTransformWorldToLocal;
 
+    half _EmissionAlphaIntensity;
+    half _ColorBlendColorIntensity;
+
     CBUFFER_END
 
     #define NB_SHADER_FLAGS _W9ParticleShaderFlags

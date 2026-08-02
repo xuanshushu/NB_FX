@@ -116,7 +116,7 @@ namespace NBShader
         public const int FLAG_BIT_PARTICLE_FRESNEL_FADE_ON = 1 << 2;
         public const int FLAG_BIT_PARTICLE_FRESNEL_COLOR_ON = 1 << 3;
         public const int FLAG_BIT_PARTICLE_USETEXCOORD2 = 1 << 4;
-        // public const int FLAG_BIT_PARTICLE_DISTANCEFADE_ON = 1 << 5; // Obsolete/reserved: keyword-driven (_DISTANCE_FADE).
+        public const int FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY = 1 << 5; // Reuses obsolete _DISTANCE_FADE bit; feature is keyword-driven.
         // public const int FLAG_BIT_PARTICLE_CHORATICABERRAT = 1 << 6; // Obsolete/reserved: keyword-driven (_CHROMATIC_ABERRATION).
         public const int FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON = 1 << 7;
         public const int FLAG_BIT_PARTICLE_POLARCOORDINATES_ON = 1 << 8;
@@ -160,7 +160,7 @@ namespace NBShader
         // public const int FLAG_BIT_PARTICLE_1_MASK_MAP3 = 1 << 13; // Obsolete/reserved: keyword-driven (_MASKMAP3_ON).
         // public const int FLAG_BIT_PARTICLE_1_NOISE_MASKMAP = 1 << 14; // Obsolete/reserved: keyword-driven (_NOISE_MASKMAP).
         public const int FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER = 1 << 15;
-        // public const int FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI = 1 << 16; // Obsolete/reserved: keyword-driven (_PROGRAM_NOISE_VORONOI).
+        public const int FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_2_ADD = 1 << 16; // Reuses obsolete _PROGRAM_NOISE_VORONOI bit; feature is keyword-driven.
         public const int FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE = 1 << 17;
         public const int FLAG_BIT_PARTICLE_1_USE_TEXCOORD1 = 1 << 18;
         public const int FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 = 1 << 19;
@@ -175,6 +175,7 @@ namespace NBShader
         public const int FLAG_BIT_PARTICLE_1_BUMP_TEX_UV_FOLLOW_MAINTEX = 1 << 28;
         public const int FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP = 1 << 29;
         public const int FLAG_BIT_PARTICLE_1_MATCAP_MULTY_MODE = 1 << 30;
+        public const int FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY = 1 << 31;
 
 
         public const int FLAG_BIT_WRAPMODE_BASEMAP = 1 << 0;

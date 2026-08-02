@@ -45,6 +45,9 @@ namespace NBShaderEditor
 
         private static readonly FlagModeBinding[] ModeFlagBindings =
         {
+            new FlagModeBinding("_EmissionBlendMode", NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY, 0, 1),
+            new FlagModeBinding("_ColorBlendMode", NBShaderFlags.FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_2_ADD, 1, 0),
+            new FlagModeBinding("_EmissionAlphaMultiplyMode", NBShaderFlags.FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY, 1, 1),
             new FlagModeBinding("_ColorBlendAlphaMultiplyMode", NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE, 0, 1),
             new FlagModeBinding("_RampColorBlendMode", NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD, 0, 1),
             new FlagModeBinding("_DissolveRampColorBlendMode", NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY, 1, 1),

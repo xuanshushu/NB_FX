@@ -1,43 +1,38 @@
-using System;
 using NBShader;
-using UnityEditor;
-using UnityEngine;
 
 namespace NBShaderEditor
 {
-    internal sealed class EmissionFeatureItem : FeatureToggleFoldOutItem
+    internal sealed class EmissionFeatureItem : ColorOverlayFeatureItem
     {
         public EmissionFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_EmissionBlockFoldOut", "_EmissionEnabled", "流光(颜色相加)", keyword: "_EMISSION")
+            : base(
+                rootItem,
+                parentItem,
+                label: "叠加贴图 1",
+                foldOutPropertyName: "_EmissionBlockFoldOut",
+                togglePropertyName: "_EmissionEnabled",
+                keyword: "_EMISSION",
+                blendModePropertyName: "_EmissionBlendMode",
+                blendModeFlag: NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY,
+                blendModeFlagIndex: 0,
+                blendModeFlagEnabledMode: 1,
+                texturePropertyName: "_EmissionMap",
+                colorPropertyName: "_EmissionMapColor",
+                wrapFlag: NBShaderFlags.FLAG_BIT_WRAPMODE_EMISSIONMAP,
+                forceNoMipFlag: NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP,
+                uvFoldOutPropertyName: "_EmissionUVModeFoldOut",
+                uvModeFlag: NBShaderFlags.FLAG_BIT_UVMODE_POS_0_EMISSION_MAP,
+                customDataOffsetXFlag: NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X,
+                customDataOffsetYFlag: NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y,
+                rotation: NumericBinding.Slider("_EmissionMapUVRotation", 0f, 360f),
+                offsetPropertyName: "_EmissionMapUVOffset",
+                distortion: NumericBinding.Float("_Emi_Distortion_intensity"),
+                colorIntensityPropertyName: "_EmissionMapColorIntensity",
+                alphaModePropertyName: "_EmissionAlphaMultiplyMode",
+                alphaModeFlag: NBShaderFlags.FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY,
+                alphaModeFlagIndex: 1,
+                alphaIntensity: NumericBinding.Slider("_EmissionAlphaIntensity", 0f, 1f))
         {
-            AddTextureWithWrap(rootItem, this, "_EmissionMap", "流光贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_EMISSIONMAP,
-                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP, "_EmissionMapColor");
-            new UVModeSelectItem(rootItem, this, "_EmissionUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_EMISSION_MAP, 0, () => Content("流光贴图UV来源"), "_EmissionMap");
-            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X, 3, () => Content("流光贴图X轴偏移自定义曲线"));
-            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y, 3, () => Content("流光贴图Y轴偏移自定义曲线"));
-            ShaderGUISliderItem emissionMapUVRotationItem = new ShaderGUISliderItem(rootItem, this)
-            {
-                PropertyName = "_EmissionMapUVRotation",
-                GuiContent = Content("流光贴图旋转"),
-                Min = 0f,
-                Max = 360f
-            };
-            emissionMapUVRotationItem.InitTriggerByChild();
-            new Vector2LineItem(rootItem, this, "_EmissionMapUVOffset", true, () => Content("流光贴图偏移速度"));
-            ShaderGUIItem emissionNoiseAffect = new NoiseAffectItem(rootItem, this);
-            ShaderGUIFloatItem emissionDistortionIntensityItem = new ShaderGUIFloatItem(rootItem, emissionNoiseAffect)
-            {
-                PropertyName = "_Emi_Distortion_intensity",
-                GuiContent = Content("流光贴图扭曲强度")
-            };
-            emissionDistortionIntensityItem.InitTriggerByChild();
-            ShaderGUIFloatItem emissionMapColorIntensityItem = new ShaderGUIFloatItem(rootItem, this)
-            {
-                PropertyName = "_EmissionMapColorIntensity",
-                GuiContent = Content("流光颜色强度")
-            };
-            emissionMapColorIntensityItem.InitTriggerByChild();
-            InitTriggerByChild();
         }
     }
 }

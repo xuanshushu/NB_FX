@@ -6,7 +6,7 @@
     #define FLAG_BIT_PARTICLE_FRESNEL_FADE_ON (1 << 2)
     #define FLAG_BIT_PARTICLE_FRESNEL_COLOR_ON (1 << 3)
     #define FLAG_BIT_PARTICLE_USETEXCOORD2 (1 << 4)
-    // #define FLAG_BIT_PARTICLE_DISTANCEFADE_ON (1 << 5) // Obsolete/reserved: keyword-driven (_DISTANCE_FADE).
+    #define FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY (1 << 5) // Reuses obsolete _DISTANCE_FADE bit; feature is keyword-driven.
     // #define FLAG_BIT_PARTICLE_CHORATICABERRAT (1 << 6) // Obsolete/reserved: keyword-driven (_CHROMATIC_ABERRATION).
     #define FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON (1 << 7)
     #define FLAG_BIT_PARTICLE_POLARCOORDINATES_ON (1 << 8)
@@ -51,7 +51,7 @@
     // #define FLAG_BIT_PARTICLE_1_MASK_MAP3 (1 << 13) // Obsolete/reserved: keyword-driven (_MASKMAP3_ON).
     // #define FLAG_BIT_PARTICLE_1_NOISE_MASKMAP (1 << 14) // Obsolete/reserved: keyword-driven (_NOISE_MASKMAP).
     #define FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER (1 << 15)
-    // #define FLAG_BIT_PARTICLE_1_PROGRAM_NOISE_VORONOI (1 << 16) // Obsolete/reserved: keyword-driven (_PROGRAM_NOISE_VORONOI).
+    #define FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_2_ADD (1 << 16) // Reuses obsolete _PROGRAM_NOISE_VORONOI bit; feature is keyword-driven.
     #define FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE (1 << 17)
     #define FLAG_BIT_PARTICLE_1_USE_TEXCOORD1 (1 << 18)
     #define FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 (1 << 19)
@@ -66,6 +66,7 @@
     #define FLAG_BIT_PARTICLE_1_BUMP_TEX_UV_FOLLOW_MAINTEX (1 << 28)
     #define FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP (1 << 29)
     #define FLAG_BIT_PARTICLE_1_MATCAP_MULTY_MODE (1 << 30)
+    #define FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY (1 << 31)
     
  
     //WrapMode不能够超过16位（因为会占用x和x+16两个bit位）

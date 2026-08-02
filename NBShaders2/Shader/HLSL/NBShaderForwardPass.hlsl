@@ -58,6 +58,60 @@
         return output;
     }
 
+    void ApplyColorOverlay(
+        inout half3 baseColor,
+        inout half baseAlpha,
+        half4 overlaySample,
+        half4 overlayTint,
+        half overlayColorIntensity,
+        half overlayAlphaIntensity,
+        bool multiplyMode,
+        bool alphaMultiplyMode)
+    {
+        half3 overlayColor = overlaySample.rgb;
+        half overlayAlpha = overlaySample.a * overlayTint.a;
+        half3 overlayTintWithIntensity = overlayTint.rgb * overlayColorIntensity;
+
+        UNITY_BRANCH
+        if (overlayAlphaIntensity != 1.0h)
+        {
+            overlayAlpha = lerp(1.0h, overlayAlpha, overlayAlphaIntensity);
+        }
+
+        UNITY_BRANCH
+        if (multiplyMode)
+        {
+            overlayColor *= overlayTintWithIntensity;
+
+            UNITY_BRANCH
+            if (alphaMultiplyMode)
+            {
+                baseColor *= overlayColor;
+            }
+            else
+            {
+                baseColor = lerp(baseColor, baseColor * overlayColor, overlayAlpha);
+            }
+        }
+        else
+        {
+            UNITY_BRANCH
+            if (!alphaMultiplyMode)
+            {
+                overlayColor *= overlayAlpha;
+            }
+
+            overlayColor *= overlayTintWithIntensity;
+            baseColor += overlayColor;
+        }
+
+        UNITY_BRANCH
+        if (alphaMultiplyMode)
+        {
+            baseAlpha *= overlayAlpha;
+        }
+    }
+
 
 
     VaryingsParticle vertParticleUnlit(AttributesParticle input)
@@ -767,22 +821,23 @@
 
 
 
-        //流光部分
-        half4 emission = half4(0, 0, 0,1);
+        //叠加贴图 1（保留旧流光的执行位置）
         #if defined(_EMISSION)
             #ifdef _NOISEMAP
                 emission_uv += cum_noise * _Emi_Distortion_intensity;
             #endif
-            // emission = tex2D_TryLinearizeWithoutAlphaFX(_EmissionMap,emission_uv);
             bool forceEmissionLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP);
-            emission = SampleTexture2DWithWrapFlags(_EmissionMap,emission_uv,FLAG_BIT_WRAPMODE_EMISSIONMAP,forceEmissionLod0);
-            emission.xyz *= emission.a;
-            _EmissionMapColor *=  _EmissionMapColorIntensity;
-            emission.xyz *= _EmissionMapColor;
-
+            half4 emission = SampleTexture2DWithWrapFlags(_EmissionMap,emission_uv,FLAG_BIT_WRAPMODE_EMISSIONMAP,forceEmissionLod0);
+            ApplyColorOverlay(
+                result,
+                alpha,
+                emission,
+                _EmissionMapColor,
+                _EmissionMapColorIntensity,
+                _EmissionAlphaIntensity,
+                CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY),
+                CheckLocalFlags1(FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY));
         #endif
-
-        result += emission;
 
 
         #if defined(_COLOR_RAMP)
@@ -949,24 +1004,22 @@
 
         #endif
 
-        //颜色渐变
+        //叠加贴图 2（保留旧颜色渐变的执行位置）
         #ifdef _COLORMAPBLEND
             #if defined(_NOISEMAP)
                 colorBlendMap_uv += cum_noise * _ColorBlendVec.x; //加入扭曲效果
             #endif
             bool forceColorBlendLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP);
             half4 colorBlend = SampleTexture2DWithWrapFlags(_ColorBlendMap,colorBlendMap_uv,FLAG_BIT_WRAPMODE_COLORBLENDMAP,forceColorBlendLod0);
-            colorBlend.rgb = colorBlend.rgb * _ColorBlendColor.rgb;
-            colorBlend.a = lerp(1,colorBlend.a*_ColorBlendColor.a,_ColorBlendVec.z);
-            if (CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE))
-            {
-                result *= colorBlend.rgb;
-                alpha *= colorBlend.a;
-            }
-            else
-            {
-                result.rgb  = lerp(result.rgb,result.rgb * colorBlend.rgb,colorBlend.a);
-            }
+            ApplyColorOverlay(
+                result,
+                alpha,
+                colorBlend,
+                _ColorBlendColor,
+                _ColorBlendColorIntensity,
+                _ColorBlendVec.z,
+                !CheckLocalFlags1(FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_2_ADD),
+                CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE));
         #endif
 
                 //遮罩部分
