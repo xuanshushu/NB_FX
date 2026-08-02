@@ -4,6 +4,12 @@ using NBShader;
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_6000_5_OR_NEWER
+using NBShaderObjectId = UnityEngine.EntityId;
+#else
+using NBShaderObjectId = System.Int32;
+#endif
+
 namespace NBShaders2.Editor.FeatureLevel
 {
     [InitializeOnLoad]
@@ -134,11 +140,11 @@ namespace NBShaders2.Editor.FeatureLevel
         {
             var materials = Resources.FindObjectsOfTypeAll<Material>();
             var editableMaterials = new List<Material>();
-            var seen = new HashSet<int>();
+            var seen = new HashSet<NBShaderObjectId>();
             for (var i = 0; i < materials.Length; i++)
             {
                 var material = materials[i];
-                if (!CanMutateMaterial(material) || !seen.Add(material.GetInstanceID()))
+                if (!CanMutateMaterial(material) || !seen.Add(GetObjectId(material)))
                     continue;
                 editableMaterials.Add(material);
             }
@@ -152,6 +158,15 @@ namespace NBShaders2.Editor.FeatureLevel
                 ApplyTierToMaterial(editableMaterials[i], tier, UndoApplyLoadedTier);
             Undo.CollapseUndoOperations(undoGroup);
             return editableMaterials.Count;
+        }
+
+        private static NBShaderObjectId GetObjectId(Material material)
+        {
+#if UNITY_6000_5_OR_NEWER
+            return material.GetEntityId();
+#else
+            return material.GetInstanceID();
+#endif
         }
 
         private static int ApplyTierToProjectMaterials(NBShaderFeatureTier tier)
