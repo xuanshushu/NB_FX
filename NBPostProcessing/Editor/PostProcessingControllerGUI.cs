@@ -47,23 +47,20 @@ namespace NBShaderEditor
                 {
                     EditorGUI.BeginChangeCheck();
                     SerializedProperty caFromDistortProp = serializedObject.FindProperty("caFromDistort");
-                    EditorGUILayout.PropertyField(caFromDistortProp, new GUIContent("色散UV跟随后处理扭曲"));
+                    EditorGUILayout.PropertyField(caFromDistortProp, new GUIContent("材质扰动色散强度"));
                     if (EditorGUI.EndChangeCheck())
                     {
                         ReflectMethod("SetUVFromDistort", ppController);
                     }
 
                     SerializedProperty caIntensityProps = serializedObject.FindProperty("chromaticAberrationIntensity");
-                    EditorGUILayout.PropertyField(caIntensityProps, new GUIContent("色散强度"));
+                    EditorGUILayout.PropertyField(caIntensityProps, new GUIContent("后处理色散强度"));
 
-                    if (!ppController.caFromDistort)
-                    {
-                        SerializedProperty caPosProp = serializedObject.FindProperty("chromaticAberrationPos");
-                        EditorGUILayout.PropertyField(caPosProp, new GUIContent("色散位置"));
+                    SerializedProperty caPosProp = serializedObject.FindProperty("chromaticAberrationPos");
+                    EditorGUILayout.PropertyField(caPosProp, new GUIContent("后处理色散过渡位置"));
 
-                        SerializedProperty caRangeProp = serializedObject.FindProperty("chromaticAberrationRange");
-                        EditorGUILayout.PropertyField(caRangeProp, new GUIContent("色散过渡范围"));
-                    }
+                    SerializedProperty caRangeProp = serializedObject.FindProperty("chromaticAberrationRange");
+                    EditorGUILayout.PropertyField(caRangeProp, new GUIContent("后处理色散过渡范围"));
                 });
 
             SerializedProperty distortSpeedToggleProp = serializedObject.FindProperty("distortSpeedToggle");
@@ -110,7 +107,7 @@ namespace NBShaderEditor
                     {
                         SerializedProperty distortSpeedPositionProp =
                             serializedObject.FindProperty("distortSpeedPosition");
-                        EditorGUILayout.PropertyField(distortSpeedPositionProp, new GUIContent("扭曲位置"));
+                        EditorGUILayout.PropertyField(distortSpeedPositionProp, new GUIContent("扭曲过渡位置"));
                         SerializedProperty distortSpeedRangeProp = serializedObject.FindProperty("distortSpeedRange");
                         EditorGUILayout.PropertyField(distortSpeedRangeProp, new GUIContent("扭曲过渡范围"));
                     }
@@ -128,27 +125,25 @@ namespace NBShaderEditor
                 isChangeToggle => { ReflectMethod("InitAllSettings", ppController); },
                 drawBlock: isToggle =>
                 {
+                    SerializedProperty radialBlurSampleCountProp =
+                        serializedObject.FindProperty("radialBlurSampleCount");
+                    EditorGUILayout.PropertyField(radialBlurSampleCountProp, new GUIContent("采样次数"));
+
                     EditorGUI.BeginChangeCheck();
                     SerializedProperty radialBlurFromDistortProp =
                         serializedObject.FindProperty("radialBlurFromDistort");
-                    EditorGUILayout.PropertyField(radialBlurFromDistortProp, new GUIContent("径向模糊跟随后处理扭曲"));
+                    EditorGUILayout.PropertyField(radialBlurFromDistortProp, new GUIContent("材质扰动径向模糊强度"));
                     if (EditorGUI.EndChangeCheck())
                     {
                         ReflectMethod("SetUVFromDistort", ppController);
                     }
 
-                    SerializedProperty radialBlurSampleCountProp =
-                        serializedObject.FindProperty("radialBlurSampleCount");
-                    EditorGUILayout.PropertyField(radialBlurSampleCountProp, new GUIContent("采样次数"));
                     SerializedProperty radialBlurIntensityProp = serializedObject.FindProperty("radialBlurIntensity");
-                    EditorGUILayout.PropertyField(radialBlurIntensityProp, new GUIContent("强度"));
-                    if (!ppController.radialBlurFromDistort)
-                    {
-                        SerializedProperty radialBlurPosProp = serializedObject.FindProperty("radialBlurPos");
-                        EditorGUILayout.PropertyField(radialBlurPosProp, new GUIContent("位置"));
-                        SerializedProperty radialBlurRangeProp = serializedObject.FindProperty("radialBlurRange");
-                        EditorGUILayout.PropertyField(radialBlurRangeProp, new GUIContent("过渡范围"));
-                    }
+                    EditorGUILayout.PropertyField(radialBlurIntensityProp, new GUIContent("后处理径向模糊强度"));
+                    SerializedProperty radialBlurPosProp = serializedObject.FindProperty("radialBlurPos");
+                    EditorGUILayout.PropertyField(radialBlurPosProp, new GUIContent("后处理径向模糊过渡位置"));
+                    SerializedProperty radialBlurRangeProp = serializedObject.FindProperty("radialBlurRange");
+                    EditorGUILayout.PropertyField(radialBlurRangeProp, new GUIContent("后处理径向模糊过渡范围"));
                 });
 
 #if CINIMACHINE_3_0
@@ -176,6 +171,10 @@ namespace NBShaderEditor
                 drawEndChangeCheck: isChangeToggle => { ReflectMethod("InitAllSettings", ppController); },
                 drawBlock: isToggle =>
                 {
+                    SerializedProperty overlayTextureBlendModeProp =
+                        serializedObject.FindProperty("overlayTextureBlendMode");
+                    EditorGUILayout.PropertyField(overlayTextureBlendModeProp, new GUIContent("肌理图混合模式"));
+
                     EditorGUI.BeginChangeCheck();
                     SerializedProperty overlayTexturePolarCoordModeProp =
                         serializedObject.FindProperty("overlayTexturePolarCoordMode");

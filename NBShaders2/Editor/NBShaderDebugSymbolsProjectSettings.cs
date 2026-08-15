@@ -12,21 +12,22 @@ namespace NBShaders2.Editor
     internal static class NBShaderDebugSymbolsSettingsProvider
     {
         internal const string DebugIncludeAssetPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl";
-        private const string ShaderAssetPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader";
+        private const string NBShaderAssetPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader";
+        private const string NBUberShaderAssetPath = "Packages/com.xuanxuan.nb.fx/NBPostProcessing/Shader/NBPostProcessUber.shader";
         private const string PackageJsonAssetPath = "Packages/com.xuanxuan.nb.fx/package.json";
         private const string PackageRootAssetPath = "Packages/com.xuanxuan.nb.fx/";
 
         private static readonly Encoding Utf8NoBom = new UTF8Encoding(false);
 
         private const string DisabledIncludeContent =
-            "// NBShader2 shader compiler debug switches.\n" +
+            "// NB FX shader compiler debug switches shared by NBShader2 and NBUber.\n" +
             "// This file is intentionally included with #include_with_pragmas.\n" +
             "\n" +
             "#undef NB_SHADER_DEBUG_SYMBOLS\n" +
             "#define NB_SHADER_DEBUG_SYMBOLS 0\n";
 
         private const string EnabledIncludeContent =
-            "// NBShader2 shader compiler debug switches.\n" +
+            "// NB FX shader compiler debug switches shared by NBShader2 and NBUber.\n" +
             "// This file is intentionally included with #include_with_pragmas.\n" +
             "\n" +
             "#undef NB_SHADER_DEBUG_SYMBOLS\n" +
@@ -44,11 +45,13 @@ namespace NBShaders2.Editor
         {
             NBFXProjectSettings.RegisterSettingsSection(
                 "NBShaderDebugSymbols",
-                () => new GUIContent(Text("debugSymbols.providerLabel", "NBShader2 Debug Symbols")),
+                () => new GUIContent(Text("debugSymbols.providerLabel", "NB FX Shader Debug Symbols")),
                 OnGUI,
                 new[]
                 {
                     "NBShader",
+                    "NBUber",
+                    "PostProcess",
                     "Debug",
                     "Symbols",
                     "D3D11",
@@ -67,7 +70,7 @@ namespace NBShaders2.Editor
             EditorGUILayout.HelpBox(
                 Text(
                     "debugSymbols.help.message",
-                    "Controls NBShader2 shader compiler debug symbols by rewriting the package include used by NBShader.shader. Enable only while debugging external shader tools."),
+                    "Controls shader compiler debug symbols for NBShader2 and NBUber through their shared package include. Enable only while debugging external shader tools."),
                 MessageType.Info);
 
             DrawCachingShaderPreprocessorState();
@@ -93,8 +96,8 @@ namespace NBShaders2.Editor
                 enabled = EditorGUILayout.Toggle(
                     Content(
                         "debugSymbols.enable",
-                        "Enable NBShader2 Debug Symbols",
-                        "Writes #pragma enable_d3d11_debug_symbols into the NBShader2 debug pragma include."),
+                        "Enable NB FX Shader Debug Symbols",
+                        "Writes #pragma enable_d3d11_debug_symbols into the shared NB FX debug pragma include."),
                     settings.enableDebugSymbols);
                 toggleChanged = EditorGUI.EndChangeCheck();
 
@@ -165,7 +168,7 @@ namespace NBShaders2.Editor
             EditorGUILayout.HelpBox(
                 Text(
                     "debugSymbols.cachingPreprocessorWarning.message",
-                    "#include_with_pragmas requires the Caching Shader Preprocessor. Enable it before using NBShader2 debug symbols."),
+                    "#include_with_pragmas requires the Caching Shader Preprocessor. Enable it before using NB FX shader debug symbols."),
                 MessageType.Warning);
 
             if (GUILayout.Button(ButtonContent("debugSymbols.enableCachingPreprocessor", "Enable Caching Shader Preprocessor")))
@@ -184,13 +187,13 @@ namespace NBShaders2.Editor
                     : Text("debugSymbols.status.disabled", "Disabled")));
 
             EditorGUILayout.LabelField(
-                Content("debugSymbols.includeState", "Include File State", "Actual package include content used by NBShader.shader."),
+                Content("debugSymbols.includeState", "Include File State", "Actual shared package include content used by NBShader2 and NBUber."),
                 new GUIContent(GetIncludeStateText(includeState)));
         }
 
         private static void ApplySettingToInclude(NBShaderFeatureLevelProjectSettings settings, bool enabled)
         {
-            Undo.RecordObject(settings, Text("debugSymbols.undo.changeSetting", "Change NBShader2 Debug Symbols"));
+            Undo.RecordObject(settings, Text("debugSymbols.undo.changeSetting", "Change NB FX Shader Debug Symbols"));
 
             string error;
             if (WriteDebugInclude(enabled, out error))
@@ -206,7 +209,7 @@ namespace NBShaders2.Editor
             }
 
             EditorUtility.DisplayDialog(
-                Text("debugSymbols.applyFailed.title", "Apply NBShader2 Debug Symbols Failed"),
+                Text("debugSymbols.applyFailed.title", "Apply NB FX Shader Debug Symbols Failed"),
                 Text("debugSymbols.applyFailed.message", "Could not write NBShaderDebugPragmas.hlsl: ") + error,
                 Text("debugSymbols.dialog.ok", "OK"));
         }
@@ -214,7 +217,7 @@ namespace NBShaders2.Editor
         private static bool ConfirmEnableDebugSymbols()
         {
             return EditorUtility.DisplayDialog(
-                Text("debugSymbols.confirmEnable.title", "Enable NBShader2 Debug Symbols"),
+                Text("debugSymbols.confirmEnable.title", "Enable NB FX Shader Debug Symbols"),
                 Text(
                     "debugSymbols.confirmEnable.message",
                     "This writes #pragma enable_d3d11_debug_symbols into the NB_FX package include. Shader size can increase and optimizations are disabled while it is enabled."),
@@ -295,7 +298,8 @@ namespace NBShaders2.Editor
         private static void ReimportShaderAssets()
         {
             AssetDatabase.ImportAsset(DebugIncludeAssetPath, ImportAssetOptions.ForceUpdate);
-            AssetDatabase.ImportAsset(ShaderAssetPath, ImportAssetOptions.ForceUpdate);
+            AssetDatabase.ImportAsset(NBShaderAssetPath, ImportAssetOptions.ForceUpdate);
+            AssetDatabase.ImportAsset(NBUberShaderAssetPath, ImportAssetOptions.ForceUpdate);
         }
 
         private static void PingIncludeAsset()

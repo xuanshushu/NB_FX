@@ -9,6 +9,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
             
             _TextureOverlay("肌理附加图",2D) = "white"
             _TextureOverlayIntensity("肌理附加强度",Float) = 0
+            [HideInInspector] _TextureOverlayBlendMode("肌理图混合模式", Integer) = 0
             _TextureOverlayAnim("机理图动画",Vector) = (0,0,0,0)
             _TextureOverlayMask("肌理图蒙板",2D) = "white"
             
@@ -29,6 +30,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
             
             _CustomScreenCenter("自定义屏幕中心",Vector) = (0.5,0.5,0,0)
             _RadialBlurVec("径向模糊矢量 x强度",Vector) = (1,0,0,0)
+            _DisturbanceMaskEffectIntensity("扰动蒙版偏移叠加倍数 x色散 y径向模糊",Vector) = (1,1,0,0)
             _VignetteVec("暗角矢量 x强度,y圆度,z光滑度",Vector) = (1,0,0,0)
             
             
@@ -54,6 +56,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                 #pragma vertex vert
                 // This line defines the name of the fragment shader.
                 #pragma fragment frag
+                #include_with_pragmas "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl"
                 #define CUSTOM_POSTPROCESS
                 // #define _POLARCOORDINATES
                 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -61,6 +64,8 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
          
                 #include "HLSL/PostProcessingFlags.hlsl"
 			    #include "../../XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
+
+                #define TEXTURE_OVERLAY_BLEND_ADD 1
 
                 
                 // This example uses the Attributes structure as an input structure in
@@ -111,6 +116,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
 
                     half4 _TextureOverlay_ST;
                     half _TextureOverlayIntensity;
+                    int _TextureOverlayBlendMode;
                     half4 _TextureOverlayMask_ST;
                     half4 _TextureOverlayAnim;
 
@@ -128,24 +134,20 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     half4 _ChromaticAberrationVec;
                     half4 _CustomScreenCenter;
                     half4 _RadialBlurVec;
+                    half4 _DisturbanceMaskEffectIntensity;
                     half4 _VignetteVec;
                     half4 _VignetteColor;
                 
                 CBUFFER_END
 
-                half4 SAMPLE_TEXTURE2D_CHORATICABERRAT(half2 screenUV,half2 distortUV,half2 blurVec,half distToCenter)
+                half4 SAMPLE_TEXTURE2D_CHORATICABERRAT(half2 screenUV,half2 distortUV,half2 disturbanceMask,
+                    half2 blurVec,half distToCenter)
                 {
-                    if(CheckLocalFlags(FLAG_BIT_CHORATICABERRAT_BY_DISTORT))
-                    {
-                        blurVec = blurVec*0.25*_ChromaticAberrationVec.x;
-                    }
-                    else
-                    {
-                        half intensity = 1;
-                        half range = _ChromaticAberrationVec.z*0.5f;
-                        intensity = NB_Remap(distToCenter,_ChromaticAberrationVec.y-range,_ChromaticAberrationVec.y+range,0,1);
-                        blurVec = blurVec*0.25*_ChromaticAberrationVec.x*intensity;
-                    }
+                    half range = _ChromaticAberrationVec.z*0.5f;
+                    half intensity = NB_Remap(distToCenter,_ChromaticAberrationVec.y-range,
+                        _ChromaticAberrationVec.y+range,0,1);
+                    blurVec = blurVec*0.25*_ChromaticAberrationVec.x*saturate(intensity);
+                    blurVec += disturbanceMask*max(0,_DisturbanceMaskEffectIntensity.x);
                     half r = SAMPLE_TEXTURE2D_X(_ScreenColorCopy1, sampler_LinearClamp, screenUV + distortUV             ).x;
                     half g = SAMPLE_TEXTURE2D_X(_ScreenColorCopy1, sampler_LinearClamp, blurVec + screenUV + distortUV     ).y;
                     half b = SAMPLE_TEXTURE2D_X(_ScreenColorCopy1, sampler_LinearClamp, blurVec * 2.0 + screenUV + distortUV).z;
@@ -176,7 +178,6 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
 
                     half2 screenUV = IN.uv;
                     half2 distortUV = 0;
-                    half2 distortUVWithoutIntensity=0;
 
                     half4 color = 0;
 
@@ -218,7 +219,6 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                             half2 noise = SAMPLE_TEXTURE2D(_SpeedDistortMap,sampler_SpeedDistortMap,distortSpeedUV);
                             noise = noise * 2-1+_SpeedDistortVec.w*0.1;
                             half distortStrength = _SpeedDistortVec.x * 0.2;
-                            distortUVWithoutIntensity = noise;
                             distortUV = noise * distortStrength;
                             
                         }
@@ -229,43 +229,24 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                             noise *= SimpleSmoothstep(_SpeedDistortVec.y,_SpeedDistortVec.y+_SpeedDistortVec.z,(distortSpeedUV.y - _SpeedDistortMap_ST.w)/_SpeedDistortMap_ST.y);
                             half distortStrength =  - _SpeedDistortVec.x * 0.2;
                             distortUV = normalize(screenUV-_CustomScreenCenter.xy)*noise;
-                            distortUVWithoutIntensity = distortUV;
                             distortUV *= distortStrength;
                         }
 
 
                         color.a += dot(distortUV,distortUV)*100000;
                     }
-                    else
-                    {
-                        distortUVWithoutIntensity = disturbanceMask;
-                    }
-                  
                     // return half4(((dot(distortUV,distortUV)*100000)).rrr,1);
                     
                     UNITY_BRANCH
                     if(CheckLocalFlags(FLAG_BIT_CHORATICABERRAT) || CheckLocalFlags(FLAG_BIT_RADIALBLUR))
                     {
-                        float2 blurVec = 0;
-                        half dist = 0;
-
-                        if(!CheckLocalFlags(FLAG_BIT_CHORATICABERRAT_BY_DISTORT)|!CheckLocalFlags(FLAG_BIT_RADIALBLUR_BY_DISTORT))
-                        {
-                            blurVec = _CustomScreenCenter.xy - screenUV;
-                            dist = dot(blurVec,blurVec)*4;
-                        }
+                        float2 blurVec = _CustomScreenCenter.xy - screenUV;
+                        half dist = dot(blurVec,blurVec)*4;
 
                         float2 choraticaBerratBlurVec;
                         if(CheckLocalFlags(FLAG_BIT_CHORATICABERRAT))
                         {
-                            if(CheckLocalFlags(FLAG_BIT_CHORATICABERRAT_BY_DISTORT))
-                            {
-                                choraticaBerratBlurVec = distortUVWithoutIntensity;
-                            }
-                            else
-                            {
-                                choraticaBerratBlurVec = blurVec;
-                            }
+                            choraticaBerratBlurVec = blurVec;
                         }
                         
                             
@@ -275,17 +256,11 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                         {
 
                             float2 radialblurVec; 
-                            if(CheckLocalFlags(FLAG_BIT_RADIALBLUR_BY_DISTORT))
-                            {
-                                radialblurVec =  distortUVWithoutIntensity*_RadialBlurVec.x;
-                            }
-                            else
-                            {
-                                _RadialBlurVec.z *= 0.5;
-                                half rangeIntensity = NB_Remap(dist,_RadialBlurVec.y-_RadialBlurVec.z,_RadialBlurVec.y+_RadialBlurVec.z,0,1);
-                                rangeIntensity = saturate(rangeIntensity);
-                                radialblurVec  =  blurVec*_RadialBlurVec.x*rangeIntensity;
-                            }
+                            half range = _RadialBlurVec.z*0.5;
+                            half rangeIntensity = NB_Remap(dist,_RadialBlurVec.y-range,
+                                _RadialBlurVec.y+range,0,1);
+                            radialblurVec = blurVec*_RadialBlurVec.x*saturate(rangeIntensity);
+                            radialblurVec += disturbanceMask*max(0,_DisturbanceMaskEffectIntensity.y);
                             color.a += dot(blurVec,blurVec)*100;
 
                             half3 acumulateColor = half3(0, 0, 0);
@@ -297,7 +272,8 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                                 if(CheckLocalFlags(FLAG_BIT_CHORATICABERRAT))
                                 {
                                     //sample *3
-                                    acumulateColor += SAMPLE_TEXTURE2D_CHORATICABERRAT(screenUV,distortUV,choraticaBerratBlurVec,dist).rgb;
+                                    acumulateColor += SAMPLE_TEXTURE2D_CHORATICABERRAT(screenUV,distortUV,
+                                        disturbanceMask,choraticaBerratBlurVec,dist).rgb;
                                 }
                                 else
                                 {
@@ -309,7 +285,8 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                         }
                         else
                         {
-                            half4 choraticaBerratColor = SAMPLE_TEXTURE2D_CHORATICABERRAT(screenUV,distortUV,choraticaBerratBlurVec,dist);
+                            half4 choraticaBerratColor = SAMPLE_TEXTURE2D_CHORATICABERRAT(screenUV,distortUV,
+                                disturbanceMask,choraticaBerratBlurVec,dist);
                             color.rgb  = choraticaBerratColor.rgb;
                             color.a += choraticaBerratColor.a;
                         }
@@ -348,7 +325,15 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                             float2 overlayTexMaskUV = TRANSFORM_TEX(overlayTexUV,_TextureOverlayMask);
                             overlayTexMask = SAMPLE_TEXTURE2D(_TextureOverlayMask,sampler_TextureOverlayMask,overlayTexMaskUV);
                         }
-                        color.rgb *= lerp(1,overlayTexSample.rgb,overlayTexSample.a*_TextureOverlayIntensity*overlayTexMask);
+                        half overlayBlendWeight = overlayTexSample.a*_TextureOverlayIntensity*overlayTexMask;
+                        if (_TextureOverlayBlendMode == TEXTURE_OVERLAY_BLEND_ADD)
+                        {
+                            color.rgb += overlayTexSample.rgb*overlayBlendWeight;
+                        }
+                        else
+                        {
+                            color.rgb *= lerp(1,overlayTexSample.rgb,overlayBlendWeight);
+                        }
                         // return half4( lerp(overlayTexSample.rgb,1,overlayTexSample.a*_TextureOverlayIntensity),1);
                         color.a += _TextureOverlayIntensity;
                     }
@@ -391,7 +376,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                         flashLuminace = SimpleSmoothstep(RangeMin,RangeMax,flashLuminace);
                         half3 finalBlackFlashColor = lerp(_FlashColor,_BlackFlashColor,_InvertIntensity);
                         half3 finalFlashColor =  lerp(_BlackFlashColor,_FlashColor,_InvertIntensity);
-                        
+
                         half3 endColor = lerp(finalBlackFlashColor,finalFlashColor,flashLuminace);
                         color.rgb = lerp(color.rgb,endColor,_FlashIntensity);
                         color.a = 1;

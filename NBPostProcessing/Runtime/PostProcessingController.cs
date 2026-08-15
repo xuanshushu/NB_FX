@@ -9,6 +9,14 @@ using UnityEditor;
 
 namespace NBShader
 {
+    public enum OverlayTextureBlendMode
+    {
+        [InspectorName("相乘")]
+        Multiply = 0,
+        [InspectorName("相加")]
+        Add = 1
+    }
+
     [ExecuteInEditMode]
     public class PostProcessingController : MonoBehaviour
     {
@@ -34,9 +42,12 @@ namespace NBShader
         public Vector2 customScreenCenterPos = new Vector2(0.5f, 0.5f);
         private Vector2 _lastCustomScreenCenterPos = new Vector2(0.5f, 0.5f);
         public bool chromaticAberrationToggle = false;
-        public bool caFromDistort = false;
+        [Min(0f)]
+        public float caFromDistort = 1f;
         public float chromaticAberrationIntensity = 0.2f;
+        [Min(0.0001f)]
         public float chromaticAberrationPos = 0.5f;
+        [Min(0.0001f)]
         public float chromaticAberrationRange = 0.5f;
         public bool distortSpeedToggle = false;
         public bool distortScreenUVMode = false;
@@ -44,18 +55,23 @@ namespace NBShader
         public float distortTextureMidValue = 1;
         public Vector4 distortSpeedTexSt = new Vector4(30,1,0,0);
         public float distortSpeedIntensity = 1f;
+        [Min(0.0001f)]
         public float distortSpeedPosition = 0.5f;
+        [Min(0.0001f)]
         public float distortSpeedRange = 1f;
         public float distortSpeedMoveSpeedX = 0.1f;
         public float distortSpeedMoveSpeed = -0.5f;//因为老的做法是没有X偏移的，只有Y的偏移，不改变量兼容老做法。
         private readonly int _distortSpeedTextureID = Shader.PropertyToID("_SpeedDistortMap");
         private readonly int _distortSpeedTextureStID = Shader.PropertyToID("_SpeedDistortMap_ST");
         public bool radialBlurToggle = false;
-        public bool radialBlurFromDistort = false;
+        [Min(0f)]
+        public float radialBlurFromDistort = 1f;
         [Range(1,12)]
         public int radialBlurSampleCount = 4;
         public float radialBlurIntensity = 1;
+        [Min(0.0001f)]
         public float radialBlurPos = 0.5f;
+        [Min(0.0001f)]
         public float radialBlurRange = 0.5f;
         #if CINIMACHINE_3_0
             public bool cameraShakeToggle = false;
@@ -65,9 +81,11 @@ namespace NBShader
         
         public bool overlayTextureToggle = false;
         public bool overlayTexturePolarCoordMode = false;
+        public OverlayTextureBlendMode overlayTextureBlendMode = OverlayTextureBlendMode.Multiply;
         public Texture2D overlayTexture;
         private readonly int _overlayTextureID = Shader.PropertyToID("_TextureOverlay");
         private readonly int _overlayTextureStID = Shader.PropertyToID("_TextureOverlay_ST");
+        private readonly int _overlayTextureBlendModeID = Shader.PropertyToID("_TextureOverlayBlendMode");
         private readonly int _textureOverlayAnimProperty = Shader.PropertyToID("_TextureOverlayAnim");
         private readonly int _textureOverlayMaskProperty = Shader.PropertyToID("_TextureOverlayMask");
         private readonly int _textureOverlayMaskStProperty = Shader.PropertyToID("_TextureOverlayMask_ST");
@@ -141,8 +159,8 @@ namespace NBShader
         void SetUVFromDistort()
         {
             PostProcessingManager.isDistortScreenUVMode = distortScreenUVMode;
-            PostProcessingManager.isCaByDistort = caFromDistort;
-            PostProcessingManager.isRadialBlurByDistort = radialBlurFromDistort;
+            PostProcessingManager.caFromDisturbanceMaskIntensity = Mathf.Max(0f, caFromDistort);
+            PostProcessingManager.radialBlurFromDisturbanceMaskIntensity = Mathf.Max(0f, radialBlurFromDistort);
         }
 
         private void SetTexture()
@@ -181,6 +199,12 @@ namespace NBShader
 
             if (overlayTextureToggle)
             {
+                if (index == PostProcessingManager.laseUpdateControllerIndex)
+                {
+                    PostProcessingManager.material.SetInteger(_overlayTextureBlendModeID,
+                        (int)overlayTextureBlendMode);
+                }
+
                 if (overlayTexturePolarCoordMode)
                 {
                     PostProcessingManager.flags.SetFlagBits(NBPostProcessFlags.FLAG_BIT_OVERLAYTEXTURE_POLLARCOORD);
@@ -389,6 +413,8 @@ namespace NBShader
             
             if (chromaticAberrationToggle)
             {
+                PostProcessingManager.caFromDisturbanceMaskIntensity =
+                    Mathf.Max(PostProcessingManager.caFromDisturbanceMaskIntensity, caFromDistort);
                 PostProcessingManager.chromaticAberrationIntensity =
                     Mathf.Max(PostProcessingManager.chromaticAberrationIntensity, chromaticAberrationIntensity);
                 PostProcessingManager.chromaticAberrationPos =
@@ -437,6 +463,8 @@ namespace NBShader
                     PostProcessingManager.material.SetVector(_overlayTextureStID, overlayTextureSt);
                     PostProcessingManager.material.SetVector(_textureOverlayMaskStProperty, overlayMaskTextureSt);
                     PostProcessingManager.material.SetVector(_textureOverlayAnimProperty,overlayTextureAnim);
+                    PostProcessingManager.material.SetInteger(_overlayTextureBlendModeID,
+                        (int)overlayTextureBlendMode);
                 }
 
                 PostProcessingManager.overlayTextureIntensity = Mathf.Max(PostProcessingManager.overlayTextureIntensity,
@@ -463,6 +491,8 @@ namespace NBShader
 
             if (radialBlurToggle)
             {
+                PostProcessingManager.radialBlurFromDisturbanceMaskIntensity =
+                    Mathf.Max(PostProcessingManager.radialBlurFromDisturbanceMaskIntensity, radialBlurFromDistort);
                 PostProcessingManager.radialBlurIntensity =
                     Mathf.Max(PostProcessingManager.radialBlurIntensity, radialBlurIntensity);
                 PostProcessingManager.radialBlurSampleCount = Mathf.Max(PostProcessingManager.radialBlurSampleCount,

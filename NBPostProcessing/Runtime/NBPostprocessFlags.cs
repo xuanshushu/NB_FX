@@ -31,8 +31,7 @@ namespace NBShader
         public const int FLAG_BIT_OVERLAYTEXTURE_POLLARCOORD = 1 << 7;
         public const int FLAG_BIT_OVERLAYTEXTURE_MASKMAP = 1 << 8;
         public const int FLAG_BIT_POST_DISTORT_SCREEN_UV = 1 << 9; //默认来自于PolarUV
-        public const int FLAG_BIT_RADIALBLUR_BY_DISTORT = 1 << 10; //默认来自于PolarUV
-        public const int FLAG_BIT_CHORATICABERRAT_BY_DISTORT = 1 << 11; //默认来自于PolarUV
+        // Bit 10/11 保留空洞：原 by-distort Flag 已废弃，为兼容旧材质请勿复用。
         public const int FLAG_BIT_FLASHTEXTURE_POLLARCOORD = 1 << 12;
 
 

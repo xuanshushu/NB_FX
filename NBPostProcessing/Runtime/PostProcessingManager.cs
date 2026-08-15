@@ -285,6 +285,7 @@ namespace NBShader
             EffectUpdater(InitDistortSpeed, UpdateDistortSpeed, EndDistortSpeed, ref _lastIsDistortSpeed,
                 distortSpeedToggles);
             EffectUpdater(InitRadialBlur, UpdateRadialBlur, EndRadialBlur, ref _lastIsRadialBlur, radialBlurToggles);
+            UpdateDisturbanceMaskEffectIntensity();
 
             bool isSetCustomScreenCenterPos =
                 (chromaticAberrationToggles | distortSpeedToggles | radialBlurToggles|flashToggles) > 0;
@@ -328,7 +329,21 @@ namespace NBShader
 
 
         private readonly int _customScreenCenterProperty = Shader.PropertyToID("_CustomScreenCenter");
+        private readonly int _disturbanceMaskEffectIntensityProperty =
+            Shader.PropertyToID("_DisturbanceMaskEffectIntensity");
         public static Vector2 customScreenCenterPos = new Vector2(0.5f, 0.5f);
+
+        public static float caFromDisturbanceMaskIntensity = 0f;
+        public static float radialBlurFromDisturbanceMaskIntensity = 0f;
+
+        private void UpdateDisturbanceMaskEffectIntensity()
+        {
+            material.SetVector(_disturbanceMaskEffectIntensityProperty,
+                new Vector4(Mathf.Max(0f, caFromDisturbanceMaskIntensity),
+                    Mathf.Max(0f, radialBlurFromDisturbanceMaskIntensity), 0f, 0f));
+            caFromDisturbanceMaskIntensity = 0f;
+            radialBlurFromDisturbanceMaskIntensity = 0f;
+        }
 
 
 
@@ -344,9 +359,6 @@ namespace NBShader
 
         public static int chromaticAberrationToggles = 0;
 
-        public static bool isCaByDistort = false;
-        private bool _lastIsCaByDistort = false;
-
         public static float chromaticAberrationIntensity = 0;
         public static float chromaticAberrationPos = 0;
         public static float chromaticAberrationRange = 0;
@@ -359,20 +371,6 @@ namespace NBShader
 
         private void UpdateChromaticAberration()
         {
-            if (_lastIsCaByDistort != isCaByDistort)
-            {
-                if (isCaByDistort)
-                {
-                    flags.SetFlagBits(NBPostProcessFlags.FLAG_BIT_CHORATICABERRAT_BY_DISTORT);
-                }
-                else
-                {
-                    flags.ClearFlagBits(NBPostProcessFlags.FLAG_BIT_CHORATICABERRAT_BY_DISTORT);
-                }
-
-                _lastIsCaByDistort = isCaByDistort;
-            }
-
             material.SetVector(_chromaticAberrationVecProperty,
                 new Vector4(chromaticAberrationIntensity, chromaticAberrationPos, chromaticAberrationRange));
             chromaticAberrationIntensity = 0; //等待下一次update
@@ -468,9 +466,6 @@ namespace NBShader
         public static float radialBlurPos = 0;
         public static float radialBlurRange = 0;
         public static int radialBlurSampleCount = 4;
-        public static bool isRadialBlurByDistort = false;
-        private bool _lastIsRadialBlurByDistort = false;
-
         private bool _lastIsRadialBlur = false;
 
         private void InitRadialBlur()
@@ -481,20 +476,6 @@ namespace NBShader
 
         private void UpdateRadialBlur()
         {
-            if (_lastIsRadialBlurByDistort != isRadialBlurByDistort)
-            {
-                if (isRadialBlurByDistort)
-                {
-                    flags.SetFlagBits(NBPostProcessFlags.FLAG_BIT_RADIALBLUR_BY_DISTORT);
-                }
-                else
-                {
-                    flags.ClearFlagBits(NBPostProcessFlags.FLAG_BIT_RADIALBLUR_BY_DISTORT);
-                }
-
-                _lastIsRadialBlurByDistort = isRadialBlurByDistort;
-            }
-
             Vector4 radialBlurVec = new Vector4(radialBlurIntensity * 0.1f / radialBlurSampleCount, radialBlurPos,
                 radialBlurRange, radialBlurSampleCount);
             material.SetVector(_radialBlurVecProperty, radialBlurVec);
