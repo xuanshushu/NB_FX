@@ -288,7 +288,8 @@ namespace NBShader
             UpdateDisturbanceMaskEffectIntensity();
 
             bool isSetCustomScreenCenterPos =
-                (chromaticAberrationToggles | distortSpeedToggles | radialBlurToggles|flashToggles) > 0;
+                (chromaticAberrationToggles | distortSpeedToggles | radialBlurToggles | flashToggles |
+                 vignetteToggles) > 0;
 
             if (isSetCustomScreenCenterPos)
             {

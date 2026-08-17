@@ -231,22 +231,6 @@ namespace NBShaderEditor
                     DrawPropertyWithReset("radialBlurRange", "后处理径向模糊过渡范围");
                 });
 
-#if CINIMACHINE_3_0
-            SerializedProperty cameraShakeToggleProp = serializedObject.FindProperty("cameraShakeToggle");
-            DrawToggleFoldOut(ppController.AnimBools[3], "震屏", cameraShakeToggleProp,
-                CameraShakePropertyNames, drawEndChangeCheck:
-                isChangeToggle => { ReflectMethod("InitAllSettings", ppController); },
-                drawBlock: isToggle =>
-                {
-                    DrawPropertyWithReset("cinemachineCamera", "绑定Cinemachine相机", () =>
-                    {
-                        serializedObject.ApplyModifiedProperties();
-                        ppController.InitCinemachineCamera();
-                    });
-                    DrawPropertyWithReset("cameraShakeIntensity", "相机震动强度");
-                });
-#endif
-
             SerializedProperty overlayTextureToggleProp = serializedObject.FindProperty("overlayTextureToggle");
             DrawToggleFoldOut(ppController.AnimBools[4], "肌理叠加图", overlayTextureToggleProp,
                 OverlayTexturePropertyNames,
@@ -322,6 +306,22 @@ namespace NBShaderEditor
                     DrawPropertyWithReset("vignetteSmothness", "暗角平滑度");
                     DrawPropertyWithReset("vignetteFill", "暗角填充度");
                 });
+
+#if CINIMACHINE_3_0
+            SerializedProperty cameraShakeToggleProp = serializedObject.FindProperty("cameraShakeToggle");
+            DrawToggleFoldOut(ppController.AnimBools[3], "震屏", cameraShakeToggleProp,
+                CameraShakePropertyNames, drawEndChangeCheck:
+                isChangeToggle => { ReflectMethod("InitAllSettings", ppController); },
+                drawBlock: isToggle =>
+                {
+                    DrawPropertyWithReset("cinemachineCamera", "绑定Cinemachine相机", () =>
+                    {
+                        serializedObject.ApplyModifiedProperties();
+                        ppController.InitCinemachineCamera();
+                    });
+                    DrawPropertyWithReset("cameraShakeIntensity", "相机震动强度");
+                });
+#endif
 
             if (GUILayout.Button("选择当前Manager"))
             {
@@ -420,12 +420,12 @@ namespace NBShaderEditor
             propertyNames.AddRange(ChromaticAberrationPropertyNames);
             propertyNames.AddRange(DistortPropertyNames);
             propertyNames.AddRange(RadialBlurPropertyNames);
-#if CINIMACHINE_3_0
-            propertyNames.AddRange(CameraShakePropertyNames);
-#endif
             propertyNames.AddRange(OverlayTexturePropertyNames);
             propertyNames.AddRange(FlashPropertyNames);
             propertyNames.AddRange(VignettePropertyNames);
+#if CINIMACHINE_3_0
+            propertyNames.AddRange(CameraShakePropertyNames);
+#endif
             return propertyNames.ToArray();
         }
 
