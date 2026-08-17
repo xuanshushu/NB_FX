@@ -105,9 +105,9 @@ namespace NBShader
         public float flashGradientRange = 0.25f;
         public float flashContrast = 0.5f;
         [ColorUsage(false, true)]
-        public Color flashColor = new Color(2f,2f,2f,1f);
+        public Color flashColor = new Color(0f,0f,0f,1f);
         [ColorUsage(false, true)]
-        public Color blackFlashColor = new Color(0f,0f,0f,1f);
+        public Color blackFlashColor = new Color(1f,1f,1f,1f);
         private readonly int _flashTextureProperty = Shader.PropertyToID("_FlashTexture");
         public bool flashTextureToggle = true;
         public Texture2D flashTexture;
@@ -118,7 +118,7 @@ namespace NBShader
         public Vector2 flashVecZW = new Vector2(0.2f, 0.2f);
         [Min(0f)]
         public float flashTextureMaskIntensity = 1f;
-        public float flashTextureIntensity = 0.5f;
+        public float flashTextureIntensity = 1f;
         
         public bool vignetteToggle = false;
         public Color vignetteColor = Color.black;

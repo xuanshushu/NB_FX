@@ -595,8 +595,8 @@ namespace NBShader
 
         public static float flashContrast = 0;
 
-        public static Color flashColor = new Color(1, 1, 1, 1);
-        public static Color blackFlashColor = new Color(0, 0, 0, 1);
+        public static Color flashColor = Color.black;
+        public static Color blackFlashColor = Color.white;
 
         private readonly int _flashIntensityProperty = Shader.PropertyToID("_FlashIntensity");
         private readonly int _flashDesaturateProperty = Shader.PropertyToID("_DeSaturateIntensity");
@@ -641,8 +641,8 @@ namespace NBShader
             flashDesaturateIntensity = 0;
             flashInvertIntensity = 0;
             flashContrast = 0;
-            flashColor = Color.white;
-            blackFlashColor = Color.black;
+            flashColor = Color.black;
+            blackFlashColor = Color.white;
             flashGradientRange = 0;
             flashTextureScaleOffset = Vector4.zero;
             flashVec = Vector4.zero;

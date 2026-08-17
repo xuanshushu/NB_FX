@@ -17,10 +17,10 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
             _DeSaturateIntensity("饱和度强度",Float) = 0
             _Contrast("对比度",Float) = 1
             _FlashIntensity("反闪效果强度",Float) = 1
-            _FlashColor("闪颜色", Vector) = (1, 1, 1, 1)
-            _BlackFlashColor("闪黑颜色", Vector) = (0, 0, 0, 1)
+            _FlashColor("闪颜色", Vector) = (0, 0, 0, 1)
+            _BlackFlashColor("闪黑颜色", Vector) = (1, 1, 1, 1)
             _FlashTexture("黑白闪细节图",2D) = "white"
-            _FlashTextureIntensity("黑白细节图混合强度",Float) = 0.5
+            _FlashTextureIntensity("黑白细节图混合强度",Float) = 1
             _FlashTextureMaskIntensity("黑白细节图遮罩强度",Float) = 1
             _FlashGradientRange("黑白闪过渡范围",Float) = 1
             _FlashVec("xy:纹理偏移速度 z:遮罩过渡位置 w:遮罩过渡范围",Vector) = (0,0,0,0)
@@ -406,7 +406,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     UNITY_BRANCH
                     if(CheckLocalFlags(FLAG_BIT_VIGNETTE))
                     {
-                        _VignetteVec.x *= _VignetteColor.a;
+                        //_VignetteVec.x *= _VignetteColor.a;
                         half2 screenVec = (_CustomScreenCenter.xy - screenUV)*_VignetteVec.x;
                         screenVec.x *= _VignetteVec.y;
                         half2 dist = dot(screenVec,screenVec);
@@ -415,6 +415,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                         // color.rgb *= lerp(_VignetteColor,(1.0).xxx,factor);
                         factor = 1- factor;
                         factor = lerp(factor,1,_VignetteVec.w);
+                        factor *= _VignetteColor.a;
                         // _VignetteColor *= factor;
                         color.rgb = lerp(color,_VignetteColor,factor);
                         color.a =1;
