@@ -578,13 +578,16 @@ namespace NBShader
         //     [BinaryInt(8)]
         // #endif
         public static int flashToggles = 0;
+        public static int flashTextureToggles = 0;
 
         private bool _lastIsFlash = false;
 
         public static float flashDesaturateIntensity = 0;
         public static float flashGradientRange = 0;
         public static Vector4 flashTextureScaleOffset = new Vector4(1,1,0,0);
-        public static Vector4 flashVec = new Vector4(0, 0);
+        // xy：纹理偏移速度；z：遮罩过渡位置；w：遮罩过渡范围。
+        public static Vector4 flashVec = Vector4.zero;
+        public static float flashTextureMaskIntensity = 1f;
         public static float flashTextureIntensity = 0.5f;
         public static float flashIntensity = 1;
 
@@ -604,6 +607,7 @@ namespace NBShader
         private readonly int _flashGradientRangeProp = Shader.PropertyToID("_FlashGradientRange");
         private readonly int _flashTextureScaleOffsetProp = Shader.PropertyToID("_FlashTexture_ST");
         private readonly int _flashVecProp = Shader.PropertyToID("_FlashVec");
+        private readonly int _flashTextureMaskIntensityProp = Shader.PropertyToID("_FlashTextureMaskIntensity");
         private readonly int _flashTextureIntensityProp = Shader.PropertyToID("_FlashTextureIntensity");
 
         private void InitFlash()
@@ -613,6 +617,15 @@ namespace NBShader
 
         private void UpdateFlash()
         {
+            if (flashTextureToggles > 0)
+            {
+                flags.SetFlagBits(NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE);
+            }
+            else
+            {
+                flags.ClearFlagBits(NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE);
+            }
+
             material.SetFloat(_flashDesaturateProperty, flashDesaturateIntensity);
             material.SetFloat(_flashInvertProperty, flashInvertIntensity);
             material.SetFloat(_flashContrastProperty, flashContrast);
@@ -621,6 +634,7 @@ namespace NBShader
             material.SetFloat(_flashGradientRangeProp, flashGradientRange);
             material.SetVector(_flashTextureScaleOffsetProp, flashTextureScaleOffset);
             material.SetVector(_flashVecProp, flashVec);
+            material.SetFloat(_flashTextureMaskIntensityProp, flashTextureMaskIntensity);
             material.SetFloat(_flashTextureIntensityProp, flashTextureIntensity);
             material.SetFloat(_flashIntensityProperty, flashIntensity);
             
@@ -631,14 +645,16 @@ namespace NBShader
             blackFlashColor = Color.black;
             flashGradientRange = 0;
             flashTextureScaleOffset = Vector4.zero;
-            flashTextureIntensity = 0;
             flashVec = Vector4.zero;
+            flashTextureMaskIntensity = 0;
+            flashTextureIntensity = 0;
             flashIntensity = 0;
         }
 
         private void EndFlash()
         {
             flags.ClearFlagBits(NBPostProcessFlags.FLAG_BIT_FLASH);
+            flags.ClearFlagBits(NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE);
         }
 
         #endregion

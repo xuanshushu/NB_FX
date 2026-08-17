@@ -82,13 +82,44 @@ namespace NBShaderEditor
             "flashColor",
             "blackFlashColor",
             "flashInvertIntensity",
+            "flashTextureToggle",
             "flashTexture",
             "flashTexturePolarCoordMode",
             "flashTextureScaleOffset",
             "flashVec",
             "flashDeSaturateIntensity",
             "flashTextureIntensity",
-            "flashVecZW"
+            "flashVecZW",
+            "flashTextureMaskIntensity"
+        };
+
+        private static readonly string[] FlashTexturePropertyNames =
+        {
+            "flashTexture",
+            "flashTexturePolarCoordMode",
+            "flashTextureScaleOffset",
+            "flashVec",
+            "flashDeSaturateIntensity",
+            "flashTextureIntensity"
+        };
+
+        private static readonly string[] FlashTextureMaskPropertyNames =
+        {
+            "flashVecZW",
+            "flashTextureMaskIntensity"
+        };
+
+        private static readonly string[] FlashTextureFeaturePropertyNames =
+        {
+            "flashTextureToggle",
+            "flashTexture",
+            "flashTexturePolarCoordMode",
+            "flashTextureScaleOffset",
+            "flashVec",
+            "flashDeSaturateIntensity",
+            "flashTextureIntensity",
+            "flashVecZW",
+            "flashTextureMaskIntensity"
         };
 
         private static readonly string[] VignettePropertyNames =
@@ -247,15 +278,36 @@ namespace NBShaderEditor
                     DrawPropertyWithReset("flashColor", "亮部闪颜色");
                     DrawPropertyWithReset("blackFlashColor", "暗部闪颜色");
                     DrawPropertyWithReset("flashInvertIntensity", "反转度");
-                    DrawPropertyWithReset("flashTexture", "反闪纹理图",
-                        () => ReflectMethod("SetTexture", ppController));
-                    DrawPropertyWithReset("flashTexturePolarCoordMode", "反闪纹理图极坐标模式",
-                        () => ReflectMethod("SetTexture", ppController));
-                    DrawPropertyWithReset("flashTextureScaleOffset", "反闪纹理图缩放平移");
-                    DrawPropertyWithReset("flashVec", "反闪纹理图偏移速度");
-                    DrawPropertyWithReset("flashDeSaturateIntensity", "纹理图Pow");
-                    DrawPropertyWithReset("flashTextureIntensity", "纹理图混合程度");
-                    DrawPropertyWithReset("flashVecZW", "反闪纹理图遮罩位置/过渡范围");
+
+                    SerializedProperty flashTextureToggleProp =
+                        serializedObject.FindProperty("flashTextureToggle");
+                    DrawToggleFoldOut(ppController.AnimBools[7], "反闪纹理", flashTextureToggleProp,
+                        FlashTextureFeaturePropertyNames,
+                        drawEndChangeCheck:
+                        isChangeToggle => { ReflectMethod("InitAllSettings", ppController); },
+                        drawBlock: isTextureToggle =>
+                        {
+                            DrawFoldOut(ppController.AnimBools[8], "纹理", FlashTexturePropertyNames,
+                                () => ReflectMethod("SetTexture", ppController), () =>
+                                {
+                                    DrawPropertyWithReset("flashTexture", "反闪纹理图",
+                                        () => ReflectMethod("SetTexture", ppController));
+                                    DrawPropertyWithReset("flashTexturePolarCoordMode", "极坐标模式",
+                                        () => ReflectMethod("SetTexture", ppController));
+                                    DrawPropertyWithReset("flashTextureScaleOffset", "缩放平移");
+                                    DrawPropertyWithReset("flashVec", "偏移速度");
+                                    DrawPropertyWithReset("flashDeSaturateIntensity", "纹理图Pow");
+                                    DrawPropertyWithReset("flashTextureIntensity", "纹理图混合程度");
+                                });
+
+                            DrawFoldOut(ppController.AnimBools[9], "遮罩", FlashTextureMaskPropertyNames,
+                                null, () =>
+                                {
+                                    DrawPropertyWithReset("flashTextureMaskIntensity", "遮罩强度");
+                                    DrawVector2ComponentWithReset("flashVecZW", 0, "遮罩过渡位置", 0f);
+                                    DrawVector2ComponentWithReset("flashVecZW", 1, "遮罩过渡范围", 0f);
+                                });
+                        });
                 });
 
             SerializedProperty vignetteToggleProp = serializedObject.FindProperty("vignetteToggle");
@@ -338,6 +390,30 @@ namespace NBShaderEditor
             if (isIndentBlock) EditorGUI.indentLevel--;
         }
 
+        private void DrawFoldOut(AnimBool foldOutAnimBool, string label, string[] resetPropertyNames,
+            Action onReset, Action drawBlock)
+        {
+            EditorGUILayout.BeginHorizontal();
+            Rect rect = EditorGUILayout.GetControlRect();
+            ShaderGUIItem.SplitControlAndResetRect(rect, out Rect propertyRect, out Rect resetRect, false);
+
+            foldOutAnimBool.target = EditorGUI.Foldout(propertyRect, foldOutAnimBool.target, label, true);
+            if (DrawResetButton(resetRect, IsAnyPropertyModified(resetPropertyNames),
+                    () => ResetProperties(resetPropertyNames)))
+            {
+                onReset?.Invoke();
+            }
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUI.indentLevel++;
+            float faded = foldOutAnimBool.faded;
+            if (faded == 0) faded = 0.00001f;
+            EditorGUILayout.BeginFadeGroup(faded);
+            drawBlock?.Invoke();
+            EditorGUILayout.EndFadeGroup();
+            EditorGUI.indentLevel--;
+        }
+
         private static string[] BuildControllerPropertyNames()
         {
             var propertyNames = new List<string> { "customScreenCenterPos" };
@@ -409,6 +485,45 @@ namespace NBShaderEditor
             if (changed)
             {
                 onChanged?.Invoke();
+            }
+        }
+
+        private void DrawVector2ComponentWithReset(string propertyName, int componentIndex, string label,
+            float minValue)
+        {
+            SerializedProperty property = serializedObject.FindProperty(propertyName);
+            SerializedProperty defaultProperty =
+                _defaultValuesSerializedObject.FindProperty(property.propertyPath);
+            Vector2 value = property.vector2Value;
+            Vector2 defaultValue = defaultProperty.vector2Value;
+            float componentValue = componentIndex == 0 ? value.x : value.y;
+            float defaultComponentValue = componentIndex == 0 ? defaultValue.x : defaultValue.y;
+
+            Rect rect = EditorGUILayout.GetControlRect();
+            ShaderGUIItem.SplitControlAndResetRect(rect, out Rect propertyRect, out Rect resetRect, false);
+            EditorGUI.BeginChangeCheck();
+            float editedComponentValue = EditorGUI.FloatField(propertyRect, label, componentValue);
+            bool changed = EditorGUI.EndChangeCheck() || editedComponentValue < minValue;
+            componentValue = Mathf.Max(minValue, editedComponentValue);
+
+            if (DrawResetButton(resetRect, !Mathf.Approximately(componentValue, defaultComponentValue),
+                    () => componentValue = defaultComponentValue))
+            {
+                changed = true;
+            }
+
+            if (changed)
+            {
+                if (componentIndex == 0)
+                {
+                    value.x = componentValue;
+                }
+                else
+                {
+                    value.y = componentValue;
+                }
+
+                property.vector2Value = value;
             }
         }
 

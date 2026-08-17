@@ -13,7 +13,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
             _TextureOverlayAnim("机理图动画",Vector) = (0,0,0,0)
             _TextureOverlayMask("肌理图蒙板",2D) = "white"
             
-            _InvertIntensity("反向强度",Float) = 0
+            _InvertIntensity("反向强度",Float) = 1
             _DeSaturateIntensity("饱和度强度",Float) = 0
             _Contrast("对比度",Float) = 1
             _FlashIntensity("反闪效果强度",Float) = 1
@@ -21,8 +21,9 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
             _BlackFlashColor("闪黑颜色", Vector) = (0, 0, 0, 1)
             _FlashTexture("黑白闪细节图",2D) = "white"
             _FlashTextureIntensity("黑白细节图混合强度",Float) = 0.5
+            _FlashTextureMaskIntensity("黑白细节图遮罩强度",Float) = 1
             _FlashGradientRange("黑白闪过渡范围",Float) = 1
-            _FlashVec("xy:FlashTextureOffsetAnim",Vector) = (0,0,0,0)
+            _FlashVec("xy:纹理偏移速度 z:遮罩过渡位置 w:遮罩过渡范围",Vector) = (0,0,0,0)
 
 
             [HideInInspector] _NBPostProcessFlags("_NBPostProcessFlags", Integer) = 0
@@ -126,6 +127,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     half _Contrast;
                     half _FlashGradientRange;
                     half _FlashTextureIntensity;
+                    half _FlashTextureMaskIntensity;
                     float4 _FlashTexture_ST;
                     float4 _FlashVec;
                     half3 _FlashColor;
@@ -201,7 +203,7 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
                     }
                     
                     UNITY_BRANCH
-                    if((CheckLocalFlags(FLAG_BIT_DISTORT_SPEED)& (!CheckLocalFlags(FLAG_BIT_POST_DISTORT_SCREEN_UV)))|CheckLocalFlags(FLAG_BIT_OVERLAYTEXTURE_POLLARCOORD)|CheckLocalFlags(FLAG_BIT_FLASHTEXTURE_POLLARCOORD)|CheckLocalFlags(FLAG_BIT_FLASH))
+                    if((CheckLocalFlags(FLAG_BIT_DISTORT_SPEED)& (!CheckLocalFlags(FLAG_BIT_POST_DISTORT_SCREEN_UV)))|CheckLocalFlags(FLAG_BIT_OVERLAYTEXTURE_POLLARCOORD)|(CheckLocalFlags(FLAG_BIT_FLASHTEXTURE)&CheckLocalFlags(FLAG_BIT_FLASHTEXTURE_POLLARCOORD)))
                     {
                         polarCoordinates= PolarCoordinates(screenUV,_CustomScreenCenter.xy);
                     }
@@ -348,36 +350,42 @@ Shader "XuanXuan/Postprocess/NBPostProcessUber"
 
                         half flashLuminace = luminance(color.rgb);
 
-                        half2 flashTexUV ;
-                        if(CheckLocalFlags(FLAG_BIT_FLASHTEXTURE_POLLARCOORD))
+                        UNITY_BRANCH
+                        if(CheckLocalFlags(FLAG_BIT_FLASHTEXTURE))
                         {
-                            flashTexUV = polarCoordinates;
+                            half2 flashTexUV ;
+                            if(CheckLocalFlags(FLAG_BIT_FLASHTEXTURE_POLLARCOORD))
+                            {
+                                flashTexUV = polarCoordinates;
+                            }
+                            else
+                            {
+                                flashTexUV = screenUV;
+                            }
+                            half flashMaskPosition = max(0.0h,_FlashVec.z);
+                            half flashMaskRange = max(0.0h,_FlashVec.w);
+                            half flashTexMask = SimpleSmoothstep(flashMaskPosition,
+                                flashMaskPosition+flashMaskRange,flashTexUV.y);
+                            flashTexMask = saturate(lerp(1.0h,flashTexMask,max(0.0h,_FlashTextureMaskIntensity)));
+                            // flashTexMask *= flashTexMask;
+
+                            flashTexUV = TRANSFORM_TEX(flashTexUV,_FlashTexture);
+                            flashTexUV = UVOffsetAnimaiton(flashTexUV,_FlashVec.xy,_Time.y);
+
+                            half flashTexColor = SAMPLE_TEXTURE2D(_FlashTexture,sampler_FlashTexture,flashTexUV).r;
+                            flashTexColor = pow(flashTexColor,max(0.0h,_DeSaturateIntensity));
+                            half flashTextureIntensity = _FlashTextureIntensity * flashTexMask;
+
+                            flashLuminace = lerp(flashLuminace,flashTexColor,flashTextureIntensity);
                         }
-                        else
-                        {
-                            
-                            flashTexUV = screenUV;
-                        }
-                        half flashTexMask = SimpleSmoothstep(_FlashVec.z,_FlashVec.z+_FlashVec.w,flashTexUV.y);
-                        // flashTexMask *= flashTexMask;
-
-                        flashTexUV = TRANSFORM_TEX(flashTexUV,_FlashTexture);
-                        flashTexUV = UVOffsetAnimaiton(flashTexUV,_FlashVec.xy,_Time.y);
-
-                        half flashTexColor = SAMPLE_TEXTURE2D(_FlashTexture,sampler_FlashTexture,flashTexUV).r;
-                        flashTexColor = pow(flashTexColor,_DeSaturateIntensity);
-                  
-                        _FlashTextureIntensity *= flashTexMask;
-
-                        
-                        flashLuminace = lerp(flashLuminace,flashTexColor,_FlashTextureIntensity);
+                        // return half4(_FlashTextureIntensity.rrr,1);
                         half RangeMin = _FlashGradientRange;
                         half RangeMax = RangeMin + _Contrast;
                         flashLuminace = SimpleSmoothstep(RangeMin,RangeMax,flashLuminace);
                         half3 finalBlackFlashColor = lerp(_FlashColor,_BlackFlashColor,_InvertIntensity);
                         half3 finalFlashColor =  lerp(_BlackFlashColor,_FlashColor,_InvertIntensity);
-
                         half3 endColor = lerp(finalBlackFlashColor,finalFlashColor,flashLuminace);
+
                         color.rgb = lerp(color.rgb,endColor,_FlashIntensity);
                         color.a = 1;
                         

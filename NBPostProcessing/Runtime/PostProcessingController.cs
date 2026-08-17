@@ -99,7 +99,8 @@ namespace NBShader
         [Range(0,1)]
         public float flashIntensity = 1f;
         [Range(0,1)]
-        public float flashInvertIntensity = 0f;
+        public float flashInvertIntensity = 1f;
+        [Min(0f)]
         public float flashDeSaturateIntensity = 1f;
         public float flashGradientRange = 0.25f;
         public float flashContrast = 0.5f;
@@ -108,11 +109,15 @@ namespace NBShader
         [ColorUsage(false, true)]
         public Color blackFlashColor = new Color(0f,0f,0f,1f);
         private readonly int _flashTextureProperty = Shader.PropertyToID("_FlashTexture");
+        public bool flashTextureToggle = true;
         public Texture2D flashTexture;
         public Vector4 flashTextureScaleOffset = new Vector4(10f,0.1f,0f,0f);
         public bool flashTexturePolarCoordMode = true;
         public Vector2 flashVec = new Vector2(0, 0.05f);
-        public Vector2 flashVecZW = new Vector2(0.2f, 0.2f);//FlashTextureMask
+        // x：遮罩过渡位置；y：遮罩过渡范围。保留 Vector2 字段以兼容旧项目，GUI 中拆为两个 Float。
+        public Vector2 flashVecZW = new Vector2(0.2f, 0.2f);
+        [Min(0f)]
+        public float flashTextureMaskIntensity = 1f;
         public float flashTextureIntensity = 0.5f;
         
         public bool vignetteToggle = false;
@@ -123,8 +128,7 @@ namespace NBShader
         public float vignetteSmothness = 10;
         [Range(0,1)]
         public float vignetteFill = 0f;
-        
-       
+
         public void InitController()
         {
             if (this.isActiveAndEnabled == false)
@@ -179,7 +183,7 @@ namespace NBShader
                 }
             }
 
-            if (flashToggle&& flashTexture)
+            if (flashToggle && flashTextureToggle)
             {
                 PostProcessingManager.material.SetTexture(_flashTextureProperty, flashTexture);
                 if (flashTexturePolarCoordMode)
@@ -249,6 +253,7 @@ namespace NBShader
             #endif
             SetBit(ref PostProcessingManager.overlayTextureToggles,index,overlayTextureToggle);
             SetBit(ref PostProcessingManager.flashToggles,index,flashToggle);
+            SetBit(ref PostProcessingManager.flashTextureToggles,index,flashToggle && flashTextureToggle);
             SetBit(ref PostProcessingManager.radialBlurToggles,index,radialBlurToggle);
             SetBit(ref PostProcessingManager.vignetteToggles,index,vignetteToggle);
 
@@ -267,6 +272,7 @@ namespace NBShader
             #endif
             SetBit(ref PostProcessingManager.overlayTextureToggles,index,false);
             SetBit(ref PostProcessingManager.flashToggles,index,false);
+            SetBit(ref PostProcessingManager.flashTextureToggles,index,false);
             SetBit(ref PostProcessingManager.radialBlurToggles,index,false);
             SetBit(ref PostProcessingManager.vignetteToggles,index,false);
         }
@@ -278,6 +284,7 @@ namespace NBShader
         #endif
         private bool _lastOverlayTextureToggle = false;
         private bool _lastFlashToggle= false;
+        private bool _lastFlashTextureToggle = true;
         private bool _lastRadialBlurToggle= false;
         private bool _lastVignetteToggle= false;
 
@@ -397,6 +404,7 @@ namespace NBShader
             #endif
             isToggleChanged |= checkIfToggleChanged(ref _lastOverlayTextureToggle, overlayTextureToggle);
             isToggleChanged |= checkIfToggleChanged(ref _lastFlashToggle, flashToggle);
+            isToggleChanged |= checkIfToggleChanged(ref _lastFlashTextureToggle, flashTextureToggle);
             isToggleChanged |= checkIfToggleChanged(ref _lastRadialBlurToggle, radialBlurToggle);
             isToggleChanged |= checkIfToggleChanged(ref _lastVignetteToggle, vignetteToggle);
             if (isToggleChanged)
@@ -473,17 +481,27 @@ namespace NBShader
 
             if (flashToggle)
             {
-                PostProcessingManager.flashDesaturateIntensity =
-                    Mathf.Max(PostProcessingManager.flashDesaturateIntensity, flashDeSaturateIntensity);
                 PostProcessingManager.flashInvertIntensity =
                     Mathf.Max(PostProcessingManager.flashInvertIntensity, flashInvertIntensity);
                 PostProcessingManager.flashIntensity = Mathf.Max(PostProcessingManager.flashIntensity, flashIntensity);
                 PostProcessingManager.flashContrast =
                     Mathf.Max(PostProcessingManager.flashContrast, flashContrast);
                 PostProcessingManager.flashGradientRange = Mathf.Max(PostProcessingManager.flashGradientRange, flashGradientRange);
-                PostProcessingManager.flashVec = new Vector4(flashVec.x,flashVec.y,flashVecZW.x,flashVecZW.y);
-                PostProcessingManager.flashTextureIntensity = Mathf.Max(PostProcessingManager.flashTextureIntensity, flashTextureIntensity);
-                PostProcessingManager.flashTextureScaleOffset = flashTextureScaleOffset;
+
+                if (flashTextureToggle)
+                {
+                    PostProcessingManager.flashDesaturateIntensity =
+                        Mathf.Max(PostProcessingManager.flashDesaturateIntensity,
+                            Mathf.Max(0f, flashDeSaturateIntensity));
+                    PostProcessingManager.flashVec = new Vector4(flashVec.x, flashVec.y,
+                        Mathf.Max(0f, flashVecZW.x), Mathf.Max(0f, flashVecZW.y));
+                    PostProcessingManager.flashTextureMaskIntensity =
+                        Mathf.Max(PostProcessingManager.flashTextureMaskIntensity,
+                            Mathf.Max(0f, flashTextureMaskIntensity));
+                    PostProcessingManager.flashTextureIntensity =
+                        Mathf.Max(PostProcessingManager.flashTextureIntensity, flashTextureIntensity);
+                    PostProcessingManager.flashTextureScaleOffset = flashTextureScaleOffset;
+                }
                 
                 PostProcessingManager.flashColor = flashColor;
                 PostProcessingManager.blackFlashColor = blackFlashColor;

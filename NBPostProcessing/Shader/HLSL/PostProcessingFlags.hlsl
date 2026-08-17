@@ -16,6 +16,7 @@
     #define FLAG_BIT_POST_DISTORT_SCREEN_UV (1 << 9)
     // Bit 10/11 保留空洞：原 by-distort Flag 已废弃，为兼容旧材质请勿复用。
     #define FLAG_BIT_FLASHTEXTURE_POLLARCOORD (1 << 12)
+    #define FLAG_BIT_FLASHTEXTURE (1 << 13)
 
 
 
