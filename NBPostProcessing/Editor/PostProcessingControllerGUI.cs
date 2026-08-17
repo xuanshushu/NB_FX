@@ -171,8 +171,15 @@ namespace NBShaderEditor
             DrawResetHeader("后处理参数", ControllerPropertyNames,
                 () => ReflectMethod("InitAllSettings", ppController));
 
-            DrawPropertyWithReset("customScreenCenterPos", "自定义屏幕中心",
-                () => ReflectMethod("SetScreenCenterPos", ppController));
+            DrawPropertyWithReset("customScreenCenterTransform", "屏幕中心跟随Transform",
+                () => ReflectMethod("SetScreenCenterPos", ppController),
+                "绑定后使用主相机计算 Transform 在 GameView 中的屏幕位置。");
+            using (new EditorGUI.DisabledScope(ppController.customScreenCenterTransform != null))
+            {
+                DrawPropertyWithReset("customScreenCenterPos", "自定义屏幕中心",
+                    () => ReflectMethod("SetScreenCenterPos", ppController),
+                    "以 GameView 为准的 Viewport 坐标：左下角为 (0, 0)，右上角为 (1, 1)；绑定 Transform 时只读。");
+            }
 
             SerializedProperty caToggleProp = serializedObject.FindProperty("chromaticAberrationToggle");
             DrawToggleFoldOut(ppController.AnimBools[0], "色散", caToggleProp, ChromaticAberrationPropertyNames,
@@ -416,7 +423,7 @@ namespace NBShaderEditor
 
         private static string[] BuildControllerPropertyNames()
         {
-            var propertyNames = new List<string> { "customScreenCenterPos" };
+            var propertyNames = new List<string> { "customScreenCenterTransform", "customScreenCenterPos" };
             propertyNames.AddRange(ChromaticAberrationPropertyNames);
             propertyNames.AddRange(DistortPropertyNames);
             propertyNames.AddRange(RadialBlurPropertyNames);
@@ -464,10 +471,11 @@ namespace NBShaderEditor
             }
         }
 
-        private void DrawPropertyWithReset(string propertyName, string label, Action onChanged = null)
+        private void DrawPropertyWithReset(string propertyName, string label, Action onChanged = null,
+            string tooltip = null)
         {
             SerializedProperty property = serializedObject.FindProperty(propertyName);
-            var content = new GUIContent(label);
+            var content = new GUIContent(label, tooltip);
             float propertyHeight = EditorGUI.GetPropertyHeight(property, content, true);
             Rect rect = EditorGUILayout.GetControlRect(true, propertyHeight);
             ShaderGUIItem.SplitControlAndResetRect(rect, out Rect propertyRect, out Rect resetRect, false);

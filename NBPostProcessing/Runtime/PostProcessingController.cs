@@ -39,6 +39,7 @@ namespace NBShader
             _index = controllerIndex;
         }
         
+        public Transform customScreenCenterTransform;
         public Vector2 customScreenCenterPos = new Vector2(0.5f, 0.5f);
         private Vector2 _lastCustomScreenCenterPos = new Vector2(0.5f, 0.5f);
         public bool chromaticAberrationToggle = false;
@@ -156,6 +157,17 @@ namespace NBShader
 
         void SetScreenCenterPos()
         {
+            if (customScreenCenterTransform)
+            {
+                Camera screenCamera = Camera.main;
+                if (screenCamera)
+                {
+                    Vector3 viewportPosition =
+                        screenCamera.WorldToViewportPoint(customScreenCenterTransform.position);
+                    customScreenCenterPos = new Vector2(viewportPosition.x, viewportPosition.y);
+                }
+            }
+
             PostProcessingManager.customScreenCenterPos = customScreenCenterPos;
             _lastCustomScreenCenterPos = customScreenCenterPos;
         }
@@ -413,7 +425,7 @@ namespace NBShader
             }
     //#endif
 
-            if (customScreenCenterPos != _lastCustomScreenCenterPos)
+            if (customScreenCenterTransform || customScreenCenterPos != _lastCustomScreenCenterPos)
             {
                 SetScreenCenterPos();
             }

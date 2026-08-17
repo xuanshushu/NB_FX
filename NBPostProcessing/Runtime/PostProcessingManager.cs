@@ -287,15 +287,8 @@ namespace NBShader
             EffectUpdater(InitRadialBlur, UpdateRadialBlur, EndRadialBlur, ref _lastIsRadialBlur, radialBlurToggles);
             UpdateDisturbanceMaskEffectIntensity();
 
-            bool isSetCustomScreenCenterPos =
-                (chromaticAberrationToggles | distortSpeedToggles | radialBlurToggles | flashToggles |
-                 vignetteToggles) > 0;
-
-            if (isSetCustomScreenCenterPos)
-            {
-                material.SetVector(_customScreenCenterProperty,
-                    new Vector4(customScreenCenterPos.x, customScreenCenterPos.y, 0, 0));
-            }
+            material.SetVector(_customScreenCenterProperty,
+                new Vector4(customScreenCenterPos.x, customScreenCenterPos.y, 0, 0));
 
 #if CINIMACHINE_3_0
             EffectUpdater(() => { }, UpdateCameraShake, EndCameraShake, ref _lastIsCameraShake, cameraShakeToggles);
