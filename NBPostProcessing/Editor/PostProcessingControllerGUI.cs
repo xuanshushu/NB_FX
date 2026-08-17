@@ -12,11 +12,41 @@ using System;
 // using Unity.Properties;
 namespace NBShaderEditor
 {
-    
+    [InitializeOnLoad]
+    internal static class NBPostProcessingLocalization
+    {
+        private const string TableName = "NBPostProcessing";
+        private const string CsvAssetPath =
+            "Packages/com.xuanxuan.nb.fx/NBPostProcessing/Editor/Localization/NBPostProcessingLocalization.csv";
+
+        static NBPostProcessingLocalization()
+        {
+            RegisterTable();
+        }
+
+        public static GUIContent MakeInspectorContent(string key, string fallback, string tip = "")
+        {
+            RegisterTable();
+            return ShaderGUILocalization.MakeInspectorContent(TableName, key, fallback, tip);
+        }
+
+        public static string[] GetInspectorOptions(string key, string[] fallback)
+        {
+            RegisterTable();
+            return ShaderGUILocalization.GetInspectorOptions(TableName, key, fallback);
+        }
+
+        private static void RegisterTable()
+        {
+            ShaderGUILocalization.RegisterCsv(TableName, CsvAssetPath);
+        }
+    }
+
     [CustomEditor(typeof(PostProcessingController))]
     public class PostProcessingControllerGUI : Editor
     {
-        private static readonly GUIContent ResetContent = new GUIContent("R", "重置当前属性及子级属性（如有）");
+        private static GUIContent ResetContent => NBPostProcessingLocalization.MakeInspectorContent(
+            "common.reset", "R", "重置当前属性及子级属性（如有）");
 
         private static readonly string[] ChromaticAberrationPropertyNames =
         {
@@ -165,10 +195,13 @@ namespace NBShaderEditor
             _managerProperty = serializedObject.FindProperty("_manager");
             _indexProperty = serializedObject.FindProperty("_index");
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.PropertyField(_managerProperty);
+            EditorGUILayout.PropertyField(_managerProperty,
+                NBPostProcessingLocalization.MakeInspectorContent("property.manager", "Manager"));
             EditorGUI.EndDisabledGroup();
 
-            DrawResetHeader("后处理参数", ControllerPropertyNames,
+            DrawResetHeader(
+                NBPostProcessingLocalization.MakeInspectorContent("header.parameters", "后处理参数"),
+                ControllerPropertyNames,
                 () => ReflectMethod("InitAllSettings", ppController));
 
             DrawPropertyWithReset("customScreenCenterTransform", "屏幕中心跟随Transform",
@@ -278,7 +311,8 @@ namespace NBShaderEditor
                         isChangeToggle => { ReflectMethod("InitAllSettings", ppController); },
                         drawBlock: isTextureToggle =>
                         {
-                            DrawFoldOut(ppController.AnimBools[8], "纹理", FlashTexturePropertyNames,
+                            DrawFoldOut(ppController.AnimBools[8], "flashTexture", "纹理",
+                                FlashTexturePropertyNames,
                                 () => ReflectMethod("SetTexture", ppController), () =>
                                 {
                                     DrawPropertyWithReset("flashTexture", "反闪纹理图",
@@ -291,7 +325,8 @@ namespace NBShaderEditor
                                     DrawPropertyWithReset("flashTextureIntensity", "纹理图混合程度");
                                 });
 
-                            DrawFoldOut(ppController.AnimBools[9], "遮罩", FlashTextureMaskPropertyNames,
+                            DrawFoldOut(ppController.AnimBools[9], "flashTextureMask", "遮罩",
+                                FlashTextureMaskPropertyNames,
                                 null, () =>
                                 {
                                     DrawPropertyWithReset("flashTextureMaskIntensity", "遮罩强度");
@@ -330,12 +365,14 @@ namespace NBShaderEditor
                 });
 #endif
 
-            if (GUILayout.Button("选择当前Manager"))
+            if (GUILayout.Button(NBPostProcessingLocalization.MakeInspectorContent(
+                    "button.selectManager", "选择当前Manager")))
             {
                 ReflectMethod("FindManager", ppController);
             }
 #if CINIMACHINE_3_0
-            if (GUILayout.Button("选择当前CinemachineCamera"))
+            if (GUILayout.Button(NBPostProcessingLocalization.MakeInspectorContent(
+                    "button.selectCinemachineCamera", "选择当前CinemachineCamera")))
             {
                 ppController.FindVirtualCamera();
             }
@@ -351,6 +388,8 @@ namespace NBShaderEditor
             FontStyle fontStyle = FontStyle.Bold,
             Action<bool> drawBlock = null, Action<bool> drawEndChangeCheck = null)
         {
+            GUIContent content = NBPostProcessingLocalization.MakeInspectorContent(
+                "foldout." + boolProperty.name, label);
             if (fontStyle == FontStyle.Bold)
             {
                 EditorGUILayout.Space();
@@ -374,7 +413,7 @@ namespace NBShaderEditor
             foldOutAnimBool.target = EditorGUI.Foldout(foldoutRect, foldOutAnimBool.target, string.Empty, true);
             var origFontStyle = EditorStyles.label.fontStyle;
             EditorStyles.label.fontStyle = fontStyle;
-            EditorGUI.LabelField(labelRect, label);
+            EditorGUI.LabelField(labelRect, content);
             EditorStyles.label.fontStyle = origFontStyle;
 
             if (DrawResetButton(resetRect, IsAnyPropertyModified(resetPropertyNames),
@@ -397,14 +436,16 @@ namespace NBShaderEditor
             if (isIndentBlock) EditorGUI.indentLevel--;
         }
 
-        private void DrawFoldOut(AnimBool foldOutAnimBool, string label, string[] resetPropertyNames,
-            Action onReset, Action drawBlock)
+        private void DrawFoldOut(AnimBool foldOutAnimBool, string localizationKey, string label,
+            string[] resetPropertyNames, Action onReset, Action drawBlock)
         {
+            GUIContent content = NBPostProcessingLocalization.MakeInspectorContent(
+                "foldout." + localizationKey, label);
             EditorGUILayout.BeginHorizontal();
             Rect rect = EditorGUILayout.GetControlRect();
             ShaderGUIItem.SplitControlAndResetRect(rect, out Rect propertyRect, out Rect resetRect, false);
 
-            foldOutAnimBool.target = EditorGUI.Foldout(propertyRect, foldOutAnimBool.target, label, true);
+            foldOutAnimBool.target = EditorGUI.Foldout(propertyRect, foldOutAnimBool.target, content, true);
             if (DrawResetButton(resetRect, IsAnyPropertyModified(resetPropertyNames),
                     () => ResetProperties(resetPropertyNames)))
             {
@@ -457,12 +498,12 @@ namespace NBShaderEditor
             _defaultValuesSerializedObject.Update();
         }
 
-        private void DrawResetHeader(string label, string[] propertyNames, Action onReset)
+        private void DrawResetHeader(GUIContent content, string[] propertyNames, Action onReset)
         {
             EditorGUILayout.Space();
             Rect rect = EditorGUILayout.GetControlRect();
             ShaderGUIItem.SplitControlAndResetRect(rect, out Rect labelRect, out Rect resetRect, false);
-            EditorGUI.LabelField(labelRect, label, EditorStyles.boldLabel);
+            EditorGUI.LabelField(labelRect, content, EditorStyles.boldLabel);
 
             if (DrawResetButton(resetRect, IsAnyPropertyModified(propertyNames),
                     () => ResetProperties(propertyNames)))
@@ -475,14 +516,25 @@ namespace NBShaderEditor
             string tooltip = null)
         {
             SerializedProperty property = serializedObject.FindProperty(propertyName);
-            var content = new GUIContent(label, tooltip);
+            GUIContent content = NBPostProcessingLocalization.MakeInspectorContent(
+                "property." + propertyName, label, tooltip ?? string.Empty);
             float propertyHeight = EditorGUI.GetPropertyHeight(property, content, true);
             Rect rect = EditorGUILayout.GetControlRect(true, propertyHeight);
             ShaderGUIItem.SplitControlAndResetRect(rect, out Rect propertyRect, out Rect resetRect, false);
             resetRect.height = EditorGUIUtility.singleLineHeight;
 
             EditorGUI.BeginChangeCheck();
-            EditorGUI.PropertyField(propertyRect, property, content, true);
+            if (property.propertyType == SerializedPropertyType.Enum)
+            {
+                string[] options = NBPostProcessingLocalization.GetInspectorOptions(
+                    "property." + propertyName, property.enumDisplayNames);
+                Rect popupRect = EditorGUI.PrefixLabel(propertyRect, content);
+                property.enumValueIndex = EditorGUI.Popup(popupRect, property.enumValueIndex, options);
+            }
+            else
+            {
+                EditorGUI.PropertyField(propertyRect, property, content, true);
+            }
             bool changed = EditorGUI.EndChangeCheck();
 
             if (DrawResetButton(resetRect, IsPropertyModified(property), () => ResetProperty(property)))
@@ -502,6 +554,8 @@ namespace NBShaderEditor
             SerializedProperty property = serializedObject.FindProperty(propertyName);
             SerializedProperty defaultProperty =
                 _defaultValuesSerializedObject.FindProperty(property.propertyPath);
+            GUIContent content = NBPostProcessingLocalization.MakeInspectorContent(
+                "property." + propertyName + "." + componentIndex, label);
             Vector2 value = property.vector2Value;
             Vector2 defaultValue = defaultProperty.vector2Value;
             float componentValue = componentIndex == 0 ? value.x : value.y;
@@ -510,7 +564,7 @@ namespace NBShaderEditor
             Rect rect = EditorGUILayout.GetControlRect();
             ShaderGUIItem.SplitControlAndResetRect(rect, out Rect propertyRect, out Rect resetRect, false);
             EditorGUI.BeginChangeCheck();
-            float editedComponentValue = EditorGUI.FloatField(propertyRect, label, componentValue);
+            float editedComponentValue = EditorGUI.FloatField(propertyRect, content, componentValue);
             bool changed = EditorGUI.EndChangeCheck() || editedComponentValue < minValue;
             componentValue = Mathf.Max(minValue, editedComponentValue);
 
