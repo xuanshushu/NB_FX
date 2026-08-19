@@ -776,12 +776,6 @@ namespace NBShaderEditor
             }
 
             TransparentMode mode = (TransparentMode)Mathf.RoundToInt(mat.GetFloat("_TransparentMode"));
-            int queueBias = mat.HasProperty("_QueueBias") ? Mathf.RoundToInt(mat.GetFloat("_QueueBias")) : 0;
-            bool uiEffect = mat.HasProperty("_MeshSourceMode") &&
-                            ((MeshSourceMode)Mathf.RoundToInt(mat.GetFloat("_MeshSourceMode")) == MeshSourceMode.UIEffectRawImage ||
-                             (MeshSourceMode)Mathf.RoundToInt(mat.GetFloat("_MeshSourceMode")) == MeshSourceMode.UIEffectSprite ||
-                             (MeshSourceMode)Mathf.RoundToInt(mat.GetFloat("_MeshSourceMode")) == MeshSourceMode.UIEffectBaseMap ||
-                             (MeshSourceMode)Mathf.RoundToInt(mat.GetFloat("_MeshSourceMode")) == MeshSourceMode.UIParticle);
 
             if (mode != TransparentMode.Transparent)
             {
@@ -792,12 +786,10 @@ namespace NBShaderEditor
             {
                 case TransparentMode.Opaque:
                     SetIntIfExists(mat, "_ZWrite", 1);
-                    SetRenderQueueIfNeeded(mat, 2100 + queueBias);
                     SetFloatIfExists(mat, "_Blend", (float)BlendMode.Opaque);
                     break;
                 case TransparentMode.Transparent:
                     SetIntIfExists(mat, "_ZWrite", 0);
-                    SetRenderQueueIfNeeded(mat, (uiEffect ? 3000 : 3100) + queueBias);
                     if (mat.HasProperty("_Blend") && (BlendMode)Mathf.RoundToInt(mat.GetFloat("_Blend")) == BlendMode.Opaque)
                     {
                         SetFloatIfExists(mat, "_Blend", (float)BlendMode.Alpha);
@@ -806,7 +798,6 @@ namespace NBShaderEditor
                     break;
                 case TransparentMode.CutOff:
                     SetIntIfExists(mat, "_ZWrite", 1);
-                    SetRenderQueueIfNeeded(mat, 2450 + queueBias);
                     SetFloatIfExists(mat, "_Blend", (float)BlendMode.Opaque);
                     break;
             }

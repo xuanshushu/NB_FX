@@ -56,8 +56,8 @@ namespace NBShaderEditor
                 rootItem,
                 this,
                 "_QueueBias",
-                () => Content("ta.renderQueue", "Queue Bias"),
-                rootItem.SyncService.SyncMaterialState);
+                () => Content("ta.renderQueue", "Queue Bias >> Current"),
+                GetBaseRenderQueue);
 
             _rgbaMaskItem = new ShaderGUIBitMaskItem(
                 rootItem,
@@ -140,6 +140,26 @@ namespace NBShaderEditor
                 {
                     mat.SetFloat(propertyName, value);
                 }
+            }
+        }
+
+        private static int GetBaseRenderQueue(Material mat)
+        {
+            if (mat == null || !mat.HasProperty("_TransparentMode"))
+            {
+                return mat != null && mat.shader != null
+                    ? mat.shader.renderQueue
+                    : (int)RenderQueue.Transparent;
+            }
+
+            switch ((TransparentMode)Mathf.RoundToInt(mat.GetFloat("_TransparentMode")))
+            {
+                case TransparentMode.Opaque:
+                    return (int)RenderQueue.Geometry;
+                case TransparentMode.CutOff:
+                    return (int)RenderQueue.AlphaTest;
+                default:
+                    return (int)RenderQueue.Transparent;
             }
         }
 
