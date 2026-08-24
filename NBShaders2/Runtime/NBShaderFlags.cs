@@ -704,7 +704,7 @@ namespace NBShader
             {
                 uint checkflagBit = uvModeFlag0 >> (i * 2);
                 checkflagBit = checkflagBit & 0b_11;
-                uint checkflagTypeBit = uvModeflagTypeBit >> (i * 2);
+                uint checkflagTypeBit = uvModeFlagType0 >> (i * 2);
                 checkflagTypeBit = checkflagTypeBit & 0b_11;
                 if (checkflagBit == uvModeflagBit && checkflagTypeBit == uvModeflagTypeBit)
                 {

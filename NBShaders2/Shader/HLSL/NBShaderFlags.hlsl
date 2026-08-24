@@ -238,51 +238,27 @@
 
     float2 GetUVByUVMode(uint flagProperty,uint flagTypeProperty,int flagPos,BaseUVs baseUVs)
     {
-        flagProperty = flagProperty >> flagPos;
-        flagProperty &= 3;
-        flagTypeProperty = flagTypeProperty >> flagPos;
-        flagTypeProperty &= 3;
-        switch (flagTypeProperty)
+        uint uvMode = (flagProperty >> flagPos) & 3u;
+        uint uvModeType = (flagTypeProperty >> flagPos) & 3u;
+        uint uvModeIndex = (uvModeType << 2u) | uvMode;
+
+        // Keep one flat switch to avoid nested-control-flow compiler issues on some mobile drivers.
+        float2 uv = baseUVs.defaultUVChannel;
+        switch (uvModeIndex)
         {
-            case 0:
-                switch(flagProperty)
-                {
-                    case 0:
-                    return baseUVs.defaultUVChannel;
-                    case 1:
-                    return baseUVs.specialUVChannel;
-                    case 2:
-                    return baseUVs.uvAfterTwirlPolar;
-                    case 3:
-                    return baseUVs.cylinderUV;
-                    default:
-                    return baseUVs.defaultUVChannel;
-                }
-            case 1:
-                switch(flagProperty)
-                {
-                    case 0:
-                    return baseUVs.mainTexUV;
-                    case 1:
-                    return baseUVs.screenUV;
-                    case 2:
-                    return baseUVs.worldPosUV;
-                    case 3:
-                    return baseUVs.objectPosUV;
-                    default:
-                    return baseUVs.defaultUVChannel;
-                }
-            case 2:
-                switch(flagProperty)
-                {
-                    case 0:
-                    return baseUVs.sharedUV;
-                    default:
-                    return baseUVs.defaultUVChannel;
-                }
-            default:
-            return baseUVs.defaultUVChannel;
+            case 0u: break;
+            case 1u: uv = baseUVs.specialUVChannel; break;
+            case 2u: uv = baseUVs.uvAfterTwirlPolar; break;
+            case 3u: uv = baseUVs.cylinderUV; break;
+            case 4u: uv = baseUVs.mainTexUV; break;
+            case 5u: uv = baseUVs.screenUV; break;
+            case 6u: uv = baseUVs.worldPosUV; break;
+            case 7u: uv = baseUVs.objectPosUV; break;
+            case 8u: uv = baseUVs.sharedUV; break;
+            default: break;
         }
+
+        return uv;
     }
 
     half Blend_HardLight(half Base, half Blend)
