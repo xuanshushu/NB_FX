@@ -32,7 +32,7 @@
     #define FLAG_BIT_PARTICLE_BACKCOLOR (1 << 28)
     #define FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA (1 << 29)
     // #define FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON (1 << 30) // Obsolete/reserved: keyword-driven (_VERTEX_OFFSET).
-    #define FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR (1 << 31)
+    // #define FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR (1 << 31) // Obsolete/reserved: mode now reads _VertexOffset_NormalDir_Toggle directly.
     // uint _W9ParticleShaderFlags;
 
     #define FLAG_BIT_PARTICLE_1_TRANSPARENT_MODE (1 << 0)
@@ -172,6 +172,8 @@
     #define FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP (5*2)
     #define FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP (6*2)
     #define FLAG_BIT_COLOR_CHANNEL_POS_0_RAMP_COLOR_MAP (7*2)
+    #define FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MAP (8*2)
+    #define FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MASKMAP (9*2)
 
     float GetCustomData(uint flagProperty,int flagPos,float orignValue,half4 cutstomData1,half4 customData2)
     {

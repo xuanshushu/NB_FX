@@ -142,7 +142,7 @@ namespace NBShader
         public const int FLAG_BIT_PARTICLE_BACKCOLOR = 1 << 28;
         public const int FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA = 1 << 29;
         // public const int FLAG_BIT_PARTICLE_VERTEX_OFFSET_ON = 1 << 30; // Obsolete/reserved: keyword-driven (_VERTEX_OFFSET).
-        public const int FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR = 1 << 31;
+        // public const int FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR = 1 << 31; // Obsolete/reserved: mode now reads _VertexOffset_NormalDir_Toggle directly.
 
         public const int FLAG_BIT_PARTICLE_1_TRANSPARENT_MODE = 1 << 0;
         public const int FLAG_BIT_PARTICLE_1_TRANSPARENT_SHADOW_DITHER = 1 << 1;
@@ -724,6 +724,8 @@ namespace NBShader
         public const int FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP = 5 * 2;
         public const int FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP = 6 * 2;
         public const int FLAG_BIT_COLOR_CHANNEL_POS_0_RAMP_COLOR_MAP = 7 * 2;
+        public const int FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MAP = 8 * 2;
+        public const int FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MASKMAP = 9 * 2;
 
 
         public enum ColorChannel

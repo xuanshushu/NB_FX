@@ -101,7 +101,7 @@ namespace NBShaderEditor
             bool customData1 = flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA1_ON);
             bool customData2 = flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_CUSTOMDATA2_ON);
 
-            bool needNormal = GetFloat(material, "_VertexOffset_NormalDir_Toggle") > 0.5f ||
+            bool needNormal = Mathf.RoundToInt(GetFloat(material, "_VertexOffset_NormalDir_Toggle")) == 1 ||
                               GetFloat(material, "_fresnelEnabled") > 0.5f ||
                               GetFloat(material, "_ParallaxMapping_Toggle") > 0.5f ||
                               GetFloat(material, "_FxLightMode") > (float)FxLightMode.UnLit ||

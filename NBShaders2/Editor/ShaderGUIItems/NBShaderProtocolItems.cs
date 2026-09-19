@@ -342,7 +342,13 @@ namespace NBShaderEditor
         {
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
             {
-                GetFlags(i)?.SetColorChanel((NBShaderFlags.ColorChannel)channel, _colorChannelFlagPos);
+                NBShaderFlags flags = GetFlags(i);
+                if (flags == null || (int)flags.GetColorChanel(_colorChannelFlagPos) == channel)
+                    continue;
+
+                Undo.RecordObject(flags.material, GuiContent.text);
+                flags.SetColorChanel((NBShaderFlags.ColorChannel)channel, _colorChannelFlagPos);
+                EditorUtility.SetDirty(flags.material);
             }
         }
 

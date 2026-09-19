@@ -187,6 +187,8 @@
 
     half3  _VertexOffset_Vec;
     half3 _VertexOffset_CustomDir;
+    float _VertexOffset_NormalDir_Toggle;
+    float _VertexOffset_DirectionSpace;
     half4 _VertexOffset_Map_ST;
 
     half4 _VertexOffset_MaskMap_ST;
@@ -1137,25 +1139,27 @@
     // half3 _VertexOffset_CustomDir;
     // half4 _VertexOffset_Map_ST;
 
-    half3 VetexOffset(half3 positionOS,half2 originUV,half2 originMaskUV,half3 normalOS,out half3 offsetOS)
+    half3 VetexOffset(half3 positionOS,half2 originUV,half2 originMaskUV,half3 normalOS,half3 vertexColorRGB,out half3 offsetOS)
     {
-        half2 uv = TRANSFORM_TEX(originUV,_VertexOffset_Map);
-        uv = UVOffsetAnimaiton(uv,_VertexOffset_Vec.xy);
-        // half vertexOffsetSample = tex2Dlod(_VertexOffset_Map,half4(uv,0,0));
-        half vertexOffsetSample = SampleTexture2DWithWrapFlags(_VertexOffset_Map,uv,FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP,true);
-        // UNITY_BRANCH
-        // if(CheckLocalWrapFlags(FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP))
-        // {
-        //     vertexOffsetSample = SAMPLE_TEXTURE2D_LOD(_VertexOffset_Map,sampler_linear_clamp,uv,0);
-        // }
-        // else
-        // {
-        //     vertexOffsetSample = SAMPLE_TEXTURE2D_LOD(_VertexOffset_Map,sampler_linear_repeat,uv,0);
-        // }
+        // The material remains a Float for serialized 0/1 compatibility; switch on an integer.
+        int directionMode = (int)round(_VertexOffset_NormalDir_Toggle);
+        half vertexOffsetSample = 1;
+        half3 directionSample = vertexColorRGB;
+        UNITY_BRANCH
+        if (directionMode != 2)
+        {
+            half2 uv = TRANSFORM_TEX(originUV,_VertexOffset_Map);
+            uv = UVOffsetAnimaiton(uv,_VertexOffset_Vec.xy);
+            half4 offsetMapSample = SampleTexture2DWithWrapFlags(_VertexOffset_Map,uv,FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP,true);
+            vertexOffsetSample = GetColorChannel(offsetMapSample,FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MAP);
+            directionSample = offsetMapSample.rgb;
+        }
 
+        // Preserve StartFromZero: on = raw data; off = 0.5-centered signed data.
         if (!CheckLocalFlags1(FLAG_BIT_PARTICLE_1_VERTEXOFFSET_START_FROM_ZERO))
         {
             vertexOffsetSample = vertexOffsetSample*2-1;
+            directionSample = directionSample*2-1;
         }
 
         half vertexOffsetMask = 1;
@@ -1163,19 +1167,29 @@
         {
             half2 maskUV = TRANSFORM_TEX(originMaskUV,_VertexOffset_MaskMap);
             maskUV = UVOffsetAnimaiton(maskUV,_VertexOffset_MaskMap_Vec.xy);
-            half vertexOffsetMaskSample = SampleTexture2DWithWrapFlags(_VertexOffset_MaskMap,maskUV,FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP,true);
+            half4 maskMapSample = SampleTexture2DWithWrapFlags(_VertexOffset_MaskMap,maskUV,FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP,true);
+            half vertexOffsetMaskSample = GetColorChannel(maskMapSample,FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MASKMAP);
             vertexOffsetMask = lerp(1,vertexOffsetMaskSample,_VertexOffset_MaskMap_Vec.z);
         }
         #endif
      
         UNITY_BRANCH
-        if(CheckLocalFlags(FLAG_BIT_PARTICLE_VERTEX_OFFSET_NORMAL_DIR))
+        switch (directionMode)
         {
-            offsetOS = normalOS*_VertexOffset_Vec.z*vertexOffsetSample*vertexOffsetMask;
-        }
-        else
-        {
-            offsetOS = _VertexOffset_CustomDir*_VertexOffset_Vec.z*vertexOffsetSample*vertexOffsetMask;
+            case 1:
+                offsetOS = normalOS*_VertexOffset_Vec.z*vertexOffsetSample*vertexOffsetMask;
+                break;
+            case 2:
+            case 3:
+                // RGB encodes a displacement vector, including magnitude. Do not normalize.
+                if (_VertexOffset_DirectionSpace > 0.5)
+                    directionSample = TransformWorldToObjectDir_NB(directionSample,false);
+                offsetOS = directionSample*_VertexOffset_Vec.z*vertexOffsetMask;
+                break;
+            case 0:
+            default:
+                offsetOS = _VertexOffset_CustomDir*_VertexOffset_Vec.z*vertexOffsetSample*vertexOffsetMask;
+                break;
         }
 
         return positionOS + offsetOS;

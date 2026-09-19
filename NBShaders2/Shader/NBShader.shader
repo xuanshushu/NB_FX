@@ -453,7 +453,9 @@ Shader "Effects/NBShader"
         _VertexOffset_Toggle("顶点偏移",Float) = 0
         _VertexOffset_Map("顶点偏移贴图",2D) = "white"{}
         _VertexOffset_Vec("xy:顶点偏移动画z:顶点偏移强度",Vector) = (0,0,1,0)
-        _VertexOffset_NormalDir_Toggle("顶点偏移自定义方向开关",Float) = 0
+        // Keep the serialized Float name: 0 = custom, 1 = normal, 2 = vertex RGB, 3 = texture RGB.
+        _VertexOffset_NormalDir_Toggle("顶点偏移方向模式",Float) = 0
+        _VertexOffset_DirectionSpace("顶点偏移RGB方向空间",Float) = 0
         _VertexOffset_StartFromZero("顶点偏移从零开始开关",Float) = 0
         _VertexOffset_CustomDir("顶点偏移自定义方向",Vector) = (1,1,1,0)
     	

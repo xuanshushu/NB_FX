@@ -301,7 +301,7 @@
             float2 vertexOffsetMaskUVs = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP,baseUVsForVertexOffset);
 
             half3 vertexOffsetOS = 0;
-            positionOS.xyz = VetexOffset(positionOS,vertexOffsetUVs,vertexOffsetMaskUVs,normalOS,vertexOffsetOS);
+            positionOS.xyz = VetexOffset(positionOS,vertexOffsetUVs,vertexOffsetMaskUVs,normalOS,input.color.rgb,vertexOffsetOS);
             #ifdef NB_DEBUG_VERTEX_OFFSET
             half3 vertexOffsetWS = TransformObjectToWorldDir_NB(vertexOffsetOS,false);
             output.color = half4(abs(vertexOffsetWS),1);
