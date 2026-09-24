@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var p=\"Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/GF_URP_VFX_Unlit.shadergraph\"; var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(p); if(s==null)return \"shader=null\"; var m=new UnityEngine.Material(s); var a=new System.Collections.Generic.List<string>(); for(int i=0;i<m.passCount;i++){a.Add(i+\":\"+m.GetPassName(i)+\":\"+s.FindPassTagValue(i,new UnityEngine.Rendering.ShaderTagId(\"LightMode\")).name);} UnityEngine.Object.DestroyImmediate(m); return s.name+\"|\"+string.Join(\";\",a);"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "VFX Graph/GF_URP_VFX_Unlit|0:Universal Forward:;1:DepthOnly:DepthOnly;2:MotionVectors:MOTIONVECTORS;3:DepthNormalsOnly:DepthNormalsOnly;4:ShadowCaster:SHADOWCASTER;5:GBuffer:UniversalGBuffer;6:SceneSelectionPass:SceneSelectionPass;7:ScenePickingPass:Picking"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

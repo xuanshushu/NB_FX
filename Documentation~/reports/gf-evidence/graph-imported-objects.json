@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var a=UnityEditor.AssetDatabase.LoadAllAssetsAtPath(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/GF_URP_VFX_Unlit.shadergraph\");return string.Join(\";\",System.Array.ConvertAll(a,x=>x.GetType().FullName+\":\"+x.name));"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "UnityEngine.Shader:VFX Graph/GF_URP_VFX_Unlit;UnityEngine.Material:GF_URP_VFX_Unlit;UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset:GF_URP_VFX_Unlit;UnityEditor.ShaderGraph.ShaderGraphMetadata:;UnityEditor.Rendering.Universal.ShaderGraph.UniversalMetadata:"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

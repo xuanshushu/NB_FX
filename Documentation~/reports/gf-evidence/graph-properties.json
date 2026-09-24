@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/GF_URP_VFX_Unlit.shadergraph\"); var a=new System.Collections.Generic.List<string>(); for(int i=0;i<s.GetPropertyCount();i++)a.Add(s.GetPropertyName(i)+\":\"+s.GetPropertyType(i)); return string.Join(\";\",a);"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "_BaseMap:Texture;_Color:Color;_CastShadows:Float;_Surface:Float;_Blend:Float;_AlphaClip:Float;_SrcBlend:Float;_DstBlend:Float;_SrcBlendAlpha:Float;_DstBlendAlpha:Float;_ZWrite:Float;_ZWriteControl:Float;_ZTest:Float;_Cull:Float;_AlphaToMask:Float;_QueueOffset:Float;_QueueControl:Float;unity_Lightmaps:Texture;unity_LightmapsInd:Texture;unity_ShadowMasks:Texture"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

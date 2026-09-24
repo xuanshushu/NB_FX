@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var p=\"Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/GF_URP_VFX_Unlit.shadergraph\"; var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(p); var m=new UnityEngine.Material(s); return \"shader=\"+s.name+\";supported=\"+s.isSupported+\";passCount=\"+m.passCount+\";opaque=\"+m.FindPass(\"NBCameraOpaqueDistortPass\")+\";deferred=\"+m.FindPass(\"NBDeferredDistortPass\")+\";queue=\"+m.renderQueue; "
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "shader=VFX Graph/GF_URP_VFX_Unlit;supported=True;passCount=8;opaque=-1;deferred=-1;queue=3000"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
