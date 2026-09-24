@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T09 · VFX 全功能与 NBPostprocess 回归 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>T09 · VFX 全功能与 NBPostprocess 回归</h1>
+<p>将已验证最小 VFX 扩展至全部确认功能组合，验证真实粒子动态、Output 与现有 NBShader 同屏工作，不降低已有 Mesh 验证标准。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>独立任务书，不是执行授权。</strong>当前未派发 SubAgent。主 Agent 完成前置 Gate、分配文件与 Editor 时段后，才能启动此任务。</p></blockquote>
+
+<h2 id="goal">目标与边界</h2>
+<p>将已验证最小 VFX 扩展至全部确认功能组合，验证真实粒子动态、Output 与现有 NBShader 同屏工作，不降低已有 Mesh 验证标准。</p><p>出口：<strong>G6</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
+
+<h2 id="preconditions">前置条件</h2>
+<p>G5 已通过；Output 清单、范围内效果和批准差异已冻结；仍以 Unity 6.3 作为首轮完整基线。</p>
+
+<h2 id="scope">修改范围与所有权</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/（经批准的 VFX 薄适配与 Graph 修正）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Assets/NBShaderSamples/NBShader_VFXGraphValidation/（D 组完整测试资产）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Tests/（VFX/集成测试）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/</code></li>
+</ul>
+<p>目录列表不是无限授权；主 Agent 在派发前填入精确文件清单和所有者。没有列入的中央入口、协议、GUI、NBPostprocess、Assets 与 ProjectSettings 不得自行修改。官方包与旧 ParticleBase 始终禁止修改；基线副本禁止跟随实现更新。</p>
+
+<h2 id="method">实施方法</h2>
+<ol>
+  <li>按确认 Output 类型建立粒子数、空间、变换、custom attributes、纹理/Flipbook、生命周期、GPU events（若纳入范围）与 Bounds/sorting 测试矩阵。未确认类型不能自动纳入或排除。</li>
+  <li>运行全部确认效果与高风险组合，特别覆盖 VAT 高 UV/Buffer、光照输入、Fresnel、Dissolve/Mask、深度衰减、Alpha、OverrideZ 和背面顺序的适用性。</li>
+  <li>分别验证 opaque/deferred distortion、ScreenColorCopy、RenderGraph/Compatibility、主相机配置及已确认相机组合；同屏混合 ShaderLab 和 VFX 防止全局资源互相污染。</li>
+  <li>核对 per-particle 与 uniform 默认值、连线覆盖、Disable/Enable、Reinit、暂停、固定步进、Domain Reload 和构建后表现；保存、重导入、重开和版本升级时复核 Property Reference Name、端口/连线与 Output 状态。不得把无法完全锁定的 GPU 时序误差直接定为实现错误或通过。</li>
+  <li>执行 Player、variants/stripping、CPU/GPU/显存与粒子规模测试；性能阈值在比较前由主 Agent 固定。功能修复若修改共享核，重新跑 A/B 和 B/C 受影响用例。</li>
+</ol>
+
+<h2 id="acceptance">验收标准</h2>
+<ul>
+  <li>确认 Output × 功能 × NBPostprocess 清单有完整结果；全部缺口有明确状态和用户结论。</li>
+  <li>同屏新旧路径、动态运行、GUI/连线和 Player 均无未批准回归。</li>
+  <li>受影响上游 Gate 复验有效，不能只证明 VFX 修复而破坏 ShaderLab。</li>
+</ul>
+<p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
+
+<h2 id="deliverables">交付物</h2>
+<ul>
+  <li>完整 VFX 样例、Output/功能覆盖表、原始截图/日志/性能记录。</li>
+  <li>C/D 回归和上游复验报告、已知限制、G6 申请。</li>
+</ul>
+<p>实现说明和证据索引更新到正式 HTML；原始 logs、JSON、captures 使用相对链接。使用<a href="../templates/report.html">验证报告模板</a>，不只提交聊天总结。</p>
+
+<h2 id="blockers">阻塞、变更与回退</h2>
+<p>不能稳定比较的用例需说明非确定性来源并建立替代测量，不能跳过验收。功能或性能无法达到标准时交用户决策，不能自行删范围。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

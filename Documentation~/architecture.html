@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>架构与拆分方法 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="index.html">返回文档目录</a></p>
+<h1>架构与拆分方法</h1>
+<p>统一功能实现，宿主负责数据与组织；不把原 Input / Forward 整体搬成另一个巨型文件。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="layers">架构边界</h2>
+<pre><code>现有 NBShader GUI / Runtime / Feature Tier
+              ↓
+   ShaderLab 参数与环境适配
+              ↓
+       共享功能 HLSL ← Graph / VFX 参数与环境适配
+              ↓                     ↑
+  NBShader / Forward 组织者      Shader Graph 组织者
+              ↓                     ↓
+    现有 ShaderLab Pass       Graph 生成的绘制路径
+              └──── NBPostprocess ────┘
+
+Mesh / Graph 仅是验证宿主；最终新产品是 NBShader_VFXGraph。</code></pre>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">层</th><th scope="col">责任</th><th scope="col">不得承担</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>纯计算</td><td>数学、混合、渐变、已明确输入的效果公式。</td><td>UnityPerMaterial、Unity 顶点语义、URP InputData、VFX 缓冲布局。</td></tr>
+      <tr><td>功能模块</td><td>按功能组织 UV、采样、颜色、Alpha、位移、扭曲数据。</td><td>复制宿主差异造成两套效果逻辑。</td></tr>
+      <tr><td>宿主 / 引擎适配</td><td>纹理、时间、空间、深度、URP 光照、Flags 传输、数据绑定。</td><td>改变原公式或未经批准引入标准 Target 替换。</td></tr>
+      <tr><td>组织与输出</td><td>调用顺序、顶点/片元阶段、插值、clip、Pass 特有输出与状态。</td><td>以 Custom Function 等同于 ShaderLab Pass 生成能力。</td></tr>
+    </tbody>
+  </table>
+<p>先复用现有文件和工具。拟新增的功能库仍位于 NBShaders2 的 HLSL 范围；公共底层仅在真正有多个使用者时进入 XuanXuanRenderUtility。原 Shader 名称、GUID 与公共 API 不随文件拆分改变。</p>
+
+<h2 id="modules">功能模块</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">模块</th><th scope="col">内容</th><th scope="col">注意事项</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Protocol</td><td>Flags、Wrap、ForceNoMip、CustomData、UVMode、ColorChannel、PNoiseBlend。</td><td>原协议不变；Graph 传输适配与解码分开。</td></tr>
+      <tr><td>Math / Gradient</td><td>Remap、旋转、Twirl、Polar、Cylinder、打包渐变。</td><td>保留精度、范围、插值和原 Alpha 行为。</td></tr>
+      <tr><td>UV / Sampling</td><td>主/特殊/共享/位置/屏幕 UV、ST、动画、LOD、Flipbook。</td><td>保留顶点/片元阶段；纹理 ST 不重复应用。</td></tr>
+      <tr><td>Surface / Alpha</td><td>主色、背面色、双叠加、Ramp、Mask、Dissolve、Noise、Fresnel。</td><td>颜色和覆盖率分别描述，不擅自交换非交换运算。</td></tr>
+      <tr><td>Geometry</td><td>Custom Local Transform、Vertex Offset、Houdini / TyFlow VAT。</td><td>保留原始 Mesh 附加通道、法线和各 Pass 变形。</td></tr>
+      <tr><td>Lighting / Environment</td><td>Unlit、Blinn-Phong、Half-Lambert、PBR、Six-Way、MatCap、Fog。</td><td>URP 数据采集与函数公式分层；不直接换成标准 Target。</td></tr>
+      <tr><td>Depth / Output</td><td>SoftParticles、DistanceFade、DepthOutline、DepthDecal、Override Z、Depth、Shadow、两种 Distort。</td><td>区分计算与 SV_Depth / Stencil / Blend / 调度能力。</td></tr>
+      <tr><td>Debug</td><td>现有功能调试输出及必要的对比中间结果。</td><td>调试证据可复用；发布变体按已有规则处理。</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="order">必须冻结的执行顺序</h2>
+<pre><code>环境与深度准备 → UV → 程序噪声 → POM / Normal
+→ Noise / Refraction → 主贴图 → 可选主贴图颜色调整
+→ Lighting → MatCap → Overlay 1 → Color Ramp → Dissolve
+→ Overlay 2 → Mask → Fresnel → DepthOutline / Fade / SoftParticles
+→ Vertex Color / 附加色 → Fog / 最终颜色调整 → 总 Alpha
+→ 当前 Pass 的 Alpha / Clip / 颜色 / Depth / Distort 输出</code></pre>
+<p>这是调研后的主链摘要，不能替代逐行分支清单。T01 为各 Pass 写出实际裁剪规则，T05 逐段确认调用次序。Depth、Shadow 和 Distort 不能简单复用一个最终 RGBA 结果后任意截取。</p>
+<ul>
+  <li>原 Overlay 1 不自动等同于标准 Emission；现有 PBR/Six-Way 公式与执行位置原样保留。</li>
+  <li>预乘、Alpha Modulate、Fog、ColorSpace、Normal 变换与 clip 明确只有一个负责位置，检查 Graph 生成代码是否再次执行。</li>
+  <li>现有代码对材质变量进行临时 += / 覆盖的逻辑，逐步转为局部有效参数；必须验证原调用链语义，不能仅做文本替换。</li>
+  <li>共享函数不靠可写全局状态在多个 Custom Function 之间传值；同一节点多次调用、Preview 和多 Pass 均应可重复。</li>
+  <li>保留原 vertex/fragment UV 分配；全面搬到 fragment 可能改变插值结果、性能和导数行为。</li>
+</ul>
+
+<h2 id="graph">Graph 包装原则</h2>
+<ul>
+  <li>优先 File 模式 Custom Function，小型 Sub Graph 组织功能组；HLSL 内部可使用结构，Graph 连线只使用已支持类型。</li>
+  <li>不要在 Graph 内重新维护等价数学实现。默认组合是参考实现，不支持用户任意改顺序后仍承诺与原 NBShader 等价。</li>
+  <li>Graph 自己管理的 CBUFFER、纹理和函数声明不可与旧 Input 重复。旧 UnityPerMaterial 声明留在 ShaderLab 适配层，Graph 从自己的属性/端口构建有效参数。</li>
+  <li>精度、texture wrapper、sampler、TexelSize、LOD 与 Preview 行为均需最小原型证明；shader feature 声明不能假设 include 中 pragma 一定生效。</li>
+  <li>NB 自定义光照优先保留。改用标准 Lit / Six-Way Target 必须先获得用户同意，等价测试不能代替授权。</li>
+</ul>
+
+<h2 id="passes">Pass 与 NBPostprocess</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">现有 Pass</th><th scope="col">保留/验证目标</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>SRPDefaultUnlit</td><td>原路径背面先绘制；Graph 范围内若要求等价，需验证调用次数与顺序。</td></tr>
+      <tr><td>UniversalForward</td><td>普通颜色与光照路径。</td></tr>
+      <tr><td>DepthOnly / ShadowCaster</td><td>顶点变形、Alpha Test、透明阴影规则一致。</td></tr>
+      <tr><td>NBCameraOpaqueDistortPass</td><td>透明物体之前的 Camera Opaque Distort；保持采样源与深度/混合行为。</td></tr>
+      <tr><td>NBDeferredDistortPass</td><td>输出扭曲场，参与 NBPostprocess 的统一组合。</td></tr>
+      <tr><td>Universal2D</td><td>原路径继续支持；新 Graph 不要求支持此宿主。</td></tr>
+    </tbody>
+  </table>
+<p>当前延迟扭曲使用 <code>R16G16_SFloat</code>、有符号 RG 偏移、源 Alpha 混合、<code>_DisturbanceMaskTex</code> 和 <code>_ScreenColorCopy1</code>。格式、clear、降采样、相机过滤、深度附件、Pass 时序与 RenderGraph 资源声明均属于契约。</p>
+<blockquote><p><strong>第一验证目标：</strong>G0 后由 T00A 在隔离的、启用 Support VFX Graph 的最小 Graph 上，提前验证普通 Mesh / Shader Graph 能否不修改官方包而生成所需自定义 Pass / LightMode，并由原 NBPostprocess RenderPass 选择与驱动。</p><p>当前包的 Target / SubTarget 为 internal，这是风险证据，不是对全部替代路线的最终证明。若公开机制不足，T00A 提交最小复现和影响最小的候选方案，等待用户决定；不能自行开展 VFX 重绘、多输出或生成代码修改架构。T06 在共享 HLSL 接入后仍须正式复验。</p></blockquote>
+
+<h2 id="unreal">Unreal 预留</h2>
+<p>纯计算显式接收时间、空间、颜色和采样数据；不混入 Unity 全局变量。URP 光照、Unity 材质绑定、NBPostprocess 与编辑器仍保持 Unity 专用。暂不创建 Unreal 分支、适配器或引擎接口框架，不因此阻挡当前等价重构。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

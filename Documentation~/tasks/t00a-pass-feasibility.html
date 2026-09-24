@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T00A · 提前 Pass 可行性试验 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>T00A · 提前 Pass 可行性试验</h1>
+<p>在大规模 HLSL 重构前，以隔离的最小 Graph 验证自定义 Pass / LightMode 和原 NBPostprocess 链路；此任务不实现 NBShader_VFXGraph 产品。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>用户已同意提前安排试验，但本轮仍只制定计划。</strong>本任务尚未派发、未创建原型或运行 Unity。主 Agent 完成 G0、锁定文件和 Editor 时段后，才可按后续实施指令启动。</p></blockquote>
+
+<h2 id="goal">目标与边界</h2>
+<p>优先检验：不修改官方包、不手改生成 Shader，是否能让启用 <code>Support VFX Graph</code> 的同一 Graph 资产生成所需自定义 Pass / LightMode，并由当前 NBPostprocess 的两个 RenderPass 选择和驱动。出口为 <strong>GF</strong>；GF 不是 G3，也不证明真正 VFX Output 可用。</p>
+
+<h2 id="preconditions">前置条件</h2>
+<p>G0 已通过，原 ShaderLab、NBPostprocess、Renderer 配置及当前未提交改动均有冻结记录；Unity/URP/SG/VFX 版本和测试输入已锁定。只读源码调查可在 G0 前准备，实际 Unity 变更必须在 G0 后。</p>
+
+<h2 id="scope">修改范围与所有权</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Tests/PassFeasibility/</code>：候选的 test-only Graph、固定颜色/扭曲输入和最小资源；实际路径由主 Agent 在派发时定稿。</li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/</code>：调查、生成代码与证据索引。</li>
+  <li>如需测试场景或隔离工程，主 Agent 先声明精确路径、复制来源与原因，并避开用户已有的 Assets、ProjectSettings 和未提交文件。</li>
+</ul>
+<p>不改 NBShader.shader、Forward、功能 HLSL、原材质和 NBPostprocess 产品代码；不改 PackageCache/官方包，不引入反射注入或伪装程序集作为默认交付。试验资产可在最终方案确定后保留为回归用例或完整移除，但不得污染产品入口。</p>
+
+<h2 id="method">实施方法</h2>
+<ol>
+  <li>只读检查当前 SG/URP Target、SubTarget、Pass 生成入口与 VFX SubTarget 对 Pass 的处理；记录公开扩展点、internal 边界与官方文档。源码可见性不等于扩展可维护。</li>
+  <li>建立最小 URP Graph，启用 <code>Support VFX Graph</code>；在普通 Mesh 上先确认同一 Graph 仍可渲染。这里不接共享功能 HLSL，只使用可识别的固定输出，以隔离 Pass 问题。</li>
+  <li>分别尝试生成 <code>NBCameraOpaqueDistortPass</code> 与 <code>NBDeferredDistortPass</code> 对应的 Pass/LightMode；验证生成 Shader、Pass 顺序/状态及不依赖手改生成文件的持久性。</li>
+  <li>让现有 NBPostprocess RenderPass 在受控 Mesh 场景中选择、绘制并产生可读的中间 RT 与合成结果；分别记录 RenderGraph 与适用的 Compatibility 路径。单纯看到颜色不算通过。</li>
+  <li>重导入 Graph、重新打开 Editor、构建并运行 Player，确认 Pass 没有因再生成、stripping 或平台编译而消失。每步记录 Console、生成代码、Frame Debugger/等价绘制证据、RT 读回和环境 hash。</li>
+  <li>若公开路径无法满足要求，提交最小失败资产、准确源码/文档依据、受影响功能和维护成本。仅提出影响最小的候选，不实施替代 Target、多次绘制、NBPostprocess 改造或官方包补丁；交用户决定后再改计划。</li>
+</ol>
+
+<h2 id="acceptance">GF 验收标准</h2>
+<ul>
+  <li>两个自定义 Pass 均在启用 VFX 支持的最小 Graph 上真实生成、被原 RenderPass 选择并驱动，RT 与合成行为可复现；或明确标记 GF 阻塞并提供用户决策材料。</li>
+  <li>重导入与 Player 验证覆盖生成结果的持久性；官方包 hash 未变，原产品 Shader/HLSL/NBPostprocess 未变。</li>
+  <li>记录当前版本/API/Renderer 条件和未覆盖项；GF 的通过不得写成共享 HLSL、完整 Graph、VFX Output 或跨版本已通过。</li>
+</ul>
+
+<h2 id="deliverables">交付物</h2>
+<ul>
+  <li>隔离最小 Graph/场景资产，生成 Shader 和两条 NBPostprocess 执行链的原始证据，或可重现的失败材料。</li>
+  <li>GF 报告、版本边界、公开扩展点结论、已知限制、后续 G1/T06 必须复验的清单。</li>
+</ul>
+<p>使用<a href="../templates/report.html">报告模板</a>归档；SubAgent 自述不构成 GF 放行。</p>
+
+<h2 id="blockers">阻塞与后续</h2>
+<p>GF 阻塞时暂停 T02–T05 的大规模实现，主 Agent 用<a href="../templates/decision.html">决策模板</a>向用户提交可选择的取舍；不自行降级，也不把失败原型当作 G3 的最终结论。GF 通过后，T01 把实际限制纳入接口；T06 仍须在重构后、真实共享 HLSL 和产品候选 Graph 上重新完成 G3。</p>
+<p>所有 Unity Editor 变更与验证由主 Agent 串行安排。回退仅针对本任务资产，不覆盖用户或其他任务工作。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。工程 Gate 尚未执行。</small></p>
+</body>
+</html>

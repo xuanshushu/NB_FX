@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>主 Agent 与任务索引 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>主 Agent 与任务索引</h1>
+<p>调度、依赖、接口、集成、回归、证据审核和 Gate 放行的责任约定。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>当前只完成任务设计，不启动 SubAgent。</strong>后续实施采用主 Agent 调度、文件所有权和单 Editor 验证。任务完成声明不等于 Gate 放行。</p></blockquote>
+<h2 id="responsibility">主 Agent 职责</h2>
+<ul>
+  <li>维护已确认范围、技术假设和用户决策的分离；任何功能删减、官方包修改需求或 Target 路线变化先向用户升级。</li>
+  <li>在派发前检查上游 Gate、精确文件范围、模块接口、环境和可回退点；将本页与独立任务书作为执行上下文。</li>
+  <li>管理依赖、中央文件所有权、集成顺序、Unity Editor 独占时段和双仓 Git 操作；遵守<a href="../tooling.html#git">Git 管理约定</a>，不要靠事后解决同文件并行修改维持协作。</li>
+  <li>审核每个 SubAgent 的代码/资产/日志/截图与复现步骤，复跑关键 case，确认记录来自同一实现版本。不能只接受“完成”或“编译通过”。</li>
+  <li>组织三条回归主线、版本/API 矩阵、性能和发布回退；更新失效证据和 Gate 状态。</li>
+  <li>维护最终实现、接口、决策和结果 HTML。SubAgent 负责自己产物和报告，主 Agent 负责总入口、索引与最终一致性。</li>
+</ul>
+
+<h2 id="index">独立任务索引</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">任务书</th><th scope="col">出口</th><th scope="col">当前状态</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><a href="t00-baseline.html">T00 · 冻结基线与验证环境</a></td><td>G0</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t00a-pass-feasibility.html">T00A · 提前 Pass 可行性试验</a></td><td>GF</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t01-contracts.html">T01 · 接口、协议与文件所有权</a></td><td>G1</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t02-uv-sampling.html">T02 · UV、采样与基础数学</a></td><td>由 T05 汇总进入 G2</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t03-surface-alpha.html">T03 · Surface、颜色与 Alpha 功能</a></td><td>由 T05 汇总进入 G2</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t04-geometry-lighting.html">T04 · Geometry、环境与光照</a></td><td>由 T05 汇总进入 G2</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t05-shaderlab-integration.html">T05 · ShaderLab 集成与原路径回归</a></td><td>G2</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t06-graph-minimum.html">T06 · Mesh / Shader Graph 最小方案</a></td><td>G3</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t07-graph-parity-gui.html">T07 · Mesh / Graph 等价与共享 GUI</a></td><td>G4</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t08-vfx-minimum.html">T08 · 真正 VFX 最小方案与 Output / GUI</a></td><td>G5</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t09-vfx-regression.html">T09 · VFX 全功能与 NBPostprocess 回归</a></td><td>G6</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t10-compatibility-delivery.html">T10 · 版本、API 与最终交付</a></td><td>G7</td><td>未派发 / 未执行</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="dependency">依赖与并行窗口</h2>
+<pre><code>T00 → G0 → T00A → GF → T01 → G1
+G1 ├─ T02 ─┐
+   ├─ T03 ─┼─ 分批交 T05 集成 → G2
+   └─ T04 ─┘
+G2 → T06 → G3 → T07 → G4 → T08 → G5 → T09 → G6 → T10 → G7</code></pre>
+<p>实施时至多按可用容量安排主 Agent＋3 个工作 Agent；这只是容量上限，不是必须同时启动。T01 只读调查可与 T00A 并行准备，但 G1 必须吸收 GF 结论；GF 失败且无用户决策时不启动 T02–T05。T02/T03/T04 只有在签名固定且修改文件不重叠时并行，Unity 编译与回归仍串行。T05 若作为独立 SubAgent 运行，需相应减少活跃模块 Agent，或由主 Agent 承担集成。</p>
+
+<h2 id="ownership">文件所有权与集成</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">区域</th><th scope="col">默认所有者</th><th scope="col">约束</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>接口/协议清单</td><td>T01；主 Agent 审核</td><td>G1 后改签名必须通知所有消费者并复验。</td></tr>
+      <tr><td>隔离 Pass 原型</td><td>T00A；主 Agent 调度 Editor</td><td>仅 test-only 资产；不得编辑生产 Shader、NBPostprocess 或官方包；T06 重新正式验证。</td></tr>
+      <tr><td>Math / UV / Sampling</td><td>T02</td><td>不得自行修改中央 Forward/Input。</td></tr>
+      <tr><td>Surface / Alpha</td><td>T03</td><td>保留执行顺序；与光照/输出接口联审。</td></tr>
+      <tr><td>Geometry / VAT / Lighting</td><td>T04</td><td>现有 VAT include 也需独占锁定。</td></tr>
+      <tr><td>NBShader.shader / Forward / Input</td><td>T05 或主 Agent</td><td>单一写入者，负责应用模块切片。</td></tr>
+      <tr><td>Graph 资产与生成层适配</td><td>T06 → T07 → T08/T09</td><td>顺序移交；不允许多 Agent 同时保存同一 Graph。</td></tr>
+      <tr><td>现有 NB GUI / SyncService</td><td>T07 → T08</td><td>共享抽象集中修改，VFX 不另建独立面板。</td></tr>
+      <tr><td>NBPostprocess</td><td>默认只读；具体决策后另定</td><td>未经用户讨论，不为解决 Graph 限制预改管线。</td></tr>
+      <tr><td>测试场景 / Unity Editor</td><td>主 Agent 调度；当前任务独占</td><td>包含保存资产、Play、Reload、截图与测试。</td></tr>
+      <tr><td>总计划 / Gate 索引</td><td>主 Agent</td><td>子任务报告可独立写；不得自行标总 Gate 通过。</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="workflow">每次派发、集成与审核流程</h2>
+<ol>
+<li>读取最新决策、任务书、AGENTS.md 和相关 skill；核对实际工作区与基线，不使用旧会话缓存代替。</li>
+<li>记录任务 ID、执行者、接口版本、输入 hash、精确文件清单、禁止项、验收 case 与 Editor 使用窗口；发出清晰任务指令。</li>
+<li>SubAgent 先确认依赖和风险，再提交可回退的小切片；发现缺失接口先沟通，不越界补功能。</li>
+<li>主 Agent 审查 staged diff 和两个仓库状态，确认没有用户改动被带入、没有官方包修改或协议漂移；按依赖顺序集成，提交和推送遵守<a href="../tooling.html#git">双仓顺序</a>。</li>
+<li>Editor 使用者先读状态，等待编译结束后读取 Console，再运行固定 case。收集证据并释放独占；任何 Reload 后重新确认连接、场景和资产状态。</li>
+<li>独立复核关键失败/通过项。若改共享核，上游 A/B 与 B/C 相应用例同步复验。</li>
+<li>填写 Gate 报告及索引，明确通过、阻塞、待环境与用户例外。只有通过才派发受该 Gate 约束的下一任务。</li>
+</ol>
+
+<h2 id="decisions">阻塞与用户决策</h2>
+<ul>
+  <li>技术限制不是删范围的授权。使用决策模板提供最小复现、失败原因、影响功能、候选方案、版本/API/维护成本和推荐项。</li>
+  <li>重点升级：GF 或 G3 自定义 Pass 不可行；拟换标准 Lit/Six-Way Target；VFX GUI 不可复用；修改 NBPostprocess；降低旧路径兼容或进一步缩减已确认的 DirectX/Metal/Vulkan。新 VFX 路径的 OpenGL ES 排除已获批准。</li>
+  <li>暂停受阻依赖链，允许无关的文档和只读调查继续；不要通过重复运行或让另一 Agent 同样失败来伪造进度。</li>
+  <li>回退按切片恢复，维护基线只读；跨仓库版本关联必须保留，不能只记主工程 commit。</li>
+</ul>
+
+<h2 id="records">文档交付与任务状态</h2>
+<p>每个任务书保持中文正文、专业术语原文。任务状态与实现结果分别记录；实现文件、接口说明、测试证据和用户决策形成闭环。使用<a href="../templates/task.html">任务模板</a>、<a href="../templates/decision.html">决策模板</a>和<a href="../templates/report.html">验证报告模板</a>。本轮只生成这些文档，不创建新任务或后台执行。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T01 · 接口、协议与文件所有权 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>T01 · 接口、协议与文件所有权</h1>
+<p>冻结共享 HLSL 的模块边界、功能执行顺序、参数和宿主输入输出契约，使各模块可独立开发而不改变协议。先建立映射，不急于抽象所有引擎。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>独立任务书，不是执行授权。</strong>当前未派发 SubAgent。主 Agent 完成前置 Gate、分配文件与 Editor 时段后，才能启动此任务。</p></blockquote>
+
+<h2 id="goal">目标与边界</h2>
+<p>冻结共享 HLSL 的模块边界、功能执行顺序、参数和宿主输入输出契约，使各模块可独立开发而不改变协议。先建立映射，不急于抽象所有引擎。</p><p>出口：<strong>G1</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
+
+<h2 id="preconditions">前置条件</h2>
+<p>G0 与 GF 已通过，或 GF 阻塞后的替代路线已有用户决策；原始源码与场景输入已冻结。只读梳理可提前，但 G1 必须纳入 GF 的实际结论。</p>
+
+<h2 id="scope">修改范围与所有权</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/contracts.html</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/architecture.html</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/HLSL/（仅经主 Agent 分配的接口文件，路径在 G1 固定）</code></li>
+</ul>
+<p>目录列表不是无限授权；主 Agent 在派发前填入精确文件清单和所有者。没有列入的中央入口、协议、GUI、NBPostprocess、Assets 与 ProjectSettings 不得自行修改。官方包与旧 ParticleBase 始终禁止修改；基线副本禁止跟随实现更新。</p>
+
+<h2 id="method">实施方法</h2>
+<ol>
+  <li>逐项导出 Shader Properties、CBUFFER、默认值、C# 与 MPB 写入者、GUI、关键字、Pass Enable、HLSL 读点，建立机器可检查的映射。现有 450 项估计不能替代完整表。</li>
+  <li>核对 NBShaderFlags.cs、NBShaderFlags.hlsl、ShaderFlagsBase 与序列化材质；记录包括 ForceNoMip 在内的实际槽位、bit、UV/Wrap/Channel/CustomData 编码。旧 W9 文档不能替代 NBShaders2 实际协议。</li>
+  <li>定义只读参数、显式 FeatureState、Geometry / Surface / Frame Context 与输出约束；注明空间、单位、精度、默认值、采样阶段、导数依赖、允许的副作用。这里是项目内部接口，不是假定 Unity 已有 API。</li>
+  <li>标注原函数对全局参数的临时修改与顺序依赖。用局部状态替代写入时，要能解释后续消费者为何获得同值。保持原计算精度和 stage，禁止顺手优化公式。</li>
+  <li>确定 ShaderLab binding 与 Graph wrapper 的分工。完整 uint 不通过未经证明的 Float / half / interpolator 传输；16-bit 分片是候选桥接，须用高位和符号边界测试证明。</li>
+  <li>按 Feature → 参数 → Pass → case 形成追踪表。区分适用于 VFX 的效果功能和已排除的新路径宿主，不以宿主缩减为理由删除效果。</li>
+  <li>根据 GF 结果确定 Pass 生成接口与版本边界。按 uniform、逐粒子动态输入、编译期 keyword 分类 Graph/VFX 参数；记录 ShaderFeature 动态连线限制，优先避免新增 MultiCompile，并制定变体/编译时间预算。</li>
+  <li>明确 <code>package.json</code>、asmdef/versionDefines 与 Graph/VFX 资产的版本隔离方案，使新路径最低 6000.x 的实现不破坏原 ShaderLab 2021.3 打开与运行；不能把此问题留给最终发布阶段。</li>
+  <li>发布文件所有权和签名 v1；中央入口交 T05，GUI 交 T07，VFX 后续适配交 T08。共享接口变化先提 proposal，由主 Agent 协调，不由任一模块自行更名。</li>
+</ol>
+
+<h2 id="acceptance">验收标准</h2>
+<ul>
+  <li>所有现有属性和协议槽位有去向，无静默删除、重编号或旧材质重新序列化要求。</li>
+  <li>模块输入输出可供 T02/T03/T04 开发，采样/顺序/坐标约束明确。</li>
+  <li>GF 的 Pass 风险已明确；新旧路径的包依赖边界、参数频率和关键词预算有可检查结论。</li>
+  <li>协议数值测试设计覆盖 bit31、复合高位、所有 packed 字段与默认状态；高风险依赖有专门 case。</li>
+</ul>
+<p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
+
+<h2 id="deliverables">交付物</h2>
+<ul>
+  <li>接口 v1、逐属性和 Flags 清单、原执行顺序图、Feature / Pass / case 映射。</li>
+  <li>每个模块的文件所有者、依赖与准入检查；G1 审核记录。</li>
+</ul>
+<p>实现说明和证据索引更新到正式 HTML；原始 logs、JSON、captures 使用相对链接。使用<a href="../templates/report.html">验证报告模板</a>，不只提交聊天总结。</p>
+
+<h2 id="blockers">阻塞、变更与回退</h2>
+<p>发现接口无法表达旧行为时先扩充上下文或调整模块边界，不能删功能。协议迁移、性能策略或旧版本要求冲突必须升级主 Agent，必要时向用户决策。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

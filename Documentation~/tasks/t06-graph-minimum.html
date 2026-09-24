@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T06 · Mesh / Shader Graph 最小方案 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>T06 · Mesh / Shader Graph 最小方案</h1>
+<p>证明不修改官方包的 Graph 路径能接入共享 HLSL、所需 Pass / LightMode 并被原 NBPostprocess 正确驱动。Custom Function 可显示颜色只是子测试。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>独立任务书，不是执行授权。</strong>当前未派发 SubAgent。主 Agent 完成前置 Gate、分配文件与 Editor 时段后，才能启动此任务。</p></blockquote>
+
+<h2 id="goal">目标与边界</h2>
+<p>证明不修改官方包的 Graph 路径能接入共享 HLSL、所需 Pass / LightMode 并被原 NBPostprocess 正确驱动。Custom Function 可显示颜色只是子测试。</p><p>出口：<strong>G3</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
+
+<h2 id="preconditions">前置条件</h2>
+<p>GF、G1 与 G2 已通过。T00A 是独立 Pass 风险试验，本任务须在共享 HLSL 与产品候选 Graph 上重新验证。仅在 Mesh 上验证，不开始真正 VFX Output。</p>
+
+<h2 id="scope">修改范围与所有权</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/（G1 分配的 ShaderGraph、wrapper 与必要的隔离生成层适配文件）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Assets/NBShaderSamples/NBShader_VFXGraphValidation/（C 组测试资产）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/</code></li>
+</ul>
+<p>目录列表不是无限授权；主 Agent 在派发前填入精确文件清单和所有者。没有列入的中央入口、协议、GUI、NBPostprocess、Assets 与 ProjectSettings 不得自行修改。官方包与旧 ParticleBase 始终禁止修改；基线副本禁止跟随实现更新。</p>
+
+<h2 id="method">实施方法</h2>
+<ol>
+  <li>读取实际安装 SG/URP 的 Target、SubTarget、CustomEditor 与 VFX 支持机制。区分公开支持扩展点、internal 类型、反射或生成代码重写；后两者不默认视为可维护方案。</li>
+  <li>产品候选 Graph 从一开始启用 <code>Support VFX Graph</code>，在 Mesh 上使用共享 HLSL File Custom Function；检查 float/half 后缀、texture/sampler、Preview 分支、生成 include、函数调用 stage 和资源重复声明。不得用未启用 VFX 支持的普通 Graph 代替同一资产验收。</li>
+  <li>验证代表性参数与 Flags 编码，检查实际生成 HLSL 类型；Graph Integer UI 不能视为 uint 的证据。</li>
+  <li>重做 GF 的自定义 Pass / LightMode 测试，确认在真实 wrapper 与共享 HLSL 接入后仍能随 Graph 正常导入、重新生成、构建而保留。编辑生成 Shader 仅可作调查材料，不能作为最终 Graph 方案。</li>
+  <li>在 Mesh C 组验证 NBCameraOpaqueDistortPass 与 NBDeferredDistortPass 的选择、绘制、RenderTarget、Blend 和合成，对照 B 组与原 NBPostprocess。记录 RenderGraph / Compatibility 路径。</li>
+  <li>若找不到不改官方包且可维护的途径，提交源码位置、最小失败资产、生成代码及影响功能。仅列出局部替代候选并向用户讨论，不直接实现替代管线、改 Lit/Six-Way Target 或展开 VFX 重绘方案。</li>
+</ol>
+
+<h2 id="acceptance">验收标准</h2>
+<ul>
+  <li>Graph 重新导入与 Player 构建不丢失需要的 Pass，且真实执行链路具有证据。</li>
+  <li>共享 HLSL 参数、precision 与 Preview/Runtime 行为经过最小测试。</li>
+  <li>官方包内容 hash 未改变；所有内部 API 风险明示，无用户未批准的替代路线。</li>
+</ul>
+<p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
+
+<h2 id="deliverables">交付物</h2>
+<ul>
+  <li>最小 Graph、Mesh 测试资产、生成代码、Pass / NBPostprocess 执行证据。</li>
+  <li>扩展点调查、Graph 版本边界与 G3 报告；若阻塞交决策材料而非“部分通过”。</li>
+</ul>
+<p>实现说明和证据索引更新到正式 HTML；原始 logs、JSON、captures 使用相对链接。使用<a href="../templates/report.html">验证报告模板</a>，不只提交聊天总结。</p>
+
+<h2 id="blockers">阻塞、变更与回退</h2>
+<p>自定义 Pass 不可行时停在 G3，保持已通过 ShaderLab 结果。未经用户决策不能以标准 Pass-only、失去 NBPostprocess 或改 Target 的方式继续。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>总体计划与工作顺序 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="index.html">返回文档目录</a></p>
+<h1>总体计划与工作顺序</h1>
+<p>先保留原路径，再验证 Mesh / Shader Graph，最后验证真正 VFX；每一阶段均需证据与独立 Gate。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="outcome">完成定义</h2>
+<ul>
+  <li>普通 NBShader 使用共享 HLSL 后，确认范围内的现有功能、序列化、辅助脚本、GUI 与管线行为没有未经批准的变化。</li>
+  <li>NBShader_VFXGraph 使用同一功能实现；在已确认版本与图形 API 上，范围内效果和 NBPostprocess 验收通过。</li>
+  <li>不修改官方包，不复制一套独立效果算法或 NB GUI；任何实现路线变化和能力缺口均有用户决策。</li>
+  <li>接口、实现方法、限制、测试证据、任务交付与 Gate 状态都在 HTML 文档中持续维护。</li>
+  <li>Unreal 仅保留适度可移植边界，不开发 Unreal 材质、插件或通用跨引擎框架。</li>
+</ul>
+
+<h2 id="sequence">阶段顺序</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">阶段</th><th scope="col">任务</th><th scope="col">阶段产物</th><th scope="col">出口</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>P0 · 基线</td><td>T00：代码与配置快照、依赖闭包、样例复制、工具能力核验、差异测试环境。</td><td>可复现基线、测试用例索引、工具能力表、已有问题表。</td><td>G0</td></tr>
+      <tr><td>P0A · Pass 可行性试验</td><td>T00A：在隔离测试资产上，使用启用 Support VFX Graph 的最小 Graph 验证自定义 Pass / LightMode 与原 NBPostprocess；不抽取功能 HLSL。</td><td>最小资产、生成代码、绘制/RT/构建证据或明确的阻塞决策材料。</td><td>GF</td></tr>
+      <tr><td>P1 · 契约</td><td>T01：参数、Flags、执行顺序、模块输入输出、宿主适配与文件所有权。</td><td>接口 v1、逐属性映射、Feature → Pass → 测试关系。</td><td>G1</td></tr>
+      <tr><td>P2 · ShaderLab 重构</td><td>T02 / T03 / T04 分模块迁移；T05 串行接入原入口并组织回归。</td><td>共享功能 HLSL、保持现有入口的 ShaderLab、原路径对比证据。</td><td>G2</td></tr>
+      <tr><td>P3 · Graph 最小方案</td><td>T06：在普通 Mesh 上验证 Custom Function、参数、所需 Pass / LightMode 与 NBPostprocess。</td><td>Mesh / Graph 最小链路、生成代码与 Pass 证据；失败则提供决策材料。</td><td>G3</td></tr>
+      <tr><td>P4 · Graph 等价与 GUI</td><td>T07：逐功能接入、共用 GUI、渲染状态、复杂组合、构建与性能比较。</td><td>确认范围内的 Mesh / Graph 等价报告。</td><td>G4</td></tr>
+      <tr><td>P5 · VFX 最小方案</td><td>T08：将已验证 Graph 接到 VFX Output，独立验证 GUI 中间层、逐粒子参数和管线。</td><td>真正 VFX 最小结果、GUI 可行性结论、Output 绑定契约。</td><td>G5</td></tr>
+      <tr><td>P6 · VFX 完整回归</td><td>T09：全部确认效果、Output 类型、复杂数据、NBPostprocess、运行状态与性能。</td><td>VFX 覆盖表、差异与缺口报告。</td><td>G6</td></tr>
+      <tr><td>P7 · 版本与交付</td><td>T10：候选最低 Unity 6000.x 至 6.5、DirectX/Metal/Vulkan、Player、变体、发布回退。</td><td>实际支持矩阵、构建与性能证据、限制与使用说明。</td><td>G7</td></tr>
+    </tbody>
+  </table>
+<p>用户已同意将 Pass 可行性试验安排在 G0 后、G1 与大规模 HLSL 重构前。此为后续执行计划的授权，不是本轮启动命令。GF 只判断架构关键风险是否足以继续投入；不替代 G2 的 ShaderLab 回归、G3 的正式 Mesh / Graph 验收或 G5 的真正 VFX Output 验证。</p>
+
+<h2 id="slices">ShaderLab 迁移批次</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">批次</th><th scope="col">内容</th><th scope="col">每批必做</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>基础</td><td>协议解码、数学、打包渐变。</td><td>独立数值测试＋原材质协议检查。</td></tr>
+      <tr><td>UV / 采样</td><td>UV 模式、Wrap、ForceNoMip、Flipbook、CustomData。</td><td>保留原阶段分配；检查采样数和精度。</td></tr>
+      <tr><td>表面</td><td>主色、双叠加、Ramp、程序噪声、溶解、Mask、Fresnel。</td><td>保留原顺序；测试 Alpha、调试输出和关键组合。</td></tr>
+      <tr><td>几何 / 环境</td><td>Custom Local Transform、Vertex Offset、VAT、深度效果。</td><td>检查法线、负缩放、Bounds、Depth / Shadow 一致性。</td></tr>
+      <tr><td>光照 / 输出</td><td>五种光照、MatCap、Six-Way、雾、所有现有 Pass 输出。</td><td>检查 URP 依赖、Pass 特有规则、混合和 NBPostprocess。</td></tr>
+    </tbody>
+  </table>
+<p>每批只做一个可回退的垂直切片。先接入原 ShaderLab 并对比，再允许依赖它的下一批合并。重构、行为修复和性能优化不能混在同一批提交。</p>
+
+<h2 id="dependency">并行与串行边界</h2>
+<pre><code>T00 → G0 → T00A → GF → T01 → G1
+G1 ├─ T02 · UV / 采样 ───┐
+   ├─ T03 · 表面 / Alpha ┤ → T05 → G2
+   └─ T04 · 几何 / 光照 ─┘
+G2 → T06 → G3 → T07 → G4 → T08 → G5 → T09 → G6 → T10 → G7</code></pre>
+<p>T01 的只读梳理可与 T00A 并行准备，但 G1 签名必须纳入 GF 结论；GF 未通过且无用户决策时，不启动 T02–T05。T10 的版本调查可早期读取源码，正式验收仍须消费对应 Gate 的实现。T02 / T03 / T04 的具体并行窗口由主 Agent 按接口依赖安排，不因图示并列就允许同时编辑中央文件。</p>
+
+<h2 id="boundary">变更边界</h2>
+<ul>
+  <li>默认实现范围为 NB_FX。样例场景复制、必要测试资产和隔离测试项目属于已规划例外；主 Agent 在执行前逐项列出目标路径与原因，不能借此改动无关 Assets 或 ProjectSettings。</li>
+  <li>计划写作时的 Unity 6000.3 升级与 VFXSample 已单独提交；实施时仍须重新检查两个仓库的实时状态。不得回滚、覆盖或自动纳入他人后续改动；基线记录实际 commit、submodule 指针和工作区输入。分支与推送遵守<a href="tooling.html#git">Git 管理约定</a>。</li>
+  <li>现有 ShaderLab 的旧版本兼容要求仍来自仓库规则；新 VFX 路径允许 Unity 6000+，不等于批准删除原路径兼容代码。若共享库迫使原路径提高版本，必须另行讨论。</li>
+  <li>优先研究 Graph 自定义 Pass 的原始目标；证明不可行后才提出局部替代，并等待用户决策，不预先建设 VFX 重绘架构。</li>
+  <li>不为测试工程便利擅自升级 Unity、URP、SG、VFX、CLI 或 Pipeline。</li>
+</ul>
+
+<h2 id="delivery">各阶段统一交付</h2>
+<p>实现变更列表、接口变更、生成代码/Pass 清单、Console 与测试原始记录、可复现步骤、失败与未验证项、性能变化、回退点，以及主 Agent 的审核结论。估时在 G0/G1 清单稳定后再给出；目前不承诺未经验证的总工期。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

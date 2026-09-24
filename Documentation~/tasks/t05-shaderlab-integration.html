@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T05 · ShaderLab 集成与原路径回归 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>T05 · ShaderLab 集成与原路径回归</h1>
+<p>把现有 NBShader 和 Forward 变为功能组织者，完整保留既有外部行为；这是 Graph 工作的前置验收，不允许用新 Graph 可见来替代。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>独立任务书，不是执行授权。</strong>当前未派发 SubAgent。主 Agent 完成前置 Gate、分配文件与 Editor 时段后，才能启动此任务。</p></blockquote>
+
+<h2 id="goal">目标与边界</h2>
+<p>把现有 NBShader 和 Forward 变为功能组织者，完整保留既有外部行为；这是 Graph 工作的前置验收，不允许用新 Graph 可见来替代。</p><p>出口：<strong>G2</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
+
+<h2 id="preconditions">前置条件</h2>
+<p>G1 已通过，各模块以可编译切片提交；主 Agent 分配唯一中央文件写入权与 Editor 时段。</p>
+
+<h2 id="scope">修改范围与所有权</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/NBShader.shader</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/</code></li>
+</ul>
+<p>目录列表不是无限授权；主 Agent 在派发前填入精确文件清单和所有者。没有列入的中央入口、协议、GUI、NBPostprocess、Assets 与 ProjectSettings 不得自行修改。官方包与旧 ParticleBase 始终禁止修改；基线副本禁止跟随实现更新。</p>
+
+<h2 id="method">实施方法</h2>
+<ol>
+  <li>对每批依赖模块先审查签名、顺序、CBUFFER、资源声明和 keywords，按基础→UV→Surface→Geometry/Lighting→Pass 的顺序合并。</li>
+  <li>保持 Shader 名称、GUID、Properties、默认值、packed Flags、Pass 名称/顺序/LightMode、CustomEditor、RenderQueue 与现有材质脚本入口。中央入口只负责输入装配、模块调度和输出。</li>
+  <li>CBUFFER 与实例化声明保持一致，检查 SRP Batcher。禁止将现有材质属性从一个 Pass 移至另一个不兼容布局，也不添加无必要的 multi_compile。</li>
+  <li>逐批运行 A/B 对照、Console 与编译检查，覆盖七个 Pass、背面先绘制、OverrideZ / SV_Depth、Stencil/Portal、ColorMask、UI/Sprite/UIParticle/Universal2D 等原宿主。</li>
+  <li>按 NBPostprocess 原契约分别验证 opaque distortion、deferred RG distortion、ScreenColorCopy 和合成；RenderGraph / Compatibility 两条路径分开记录。</li>
+  <li>验证 GUI 状态、关键词、材质序列化、运行时 Material/MPB 修改、FeatureLevel、SVC、Player 和性能。出现已有 bug 时登记，不与本次重构混改。</li>
+  <li>G2 前在隔离的 Unity 2021.3 环境运行原 ShaderLab 路径 smoke，检查包导入、Shader 编译、材质与基础 NBPostprocess；不在用户主工程上降级。若新 Graph/VFX 资产或代码使旧版本无法打开，先修隔离策略，不能推迟至 T10。</li>
+</ol>
+
+<h2 id="acceptance">验收标准</h2>
+<ul>
+  <li>A/B 确认范围内功能和行为无未经批准变化；原材质不需迁移。</li>
+  <li>每个 Pass 和 NBPostprocess 双路径具有执行证据；仅生成 shader 编译成功不足以通过。</li>
+  <li>中央逻辑确实复用新模块，无保留两份可逐渐分叉的效果实现；原有脚本与 GUI 仍可用。</li>
+  <li>原路径 2021.3 smoke 有独立证据；完整旧版本矩阵仍由 T10 负责。</li>
+</ul>
+<p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
+
+<h2 id="deliverables">交付物</h2>
+<ul>
+  <li>入口和共享模块集成、每批 commit/回退点、生成 shader 与变体记录。</li>
+  <li>A/B 全量回归报告、性能/批处理报告、G2 申请和差异归因。</li>
+</ul>
+<p>实现说明和证据索引更新到正式 HTML；原始 logs、JSON、captures 使用相对链接。使用<a href="../templates/report.html">验证报告模板</a>，不只提交聊天总结。</p>
+
+<h2 id="blockers">阻塞、变更与回退</h2>
+<p>任何新回归先停下一批合并并回退最小切片；不能顺手改基线或降低阈值。仅主 Agent 审核证据后允许 G2 放行。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

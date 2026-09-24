@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T07 · Mesh / Graph 等价与共享 GUI · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>T07 · Mesh / Graph 等价与共享 GUI</h1>
+<p>在普通 Mesh 验证 scaffold 中接入全部确认效果，复用 NB GUI 的规则和实现，验证 Pass、高级渲染状态与 NBPostprocess 的等价边界。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>独立任务书，不是执行授权。</strong>当前未派发 SubAgent。主 Agent 完成前置 Gate、分配文件与 Editor 时段后，才能启动此任务。</p></blockquote>
+
+<h2 id="goal">目标与边界</h2>
+<p>在普通 Mesh 验证 scaffold 中接入全部确认效果，复用 NB GUI 的规则和实现，验证 Pass、高级渲染状态与 NBPostprocess 的等价边界。</p><p>出口：<strong>G4</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
+
+<h2 id="preconditions">前置条件</h2>
+<p>G3 已通过且路线获得确认；所有 G3 例外均有用户决策。此任务仍不实现真正 VFX。</p>
+
+<h2 id="scope">修改范围与所有权</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/（已分配的 ShaderGraph 与 wrapper）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/NBShaderGUI.cs</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/（需要共享配置访问抽象的现有文件）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/XuanXuanRenderUtility/（只在现有抽象确需调整时，由主 Agent 单独分配）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/</code></li>
+</ul>
+<p>目录列表不是无限授权；主 Agent 在派发前填入精确文件清单和所有者。没有列入的中央入口、协议、GUI、NBPostprocess、Assets 与 ProjectSettings 不得自行修改。官方包与旧 ParticleBase 始终禁止修改；基线副本禁止跟随实现更新。</p>
+
+<h2 id="method">实施方法</h2>
+<ol>
+  <li>按 Feature 清单逐项接入共享函数，建立 Graph 参数 → HLSL → Pass 映射；避免把原光照结果交给另一个 Target 再算一次。</li>
+  <li>验证 Vertex 输入、UV 通道、Custom Interpolator、精度和 stage；对 VAT、高级深度和复杂光照分别设 case，不把 Unity Mesh 的成功等同 VFX 的能力。</li>
+  <li>先调查 Graph 的 CustomEditor 能否直接使用 NBShaderGUI；必要时将现有 GUI 的数据访问与配置规则抽为薄接口，继续复用 RootItem/Context/SyncService，不复制第二套面板或改 UI Toolkit。</li>
+  <li>原 ShaderLab 的 GUI、材质和名称识别规则继续不变；Graph 通过明确的 host/capability 描述适配。Graph 验证材质无需与旧材质保持相同序列化；可选测试转换不得发展成 VFX 导入产品。</li>
+  <li>用受控 Mesh 对照 B/C，覆盖混合、Alpha、Fog、深度、Stencil、背面顺序、阴影、光照和 NBPostprocess。Graph 排除 UI/Sprite/UIParticle/Universal2D，但适用效果不能默认删减。</li>
+  <li>审核生成代码、采样数、variants、SRP Batcher、FeatureLevel/SVC、Player 与性能；多选/Undo/重载/默认值/动画提示等 GUI 行为纳入回归。</li>
+</ol>
+
+<h2 id="acceptance">验收标准</h2>
+<ul>
+  <li>所有确认效果均有 B/C 结论；差异逐条归因并经用户处理，不用“尽量”等措辞掩盖缺失。</li>
+  <li>同一 NB GUI 规则与实现被复用，原路径 Inspector 无回归；无独立维护的新 GUI 副本。</li>
+  <li>G3 的 Pass 与 NBPostprocess 证据在完整 Graph 下仍有效。</li>
+</ul>
+<p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
+
+<h2 id="deliverables">交付物</h2>
+<ul>
+  <li>完整 Mesh 验证 Graph、GUI 薄适配、功能覆盖与 B/C 图像/数值报告。</li>
+  <li>高级状态与 Player/性能证据、G4 报告，以及交 T08 的已验证接口。</li>
+</ul>
+<p>实现说明和证据索引更新到正式 HTML；原始 logs、JSON、captures 使用相对链接。使用<a href="../templates/report.html">验证报告模板</a>，不只提交聊天总结。</p>
+
+<h2 id="blockers">阻塞、变更与回退</h2>
+<p>标准 Lit/Six-Way Target、ShaderLab 公共行为变更或无法实现的高级状态必须先与用户讨论。ShaderGraph 材质序列化不同本身不是阻塞，也不是建设同步工具的理由。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

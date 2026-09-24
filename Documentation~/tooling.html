@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>工具、文档与证据规范 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="index.html">返回文档目录</a></p>
+<h1>工具、文档与证据规范</h1>
+<p>CLI / Pipeline 是主要可复现工具链；本页不授予安装、升级或 Unity 变更权限。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="tools">工具状态与约束</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">项目</th><th scope="col">记录</th><th scope="col">证据级别</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Unity CLI</td><td>1.0.0-beta.11；终端可直接调用 unity。</td><td>本次执行 unity --version 核对。</td></tr>
+      <tr><td>Pipeline</td><td>com.unity.pipeline@0.7.0-exp.1。</td><td>本次读取 manifest、lock 与安装包 package.json。</td></tr>
+      <tr><td>Unity / URP / SG / VFX</td><td>6000.3.18f1 / 17.3.0 / 17.3.0 / 17.3.0。</td><td>工程与包文件读取，不等于运行验证。</td></tr>
+      <tr><td>安装时 Editor</td><td>ready，编译结束，未 Play；Console 0 错误、1 条 VFX 数据反序列化警告，未清除。</td><td>用户交接记录，非本次新采样。</td></tr>
+      <tr><td>MCP</td><td>保留原配置；当前会话工具发现未暴露 unityMCP。</td><td>不声称 Coplay MCP 已安装或可用；当前采用 CLI / Pipeline fallback。</td></tr>
+      <tr><td>截图 / tests / Reload / build</td><td>全部待 G0 能力核验。</td><td>工具存在不代表这些能力已验证。</td></tr>
+    </tbody>
+  </table>
+<p>CLI 与 Pipeline 仍是 Beta / experimental，记录精确版本并固定，不擅自升级。若后续会话实际提供可用 unityMCP，Editor 状态读取和操作遵循项目的 Unity MCP 优先核验规则；CLI/Pipeline 保留为主要可复现命令链和不可用时的 fallback。不为此擅自重配或安装 MCP。</p>
+
+<h2 id="discovery">执行前发现能力</h2>
+<p>以下是后续只读检查入口，除版本/help 读取外，本次未用它们启动 Editor 工作：</p>
+<pre><code>unity --version
+unity status --json
+unity list --project-path "/Users/bytedance/UnityProject/NBUnityProject" --json
+unity command --help
+unity test --help
+unity build --help</code></pre>
+<p>读取已安装 CLI skill 与当前 Pipeline command schema 后，再确定具体 Console、截图、测试、wait、reload 命令。不要猜命令名或参数，不自动执行安装/升级/重启/clear_console。多 Editor 场景显式指定 project path。</p>
+<h3>G0 工具能力核验</h3>
+<ul>
+  <li>确认目标 project、Editor PID/session、状态、编译、Play、当前场景和 dirty 状态。</li>
+  <li>Console 保留原始条目与 ground truth counts；区分历史 warning 与新增错误，不清空掩盖问题。</li>
+  <li>截图验证相机、分辨率、色彩与文件读回；确认 Scene View 与 Game View 含义。</li>
+  <li>EditMode/PlayMode 测试执行、结果 XML/JSON、失败传播与 Player build 路径。</li>
+  <li>Domain Reload / Play 变化后的重新发现、会话/日志 cursor 恢复和超时处理；不能把“无新日志”当成“无编译错误”。</li>
+  <li>工具超时或断连时记录失败，恢复连接后重新读取状态，禁止盲目重复可能产生资产的操作。</li>
+</ul>
+
+<h2 id="editor-lock">Unity Editor 串行协议</h2>
+<ol>
+  <li>SubAgent 提交操作申请：任务、目标、预计修改、输入、验证和恢复步骤。</li>
+  <li>主 Agent 确认前序操作结束、目标 Editor ready、无不明 dirty 状态，再安排执行窗口。</li>
+  <li>变更前读取相关对象/资产/场景状态；不得擅自保存或覆盖用户未保存场景。</li>
+  <li>脚本/资产变更后等待导入与编译，读取 Console，再运行验证；发生错误停止依赖操作。</li>
+  <li>记录操作、证据和最终状态，恢复测试环境并释放窗口。其他 Agent 不同时切场景、Play 或批量改材质。</li>
+</ol>
+
+<h2 id="git">Git 管理约定</h2>
+<p>主工程与 <code>Packages/NB_FX</code> 是两个独立 Git 仓库；主工程只记录 NB_FX 的 submodule commit 指针。主 Agent 对分支、集成、提交与推送顺序负责，SubAgent 不在共享工作树自行切换分支。</p>
+<ul>
+  <li><strong>分支：</strong>实施工作从已核对的主工程与 NB_FX 对应提交出发；不直接在 main/master 做重构。默认使用 <code>codex/</code> 前缀，建议两个仓库分别建立 <code>codex/nb-fx-vfxgraph-implementation</code>；名称是建议，不覆盖用户另行指定的名称。计划文档分支不直接混入 Shader 实现。</li>
+  <li><strong>开工检查：</strong>每次切分支、派发或集成前分别读取两个仓库的 branch、HEAD、remote tracking、Git status、未跟踪文件及主工程中的 submodule 指针。T00 冻结的是当时真实 commit 与工作区输入，不用文档发布日期或旧会话记录冒充基线。</li>
+  <li><strong>保护工作区：</strong>未经确认，不 reset、clean、强制切换、stash 他人的改动，也不在共享分支强制 push 或改写历史。混合工作区只暂存明确归属本任务的路径；仅当用户确认整个工作区都在范围内，才可使用 <code>git add -A</code>。提交前检查 staged diff、未跟踪资产、敏感信息与 LFS 规则。</li>
+  <li><strong>SubAgent：</strong>共享工作树由主 Agent 管理 branch 与 staging。并行代码若需要独立 branch，应使用主 Agent 分配的独立 worktree/checkout 和文件所有权；由主 Agent 审核后集成，不能让多个 Agent 在同一 checkout 互相切 branch。</li>
+  <li><strong>提交：</strong>按可回退的垂直切片提交，记录任务 ID、输入版本、验证证据和回退点；重构、行为修复、性能优化及环境升级不要混为一个实现提交。Gate 报告记录主工程 commit、NB_FX commit，以及必要的工作区 diff hash，不能只记其中一个。</li>
+  <li><strong>双仓推送：</strong>先提交并推送 NB_FX，再在主工程提交指向该已推送 commit 的 submodule 指针及经批准的测试资产，最后推送主工程。核对两个远端 commit、指针一致性与工作区状态。过去一次推送授权不自动授权未来持续 push；PR 也不自动创建。</li>
+</ul>
+
+<h2 id="documents">文档维护规范</h2>
+<p>正式目录：<code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/</code>，使用半角 <code>~</code>。正文是 UTF-8、独立完整的静态 HTML。每份文件可直接打开，不依赖 CSS、JS、页面外壳或生成流程。</p>
+<ul>
+  <li>正文直接编辑对应 HTML；<code>index.html</code> 只列出文件入口，不维护重复正文。任务、决策和报告模板是可独立打开的 HTML 范例。</li>
+  <li>代码与专业术语原文保留，说明文字中文。文档维护应同步任务、契约、决策、Gate 和证据链接。</li>
+  <li>可包含表格、code、SVG 流程图、截图和 video；媒体采用相对链接，不嵌入大段 Base64。当前未生成假截图或运行视频。</li>
+  <li>HTML/JSON/XML/log/SVG 等文本使用普通 Git；大图和视频通过 LFS。本目录的 .gitattributes 对常见媒体明确 LFS 规则。发布离线包前确认 LFS 媒体已实际取回，而不是 pointer。</li>
+  <li>报告原始日志必须删去凭据、访问令牌或无关私人内容，保留与复现有关的结构与时间。证据不得伪造或仅靠摘要替代。</li>
+  <li>真正测试代码、场景、材质、shadergraph、vfx 不放进 Documentation~。该目录不会作为 Unity 测试资产入口。</li>
+  <li>新任务使用独立任务模板；新决策和验证报告使用对应模板。模板占位不代表已执行或已批准。</li>
+</ul>
+
+<h2 id="templates">独立模板文件</h2>
+<ul>
+  <li><a href="templates/task.html">SubAgent 任务模板</a></li>
+  <li><a href="templates/decision.html">决策记录模板</a></li>
+  <li><a href="templates/report.html">验证与 Gate 报告模板</a></li>
+</ul>
+<p>每次文档更新至少检查本地链接、anchors、中文编码、HTML 结构、离线资源和 Git/LFS 属性。文档可读性检查与 Unity 渲染回归必须分别记账。</p>
+
+<p>文档目录 Git 例外：本机 global ignore 的 <code>*~</code> 会忽略 Documentation~，因此包内 .gitignore 为该目录增加反向规则；这不影响 Unity 对 ~ 目录的忽略。没有修改全局 Git 配置。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

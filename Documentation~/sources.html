@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>源码与资料索引 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="index.html">返回文档目录</a></p>
+<h1>源码与资料索引</h1>
+<p>以当前源码和版本化官方资料为依据；静态调查与运行验证分开。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="repo">当前源码</h2>
+<p>最初静态调查使用主工程 <code>cd843e7264c0ef08d9085938b4b639721eb10e3f</code> 与 NB_FX <code>371290a551de85c50fc0b35d805dff6634761a16</code>。随后计划文档 v0.4 与 Unity 6000.3 升级推送点分别为主工程 <code>2a2f08cab8699c6b8a3b2264f5babec80a3720d2</code>、NB_FX <code>2aad5c47a971ae141f28521f5743e5acfbfdbc1b</code>；主工程该提交指向此 NB_FX commit。这些是历史记录，不自动充当渲染基线。T00 必须重新记录两个仓库的实时版本、diff 与相关未跟踪文件。</p>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">入口</th><th scope="col">绝对路径</th><th scope="col">用途</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Shader 入口</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/NBShader.shader</code></td><td>Properties、7 个 Pass、状态和关键字。</td></tr>
+      <tr><td>Forward</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl</code></td><td>顶点/片元顺序、Alpha、多 Pass 输出、Override Z。</td></tr>
+      <tr><td>Input</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl</code></td><td>CBUFFER、采样、UV、几何输入、URP 光照输入。</td></tr>
+      <tr><td>Flags</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderFlags.hlsl</code></td><td>HLSL 解码。</td></tr>
+      <tr><td>Flags C#</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Runtime/NBShaderFlags.cs</code></td><td>当前实际 NBShader 协议，包括 ForceNoMip。</td></tr>
+      <tr><td>Flags 基础</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/XuanXuanRenderUtility/Runtime/ShaderFlagsBase.cs</code></td><td>Material / MaterialPropertyBlock 读写。</td></tr>
+      <tr><td>GUI</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/NBShaderGUI.cs</code></td><td>同一 GUI 实现与 RootItem。</td></tr>
+      <tr><td>GUI 状态</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs</code></td><td>状态、关键字、Pass 同步。</td></tr>
+      <tr><td>GUI 规则</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/NBShaderGUI_RULE.md</code></td><td>共享控件、IMGUI、动画、本地化。</td></tr>
+      <tr><td>Intent</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs</code></td><td>材质意图与依赖。</td></tr>
+      <tr><td>Feature</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Runtime/NBShaderFeatureCatalog.cs</code></td><td>65 个目录管理关键字。</td></tr>
+      <tr><td>Pass</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Runtime/NBShaderPassFeatureCatalog.cs</code></td><td>Pass 管理与等级。</td></tr>
+      <tr><td>Pipeline</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBPostProcessing/Runtime/NBPostProcess.cs</code></td><td>调度与相机范围。</td></tr>
+      <tr><td>Deferred Distort</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBPostProcessing/Runtime/DisturbanceMaskRenderPass.cs</code></td><td>Tag、RT、RendererList、降采样。</td></tr>
+      <tr><td>Opaque Distort</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBPostProcessing/Runtime/RenderCameraOpaqueDistortObjectPass.cs</code></td><td>Tag 与透明前绘制。</td></tr>
+      <tr><td>最终后处理</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBPostProcessing/Shader/NBPostProcessUber.shader</code></td><td>扭曲场与场景颜色组合。</td></tr>
+      <tr><td>VAT</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl</code></td><td>Houdini/TyFlow 分派及宿主输入耦合。</td></tr>
+      <tr><td>Six-Way</td><td><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl</code></td><td>NB 光照实现与 URP 依赖。</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="packages">安装包中的风险证据</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Library/PackageCache/com.unity.shadergraph@2b401d56d4b3/Editor/Generation/Target.cs</code> 与同目录 SubTarget.cs：internal 类型，不能假定普通外部程序集直接继承。</li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/Editor/ShaderGraph/Targets/UniversalUnlitSubTarget.cs</code>：生成 Pass 由 Target 组织，不由 Custom Function 决定。</li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Library/PackageCache/com.unity.visualeffectgraph@f89f6436500a/Editor/ShaderGraph/VFXSubTarget.cs</code>：VFX 对属性、结构与 Pass 的再处理。</li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Library/PackageCache/com.unity.shadergraph@2b401d56d4b3/Editor/Data/Graphs/Vector1ShaderProperty.cs</code>：Integer UI 与 HLSL 浮点路径，32 位位域不可盲传。</li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/package.json</code>：0.7.0-exp.1 与 Unity 6000.0 元数据。</li>
+</ul>
+<p>PackageCache hash 与路径是本机本次安装证据，不是产品硬编码依赖。后续按实际 lock 重新定位，只读，不修改官方包。</p>
+
+<h2 id="official">官方参考资料</h2>
+<ul>
+  <li><a href="https://docs.unity3d.com/Packages/com.unity.shadergraph@17.3/manual/Custom-Function-Node.html">Shader Graph 17.3 · Custom Function</a>：File 模式、precision、texture wires 与声明边界。</li>
+  <li><a href="https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/sg-working-with.html">VFX Graph 17.3 · Shader Graph 接入</a>：支持设置、Output、Keyword 与属性限制。</li>
+  <li><a href="https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/System-Requirements.html">VFX Graph 17.3 · Requirements and compatibility</a>：OpenGL ES 不支持、URP Gamma 限制、compute shaders/SSBO 要求。</li>
+  <li><a href="https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/Context-OutputShaderGraphMesh.html">VFX Graph 17.3 · Output Particle ShaderGraph Mesh</a>：真正的粒子 Mesh/Graph Output。</li>
+  <li><a href="https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/Context-OutputMesh.html">VFX Graph 17.3 · Output Mesh</a>：独立静态 Mesh Output，不代替粒子验收。</li>
+  <li><a href="https://docs.unity.cn/Packages/com.unity.shadergraph@17.3/manual/Custom-Interpolators.html">Shader Graph 17.3 · Custom Interpolators</a>：类型与资源限制，实际编译和 VFX 支持仍须验证。</li>
+  <li><a href="https://docs.unity3d.com/Packages/com.unity.pipeline@0.7/manual/index.html">Unity Pipeline 0.7 文档入口</a>：入口来自已安装包 metadata；命令以本地 schema 为准。</li>
+</ul>
+<p>外链为补充材料。核心计划、约束、任务书与验收标准已保存在本地 HTML，离线阅读不依赖访问这些链接。引用文档不等于该项目已经实测通过。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

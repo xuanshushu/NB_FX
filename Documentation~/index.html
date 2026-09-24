@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NB_FX 重构计划</title>
+</head>
+<body>
+<h1>NB_FX 重构计划</h1>
+<p>共享功能 HLSL，保留 NBShader，新增只面向 VFX Graph 的 NBShader_VFXGraph。当前仅编写计划。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="scope">已确认的产品范围</h2>
+<blockquote><p><strong>普通 Mesh 与现有宿主继续使用 NBShader（ShaderLab）；NBShader_VFXGraph 最终只服务 VFX Graph。</strong>让 Mesh 使用 Shader Graph 材质，仅用于隔离验证，不是新的用户工作流。</p></blockquote>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">项目</th><th scope="col">确认内容</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>重构对象</td><td>以 NBShaders2 为主；旧 ParticleBase 不改。当前检出没有旧 NBShaders 实现，不以过期目录说明代替源码。</td></tr>
+      <tr><td>原路径</td><td>保留行为、材质协议、GUI、辅助组件、Feature Tier、Pass 与 NBPostprocess；UI、Sprite、UIParticle、Universal2D 仍归原路径。</td></tr>
+      <tr><td>新路径</td><td>产品名 NBShader_VFXGraph；不要求支持 UI、Sprite、UIParticle、Universal2D。宿主收缩不授权删减范围内的效果功能。</td></tr>
+      <tr><td>GUI</td><td>ShaderLab 与 Graph 尽量共用同一 NB GUI 实现；VFX Output 的接入或薄适配须单独验证，不维护两套独立 NB GUI。</td></tr>
+      <tr><td>VFX 创作</td><td>直接在 Graph / Output 配置；连线与逐粒子数据由 VFX 管理。不建设材质导入、同步或转换工作流。</td></tr>
+      <tr><td>Graph 材质</td><td>Mesh 验证阶段不要求与原材质序列化兼容；兼容仅为加分项。原 ShaderLab 材质兼容仍是硬要求。</td></tr>
+      <tr><td>版本</td><td>新路径可以 Unity 6000+ 起，具体最低版本由依赖能力确定；先验证 6.3，后续覆盖至 6.5。</td></tr>
+      <tr><td>平台</td><td>新 VFX 路径以较新 DirectX、Metal、Vulkan 为候选，具体最低版本待验证；不支持 OpenGL ES，XR 不在正式范围。原 ShaderLab 的兼容范围不因本决定缩减。</td></tr>
+      <tr><td>禁止事项</td><td>不修改官方包；不擅自改用标准 Lit / Six-Way Target；不能自行接受能力降级。</td></tr>
+      <tr><td>当前授权</td><td>仅制定计划与维护本文档；工具安装是已完成的单独授权事项，不授权开始重构或 SubAgent 执行。</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="tracks">三条验证主线</h2>
+<p><strong>01 · ShaderLab 回归</strong><br>冻结原始 ShaderLab ↔ 重构 ShaderLab。验证共享 HLSL 拆分不改变原行为。</p>
+<p><strong>02 · Mesh / Graph 验证</strong><br>重构 ShaderLab ↔ Mesh 上的 Shader Graph。验证功能组合、Pass、GUI 与 NBPostprocess。</p>
+<p><strong>03 · VFX 验证</strong><br>已验证的 Graph ↔ 真正 VFX 输出。验证 Output、参数、逐粒子数据与渲染兼容。</p>
+<p>用户所说的“两步走”是主线 02 与 03：必须分别实施、分别验收。03 不能代替 02；02 通过也不能宣称 VFX 已通过。</p>
+
+<h2 id="read">文档目录</h2>
+<ul>
+  <li><a href="plan.html">总体计划</a></li>
+  <li><a href="architecture.html">架构与拆分方法</a></li>
+  <li><a href="contracts.html">接口与参数契约</a></li>
+  <li><a href="gates.html">Gate 与放行标准</a></li>
+  <li><a href="validation.html">基线与回归</a></li>
+  <li><a href="compatibility.html">版本与图形 API</a></li>
+  <li><a href="tasks/main-agent.html">主 Agent 与任务索引</a></li>
+  <li><a href="tasks/t00a-pass-feasibility.html">T00A · 提前 Pass 可行性试验</a></li>
+  <li><a href="decisions.html">决策与待讨论事项</a></li>
+  <li><a href="tooling.html">工具与文档约定</a></li>
+  <li><a href="reports/index.html">验证报告与状态</a></li>
+  <li><a href="sources.html">源码与资料索引</a></li>
+</ul>
+<h2 id="status">当前状态</h2>
+<p>全部工程 Gate（含新增 GF）均为<strong>未开始</strong>。本次仅核对本地源码、CLI 版本和包元数据，编写 HTML 文档；没有执行 Shader 编译验证、场景修改、Play、测试或构建。T00A 已纳入后续计划，但当前未启动。</p>
+<p>CLI 为 <code>1.0.0-beta.11</code>，Pipeline 为 <code>0.7.0-exp.1</code>，当前工程文件指向 <code>6000.3.18f1</code> 与 URP / SG / VFX <code>17.3.0</code>。交接时的 ready、0 错误、1 条警告仅是历史记录。详见<a href="reports/index.html">证据状态</a>。</p>
+<p>文档 v0.4 增加用户确认的 OpenGL ES 范围调整与 T00A 提前 Pass 可行性试验。专业术语保留原文，不另写中文释义。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>
