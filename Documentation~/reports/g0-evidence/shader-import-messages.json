@@ -1,0 +1,78 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var a = UnityEditor.ShaderUtil.GetShaderMessages(UnityEngine.Shader.Find(\"Effects/NBShader_T00_Frozen\")); var b = UnityEditor.ShaderUtil.GetShaderMessages(UnityEngine.Shader.Find(\"Effects/NBShader\")); return new { frozen = System.Array.ConvertAll(a, m => m.severity + \": \" + m.message), original = System.Array.ConvertAll(b, m => m.severity + \": \" + m.message) };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "frozen": [
+          "Warning: 'Blend_HardLight': implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: 'ProcessBaseUVs': implicit truncation of vector type",
+          "Warning: 'TransformWorldToView': implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: 'mul': implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: 'mul': implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: signed/unsigned mismatch, unsigned assumed"
+        ],
+        "original": [
+          "Warning: 'Blend_HardLight': implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: 'ProcessBaseUVs': implicit truncation of vector type",
+          "Warning: 'TransformWorldToView': implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them",
+          "Warning: 'NB_Remap01': implicit truncation of vector type",
+          "Warning: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them",
+          "Warning: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them",
+          "Warning: gradient instruction used in a loop with varying iteration; partial derivatives may have undefined value",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: 'mul': implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: 'mul': implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them",
+          "Warning: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them",
+          "Warning: implicit truncation of vector type",
+          "Warning: implicit truncation of vector type",
+          "Warning: signed/unsigned mismatch, unsigned assumed",
+          "Warning: use of potentially uninitialized variable (TyflowVatTex2DHalf)",
+          "Warning: array reference cannot be used as an l-value; not natively addressable, forcing loop to unroll",
+          "Warning: array reference cannot be used as an l-value; not natively addressable, forcing loop to unroll",
+          "Warning: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them",
+          "Warning: pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them"
+        ]
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

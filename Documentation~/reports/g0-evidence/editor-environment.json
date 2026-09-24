@@ -1,0 +1,32 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "return new { os = UnityEngine.SystemInfo.operatingSystem, gpu = UnityEngine.SystemInfo.graphicsDeviceName, gpuVersion = UnityEngine.SystemInfo.graphicsDeviceVersion, api = UnityEngine.SystemInfo.graphicsDeviceType.ToString(), colorSpace = UnityEngine.QualitySettings.activeColorSpace.ToString(), msaa = UnityEngine.QualitySettings.antiAliasing, renderPipeline = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline == null ? \"BuiltIn\" : UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline.name, buildTarget = UnityEditor.EditorUserBuildSettings.activeBuildTarget.ToString() };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "os": "Mac OS X 15.7.3",
+        "gpu": "Apple M3 Pro",
+        "gpuVersion": "Metal",
+        "api": "Metal",
+        "colorSpace": "Linear",
+        "msaa": 4,
+        "renderPipeline": "URP-HighFidelity",
+        "buildTarget": "StandaloneOSX"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

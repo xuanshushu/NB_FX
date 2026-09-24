@@ -1,0 +1,2435 @@
+{
+  "id": "NBFX-T00-G0-2026-09-25",
+  "snapshotUtc": "2026-09-24T18:09:53Z",
+  "git": {
+    "mainHead": "57a0604a8625ce171bc28f33d7e2472f97bc13b8",
+    "mainBranch": "codex/nb-fx-vfxgraph-implementation",
+    "nbFxHead": "26917c03709830fc62b12fa466e38862840cfde2",
+    "nbFxBranch": "codex/nb-fx-vfxgraph-implementation",
+    "mainSubmodulePointer": "26917c03709830fc62b12fa466e38862840cfde2",
+    "initialWorktreesClean": "observed in preflight before T00 mutations; see G0 report"
+  },
+  "frozenHlslClosure": [
+    {
+      "source": {
+        "path": "Packages/NB_FX/NBShaders2/Shader/NBShader.shader",
+        "sha256": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00",
+        "size": 73938,
+        "guid": "7787bfdacec31472ca6644d6e3616bd4",
+        "metaSha256": "d2f6989f1b631e00521c87ea3f72bfa072be6ebac2a62c35a5ba0f544c0b065c"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+        "sha256": "a27e705c3ac3a83d932a8745a48f4ac45f31a5fb1b945fa5a66f38c99c742a8d",
+        "size": 74013,
+        "guid": "c67004e54ace849c7afef19566b2d831",
+        "metaSha256": "1326f3e1007a29ba7e0871146fe7efe7884f06cbadc3d95c89832ef2c04e9672"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl",
+        "sha256": "71b30dc3bff96f65d09e64adee5d45a9c4bc4de18636cd03d81f78285033ea48",
+        "size": 205,
+        "guid": "d7750d9f790e4369b26f49461830b5ea",
+        "metaSha256": "0cfbb636644a7b3668e647c4fe1408d2a2d72ebfccd1982cd9dd8a942df0ae20"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl",
+        "sha256": "71b30dc3bff96f65d09e64adee5d45a9c4bc4de18636cd03d81f78285033ea48",
+        "size": 205,
+        "guid": "6416143add31f4d86998dd1f98d0be4b",
+        "metaSha256": "837bce1c00c6078d52511d32092acf1300e9ce8a9c211941f56b64be6e8ae132"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderFlags.hlsl",
+        "sha256": "ff61aa9367577fed95fb4862b52f60520ad673243b87a99a697cac3d5b014df3",
+        "size": 14559,
+        "guid": "2813ce2207b94f57be1d1c91d9a21023",
+        "metaSha256": "9912ff27dde750e0121a53dfe85bb3897279a8d9832874c71b3484beb3c73b15"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderFlags.hlsl",
+        "sha256": "ff61aa9367577fed95fb4862b52f60520ad673243b87a99a697cac3d5b014df3",
+        "size": 14559,
+        "guid": "d8b67bea4b05a4052bafa7ecd3f81614",
+        "metaSha256": "48e1daea3efd2089df800fc2468bcd5ebac753e16dd4c2a01836485fc7ce2048"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+        "sha256": "18fd0be3b8e85e97a9c649ec97f480e7a705f8efb056019a3c71a0b3ff32da71",
+        "size": 54870,
+        "guid": "5bc5a11b8453489893769021c54525b0",
+        "metaSha256": "f28b386f33518ecc9e716864f6141a7a5f27d528cb76e431a0d999ba3d667044"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+        "sha256": "dbf0315495ec9dd333025e0d02a853a4acc13cd6cc012cba9050541d3073462b",
+        "size": 54914,
+        "guid": "5c07ce2201e9d400cb6c88b16c0eaad8",
+        "metaSha256": "d3ad6cac2d1e0bbbdaf3bf18a97ce712842b30bf0af7544fbcf2b12e0ab87110"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+        "sha256": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9",
+        "size": 64651,
+        "guid": "0aaec9236001406ebcc710ac8f3f7c43",
+        "metaSha256": "3c00f44c19f3dea3190a1e835e60a0de8ad9727e76525a32395101966912d050"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+        "sha256": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9",
+        "size": 64651,
+        "guid": "ef4dade228d1f411f9521e87276ff4d7",
+        "metaSha256": "66364bbd743ce088dc5d241c85ea5fc33e257e1cdd10b0460c363fb9ed9daddd"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl",
+        "sha256": "194074672eaab1cdb5124f547ece7cc226cc068d69a10f05bd6f73670fe5601d",
+        "size": 11163,
+        "guid": "9f34986983f558c40a7e30a353dc3c34",
+        "metaSha256": "988ced65c4e59d0dbd6e1eaad43cf9cd9e017b6d57512c6ed0f2b0e614600007"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl",
+        "sha256": "194074672eaab1cdb5124f547ece7cc226cc068d69a10f05bd6f73670fe5601d",
+        "size": 11163,
+        "guid": "f338fdefd93654109b8526cedb0e1e80",
+        "metaSha256": "96bd1bf4c5c2f55782676b352880a4b3061e07d6c1bb79b25ef1afaf41bf50c4"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl",
+        "sha256": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016",
+        "size": 468,
+        "guid": "a0126cd1b294e894f9ac10e46b7776d6",
+        "metaSha256": "78ab83acf7542705367103bab6019b1a1a45ae352e9ed29fbd00b77ec7663b3f"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl",
+        "sha256": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016",
+        "size": 468,
+        "guid": "38d938b538bc34c53886d0a12b3e64cd",
+        "metaSha256": "ea1ed3b0773bc67dea85559dadf3c42333ca139a5905ddfe49320ed49afb60e5"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/HoudiniVAT.hlsl",
+        "sha256": "5984e8aecc20c3fe99f929eab385f94f8c29b7c07be47fb4b7090ea063346317",
+        "size": 22791,
+        "guid": "802859f4f9ef96442bf245ade4894f0d",
+        "metaSha256": "7c57f754cb9b944b15be1303f89c186bfc1cb549621993d71915a78c0c5b2fd5"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/HoudiniVAT.hlsl",
+        "sha256": "5984e8aecc20c3fe99f929eab385f94f8c29b7c07be47fb4b7090ea063346317",
+        "size": 22791,
+        "guid": "dc855b6c2adf2457ea814b44d94318c3",
+        "metaSha256": "bb24efde73715d893991eab85b9ea0ac9ac4fe5da09754ce9fce4bc0485d83ec"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl",
+        "sha256": "5091f80d00b150c8af7f7b71022162720474181fae37b41c587fdc74effa22d7",
+        "size": 17264,
+        "guid": "e5bde8a4dd9946d4ab49c8b1f3bc6d12",
+        "metaSha256": "5beae13630dff25e17051516fdc455c94d89e9de078a4ec429b116bb6d587e97"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl",
+        "sha256": "5091f80d00b150c8af7f7b71022162720474181fae37b41c587fdc74effa22d7",
+        "size": 17264,
+        "guid": "a135f3a87718a47b296862beae749428",
+        "metaSha256": "1e90b77143b3dd8f4d8072367cfa5de3914c092964f384056373161e627b7b0e"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl",
+        "sha256": "14295cb1841ab7926e74d4b1f6f7432d62436480eadcca8168b51d6992603e72",
+        "size": 13221,
+        "guid": "70e94bdedafe40bfb7f8e77cdc4bef0f",
+        "metaSha256": "4f1648eb92f7066bbaaf308fa500434f30d6190cc863d8ef767e33e29b4c1cde"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl",
+        "sha256": "14295cb1841ab7926e74d4b1f6f7432d62436480eadcca8168b51d6992603e72",
+        "size": 13221,
+        "guid": "7fb69ceeac3cb48bfb987890b40750d9",
+        "metaSha256": "ac2fe39cf65a2eeaa1067733f999a2ca59e9aabf81514d4327c4abcc6876ec36"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl",
+        "sha256": "82fdf169ebc798ebbb16b1ae00756e190752b7e069d2451cb444f76c883270a7",
+        "size": 2438,
+        "guid": "2b1bb9b67aabb824998a7d2e026d2606",
+        "metaSha256": "8ec868ef2c35278a59490e15bcc3343c58daf002326334a732593f9b73869abc"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl",
+        "sha256": "82fdf169ebc798ebbb16b1ae00756e190752b7e069d2451cb444f76c883270a7",
+        "size": 2438,
+        "guid": "e6310fc14bd60425e9bd230d868ef1c4",
+        "metaSha256": "7648cd55ef79788ab39712b11301171260b42ef4cca209e54de4b90a1b2e54e8"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl",
+        "sha256": "133aa1bdefae5cb633852dcd82a93e1b8ec9e5259fb905a54785a867a904e861",
+        "size": 3165,
+        "guid": "2688615dc3cd4ed4cbca4cd0135d8e8a",
+        "metaSha256": "c1bd8eccbaaea9357ab315f662b0f16ee2e9dcf1d3885605fcc9768d3eadf5f2"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl",
+        "sha256": "133aa1bdefae5cb633852dcd82a93e1b8ec9e5259fb905a54785a867a904e861",
+        "size": 3165,
+        "guid": "0d4c198f0369d443d845d821f923710e",
+        "metaSha256": "a9f4c2452108a1c13c35868367fbf15d27d778a9e3588ab4119c31d3388a5b67"
+      },
+      "allowedTransformOnly": true
+    },
+    {
+      "source": {
+        "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/Common.hlsl",
+        "sha256": "2d56ce991289b8d4bb59f4557a3a2aa5a86c7a2c4b5355edf94077332f03f066",
+        "size": 1059,
+        "guid": "443fb5ca2e0ec42bc8a96eb43c8470fe",
+        "metaSha256": "e60754acdf37ee7512ef8268b882c7f87c38c4d53a227d45ff9a5d05f631b15f"
+      },
+      "frozen": {
+        "path": "Packages/NB_FX/Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/Common.hlsl",
+        "sha256": "2d56ce991289b8d4bb59f4557a3a2aa5a86c7a2c4b5355edf94077332f03f066",
+        "size": 1059,
+        "guid": "9ec9299391a084d0a80f063436e8aad3",
+        "metaSha256": "7104aac0c195f94321d09484955a81b983ec69d0666474311d7e05b2bd6ff01e"
+      },
+      "allowedTransformOnly": true
+    }
+  ],
+  "staticallyTraversedIncludeFiles": [
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/Runtime/Lighting/ProbeVolume/DecodeSH.hlsl",
+      "sha256": "f3076129b5c7589c7dfd2f6e970cb031ea6094d1fe5353ae6f5adc07373a3815",
+      "size": 3408,
+      "guid": "6646f462aeb8278489c25fda24fd2db8",
+      "metaSha256": "0b7c49a1ea30d2cfa250f9e03e1a49d09db16b55fb45f7688bf197387e360c10"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/Runtime/Lighting/ProbeVolume/ProbeVolume.hlsl",
+      "sha256": "281c72c9425f12088340b79f5448ef06aac8234feebba33a039f442dee7e9832",
+      "size": 35170,
+      "guid": "688129ab15b222340a2c7fa427269889",
+      "metaSha256": "9514780206f5e17bde20d811b429fe71dd416fc75e1b04f2104e7105daf74d98"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/Runtime/Lighting/ProbeVolume/ShaderVariablesProbeVolumes.cs.hlsl",
+      "sha256": "c8354aba69d89ef3be341fd146e2eb3e0948bde74d1f0575b8dce9ef2968d2b6",
+      "size": 1269,
+      "guid": "dcbd446e83bc87d40b82dd90f8814c3c",
+      "metaSha256": "e9e13c2d18a7ffeb469532d887bea278af785a31f92a6e136902b32d34302e1f"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/Runtime/ShaderLibrary/Sampling/Hammersley.cs.hlsl",
+      "sha256": "04f63398fba53a8e6e3377d15ce57440a4f30966bced9025cbe201d84cdb7d85",
+      "size": 913,
+      "guid": "5060b04656b69294cb1c5d9dc7185ad2",
+      "metaSha256": "813938bf685a53e2412b908ad0ae62835412f5e92564bbdc18486e0aa43495b6"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/ACES.hlsl",
+      "sha256": "7e7978f40993e90c34c29ba3cbda505a64ed5d2e7920907b247e5ff335522c94",
+      "size": 53943,
+      "guid": "b52d68e305b98a94bac88855d8ea5936",
+      "metaSha256": "954ae8d724031b91a86cfd7453a8a7e2f91d01aca83f7276e431525368c6a8e6"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/API/D3D11.hlsl",
+      "sha256": "dc9362fc3f1f495735681247bbca47d304d08b2a7252772d71037bad9a8b70dc",
+      "size": 13738,
+      "guid": "9c7140d7b956a4547bb71f8ed0dd9049",
+      "metaSha256": "e57a2d0c196f53f3dc22690363fad69b612402737d79ddfc3cff90ec42f30d99"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/API/FoveatedRendering_Metal.hlsl",
+      "sha256": "ce559157c19b6e8a61a0b9fe3e60ab541848fa256cbd7eb00699995a99e2c259",
+      "size": 3217,
+      "guid": "e885d2d1e5bc4382b9f742451fef9b1f",
+      "metaSha256": "ff0bd4465f182878e42ba9db72b009536f0c99c13b8d358d947a54781d16dab4"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/API/GLCore.hlsl",
+      "sha256": "1a596106e426fcda48e3352ea76b5c414b1ec88240983e72749f0966bb33049a",
+      "size": 15520,
+      "guid": "17e9ff94ac9e8aa4e81b23222a4dc205",
+      "metaSha256": "5e2f07faae03d1d028c835fbdd2655655445db8153b0f129f25b7b2bc7655867"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/API/GLES3.hlsl",
+      "sha256": "534dbcc9ae0b2adfcc5dfdfe4e55e9bde2f1d2a0fef500df3887c6271b79d4f0",
+      "size": 16351,
+      "guid": "14a46e0dac04a0245b3f95359167b663",
+      "metaSha256": "2252726adfc2aee61fcb67454e7fad075ebafbcf23c2d27b9326413e822a680b"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/API/Metal.hlsl",
+      "sha256": "ad2ea4c9a5081350f8e4c70f70c25186c47497b70f34a76257a50e9f97a9f218",
+      "size": 13571,
+      "guid": "f4d51e77f119d4dc8899ff02b46bb621",
+      "metaSha256": "f5a5a54190a99d26d68890f625cc5a45d049e18bef7d09797bb7de6f27fab520"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/API/Switch.hlsl",
+      "sha256": "a5c3676af63d5a5ac08977b392a2b1b09928938f396d5c7fa9ff1fc48667a8d9",
+      "size": 13416,
+      "guid": "e81335bf0a3c45c4fa81ed2fe67eeba0",
+      "metaSha256": "7e5507ca4d03cf9de3c953e161b5ff5130f1c939daabf5d91cb4bb6640e8f3c8"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/API/Switch2.hlsl",
+      "sha256": "d9a25983634c677901d972d7f3b69d1c20bf430a8856c74cefe45e7b4ae7224f",
+      "size": 13412,
+      "guid": "27b804a87c546b2429017809b12cd1c9",
+      "metaSha256": "14d42ca0810f60fa553df98487151d1f83f279011fc114e4be88f5215a20d4f2"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/API/Validate.hlsl",
+      "sha256": "3134db504d40f1a1fbf300af43fbf8c7ba62937dab96e873c998b20546be9b0d",
+      "size": 803,
+      "guid": "30ba55673585a6e4f9afd796eb8b170e",
+      "metaSha256": "017110f64ce90ccb2d58fdba68bb1a7266ffd1cca9e3fec1a8662b5b64b78d42"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/API/Vulkan.hlsl",
+      "sha256": "e4e9558be11646a03dae3d91d41a407ee546bd65cdec1ab35dc67da3299f337c",
+      "size": 14700,
+      "guid": "05a00b34d7740a643a8a6de19c6d9aa6",
+      "metaSha256": "a58265ec4dc73d9a8f6f3a8e44ad916ceb14f23c2b4e7ef46a6086c8e72f286d"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/API/WebGPU.hlsl",
+      "sha256": "c175504ba82912a22031213b5b81fcb2896f0db13f4697ebd44ee8e0b72db541",
+      "size": 13503,
+      "guid": "e0badbba7ccb42748817520dc250e720",
+      "metaSha256": "53a7637a1a934cd9e15df1f6abe027686d45082a1c7522912777ae602826aca8"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/AmbientProbe.hlsl",
+      "sha256": "c34711410eddad9de1f189ced4e711d02c0245cfb8dd3bb93d06944ad8d5aa54",
+      "size": 3338,
+      "guid": "a1a94b80a0038af4484e8122c5df419e",
+      "metaSha256": "5bc323b27f4827ed09b1cf36e5a570e80562327a58f4c11a36e316a11e373c3a"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/BSDF.hlsl",
+      "sha256": "c19e8362b94a9e9ecdb2b422706b825b2f9599220d29c97f29d7801b1e53eb83",
+      "size": 26373,
+      "guid": "5eb5e8e99ae281342bae5c7b296b3ae3",
+      "metaSha256": "7784be2f16467e4c9171795d9117e5977ebc82a71dd9485eb4212d8b86d74b6b"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Color.hlsl",
+      "sha256": "21ec6ebfa1ae02cce8b4966e669ddd0d437dd4c89422712e6b48d1ee3cf18c3e",
+      "size": 20236,
+      "guid": "23284bbc36146a94995a8a08e61f4e73",
+      "metaSha256": "df5a444fb15108f916dc62e322ebdc2cdfed2a8866da6fc4af661beea7d29dae"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Common.hlsl",
+      "sha256": "0a6a5fcf220db789b3cebf0421b71ba19a0fca9846bc6036f776f0254571c035",
+      "size": 72502,
+      "guid": "a57f9f83ea626ae45b402953fe637268",
+      "metaSha256": "e9348a289dc0743fa018d1410ec32f9cca5041e2abd997969d68ec98ecdf20ae"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/CommonDeprecated.hlsl",
+      "sha256": "44745d7cebaa271e6aef262d55db3debcbe26117a1929a21459cac5f62dd2cdd",
+      "size": 613,
+      "guid": "ca3a5025616550a40816a5272a4f7631",
+      "metaSha256": "0431282ed81908b0c5fcd8e687e2ccca1846fe77910e5063aff403d39745a441"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/CommonLighting.hlsl",
+      "sha256": "88a3da8d877f2d5f4406ae621b2eb3a3761bdd3a687906ef77dd7d48d583f028",
+      "size": 24621,
+      "guid": "93bbf250faa37d446990b9501e7fb7e8",
+      "metaSha256": "e1dc7ec7b28bc36a2352006d91462d13dbe43dc86e21f9aff0b46e2045ac627c"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/CommonMaterial.hlsl",
+      "sha256": "1025efb7d34f4f73864944624490684ca11e5d35dfa5435895d7bd6d2d640b74",
+      "size": 15802,
+      "guid": "540178d5ddc29e74da771e38536aee22",
+      "metaSha256": "9b55fe3c18544fbe58569b787315f39c7520ea9ae000593cae2af5ff02e11d34"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Debug.hlsl",
+      "sha256": "b98556d3ee6d2be7dafaca88ebe7e5764c4de4c146d08568568a862090527046",
+      "size": 20571,
+      "guid": "90f3145f58b7eb44cb4252ac2a3ab258",
+      "metaSha256": "2da2b81f7ac5303c7ed01dc9e51457f01a692b33ca6d8c169a9120167c9958d2"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/DebugMipmapStreaming.hlsl",
+      "sha256": "47dc63086ba665147ef4633d21f6a900367b97576aab203f1ea0a483a83ac455",
+      "size": 36016,
+      "guid": "369a40fd4db19d048ad2cf161cc89fcd",
+      "metaSha256": "a4921be6135bbbee2fb8a8971b393c9b86a7aa7b54039dca03eac98554e863a9"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/DynamicScalingClamping.hlsl",
+      "sha256": "5ddd7c916537b74608af51ad688985ac6e1d12ac7d984fa6b901a31a73aeb2ee",
+      "size": 1465,
+      "guid": "49883cc3d16fa0241a1c9114ce9a1f64",
+      "metaSha256": "52b27dbb6ec2fc514bf1e7eb9cf30ae2c1063e5b2efd02e4f182623d74e449b2"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/EntityLighting.hlsl",
+      "sha256": "ea013951841e68cc2c2a7306a4d8e265bd89786cd54e9535fa660cb00fd4c92a",
+      "size": 18621,
+      "guid": "0303be75670325342b4bf5697686e77b",
+      "metaSha256": "92ff1b487626175f7a6f3b03ebd513fecc32d89ac29559e5e9c9fcb0d3a95af8"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Filtering.hlsl",
+      "sha256": "6b8e0ad9d70cf4af4b43ccb0a068172db524397b48596cd0bebac8b9ba4110c5",
+      "size": 7917,
+      "guid": "54ca0b3b7814f804aac1450b38477c74",
+      "metaSha256": "7731a9b0a2720f801b69507b98eadba30a4eea2f9eec12d06c92271943a96050"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/FoveatedRendering.hlsl",
+      "sha256": "188d904bfd6357f0e6bf5ecefb6839030a552ce8b72c427ad11e9b6720f31ed1",
+      "size": 7941,
+      "guid": "f36f5598be293c04db2a21f9e7463518",
+      "metaSha256": "e7c218daca4ee283865e385ee11b90203569c1478a7071100cf3eb08575ca191"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/GlobalSamplers.hlsl",
+      "sha256": "f8db3219070a49de17e423bbfa2839becbecbd614c02f4888b39396f8e5d90db",
+      "size": 522,
+      "guid": "47ecc1e1971024be4a44aa322690660e",
+      "metaSha256": "7689cf4a6a4c7a1cef6895ef50a20ab531fb95d833a810d22c3c1471b3a3c722"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/ImageBasedLighting.hlsl",
+      "sha256": "64fd0c04fc23c934a11b9d522ae782cb479ed75af19a318d1fbfdaed63ccdebe",
+      "size": 28654,
+      "guid": "ae4dc0bfd9fc0b544a109513ba841d30",
+      "metaSha256": "5fa00a35ff6b6d274344f090674b6cfc76e8d629e611807469b08d2d5e810ece"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Macros.hlsl",
+      "sha256": "bc2fcddd337b4f18ff6b1f89b5c487f9b974d18e9d4eac4f1da63ca1e2914816",
+      "size": 12607,
+      "guid": "6300b0e79f5d15e499b9d6b5d23ca01b",
+      "metaSha256": "73b6f27c25d8de26346e205b479cca666c48b330bbf68651cc539cced3acaa42"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Packing.hlsl",
+      "sha256": "df21b00c1457ce5c8c1ae6069fb4e6e4b4e15b3334ece98a28b7d2e8f302082e",
+      "size": 19090,
+      "guid": "ad629edbad34c1c45afea3021c1553c8",
+      "metaSha256": "9828028aa196d3b40a066f378d449a5882b39f3e8173d6d18b6055e0ebaff86a"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Random.hlsl",
+      "sha256": "4d788edda5d92cb119ae7fe19e47965338979997e64d8df701ae6df1175d0be7",
+      "size": 2769,
+      "guid": "11914c30949383848ab39385375eff34",
+      "metaSha256": "bd2c4250532a31993b594422cf575c21098d5e81712f47b8a79698842c6981bc"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Sampling/Fibonacci.hlsl",
+      "sha256": "142f2411b6854a4d68077fda893c3ac90ec13f9a94fe429b2bac8ab7d9cd0048",
+      "size": 10501,
+      "guid": "63275e6ba7e477f43a376217dc2e147f",
+      "metaSha256": "b5dc312c55301d5af8de06f414a371b6d144fe0fcbaba48925a228eede49f0c8"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Sampling/Hammersley.hlsl",
+      "sha256": "69ec8e738afd4641c24976fbe8f07da1cdea6ef012ff21daef4f573ad56f7f88",
+      "size": 15169,
+      "guid": "aa5e319c8b8499f4fba1c3ecdd133545",
+      "metaSha256": "b199b03cd1bdf233346faa56febceb6d9977869f10b48d44fb4646a60ac5f3a4"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Sampling/Sampling.hlsl",
+      "sha256": "2ac6f764056f27d70d62570ef00dd26f38be61d1f8d7701737445ce48981309f",
+      "size": 9669,
+      "guid": "f4c850bea2c5d45449ba8e228333c82c",
+      "metaSha256": "1a0bd834aaec4744441a118e502eb83b427e75840dcb23796436d0ab6bd7fde4"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Shadow/ShadowSamplingTent.hlsl",
+      "sha256": "77e2d61fdcfa891d5164653d6e0b3fd0666987189aa9d67a826209c457144a9b",
+      "size": 16348,
+      "guid": "6ff912bb23fcd5b468dd2e5c37addac3",
+      "metaSha256": "96d1f6bbc342c98c75a4921267ed6de58e73aadb1442aadd63089739bd94aaf4"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/SpaceTransforms.hlsl",
+      "sha256": "bd0c174c2300eec9baf99bddc5b003e34082766950d86e8d3746df7e8693acfa",
+      "size": 11461,
+      "guid": "07d22e3065efb5a489e5e2644df19bc7",
+      "metaSha256": "1329a1327a33358e31176f9340d0b3510d801b8bb2e2a97405aab8bb261390c8"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/SphericalHarmonics.hlsl",
+      "sha256": "ad654583b2dffc159ebad16383d560f6e710d1b2fe87aa18e1a47596cb0261da",
+      "size": 5931,
+      "guid": "e7990b191f2f28e4884a439c088c4fe0",
+      "metaSha256": "d26d3fbb6b91bd99b8fc004fe2ade421b59f2184a47c617cdcd765b775f92000"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/UnityDOTSInstancing.hlsl",
+      "sha256": "7e09ccf4267412c30ee60271f1149c045a783938e7681e8b33a1d13e46b96b65",
+      "size": 33889,
+      "guid": "89aebf2868d41e34abc02aae1d41b4cd",
+      "metaSha256": "c741e90eb6a0576d907d33cf6424f9fb0af4a3d270696897a1610e354338c65e"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/UnityInstancing.hlsl",
+      "sha256": "b0627d99f754c6e5b07a45dbce3cf9857854d24473da25d0696bfaf4feb11d5a",
+      "size": 28870,
+      "guid": "e1cfc5ca61db3d448825f316ff92cb0b",
+      "metaSha256": "9f7f8e4f9a0272f82fb121ac0852e84034475f8eb4ece0fed92feb50d9d516d0"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Version.hlsl",
+      "sha256": "7712221f6a5d67235080a7e5a11b83b2a51c641f1b6cee4b73a702af33adde59",
+      "size": 885,
+      "guid": "96eb0e7285e8ec64b9b711f1e6b78dea",
+      "metaSha256": "15ecbcd0a5156e2ab195a182bdfb5cddca3fca546414598c2c1d9004f91c460e"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal-config@8dc1aab4af1d/Runtime/ShaderConfig.cs.hlsl",
+      "sha256": "473bf6bd5955eab1fe31d534719e4635904c6a829b50a99e374edf7d77eee376",
+      "size": 478,
+      "guid": "956ff25f08f5e1d4a9ffc96f5803d5a1",
+      "metaSha256": "10e97d36ce440d3c534594118d35b2c83d827529ddc0ad3d7700b28a49a2393d"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/AmbientOcclusion.hlsl",
+      "sha256": "ca4eb8189f5db08f839e768a1fa1e4c3a198addf6d06e60a9d5ebbc8dd08ed36",
+      "size": 2383,
+      "guid": "1c0cb2353d9a4debbc61e650002843f4",
+      "metaSha256": "48b63036e7e3c68233f623d72bf34640f68bf7aab9d17029d79f89c717417d25"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/BRDF.hlsl",
+      "sha256": "1e8427056b0ab3046adf753d72fc3afee3d54c335e38a4d1069e6eedb0f78075",
+      "size": 12208,
+      "guid": "e325eaafb90d419598a94581ba3335a4",
+      "metaSha256": "334c0f59d8b6ef89d0f59ac7641fefef4892f47fa2dcd864004fd1d3029fb665"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/Clustering.hlsl",
+      "sha256": "25726d2f0f9f28e20228d87f08d4b772b762acf2ffc31c6416c57799e9d735fc",
+      "size": 6335,
+      "guid": "5c52f3d26791c415b9e887442bfc817c",
+      "metaSha256": "7509936aa80d3155c02da36ce06809cf0ba70e494804ee5dbd7bcf3289f79224"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/Core.hlsl",
+      "sha256": "9614b01872c7afbb732ec1b6958fcdaaa04fc9650107fa6b1121c9f647d40b40",
+      "size": 18806,
+      "guid": "53686bf58189656459fca4c6ab04ebe5",
+      "metaSha256": "a94dd7f82fa0ff988e2dec69ece567d6cbbfa3ab75032c920118df75dabbaba8"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/DBuffer.hlsl",
+      "sha256": "8b0fa67deb613f74f9baaec694a154ccf51bf5c1aac3df69a7431922797d6a83",
+      "size": 7964,
+      "guid": "9041fd6e0797cf74a8f08340e6157c0d",
+      "metaSha256": "f354b7b62dae26aceb04a648aed2db73d502b7c773b04a04e5a94b46cfdf9e8e"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/Debug/DebugViewEnums.cs.hlsl",
+      "sha256": "c1e81175359ca8ce2aaf6672db0f4fe17f6f99660dae5a2a527ea7cbfbb19179",
+      "size": 5213,
+      "guid": "448811f26ae38ae4cbb2edb0d2b9186c",
+      "metaSha256": "3cee3c2237011ed826d360803d5d18373e8405c19b1619fb692d17db334b0ee0"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/Debug/Debugging3D.hlsl",
+      "sha256": "4c3a2e61256b76efdd2752787caea7b0b203ad1a77b88ad0120dcc48ef599564",
+      "size": 15353,
+      "guid": "d8ae717b647341719f2a89f20faaf51b",
+      "metaSha256": "c9cdd6a1aa7da1c5b57b8f369b360f0e73b46d18d67007a8ad33f717708a81e5"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/Debug/DebuggingCommon.hlsl",
+      "sha256": "98b99e2cb1490186c1041eab8ca20ca88160746937c3c58b03fb52d202726030",
+      "size": 10244,
+      "guid": "a419d344c87843af8e1ce2e8c571fcb6",
+      "metaSha256": "21605fdcf44592d2e897df86b4733b3f567bc175a30590abc72ea230c5ef09f4"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/DecalInput.hlsl",
+      "sha256": "7d05a2431d8b2c2aa633c617ac149fdbe6f74d3e773e34944dcfb93146d39036",
+      "size": 290,
+      "guid": "3e4be2c2c37a850478a159473b68a63f",
+      "metaSha256": "56ca2ee23ed50986f36d83863894a36590819189acfcbf1cc0759aaf63dfe9a3"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/DeclareDepthTexture.hlsl",
+      "sha256": "f30ee21e8f8bf01944bd558cae67c388b426115c5e7de2edc58d526ad9bee48b",
+      "size": 934,
+      "guid": "ff20ba0133cd2904ebf470aedb16e9a2",
+      "metaSha256": "960a29edad93ce41ea7856e4a81c65d3378f8f0e56a468bff6301bf7f5b4b503"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/Deprecated.hlsl",
+      "sha256": "5b6c0b3a2e9ad8f6285f30aed67952de8e4431524f14c326c574dbc7502a2d21",
+      "size": 316,
+      "guid": "9802e36ef1c38064d9bcd7bf2e01cccb",
+      "metaSha256": "9778d7af5bbd2d63d141bf2c56e553eec534eb7cb0ead4e565fe4b42ac1c0997"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/ForwardPlusKeyword.deprecated.hlsl",
+      "sha256": "0224bd4f92a6189112a5cfd07d9762555788e58a38b250eec1a3f2217c10030e",
+      "size": 1146,
+      "guid": "7e363e809b854c74b30d5945820534d4",
+      "metaSha256": "4912c351718da95fa6f5771234f6c42b1f92dfbd2a4df583c8ed5b771b4ec9d8"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/GlobalIllumination.hlsl",
+      "sha256": "1f920be6e525dbb41cdbb588aaaee258aecb30660c71bec3458e0abccbb57092",
+      "size": 27324,
+      "guid": "1be91b057dbe43239a838d9e45a42a32",
+      "metaSha256": "87e554b4591a1617fd2a4fe07d6277d3ee0ca64185ad304acd668b17c2e6de0e"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/Input.hlsl",
+      "sha256": "72ce05de8f49228c6e62b376ef3165b57842fe73bd13420f0f822eb99b90c9dc",
+      "size": 8336,
+      "guid": "b2555155ead696140913bef1ec93adf0",
+      "metaSha256": "00262904d0aee754205fc1f672dd983f01387ba0c81fa073a806c186d00d4cc6"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/LightCookie/LightCookie.hlsl",
+      "sha256": "2660a79e9653764b9567923994fbc83d52b3ee16a574471e7c729293870bf772",
+      "size": 4453,
+      "guid": "8878828335bd847b493e10211fcbf825",
+      "metaSha256": "012633347505847f0f0d0d8288de78c6be5e0131a82b4e6faa1d86fe84e4fc9c"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/LightCookie/LightCookieInput.hlsl",
+      "sha256": "e548590c9f8bc05d04853a56830688fb4327ea4166673d76cfb3f2dee20cc962",
+      "size": 3832,
+      "guid": "a70b6c101edaa442a80370b0d514fb3c",
+      "metaSha256": "bf0ac129d2dbe43f4806384e7fce32e8942420bdd5d7015fb808701ca69938cb"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/LightCookie/LightCookieTypes.hlsl",
+      "sha256": "e72f8359e539e3a69dcd3b772fe27587830e883a5e9c73b1a183c95d5f3562fb",
+      "size": 403,
+      "guid": "394c5e9a352f74e998cb797d7aa461d4",
+      "metaSha256": "ff042db7013cf4d2d95a0d10f2b0673465759521105051af55f4e787328d7826"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/Lighting.hlsl",
+      "sha256": "1132ec024298a9e3ebf527f9e48dcb2ee037be250acb89b881b8ec00320896b7",
+      "size": 20420,
+      "guid": "762f0a4829f44584ba01e2f0661150d9",
+      "metaSha256": "47098598861d990875f8793b2f332b70d1c9579c2b3196b363cabddc9970066c"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/RealtimeLights.hlsl",
+      "sha256": "59d1d75a99532078be787c6f4d76d5aa5a29b5bc33d97c190b5b6797b39bffcb",
+      "size": 12444,
+      "guid": "4e8e2a4c57cb4eb6bf8653ab88069a9c",
+      "metaSha256": "346d3ca09a8065f33e2942cdd69cf113106c2383287be7d065b6be87ad48ed07"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/ShaderTypes.cs.hlsl",
+      "sha256": "f48eb2e6338da6e9aef933f1b42533b459308f728cde48dac8fa5cfa21f53bad",
+      "size": 482,
+      "guid": "6be8cfeb6b34eca43b000cb7bad7255e",
+      "metaSha256": "56ae92dd5ee1fd478e9c4810ef7a068b3ac431e53c3113487ffc2e5782276ea6"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/ShaderVariablesFunctions.deprecated.hlsl",
+      "sha256": "87423aab757b97e99f1b8905d7980c527aac8134efe2f9ca66cbecbddf5e0c24",
+      "size": 734,
+      "guid": "77a6d2810aa974e0bad8b56aec6e87f4",
+      "metaSha256": "17b6f31ff8bab911542929b889bb3d303908d91665b0d348b4391a2e6e2a3889"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/ShaderVariablesFunctions.hlsl",
+      "sha256": "4506cc4e48fb36ef32e45633b90e6171a3b929ac38f861ca0dcb9433fa560643",
+      "size": 19305,
+      "guid": "a8db2eae5ac4548a683f17e8c528c05c",
+      "metaSha256": "0073ac0e0115be8f3e8ab440c824dadde59887c27a8d00279e2f5faacd30bfb9"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/Shadows.deprecated.hlsl",
+      "sha256": "3294bf6448a0724a251634502ebe135e1e2b8b4e2e31e423cc2c3cd5979d82b8",
+      "size": 470,
+      "guid": "51fae96488b3f402a8abcda4217b37e1",
+      "metaSha256": "b571574164285040a6f1134d0afed87af659a354fa2937da490a6c1a9df15eac"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/Shadows.hlsl",
+      "sha256": "caa3e10c26476cd44cbaf7eadca308a2417bd42cc18a8a4c1466466e2af9173d",
+      "size": 28244,
+      "guid": "5cb845b7decdb4db6a7fcc676b127b6d",
+      "metaSha256": "1df514e433ae72da11d5ca875e8fec4fd7d4814bcae1c54475a1d9276d1a7d63"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/SurfaceData.hlsl",
+      "sha256": "789c20cdfaa4f9578770e999d75adec5dbd337d93d5718056013636ed19af039",
+      "size": 375,
+      "guid": "181b211e2007bd4478d853b8964457ab",
+      "metaSha256": "6cf7b99be83f1299fc9bc70386724c86070039ca09b65101679a8c4073c87c20"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/UnityInput.hlsl",
+      "sha256": "c288984300ba0866217aae4b2e0b5b6363ad5d0bb81423a2ba27f26cd134f9c9",
+      "size": 11260,
+      "guid": "6564342aa7c6ca44a86b97323a311d74",
+      "metaSha256": "aa834fc5f405078b55c51356133db93950361401eb328faf44f8431cb531d4bf"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/UnityTypes.hlsl",
+      "sha256": "c63be00e04bf36eb4455df64f722f0423979005ff0c3b78f2599ca92ca0a9140",
+      "size": 696,
+      "guid": "8d0dd75f99f9243d584a08489c8498b8",
+      "metaSha256": "e7f0414edb6f0cc279d24070b5b169830de4ad79586fcb02a219a689e3fc2477"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/ShaderLibrary/UniversalDOTSInstancing.hlsl",
+      "sha256": "5209dabe14e13ea9f0e8596dbd85802ba46a881fe7c049fb1609df1c82c539fe",
+      "size": 4222,
+      "guid": "91bd1404255c4cb28a6c81f20300308f",
+      "metaSha256": "8f35027f7fd1a84d00361139c574fca838e852f7ffe8814102b1346471be1a79"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.visualeffectgraph@f89f6436500a/Shaders/VFXMatricesOverride.hlsl",
+      "sha256": "2752a0e99c390080f4bd07d1e8945a479b07878d6e1ed145872afc5cd3e36c1b",
+      "size": 1571,
+      "guid": "d484a27022e2acf41aeb3ed4aad8674a",
+      "metaSha256": "b8ccb5387a4ec332910b0b75f3d5a473c0622607a54fc248090f10587ca1bc3e"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl",
+      "sha256": "71b30dc3bff96f65d09e64adee5d45a9c4bc4de18636cd03d81f78285033ea48",
+      "size": 205,
+      "guid": "d7750d9f790e4369b26f49461830b5ea",
+      "metaSha256": "0cfbb636644a7b3668e647c4fe1408d2a2d72ebfccd1982cd9dd8a942df0ae20"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderFlags.hlsl",
+      "sha256": "ff61aa9367577fed95fb4862b52f60520ad673243b87a99a697cac3d5b014df3",
+      "size": 14559,
+      "guid": "2813ce2207b94f57be1d1c91d9a21023",
+      "metaSha256": "9912ff27dde750e0121a53dfe85bb3897279a8d9832874c71b3484beb3c73b15"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "sha256": "18fd0be3b8e85e97a9c649ec97f480e7a705f8efb056019a3c71a0b3ff32da71",
+      "size": 54870,
+      "guid": "5bc5a11b8453489893769021c54525b0",
+      "metaSha256": "f28b386f33518ecc9e716864f6141a7a5f27d528cb76e431a0d999ba3d667044"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "sha256": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9",
+      "size": 64651,
+      "guid": "0aaec9236001406ebcc710ac8f3f7c43",
+      "metaSha256": "3c00f44c19f3dea3190a1e835e60a0de8ad9727e76525a32395101966912d050"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Shader/NBShader.shader",
+      "sha256": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00",
+      "size": 73938,
+      "guid": "7787bfdacec31472ca6644d6e3616bd4",
+      "metaSha256": "d2f6989f1b631e00521c87ea3f72bfa072be6ebac2a62c35a5ba0f544c0b065c"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/HoudiniVAT.hlsl",
+      "sha256": "5984e8aecc20c3fe99f929eab385f94f8c29b7c07be47fb4b7090ea063346317",
+      "size": 22791,
+      "guid": "802859f4f9ef96442bf245ade4894f0d",
+      "metaSha256": "7c57f754cb9b944b15be1303f89c186bfc1cb549621993d71915a78c0c5b2fd5"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl",
+      "sha256": "14295cb1841ab7926e74d4b1f6f7432d62436480eadcca8168b51d6992603e72",
+      "size": 13221,
+      "guid": "70e94bdedafe40bfb7f8e77cdc4bef0f",
+      "metaSha256": "4f1648eb92f7066bbaaf308fa500434f30d6190cc863d8ef767e33e29b4c1cde"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl",
+      "sha256": "5091f80d00b150c8af7f7b71022162720474181fae37b41c587fdc74effa22d7",
+      "size": 17264,
+      "guid": "e5bde8a4dd9946d4ab49c8b1f3bc6d12",
+      "metaSha256": "5beae13630dff25e17051516fdc455c94d89e9de078a4ec429b116bb6d587e97"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl",
+      "sha256": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016",
+      "size": 468,
+      "guid": "a0126cd1b294e894f9ac10e46b7776d6",
+      "metaSha256": "78ab83acf7542705367103bab6019b1a1a45ae352e9ed29fbd00b77ec7663b3f"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl",
+      "sha256": "194074672eaab1cdb5124f547ece7cc226cc068d69a10f05bd6f73670fe5601d",
+      "size": 11163,
+      "guid": "9f34986983f558c40a7e30a353dc3c34",
+      "metaSha256": "988ced65c4e59d0dbd6e1eaad43cf9cd9e017b6d57512c6ed0f2b0e614600007"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl",
+      "sha256": "133aa1bdefae5cb633852dcd82a93e1b8ec9e5259fb905a54785a867a904e861",
+      "size": 3165,
+      "guid": "2688615dc3cd4ed4cbca4cd0135d8e8a",
+      "metaSha256": "c1bd8eccbaaea9357ab315f662b0f16ee2e9dcf1d3885605fcc9768d3eadf5f2"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/Common.hlsl",
+      "sha256": "2d56ce991289b8d4bb59f4557a3a2aa5a86c7a2c4b5355edf94077332f03f066",
+      "size": 1059,
+      "guid": "443fb5ca2e0ec42bc8a96eb43c8470fe",
+      "metaSha256": "e60754acdf37ee7512ef8268b882c7f87c38c4d53a227d45ff9a5d05f631b15f"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl",
+      "sha256": "82fdf169ebc798ebbb16b1ae00756e190752b7e069d2451cb444f76c883270a7",
+      "size": 2438,
+      "guid": "2b1bb9b67aabb824998a7d2e026d2606",
+      "metaSha256": "8ec868ef2c35278a59490e15bcc3343c58daf002326334a732593f9b73869abc"
+    }
+  ],
+  "unresolvedConditionalIncludes": [
+    {
+      "from": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Common.hlsl",
+      "include": "Packages/com.unity.render-pipelines.gamecore/ShaderLibrary/API/GameCore.hlsl",
+      "resolved": null
+    },
+    {
+      "from": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Common.hlsl",
+      "include": "Packages/com.unity.render-pipelines.xboxone/ShaderLibrary/API/XBoxOne.hlsl",
+      "resolved": null
+    },
+    {
+      "from": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Common.hlsl",
+      "include": "Packages/com.unity.render-pipelines.ps4/ShaderLibrary/API/PSSL.hlsl",
+      "resolved": null
+    },
+    {
+      "from": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/Common.hlsl",
+      "include": "Packages/com.unity.render-pipelines.ps5/ShaderLibrary/API/PSSL.hlsl",
+      "resolved": null
+    },
+    {
+      "from": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/ShaderLibrary/FoveatedRendering.hlsl",
+      "include": "Packages/com.unity.render-pipelines.ps5/ShaderLibrary/API/FoveatedRendering_PSSL.hlsl",
+      "resolved": null
+    }
+  ],
+  "sampleSourceDependencyAssets": [
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples.unity",
+      "sha256": "1faf145b6453114c700bc50d15f1694d578787b2a267298e9cda63ec2d8de91d",
+      "size": 849226,
+      "guid": "4e0fe2543da2fcd4483aa1394512071d",
+      "metaSha256": "cc9868104d88d5e891a0c12a78626b817525fd9934f1aca2ccdc7c7e370d507f"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/14962-normal.jpg",
+      "sha256": "7d252134074d8f61cf70d666d60bc2da0eb5b0ee88529f231b85cd7d582bdd5a",
+      "size": 315392,
+      "guid": "488b537fe3fad384cba67852f242f88d",
+      "metaSha256": "9d3cc9c1487268754c5e0b67f71fe7acdfd2633ab788e288bc6dc71ed7bd2091"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/BlinnPhong.mat",
+      "sha256": "0a19c0c11f02ffaf65fd38c38bb1b64deb6a0e61b8ba9b9331ebf34ca86e11bf",
+      "size": 21847,
+      "guid": "13eaea1da5863654288faa1de8fb4b2e",
+      "metaSha256": "161a62d260b9e59aa257ed7ad19b0bc339cb33f1e9db9d6979feb591e4ef7b76"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Distort/DistortParticles.mat",
+      "sha256": "8d6c8573edfb30d26c217bd65d7f2a4128c6b4ec5853e15eaf8d531f2f0c25a8",
+      "size": 21487,
+      "guid": "f6def21fe041c49429ed664a223aa9d1",
+      "metaSha256": "e7cf9f471306c764cf6ceea95101d9d9a32c725197151cfa7719352198c71165"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Distort/Eff_Water_LargeWaves_Normal.png",
+      "sha256": "5242c9c7497833917337685e98f19fb7a605830920aa991c62731486daa1dab7",
+      "size": 32707,
+      "guid": "e26e9f2b1973bc742a8f5d12017bbed7",
+      "metaSha256": "06c673f46f415af040a036a5b261eb7875fac2c2116519708bbe3b039c64ab57"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Distort/Refraction.mat",
+      "sha256": "33dfedbef3d3b0677a493091e58c087d9a4f451426fa2270ca4cc3dd431df08a",
+      "size": 21679,
+      "guid": "8e5702e5d308e114290a923fa09193d6",
+      "metaSha256": "9117ae2f901a114d39782c6c0a57ce6131e488662e71149b276cf0e8b8457797"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Distort/icetex.png",
+      "sha256": "eb2e8053d9c93f4c96b5d4385b67ee215bcfcf79261963c1f2825ff66ec643f0",
+      "size": 246713,
+      "guid": "83f222b2ca0ce5c4cac1a71dc3e9dd2b",
+      "metaSha256": "b66e347c8a19afab04f0eb3f08cadd4ca2ffc9e99ad453f1ba55944c56e7439e"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Distort/normal009.png",
+      "sha256": "abbfbc17dd74f77b0aff3080d0c01ca0efc4a28303d1fca194abd71c9c2bffc2",
+      "size": 28737,
+      "guid": "f891f8270f72a814ebf8cb0a0e85e609",
+      "metaSha256": "73016dd3bdf6d29d34580be2ef8b668b897c200bef503353ffbc6eaff8a35cda"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Eff_Bomb_Ramp.png",
+      "sha256": "86a22da6c879393f5031b4b74796ffbf214ee33ef0841e4976b608e8d6086296",
+      "size": 15619,
+      "guid": "d8be9dd4b07006b4d9352533fa1eca1f",
+      "metaSha256": "6517b2ef5dc67652ad14dd3ebc6bbea4395f8f0e0ae5a3681205503f990f7a6a"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Eff_Noise_14.png",
+      "sha256": "77896102827e1bc741c6ef86f62b7b08b4f89afca251d27c88567d2e2cc587e5",
+      "size": 207635,
+      "guid": "57293ada82055cc48bdf8bc13518f205",
+      "metaSha256": "a590f8813e073990aa9971d04204275bcb392364bb04597b687106ed8424f685"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Floor.mat",
+      "sha256": "37e4d0f1d158f15c29b79f51415db3b6727fff3620e5a0c24847a3104a0e2526",
+      "size": 3654,
+      "guid": "212d0b92829dc2347bad99eac875158d",
+      "metaSha256": "1e5d21ea895573a9dd03beb71cfd801cf24497ad659e5f1fadcd86bad48851e2"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/GlobalVolumeProfile.asset",
+      "sha256": "3411f7d142456075325ec0d56465ee99fe4445fbf5611dd8defd982845a178ea",
+      "size": 2388,
+      "guid": "7d7b9649ba2a70641abdeeb7b5668189",
+      "metaSha256": "df62ebb16abfe09ed5570270a932d8b5e2050d65f4a411c70d3cdd0a92cb3d03"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Gradient/ColorRamp.mat",
+      "sha256": "4d6795c36f03320a1587f75f5cccb4f8afdd5cc657b48a6e191ad2f553346a06",
+      "size": 21687,
+      "guid": "4b192c2a2f7018346bc65766a440e11d",
+      "metaSha256": "e83af72f46c5de6ebef4d42ac740eda4b8fdab15016a1bc7908b9db97a9e601b"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Gradient/DissolveRamp.mat",
+      "sha256": "5183f226b73e61ffea1356b9a99718d98971e19001b5ed12dfa08cd34b650e7c",
+      "size": 21485,
+      "guid": "2ca043e9331b09f4e9c82bfbc40fc701",
+      "metaSha256": "a8850d2470f80632796eadfb5f345af2d3278e608332fc9f588eb963c33f93d9"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Gradient/Eff_FireNoise_03.png",
+      "sha256": "a1263cf69a42fe836127fd3f4bc207f399f980ffb7ca24c12be66efb8850d538",
+      "size": 599206,
+      "guid": "ed0db1b60dfea904f99df27ef57369ed",
+      "metaSha256": "67a55edadf02082a18bbe7bd3e1e34642da6cceaeb3f09dbb565d74d1c77698e"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Gradient/Eff_Universe_00.png",
+      "sha256": "3a1faa35dc48e4230c022805820bdda2b0e81752e47061eac3529a81b3bb15cd",
+      "size": 631326,
+      "guid": "d14251240c0005d4697bb46df35dfb76",
+      "metaSha256": "1cceb45dc13b84d8fa11dcba73b5ca5bce4d6a5a0a40496c3f89a9de2c06c419"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Gradient/GradientMask.mat",
+      "sha256": "dab64ca0bf3337e715cf2a7ce300ad6e871bf7b6cadf79cbd1ee4e284a99040e",
+      "size": 21524,
+      "guid": "739551808745af74594b9f909fabf208",
+      "metaSha256": "cb5a6ca5f214f0e8860f13ae37930bab09fe7fba2b5babedaa038be6d8682240"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Gradient/Mask.tga",
+      "sha256": "a75445e2848dffeb46ce5ed58d41ac6fdc5084826c80ac2fe5d849e010d8fe6a",
+      "size": 1048620,
+      "guid": "3c38f66f87484c74dbed606f2ff9dda1",
+      "metaSha256": "1718cd73909af0feaf202a26b3d5d3b0e9320e8b29e7b3ad8b89c3c19bd36014"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HalfLambert.mat",
+      "sha256": "8606aaa21361a4b19c59ddc98e7c45d0da8b8c750c3733915a8372358ace3041",
+      "size": 21832,
+      "guid": "247c47d5f215cfe458b41f42539356b2",
+      "metaSha256": "073a1145b46e677caa15aa87195712d9f13b968c12ed7d3d14c1f584d5642c74"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/Fluid/geo/vertex_animation_textures1_mesh.fbx",
+      "sha256": "6a3affc1e843788f091ba207b6627e1e00b27031c1ba4b9edb9298b4cc351bf0",
+      "size": 7214812,
+      "guid": "1a4de196355d3fc4fb62be25b5b0abb6",
+      "metaSha256": "401cf65397c87e09436f5013f3eb69281fd4883bc730a2b1d5596b28976f24cd"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/Fluid/tex/vertex_animation_textures1_col.exr",
+      "sha256": "c9eec29e8f4975f8a9faf51e78aeab511a956a5bf39459a18d8768a56e954f54",
+      "size": 322635,
+      "guid": "1ccba4d6569c7264e92aa85fd7b84ec3",
+      "metaSha256": "202defe80e9a4c8f9a41f1702f057e17caa19b22f1f798a9aca1e2976bf36d2e"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/Fluid/tex/vertex_animation_textures1_lookup.png",
+      "sha256": "a17195c685149ffed131c0844a4817f92f3f56efc53c86efe058d72c540df6e3",
+      "size": 3148912,
+      "guid": "347ce1a3cfc9d074eb1446c90c0dbe61",
+      "metaSha256": "2b4d52d1269e5b8aa27525b295c1640681714421ec0f2695d9bad55b0292f451"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/Fluid/tex/vertex_animation_textures1_pos.exr",
+      "sha256": "1ef4a6238187c4dc53d752a300313219dcc07e995e93031f78ab7bb305f6e24e",
+      "size": 3804426,
+      "guid": "81de8fd2478012d47b7d142fa8688d8a",
+      "metaSha256": "a4b6dbce0214481f47f9640222d95dfb06c8a239e7e1ee9fc02e54cfdb2074ed"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/Fluid/tex/vertex_animation_textures1_rot.exr",
+      "sha256": "8f16da14b86b701688c665de01ad19b96ae65c346aa162adf3a5df67e8439ce5",
+      "size": 5205440,
+      "guid": "e7b365d6025185c4db6ebd9ba5df045f",
+      "metaSha256": "487a766849943e1d5e90da7e6ba9d54ebdac13a88929677365e80c1f79732833"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/Fluid/unity/vertex_animation_textures1_mat 1.mat",
+      "sha256": "79cdea0a19e052b8d0998dce15a7714b3bb2a994733b0f4711b1d62e05493420",
+      "size": 21403,
+      "guid": "de42641c54594ff4fbc27ec8cd17dd73",
+      "metaSha256": "71778f847600b4433bb0c1b3b88052d09f70397e040b77d07d1e42d0361ded7d"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/Particle/geo/vertex_animation_textures1_mesh.fbx",
+      "sha256": "b14295504f998ab215ffeaf977310d9e0b68966f7583307f701f6c3b8699461b",
+      "size": 5846177,
+      "guid": "0daa14ff06bb2e840b0e85ed92939301",
+      "metaSha256": "26a8924ac5019d776da5759a39e6957edf27ba0bbdd964e7ccf1a6715ac161a5"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/Particle/tex/vertex_animation_textures1_col.exr",
+      "sha256": "d75b719c197eac273dbdf4fa4851d69377279700863ee801975adf78338e573c",
+      "size": 89546,
+      "guid": "d565fd03068e3204098da0886c3df01a",
+      "metaSha256": "75cb14832ed4bf69a858132459b8566fa027870c7dfbf3e84348f22151e4e377"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/Particle/tex/vertex_animation_textures1_pos.exr",
+      "sha256": "744da62de7db24484d245cb192a9d3402f4faefd016015bd452ce83a77a1dc1e",
+      "size": 29805483,
+      "guid": "5815500111ffbf6429692228816a8186",
+      "metaSha256": "d6e6699f014ff6b7cd9234544b8c16d60d71a7fedc39360d336323de1fc308ee"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/Particle/unity/vertex_animation_textures1_mat 1.mat",
+      "sha256": "757f9a2281008c21a15e915be5f09885285f07a736c84e9f6f7482e19a737437",
+      "size": 21274,
+      "guid": "4840de0c946c4db4f98696e0c5b3b07c",
+      "metaSha256": "e90a609a791e2829c3e7ed90f850fe00099ba8bc6993f503b58945c5a94284f6"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/RigidBody/geo/vertex_animation_textures_mesh.fbx",
+      "sha256": "b28649e82e54c1e89524cabbd9fae96596b7cbcc173446b80f7a10844a896766",
+      "size": 16676323,
+      "guid": "32c732ed659529b43abfb0a80a6676e4",
+      "metaSha256": "8f8d3f66fe14304d0b9a16fc1ecb336a4a82894850d8800e6b384b4312547cef"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/RigidBody/tex/vertex_animation_textures_col.exr",
+      "sha256": "e55067d2233bf96749a604259334433f18b0683925ae2c1b7112cb9ec540dae4",
+      "size": 5201,
+      "guid": "69a77ed8bc98719469d6bb6e8ff4f731",
+      "metaSha256": "77a53fe3020dbc559f1cffdacc2db7bbf722e6bee9a0dd08b4e2418f8f0dd133"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/RigidBody/tex/vertex_animation_textures_pos.exr",
+      "sha256": "f27ef9dd65589de2556343a6cd43c992208c01ccb1348c541fe1d422e2b2022b",
+      "size": 398528,
+      "guid": "b9b469c13592e444990d12d6f7165207",
+      "metaSha256": "f35294c8eb66e4f54d84ff2db74995a47131d5f25a89f28add2e42fbe84499db"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/RigidBody/tex/vertex_animation_textures_rot.exr",
+      "sha256": "3ef1946cbffbe51656a045e253efbadab3bc76837e2373aa4a0857b4a9507775",
+      "size": 375396,
+      "guid": "93770afb5839ce14b8ebd357af55c157",
+      "metaSha256": "019ce3e7b3d6e60529355bf22f3601e33d81079a4ba246d939ba50d90d35a24d"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/RigidBody/unity/vertex_animation_textures_mat.mat",
+      "sha256": "88b460600322c6af220d9e3ff1ff5a4cb4d3ee73a60eb9017ce9cef0386fe42a",
+      "size": 20160,
+      "guid": "39f79993fb4c4fc47b69036889768872",
+      "metaSha256": "37e29dd6cb68a6804f27659ef7db382c669def83c4afa037002e5eb318d62759"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/SoftBody/geo/vertex_animation_textures_mesh.fbx",
+      "sha256": "9860181c7764e87fda759abdb8758f1bfe037ad7f212b33278de3de18be53952",
+      "size": 680152,
+      "guid": "ab5403f48f467d441be6c04132bfea60",
+      "metaSha256": "0fcb17288983329c88f60ad70977eae00bb4c06920ffed1e43e03ca8fbef7cab"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/SoftBody/tex/vertex_animation_textures_pos.exr",
+      "sha256": "9660201c813cd97dcb52ec8a0e0cb9a907f17d5705f3c2291a6339325b4bf13b",
+      "size": 384526,
+      "guid": "b00dad2dba94b344e8301d19ec18469d",
+      "metaSha256": "3a7d63d4ad1026c44d5e4a9bb050ab5bdd4876d1374c463f7bd70f1d3e2c3abc"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/SoftBody/tex/vertex_animation_textures_rot.exr",
+      "sha256": "ab2b3f4aea48c1087ac28979ac97c3269a18ccefac425f3b1bd3a36d61e27e06",
+      "size": 520709,
+      "guid": "24ee4cd541a110e46ba0ae51d975486f",
+      "metaSha256": "bc2733b2163de49740aec9c5fbfef83e53e1c4dbcfe19cfe0aa02e08a68f0790"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/HoudiniVATSamples/SoftBody/unity/vertex_animation_textures_mat.mat",
+      "sha256": "716b822a3d052f22bf2120e7832226d75411b51eee62fb30aafc4cbd906da169",
+      "size": 21197,
+      "guid": "23ba484916e87134894936c78726770c",
+      "metaSha256": "1fd50ace166df5521607bd871b3fb90bb79222de33ad07513fe450c30fa87121"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/MatCap1.png",
+      "sha256": "97a594d49ceda1b4a3d861d7f5b5cb835837719a0b81e401699c2b46ede0c6a7",
+      "size": 64132,
+      "guid": "6f782829a9e4df04d93d1cfa7ff72fcc",
+      "metaSha256": "6b529a4833af3c57c9952f7c80962fb11b3a9ab26480d8da2905b040c4afe3a1"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/MatCapMateriak.mat",
+      "sha256": "bac0a2526989419abe7f8b54a529d67a8f44e5f546decc546530026681a1f9e2",
+      "size": 21702,
+      "guid": "565ec565a4c4cd748b0082ad7922ce42",
+      "metaSha256": "0da5379aff4f20d58fec88f049c2f1f103663dadebb973b779c394c1d9300cf2"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Metal_Albedo.jpg",
+      "sha256": "be7886b07905786ef935de45735b4b41d78c2b78714f57d959464a41149e84cf",
+      "size": 3244299,
+      "guid": "6d71e6bf3fdf942418bd53b747539a95",
+      "metaSha256": "697cfd468a8b911d514e41d171161e29b3c089994e0c630cafd24cf66a8e6ecd"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Metal_NMS.tga",
+      "sha256": "91ed0434fec0c9369d31091c84a51b4db7e365a8635b20fae293181e945a2e81",
+      "size": 16777260,
+      "guid": "802d35084d278c7408a18ccd978f49aa",
+      "metaSha256": "bfb48b5d2cfa22b7bb1f922c3d2fb9035cfa88197a178f4f567a526e3b057b56"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/NormalSmoke.mat",
+      "sha256": "5daa131bbad0885d5b7e8ac7944cfa71142cf9cd60b8539d74cff1b3ba879028",
+      "size": 21628,
+      "guid": "064db751c7e69204fafe927bfe91deb3",
+      "metaSha256": "75fa69a091f851c4af825558e57b6c14e9d45a149a7d7fe09693243fd304f505"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/PBR.mat",
+      "sha256": "23014853787aab2bac1e818e38f5e525a31f7779b341da2f731db387e1a99556",
+      "size": 21579,
+      "guid": "2298605e7ceca9146ac4bfc040d14fff",
+      "metaSha256": "f36e14bb8fa4c0afb41543c55f1fee325d66f30fb3b4a2759addf09dca0b6e93"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/SixWaySmoke.mat",
+      "sha256": "82753f3ac4f762d10695a380f80eea36b18404ea2b93eb5bf48868878d675242",
+      "size": 21274,
+      "guid": "5c4b6fa3d9290264eb480d27b9ffc0c5",
+      "metaSha256": "3bb7f8eeaf401e499b04ff28f4f4cb94538610469517b201077bd95b02640b20"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/SkyBox.mat",
+      "sha256": "2a2a3ef31cdb576333a2a8a499518ed44daf39575eaf5e8998b7bd8be3c20ae0",
+      "size": 4479,
+      "guid": "2a57c799c160755418766e0e05213121",
+      "metaSha256": "ebb555afae897020ddf12164587d3269ccb834a0471968a3c2a27c02ffc46192"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/SkyBox.png",
+      "sha256": "c924b7a68e4f19563ebeb53ae0614db752506c0db4d146c28850d63970dd3914",
+      "size": 1993500,
+      "guid": "9c7d47d6e6371814494b9a3da3dbf4ff",
+      "metaSha256": "dadac0655e288bd8ecfa072d8efd2c59b44de73201abe36dd6357a029947cf11"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Smoke_Albedo.png",
+      "sha256": "ff91f2615a1205961aa614185497178907566154dbc5d43d7070e9a59c93abfe",
+      "size": 1580352,
+      "guid": "b27cb548697644b408e4978b6f1cc687",
+      "metaSha256": "c134128983e418428c8cc6bfbb90821a7dd96d20aaae75c95d1bc5349ad487a2"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/Smoke_Albedo_Normal.png",
+      "sha256": "21665a6fe4e34d296bc3aea2ac705943d77089e4e02d42a4f4b872443f2f4a36",
+      "size": 1089367,
+      "guid": "dbeeee6b1cd55a944b4e847bc8eb513d",
+      "metaSha256": "0fdcce30f4f34af50fa0e0d9183271c5e55c8edc849f9712dd21b6fe63b7acea"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TX_Pyro_GazExplosion_A_N.tga",
+      "sha256": "96e38257d61ed6dc0ce3dd7e3557a827c02a7e18b8a7d712e00868352d4fa4ea",
+      "size": 22167298,
+      "guid": "95f44d21e73bf0a49b216ed84eda9921",
+      "metaSha256": "7df13af51188a9b074b016b52122f62c521b909d8fe8e75731650c3ff8bb0e70"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TX_Pyro_GazExplosion_A_P.tga",
+      "sha256": "ac038dcc13cc5e4b13af82b893e67885c10c2e8eb103c1f15c5e5be624e581b2",
+      "size": 22211529,
+      "guid": "02a95ae6246e86940a7c38b8f1e49e16",
+      "metaSha256": "107e016a55e96723a2f6b0eb5b83ad2b16893d1322985f3dc0527adc5fb94c9b"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TyFlowVATSamples/Alien.fbx",
+      "sha256": "2728af7435f62608f20d3989ebeef29709302dff53ed85972d2c0bc535ab4a01",
+      "size": 4669977,
+      "guid": "3771a1de7d5b7a745935b2b3ff8d6974",
+      "metaSha256": "bd9fdb961fee769fb4ebd16a556ef8972dc5d628bc1d38c4eded1f9afe1a2e3c"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TyFlowVATSamples/Alien.mat",
+      "sha256": "8c60d327dd07ea0fb1207eafcdd61131722f7302cd50387eca1d27256427743e",
+      "size": 20977,
+      "guid": "495a377830d00f146b08be31ca2910df",
+      "metaSha256": "af279890e3169a9edd59f0460438845f084ba7bbb24eae171e757319bb767522"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TyFlowVATSamples/Alien_vat.exr",
+      "sha256": "f8a6d7fec4e82a4fe8da8903b6a789e77ca1e6556c1587b0227a9104698f2530",
+      "size": 25198905,
+      "guid": "336177ecacbee3040acf7afbc0e4d7ce",
+      "metaSha256": "c494af73b617306b38298c848c6b074756e25c7530a5b318e894818ca54ff55f"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TyFlowVATSamples/Balloon.fbx",
+      "sha256": "2ae1b4e42a8fec17afecce42e1df75a171875165d2f602d2dd46b511f861a536",
+      "size": 174736,
+      "guid": "90f2a53863c32d34c97e962c80f65b35",
+      "metaSha256": "aa8ea9ad9f993c281e61bf091ae0e754a01f73e2dcb795dab5ab8e8358847a1a"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TyFlowVATSamples/Balloon.mat",
+      "sha256": "7463eb27f7f6153b1ccf07158a42b2bbe54c4092e80072c9faae6fdcccf5f161",
+      "size": 20953,
+      "guid": "3bfc8d86c14192543a04ef19df6c97d7",
+      "metaSha256": "c6ff17a2604c4d80ea1b65726e549305ad195183441045937dc343885b3ea230"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TyFlowVATSamples/Balloon_vat.exr",
+      "sha256": "1932682079760b5308604dd69e94afa1d16371c9fcc7a538e7b8de4563184a13",
+      "size": 6308153,
+      "guid": "362b6750d53f8a34eb096bc9e1ae2481",
+      "metaSha256": "eb3b12ee92963cfa25ef9deb5e4105fba4d250c560b1d95ce02476e038431ba0"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TyFlowVATSamples/Sculpture.fbx",
+      "sha256": "710ac732e13ca341fc8ab0eeca4a02279e7f8e35194665484c3fa6be1e6a4f49",
+      "size": 1492048,
+      "guid": "5722fcc5c9da9b14faa15119a2c7808d",
+      "metaSha256": "465864c4eed00c8e5815d564982fd716d91facb468ecd22bbfa624f043e1b893"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TyFlowVATSamples/Sculpture.mat",
+      "sha256": "e0b813ea05ab7cb88f4de0922340dd900d2813b6a12a42f9e7d2be26293b69cb",
+      "size": 21000,
+      "guid": "5eece444c9ceb484fa48814f67275798",
+      "metaSha256": "45277da5d3f4cf2286cdea44eb9cea4b972a44be6c35bd6ccf28f0a70c5f518c"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TyFlowVATSamples/Sculpture_vat.exr",
+      "sha256": "67c4bf4f18601c17051758d2725db9309b293366eba5ab645f1e652380710974",
+      "size": 201392441,
+      "guid": "61f6f9a5e5cffa0478aea77b363f52c1",
+      "metaSha256": "d91c1cac244439d0ff35923c8f2ef4e4f4464afec7bb22a2d8d54198d88abc34"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/TyFlowVATSamples/tyVAT.prefab",
+      "sha256": "adcdaf438358fb60ab9ea9101ffe7d187859ed157e1dd17b5b9942d8819e0c64",
+      "size": 15002,
+      "guid": "d6994cb58664d1d4c87dd9a2459ad5d6",
+      "metaSha256": "75db7ccf4c21dac56dc693c83634c9c8929760db27a5773fded9ce1982c979cd"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/UnLit.mat",
+      "sha256": "ddfe43517e79ae6bb99666a96a31c2fd8c6388f9cf94fc1edf27f20d0f42b0ff",
+      "size": 21635,
+      "guid": "e0fe3882c57b2ce4ea195e599e124334",
+      "metaSha256": "4738c4bc6025db7ddbb91487407fe83ca0435e4af136914f7497b4273ce51c74"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/christmas_photo_studio_01_4k.exr",
+      "sha256": "13a3dca623af8ed1720adab33a8a43b567254211ce1cafd5b3cb9df0a536ca64",
+      "size": 22867085,
+      "guid": "e936f6950dd71124f91327f503241502",
+      "metaSha256": "cc79aaef24b3358bbee04a1d00db1bfd441c5a81b5c5cf7ccc7e0bb469ea2ccf"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShaderSamples/vfx_NormalQuad.fbx",
+      "sha256": "89db589819a626eca9c24848094cbc78731d32b28405745ccd0c1fc3598fc509",
+      "size": 16092,
+      "guid": "03450c1a33cb2684e845e849cd7cf239",
+      "metaSha256": "58deebbad18dcd6e5ac72635280ccb507d878bc677b991292de677bbad9a892b"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/3DPostionShake.asset",
+      "sha256": "b97f6e4409bdb8989272ff38e5ccfd103de844f768f654de34a4f6fdfd01a21a",
+      "size": 1861,
+      "guid": "c3a1931bdb3088e4ebf4755df90c90e9",
+      "metaSha256": "0765b0ec707077b99067741a745a0746a789a90a2e446fcb29d63ed512a73b81"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/PostProcessingController.cs",
+      "sha256": "e814e89cf1359768c26c918182dca313b440b2dcc4c33e3c7d1f4a93c4965b79",
+      "size": 24313,
+      "guid": "909ea7d136ae0c349a24f02cac1f5f71",
+      "metaSha256": "352e11aa0bd4487be56f02b0e00b44131c3d8675bc9559905d8e30ce98be8f17"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Shader/DistortSpeedNoise.png",
+      "sha256": "15fb002511f6feb08bfd05287edb4a3c8525cec24fc16a6eb2c192e7456e1aee",
+      "size": 19230,
+      "guid": "7f808d0c8608b954d8f20cb4132c3049",
+      "metaSha256": "3e4214de8af8710f8b4e7fe14ac43e9ba373582bf3853f1a59d410aec7c9c78f"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Shader/NBShader.shader",
+      "sha256": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00",
+      "size": 73938,
+      "guid": "7787bfdacec31472ca6644d6e3616bd4",
+      "metaSha256": "d2f6989f1b631e00521c87ea3f72bfa072be6ebac2a62c35a5ba0f544c0b065c"
+    }
+  ],
+  "unresolvedSampleGuids": [
+    "0000000000000000e000000000000000",
+    "0000000000000000f000000000000000",
+    "8f7df3393ccb0ce469fbb19598540497"
+  ],
+  "mutableGuiProtocolAndPostprocessInputs": [
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/DisturbanceMaskRenderPass.cs",
+      "sha256": "99e78fcb5044208829d1391f7175181d98779056b3736035adaac3305ee0003a",
+      "size": 17093,
+      "guid": "1e411db03f9f4d85aa8a5e485158c961",
+      "metaSha256": "97d6bf6d379b4d6096347faaba4f1e95d2d2c28c6fe6f14523a2a6c12deb45ef"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/NBPostProcess.cs",
+      "sha256": "3e7aaece519bd86622635021984d9f484428ef604ec819e91423c9f947be5f4a",
+      "size": 7332,
+      "guid": "d5a1f9350d8fc2c46a372955ef0e73b5",
+      "metaSha256": "f97ef7680bc82d5c36d53a6f49d5dea5cca1f4ae865d000f32334f7c29d77290"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/NBPostProcessRenderPass.cs",
+      "sha256": "143d9b450cc69d1cd1f61f1538510790b8fa9053d0ef3ef27296db99e981c7f8",
+      "size": 4016,
+      "guid": "2a20551d205e487f89b91897e9cb7a43",
+      "metaSha256": "ae96668cb44e19187a3f4b362bc3208441b39a2814ac031fe96b9fed73dbddac"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/NBPostprocessFlags.cs",
+      "sha256": "1a65014ef3063f2ee08781d871f278d3b9516420a5dd6f9ae1a2702558893988",
+      "size": 1429,
+      "guid": "be6a95b97f4bc3846bdada66138f6da1",
+      "metaSha256": "c1ecdaabd0bff8014416349784825bbb3d9f885d4096aad53de8ace295995736"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/PostProcessingController.cs",
+      "sha256": "e814e89cf1359768c26c918182dca313b440b2dcc4c33e3c7d1f4a93c4965b79",
+      "size": 24313,
+      "guid": "909ea7d136ae0c349a24f02cac1f5f71",
+      "metaSha256": "352e11aa0bd4487be56f02b0e00b44131c3d8675bc9559905d8e30ce98be8f17"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/PostProcessingManager.cs",
+      "sha256": "923ca437b15269311392857dfd59a32689fce7d2bc3a1903c7db100836f581c4",
+      "size": 22972,
+      "guid": "fe30e455c04f33342bb3d1c227855682",
+      "metaSha256": "b54f1adbc46aac2c51ab281856419f5fee41309a77ab790f0122f99e3e4f15c7"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/RenderCameraOpaqueDistortObjectPass.cs",
+      "sha256": "377a842525d896063d64b1f654418628339f70ce8f9b9278b07ce8899c02ad38",
+      "size": 4334,
+      "guid": "d9bf1337892f42c489f6d9e553271b59",
+      "metaSha256": "2246d6d190a30c6e0a72938ddf209e1763481c3e89038e2c0c3ccf330cf489a3"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/ScreenColorRenderPass.cs",
+      "sha256": "1f60b3f3d149ec0aba9457002471c069e3e6a4156a5d35bc154a1b9e7b41dcd1",
+      "size": 12025,
+      "guid": "ff8358dc3f3531d4c92a43a49d07f36c",
+      "metaSha256": "b4a54bef20ca1fe9a4dc1e2088b94d3454bd1c44fff35db0d4764ae4cca04acb"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Shader/ColorBlit.shader",
+      "sha256": "b92a76235869450b916d310902e05f9b51b86297dd8faf94335a65d0e9a01ee6",
+      "size": 7921,
+      "guid": "3e92fe624a4f13d4eadc7753e236006a",
+      "metaSha256": "3c3b4b3cae06c08d6e13c15f3c6c1ba5ca5f59cd3e49c109474fc099fa8ce8e2"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Shader/ColorBufferBlit.shader",
+      "sha256": "e3808317f5525aa9fdf67094bb3ae265d506538e91f00c37df17d7dcfb8d2a77",
+      "size": 3364,
+      "guid": "3150dab783854cd6b791d5db3be4a966",
+      "metaSha256": "c322fae15a87371407b9daeb10651568e90347152cf2a8cfd68ca47f009f74ab"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Shader/DistortSpeedNoise.png",
+      "sha256": "15fb002511f6feb08bfd05287edb4a3c8525cec24fc16a6eb2c192e7456e1aee",
+      "size": 19230,
+      "guid": "7f808d0c8608b954d8f20cb4132c3049",
+      "metaSha256": "3e4214de8af8710f8b4e7fe14ac43e9ba373582bf3853f1a59d410aec7c9c78f"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Shader/Disturbance.shader",
+      "sha256": "f619b68c97466fffe88aca78497e52e1b5cf4a7af7c9adb462e3d2b19e83b54e",
+      "size": 3936,
+      "guid": "1b530af6d4d97eb4c8f3725d4cd3e9b8",
+      "metaSha256": "31bae97f21e2208a0a7c5a8c9ae8ddf67b9bc9d2abc28c4f1f0a1df94a53c909"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Shader/FullScreenDisturbance.shader",
+      "sha256": "689123a37091d6f143a786c512248f711230e857927d9f29e285efc0af09c30c",
+      "size": 2571,
+      "guid": "126dad763ce350945945655d5c062248",
+      "metaSha256": "2fe55fcbbb124f246348e0dfbbe76f7a8dcd93ed81b56b2a1a1771cf271ea1b8"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Shader/HLSL/PostProcessingFlags.hlsl",
+      "sha256": "8c2cd48e66a1e1394a2180cf9cb2fc9645bf6f52750689656af590fcccba2305",
+      "size": 901,
+      "guid": "8d59b331ef0707e49a98c91244bd0c1a",
+      "metaSha256": "6f8a590e3a71bb500fe0343d4052f08f78b4d9e418129ebf46d9403a62b92b55"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Shader/NBPostProcessUber.shader",
+      "sha256": "75f352dce5d37b0d5d177bf190abf2dddc618adb3fe0cd9e416bcffcdd4094df",
+      "size": 21427,
+      "guid": "5fd213d22763447c4aa106605e06184e",
+      "metaSha256": "994b33a157f62432c1a00410aeddfcab0b0bf8f24c04439dd0ab603f85687a0b"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderEditorQualityTierWatcher.cs",
+      "sha256": "472011f4a77ac54619be884e75cac1e93e46eb15833f1a2f48ad8a670f550f85",
+      "size": 17412,
+      "guid": "48ae002b228442d4a26f69f91cef7810",
+      "metaSha256": "eeb693e18bbebf424234753e63d8d0243ff855d4f2bc3044488cf6637318ef5c"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelBuildInfo.cs",
+      "sha256": "1a9a2fc4198912be105848a560fd99e7d28b8e1f9e6e8f577d1222b386ebf0a7",
+      "size": 28046,
+      "guid": "48cf3e4ab2374d47bbb51283b80ad2d2",
+      "metaSha256": "30db7b959e8ad2ec196997589daab624ba104b49b0e27bc28aeb34e4b1e540a5"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelBuildStripOverride.cs",
+      "sha256": "6551b9c3944e8c7611074a567ebdc4979f00c72ecaf796a5f3259b06af23eb54",
+      "size": 1296,
+      "guid": "21bd03c909bfb4e9f97d2c9524827cce",
+      "metaSha256": "13ee2dc8d650fca1c2523269024a783f488ecf86660a7ba3aa2992b667d6e39a"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelCatalog.cs",
+      "sha256": "4968f550e5fde74c8fb3d0d1bfb5945a21c04ca5d6000f8304db15a3b8fce3fb",
+      "size": 1920,
+      "guid": "8da3dc0041f2c47a38e0d1c1c20dc493",
+      "metaSha256": "c8c5d86e04ba1af652e25dc8f43bcf3ff8f4451d9f0dfc6d0a38928ae79d64ae"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelEditorAPI.cs",
+      "sha256": "809b50bb3fcafacdb21e4433ebfaf476e0266cbf9535ff0aa1e4dbfc05d88d40",
+      "size": 11046,
+      "guid": "00d0583b58944e79978bb3deeaf7bdf7",
+      "metaSha256": "ad51bd3857e6919df7006385d5af947f48a63b9d1550ad6fe6a934720a30a1fd"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs",
+      "sha256": "7ac5374d7195fb3570225d1350f87c37b09a33ac7fa92cbe210170856b328af6",
+      "size": 3380,
+      "guid": "8f23b4e1c9a5465cbf64079ab0d81880",
+      "metaSha256": "98cdd05a2bf8ad023b9b32cb5c5e7712940e032da932121f1a34641811c53d71"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelPreset.cs",
+      "sha256": "6e8539c2f589a9ec826d3c2670fc1630e58f79cd2d3ec786dbe8855387ad8386",
+      "size": 11071,
+      "guid": "a320954bde0b436381c4aef9f96ac237",
+      "metaSha256": "627fb52ab4abcca48acbc4120be5a1eef3287bde6274cc3f749796ed5190daba"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelProjectSettings.cs",
+      "sha256": "5c944b974e1bffd6314ce7137c454230ca120bb9a728a6b06a6074231fe9636a",
+      "size": 26922,
+      "guid": "ac3a7eef1342b4895b4c1a6bf2669486",
+      "metaSha256": "3b9e8340c826e954e1f76b726c54d0dd2bacb7afe9d4e8fcd8d3d74843bd5e00"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelRowCatalog.cs",
+      "sha256": "eb8c89a02c233c88bc37a8157a98723821b1d1185c807608bc8436fab77aa8aa",
+      "size": 16411,
+      "guid": "2abec81852044be281de893c9ef6ea3b",
+      "metaSha256": "27fe5a337111216516a442b345edda0b5c96c94f869b3ec6e6cf6f49851653b0"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelSettingsProvider.cs",
+      "sha256": "cea727874f0b61f441173b213a06d71de4b790bb71d61ec3389f1a4d2daa7545",
+      "size": 36698,
+      "guid": "278a2a702fc5d47e3a7e5c61468cc2c7",
+      "metaSha256": "70ecf33985cd814df71de11a3520ff413bca16b716e747ae7296c9525d57670a"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelTypes.cs",
+      "sha256": "077e4f87e2b0490eee0c884a753c649a0a988cfae526129ba380528feeba7e7d",
+      "size": 603,
+      "guid": "24ec2067d0e81465ebeab015048983e0",
+      "metaSha256": "b68a79d467d9692cd9853c416fc27fdd9d3e65a604feb16ad6ccd1780b69fc77"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureRuntimeSettingsEditor.cs",
+      "sha256": "adc56bafce502fb836c51f78eca983bd58ef37f1194a7d9cf7b6676efebbc8f2",
+      "size": 2186,
+      "guid": "86834a41402844679aead46b69ad7fdf",
+      "metaSha256": "a96cac3aa472f5370fe4389df3d5a4872f362e492194e78d0dc1165aca631c43"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderRuntimeSettingsSynchronizer.cs",
+      "sha256": "990f46066c1fade938c7862faeef518be81d34b0538279a91c56cc2392767ac4",
+      "size": 10917,
+      "guid": "24198ba1f30a4441782ea031021cfbfb",
+      "metaSha256": "9f2d8dc8ca3865d5a34b4db29ab14451751ad8f083202588aadf03a9d5d90377"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderSVCBuilderWindow.cs",
+      "sha256": "08f4b580f80b6e97c32b558ab23f945997385d2c67ecca8974aafabc1efd843a",
+      "size": 10977,
+      "guid": "b1a45eb1f5ea442aa4193608a1b355a3",
+      "metaSha256": "c58ebf7a418944e8797d31da17c2ac4ee776c43b6ff27efb373de54c1fff2036"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderVariantCollectionBuilder.cs",
+      "sha256": "5e84cd59bd865a226c788d8c0ec7f0193ffd34d0fb72eb875bab0a692fa28a0f",
+      "size": 17924,
+      "guid": "f15d05bf7f574642927c7aed8465cff2",
+      "metaSha256": "0a18f1aca3045258ae1f3b59d63a7d034538e0d6dd80072e0b04df7bab67af39"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderVariantStripper.cs",
+      "sha256": "9ed87bc570a7cf5009dd28ed8a98f357bdac07ce6f44e711be73fb7e700fe19f",
+      "size": 4320,
+      "guid": "b503214133aa446e59281f9583f6a285",
+      "metaSha256": "0b289e1b37693382fca9e94e6f76fc5558cda32713b9ede9920432a8e27c9e7e"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/Localization/NBShaderInspectorLocalization.cs",
+      "sha256": "3607c19b66894f31a7b2ff7051b1b6b40caa777361a21f7e3e652ccfe56c7859",
+      "size": 2587,
+      "guid": "8dd81afc56b7652468af814441ee910f",
+      "metaSha256": "e75743658570c5c193c2462def9476b83854a4fddef62c871614aeefe4ed7ae8"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/NBShaderDebugSymbolsProjectSettings.cs",
+      "sha256": "4d1f388bc78c00124c8a7f83df3baa8ceb1ed195b92fb0987efc1f6606696eed",
+      "size": 14174,
+      "guid": "e55769c18e7943dc94e2223f195e0311",
+      "metaSha256": "55f0802ee233f6af7c08592020389274dd62949bc5e307997da4334b037c5a86"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/NBShaderGUI.cs",
+      "sha256": "158ad2ff74d13feb79645779b1f6db120c7496d6cb7a1710c4abe40acf901844",
+      "size": 4269,
+      "guid": "1b18ce80080b45c7a5b2a0f8cc2492d7",
+      "metaSha256": "89b696566391eb87d525af29efed73e6ab36d3c221c02b0a2373aba649bd7413"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ParticleBaseMigrationWindow.cs",
+      "sha256": "3ff3bddd0e47710e6c44e7a683f5cec2a7821ceea64f7267c61ef32bce09ca1d",
+      "size": 27000,
+      "guid": "748a4df299d449b49d8ee8055fe56dea",
+      "metaSha256": "8a58880aca5487cf82a3f8479b5d1d52d0064d641bc51c95fc2671faa2768bfe"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/BaseOptionBigBlockItem.cs",
+      "sha256": "9e0406589ee72b0278064c497728e772c1f3cc4fcebdca37ef50a6528c8a69ab",
+      "size": 19038,
+      "guid": "135aa1fd916c4155b15cada119fdf3fd",
+      "metaSha256": "7c5f9e7e7a9c29412b07bc4bd0f623a6b2c25e6e2da2dc658bbfdf77d1c4a64f"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/FeatureBigBlockItem.cs",
+      "sha256": "f52b21b48c0f548851fccd3f55db7380317261a301a77568932066b39a8177a4",
+      "size": 4065,
+      "guid": "9bfc5d4ee5b1dc64caf81212c9880723",
+      "metaSha256": "a9cebef7d9511f081d944b8dabc7b0b448ce7647f5f4315bf8ef6f3f06a52a4c"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/ChromaticAberrationFeatureItem.cs",
+      "sha256": "8fc6d9a281dc24cd50a39bc2ef6b245a38a656c41cd657ce78ac04fe97abb598",
+      "size": 1284,
+      "guid": "d0e463cf92ee4725b57727544bc58488",
+      "metaSha256": "917244ad0b8770f03efcc82d8cbb60c252e35b19ed9a05941237f3ece7f701e6"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/ColorBlendFeatureItem.cs",
+      "sha256": "254928cb3b9c604ab1031d7f91db298872cd37c8ce82ee87ba21e9550d4e26a3",
+      "size": 1968,
+      "guid": "a4e1e4d5240a4b748b50807573e22ab8",
+      "metaSha256": "5cd7a38befbf7eda2bcb6eb10ba6f3f1c6ebe7bc7a51b4d93446bc2f6261ee85"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/ColorOverlayFeatureItem.cs",
+      "sha256": "7cf04b063d2029367575e98a857f595da2d967096c5a749b4848867c15c17b38",
+      "size": 7123,
+      "guid": "ff2b511ca4fa43cf95a00570a14980cd",
+      "metaSha256": "0c3b4a0b5281548746857ea4f303e14ae2a5fe76d1675a74d2888eaea0bd7d0c"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/DepthFeatureItem.cs",
+      "sha256": "69e8cd71f69f9fc2d5d6d49217b14e5db5f30d7b1c55dad2baf25d18239c542f",
+      "size": 2160,
+      "guid": "0482c5f68e7b4438bc494df4ebf47267",
+      "metaSha256": "5d625bbe529a547b29755342eaae11936a07dcda1b6fd1734405c24aa6ad65ff"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/DissolveFeatureItem.cs",
+      "sha256": "f87cb1907926f2482d62730c538f4c2e02f5a042da22295af44195fd996dbc91",
+      "size": 7814,
+      "guid": "64cae13520d842939c7d27d6ffadd01d",
+      "metaSha256": "cfca9f76a4c393035005d41a225c6a2ffeacf86843af0d6177d944f642985266"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/EmissionFeatureItem.cs",
+      "sha256": "1f9635b8f724362767da2c90167e382a26b354372a0c2f95e8db87b6fa0446e2",
+      "size": 1934,
+      "guid": "ed7051253ed04c968aa25e96aa0e5d5d",
+      "metaSha256": "3a16733146b6a8b61337ec624d91d3db3d21e26dc57c7ad220ae39ff6de41058"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/FeatureSupportItems.cs",
+      "sha256": "e1670d113a9cafa092a0e6ad348021b740550c6ed0a0936a692af5a3b605be06",
+      "size": 6055,
+      "guid": "2c8170a5849c4a5abf332cdf3832fa02",
+      "metaSha256": "d3a823fd022a748a784d9fb935866c549ae1e44cc5eda44a4e9daeba38559dca"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/FeatureToggleFoldOutItem.cs",
+      "sha256": "74985df06b451aaab516bafd5ff9b5ee887c0c0e3d610a627700818ccfe5fe11",
+      "size": 9996,
+      "guid": "355bed04b23c4ea093ad45991f0004a4",
+      "metaSha256": "649ec6963ad87ec10c45dbacc7faaa12f5d52ea8a7cc38b78910e0f4bd6bd991"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/FresnelFeatureItem.cs",
+      "sha256": "ddc1430d98eb4ded7bbd0d2152691f4a30597384542e21071bc2de8aae9c662a",
+      "size": 2906,
+      "guid": "ee140beb49b74735960d38a89bd528fd",
+      "metaSha256": "b7818c1c2a2ddb7409be6c71bd68d86509036be53a9a44ab3c1dd7648da17b62"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/MaskFeatureItem.cs",
+      "sha256": "dad988e16cd4b31efd56a2bf0f07cbf95c2493f08ddff98ba19f491d5281d635",
+      "size": 9020,
+      "guid": "c5fe236301944650a35adc509015737c",
+      "metaSha256": "e9aa276fbed30fd122ec397673e4a195cf2b4cc63ac7a30c678100c00b8f84c2"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/NoiseAndDistortFeatureItem.cs",
+      "sha256": "997bdb442eec0d429d901d56c8a845fce8a11712a3ec0108775cba6be1f04416",
+      "size": 24939,
+      "guid": "e4f64374c74c47478edfdd0ddb6e8355",
+      "metaSha256": "7c43e2494b64a1fba557eb575e0e5e98bf3f73788c7e2c341c9e1243376943a1"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/ParallaxFeatureItem.cs",
+      "sha256": "c6e608a1169848f3a35c96ff275893696c9d38db1596bf11fadfed32052db7d3",
+      "size": 1935,
+      "guid": "d5bf38ca73454cc1916d18f40182d5ad",
+      "metaSha256": "ce2ea4c1e66efa22ee0bbfa0579f661ce60b56180b631b52fe96e2cf8e31fe9c"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/PortalFeatureItem.cs",
+      "sha256": "7084667702c9ecdbf3c370214d9e1f3c8b02d21962de19fc16fd93d86d2b59fc",
+      "size": 699,
+      "guid": "67c4fd7f472848dfbefe5703bb834b60",
+      "metaSha256": "eb56fb3abcfb101c29bfded28f17cc53ca194aebaee038abfffe2a526a96f7e0"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/ProgramNoiseFeatureItem.cs",
+      "sha256": "6ea0c671072580070bac9c9f6210af5bff314a7f2ad63dbe37fd877b5b96fae4",
+      "size": 4021,
+      "guid": "c6a446a2f0364fb0844cb9d36bd39a27",
+      "metaSha256": "7eefef9480a16e1297f1619ba946c4518d558a2df4bd1d980275ffc7fe381801"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/RampColorFeatureItem.cs",
+      "sha256": "39a6483f24c49eab454ff7768d99df816b7e3c1b728b1b659348a987389aa2f1",
+      "size": 2813,
+      "guid": "45dcb7c7a750440a99a8d5017d41fa22",
+      "metaSha256": "d7f6d723fb57e7e38097b6cc48ff154b42313159a6130c66d2d80973de09d29c"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/SharedUVFeatureItem.cs",
+      "sha256": "19c5daef43be847cddf054aca04d3d971622e18b19af460bf183c3a71b946452",
+      "size": 1496,
+      "guid": "dece160aaa274dd79c1e771fed834249",
+      "metaSha256": "ac7ad4964cda9902e6fb1e4426070f608c2eaeb31d2c2df29bfd329a3576917c"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/VatFeatureItem.cs",
+      "sha256": "7b1553a588493f37d71c7e0b38aaa6d90e94ed028bf3f5b6dfb477da3602fa5c",
+      "size": 21349,
+      "guid": "744c08c430cd42fda37db42e777c3c84",
+      "metaSha256": "4c06f007d2263117bb4bec4dec20ca0e8517ee58fbf392ed2b1557cc7a9e3389"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/Features/VertexOffsetFeatureItem.cs",
+      "sha256": "99ad2b18c76f7cd3534b9b2701d4ba6548a2af4b6114fd2ead5aa7b9044ac897",
+      "size": 9159,
+      "guid": "5507463f5ee64c358b78250126100a8d",
+      "metaSha256": "a3f9cb7f148db9dd5a401e2a6b945ebee54ada47eb7ce62de37a1ad6fdb36265"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/LightBigBlockItem.cs",
+      "sha256": "ea4fc409e86e2c418f5e0836870f0813d9b04439f7099264084d490a7edee678",
+      "size": 14216,
+      "guid": "3e6914407bf83004f8b2c13ccf777981",
+      "metaSha256": "3a29d43f493da524f5e1d1c857839bacd88499603cf775cda8fec2166407bbc2"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/MainTexBigBlockItem.cs",
+      "sha256": "09062871942842ef3ecdeb47fc2f132932695a7aff29aba3f31a90ed0bfddff8",
+      "size": 11275,
+      "guid": "7ebc7f22502386443b06ac9aebc4222b",
+      "metaSha256": "abbd8a5b85d30d2c31cf1c3c8b30e87ca45747c99b03fada373b75aad1ddc822"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/ModeBigBlockItem.cs",
+      "sha256": "4d4962ba7afba8a03ac447f2d45d5588750ade5d2512bd6fd2683be6b6001044",
+      "size": 12843,
+      "guid": "ed09665b113c407dbfb8c818b74f48aa",
+      "metaSha256": "b8ec6c29312cccf325a86457f0d67361c921ea46ad2aa2ff484a73f27d6d0852"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/NBShaderGUIContext.cs",
+      "sha256": "9824a4ce2e3506948fdfd520c9740a392a1a77834e9aa15de8e81c2ec4044a2a",
+      "size": 8063,
+      "guid": "fa789821f4c5470479fc50aac3322924",
+      "metaSha256": "046a64ef2c43ba62172f40c39ecdc054683d6bbae53e563e23d6a5eb0d77d12a"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/NBShaderGUIToolBar.cs",
+      "sha256": "2040e495afcf66c330c6c318d1d679a6835005284ae3fa85fbaab809eecf8038",
+      "size": 25639,
+      "guid": "0518e5ab9884c0e4d9b2c5ba352090ff",
+      "metaSha256": "0b2f63a2ddbdb8fc99d498a68ca3c964229621539500d65e0a38e1e6d8a7bfbc"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/NBShaderProtocolItems.cs",
+      "sha256": "daa515fbf5084482bd33b8bafddfc9068fd3e23dc8ea9f4f1023ab97a36d9a0b",
+      "size": 48879,
+      "guid": "ce0a3556e53240939194057f6b6c7976",
+      "metaSha256": "3d47a826ced0eece65dbf7c930ddd90c36454f3599b585d517a95a7143c396f1"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs",
+      "sha256": "a87fdec040f404206f2021d27524a951048ef08ae28f8dfe9e7601f4b8f221fa",
+      "size": 42210,
+      "guid": "078260ce42a40b046b687b55fa82ae32",
+      "metaSha256": "896ed50b4598d5d47cb17582e547ea583558fab52569bde06cdcbad9e298bd12"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/ParticleVertexStreamsItem.cs",
+      "sha256": "113b79ce5b8387a30de956eacc3e2b73a3cc21dc1554a8b00e3c9f93e83d73cb",
+      "size": 16321,
+      "guid": "1a9c67414c0e4a938fa58f42f8828e45",
+      "metaSha256": "9ae6901a696d921fd7a5600a4bf944912a7cfa0209a6f8e14b5cacad3c4bca5a"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/TABigBlockItem.cs",
+      "sha256": "4dc8fc53b80dc54e8d18541cb4666df9dbc5e84818c2170cdd120d057a5b2bf8",
+      "size": 9378,
+      "guid": "17025a3939882e0459ded7a5251b2463",
+      "metaSha256": "276f73330b3feeba5c82c016823518a1298f0d26fb6ed250f71be2ad2a123b7c"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/NBShaderFeatureCatalog.cs",
+      "sha256": "f639adda9df36642756fd138fb064a2e88b4b402de168fca978494001a838870",
+      "size": 3695,
+      "guid": "faf1ed0560444790b66010208bd2934f",
+      "metaSha256": "48c979873f177693861a6242940d7eebeb65ff6b0c02d5a0452f44717eefaab6"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/NBShaderFeatureRuntime.cs",
+      "sha256": "03882a6755f2a434e18a68901dd4550ac39e36a59a818f66cfc45db0ff4f2183",
+      "size": 7697,
+      "guid": "b6115ddf8278414a953d467dc43f637c",
+      "metaSha256": "030b129059853f9970c761b2380645863db936d232474f27875c0b1f78bee634"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/NBShaderFeatureRuntimeSettings.cs",
+      "sha256": "f913281e36868df96bc458653f69d29d9a602fd33beb19f33000e26bd58f5755",
+      "size": 5101,
+      "guid": "c77ae8665b4443efa5ab2f470a2939b6",
+      "metaSha256": "3dffda669e2a903d0d63102e2d4f32d5f25a5276c44b520643474987a32226d2"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/NBShaderFeatureTier.cs",
+      "sha256": "e2541e68be8150416fb27aad3dfafe6c0e1ff20a7ef03a2884408c59ab1611c9",
+      "size": 287,
+      "guid": "0ad18474c2a04675834e005ab993b7c6",
+      "metaSha256": "44ac9812539e1ccdf5d80b6ee4ca10c7d422732f61cb8fed64eddd0c4c7f06fb"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/NBShaderFlags.cs",
+      "sha256": "48b226ab9b6229a11782048f8d4ba765294347ada1c46cd60541fd78f61a4ec9",
+      "size": 35464,
+      "guid": "2b35030d15614953b769ad23d9fe5dfe",
+      "metaSha256": "65cf5364558a76233c24ecf91131c7ee6b3fb84e129b455fe7fa04bacc664535"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/NBShaderMaterialIntentProtocol.cs",
+      "sha256": "c159a803745e7e36cecd090d5cb9f0f1fb73a4386b03b02bb5edecf9788f6a4f",
+      "size": 1296,
+      "guid": "c88a6a4a7ec940c4aa97cfdcf4a8349e",
+      "metaSha256": "731fd5c0f5f536b4e75222256ba1d4fef1b8d7aba9b5150e7fc253ae4b67a479"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs",
+      "sha256": "1220576a61cc3c926bf26a3191e4512153cb682bc6521c12fcc46955c458d0aa",
+      "size": 25064,
+      "guid": "b6fbac1987464c5f9bf46b3b121d4c21",
+      "metaSha256": "8ab1c79e6c1249d8787a8c5eb59c80047e93c8390e138859d10d620935a2690c"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/NBShaderPassFeatureCatalog.cs",
+      "sha256": "8aea5b2d15d18057eaff13a4fda01cc3802ac35e65cdb603ad354060087cf37c",
+      "size": 4418,
+      "guid": "3238bc94e7aff1147a510c286ad0a673",
+      "metaSha256": "6a13baff470fe84833df572a0b68d3dc0f54a4462639e361c697ed0d2125aa28"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/Properties/AssemblyInfo.cs",
+      "sha256": "fcd256df820232bf25a22ff20237472f10800bff2393c29bb370893dd13b7568",
+      "size": 106,
+      "guid": "f4991907da0943fe9b83896151ba7d2b",
+      "metaSha256": "62012fecbfbc8e3acf303f4b95de6213a41d959f429d4039ee0210b253c336f7"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/AnimationSheetHelperEditor.cs",
+      "sha256": "91d69ce25b25978d866af6ace2fafce7df957a9e8bb46dbf80b7837af0a0fb0a",
+      "size": 4733,
+      "guid": "2e1a5d6748bd4515869cb9c6ebd2b548",
+      "metaSha256": "c0ec4da1ab6f9d544b1c2e2d68f18750a93cddf35657ac0e026f4156536b6383"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/BinaryIntAttribute.cs",
+      "sha256": "79e4716b42770b9e7663c17bbe586158817ffb20c1dccefd46c2f2144bbc0e1b",
+      "size": 3191,
+      "guid": "4517deaf5f31a5848b6a58304d1f516f",
+      "metaSha256": "43f0cf9ec9fd7bdea4a0e71a65a5bbe5efc49e1ce3d0e27f0ef3d5379f1f9245"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/GradientRefletctionHelper.cs",
+      "sha256": "a7bf3230ab209f69ddbc280925a9dc50a2f8ff3afaa52ebce2a46f4e4c3bb18e",
+      "size": 8994,
+      "guid": "ebe6cf7ae30f4357bae940f8ce409628",
+      "metaSha256": "e63e1a26294fe79103c220b3c18c6874141c7e20d62ec6078e58c860ec0c8e84"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/MaterialPropertyAgentInspector.cs",
+      "sha256": "6c20f90d4f2b4b93e8f9b03044397002fc4b48487b719a9bece89fbd3f1b80f8",
+      "size": 10963,
+      "guid": "b9544bec10c84ecca289bece4a630d65",
+      "metaSha256": "8b7c51dd467c96b60c52a8b052d8cbe51b0f37527991326ec621df6e3549655e"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/MeshUIInspector.cs",
+      "sha256": "a1289de3753b58217916670185178ed53f88465b4c848ddd664c4d2e69bb470c",
+      "size": 14401,
+      "guid": "10b17bb5e66542688383e3f64f44717c",
+      "metaSha256": "c675cb9dbd00437b89ae24618036c817fc705d633b3065ea24d26e5b39c37414"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/NBCompatEditorUtility.cs",
+      "sha256": "cb39ad5b50456692400b6fa4eb11e2590e2cdf675e38b85891c443abe7e6d445",
+      "size": 783,
+      "guid": "ab0b838b256742c994e033e50aca5be0",
+      "metaSha256": "a71cdddcdf12386ebca45bd424d4109a06657de4b6a154a12611cd313fb76924"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ProjectSettings/NBFXProjectSettings.cs",
+      "sha256": "5ce39f2765d595c055eef894e401e8206e085e73b4a153b0e233359921406ef5",
+      "size": 11087,
+      "guid": "f5f19e24bcae4dcc8e06c4550b9b1029",
+      "metaSha256": "51f8dac744a8d7baa8c82b9e3d459bd802133c08ac4a231fde7f62fe06245a58"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIHelper.cs",
+      "sha256": "be7965b77c1e160e10961edc85852d250f892c8a39fad02e7e8bc3ad7741bfe5",
+      "size": 89076,
+      "guid": "9279ba81938dc1548b9e9d8297bdcd57",
+      "metaSha256": "a5669646d3ecae9bbc8857eec7b5a35cbcba75a18d73175f54e609cf19e71f40"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/BlockItem.cs",
+      "sha256": "3938ae3f9e942810c867aff7e10017e0e83de4201c3f604d263fbea35ac373a1",
+      "size": 2663,
+      "guid": "d07eceb7cee2d8b46ab0f6f62c4f82e5",
+      "metaSha256": "bea2bafecb687049d7921904f000ffdea2b24c7be90925214659bd5ff9158d5e"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/ColorItem.cs",
+      "sha256": "b2c1cf72ce63737e6f2cac208ed54f4009ec84789b01a898a6f32801f95fde4d",
+      "size": 6463,
+      "guid": "31b44f82d6184d46b683b144f9b5f517",
+      "metaSha256": "ee617311373be593c6e6c999fa6129df671ee2160deafe916314f1f04e58d3ac"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/GradientItem.cs",
+      "sha256": "4653ddaf517bc6168b2bf2888698d2de292fb390f8157f5b0c2401b961d1543f",
+      "size": 18797,
+      "guid": "17810b41ec32488faa9fbceaaf8b8fd5",
+      "metaSha256": "fd43825de3490ee9822d7c5e5f6a4087c1a786f7b4b5a6ed550f5ddd29cc9f98"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/HelpBoxItem.cs",
+      "sha256": "bbd766df465dba6fce9fc9de92bcef5e3265abf40cd33d21a18fa16ea6393e83",
+      "size": 1028,
+      "guid": "6c516e0fb3014df8b96bce4e0925cb45",
+      "metaSha256": "ce433f5f511256dc594c17c2f2579f94e364a7dc12b3021a686a99f7c04c3b9a"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/RenderQueueItem.cs",
+      "sha256": "eb85972821a3c2e963f5c11e21ef2b0a33a3445068ecce18315fd2477144598f",
+      "size": 5771,
+      "guid": "5caca15eb8794602ae6029d798cb5f1f",
+      "metaSha256": "d94c836bc364c0f1c5eb7085c04d2483ccffe67e692306e52827f2d7516facd0"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/SectionLabelItem.cs",
+      "sha256": "9dc90963f733c45d8bc3a4418d521bdfd7f78cca0512ee381df5ac046943d918",
+      "size": 1041,
+      "guid": "75c41d424c5e4203992222069d060bc6",
+      "metaSha256": "d4cc54fde6392055e57aafedf3de69503d690a71d904260ad3a17f501a0658e1"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/ShaderGUIFloatItem.cs",
+      "sha256": "b0d802ecb78ad31f67ef7c6e7c2f511bbe906b87ba1d7903234fc1aeeaaa08f0",
+      "size": 14612,
+      "guid": "b82b6bb5065f449f98cdba68daa4c16f",
+      "metaSha256": "bd9f120010971a76fbac6432e043d0f9bc4325f30fcd5440a0b454afaf1c4238"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/ShaderGUIFoldOutItem.cs",
+      "sha256": "9f4493af9f15c31b0d7d9c80e78fd14323f70743fa187da33ff47809dd6c2a26",
+      "size": 3722,
+      "guid": "6228baa804b041658eaebea96655b431",
+      "metaSha256": "0dd4c1445a128f2e3997f80f0acbd54c7df0ab9dc3c7be3a0f46148e773908f3"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/ShaderGUIItem.cs",
+      "sha256": "7cf5630f5ecdfa6017958865f0466206c616e76451de7dcc9c0960ef0316e253",
+      "size": 18926,
+      "guid": "4f948e090bae4a558a52cb56d0b6c9fc",
+      "metaSha256": "c2472fc9160dbc491cda9585010d9086664be537e6cb9dad1637f78b9f30a146"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/ShaderGUILocalization.cs",
+      "sha256": "6b3c132264153d3186e13ec239b3c13a31aa20b82d7ec1d4e81327218daa9cce",
+      "size": 31387,
+      "guid": "a5429c73ee5e4590bbbbccee3d5a3a58",
+      "metaSha256": "4a95eb63da8ba47d1de72d001bfb8f47997ff366a194e5a4e2bdc448bb9c2c93"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/ShaderGUIPopUpItem.cs",
+      "sha256": "3b890e2c0da88786d59aec25d3c217b0ebcef7d06eb5c1066ce2fddf841a33f8",
+      "size": 5010,
+      "guid": "a4147e85b43d4bcaab43dedf111c41fb",
+      "metaSha256": "6c27799afc1f32a334f885ad0f543bccbcda2c118040529f4cfeb3f50d70fcb9"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/ShaderGUIRootItem.cs",
+      "sha256": "c448961a9a598d011506e8a29eb47587d2b48ae011752aa80a4ce54c04a5ade7",
+      "size": 10020,
+      "guid": "e57b381204754ae780ab305e5feff475",
+      "metaSha256": "2adf218b757cd8384ef1c9ee0763f2cfa914a38c24113d21a23a7fa6d982bda9"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/TextureItem.cs",
+      "sha256": "ebdb00b8e97cc1dca6ed7536e247c03f3e98697fcfccbd86582081489fc6ef6c",
+      "size": 18660,
+      "guid": "7f026fa752b843a0b469f9306b2ff461",
+      "metaSha256": "c3359449b4d861f1d322bb17ad1d09174ba0611599f6930bcaae6882ffd77407"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/ToggleItem.cs",
+      "sha256": "b2a7e5247258515a62806456d57390b98a525c3c58df99be2ed44d3cd30cce12",
+      "size": 1746,
+      "guid": "afba064c4c70401bbb7133de835d2d35",
+      "metaSha256": "5197eb17b07527207c58c945f22f199d5d537bcbb85edceae5566aa948cc8013"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIItems/VectorItem.cs",
+      "sha256": "c66a176231db6069d48f8e43dfe9fedd3dfdd3360a255ecc4901e14e6c516ff4",
+      "size": 21535,
+      "guid": "20a960b448954fc29c9197c2357e89ec",
+      "metaSha256": "41952216b082cb6647940e43582f3e0adc9435e0350a4be265410141c77a57bc"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIResetTool.cs",
+      "sha256": "069c4dd5b310542951a5bad28ccb52290397023d765cb75936f566a9321d48fb",
+      "size": 19211,
+      "guid": "73135babda09451c9e5798b36897637b",
+      "metaSha256": "a759a66693429a2dc15a238270b0cd9ae5dca1222df42f8c1fdc7067705a6c2b"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/ShaderGUIToolBar.cs",
+      "sha256": "ba3cf6ed6ff18c3b0442ae448e2cf80cd32f3d02ec1b5e703f629d36ab718306",
+      "size": 9974,
+      "guid": "deccdbc6963a48b2ace3358cbba67689",
+      "metaSha256": "c8e55eef9f947452b654a033286eca2be9344ac423c79cde9397db1c39607118"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/StencilTestHelper.cs",
+      "sha256": "0eba2896c5640c16088de7f14a121fb4b820feba0c926fcc17bd656c1a11de86",
+      "size": 5956,
+      "guid": "a7d6268a1ca7d824d8da2adf4cb8f74a",
+      "metaSha256": "5cbd87fed1d084e84b82bd6d8ef5a69a7d958d09a02b3713028fc1e0591a0509"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/StencilValuesConfig.cs",
+      "sha256": "5db51ad667ed605d93d597744ca53bd6ffe893ae17d2eb9bed97ced43cb2f7e8",
+      "size": 1861,
+      "guid": "9177edf81a5b2354490ec4d66c4c069d",
+      "metaSha256": "6bc0a8bef2447feb2858b29b1369e26ce88a6a029e78d8d62f5d590bd16fb4ff"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/StringListSerchProvider.cs",
+      "sha256": "3a86cbdb0f63b2dd89b2308fc47356bdfe8aae1cff7ab5a4831714a49ac793fb",
+      "size": 3091,
+      "guid": "aec459410f5254c4bb4d42e7ec8b4b5e",
+      "metaSha256": "c97b795ee08234f57e3bcfc3c460c6be53348b2af6a661030e1eb7c639dd6acb"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/VATTextureImporter.cs",
+      "sha256": "1b40838ae1adef82b009b5710a727299c167501e04598f376cb2e71ca843ff5e",
+      "size": 4579,
+      "guid": "0eb1e10af3780b0499d3c7e1393a0749",
+      "metaSha256": "1bd6b68a7d1bf75665a88b0561c553eb1027733b8fb43a28730aa9b98ae84628"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/refreshMaterialInspectorWindow.cs",
+      "sha256": "c597ad94a38b11ad70d0ed862ced6942b88bb2157344e2916e14cd9d698441b0",
+      "size": 7659,
+      "guid": "317bb692129be184ebd7249bba265210",
+      "metaSha256": "57420c09d40eb904893a54e8bf029dc664f6c8d49a209c20e107361b9ec38917"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs",
+      "sha256": "6da96dc11754c111a8b28383bb0ef3ad132e18d395c73c87001a737198c39aaa",
+      "size": 9864,
+      "guid": "cf793623f3ea13b4db35460280cb6ded",
+      "metaSha256": "3c0ee6d0176843883c47bc1fed87a65ab9d61b697fdd60040fc6eff5544e283b"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/ButtonAttributes.cs",
+      "sha256": "2496182be01fa755509c96191b50a0d9eb33aa6100c453041f570b4a5c58007e",
+      "size": 1816,
+      "guid": "45f557806bb54c4dbeaec7a2ded5be83",
+      "metaSha256": "5145c77ab6d8fa7a2743911ed3f62480b38d61cd22570f5eadceb5819d4321b1"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/MaterialPropertyAgent.cs",
+      "sha256": "b942a9f916b81fd94bb727d9a23c104cdfc8745946db9561d4fb22b4c56417cb",
+      "size": 17871,
+      "guid": "781e80efab11a1d438f7c4d37603bdff",
+      "metaSha256": "ec9d9a9500d5105b7042c6e35c7b70d5708b32f925df00aef9184d2694ae7c39"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/MeshUI.cs",
+      "sha256": "d515c2d263f1aa7fab8d41afe6ed0198471e82edd180804220d21f3b3e6b3bed",
+      "size": 9712,
+      "guid": "96ee1f1d0f8f4cb3a4993f12831f42b7",
+      "metaSha256": "185093916cbda7cc78a41806adf753f53885744e70706f627a7eec462f0d032d"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/NBCompatRuntimeUtility.cs",
+      "sha256": "33744446e7e3c3c72eb3f66aac7037426db7b03291843d554bca44ae08a4a3d1",
+      "size": 671,
+      "guid": "6399d1dc93fb4e0c8a757240070a1313",
+      "metaSha256": "135e45b5f9cba87784d1eac159fe3bf8d34615bacf1f99d879bf4c5ac6573813"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/NBParticleLocalTransformHelper.cs",
+      "sha256": "84f019269faf5e48bfed774a44afe1005990b4c4b201eb793fbd744ceb077d98",
+      "size": 5640,
+      "guid": "70a2d4dce4af4875b6c1cb93bf60442d",
+      "metaSha256": "46fd32f09928c3a689e3b322b4f083633da8d133fc2535d4e735e9e5580a9b19"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/NBShaderSpriteHelper.cs",
+      "sha256": "ec5720dfdc47fef6f15c59c705b6693ab03f5396c464899cc4ea82289f7d6ffa",
+      "size": 2937,
+      "guid": "58ec7ff2f9b58f5459946ac86028eacf",
+      "metaSha256": "dbe70e847a1d277b74b9c5be1210447abbc7ab4e610863bb8274e6579da06d2b"
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/ShaderFlagsBase.cs",
+      "sha256": "14047e8f0b03c779ccd6bcbee3d055e42819bc1356a9cccdd0b7f4d4af621ab7",
+      "size": 2657,
+      "guid": "3bcf591e67bd470e9375d72c63838643",
+      "metaSha256": "0e11611fbe4b538302f3742d349bdf0796c7a118060a287d60aae1ef8d8ea894"
+    }
+  ],
+  "projectAndRendererConfig": [
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "sha256": "d03fca18d2e511a37f7a81f8709404ebb2a571d3e0e5c854038c91a943ae15da",
+      "size": 85,
+      "guid": null,
+      "metaSha256": null
+    },
+    {
+      "path": "ProjectSettings/GraphicsSettings.asset",
+      "sha256": "a7f40dbe338c7ffa3385c77938fdab2b61c0892e1dc79a869c34c7e24e513f32",
+      "size": 2801,
+      "guid": null,
+      "metaSha256": null
+    },
+    {
+      "path": "ProjectSettings/QualitySettings.asset",
+      "sha256": "0772c5fc9aea0f7f549f3c462dc07ea7c03568fdc0837b9f4e470601e12b85c1",
+      "size": 5014,
+      "guid": null,
+      "metaSha256": null
+    },
+    {
+      "path": "ProjectSettings/ProjectSettings.asset",
+      "sha256": "800e18d1d8567679d7111dc7db91fe6abbfe140adaf7c89c76f01f27deb8fffd",
+      "size": 25759,
+      "guid": null,
+      "metaSha256": null
+    },
+    {
+      "path": "Packages/manifest.json",
+      "sha256": "011e2c28b6e51b42c61579d58f3f804244abd8a935a8680900b4ba6f158317d2",
+      "size": 1976,
+      "guid": null,
+      "metaSha256": null
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "sha256": "aded9f30b15835ddcbfa6e823905b017d5fe4a88a08d082c1d51bdc57fe6029e",
+      "size": 13600,
+      "guid": null,
+      "metaSha256": null
+    },
+    {
+      "path": "Assets/UniversalRenderPipelineGlobalSettings.asset",
+      "sha256": "2efc4973d0b0b44f0a05291674e017063a3e44ddb2422028312ee42f2476a8b6",
+      "size": 26509,
+      "guid": "18dc0cd2c080841dea60987a38ce93fa",
+      "metaSha256": "f61661d8bc8dbe531daf09f6211ef978c7ba145c9207c8e76524396ae0722d7c"
+    },
+    {
+      "path": "Assets/Settings/URP-Balanced-Renderer.asset",
+      "sha256": "b4dd794c556cf664759b1776e03bef86c661a1a61ddbc8d2210e949ca7444502",
+      "size": 4647,
+      "guid": "e634585d5c4544dd297acaee93dc2beb",
+      "metaSha256": "ebbb7afa6c1a6e28d17b2125e19e634a4b03a8abe5d7263f220a042b0ea62103"
+    },
+    {
+      "path": "Assets/Settings/URP-Balanced.asset",
+      "sha256": "52037834f31485cffd398da589a7ec370535967577eabb503b8b0c4d5387b400",
+      "size": 4587,
+      "guid": "e1260c1148f6143b28bae5ace5e9c5d1",
+      "metaSha256": "582d59eee6f9e76075756f73ce0df51df7165d725956be92750ac4a7e2c6e4cd"
+    },
+    {
+      "path": "Assets/Settings/URP-HighFidelity-Renderer.asset",
+      "sha256": "f81ee5721b5eb532871704531e0cb2040027348260ff205f1a0a60c8d5f4048f",
+      "size": 3030,
+      "guid": "c40be3174f62c4acf8c1216858c64956",
+      "metaSha256": "1f35ac5b27888da9ed16c57d619316d9aedc9d760f18fb2350592698f38702ee"
+    },
+    {
+      "path": "Assets/Settings/URP-HighFidelity.asset",
+      "sha256": "9dd6e3546cf238e9653f99d7ad44a9af988a3144eb4ec00e56d53c962efcb62a",
+      "size": 3649,
+      "guid": "7b7fd9122c28c4d15b667c7040e3b3fd",
+      "metaSha256": "4f4e042a301842e1e072de030d7dfafa1a6498c7d69177a62f645a233c54c234"
+    },
+    {
+      "path": "Assets/Settings/URP-Performant-Renderer.asset",
+      "sha256": "fcab9b1628687484d9d28be62b58cfae5aeaf293c90c9e9d406e95f790b7b496",
+      "size": 3376,
+      "guid": "707360a9c581a4bd7aa53bfeb1429f71",
+      "metaSha256": "299b5cb85aa3528d3255645dd3e11be5530ea4275255e0df460d3ca8866fa28b"
+    },
+    {
+      "path": "Assets/Settings/URP-Performant.asset",
+      "sha256": "616c083e15a39e901c07a761e35d453488df8dd70f56778bb82d2bf77c6ac429",
+      "size": 4590,
+      "guid": "d0e2fc18fe036412f8223b3b3d9ad574",
+      "metaSha256": "26a8380abc9f83be23c7a6749e165af3ee254ee1e6b13c5c5bc9a735a30ca241"
+    }
+  ],
+  "packageCache": {
+    "com.unity.render-pipelines.core": {
+      "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f",
+      "packageJsonSha256": "9021a0e2d8c7a99aaa072c9d181282072c0a030e73ba8a3b6b7c18c14f1ae13b",
+      "version": "17.3.0"
+    },
+    "com.unity.render-pipelines.universal": {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01",
+      "packageJsonSha256": "8d62c64d3ad27559b4beb27d5001dae9b57918268aebc794fe7e931f7803264f",
+      "version": "17.3.0"
+    },
+    "com.unity.render-pipelines.universal-config": {
+      "path": "Library/PackageCache/com.unity.render-pipelines.universal-config@8dc1aab4af1d",
+      "packageJsonSha256": "ba5082b6c32161b374389816ab771ed1339b22b61f889e50f2a65937180f816b",
+      "version": "17.0.3"
+    },
+    "com.unity.shadergraph": {
+      "path": "Library/PackageCache/com.unity.shadergraph@2b401d56d4b3",
+      "packageJsonSha256": "56e0602a6aa6733cf201db6b869bd22abd8a444dec5e46e922d093fe9d78bde5",
+      "version": "17.3.0"
+    },
+    "com.unity.visualeffectgraph": {
+      "path": "Library/PackageCache/com.unity.visualeffectgraph@f89f6436500a",
+      "packageJsonSha256": "e194f9c1305932b907dd5a38298e32e264f7a4d325f39e688999ea1f8497e2f8",
+      "version": "17.3.0"
+    }
+  },
+  "frozenTestAssets": [
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphSample.unity",
+      "sha256": "ae47541fdf8509ed1bdd227f125fcf0a3df7e870a2c674910e16ad54804326d1",
+      "size": 855305,
+      "guid": "e2cb0a49e5fde4669ad177fd78bcafa0",
+      "metaSha256": "836572a658075dabab43a2aca2e75342bf557e26b23a1e978ac408b917ce215e"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/tyVAT_Frozen.prefab",
+      "sha256": "2cd4741e8181b96bd1217c4b69625b62c85d991da7f2fdbb0485fed0e1776689",
+      "size": 15009,
+      "guid": "90229ac9ea8664044b778e022dca3ae4",
+      "metaSha256": "7bb8b96b27059675ecfad1c723e8bb0734c21b7cd018508519740a0df6cdf862"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/BlinnPhong.mat",
+      "sha256": "4089a38e6412f90ae1201e8c56d8a4be7604020656878b33fbc5b3d18eb34cd1",
+      "size": 21847,
+      "guid": "d0e3bbed917544242bf8e0a9e4527d62",
+      "metaSha256": "fe7722bfc18c48f3d7b7c2a5040708c77911a3ff1efc67a27ca2a35c07e32af9"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/MatCapMateriak.mat",
+      "sha256": "64f55236c4ab697feb5b6d44effe34b9649c8bcbe966d295f401baaa1024d80f",
+      "size": 21702,
+      "guid": "88ff84e12ea0743b8bde9d73c1ba980a",
+      "metaSha256": "ee0317d4efce30253b2d85f04323679e70a5ccacd8bb10c67f87136f4d1d0d00"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/UnLit.mat",
+      "sha256": "08a84dd265a43d6f79a412e3397371a7fac3da794af29a4035705c63aed3811a",
+      "size": 21635,
+      "guid": "faba5def5dcc2463e84eb44789d2c3a3",
+      "metaSha256": "37ea9518530d34a862624ae20512191a315bdcbd76fd1aba40b78ba7f1f93378"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/SixWaySmoke.mat",
+      "sha256": "cf27bc3dabab835d1ebbbac2ef85043cf6a90ff4f1f3b58646a7c142251355b8",
+      "size": 21274,
+      "guid": "68e23af3d20b34ca9baaa73399da3831",
+      "metaSha256": "87957f22cbef2c7cb93db70908344394fe6424e0986669f17125e35303ffcaf0"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/HalfLambert.mat",
+      "sha256": "3b22481486d2994722a0a17aa43c26ecd404cd28a17bd5c35b5bd946c705ea1f",
+      "size": 21832,
+      "guid": "61ebfea4772ca438495fca5a58ff97de",
+      "metaSha256": "913ff30f3846c4d91bbe3849eac60a4c18e5f933276c04cb32ecff3eea114f63"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/NormalSmoke.mat",
+      "sha256": "b2aafa4d038debb7d0b56c42e311ef71f6420c40fc2cc92390005dfbaec737b4",
+      "size": 21628,
+      "guid": "358f96cc077eb4fb28d602987cfc5be3",
+      "metaSha256": "4d0da9a2d50caf39c4da38249aeeba95131b0ebd05745d7a25f687a7f90d34a9"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/PBR.mat",
+      "sha256": "0fdcfe90f440963504c0f737ce973431525f686176281a55ad20d488d367ffa3",
+      "size": 21579,
+      "guid": "e77183cda33c8410c88656cbca15f261",
+      "metaSha256": "dc6a56a1cb0632ecc53129de59f01cbc8ffe046dcb1f1dac3cadfcc3e8c47990"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/Gradient/DissolveRamp.mat",
+      "sha256": "5c9d31b561998815c35cbdcb709cca91d441f267f76fd5c901050e4414ec0e0f",
+      "size": 21485,
+      "guid": "780b19578496e4eadb7a1754add14e41",
+      "metaSha256": "f725baeb6bb1686be7130dd1b5f4216c864311f764645dae5abba74302cb5830"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/Gradient/ColorRamp.mat",
+      "sha256": "d8d53ddbc332a09ed0dd80575d9f6f6b5420071b90634e15958273874a9b7e9b",
+      "size": 21687,
+      "guid": "36f3419b697774dffaaca99e18185719",
+      "metaSha256": "6ef10c42228d92b7316dabef747e15a9f07dd76d6c06b1a340e8cc2e46ff0f18"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/Gradient/GradientMask.mat",
+      "sha256": "f6ff4b9d62897d5ebedb0300abf234c5ac88cba7a70b5a4f5fce93af7bf48297",
+      "size": 21524,
+      "guid": "17c3cb2ec6a1d40e394a3abea5244ba7",
+      "metaSha256": "5cbbeb7ad56ec0fc5f476b2b12ae9cfbd03f13f9e8c005f31b089a08bcf00cb5"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/TyFlowVATSamples/Sculpture.mat",
+      "sha256": "50f84ed3b249196e2a42ad4901e0277beae7d92258a93a1f255142d9767b836c",
+      "size": 21000,
+      "guid": "1cceaf0f325fd452c9b317265eb97b88",
+      "metaSha256": "39d07bb778e4e98d33ff03fbc9c62dad6cff419de9dcddda07dc3a48b36baa38"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/TyFlowVATSamples/Alien.mat",
+      "sha256": "52e7e330e21f9a384dc086634d91fd7c4238b5806abdaa54f4081b24a6b08671",
+      "size": 20977,
+      "guid": "5762b99acb43a4d958f236b2da156c8e",
+      "metaSha256": "0140061b26cefd50a2a83e91877ce7532f9d66150914a3ee22293868458d589c"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/TyFlowVATSamples/Balloon.mat",
+      "sha256": "f0521d38959e0a6eed871ac1d258faffdec1b3993e06c02d7667ad7da936b459",
+      "size": 20953,
+      "guid": "57fbc593a603143c48197cc443f5062a",
+      "metaSha256": "b70d4af107c81ae88a66dcfdf586c8dfe70f0a675b29c3cb2a1c1f3d879051e8"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/HoudiniVATSamples/Fluid/unity/vertex_animation_textures1_mat 1.mat",
+      "sha256": "d5e34159913c701ce2ce6d37133e9a1e7a5e20140dd5d07d24473fac6d7cbae1",
+      "size": 21403,
+      "guid": "6cb0a0bc6114c4621bb8013b32f2ea20",
+      "metaSha256": "d022abd5346fb3306ef350cb3b3f557e41c4c178898b7e56910cca1fd76649ba"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/HoudiniVATSamples/SoftBody/unity/vertex_animation_textures_mat.mat",
+      "sha256": "22584b92b61abaf4320444e6f1902a935883cc20f662d6a0520771c776cd0763",
+      "size": 21197,
+      "guid": "373c2c4392a3b4e9facf772b8ce7fc5c",
+      "metaSha256": "8ea9063e3e90abce4c7de0b67d4844258465b01ab9ba3b7cc2a40c47403a824a"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/HoudiniVATSamples/Particle/unity/vertex_animation_textures1_mat 1.mat",
+      "sha256": "ffaa3af297f90863ba31d7a875de90fea6829a8e70e08bcc673d8b9e8c853a9e",
+      "size": 21274,
+      "guid": "e9e3d447bebf24ea5ac0699a17287c18",
+      "metaSha256": "b3e12824b95447a4195b01a44a9201f721f1a3240002947a2f5c16e10ff800c0"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/HoudiniVATSamples/RigidBody/unity/vertex_animation_textures_mat.mat",
+      "sha256": "aedfab046cfbb1f828d8fece115dbd4301c438a1faf14d0e4a9d9bb7594c3856",
+      "size": 20160,
+      "guid": "bf44a2e699bfd4fba8e6b1a3822932ba",
+      "metaSha256": "2a1c8912d82de2bb0b83561dc5d30976ae60ccefd6b1169e231e637370d976c7"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/Distort/DistortParticles.mat",
+      "sha256": "7a456441fa4e6db9185ad4bf115f3937aac62b0ba0c57267edb4b11e7a6177ad",
+      "size": 21487,
+      "guid": "1414a8d018f7045f1b26e78083cba640",
+      "metaSha256": "22742f9e7558eb4bb3012c37040b6b3247156a9007a62291859f7a98651067a4"
+    },
+    {
+      "path": "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/Distort/Refraction.mat",
+      "sha256": "1195d051711e7aabcdece745d7c46aba2605a0079a4eeabb35d41979db0a143a",
+      "size": 21679,
+      "guid": "ce81e5e213288418294b5aee84815196",
+      "metaSha256": "b31a318819d7e4668756e4da2107fdf773c54a005d060cd098ed2f111e6645e4"
+    }
+  ],
+  "testFixtureSource": [
+    {
+      "path": "Packages/NB_FX/Tests/Editor/G0FrozenShaderTests.cs",
+      "sha256": "90706efb7892fff300ff19b725605188a7fca0f369f2d776feb36cd110af87c0",
+      "size": 8008,
+      "guid": "73ad8e2a24b064b7e8b8932ea1a47937",
+      "metaSha256": "e59e2b687ae915d434aae7dbc2c91842c4d634308ae6ddfb9519a5d9a10f4550"
+    },
+    {
+      "path": "Packages/NB_FX/Tests/Editor/NBFX.Baseline.Editor.Tests.asmdef",
+      "sha256": "5f27fdd853baed5057f399777a068b2f57de2baca93a3dd88c0ef2c84097ec5c",
+      "size": 297,
+      "guid": "97516a5af08dc4ba082c7a08409acd2d",
+      "metaSha256": "5f3b03825d1ab57940adb2b8d6a225ad3fe31ec83f7d881934ccfe365d9d123d"
+    },
+    {
+      "path": "Packages/NB_FX/Tests/PlayMode/G0PipelinePlayModeSmokeTests.cs",
+      "sha256": "092222384d7e7b6ce4cbabe9cad490bd960f069ccc9f806254c779d74602aab1",
+      "size": 436,
+      "guid": "d4b9a3ce860e14033819f3d13c6858e7",
+      "metaSha256": "f79860abd042d10926b67d8810781479af529e1279a430871320a2a25c56c942"
+    },
+    {
+      "path": "Packages/NB_FX/Tests/PlayMode/NBFX.Baseline.PlayMode.Tests.asmdef",
+      "sha256": "4c8331fe88cb86150938385221fd90c4e2d89ed152514a690c61fdfbdf9502ed",
+      "size": 265,
+      "guid": "fd48a4eaae5644f6799bf7555d83f6a8",
+      "metaSha256": "330995e2152cb50fb8d14c6052ac2ae13f1a178a7547faebdb0566136cb9d59f"
+    }
+  ],
+  "environment": {
+    "output": null,
+    "diagnostics": [],
+    "success": true,
+    "result": {
+      "os": "Mac OS X 15.7.3",
+      "gpu": "Apple M3 Pro",
+      "gpuVersion": "Metal",
+      "api": "Metal",
+      "colorSpace": "Linear",
+      "msaa": 4,
+      "renderPipeline": "URP-HighFidelity",
+      "buildTarget": "StandaloneOSX"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "success": true,
+  "command": "command console",
+  "data": {
+    "command": "console",
+    "parameters": {},
+    "result": {
+      "entries": [
+        {
+          "seq": 1,
+          "timestampUtc": "2026-09-24T18:09:54.247476Z",
+          "level": "error",
+          "logType": "Error",
+          "message": "Command 'capture_game_view' failed: Path 'Packages/NB_FX/Documentation~/reports/g0-evidence/original-sample.png' resolves to 'Packages/NB_FX/Documentation~/reports/g0-evidence/original-sample.png', which is outside the authoring root 'Assets'.",
+          "stackTrace": "UnityEngine.Debug:LogError (object)\nUnity.Pipeline.BasePipelineServer:ExecuteCommandDirect (Unity.Pipeline.Commands.CommandInfo,object[]) (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/BasePipelineServer.cs:2642)\nUnity.Pipeline.BasePipelineServer/<>c__DisplayClass134_0:<ExecuteCommand>b__1 () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/BasePipelineServer.cs:2508)\nUnity.Pipeline.Threading.Dispatcher/WorkItem`1<object>:ExecuteCore () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/Dispatcher.cs:284)\nUnity.Pipeline.Threading.Dispatcher/WorkItem:Execute () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/Dispatcher.cs:229)\nUnity.Pipeline.Threading.Dispatcher:ProcessWorkQueue (int) (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/Dispatcher.cs:195)\nUnity.Pipeline.Threading.Dispatcher:ProcessWorkQueue () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/Dispatcher.cs:210)\nUnityEditor.EditorApplication:Internal_CallUpdateFunctions () (at /Users/bokken/build/output/unity/unity/Editor/Mono/EditorApplication.cs:392)\n",
+          "seeded": false
+        },
+        {
+          "seq": 2,
+          "timestampUtc": "2026-09-24T18:17:45.183054Z",
+          "level": "error",
+          "logType": "Error",
+          "message": "Packages/NB_FX/Tests/Editor/G0FrozenShaderTests.cs(26,114): error CS0103: The name 'ShaderCompilerMessageSeverity' does not exist in the current context",
+          "stackTrace": "",
+          "seeded": false
+        },
+        {
+          "seq": 3,
+          "timestampUtc": "2026-09-24T18:18:16.945797Z",
+          "level": "warn",
+          "logType": "Warning",
+          "message": "Embedded package [com.xuanxuan.nb.fx] was found in the directory [/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX]. Please consider changing the directory name to match the package name.",
+          "stackTrace": "",
+          "seeded": false
+        }
+      ],
+      "cursor": 3,
+      "session": "6f086234c3c841feb379d75a882d814f",
+      "returned": 3,
+      "dropped": false,
+      "reset": false,
+      "counts": {
+        "error": 2,
+        "warn": 1,
+        "log": 0
+      },
+      "groundTruth": {
+        "sampledUtc": "2026-09-24T18:18:41.959023Z",
+        "ageMs": 294,
+        "compilationFailed": false,
+        "compiling": false,
+        "consoleErrors": 0,
+        "consoleWarnings": 1,
+        "consoleLogs": 0,
+        "seeded": true
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
