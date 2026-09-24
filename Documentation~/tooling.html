@@ -55,6 +55,17 @@ unity build --help</code></pre>
   <li>记录操作、证据和最终状态，恢复测试环境并释放窗口。其他 Agent 不同时切场景、Play 或批量改材质。</li>
 </ol>
 
+<h2 id="git">Git 管理约定</h2>
+<p>主工程与 <code>Packages/NB_FX</code> 是两个独立 Git 仓库；主工程只记录 NB_FX 的 submodule commit 指针。主 Agent 对分支、集成、提交与推送顺序负责，SubAgent 不在共享工作树自行切换分支。</p>
+<ul>
+  <li><strong>分支：</strong>实施工作从已核对的主工程与 NB_FX 对应提交出发；不直接在 main/master 做重构。默认使用 <code>codex/</code> 前缀，建议两个仓库分别建立 <code>codex/nb-fx-vfxgraph-implementation</code>；名称是建议，不覆盖用户另行指定的名称。计划文档分支不直接混入 Shader 实现。</li>
+  <li><strong>开工检查：</strong>每次切分支、派发或集成前分别读取两个仓库的 branch、HEAD、remote tracking、Git status、未跟踪文件及主工程中的 submodule 指针。T00 冻结的是当时真实 commit 与工作区输入，不用文档发布日期或旧会话记录冒充基线。</li>
+  <li><strong>保护工作区：</strong>未经确认，不 reset、clean、强制切换、stash 他人的改动，也不在共享分支强制 push 或改写历史。混合工作区只暂存明确归属本任务的路径；仅当用户确认整个工作区都在范围内，才可使用 <code>git add -A</code>。提交前检查 staged diff、未跟踪资产、敏感信息与 LFS 规则。</li>
+  <li><strong>SubAgent：</strong>共享工作树由主 Agent 管理 branch 与 staging。并行代码若需要独立 branch，应使用主 Agent 分配的独立 worktree/checkout 和文件所有权；由主 Agent 审核后集成，不能让多个 Agent 在同一 checkout 互相切 branch。</li>
+  <li><strong>提交：</strong>按可回退的垂直切片提交，记录任务 ID、输入版本、验证证据和回退点；重构、行为修复、性能优化及环境升级不要混为一个实现提交。Gate 报告记录主工程 commit、NB_FX commit，以及必要的工作区 diff hash，不能只记其中一个。</li>
+  <li><strong>双仓推送：</strong>先提交并推送 NB_FX，再在主工程提交指向该已推送 commit 的 submodule 指针及经批准的测试资产，最后推送主工程。核对两个远端 commit、指针一致性与工作区状态。过去一次推送授权不自动授权未来持续 push；PR 也不自动创建。</li>
+</ul>
+
 <h2 id="documents">文档维护规范</h2>
 <p>正式目录：<code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/</code>，使用半角 <code>~</code>。正文是 UTF-8、独立完整的静态 HTML。每份文件可直接打开，不依赖 CSS、JS、页面外壳或生成流程。</p>
 <ul>
@@ -75,7 +86,7 @@ unity build --help</code></pre>
 </ul>
 <p>每次文档更新至少检查本地链接、anchors、中文编码、HTML 结构、离线资源和 Git/LFS 属性。文档可读性检查与 Unity 渲染回归必须分别记账。</p>
 
-        <p>文档 Git 约定：NB_FX 是独立仓库。本机 global ignore 的 <code>*~</code> 会忽略 Documentation~，因此包内 .gitignore 仅为该文档目录增加反向规则；这不影响 Unity 对 ~ 目录的忽略。没有修改全局 Git 配置。</p>
+<p>文档目录 Git 例外：本机 global ignore 的 <code>*~</code> 会忽略 Documentation~，因此包内 .gitignore 为该目录增加反向规则；这不影响 Unity 对 ~ 目录的忽略。没有修改全局 Git 配置。</p>
 <hr>
 <p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>

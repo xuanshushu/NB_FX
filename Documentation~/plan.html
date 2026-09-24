@@ -65,7 +65,7 @@ G2 → T06 → G3 → T07 → G4 → T08 → G5 → T09 → G6 → T10 → G7</c
 <h2 id="boundary">变更边界</h2>
 <ul>
   <li>默认实现范围为 NB_FX。样例场景复制、必要测试资产和隔离测试项目属于已规划例外；主 Agent 在执行前逐项列出目标路径与原因，不能借此改动无关 Assets 或 ProjectSettings。</li>
-  <li>现有工作区有未提交修改和 VFXSample 资产。不得回滚、覆盖或自动纳入自己的实现；基线需记录实际工作区状态。</li>
+  <li>计划写作时的 Unity 6000.3 升级与 VFXSample 已单独提交；实施时仍须重新检查两个仓库的实时状态。不得回滚、覆盖或自动纳入他人后续改动；基线记录实际 commit、submodule 指针和工作区输入。分支与推送遵守<a href="tooling.html#git">Git 管理约定</a>。</li>
   <li>现有 ShaderLab 的旧版本兼容要求仍来自仓库规则；新 VFX 路径允许 Unity 6000+，不等于批准删除原路径兼容代码。若共享库迫使原路径提高版本，必须另行讨论。</li>
   <li>优先研究 Graph 自定义 Pass 的原始目标；证明不可行后才提出局部替代，并等待用户决策，不预先建设 VFX 重绘架构。</li>
   <li>不为测试工程便利擅自升级 Unity、URP、SG、VFX、CLI 或 Pipeline。</li>
