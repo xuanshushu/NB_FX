@@ -30,11 +30,12 @@
 
 <h2 id="method">实施方法</h2>
 <ol>
-  <li>读取实际 VFX Output、ShaderGraph 属性绑定和生成层源码；先用固定种子、固定 timestep、单粒子固定位置建立 C/D 对比。保留 A/B/C，不以 VFX 替换基线。</li>
+  <li>读取实际 VFX Output、ShaderGraph 属性绑定和生成层源码；首选真正的 <code>Output Particle ShaderGraph Mesh</code> 建立固定种子、固定 timestep、单粒子固定位置的 C/D 对比。不要把独立于粒子系统的 <code>Output Mesh</code> 当作逐粒子验证。保留 A/B/C，不以 VFX 替换基线。</li>
   <li>列出颜色、Alpha、UV、年龄、size、position、rotation、custom attributes 与 feature 参数的所有权。区分每 Output 状态、uniform、per-particle 和 frame 数据，检查范围和默认值。</li>
   <li>独立试验 Output 是否能接入现有 NB GUI。不能直接嵌入时验证共享配置规则/功能定义/薄适配能否完成同一体验，明确真实公开扩展点，而非预先承诺。</li>
   <li>检查连线参数与 Inspector 控件优先级、逐粒子值能否参与功能、不能逐粒子变化的 RenderState/keyword 的处理。既不能覆盖用户连线，也不能用每粒子关键字组合制造变体。</li>
   <li>验证最小 Output 的空间、Bounds、生成 shader/Pass、NBPostprocess、排序与基础透明行为；与 Mesh 结果比较时控制朝向、几何、时间与相机输入。</li>
+  <li>保存并重导入 Graph/VFX Asset，重新打开工程后核对 Property Reference Name、Output 端口/连线、默认值与 RenderState；Graph 的局部 Output 设置不能被误认为修改了 Graph 资产。</li>
   <li>让用户直接在 Graph / Output 配置；不新增 Material → VFX 导入、同步、转换菜单或持久同步状态。</li>
 </ol>
 
@@ -43,6 +44,7 @@
   <li>至少一个用户确认的真正 VFX Output 工作，且不是普通 Mesh 模拟 VFX。</li>
   <li>Output/GUI 的直接复用或薄适配方案有实际证据与可维护边界；若不可行仍为阻塞。</li>
   <li>最小 C/D 参数与 NBPostprocess 对比通过，未绕开 G3/G4 的原始问题。</li>
+  <li>Graph/VFX Asset 保存、重导入和重开后，最小参数绑定与连线仍有效。</li>
 </ul>
 <p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
 
@@ -56,6 +58,6 @@
 <h2 id="blockers">阻塞、变更与回退</h2>
 <p>VFX 生成层丢 Pass、不能提供必要数据、GUI 扩展不可用或用户连线被破坏时，停在受影响能力，提交实际限制与候选选择。不能复制独立 GUI 或自行削减功能。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

@@ -94,11 +94,11 @@ Mesh / Graph 仅是验证宿主；最终新产品是 NBShader_VFXGraph。</code>
     </tbody>
   </table>
 <p>当前延迟扭曲使用 <code>R16G16_SFloat</code>、有符号 RG 偏移、源 Alpha 混合、<code>_DisturbanceMaskTex</code> 和 <code>_ScreenColorCopy1</code>。格式、clear、降采样、相机过滤、深度附件、Pass 时序与 RenderGraph 资源声明均属于契约。</p>
-<blockquote><p><strong>第一验证目标：</strong>普通 Mesh / Shader Graph 能否在不修改官方包的前提下生成所需自定义 Pass / LightMode，并由原 NBPostprocess RenderPass 选择与驱动。</p><p>当前包的 Target / SubTarget 为 internal，这是风险证据，不是对全部替代路线的最终证明。若公开机制不足，T06 必须提交最小复现和影响最小的候选方案，等待用户决定；不能自行开展 VFX 重绘、多输出或生成代码修改架构。</p></blockquote>
+<blockquote><p><strong>第一验证目标：</strong>G0 后由 T00A 在隔离的、启用 Support VFX Graph 的最小 Graph 上，提前验证普通 Mesh / Shader Graph 能否不修改官方包而生成所需自定义 Pass / LightMode，并由原 NBPostprocess RenderPass 选择与驱动。</p><p>当前包的 Target / SubTarget 为 internal，这是风险证据，不是对全部替代路线的最终证明。若公开机制不足，T00A 提交最小复现和影响最小的候选方案，等待用户决定；不能自行开展 VFX 重绘、多输出或生成代码修改架构。T06 在共享 HLSL 接入后仍须正式复验。</p></blockquote>
 
 <h2 id="unreal">Unreal 预留</h2>
 <p>纯计算显式接收时间、空间、颜色和采样数据；不混入 Unity 全局变量。URP 光照、Unity 材质绑定、NBPostprocess 与编辑器仍保持 Unity 专用。暂不创建 Unreal 分支、适配器或引擎接口框架，不因此阻挡当前等价重构。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

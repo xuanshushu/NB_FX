@@ -25,12 +25,13 @@
       <tr><td>D06</td><td>Graph 测试材质与原材质的序列化兼容不是硬要求。</td><td>可选转换仅用于验证，不成为产品或架构限制；原 ShaderLab 兼容仍必须保留。</td></tr>
       <tr><td>D07</td><td>改用标准 Lit / Six-Way Target 等其他实现必须先讨论并获得同意。</td><td>不能仅凭等价测试自行替换。</td></tr>
       <tr><td>D08</td><td>新路径最低版本可在 Unity 6000+ 中确定，先 6.3，后续至 6.5。</td><td>不再要求新路径回到 2021.3；不自动批准原 ShaderLab 放弃旧兼容。</td></tr>
-      <tr><td>D09</td><td>较新 DirectX、Metal、Vulkan、OpenGL ES；XR 不在正式范围。</td><td>具体最低 API、OS、设备与版本仍待验证。</td></tr>
+      <tr><td>D09</td><td>新 VFX 路径保留较新 DirectX、Metal、Vulkan 候选；接受不支持 OpenGL ES。XR 不在正式范围。</td><td>具体最低 API、OS、设备与版本仍待验证；原 ShaderLab 兼容要求不因 VFX 排除 GLES 而缩减。</td></tr>
       <tr><td>D10</td><td>复制 NBShaderSample 与必要资产，保留原始/重构/Graph 三组，后续增加 VFX。</td><td>不能只复制材质当作原实现冻结，也不能删掉前期对照。</td></tr>
       <tr><td>D11</td><td>正式文档采用 Documentation~ 内可独立打开的简单 HTML；index.html 仅列文件入口，不使用公共 CSS、JS、页面外壳或生成流程。</td><td>不维护重复 Markdown 正文；证据媒体使用相对链接与 LFS；测试资产在 Unity 可导入范围。</td></tr>
       <tr><td>D12</td><td>CLI 1.0.0-beta.11 / Pipeline 0.7.0-exp.1 已单独授权安装，版本固定。</td><td>不自动升级；工具连通不等于回归通过；不视为 Coplay MCP 已安装。</td></tr>
       <tr><td>D13</td><td>本轮仅计划与文档，禁止开始重构和 SubAgent 执行。</td><td>后续任务书是执行说明，不是当前启动指令。</td></tr>
       <tr><td>D14</td><td>文档正文中文，专业术语保留原文，不附中文释义。</td><td>不制作术语翻译表。</td></tr>
+      <tr><td>D15</td><td>允许把 Pass 可行性试验提前到 G0 后、大规模 HLSL 重构前，单列 T00A/GF。</td><td>不等于本轮启动试验；GF 不替代 G2/G3/G5，也不授权修改官方包或自行选择降级方案。</td></tr>
     </tbody>
   </table>
 
@@ -40,10 +41,10 @@
       <tr><th scope="col">编号</th><th scope="col">问题</th><th scope="col">触发/责任</th></tr>
     </thead>
     <tbody>
-      <tr><td>Q01</td><td>Graph 所需自定义 Pass / LightMode 是否可用；不可行时接受哪种局部替代？</td><td>T06 / G3；原始目标失败后给出最小复现、官方限制与候选代价，不提前建设替代架构。</td></tr>
+      <tr><td>Q01</td><td>Graph 所需自定义 Pass / LightMode 是否可用；不可行时接受哪种局部替代？</td><td>先 T00A / GF，再 T06 / G3 正式复验；原始目标失败后给出最小复现、官方限制与候选代价，不提前建设替代架构。</td></tr>
       <tr><td>Q02</td><td>VFX Output 是否能复用 GUI；不能直接嵌入时薄适配到什么程度可接受？</td><td>T08 / G5；附配置、连线驱动、RenderState 的实际数据流与界面证据。</td></tr>
       <tr><td>Q03</td><td>Override Z、背面先绘制、Stencil、透明阴影等能力如何保持？</td><td>T06/T07 与 T08/T09；逐项列限制，不能统一降级。</td></tr>
-      <tr><td>Q04</td><td>最低 Unity 6000.x、各 API 版本和 OS/GPU 设备矩阵。</td><td>T10，结合前序最小方案特性。</td></tr>
+      <tr><td>Q04</td><td>最低 Unity 6000.x、DirectX/Metal/Vulkan 具体版本和 OS/GPU 设备矩阵。</td><td>T10，结合前序最小方案特性；OpenGL ES 已排除新 VFX 范围，不再作为悬而未决项。</td></tr>
       <tr><td>Q05</td><td>正式 Output 类型清单、必须覆盖的 VFX Mesh/VAT 数据组合。</td><td>T08 先最小验证，T09 前确认；不凭便利缩小范围。</td></tr>
       <tr><td>Q06</td><td>图像容差与新增路径性能预算。</td><td>基线校准后、全量验收前确认，不在失败后放宽。</td></tr>
       <tr><td>Q07</td><td>若共享重构影响原 ShaderLab 的旧版本兼容，如何处理？</td><td>主 Agent；当前没有放弃原兼容要求的批准。</td></tr>
@@ -59,6 +60,6 @@
 </ol>
 <p>技术试验成功只能证明候选可行，不能代替用户对不同实现路线的批准。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

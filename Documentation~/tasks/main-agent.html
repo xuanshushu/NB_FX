@@ -29,6 +29,7 @@
     </thead>
     <tbody>
       <tr><td><a href="t00-baseline.html">T00 · 冻结基线与验证环境</a></td><td>G0</td><td>未派发 / 未执行</td></tr>
+      <tr><td><a href="t00a-pass-feasibility.html">T00A · 提前 Pass 可行性试验</a></td><td>GF</td><td>未派发 / 未执行</td></tr>
       <tr><td><a href="t01-contracts.html">T01 · 接口、协议与文件所有权</a></td><td>G1</td><td>未派发 / 未执行</td></tr>
       <tr><td><a href="t02-uv-sampling.html">T02 · UV、采样与基础数学</a></td><td>由 T05 汇总进入 G2</td><td>未派发 / 未执行</td></tr>
       <tr><td><a href="t03-surface-alpha.html">T03 · Surface、颜色与 Alpha 功能</a></td><td>由 T05 汇总进入 G2</td><td>未派发 / 未执行</td></tr>
@@ -43,12 +44,12 @@
   </table>
 
 <h2 id="dependency">依赖与并行窗口</h2>
-<pre><code>T00 → G0 → T01 → G1
-                    ├─ T02 ─┐
-                    ├─ T03 ─┼─ 分批交 T05 集成 → G2
-                    └─ T04 ─┘
+<pre><code>T00 → G0 → T00A → GF → T01 → G1
+G1 ├─ T02 ─┐
+   ├─ T03 ─┼─ 分批交 T05 集成 → G2
+   └─ T04 ─┘
 G2 → T06 → G3 → T07 → G4 → T08 → G5 → T09 → G6 → T10 → G7</code></pre>
-<p>实施时至多按可用容量安排主 Agent＋3 个工作 Agent；这只是容量上限，不是必须同时启动。T02/T03/T04 只有在签名固定且修改文件不重叠时并行，Unity 编译与回归仍串行。T05 若作为独立 SubAgent 运行，需相应减少活跃模块 Agent，或由主 Agent 承担集成。纯只读调查可提前，不绕过 Gate 进入下一阶段实施。</p>
+<p>实施时至多按可用容量安排主 Agent＋3 个工作 Agent；这只是容量上限，不是必须同时启动。T01 只读调查可与 T00A 并行准备，但 G1 必须吸收 GF 结论；GF 失败且无用户决策时不启动 T02–T05。T02/T03/T04 只有在签名固定且修改文件不重叠时并行，Unity 编译与回归仍串行。T05 若作为独立 SubAgent 运行，需相应减少活跃模块 Agent，或由主 Agent 承担集成。</p>
 
 <h2 id="ownership">文件所有权与集成</h2>
 <table border="1" cellpadding="6">
@@ -57,6 +58,7 @@ G2 → T06 → G3 → T07 → G4 → T08 → G5 → T09 → G6 → T10 → G7</c
     </thead>
     <tbody>
       <tr><td>接口/协议清单</td><td>T01；主 Agent 审核</td><td>G1 后改签名必须通知所有消费者并复验。</td></tr>
+      <tr><td>隔离 Pass 原型</td><td>T00A；主 Agent 调度 Editor</td><td>仅 test-only 资产；不得编辑生产 Shader、NBPostprocess 或官方包；T06 重新正式验证。</td></tr>
       <tr><td>Math / UV / Sampling</td><td>T02</td><td>不得自行修改中央 Forward/Input。</td></tr>
       <tr><td>Surface / Alpha</td><td>T03</td><td>保留执行顺序；与光照/输出接口联审。</td></tr>
       <tr><td>Geometry / VAT / Lighting</td><td>T04</td><td>现有 VAT include 也需独占锁定。</td></tr>
@@ -83,7 +85,7 @@ G2 → T06 → G3 → T07 → G4 → T08 → G5 → T09 → G6 → T10 → G7</c
 <h2 id="decisions">阻塞与用户决策</h2>
 <ul>
   <li>技术限制不是删范围的授权。使用决策模板提供最小复现、失败原因、影响功能、候选方案、版本/API/维护成本和推荐项。</li>
-  <li>重点升级：自定义 Pass 不可行；拟换标准 Lit/Six-Way Target；VFX GUI 不可复用；修改 NBPostprocess；降低旧路径兼容或 API 范围。</li>
+  <li>重点升级：GF 或 G3 自定义 Pass 不可行；拟换标准 Lit/Six-Way Target；VFX GUI 不可复用；修改 NBPostprocess；降低旧路径兼容或进一步缩减已确认的 DirectX/Metal/Vulkan。新 VFX 路径的 OpenGL ES 排除已获批准。</li>
   <li>暂停受阻依赖链，允许无关的文档和只读调查继续；不要通过重复运行或让另一 Agent 同样失败来伪造进度。</li>
   <li>回退按切片恢复，维护基线只读；跨仓库版本关联必须保留，不能只记主工程 commit。</li>
 </ul>
@@ -91,6 +93,6 @@ G2 → T06 → G3 → T07 → G4 → T08 → G5 → T09 → G6 → T10 → G7</c
 <h2 id="records">文档交付与任务状态</h2>
 <p>每个任务书保持中文正文、专业术语原文。任务状态与实现结果分别记录；实现文件、接口说明、测试证据和用户决策形成闭环。使用<a href="../templates/task.html">任务模板</a>、<a href="../templates/decision.html">决策模板</a>和<a href="../templates/report.html">验证报告模板</a>。本轮只生成这些文档，不创建新任务或后台执行。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

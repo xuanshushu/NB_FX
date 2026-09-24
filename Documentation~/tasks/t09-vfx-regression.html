@@ -33,7 +33,7 @@
   <li>按确认 Output 类型建立粒子数、空间、变换、custom attributes、纹理/Flipbook、生命周期、GPU events（若纳入范围）与 Bounds/sorting 测试矩阵。未确认类型不能自动纳入或排除。</li>
   <li>运行全部确认效果与高风险组合，特别覆盖 VAT 高 UV/Buffer、光照输入、Fresnel、Dissolve/Mask、深度衰减、Alpha、OverrideZ 和背面顺序的适用性。</li>
   <li>分别验证 opaque/deferred distortion、ScreenColorCopy、RenderGraph/Compatibility、主相机配置及已确认相机组合；同屏混合 ShaderLab 和 VFX 防止全局资源互相污染。</li>
-  <li>核对 per-particle 与 uniform 默认值、连线覆盖、Disable/Enable、Reinit、暂停、固定步进、Domain Reload 和构建后表现。不得把无法完全锁定的 GPU 时序误差直接定为实现错误或通过。</li>
+  <li>核对 per-particle 与 uniform 默认值、连线覆盖、Disable/Enable、Reinit、暂停、固定步进、Domain Reload 和构建后表现；保存、重导入、重开和版本升级时复核 Property Reference Name、端口/连线与 Output 状态。不得把无法完全锁定的 GPU 时序误差直接定为实现错误或通过。</li>
   <li>执行 Player、variants/stripping、CPU/GPU/显存与粒子规模测试；性能阈值在比较前由主 Agent 固定。功能修复若修改共享核，重新跑 A/B 和 B/C 受影响用例。</li>
 </ol>
 
@@ -55,6 +55,6 @@
 <h2 id="blockers">阻塞、变更与回退</h2>
 <p>不能稳定比较的用例需说明非确定性来源并建立替代测量，不能跳过验收。功能或性能无法达到标准时交用户决策，不能自行删范围。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

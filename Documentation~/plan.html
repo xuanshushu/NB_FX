@@ -27,16 +27,17 @@
     </thead>
     <tbody>
       <tr><td>P0 · 基线</td><td>T00：代码与配置快照、依赖闭包、样例复制、工具能力核验、差异测试环境。</td><td>可复现基线、测试用例索引、工具能力表、已有问题表。</td><td>G0</td></tr>
+      <tr><td>P0A · Pass 可行性试验</td><td>T00A：在隔离测试资产上，使用启用 Support VFX Graph 的最小 Graph 验证自定义 Pass / LightMode 与原 NBPostprocess；不抽取功能 HLSL。</td><td>最小资产、生成代码、绘制/RT/构建证据或明确的阻塞决策材料。</td><td>GF</td></tr>
       <tr><td>P1 · 契约</td><td>T01：参数、Flags、执行顺序、模块输入输出、宿主适配与文件所有权。</td><td>接口 v1、逐属性映射、Feature → Pass → 测试关系。</td><td>G1</td></tr>
       <tr><td>P2 · ShaderLab 重构</td><td>T02 / T03 / T04 分模块迁移；T05 串行接入原入口并组织回归。</td><td>共享功能 HLSL、保持现有入口的 ShaderLab、原路径对比证据。</td><td>G2</td></tr>
       <tr><td>P3 · Graph 最小方案</td><td>T06：在普通 Mesh 上验证 Custom Function、参数、所需 Pass / LightMode 与 NBPostprocess。</td><td>Mesh / Graph 最小链路、生成代码与 Pass 证据；失败则提供决策材料。</td><td>G3</td></tr>
       <tr><td>P4 · Graph 等价与 GUI</td><td>T07：逐功能接入、共用 GUI、渲染状态、复杂组合、构建与性能比较。</td><td>确认范围内的 Mesh / Graph 等价报告。</td><td>G4</td></tr>
       <tr><td>P5 · VFX 最小方案</td><td>T08：将已验证 Graph 接到 VFX Output，独立验证 GUI 中间层、逐粒子参数和管线。</td><td>真正 VFX 最小结果、GUI 可行性结论、Output 绑定契约。</td><td>G5</td></tr>
       <tr><td>P6 · VFX 完整回归</td><td>T09：全部确认效果、Output 类型、复杂数据、NBPostprocess、运行状态与性能。</td><td>VFX 覆盖表、差异与缺口报告。</td><td>G6</td></tr>
-      <tr><td>P7 · 版本与交付</td><td>T10：候选最低 Unity 6000.x 至 6.5、各 API、Player、变体、发布回退。</td><td>实际支持矩阵、构建与性能证据、限制与使用说明。</td><td>G7</td></tr>
+      <tr><td>P7 · 版本与交付</td><td>T10：候选最低 Unity 6000.x 至 6.5、DirectX/Metal/Vulkan、Player、变体、发布回退。</td><td>实际支持矩阵、构建与性能证据、限制与使用说明。</td><td>G7</td></tr>
     </tbody>
   </table>
-<p>上述顺序为默认执行路线。可以提前做不改变项目的源码调查；若希望提前运行 Graph 风险原型，必须单独调整执行计划，且不得用提前原型跳过 G2、G3、G4。当前没有授权执行任何原型。</p>
+<p>用户已同意将 Pass 可行性试验安排在 G0 后、G1 与大规模 HLSL 重构前。此为后续执行计划的授权，不是本轮启动命令。GF 只判断架构关键风险是否足以继续投入；不替代 G2 的 ShaderLab 回归、G3 的正式 Mesh / Graph 验收或 G5 的真正 VFX Output 验证。</p>
 
 <h2 id="slices">ShaderLab 迁移批次</h2>
 <table border="1" cellpadding="6">
@@ -54,12 +55,12 @@
 <p>每批只做一个可回退的垂直切片。先接入原 ShaderLab 并对比，再允许依赖它的下一批合并。重构、行为修复和性能优化不能混在同一批提交。</p>
 
 <h2 id="dependency">并行与串行边界</h2>
-<pre><code>T00 → G0 → T01 → G1
-                    ├─ T02 · UV / 采样 ───┐
-                    ├─ T03 · 表面 / Alpha ┤ → T05 → G2
-                    └─ T04 · 几何 / 光照 ─┘
+<pre><code>T00 → G0 → T00A → GF → T01 → G1
+G1 ├─ T02 · UV / 采样 ───┐
+   ├─ T03 · 表面 / Alpha ┤ → T05 → G2
+   └─ T04 · 几何 / 光照 ─┘
 G2 → T06 → G3 → T07 → G4 → T08 → G5 → T09 → G6 → T10 → G7</code></pre>
-<p>T10 的版本调查可以早期读取源码，但正式验收须消费对应 Gate 的实现。T02 / T03 / T04 的具体并行窗口由主 Agent 按接口依赖安排，不因图示并列就允许同时编辑中央文件。</p>
+<p>T01 的只读梳理可与 T00A 并行准备，但 G1 签名必须纳入 GF 结论；GF 未通过且无用户决策时，不启动 T02–T05。T10 的版本调查可早期读取源码，正式验收仍须消费对应 Gate 的实现。T02 / T03 / T04 的具体并行窗口由主 Agent 按接口依赖安排，不因图示并列就允许同时编辑中央文件。</p>
 
 <h2 id="boundary">变更边界</h2>
 <ul>
@@ -73,6 +74,6 @@ G2 → T06 → G3 → T07 → G4 → T08 → G5 → T09 → G6 → T10 → G7</c
 <h2 id="delivery">各阶段统一交付</h2>
 <p>实现变更列表、接口变更、生成代码/Pass 清单、Console 与测试原始记录、可复现步骤、失败与未验证项、性能变化、回退点，以及主 Agent 的审核结论。估时在 G0/G1 清单稳定后再给出；目前不承诺未经验证的总工期。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

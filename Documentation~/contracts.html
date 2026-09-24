@@ -77,6 +77,7 @@
 
 <h2 id="vfx">VFX 数据契约：G4 后细化</h2>
 <p>T08 单独验证 color/alpha、Custom1/Custom2、UV/Flipbook、position/normal/tangent、空间与缩放、time/age、自定义属性和 Output 参数频率。T09 再覆盖 Mesh VAT 附加通道、所有确认 Output 类型和高级组合。</p>
+<p>G1 先按 uniform、per-particle 动态值、compile-time keyword 分类每个候选参数，并记录 Graph Property Reference Name、VFX Output 端口与默认值的稳定性要求。VFX Graph 17.3 对动态连接的 ShaderFeature keyword 有限制；任何必须使用 MultiCompile 的候选都须量化变体与编译成本，不能因连线便利批量改写关键字。</p>
 <p>Quad / Mesh / Strip 按语义分别验收。没有 Mesh 拓扑的数据源不要求执行 Mesh VAT，但不能借 Output 类型差异删减 Mesh Output 本应支持的效果。用户未批准前，不为适配而复制一套模拟或另起 CPU 粒子替身。</p>
 
 <h2 id="feature">Feature Tier、关键字与变体</h2>
@@ -85,8 +86,9 @@
   <li>每个功能记录 compile-time 与 runtime 部分；保持原 shader_feature / multi_compile 的意图，不为方便将全部开关改为动态分支或 multi_compile。</li>
   <li>检查 Graph 的关键词命名、实际声明、VFX expression 频率、构建 stripping；不能从 Inspector 状态推断 shader variant 存在。</li>
   <li>生成代码、编译后变体和 Player 结果都要取证；Feature Tier 在 VFX 的映射未验证前不得宣称支持运行时动态切换。</li>
+  <li>官方 VFX 17.3 不支持暴露的 Shader Graph Gradient Blackboard 属性；现有 NB 打包渐变应先核对 Vector 传输与解码，不直接认定功能缺失或改成第二套渐变算法。</li>
 </ul>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

@@ -36,6 +36,7 @@
   <li>逐批运行 A/B 对照、Console 与编译检查，覆盖七个 Pass、背面先绘制、OverrideZ / SV_Depth、Stencil/Portal、ColorMask、UI/Sprite/UIParticle/Universal2D 等原宿主。</li>
   <li>按 NBPostprocess 原契约分别验证 opaque distortion、deferred RG distortion、ScreenColorCopy 和合成；RenderGraph / Compatibility 两条路径分开记录。</li>
   <li>验证 GUI 状态、关键词、材质序列化、运行时 Material/MPB 修改、FeatureLevel、SVC、Player 和性能。出现已有 bug 时登记，不与本次重构混改。</li>
+  <li>G2 前在隔离的 Unity 2021.3 环境运行原 ShaderLab 路径 smoke，检查包导入、Shader 编译、材质与基础 NBPostprocess；不在用户主工程上降级。若新 Graph/VFX 资产或代码使旧版本无法打开，先修隔离策略，不能推迟至 T10。</li>
 </ol>
 
 <h2 id="acceptance">验收标准</h2>
@@ -43,6 +44,7 @@
   <li>A/B 确认范围内功能和行为无未经批准变化；原材质不需迁移。</li>
   <li>每个 Pass 和 NBPostprocess 双路径具有执行证据；仅生成 shader 编译成功不足以通过。</li>
   <li>中央逻辑确实复用新模块，无保留两份可逐渐分叉的效果实现；原有脚本与 GUI 仍可用。</li>
+  <li>原路径 2021.3 smoke 有独立证据；完整旧版本矩阵仍由 T10 负责。</li>
 </ul>
 <p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
 
@@ -56,6 +58,6 @@
 <h2 id="blockers">阻塞、变更与回退</h2>
 <p>任何新回归先停下一批合并并回退最小切片；不能顺手改基线或降低阈值。仅主 Agent 审核证据后允许 G2 放行。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

@@ -31,7 +31,7 @@
 <ol>
   <li>以具体依赖特性确定最低版本，不把“6000+”当作每个版本已经支持。为纳入范围的版本族和补丁组合建立独立工程/Library，固定 URP/SG/VFX 与 Renderer 设置。</li>
   <li>首先复验 6000.3，再在可获取且获准使用的版本中扩展到 6.5。工具或 Editor/包升级另行授权；本任务不自动升级用户主工程。</li>
-  <li>按实际设备建立 DirectX、Metal、Vulkan、OpenGL ES 的 Player 测试。GLES 的 VFX 能力特别先查版本限制并实测；不支持时登记阻塞/待决策，而非沿用 ShaderLab 支持推断。XR 不纳入。</li>
+  <li>按实际设备建立新 VFX 路径的 DirectX、Metal、Vulkan Player 测试；逐版本检查 compute shaders、SSBO、URP color space 与官方平台要求。OpenGL ES 已确认不属于新 VFX 支持与验收矩阵，XR 不纳入。原 ShaderLab 如原本覆盖 GLES，须在独立旧路径矩阵中维持相应回归。</li>
   <li>分别验收原 ShaderLab 旧版本要求和新 VFX 范围，版本适配隔离在 host 层，公共算法不堆砌各引擎/版本条件。原路径 2021.3 规则若要改变必须另议。</li>
   <li>验证 FeatureLevel、SVC、stripping、材质/Graph 导入、无开发辅助工具时的产品运行；Pipeline/CLI 只作为验证工具，不无意增加发布包运行依赖。</li>
   <li>收集每格环境、build、Console、截图、Pass、性能证据，清理仅测试注入，保留验证资产与文档；整体验收前再跑三条主线关键 smoke。</li>
@@ -56,6 +56,6 @@
 <h2 id="blockers">阻塞、变更与回退</h2>
 <p>缺设备、版本未可用、官方 API 不支持或包组合不兼容时如实保留待环境/失败状态。只有用户决定调整范围后才能据此改变最终完成定义。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

@@ -17,7 +17,7 @@
 <p>证明不修改官方包的 Graph 路径能接入共享 HLSL、所需 Pass / LightMode 并被原 NBPostprocess 正确驱动。Custom Function 可显示颜色只是子测试。</p><p>出口：<strong>G3</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
 
 <h2 id="preconditions">前置条件</h2>
-<p>G2 已通过。仅在 Mesh 上接入 Graph；不开始 VFX Output 实现。需要原型提前执行时先调整计划。</p>
+<p>GF、G1 与 G2 已通过。T00A 是独立 Pass 风险试验，本任务须在共享 HLSL 与产品候选 Graph 上重新验证。仅在 Mesh 上验证，不开始真正 VFX Output。</p>
 
 <h2 id="scope">修改范围与所有权</h2>
 <ul>
@@ -30,9 +30,9 @@
 <h2 id="method">实施方法</h2>
 <ol>
   <li>读取实际安装 SG/URP 的 Target、SubTarget、CustomEditor 与 VFX 支持机制。区分公开支持扩展点、internal 类型、反射或生成代码重写；后两者不默认视为可维护方案。</li>
-  <li>最小 Graph 使用共享 HLSL File Custom Function，检查 float/half 后缀、texture/sampler、Preview 分支、生成 include、函数调用 stage 和资源重复声明。</li>
+  <li>产品候选 Graph 从一开始启用 <code>Support VFX Graph</code>，在 Mesh 上使用共享 HLSL File Custom Function；检查 float/half 后缀、texture/sampler、Preview 分支、生成 include、函数调用 stage 和资源重复声明。不得用未启用 VFX 支持的普通 Graph 代替同一资产验收。</li>
   <li>验证代表性参数与 Flags 编码，检查实际生成 HLSL 类型；Graph Integer UI 不能视为 uint 的证据。</li>
-  <li>验证自定义 Pass / LightMode 能否随 Graph 正常导入、重新生成、构建而保留。编辑生成 Shader 仅可作调查材料，不能作为最终 Graph 方案。</li>
+  <li>重做 GF 的自定义 Pass / LightMode 测试，确认在真实 wrapper 与共享 HLSL 接入后仍能随 Graph 正常导入、重新生成、构建而保留。编辑生成 Shader 仅可作调查材料，不能作为最终 Graph 方案。</li>
   <li>在 Mesh C 组验证 NBCameraOpaqueDistortPass 与 NBDeferredDistortPass 的选择、绘制、RenderTarget、Blend 和合成，对照 B 组与原 NBPostprocess。记录 RenderGraph / Compatibility 路径。</li>
   <li>若找不到不改官方包且可维护的途径，提交源码位置、最小失败资产、生成代码及影响功能。仅列出局部替代候选并向用户讨论，不直接实现替代管线、改 Lit/Six-Way Target 或展开 VFX 重绘方案。</li>
 </ol>
@@ -55,6 +55,6 @@
 <h2 id="blockers">阻塞、变更与回退</h2>
 <p>自定义 Pass 不可行时停在 G3，保持已通过 ShaderLab 结果。未经用户决策不能以标准 Pass-only、失去 NBPostprocess 或改 Target 的方式继续。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

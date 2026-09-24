@@ -83,7 +83,7 @@
   <li>捕获 _DisturbanceMaskTex、_ScreenColorCopy1 和最终输出；不能只看最后颜色。</li>
   <li>检查 ZWrite/ZTest、Stencil、深度附件、软粒子和主 Pass 开关；不得污染无关对象或重复绘制普通颜色。</li>
   <li>检查 Game / Scene、多个相机、分辨率/Render Scale/MSAA、适用的 RenderGraph/Compatibility 路径，以及原 NBPostprocess 其他效果组合。</li>
-  <li>Mesh / Graph 阶段先证明自定义 Pass 可以生成、被选择并执行；VFX 阶段再证明同一契约在生成的 VFX 绘制中成立。</li>
+  <li>T00A 在重构前用隔离原型提前探测 Pass；G3 再在实际共享 HLSL 和启用 Support VFX Graph 的产品候选 Graph 上证明生成、选择与执行；VFX 阶段才证明同一契约在生成的粒子绘制中成立。</li>
 </ul>
 
 <h2 id="acceptance">正确性与性能标准</h2>
@@ -91,11 +91,12 @@
 <p>协议丢位、缺 Pass、错误空间、错误时序、丢阴影、NaN/Inf、原材质破坏不属于可接受的小误差。已有基线问题单独登记；修复必须独立授权和提交。</p>
 <p>记录相同输入下的 GPU 时间分布、CPU 提交、Draw/Pass 数、纹理采样、变体数、构建大小、导入时间、插值与资源压力。原路径不增加无意义采样/Pass/variant，保持其适用条件下 SRP Batcher 兼容。VFX 单独衡量模拟和绘制成本，不以普通 Mesh batching 结论代替。</p>
 <p>新路径性能预算在 G3/G5 最小原型后、完整验收前由用户确认。测试须固定硬件、API、分辨率、粒子数、warmup、采样时长及重复次数。</p>
+<p>另设持久化回归：保存 Graph/VFX Asset，重新导入、关闭重开工程和版本升级后，核对 Graph Property Reference Name、端口、Output 参数连线、默认值、RenderState 与生成 Pass 的绑定；VFX 不需要材质导入流程，但用户创作的绑定不能静默丢失。</p>
 
 <h2 id="evidence">证据与复验</h2>
 <p>每份报告含 case ID、任务/Gate、代码与输入 hash、Editor/包/CLI/Pipeline/GPU/驱动/API 版本、步骤、原始输出、差异图、结论和未验证项。截图测试构建能力尚待实际核验；截图失败或没有可用设备时标明待环境，不伪造通过。</p>
 <p>报告正文可参考<a href="templates/report.html">独立 HTML 范例</a>，原始 JSON、XML、日志、图片、视频作为相对链接附件。主 Agent 复查证据并抽样复跑；失败用例独立复现后再允许重新放行。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>

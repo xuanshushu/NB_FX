@@ -18,13 +18,14 @@
     </thead>
     <tbody>
       <tr><td>G0</td><td>基线可复现、验证工具可信。</td><td>原 shader/HLSL 依赖闭包和配置哈希；基线重放；样例复制方案；截图、日志、测试与 Reload 能力核验。</td><td>先修复基线/工具，不开始重构。</td></tr>
-      <tr><td>G1</td><td>接口与拆分规则冻结。</td><td>逐属性/Flags/阶段/Pass 映射；函数签名；文件所有权；模块测试方案。</td><td>冲突交主 Agent 协调，不各自发明接口。</td></tr>
-      <tr><td>G2</td><td>ShaderLab 重构回归通过。</td><td>原始与重构图像/数值/材质/GUI/Pass/NBPostprocess 对照；旧路径未支持项和已有问题明示。</td><td>定位最小回归切片，回退或修复，不用 Graph 结果替代。</td></tr>
-      <tr><td>G3</td><td>Mesh / Shader Graph 最小方案跑通。</td><td>Custom Function、基础参数、所需自定义 Pass / LightMode 与 NBPostprocess 双路径证据；无官方包修改。</td><td>若 Pass 不可行，交具体限制与最小替代候选，待用户批准。普通颜色可见不算通过。</td></tr>
+      <tr><td>GF</td><td>提前判断所需自定义 Pass / LightMode 与 NBPostprocess 是否有不修改官方包的可维护路径。</td><td>隔离最小 Graph 启用 Support VFX Graph；两个自定义 Pass 的生成、选择、绘制、RT/合成、重新导入与 Player 证据；或完整失败复现和用户决策。</td><td>暂停大规模 HLSL 重构；提交具体限制与候选代价，不能自行改 Target、管线或删功能。GF 不等于 G3。</td></tr>
+      <tr><td>G1</td><td>接口与拆分规则冻结。</td><td>GF 结论；逐属性/Flags/阶段/Pass 映射；函数签名；文件所有权；包/asmdef 版本隔离、参数频率与变体预算。</td><td>冲突交主 Agent 协调，不各自发明接口。</td></tr>
+      <tr><td>G2</td><td>ShaderLab 重构回归通过。</td><td>原始与重构图像/数值/材质/GUI/Pass/NBPostprocess 对照；隔离 Unity 2021.3 原路径 smoke；旧路径未支持项和已有问题明示。</td><td>定位最小回归切片，回退或修复，不用 Graph 结果替代。</td></tr>
+      <tr><td>G3</td><td>Mesh / Shader Graph 最小方案跑通。</td><td>实际产品候选 Graph 启用 Support VFX Graph；Custom Function、基础参数、所需自定义 Pass / LightMode 与 NBPostprocess 双路径证据；无官方包修改。</td><td>GF 的孤立原型不能代替共享 HLSL 集成验收；若正式路径失败，重新升级决策。普通颜色可见不算通过。</td></tr>
       <tr><td>G4</td><td>Mesh / Shader Graph 在确认范围内尽量等价。</td><td>功能与组合覆盖、共享 GUI、深度/阴影/高级状态、生成代码、Player、性能对照；所有差异有结论。</td><td>未解决差异不得静默接受；需要用户确认例外或继续修复。</td></tr>
-      <tr><td>G5</td><td>真正 VFX 最小方案可用。</td><td>真实 VFX Output、受控粒子数据、空间、GUI 入口/薄适配可行性、与已验证 Graph 的对照和 NBPostprocess。</td><td>记录 Output/GUI/数据限制；不回避到普通 Mesh 宣称成功。</td></tr>
-      <tr><td>G6</td><td>VFX 确认范围完整回归。</td><td>确认 Output 类型、功能、VAT/光照、动态输入、同屏新旧路径、管线与性能证据。</td><td>缺口逐项讨论，不减少范围后自行通过。</td></tr>
-      <tr><td>G7</td><td>版本/API/发布验收。</td><td>明确最低版本、6.3 与 6.5 及范围内版本族、各 API 的真实 Player 证据；文档、回退和依赖检查。</td><td>未测项目标记未验证，不标为支持。</td></tr>
+      <tr><td>G5</td><td>真正 VFX 最小方案可用。</td><td>Output Particle ShaderGraph Mesh 等真正粒子 Output、受控粒子数据、空间、GUI 入口/薄适配、绑定持久化、与已验证 Graph 的对照和 NBPostprocess。</td><td>Output Mesh 静态输出或普通 Mesh 不能冒充粒子验收；限制如实上报。</td></tr>
+      <tr><td>G6</td><td>VFX 确认范围完整回归。</td><td>确认 Output 类型、功能、VAT/光照、动态输入、保存/重导入/升级绑定、同屏新旧路径、管线与性能证据。</td><td>缺口逐项讨论，不减少范围后自行通过。</td></tr>
+      <tr><td>G7</td><td>版本/API/发布验收。</td><td>明确最低版本、6.3 与 6.5 及范围内版本族；新 VFX 路径 DirectX/Metal/Vulkan 的真实 Player 证据；原 ShaderLab 兼容证据、文档、回退和依赖检查。</td><td>OpenGL ES 不属于新 VFX 必测项；其他未测项目标记未验证，不标为支持。</td></tr>
     </tbody>
   </table>
 
@@ -45,12 +46,12 @@
   <li>拟改用标准 Lit / Six-Way Target、替换现有公式、调整效果范围或降低精度。</li>
   <li>VFX Output 无法复用 GUI，薄适配仍不足；或必须维护独立 NB GUI。</li>
   <li>拟牺牲原 ShaderLab 材质兼容或旧版本支持；拟改变公共属性/Flags/关键字。</li>
-  <li>平台无法达到功能或性能要求；拟删减 API、Output 类型或版本。</li>
+  <li>平台无法达到功能或性能要求；拟进一步删减已确认的 DirectX/Metal/Vulkan、Output 类型或版本。已批准排除的 OpenGL ES 不重复作为待决策缺口。</li>
 </ul>
 
 <h2 id="record">当前状态与模板</h2>
-<p>G0–G7 均为<strong>未开始</strong>。请使用<a href="templates/report.html">验证报告模板</a>提交证据，再由主 Agent 写入<a href="reports/index.html">报告索引</a>。阻塞时使用<a href="templates/decision.html">决策模板</a>，不预填通过。</p>
+<p>G0、GF、G1–G7 均为<strong>未开始</strong>。请使用<a href="templates/report.html">验证报告模板</a>提交证据，再由主 Agent 写入<a href="reports/index.html">报告索引</a>。阻塞时使用<a href="templates/decision.html">决策模板</a>，不预填通过。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
 </body>
 </html>
