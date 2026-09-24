@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>GF / T00A Pass 可行性报告 · NB_FX</title></head>
+<body>
+<p><a href="index.html">返回报告索引</a> · <a href="../index.html">返回文档目录</a></p>
+<h1>GF / T00A · 提前 Pass 可行性试验</h1>
+<p><small>执行与 Gate 审核：主 Agent · 2026-09-25 · 结论：<strong>GF 阻塞，等待用户决策</strong> · 未推送</small></p>
+<blockquote><p>结论仅针对 Unity 6000.3.18f1 / URP、Shader Graph、VFX Graph 17.3.0 当前版本和不修改官方包、不手改生成 Shader、保持现有 NBPostprocess 精确 LightMode 的约束。测试 Graph 能在 Mesh 渲染，且产生 VFX Graph 支持子资产；但导入后的 Shader 没有 <code>NBCameraOpaqueDistortPass</code> 或 <code>NBDeferredDistortPass</code>。不能把颜色可见当作原后处理链路可用；GF 不代替 G3。</p></blockquote>
+<h2>输入、版本和复现</h2>
+<table border="1" cellpadding="6"><tbody>
+<tr><th>关联输入</th><td>G0 已放行。开工主工程 <code>e89066f347f8b5bdf23ffd38b4c673833a576d4d</code>、NB_FX <code>841760e252a5013350d377c1d90b71945990f68c</code>，双仓同在 <code>codex/nb-fx-vfxgraph-implementation</code> 且开工 clean；隔离 Graph 与原始证据已提交为 NB_FX <code>a5df27d2c0256ede227e9cf0012bd90bdedb7349</code>；本报告为独立文档切片。<a href="g0-t00-baseline.html">G0 报告</a>。</td></tr>
+<tr><th>环境</th><td>macOS 15.7.3 / Apple M3 Pro / Metal / Linear / URP-HighFidelity；Unity 6000.3.18f1、URP/SG/VFX 17.3.0；CLI 1.0.0-beta.11 / Pipeline 0.7.0-exp.1。此会话没有可调用的 unityMCP，Unity Editor 由主 Agent 串行通过 CLI/Pipeline 验证。</td></tr>
+<tr><th>受控资产</th><td><code>NBShaders2/Tests/PassFeasibility/GF_URP_VFX_Unlit.shadergraph</code> 是官方 VFX Graph 包内 <code>ShaderGraph/0_VFXGraph Unlit.shadergraph</code> 的逐字节复制，独立新 GUID；仅作测试，不作为产品入口。原模板同时序列化 HDRP/URP Targets；当前 Pipeline 使用 URP UniversalUnlitSubTarget，URP 的 <code>m_SupportVFX=true</code>。无自定义功能 HLSL 或关键词。<a href="gf-evidence/gf-inputs-and-hashes.json">源文件与资产 hash</a>。</td></tr>
+<tr><th>受控 Mesh</th><td>临时 Quad（layer 2）和 128×128 RGBA32 正交 Camera；材质运行时设置 <code>_Color=red</code>、<code>_BaseMap=white</code>，无场景保存；与空 cullingMask 参考比较。该渲染夹具只证明 Graph 可在普通 Mesh 着色，不是 NBPostprocess 结果。<a href="gf-evidence/mesh-render.json">原始命令与读回</a>、<a href="gf-evidence/GF_mesh.png">PNG</a>。</td></tr>
+</tbody></table>
+<p>复现：导入上述 Graph，使用 <code>AssetDatabase.LoadAssetAtPath&lt;Shader&gt;</code>；创建临时 Material，逐项读 <code>GetPassName</code> 与 <code>Shader.FindPassTagValue(index, LightMode)</code>，并查询 <code>Material.FindPass</code>；然后 <code>AssetDatabase.ImportAsset(path, ForceUpdate)</code> 并重复读取。可直接重放<a href="gf-evidence/graph-pass-list-before-reimport.json">导入前命令</a>、<a href="gf-evidence/graph-force-reimport.json">强制重导入</a>、<a href="gf-evidence/graph-pass-list-after-reimport.json">导入后命令</a>和<a href="gf-evidence/graph-exact-pass-check.json">精确 Pass 查询</a>。</p>
+<h2>Case 与实际结果</h2>
+<table border="1" cellpadding="6"><thead><tr><th>Case</th><th>预期 / 测量</th><th>实际</th><th>结论 / 证据</th></tr></thead><tbody>
+<tr><td>GF-GRAPH-01</td><td>启用 Support VFX Graph 的 URP Graph 可导入，Mesh 可着色</td><td>导入对象包含 Shader、Material、<code>ShaderGraphVfxAsset</code> 与 URP Metadata；Shader supported，编译消息无 Error。128×128 中 4096 像素相对背景改变，中心由 (32,64,96,255) 变为 (255,0,0,255)。</td><td>通过本项，不代表真实 VFX Output：<a href="gf-evidence/graph-imported-objects.json">导入对象</a>、<a href="gf-evidence/graph-compiler-messages.json">编译消息</a>、<a href="gf-evidence/mesh-render.json">Mesh 读回</a></td></tr>
+<tr><td>GF-PASS-OPAQUE</td><td>同一 Graph 生成 <code>NBCameraOpaqueDistortPass</code> 精确 LightMode</td><td>8 个导入 Pass 无此名称/LightMode；<code>Material.FindPass</code> 返回 -1。</td><td><strong>阻塞</strong>：<a href="gf-evidence/graph-pass-list-before-reimport.json">Pass 清单</a>、<a href="gf-evidence/graph-exact-pass-check.json">精确查询</a></td></tr>
+<tr><td>GF-PASS-DEFERRED</td><td>同一 Graph 生成 <code>NBDeferredDistortPass</code> 精确 LightMode</td><td>同上，<code>Material.FindPass</code> 返回 -1。</td><td><strong>阻塞</strong>：<a href="gf-evidence/graph-exact-pass-check.json">精确查询</a></td></tr>
+<tr><td>GF-REIMPORT-01</td><td>Graph 重导入后 Pass 保留</td><td>强制重导入成功，但仍是原 8 Pass，两条 NB 标签仍不存在；Editor ready、编译成功，当前 Console groundTruth 0 Error/0 Warning。</td><td>失败状态可复现：<a href="gf-evidence/graph-pass-list-after-reimport.json">重导入后</a>、<a href="gf-evidence/after-reimport-status.json">Editor</a>、<a href="gf-evidence/after-reimport-console.json">Console</a></td></tr>
+<tr><td>GF-NBPOST-01</td><td>现有两个 RenderPass 选择 Graph 并产生 RT/合成</td><td>上游精确 Pass 缺失；现有 <code>ShaderTagId</code> 不匹配。没有通过替换材质、扩大筛选、改 Target 或修改 NBPostprocess 人为制造绘制。</td><td><strong>未运行 RT/合成</strong>；现有代码所要求的前置条件不成立，不能宣称实测画面失败。</td></tr>
+<tr><td>GF-PLAYER-01</td><td>Player 中持久性和 stripping</td><td>Editor 重导入后候选 Pass 仍不存在；未构建或运行 Player。</td><td><strong>未运行</strong>，不能据此推断 Player 或跨平台结果。</td></tr>
+</tbody></table>
+<p><img src="gf-evidence/GF_mesh.png" alt="GF Graph 在普通 Mesh 上的红色 Quad；不是 NBPostprocess 验证" width="256"></p>
+<h2>根因与边界</h2>
+<ol>
+<li>原生产 ShaderLab 分别在 <code>NBShaders2/Shader/NBShader.shader:972–980</code>、<code>:1096–1104</code> 声明两条精确 LightMode；<code>NBPostProcessing/Runtime/RenderCameraOpaqueDistortObjectPass.cs:21</code> 和 <code>DisturbanceMaskRenderPass.cs:44</code> 分别只列这些标签。前者画向相机色/深度，后者画入扰动遮罩后进行屏幕拷贝、全局纹理设置与合成；默认运行分支是 RenderGraph。Pass 缺失意味着现有精确筛选不会选中该 Graph；这是依据源码与 Shader 清单的推断，非 RT 实测。</li>
+<li>安装的 Shader Graph <code>Target.cs:12</code>、<code>SubTarget.cs:10</code>、<code>PassDescriptor.cs:10</code>、<code>PassCollection.cs:7</code> 均为 <code>internal</code>；URP <code>UniversalTarget.cs:111</code>、<code>UniversalUnlitSubTarget.cs:13</code> 为 <code>sealed</code>。URP Unlit 的 <code>Setup</code> / <code>SubShaders.Unlit</code> 在 <code>UniversalUnlitSubTarget.cs:54–71,214–255</code> 内建立固定 Pass 集合；Support VFX Graph 的开关仅控制 VFX 支持。没有在当前版本发现可从 NB_FX 外部程序集向此固定集合加入两条 Pass 的公开配置点。这里是当前源码审查结论，不宣称未来版本绝对不可能。</li>
+<li>Unity 官方<a href="https://docs.unity3d.com/ja/6000.0/Manual/urp/lighting/custom-lighting-introduction.html">URP 自定义光照说明</a>明确 Custom Function 节点不能定义额外 Shader Pass 或 RenderState；因此共享 HLSL Custom Function 无法单独补齐本缺口。<code>VFXCodeGenerator.cs:773–802</code> 还要求 VFX 兼容 Target 与 SRP Binder 位于同一 Assembly；NB_FX 独立 Target 不可当作已验证的简易替代。后者为当前版本源码风险，不是已运行的自定义 Target 失败测试。</li>
+<li>Compatibility 路径受 <code>!UNITY_6000_3_OR_NEWER || (URP_COMPATIBILITY_MODE &amp;&amp; !UNITY_6000_4_OR_NEWER)</code> 编译条件控制；当前配置未发现 <code>URP_COMPATIBILITY_MODE</code> 定义。本次不能宣称已覆盖 Compatibility；即使两条 Pass 存在仍须先核验实际构建分支。</li>
+</ol>
+<p><a href="gf-evidence/gf-inputs-and-hashes.json">输入核验</a>与<a href="gf-evidence/evidence-sha256.txt">原始证据 SHA-256 清单</a>：G0 锁定的 85 个 include、111 个 GUI/协议/后处理输入、13 个项目配置文件均逐项 hash 匹配；5 个官方包 package.json hash 与 G0 一致。未修改 PackageCache、产品 Shader/HLSL、Target、NBPostprocess 或原材质；该 hash 核验不等同于对 PackageCache 全目录逐字节审计。</p>
+<h2>Gate 审核、影响与回退</h2>
+<p>主 Agent 核查了 Graph 的 GUID/hash 与 VFX 支持、Unity 导入对象、Mesh 读回、两次 Pass 清单、精确查询、重导入、Console/编译状态、原链路源码与 G0 hash。静态源码调查 SubAgent 不操作 Editor 或文件。<strong>GF 不放行</strong>，暂停 T02–T05 的大规模 HLSL 重构及依赖该 Pass 方案的 T06；不启动正式 G3。Graph 的 Mesh 可见性不等于功能等价、NBPostprocess、VFX Output 或 Player 通过。见<a href="gf-t00a-decision.html">待用户决策材料</a>。</p>
+<p>回退：只删除 <code>NBShaders2/Tests/PassFeasibility/</code> 的隔离资产与本报告/证据，不触碰 G0 资产和用户文件。输入回退点为主工程 <code>e89066f</code> / NB_FX <code>841760e</code>。若 Unity/URP/SG/VFX 版本、Graph/Target、NBPostprocess 筛选或 Renderer 配置改变，GF 证据需复验；任何获批方案均需重新验证 Mesh Pass/RT/合成、重新导入、Player、随后 T06/G3。</p>
+<hr><p><small>NB_FX 实施报告：GF 阻塞、等待用户决策；未运行项不可推定通过。</small></p>
+</body></html>
