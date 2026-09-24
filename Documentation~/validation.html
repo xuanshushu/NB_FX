@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>基线、场景与回归方案 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="index.html">返回文档目录</a></p>
+<h1>基线、场景与回归方案</h1>
+<p>三条验证主线使用可重放输入、冻结代码与独立证据。截图相似不能代替 Pass、协议和构建验证。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="freeze">冻结原始实现</h2>
+<blockquote><p><strong>只复制材质不构成基线。</strong>材质仍会引用被重构的 shader/HLSL。必须冻结 Shader、递归 include、功能 Flags、VAT/光照工具和采样配置，才能持续对照。</p></blockquote>
+<p>建议采用双保险，实际路径与资产操作由 T00 在执行开始时提交：</p>
+<ol>
+  <li>保存当前 commit、未提交 diff、未跟踪依赖清单和逐文件 SHA-256。保存 Unity、URP、SG、VFX、Renderer/Quality、贴图导入、材质、脚本输入与测试参数。</li>
+  <li>建立隔离的原始基线 checkout / 工程，包含确实需要的未提交内容。原工程不回滚、不清理；禁止包含凭据或无关大文件。</li>
+  <li>为同场景对标建立 test-only baseline shader 与依赖闭包，使用独立测试 Shader 名和 GUID，所有会变化的 NB include 指向冻结副本。新 GUID 的映射必须记录；不能把原 .meta GUID 复制成冲突。</li>
+  <li>冻结材质与贴图/importer；不可变大资产可按 hash 引用，但若其导入设置要变化，必须隔离。GUI 不得在打开 baseline 材质时重新同步并改写它。</li>
+  <li>验证“原工程冻结结果”与“同场景 baseline 副本”一致，记录仅为隔离而变更的 Shader 名、GUID、路径；若不一致，G0 不通过。</li>
+</ol>
+<p>Baseline 副本仅是不可编辑的测试参考，不是第二套产品实现。真正由 Unity 加载的基线 Shader、测试脚本、场景与材质必须放在导入范围内；Documentation~ 只保存说明与证据。</p>
+
+<h2 id="scene">样例场景与对标展示</h2>
+<p>以现有 <code>/Users/bytedance/UnityProject/NBUnityProject/Assets/NBShaderSamples/NBShaderSamples.unity</code> 为源，后续复制为候选 <code>/Users/bytedance/UnityProject/NBUnityProject/Assets/NBShaderSamples/NBShader_VFXGraphSample.unity</code>，并复制必要资产。此处仅规划，尚未创建。</p>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">展示组</th><th scope="col">内容</th><th scope="col">保留要求</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>A · 原始基线</td><td>冻结原 ShaderLab 与依赖。</td><td>后续不被重构修改，也不被 VFX 展示替换。</td></tr>
+      <tr><td>B · 重构路径</td><td>新的共享 HLSL＋NBShader ShaderLab。</td><td>与 A 相同参数、状态和几何输入。</td></tr>
+      <tr><td>C · Mesh / Graph</td><td>普通 Mesh 使用 Graph 验证材质。</td><td>仅验证宿主；不作为新用户工作流。</td></tr>
+      <tr><td>D · VFX</td><td>G4 后增加真正 VFX 展示。</td><td>保留 A/B/C，分别标识 Output、数据映射和运行条件。</td></tr>
+    </tbody>
+  </table>
+<p>展示可并排摆放，但自动图像对比必须将同一测试对象置于相同世界位置、相机和光照条件下逐组渲染，或使用等价隔离方案。简单横向挪开会影响 World UV、光照、深度与扭曲，不可直接作为数值对比输入。</p>
+<p>已有样例覆盖光照、渐变和 VAT，但不是全量回归集。新增最小测试项而非只看大样例场景。现有用户 VFXSample 资产不自动覆盖或改作测试资产。</p>
+
+<h2 id="determinism">可重放输入</h2>
+<ul>
+  <li>固定 camera、projection、resolution、Render Scale、MSAA、color space、exposure、light、fog、Quality 和 Renderer 设置。</li>
+  <li>固定 scaled/unscaled/script time、VAT frame、随机 seed、模拟步数、warmup 和播放状态。不能只固定随机 seed 却任由 deltaTime 改变。</li>
+  <li>先用静态或受控单粒子建立 Mesh / VFX 对照，再测试真实模拟。不同粒子运动结果不拿来伪造逐像素等价。</li>
+  <li>记录纹理/importer、材质、Mesh、Graph、VFX、脚本和配置 hash；保留原始场景色与中间 RT。</li>
+  <li>为每个测试记录输入、期望、操作、捕获帧与清理恢复步骤；多相机和全局状态需检查是否跨测试泄漏。</li>
+</ul>
+
+<h2 id="matrix">回归矩阵</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">测试组</th><th scope="col">内容</th><th scope="col">关键证据</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>协议</td><td>全部有效 Flags、UV/Wrap/Channel/CustomData/PNoise/ForceNoMip 编码，高位和组合边界。</td><td>C# 与 GPU 解码结果、序列化前后值。</td></tr>
+      <tr><td>材质 / GUI</td><td>默认值、原材质、Undo/Redo、多选、保存重开、动画、辅助脚本与 Feature Tier。</td><td>状态快照；不要求 Graph 材质序列化等同原材质。</td></tr>
+      <tr><td>单功能</td><td>基础 UV/采样、颜色、渐变、程序噪声、Mask、Dissolve、Fresnel、Normal、POM。</td><td>最终色、Alpha、调试/中间 RT 与误差图。</td></tr>
+      <tr><td>几何</td><td>Custom Local Transform、位移方向、负缩放、VAT 所有确认模式、法线、Bounds。</td><td>几何/normal/depth/shadow、关键帧序列。</td></tr>
+      <tr><td>光照</td><td>Unlit、Blinn-Phong、Half-Lambert、PBR、Six-Way、MatCap、雾。</td><td>主/附加灯、阴影、SH、双面与精度对比。</td></tr>
+      <tr><td>Pass / 状态</td><td>七个原 Pass、深度、透明阴影、Override Z、背面先绘制、Stencil/Portal、Blend/ZWrite/ZTest/ColorMask。</td><td>生成代码、Frame Debugger 或等价绘制记录、RT 读回。</td></tr>
+      <tr><td>原路径宿主</td><td>Mesh、ParticleSystem、UI、Sprite、UIParticle、Universal2D。</td><td>确认现有行为无回归；新 Graph 不承担后四类宿主。</td></tr>
+      <tr><td>VFX</td><td>确认的 Quad/Mesh/Strip，常量/连线/逐粒子输入，空间、Flipbook、Mesh VAT、GUI。</td><td>真实 Output、参数和数据链证据，不能用 Mesh 替代。</td></tr>
+      <tr><td>构建</td><td>Editor/Player、裁剪、SVC、Feature Tier、AssetBundle 使用路径、重新导入与 Domain Reload。</td><td>构建日志、实际运行、缺失变体检测。</td></tr>
+    </tbody>
+  </table>
+<h3>高风险组合</h3>
+<ul>
+  <li>Twirl / Polar＋Shared UV＋CustomData；Flipbook＋特殊 UV。</li>
+  <li>Noise＋Chromatic Aberration＋Dissolve＋Mask；双 Overlay＋Color Adjustment＋Premultiply。</li>
+  <li>POM＋Normal＋Lighting；Six-Way＋Flipbook＋Shadow。</li>
+  <li>VAT＋Vertex Offset＋Custom Local Transform；透明阴影＋Dissolve＋Mask。</li>
+  <li>Distort＋Alpha Refine＋主 Pass 禁用；Portal / Stencil＋Depth 效果。</li>
+  <li>原 ShaderLab 与新路径同屏写入扭曲场，多对象重叠和多相机。</li>
+</ul>
+<p>采用单功能全覆盖、成对组合和风险驱动多功能链，而非无边界穷举所有开关。每项必须能追踪到功能 ID 与阶段 Gate。</p>
+
+<h2 id="nbpost">NBPostprocess 专项</h2>
+<ul>
+  <li>两种扭曲分别验收：CameraOpaque 的采样源/绘制时点，与 Deferred 的透明后场景复制/扭曲场/最终组合。</li>
+  <li>检查 RG 有符号值、清屏值、源 Alpha 混合、降采样、正负方向、零扭曲、重叠顺序和极值。</li>
+  <li>捕获 _DisturbanceMaskTex、_ScreenColorCopy1 和最终输出；不能只看最后颜色。</li>
+  <li>检查 ZWrite/ZTest、Stencil、深度附件、软粒子和主 Pass 开关；不得污染无关对象或重复绘制普通颜色。</li>
+  <li>检查 Game / Scene、多个相机、分辨率/Render Scale/MSAA、适用的 RenderGraph/Compatibility 路径，以及原 NBPostprocess 其他效果组合。</li>
+  <li>Mesh / Graph 阶段先证明自定义 Pass 可以生成、被选择并执行；VFX 阶段再证明同一契约在生成的 VFX 绘制中成立。</li>
+</ul>
+
+<h2 id="acceptance">正确性与性能标准</h2>
+<p>同设备同 API 先追求零差异；以基线重复渲染误差和 RT 精度预先校准容差，不能失败后倒推阈值。HDR 使用绝对与相对误差；Alpha 边界、Depth、Distort 分别统计，辅以局部最大误差和可视化，不能只看整图均值。</p>
+<p>协议丢位、缺 Pass、错误空间、错误时序、丢阴影、NaN/Inf、原材质破坏不属于可接受的小误差。已有基线问题单独登记；修复必须独立授权和提交。</p>
+<p>记录相同输入下的 GPU 时间分布、CPU 提交、Draw/Pass 数、纹理采样、变体数、构建大小、导入时间、插值与资源压力。原路径不增加无意义采样/Pass/variant，保持其适用条件下 SRP Batcher 兼容。VFX 单独衡量模拟和绘制成本，不以普通 Mesh batching 结论代替。</p>
+<p>新路径性能预算在 G3/G5 最小原型后、完整验收前由用户确认。测试须固定硬件、API、分辨率、粒子数、warmup、采样时长及重复次数。</p>
+
+<h2 id="evidence">证据与复验</h2>
+<p>每份报告含 case ID、任务/Gate、代码与输入 hash、Editor/包/CLI/Pipeline/GPU/驱动/API 版本、步骤、原始输出、差异图、结论和未验证项。截图测试构建能力尚待实际核验；截图失败或没有可用设备时标明待环境，不伪造通过。</p>
+<p>报告正文可参考<a href="templates/report.html">独立 HTML 范例</a>，原始 JSON、XML、日志、图片、视频作为相对链接附件。主 Agent 复查证据并抽样复跑；失败用例独立复现后再允许重新放行。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

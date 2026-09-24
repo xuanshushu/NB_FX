@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T03 · Surface、颜色与 Alpha 功能 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>T03 · Surface、颜色与 Alpha 功能</h1>
+<p>迁移主纹理、叠加、Ramp、Dissolve、Mask、Fresnel、颜色与 Alpha 逻辑，保留非交换运算的原始顺序。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>独立任务书，不是执行授权。</strong>当前未派发 SubAgent。主 Agent 完成前置 Gate、分配文件与 Editor 时段后，才能启动此任务。</p></blockquote>
+
+<h2 id="goal">目标与边界</h2>
+<p>迁移主纹理、叠加、Ramp、Dissolve、Mask、Fresnel、颜色与 Alpha 逻辑，保留非交换运算的原始顺序。</p><p>出口：<strong>由 T05 汇总进入 G2</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
+
+<h2 id="preconditions">前置条件</h2>
+<p>G1 已通过；T02 的依赖接口固定。可并行实现互不依赖函数，但必须等待实际依赖完成后做集成。</p>
+
+<h2 id="scope">修改范围与所有权</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/HLSL/（G1 分配的 Surface / Color / Dissolve / Mask / Alpha 模块）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Tests/（G1 分配的 Surface 测试）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/</code></li>
+</ul>
+<p>目录列表不是无限授权；主 Agent 在派发前填入精确文件清单和所有者。没有列入的中央入口、协议、GUI、NBPostprocess、Assets 与 ProjectSettings 不得自行修改。官方包与旧 ParticleBase 始终禁止修改；基线副本禁止跟随实现更新。</p>
+
+<h2 id="method">实施方法</h2>
+<ol>
+  <li>按 Forward 原顺序记录颜色与 Alpha 中间值、Noise 影响和调试分支，列出每个模块可写的 FeatureState 字段。</li>
+  <li>逐段提取函数，保持 Overlay1、Ramp、Dissolve、Overlay2、Mask、Fresnel、深度衰减及最终输出之间的顺序，不把 Overlay1 重解释为 Emission。</li>
+  <li>将临时参数变化显式化，但保留其后续影响；复核 inactive feature 默认值，不让未启用模块改变 Alpha 或 UV。</li>
+  <li>测试 HDR/负值/零 Alpha、渐变边界、Dissolve 两端、软边、顶点色、AlphaClip、Debug、premultiply 与颜色调整交叉。</li>
+  <li>Fog、光照与 NBPostprocess 输出边界与 T04/T05 联审，避免 Graph 或 Pass 再次处理。分批交 T05 在原路径验证。</li>
+</ol>
+
+<h2 id="acceptance">验收标准</h2>
+<ul>
+  <li>孤立功能和高风险组合均有对应 case，无顺序变化或隐藏的默认值变化。</li>
+  <li>Alpha、clip、混合前颜色、HDR 和中间调试值可比较，不只比较最终截图。</li>
+  <li>同一计算被需要的 Pass 复用，未复制第二套公式，未引入多余采样和关键字。</li>
+</ul>
+<p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
+
+<h2 id="deliverables">交付物</h2>
+<ul>
+  <li>功能模块、状态写入清单、原顺序映射、Alpha 与组合测试证据。</li>
+  <li>由 T05 实际接入的回归结果和偏差解释。</li>
+</ul>
+<p>实现说明和证据索引更新到正式 HTML；原始 logs、JSON、captures 使用相对链接。使用<a href="../templates/report.html">验证报告模板</a>，不只提交聊天总结。</p>
+
+<h2 id="blockers">阻塞、变更与回退</h2>
+<p>原行为含疑似 bug 时先保持并登记，不在重构里修正。若合理拆分无法保持顺序，将失败 case 与依赖回交 T01/主 Agent 调整接口。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

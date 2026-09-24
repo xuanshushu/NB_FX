@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T00 · 冻结基线与验证环境 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>T00 · 冻结基线与验证环境</h1>
+<p>建立能够重放的原始 ShaderLab 基线和受控对比场景，证明测试工具能发现已知差异。此任务不改变生产 Shader 的算法、属性或 Pass。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>独立任务书，不是执行授权。</strong>当前未派发 SubAgent。主 Agent 完成前置 Gate、分配文件与 Editor 时段后，才能启动此任务。</p></blockquote>
+
+<h2 id="goal">目标与边界</h2>
+<p>建立能够重放的原始 ShaderLab 基线和受控对比场景，证明测试工具能发现已知差异。此任务不改变生产 Shader 的算法、属性或 Pass。</p><p>出口：<strong>G0</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
+
+<h2 id="preconditions">前置条件</h2>
+<p>用户另行授权实施；主 Agent 已记录项目和 NB_FX 两个 Git 仓库的 HEAD、工作区 diff、未跟踪文件与工具版本。不得用当前文档发布日期代替快照时间。</p>
+
+<h2 id="scope">修改范围与所有权</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Tests/（候选测试代码目录，实际 assembly 布局先确认）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Assets/NBShaderSamples/NBShader_VFXGraphSample.unity（计划新增）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Assets/NBShaderSamples/NBShader_VFXGraphValidation/（候选专用基线资产目录）</code></li>
+</ul>
+<p>目录列表不是无限授权；主 Agent 在派发前填入精确文件清单和所有者。没有列入的中央入口、协议、GUI、NBPostprocess、Assets 与 ProjectSettings 不得自行修改。官方包与旧 ParticleBase 始终禁止修改；基线副本禁止跟随实现更新。</p>
+
+<h2 id="method">实施方法</h2>
+<ol>
+  <li>从 NBShader.shader 出发递归列出可变 include、ShaderGUI、Flags、RendererFeature、全局纹理来源、URP 设置和样例依赖；记录内容哈希与 GUID。只复制材质不能冻结算法。</li>
+  <li>同时规划隔离 checkout 的原始重放与场景内测试专用 Frozen Shader。后者复制所有可变 NB include，重映射 include 路径、Shader 名称及 GUID；不让基线引用随后会变更的共享 HLSL。第三方依赖锁定版本并记录 hash，不改官方包。</li>
+  <li>先证明 Frozen Shader 与未改动的原始 ShaderLab 一致，再用它作为 A 组。原始材质和纹理的必要副本保持导入设置；现有用户 VFXSample 资产不是本任务的可覆盖目录。</li>
+  <li>从现有 NBShaderSamples 场景复制验证场景，预留 A 原始、B 重构、C Mesh / Graph，之后才增 D VFX。C/D 在对应阶段前标记未实现，不能展示替代效果冒充结果。</li>
+  <li>建立固定相机、对象空间、时间、随机种子、模拟步数、颜色空间、分辨率、MSAA 和后处理配置。并列展示供人工观察，数值截图轮流在同一空间位置渲染。</li>
+  <li>按工具规范发现并核验状态、编译、Console、截图、测试与 Domain Reload 恢复能力。先读状态再做授权测试，保留既有警告，不清空 Console 掩盖问题。</li>
+  <li>建立 Feature → 用例索引；已有约 19 个材质只是起点。校准截图噪声与阈值，并注入测试夹具中的受控错误证明比较器会失败，完成后移除注入。</li>
+</ol>
+
+<h2 id="acceptance">验收标准</h2>
+<ul>
+  <li>Frozen Shader 的依赖闭包完整、可复现且与真实原始结果一致；原始生产实现未被改动。</li>
+  <li>基线场景、环境 manifest、工具能力与初始 Console 记录齐备；已有问题独立登记。</li>
+  <li>至少一条数值/图像差异检测负例有效；阈值的确定不依赖后续实现是否失败。</li>
+</ul>
+<p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
+
+<h2 id="deliverables">交付物</h2>
+<ul>
+  <li>基线 manifest、双仓库 commit/diff hash、资产 GUID 映射、依赖 hash 清单。</li>
+  <li>场景和最小测试夹具、原始 captures/logs、G0 报告、后续回归用例清单。</li>
+</ul>
+<p>实现说明和证据索引更新到正式 HTML；原始 logs、JSON、captures 使用相对链接。使用<a href="../templates/report.html">验证报告模板</a>，不只提交聊天总结。</p>
+
+<h2 id="blockers">阻塞、变更与回退</h2>
+<p>无法冻结外部依赖、工具无法稳定截图、工作区来源不明确时，停止建立“通过”基线。提交具体缺项，主 Agent 决定补环境或向用户确认。不要替用户提交或清理其改动。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>接口、参数与 GUI 契约 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="index.html">返回文档目录</a></p>
+<h1>接口、参数与 GUI 契约</h1>
+<p>本页定义需在 G1 冻结的契约内容；示意结构名不是已实现 API。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="inventory">参数清单与来源</h2>
+<p>以实际 Shader Properties、CBUFFER、C# 写入者、HLSL 读取者和生成 Shader 为准。初步静态统计约 450 项 Properties、65 个目录管理关键字、7 个 Pass；数量只是调查起点，不代表覆盖通过。</p>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">字段</th><th scope="col">必须记录</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>身份</td><td>稳定功能 ID、原属性名、类型、默认值、单位、值域、是否序列化。</td></tr>
+      <tr><td>意义</td><td>渲染参数 / 功能意图 / RenderState / Editor 状态，不把 Foldout 一律暴露给 VFX。</td></tr>
+      <tr><td>上下文</td><td>坐标空间、精度、vertex/fragment 阶段、时间来源、贴图导入与采样要求。</td></tr>
+      <tr><td>协议</td><td>Flag 槽与位域、CustomData 路由、UV/Wrap/Channel/PNoise 编码。</td></tr>
+      <tr><td>依赖</td><td>关键字、Feature Tier、Pass、脚本/Timeline/辅助组件写入者。</td></tr>
+      <tr><td>宿主映射</td><td>ShaderLab 读取方式、Graph 属性/端口、VFX Output 参数/连线、默认值。</td></tr>
+      <tr><td>验证</td><td>支持的版本/API/Output、测试 ID、证据、已知缺口与决策 ID。</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="data">建议的数据边界</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">概念</th><th scope="col">内容</th><th scope="col">约束</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Material Parameters</td><td>各功能只读参数，不把所有属性硬塞入每个函数。</td><td>原 ShaderLab CBUFFER 类型、布局、默认值不随模块条件变化。</td></tr>
+      <tr><td>Frame Context</td><td>当前/所需历史时间、相机、投影、屏幕和深度信息。</td><td>原时间行为先保留；不同时间模式有声明无有效读取时登记已有问题。</td></tr>
+      <tr><td>Geometry Context</td><td>位置、法线、切线、handedness、UV、颜色、CustomData、VAT 数据。</td><td>明确 Mesh / 粒子 / 系统 / 世界空间，不能只写模糊的 object space。</td></tr>
+      <tr><td>Surface State</td><td>功能链当前颜色、Alpha、UV、noise、normal 等中间结果。</td><td>通过参数传递，不写共享全局临时变量。</td></tr>
+      <tr><td>Pass Output</td><td>颜色、coverage、alpha-clip 输入、distortion vector/weight、depth 意图。</td><td>SV_Depth、Blend、Stencil 等由宿主落实，计算值存在不等于输出能力存在。</td></tr>
+    </tbody>
+  </table>
+<p>G1 交付真实签名、读写方向、有效范围和例子。导数依赖、LOD、normal/tangent 的归一化时机、两面法线翻转和矩阵约定必须显式说明。不得因抽象而引入大参数复制、冗余采样或新的通用框架。</p>
+
+<h2 id="flags">Flags 与精度</h2>
+<ul>
+  <li>原 ShaderLab 保留现有 flags 槽、bit、字段与存储类型，检查 runtime Material / MaterialPropertyBlock 全链路。</li>
+  <li>Graph 的原材质序列化兼容不是硬要求，但内部功能意义必须一致。不能用普通 Float Numeric Conversion 搬运完整 32 位位域。</li>
+  <li>先检测 Graph / VFX 生成数据类型；若无可靠整数链，候选是两个 16 位字段以 float 精度传输，在包装函数内重组。此候选须 GPU 测试后确定，禁止 half、插值和有损 casts。</li>
+  <li>测试高位、符号位、相邻位、组合位和边界值；不用只测第 0 位的结果宣称完整协议通过。</li>
+  <li>Editor-only Foldout 与动画状态继续按原规则处理；新 VFX UI 状态不占用 shader 功能位。</li>
+  <li>不得在 shader 层因 Graph 适配复制一套不同含义的 Flags。解码测试同时覆盖 C# writer、HLSL reader 和 Graph wrapper。</li>
+</ul>
+
+<h2 id="gui">同一套 NB GUI，薄宿主适配</h2>
+<p>现有 NBShaderGUI 通过 RootItem、Context、SyncService 与 ShaderGUIItems 组织界面。实施时先复用这些结构，不复制第二套大面板，也不重写成 UI Toolkit。</p>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">阶段</th><th scope="col">验证内容</th><th scope="col">成功标准</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ShaderLab</td><td>原 GUI、Undo/Redo、多选、动画高亮、默认值和 SyncService。</td><td>重构前后行为不变。</td></tr>
+      <tr><td>Mesh / Graph</td><td>Graph 是否能配置使用现有 NB ShaderGUI；属性/关键字/状态与现有控件如何绑定。</td><td>共用业务控件、功能定义和校验规则；差异集中在最小适配。</td></tr>
+      <tr><td>VFX Output</td><td>是否允许复用现有 GUI 入口；若不能，是否能通过共享规则和薄适配复用。</td><td>有实测证据；不承诺直接嵌入 MaterialEditor，不复制独立 GUI。</td></tr>
+    </tbody>
+  </table>
+<p>GUI 适配方案属于验证内容，不是预先确认的实现。若只能通过内部 API、反射或官方包修改嵌入，停止并交用户选择，不伪装为已满足“同一 GUI”。</p>
+<h3>VFX 的参数所有权</h3>
+<ul>
+  <li>未连接端口：Graph / Output 默认或显式配置；连接后：VFX 连线驱动，该输入不应被另一份 GUI 值静默覆盖。</li>
+  <li>逐粒子值由 VFX 管理；RenderState 与 compile-time 功能不能假装支持逐粒子切换，必须验证频率和类型。</li>
+  <li>功能定义、依赖、范围、标签、本地化尽量共享；每个宿主负责将有效配置应用到自己支持的数据入口。</li>
+  <li>UI 必须表达连线驱动、不可用和冲突状态；单向应用，不做 Material ↔ VFX 自动同步。</li>
+  <li>取消原计划中的 VFX 材质导入/同步/转换工具。测试夹具可把同一测试配置分别写入两个宿主，但不是产品工作流。</li>
+</ul>
+
+<h2 id="vfx">VFX 数据契约：G4 后细化</h2>
+<p>T08 单独验证 color/alpha、Custom1/Custom2、UV/Flipbook、position/normal/tangent、空间与缩放、time/age、自定义属性和 Output 参数频率。T09 再覆盖 Mesh VAT 附加通道、所有确认 Output 类型和高级组合。</p>
+<p>Quad / Mesh / Strip 按语义分别验收。没有 Mesh 拓扑的数据源不要求执行 Mesh VAT，但不能借 Output 类型差异删减 Mesh Output 本应支持的效果。用户未批准前，不为适配而复制一套模拟或另起 CPU 粒子替身。</p>
+
+<h2 id="feature">Feature Tier、关键字与变体</h2>
+<ul>
+  <li>复用现有 FeatureCatalog、MaterialIntentResolver、PassFeatureCatalog、SyncService、VariantStripper 和 SVC 逻辑；增加宿主识别，不靠名称模糊匹配。</li>
+  <li>每个功能记录 compile-time 与 runtime 部分；保持原 shader_feature / multi_compile 的意图，不为方便将全部开关改为动态分支或 multi_compile。</li>
+  <li>检查 Graph 的关键词命名、实际声明、VFX expression 频率、构建 stripping；不能从 Inspector 状态推断 shader variant 存在。</li>
+  <li>生成代码、编译后变体和 Player 结果都要取证；Feature Tier 在 VFX 的映射未验证前不得宣称支持运行时动态切换。</li>
+</ul>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

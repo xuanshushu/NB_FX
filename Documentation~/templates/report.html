@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>验证报告模板 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>验证报告模板</h1>
+<p>将实现版本、受控输入、测量结果和 Gate 审核绑定。</p>
+<p><small>更新：2026-09-25 · 模板 · 未运行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p>这是验证报告模板，不代表任何测试已运行。缺少原始证据、环境、实现版本或阈值的“通过”无效。</p></blockquote>
+<h2 id="identity">报告与环境</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">字段</th><th scope="col">填写内容</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>报告 ID / 任务 / Gate / 主线</td><td>待填写；A/B、B/C 或 C/D</td></tr>
+      <tr><td>执行与审核者 / 时间</td><td>待填写</td></tr>
+      <tr><td>状态</td><td>未运行</td></tr>
+      <tr><td>主工程与 NB_FX commit / diff hash</td><td>待填写；包含未跟踪相关文件 manifest</td></tr>
+      <tr><td>Unity / URP / SG / VFX / CLI / Pipeline</td><td>待填写具体版本</td></tr>
+      <tr><td>OS / GPU / Driver / API / Player</td><td>待填写</td></tr>
+      <tr><td>Scene / Camera / Renderer / Pipeline 模式</td><td>待填写</td></tr>
+      <tr><td>输入与资产 hash / seed / time / steps</td><td>待填写</td></tr>
+      <tr><td>分辨率 / 色彩空间 / HDR / MSAA</td><td>待填写</td></tr>
+      <tr><td>比较阈值及制定依据</td><td>待填写；在比较前固定</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="reproduce">复现步骤</h2>
+<ol><li>待填写：恢复基线和目标实现、加载受控场景。</li><li>待填写：先读取 Editor/编译/Console 状态，核对环境。</li><li>待填写：执行命令或 UI 操作及固定输入。</li><li>待填写：输出位置、数据读取与比较命令。</li></ol>
+
+<h2 id="results">结果表</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">case ID</th><th scope="col">预期 / 测量方式</th><th scope="col">实际 / 误差</th><th scope="col">状态</th><th scope="col">证据</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>待填写</td><td>待填写</td><td>待填写</td><td>未运行</td><td>待填写相对链接</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="evidence">原始证据与媒体</h2>
+<ul>
+  <li>保留 Console 原始日志、命令输出、测试 XML/JSON、生成 Shader / Pass 清单与 build 记录。</li>
+  <li>图像包含 Reference / Candidate / Diff；必要时保留 HDR/Depth/Alpha 数据，不能仅留缩略图。</li>
+  <li>填写 NBPostprocess 实际 Pass 执行、RenderTarget 格式、Blend 与合成结果。</li>
+  <li>附采样数、variants、SRP Batcher、CPU/GPU/显存等受影响指标；不适用项写明理由。</li>
+  <li>截图和视频使用相对路径与说明，不嵌 Base64；附件大型媒体使用 LFS。</li>
+</ul>
+
+<pre><code>&lt;figure&gt;
+  &lt;img src="evidence/CASE-001/diff.png" alt="CASE-001 受控同位置截图的差异图"&gt;
+  &lt;figcaption&gt;实现版本、环境、阈值与差异说明。&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;video controls preload="metadata" src="evidence/CASE-001/replay.mp4"&gt;
+  当前阅读器不支持播放，请使用附件文件。
+&lt;/video&gt;</code></pre>
+<h2 id="differences">差异、失败与已有问题</h2>
+<p>待填写：回归、基线已有问题、环境问题、平台限制、用户批准差异分别列出。0 个新 Console Error 不等于 Shader 功能通过。1 条既有警告也不能在没有归因的情况下自动豁免。</p>
+
+<h2 id="gate">主 Agent 审核与 Gate 结论</h2>
+<p>待填写：审核过哪些产物、复跑哪些 case、证据是否对应当前实现；通过/不通过/待环境、批准例外的决策链接、未解决项和下一阶段权限。SubAgent 不自行放行。</p>
+
+<h2 id="rollback">回退与证据失效</h2>
+<p>待填写：最小回退点、受影响上游 Gate、复验触发条件和文档索引更新。实现或环境变化后旧证据应标记需复验。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

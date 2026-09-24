@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gate 与放行标准 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="index.html">返回文档目录</a></p>
+<h1>Gate 与放行标准</h1>
+<p>所有 Gate 当前均未开始。最小可用、功能等价、VFX 可用与最终回归是不同结论。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="list">Gate 清单</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">Gate</th><th scope="col">目标</th><th scope="col">必备证据</th><th scope="col">不通过时</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>G0</td><td>基线可复现、验证工具可信。</td><td>原 shader/HLSL 依赖闭包和配置哈希；基线重放；样例复制方案；截图、日志、测试与 Reload 能力核验。</td><td>先修复基线/工具，不开始重构。</td></tr>
+      <tr><td>G1</td><td>接口与拆分规则冻结。</td><td>逐属性/Flags/阶段/Pass 映射；函数签名；文件所有权；模块测试方案。</td><td>冲突交主 Agent 协调，不各自发明接口。</td></tr>
+      <tr><td>G2</td><td>ShaderLab 重构回归通过。</td><td>原始与重构图像/数值/材质/GUI/Pass/NBPostprocess 对照；旧路径未支持项和已有问题明示。</td><td>定位最小回归切片，回退或修复，不用 Graph 结果替代。</td></tr>
+      <tr><td>G3</td><td>Mesh / Shader Graph 最小方案跑通。</td><td>Custom Function、基础参数、所需自定义 Pass / LightMode 与 NBPostprocess 双路径证据；无官方包修改。</td><td>若 Pass 不可行，交具体限制与最小替代候选，待用户批准。普通颜色可见不算通过。</td></tr>
+      <tr><td>G4</td><td>Mesh / Shader Graph 在确认范围内尽量等价。</td><td>功能与组合覆盖、共享 GUI、深度/阴影/高级状态、生成代码、Player、性能对照；所有差异有结论。</td><td>未解决差异不得静默接受；需要用户确认例外或继续修复。</td></tr>
+      <tr><td>G5</td><td>真正 VFX 最小方案可用。</td><td>真实 VFX Output、受控粒子数据、空间、GUI 入口/薄适配可行性、与已验证 Graph 的对照和 NBPostprocess。</td><td>记录 Output/GUI/数据限制；不回避到普通 Mesh 宣称成功。</td></tr>
+      <tr><td>G6</td><td>VFX 确认范围完整回归。</td><td>确认 Output 类型、功能、VAT/光照、动态输入、同屏新旧路径、管线与性能证据。</td><td>缺口逐项讨论，不减少范围后自行通过。</td></tr>
+      <tr><td>G7</td><td>版本/API/发布验收。</td><td>明确最低版本、6.3 与 6.5 及范围内版本族、各 API 的真实 Player 证据；文档、回退和依赖检查。</td><td>未测项目标记未验证，不标为支持。</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="criteria">放行规则</h2>
+<ul>
+  <li>主 Agent 审查代码、资产、日志、截图与可复现步骤，核对 commit / 工作区 diff hash / 输入 hash / 版本 / API。SubAgent 自述完成不能放行。</li>
+  <li>每个必测项只允许通过、失败、未运行、待环境、用户批准例外等明确状态；未运行不是通过。</li>
+  <li>“尽量等价”不表示自动容忍可见差异。每个差异必须归为回归、基线已有问题、平台限制、用户已批准差异之一。</li>
+  <li>范围和验收容差不能由实现者在看到失败结果后自行放宽。调整先记录用户决策，再更新用例和 Gate 版本。</li>
+  <li>Gate 记录必须含审核人、时间、任务 ID、证据链接、未解决事项、批准的例外、回退点与后续可启动任务。</li>
+  <li>接口、核心功能或 pipeline 变更导致上游证据失效时，标记受影响 Gate 需复验，不沿用过期通过状态。</li>
+</ul>
+
+<h2 id="blockers">必须向用户升级的情况</h2>
+<ul>
+  <li>所需自定义 Pass / LightMode 无公开且可维护的方案；需要改官方包或内部生成流程。</li>
+  <li>拟改变 NBPostprocess 调度、扭曲编码、Graph 渲染方式或使用替代多次绘制路线。</li>
+  <li>拟改用标准 Lit / Six-Way Target、替换现有公式、调整效果范围或降低精度。</li>
+  <li>VFX Output 无法复用 GUI，薄适配仍不足；或必须维护独立 NB GUI。</li>
+  <li>拟牺牲原 ShaderLab 材质兼容或旧版本支持；拟改变公共属性/Flags/关键字。</li>
+  <li>平台无法达到功能或性能要求；拟删减 API、Output 类型或版本。</li>
+</ul>
+
+<h2 id="record">当前状态与模板</h2>
+<p>G0–G7 均为<strong>未开始</strong>。请使用<a href="templates/report.html">验证报告模板</a>提交证据，再由主 Agent 写入<a href="reports/index.html">报告索引</a>。阻塞时使用<a href="templates/decision.html">决策模板</a>，不预填通过。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

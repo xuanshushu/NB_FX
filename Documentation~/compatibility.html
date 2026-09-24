@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>版本与图形 API 范围 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="index.html">返回文档目录</a></p>
+<h1>版本与图形 API 范围</h1>
+<p>新路径不再以 Unity 2021.3 为目标；最低版本由实际依赖决定，先验证 6.3，再覆盖至 6.5。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="versions">版本范围与支持状态</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">版本/路径</th><th scope="col">计划</th><th scope="col">当前证据</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>原 ShaderLab</td><td>继续保留现有兼容设计；仓库原有 2021.3 要求不因新路径收缩自动失效。</td><td>本次未做版本回归；不得标记已通过。</td></tr>
+      <tr><td>新路径 Unity 6000.0–6000.2</td><td>只作为最低版本候选；若所需特性不足，可以讨论放弃这些低版本。</td><td>未验证，不保证全部候选版本都进入最终支持矩阵。</td></tr>
+      <tr><td>Unity 6000.3</td><td>当前主验证环境；Graph / VFX / NBPostprocess 先在此完成分阶段 Gate。</td><td>工程文件与包元数据已读取，功能未运行验证。</td></tr>
+      <tr><td>Unity 6000.4–6000.5</td><td>后续兼容与发布验收覆盖至 6.5；检查中间版本族差异。</td><td>未安装/未测试状态不等于已支持；具体补丁与包版本待记录。</td></tr>
+    </tbody>
+  </table>
+<p>支持矩阵必须写具体 Editor 与随版本匹配的 URP / SG / VFX。不能只写“Unity 6 支持”或仅依靠宏编译通过。按版本族选定补丁实施全量/差异验证，不对所有未测补丁作通用保证。</p>
+
+<h2 id="apis">图形 API</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">API</th><th scope="col">待确认项</th><th scope="col">验收要求</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>DirectX</td><td>具体 DX11 / DX12 范围、Shader Model、Windows/GPU/驱动。</td><td>对应 Player 编译与真机运行；不以 Metal 成功推断。</td></tr>
+      <tr><td>Metal</td><td>目标 macOS / iOS 范围、OS、GPU、MSL 与硬件能力。</td><td>确认的平台分别取证；不能把 API 名等同于所有 Apple 设备。</td></tr>
+      <tr><td>Vulkan</td><td>桌面/Android 范围、版本、扩展、GPU/驱动与资源限制。</td><td>确认平台逐项构建和运行，检查采样/插值/RenderGraph。</td></tr>
+      <tr><td>OpenGL ES</td><td>具体版本和平台、Compute/VFX 能力、纹理/缓冲/插值限制。</td><td>重点风险项；若目标不满足 VFX 要求，记录“不支持”或候选排除，交用户决定。</td></tr>
+      <tr><td>XR</td><td>正式范围外。</td><td>不建设 XR 验收矩阵，也不宣称 XR 支持。原代码不做无关破坏。</td></tr>
+    </tbody>
+  </table>
+<p>API 的“较新版本”仍是范围意向，不是技术可用性证明。T10 必须先检查该 Unity/VFX 版本的官方平台能力和本地生成代码，再确定设备和用例；缺硬件标记待环境，不能用模拟或 Editor 编译冒充实机通过。</p>
+
+<h2 id="isolation">兼容策略</h2>
+<ul>
+  <li>共享 HLSL 保持一份；版本差异集中在小型宿主/URP/Graph 适配，不复制整套算法。</li>
+  <li>Graph 资产格式按实际最低版本选择；若需少量版本族包装，先记录维护成本，不将高版本保存的 Graph 自动当作低版本可读。</li>
+  <li>原 ShaderLab 稳定 API、Flags 与材质协议保持；新路径依赖用适当程序集/条件隔离，不能令未使用 VFX 的原用户被迫安装高版本依赖。</li>
+  <li>不同 Unity 版本使用隔离项目/checkout 与 Library；不能反复降级打开当前用户工程。</li>
+  <li>CLI / Pipeline 是验证工具依赖，不默认打包成 NB_FX 产品依赖；若产品代码出现对此依赖，须说明理由并审核。</li>
+  <li>保留已存在的 RenderGraph 与适用 Compatibility 路径；新版本缺失某路径时准确标记，不伪造等价测试。</li>
+</ul>
+
+<h2 id="matrix">最终矩阵格式</h2>
+<p>每行记录：Editor、URP/SG/VFX、平台、API/GPU/驱动、Output 类型、核心功能、GUI、NBPostprocess 两路径、高级状态、Editor/Player、性能、证据链接、批准例外、支持结论。</p>
+<p>原 ShaderLab、Mesh / Graph 验证结果、VFX 产品结果是不同列。全部空项初始状态为未验证；仅在 G7 审核后填入“已支持”。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

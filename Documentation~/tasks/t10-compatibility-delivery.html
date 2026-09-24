@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T10 · 版本、API 与最终交付 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>T10 · 版本、API 与最终交付</h1>
+<p>确定新路径实际最低 Unity 6000.x 与直到 6.5 的支持矩阵，覆盖确认图形 API，交付可回退、可维护的包与文档。未验证版本不标支持。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>独立任务书，不是执行授权。</strong>当前未派发 SubAgent。主 Agent 完成前置 Gate、分配文件与 Editor 时段后，才能启动此任务。</p></blockquote>
+
+<h2 id="goal">目标与边界</h2>
+<p>确定新路径实际最低 Unity 6000.x 与直到 6.5 的支持矩阵，覆盖确认图形 API，交付可回退、可维护的包与文档。未验证版本不标支持。</p><p>出口：<strong>G7</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
+
+<h2 id="preconditions">前置条件</h2>
+<p>G6 已通过；版本/平台/API/硬件清单由主 Agent 与用户确认。源码只读调查可提前，正式验证必须基于当前实现。</p>
+
+<h2 id="scope">修改范围与所有权</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/（已批准且隔离的版本适配）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Tests/（跨版本构建验证）</code></li>
+</ul>
+<p>目录列表不是无限授权；主 Agent 在派发前填入精确文件清单和所有者。没有列入的中央入口、协议、GUI、NBPostprocess、Assets 与 ProjectSettings 不得自行修改。官方包与旧 ParticleBase 始终禁止修改；基线副本禁止跟随实现更新。</p>
+
+<h2 id="method">实施方法</h2>
+<ol>
+  <li>以具体依赖特性确定最低版本，不把“6000+”当作每个版本已经支持。为纳入范围的版本族和补丁组合建立独立工程/Library，固定 URP/SG/VFX 与 Renderer 设置。</li>
+  <li>首先复验 6000.3，再在可获取且获准使用的版本中扩展到 6.5。工具或 Editor/包升级另行授权；本任务不自动升级用户主工程。</li>
+  <li>按实际设备建立 DirectX、Metal、Vulkan、OpenGL ES 的 Player 测试。GLES 的 VFX 能力特别先查版本限制并实测；不支持时登记阻塞/待决策，而非沿用 ShaderLab 支持推断。XR 不纳入。</li>
+  <li>分别验收原 ShaderLab 旧版本要求和新 VFX 范围，版本适配隔离在 host 层，公共算法不堆砌各引擎/版本条件。原路径 2021.3 规则若要改变必须另议。</li>
+  <li>验证 FeatureLevel、SVC、stripping、材质/Graph 导入、无开发辅助工具时的产品运行；Pipeline/CLI 只作为验证工具，不无意增加发布包运行依赖。</li>
+  <li>收集每格环境、build、Console、截图、Pass、性能证据，清理仅测试注入，保留验证资产与文档；整体验收前再跑三条主线关键 smoke。</li>
+  <li>更新实际接口、决策、支持矩阵、限制和回退指南。发布说明不得包含未跑平台承诺；原 ParticleBase 不变。</li>
+</ol>
+
+<h2 id="acceptance">验收标准</h2>
+<ul>
+  <li>每个标为支持的版本/API 单元都有真实环境与 Player 证据，不以编辑器单平台截图替代。</li>
+  <li>全部必需矩阵缺口有用户批准处理；原路径兼容和无官方包修改要求保持。</li>
+  <li>可从确定回退点恢复旧路径，文档与实现一致，维护任务/风险均有责任人。</li>
+</ul>
+<p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
+
+<h2 id="deliverables">交付物</h2>
+<ul>
+  <li>最终兼容矩阵、跨版本/API 构建与回归证据、依赖清单与性能汇总。</li>
+  <li>正式 G7 报告、使用/维护与回退文档、未支持或未验证项的准确列表。</li>
+</ul>
+<p>实现说明和证据索引更新到正式 HTML；原始 logs、JSON、captures 使用相对链接。使用<a href="../templates/report.html">验证报告模板</a>，不只提交聊天总结。</p>
+
+<h2 id="blockers">阻塞、变更与回退</h2>
+<p>缺设备、版本未可用、官方 API 不支持或包组合不兼容时如实保留待环境/失败状态。只有用户决定调整范围后才能据此改变最终完成定义。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

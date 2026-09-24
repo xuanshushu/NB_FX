@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>验证报告与当前状态 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>验证报告与当前状态</h1>
+<p>这里区分用户交接记录、本次静态核对与未来工程验证；没有以计划文档冒充执行证据。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="current">现有记录</h2>
+<p>文档格式检查与 Unity 工程验证分别记录；G0–G7 均未开始。</p>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">编号</th><th scope="col">来源</th><th scope="col">内容</th><th scope="col">不能据此推断</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>E-HANDOFF-01</td><td>用户交接</td><td>工具安装已授权；连接 6000.3.18f1，ready，非 Play；Console 0 错误、1 条 VFX 数据反序列化 warning，未清除。</td><td>不是当前 Editor 状态，也不是 shader 回归结果。</td></tr>
+      <tr><td>E-STATIC-01</td><td>本次终端只读</td><td>unity --version 返回 1.0.0-beta.11；读取 manifest/lock/包元数据确认 Pipeline 0.7.0-exp.1 与图形包 17.3.0。</td><td>不证明截图、测试、Reload 恢复或 Player build 可用。</td></tr>
+      <tr><td>E-STATIC-02</td><td>本次源码只读</td><td>确认原 GUI 入口、7 个 Pass、NBPostprocess Tag/RT 与 internal Target 风险。</td><td>不能替代真实 Mesh / Graph / VFX 的编译与渲染证据。</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="gates">工程验证状态</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">Gate</th><th scope="col">状态</th><th scope="col">报告</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>G0</td><td>未开始</td><td>尚无执行报告</td></tr>
+      <tr><td>G1</td><td>未开始</td><td>尚无执行报告</td></tr>
+      <tr><td>G2</td><td>未开始</td><td>尚无执行报告</td></tr>
+      <tr><td>G3</td><td>未开始</td><td>尚无执行报告</td></tr>
+      <tr><td>G4</td><td>未开始</td><td>尚无执行报告</td></tr>
+      <tr><td>G5</td><td>未开始</td><td>尚无执行报告</td></tr>
+      <tr><td>G6</td><td>未开始</td><td>尚无执行报告</td></tr>
+      <tr><td>G7</td><td>未开始</td><td>尚无执行报告</td></tr>
+    </tbody>
+  </table>
+<p>主 Agent 在未来完成验证后，以实际证据链接替换空项；禁止仅把“待验证”改成“已通过”而不提供记录。文档的链接/布局检查不属于这些工程 Gate。</p>
+
+<h2 id="format">报告归档</h2>
+<p>采用<a href="../templates/report.html">验证报告模板</a>。每个报告独立 HTML，附件放同级或子目录，以相对链接关联；JSON/XML/日志保留原始结构。截图、视频通过 LFS，禁止 Base64 大块内嵌。</p>
+<p>报告至少包含测试 ID、任务/Gate、代码和输入 hash、环境、步骤、原始结果、期望、diff、性能、失败项、未测项、审核与复验结论。允许失败报告，不能制造成功报告占位。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>决策记录与待讨论事项 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="index.html">返回文档目录</a></p>
+<h1>决策记录与待讨论事项</h1>
+<p>用户确认约束作为当前依据；技术可行性、实现选择与运行证据另行记录。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<h2 id="confirmed">已确认决策</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">编号</th><th scope="col">决定</th><th scope="col">替代/排除</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>D01</td><td>NBShader 保留普通 Mesh 与现有宿主；NBShader_VFXGraph 最终服务 VFX。</td><td>不推出普通 Mesh 的 Graph 用户工作流；不要求新 Graph 支持 UI/Sprite/UIParticle/Universal2D。</td></tr>
+      <tr><td>D02</td><td>三条验证主线独立，尤其 Mesh / Graph 与 VFX 两步走。</td><td>不能直接跳到 VFX，或把最小可用与功能等价合并。</td></tr>
+      <tr><td>D03</td><td>不修改官方包；先验证所需自定义 Pass / LightMode。</td><td>不默认反射注入、修改 PackageCache、伪装程序集或手改生成 Shader 解决。</td></tr>
+      <tr><td>D04</td><td>ShaderLab / Graph 尽量共用 NB GUI；VFX GUI 独立验证。</td><td>不维护两套独立 NB GUI；不预先承诺可直接嵌入 VFX Output。</td></tr>
+      <tr><td>D05</td><td>VFX 直接配置 Graph / Output，连线与逐粒子数据由 VFX 管理。</td><td>取消材质导入、同步、转换工作流。</td></tr>
+      <tr><td>D06</td><td>Graph 测试材质与原材质的序列化兼容不是硬要求。</td><td>可选转换仅用于验证，不成为产品或架构限制；原 ShaderLab 兼容仍必须保留。</td></tr>
+      <tr><td>D07</td><td>改用标准 Lit / Six-Way Target 等其他实现必须先讨论并获得同意。</td><td>不能仅凭等价测试自行替换。</td></tr>
+      <tr><td>D08</td><td>新路径最低版本可在 Unity 6000+ 中确定，先 6.3，后续至 6.5。</td><td>不再要求新路径回到 2021.3；不自动批准原 ShaderLab 放弃旧兼容。</td></tr>
+      <tr><td>D09</td><td>较新 DirectX、Metal、Vulkan、OpenGL ES；XR 不在正式范围。</td><td>具体最低 API、OS、设备与版本仍待验证。</td></tr>
+      <tr><td>D10</td><td>复制 NBShaderSample 与必要资产，保留原始/重构/Graph 三组，后续增加 VFX。</td><td>不能只复制材质当作原实现冻结，也不能删掉前期对照。</td></tr>
+      <tr><td>D11</td><td>正式文档采用 Documentation~ 内可独立打开的简单 HTML；index.html 仅列文件入口，不使用公共 CSS、JS、页面外壳或生成流程。</td><td>不维护重复 Markdown 正文；证据媒体使用相对链接与 LFS；测试资产在 Unity 可导入范围。</td></tr>
+      <tr><td>D12</td><td>CLI 1.0.0-beta.11 / Pipeline 0.7.0-exp.1 已单独授权安装，版本固定。</td><td>不自动升级；工具连通不等于回归通过；不视为 Coplay MCP 已安装。</td></tr>
+      <tr><td>D13</td><td>本轮仅计划与文档，禁止开始重构和 SubAgent 执行。</td><td>后续任务书是执行说明，不是当前启动指令。</td></tr>
+      <tr><td>D14</td><td>文档正文中文，专业术语保留原文，不附中文释义。</td><td>不制作术语翻译表。</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="pending">待证据后讨论</h2>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">编号</th><th scope="col">问题</th><th scope="col">触发/责任</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Q01</td><td>Graph 所需自定义 Pass / LightMode 是否可用；不可行时接受哪种局部替代？</td><td>T06 / G3；原始目标失败后给出最小复现、官方限制与候选代价，不提前建设替代架构。</td></tr>
+      <tr><td>Q02</td><td>VFX Output 是否能复用 GUI；不能直接嵌入时薄适配到什么程度可接受？</td><td>T08 / G5；附配置、连线驱动、RenderState 的实际数据流与界面证据。</td></tr>
+      <tr><td>Q03</td><td>Override Z、背面先绘制、Stencil、透明阴影等能力如何保持？</td><td>T06/T07 与 T08/T09；逐项列限制，不能统一降级。</td></tr>
+      <tr><td>Q04</td><td>最低 Unity 6000.x、各 API 版本和 OS/GPU 设备矩阵。</td><td>T10，结合前序最小方案特性。</td></tr>
+      <tr><td>Q05</td><td>正式 Output 类型清单、必须覆盖的 VFX Mesh/VAT 数据组合。</td><td>T08 先最小验证，T09 前确认；不凭便利缩小范围。</td></tr>
+      <tr><td>Q06</td><td>图像容差与新增路径性能预算。</td><td>基线校准后、全量验收前确认，不在失败后放宽。</td></tr>
+      <tr><td>Q07</td><td>若共享重构影响原 ShaderLab 的旧版本兼容，如何处理？</td><td>主 Agent；当前没有放弃原兼容要求的批准。</td></tr>
+    </tbody>
+  </table>
+
+<h2 id="process">决策流程</h2>
+<ol>
+  <li>发现问题，停止受影响分支，保存最小复现和原始证据；其他无关已授权任务可继续。</li>
+  <li>提交原目标、限制、候选实现、影响功能、版本、性能、维护成本、回退方案与推荐意见。</li>
+  <li>等待用户明确选择。沉默、工具失败或 SubAgent 自认为可接受，都不构成批准。</li>
+  <li>用<a href="templates/decision.html">决策模板</a>记录答复，更新接口、任务书、用例和受影响 Gate。</li>
+</ol>
+<p>技术试验成功只能证明候选可行，不能代替用户对不同实现路线的批准。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>

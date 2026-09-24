@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T04 · Geometry、环境与光照 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>T04 · Geometry、环境与光照</h1>
+<p>隔离 Unity/URP 环境输入并迁移 Geometry、VAT、深度和现有光照，保持五种光照路径、坐标及各 Pass 的一致性。</p>
+<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<hr>
+<blockquote><p><strong>独立任务书，不是执行授权。</strong>当前未派发 SubAgent。主 Agent 完成前置 Gate、分配文件与 Editor 时段后，才能启动此任务。</p></blockquote>
+
+<h2 id="goal">目标与边界</h2>
+<p>隔离 Unity/URP 环境输入并迁移 Geometry、VAT、深度和现有光照，保持五种光照路径、坐标及各 Pass 的一致性。</p><p>出口：<strong>由 T05 汇总进入 G2</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
+
+<h2 id="preconditions">前置条件</h2>
+<p>G1 已通过；基础 Context 固定，T02/T03 的消费接口已协调。涉及现有 VAT include 的改动须单独锁定文件。</p>
+
+<h2 id="scope">修改范围与所有权</h2>
+<ul>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/HLSL/（G1 分配的 Geometry / VAT / Lighting / Environment 模块）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Tests/（G1 分配的 Geometry / Lighting 测试）</code></li>
+  <li><code>/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/</code></li>
+</ul>
+<p>目录列表不是无限授权；主 Agent 在派发前填入精确文件清单和所有者。没有列入的中央入口、协议、GUI、NBPostprocess、Assets 与 ProjectSettings 不得自行修改。官方包与旧 ParticleBase 始终禁止修改；基线副本禁止跟随实现更新。</p>
+
+<h2 id="method">实施方法</h2>
+<ol>
+  <li>调查 Custom Local Transform、Vertex Offset、VAT 所需 UV0–UV7、法线、切线、实例与 Buffer 输入，拆除函数对 AttributesParticle 的直接依赖但不改变数据语义。</li>
+  <li>将矩阵、相机/深度、主光和附加光、SH、阴影等 URP 调用留在 Unity adapter；纯数学放共享层。不把 URP 宏和资源声明散布至所有模块。</li>
+  <li>保持当前光照公式、MatCap 与 Six-Way 语义。这里不是切换 Shader Graph Lit / Six-Way Target 的授权。</li>
+  <li>与 T05 对齐 Forward / DepthOnly / ShadowCaster / 扭曲 Pass 的几何与 Alpha 使用，检查阴影和深度是否使用同样的形变。</li>
+  <li>建立 VAT 类型、边界帧、缺失流、非均匀/负缩放、法线切线、屏幕深度、软粒子、雾、阴影、附加光和 Bounds 测试；对原宿主能力照旧验收。</li>
+  <li>记录 VFX 日后无法提供的候选数据需求，但此阶段不假设 VFX Output 会提供，也不提前构造替代架构。</li>
+</ol>
+
+<h2 id="acceptance">验收标准</h2>
+<ul>
+  <li>原 ShaderLab 的几何、光照、深度和阴影在受控输入下回归一致。</li>
+  <li>对 UV 流、Buffer、矩阵与 Frame 数据的依赖完全显式，Unreal 仅获得可重用边界而非实现承诺。</li>
+  <li>不存在未经批准的标准 Target 替换、光照近似或 Bounds 行为改变。</li>
+</ul>
+<p>检查结果必须关联源码/资产 hash、环境与 case ID。未运行、待环境、失败均不能写成通过。主 Agent 按<a href="../gates.html">Gate 规则</a>审核后才可放行。</p>
+
+<h2 id="deliverables">交付物</h2>
+<ul>
+  <li>Geometry / VAT / Lighting 模块与 Unity adapter，资源和 stage 依赖表。</li>
+  <li>对应回归用例、关键坐标数值、原路径 Pass 证据与后续 Graph 风险清单。</li>
+</ul>
+<p>实现说明和证据索引更新到正式 HTML；原始 logs、JSON、captures 使用相对链接。使用<a href="../templates/report.html">验证报告模板</a>，不只提交聊天总结。</p>
+
+<h2 id="blockers">阻塞、变更与回退</h2>
+<p>宿主数据不可获得、插值预算不足或 URP 内部依赖不可移植时，明确指出是哪项效果和输入受阻。不得静默禁用 VAT、光照或深度功能。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
+<hr>
+<p><small>NB_FX 计划文档 v0.3。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+</body>
+</html>
