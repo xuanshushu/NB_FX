@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>G0 / T00 基线验证报告 · NB_FX</title></head>
+<body>
+<p><a href="index.html">返回报告索引</a> · <a href="../index.html">返回文档目录</a></p>
+<h1>G0 / T00 · 冻结基线与验证环境</h1>
+<p><small>执行与审核：主 Agent · 2026-09-25 02:30 CST · Gate 结论：<strong>通过（仅 G0 范围）</strong> · 未推送</small></p>
+<blockquote><p>用户在本轮明确授权实施，覆盖计划编写时的“仅制定计划”历史状态。G0 证明冻结原 ShaderLab 和验证工具可信，不证明 19 个材质、七个 Pass 或 VFX 全功能等价。GF 可启动；GF 不能代替 G3。</p></blockquote>
+<h2 id="identity">输入、版本与回退点</h2>
+<table border="1" cellpadding="6"><tbody>
+<tr><th>任务 / Gate / 主线</th><td>T00 / G0 / 原 ShaderLab ↔ test-only Frozen ShaderLab</td></tr>
+<tr><th>开工双仓</th><td>主工程 <code>57a0604a8625ce171bc28f33d7e2472f97bc13b8</code>；NB_FX <code>26917c03709830fc62b12fa466e38862840cfde2</code>；均为 <code>codex/nb-fx-vfxgraph-implementation</code>、已跟踪远端且开工时工作区干净；主工程 submodule 指针为 NB_FX 该提交。</td></tr>
+<tr><th>实现证据提交</th><td>NB_FX <code>04e0d954850475b6b50f645cabfc4bc2e82cc07a</code>；主工程 <code>ce4daf7d7a76a4bcd8790edf7129a581acd5e13b</code>。本报告与索引作为后续独立文档切片提交；以上为可回退实现切片。</td></tr>
+<tr><th>输入 hash / GUID</th><td><a href="g0-evidence/baseline-manifest.json">完整环境、源码、配置、资产 SHA-256/GUID manifest</a>；<a href="g0-evidence/evidence-sha256.txt">原始证据校验清单</a>；<a href="g0-evidence/material-map.json">19 材质映射</a>；<a href="g0-evidence/scene-remap.json">场景与 Prefab 引用映射</a>。开工 diff 为空；原生产 Shader、NBPostprocess、官方包、原样例未被修改。</td></tr>
+<tr><th>Unity / 包 / 工具</th><td>Unity 6000.3.18f1；URP / Shader Graph / VFX Graph 17.3.0；Unity CLI 1.0.0-beta.11；Pipeline 0.7.0-exp.1。当前会话未暴露 unityMCP，按约定使用 CLI/Pipeline。</td></tr>
+<tr><th>设备与渲染</th><td><a href="g0-evidence/editor-environment.json">macOS 15.7.3、Apple M3 Pro、Metal、Linear、Quality MSAA 4、URP-HighFidelity、StandaloneOSX</a>。数值夹具另使用 128×128 RGBA32 RenderTexture、关闭相机 HDR/MSAA；不可混同样例场景截图。</td></tr>
+</tbody></table>
+<h2 id="freeze">冻结与可重放输入</h2>
+<ol>
+<li>从 <code>NBShaders2/Shader/NBShader.shader</code> 递归解析 <code>#include</code> 与 <code>#include_with_pragmas</code>：13 个 NB 自有文件全部复制至 <code>Tests/Baseline/Frozen/</code>，包括 XuanXuanRenderUtility 的 Utility、VAT、Six-Way 与噪声。每个复制文件获得独立 GUID，13 项仅有包内 include 重映射；入口另改 Shader 名并移除会写材质的 CustomEditor。<a href="g0-evidence/baseline-manifest.json">manifest</a> 的 <code>allowedTransformOnly</code> 对 13 项均为 true。原 Shader SHA-256 为 <code>9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00</code>。</li>
+<li>静态遍历含官方包分支共 85 个 include 文件并逐文件记录 hash；官方 URP/Core/SG/VFX 版本与 package.json hash 已锁定，不复制或修改官方包。另有 5 个仅在其他平台条件分支引用的官方 include 在本机 PackageCache 不存在；Metal 下 Frozen Shader 导入及测试无编译 Error，不能据此宣称其他平台已通过。</li>
+<li>复制 19 个 NBShader 样例材质到 <code>Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/</code>，逐字节核查除 Shader GUID 外的序列化文本一致，包括 keywords、render queue 与贴图引用。源 68 个递归样例依赖资产（约 410 MB）及 importer 的文件/.meta hash 已锁定；未复制整套大资产或改 importer。<a href="g0-evidence/vat-import-settings.json">VAT importer</a> 与<a href="g0-evidence/regular-texture-import-settings.json">普通贴图 importer</a> 读回区别已记录。</li>
+<li>由原 <code>NBShaderSamples.unity</code> 复制 <code>NBShader_VFXGraphSample.unity</code>，场景 17 处材质引用、测试 Prefab 3 处材质引用改为 Frozen GUID；源场景 19 处 Prefab 引用指向测试副本。A 组为 Frozen ShaderLab；B、C 空对象明确标为未实现；D 尚未加入。源场景与用户 VFXSample 未改。该大场景含粒子、Cinemachine、Bloom 和 NBPostprocess，截图仅供人工观察，不当作数值等价输入。</li>
+<li>可重放命令：在对应主工程 / NB_FX 实现提交打开 Unity 6000.3.18f1，先执行 <code>unity status --json</code>、<code>unity command editor_status</code>、<code>unity command console_status</code>；运行 <code>unity command run_tests --mode editor --filter NBFX.Baseline.Editor.Tests --filter_type assembly</code>；PlayMode 用相同命令改 <code>--mode playmode --filter NBFX.Baseline.PlayMode.Tests --async_tests true</code> 并轮询 <code>unity command test_status</code>。输出和阈值由已提交夹具固定。</li>
+</ol>
+<p>后续回归的 <a href="g0-evidence/feature-case-index.json">Feature → case 索引</a>列出 19 个样例材质的原始 keywords 和 G2 候选 case ID，并明确协议、组合、Pass、宿主、Graph/VFX 缺口；索引不等于通过。</p>
+<h2 id="results">G0 case 与证据</h2>
+<table border="1" cellpadding="6"><thead><tr><th>Case ID</th><th>输入 / 判据</th><th>实测</th><th>状态与证据</th></tr></thead><tbody>
+<tr><td>G0-FREEZE-01</td><td>13 个自有源码闭包、新 GUID、允许的文本重映射；生产实现不变</td><td>13/13 完整、映射核查 true；Unity 识别 <code>Effects/NBShader_T00_Frozen</code>，无 Shader 编译 Error</td><td>通过：<a href="g0-evidence/baseline-manifest.json">manifest</a>、<a href="g0-evidence/shader-import-messages.json">Shader 消息</a></td></tr>
+<tr><td>G0-ASSET-01</td><td>19 材质、场景/Prefab 隔离与 hash；A/B/C 状态真实</td><td>19 份仅换 Shader GUID；17＋3 材质引用及 19 Prefab 引用重映射；场景保存后 clean</td><td>通过：<a href="g0-evidence/material-map.json">材质</a>、<a href="g0-evidence/scene-remap.json">场景</a>、<a href="g0-evidence/g0-final-scene-state.json">Editor 场景</a></td></tr>
+<tr><td>G0-RENDER-01</td><td>固定正交相机与单 Quad，同一位置/材质输入、layer 2 隔离；RGBA32 全图逐通道阈值 0，中央红像素证明实际绘制</td><td>128×128 共 16384 像素，0 像素有差异；原与 Frozen EditMode 2/2</td><td>通过：<a href="g0-evidence/g0-editmode-tests.json">JSON</a>、<a href="g0-evidence/g0-editmode-tests.xml">XML</a>、<a href="g0-evidence/G0_reference.png">原图</a>、<a href="g0-evidence/G0_frozen.png">Frozen</a>、<a href="g0-evidence/G0_diff.png">Diff</a></td></tr>
+<tr><td>G0-NEG-01</td><td>在比较器输入中央红通道注入 1/255，仍使用预设零容差</td><td>恰好 1 像素差，最大通道误差 1；比较器拒绝该输入</td><td>通过：<a href="g0-evidence/G0_negative_control.png">负例</a>、<a href="g0-evidence/g0-editmode-tests.xml">测试结果</a></td></tr>
+<tr><td>G0-TOOL-01</td><td>Editor、Console、Game/Scene 截图、EditMode/PlayMode、Reload 恢复与 build 入口发现</td><td>Game/Scene 截图成功；EditMode 2/2，PlayMode 1/1；Domain Reload 后 Pipeline 连接恢复、Editor ready、编译成功、场景 clean；build target 可列出，Player 未构建</td><td>通过能力核验：<a href="g0-evidence/g0-playmode-status.json">PlayMode</a>、<a href="g0-evidence/g0-playmode-tests.xml">XML</a>、<a href="g0-evidence/g0-final-console.json">Console</a>、<a href="g0-evidence/g0-final-editor-status.json">状态</a>、<a href="g0-evidence/build-targets.json">构建入口</a></td></tr>
+</tbody></table>
+<p><img src="g0-evidence/G0_reference.png" alt="G0 原 ShaderLab 单对象参考图" width="256"> <img src="g0-evidence/G0_frozen.png" alt="G0 Frozen ShaderLab 单对象图" width="256"> <img src="g0-evidence/G0_diff.png" alt="G0 零差异图" width="256"></p>
+<p><a href="g0-evidence/original-sample-game.png">源 Game View</a>、<a href="g0-evidence/frozen-sample-game.png">Frozen 场景 Game View</a>、<a href="g0-evidence/frozen-sample-scene-view.png">Frozen Scene View</a> 仅是非确定性场景观察，未用于数值结论。</p>
+<h2 id="issues">已有问题、操作失败与未运行项</h2>
+<ul>
+<li>原有 <code>GradientMask.mat</code> 与 <code>DissolveRamp.mat</code> 的 <code>_RampColorMap</code> 指向缺失 GUID <code>8f7df3393ccb0ce469fbb19598540497</code>；Unity 读回为 null。这两份材质当前未启用 <code>_COLOR_RAMP_MAP</code>，已按原样冻结缺失状态；未来测试该 keyword 必须另建有效输入，不能把缺失贴图当通过。另两个全零前缀 GUID 是 Unity 内置资源，不是丢失自有文件。</li>
+<li>历史交接的 VFX 反序列化 warning 未在开工 Console 采样中出现，不能凭历史记录宣称已修复。执行期间因 <code>capture_game_view</code> 输出路径超出其 <code>Assets</code> authoring root 产生 1 条操作 Error，改用已核验的 <code>screenshot</code>；初版测试曾因错误的 enum 名称产生 1 条编译 Error，修正后编译成功。未清空 Console；保留原始<a href="g0-evidence/g0-final-console.json">cursor 与 groundTruth</a>，最终 groundTruth 为 0 编译 Error / 0 当前 Console Error / 0 当前 Warning。一次 Package 目录命名 warning 为导入后历史条目，未更名包目录。</li>
+<li>PlayMode 同步调用被 Pipeline 明确拒绝，因为进入 Play 会 Domain Reload；随后改用其声明的 async 模式，通过并恢复。Reload 期间连接短暂不可达，等待并重新发现状态，不盲目重试资产操作。</li>
+<li>Player build、跨 Unity 版本/API、19 材质全部视觉比较、七个 Pass、GUI/Flags、NBPostprocess 全功能与性能均<strong>未运行</strong>；分属 GF/G2–G7，不由 G0 推断通过。新旧大场景动态截图不设置像素容差。</li>
+</ul>
+<h2 id="gate">主 Agent 审核、放行与回退</h2>
+<p>主 Agent 核对了两个仓库提交/指针、staged 范围、13 项源码映射、19 材质仅 GUID 差异、场景引用、测试 JSON/XML、PNG 原图/差异图、Console groundTruth 与 Reload 后场景 clean。SubAgent 仅做只读闭包和样例调查，没有文件所有权或 Editor 操作。G0 在上述限定范围内<strong>放行</strong> T00A/GF 的隔离 Pass 可行性试验；不放行生产 HLSL 重构、Target 变更或 NBPostprocess 修改。若源 Shader/共享核、导入器、URP 配置或验证夹具改变，本报告对应证据需复验。</p>
+<p>回退点：主工程 <code>57a0604</code> / NB_FX <code>26917c0</code>；独立实现切片为 NB_FX <code>04e0d95</code> 与主工程 <code>ce4daf7</code>。只回退本任务新增资产，不覆盖用户变更。两个仓库均未 push。</p>
+<hr><p><small>NB_FX 重构实施记录；证据为当前提交与环境限定，未运行项不得视为通过。</small></p>
+</body></html>

@@ -7,8 +7,8 @@
 </head>
 <body>
 <h1>NB_FX 重构计划</h1>
-<p>共享功能 HLSL，保留 NBShader，新增只面向 VFX Graph 的 NBShader_VFXGraph。当前仅编写计划。</p>
-<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<p>共享功能 HLSL，保留 NBShader，新增只面向 VFX Graph 的 NBShader_VFXGraph。实施已获授权；G0 基线通过，GF 待启动。</p>
+<p><small>更新：2026-09-25 · G0 已放行 · 不修改官方包</small></p>
 <hr>
 <h2 id="scope">已确认的产品范围</h2>
 <blockquote><p><strong>普通 Mesh 与现有宿主继续使用 NBShader（ShaderLab）；NBShader_VFXGraph 最终只服务 VFX Graph。</strong>让 Mesh 使用 Shader Graph 材质，仅用于隔离验证，不是新的用户工作流。</p></blockquote>
@@ -26,7 +26,7 @@
       <tr><td>版本</td><td>新路径可以 Unity 6000+ 起，具体最低版本由依赖能力确定；先验证 6.3，后续覆盖至 6.5。</td></tr>
       <tr><td>平台</td><td>新 VFX 路径以较新 DirectX、Metal、Vulkan 为候选，具体最低版本待验证；不支持 OpenGL ES，XR 不在正式范围。原 ShaderLab 的兼容范围不因本决定缩减。</td></tr>
       <tr><td>禁止事项</td><td>不修改官方包；不擅自改用标准 Lit / Six-Way Target；不能自行接受能力降级。</td></tr>
-      <tr><td>当前授权</td><td>仅制定计划与维护本文档；工具安装是已完成的单独授权事项，不授权开始重构或 SubAgent 执行。</td></tr>
+      <tr><td>当前授权</td><td>用户于 2026-09-25 授权从 T00/G0 实施，G0 后进行 T00A/GF；不授权修改官方包、擅改 Target/NBPostprocess 或删减功能，未经再次要求不 push。</td></tr>
     </tbody>
   </table>
 
@@ -52,10 +52,10 @@
   <li><a href="sources.html">源码与资料索引</a></li>
 </ul>
 <h2 id="status">当前状态</h2>
-<p>全部工程 Gate（含新增 GF）均为<strong>未开始</strong>。本次仅核对本地源码、CLI 版本和包元数据，编写 HTML 文档；没有执行 Shader 编译验证、场景修改、Play、测试或构建。T00A 已纳入后续计划，但当前未启动。</p>
+<p><strong>G0 已放行，GF 尚未开始。</strong>T00 已冻结原 ShaderLab、复制验证场景，并完成差异负例、EditMode/PlayMode 与 Reload 工具核验。生产 Shader 未重构，Player 未构建。详见<a href="reports/g0-t00-baseline.html">G0 报告</a>。</p>
 <p>CLI 为 <code>1.0.0-beta.11</code>，Pipeline 为 <code>0.7.0-exp.1</code>，当前工程文件指向 <code>6000.3.18f1</code> 与 URP / SG / VFX <code>17.3.0</code>。交接时的 ready、0 错误、1 条警告仅是历史记录。详见<a href="reports/index.html">证据状态</a>。</p>
 <p>文档 v0.4 增加用户确认的 OpenGL ES 范围调整与 T00A 提前 Pass 可行性试验。专业术语保留原文，不另写中文释义。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 实施记录：G0 已放行；其余 Gate 状态见报告索引。</small></p>
 </body>
 </html>
