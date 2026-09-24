@@ -1,0 +1,50 @@
+{
+  "success": true,
+  "command": "command console",
+  "data": {
+    "command": "console",
+    "parameters": {
+      "since": "30"
+    },
+    "result": {
+      "entries": [
+        {
+          "seq": 31,
+          "timestampUtc": "2026-09-24T18:40:21.203879Z",
+          "level": "error",
+          "logType": "Error",
+          "message": "ExecuteCommandByName: No command named 'scene' is available. Available: [add_animator_layer, get_tags_layers, editor_focus, remove_scene_from_build, get_animator_controller, get_serialized_fields, get_authoring_root, list_shaders, remove_component, move_asset, set_active_scene, remove_animation_curve, add_timeline_track, cancel_occlusion_bake, set_transform, get_material_properties, add_animator_parameter, list_build_targets, occlusion_bake_status, get_runtime_pipeline_settings, get_player_settings, cancel_lighting_bake, audit_status, clear_baked_lighting, clear_occlusion_culling, add_animator_transition, list_tests, get_time_settings, batch, set_tag, get_import_settings, set_material_properties, delete_gameobject, package_list, wait_status, wait_cancel, add_scene_to_build, bake_lighting, bake_occlusion_culling, set_authoring_root, get_input_settings, set_input_settings, add_component, switch_build_target, rename_asset, package_remove, set_player_settings, list_build_profiles, set_parent, package_resolve, save_all, import_asset, get_quality_settings, save_prefab_contents, set_component_properties, set_autotick, set_animation_curve, cancel_navmesh_bake, bake_navmesh_surfaces, set_quality_settings, set_runtime_pipeline_settings, create_script, create_folder, create_animation_clip, get_graphics_settings, capture_game_view, create_gameobject, lighting_bake_status, get_scene_hierarchy, get_lighting_settings, read_text_file, delete_asset, get_performance_stats, recompile, set_time_settings, recompile_status, add_timeline_clip, set_active, package_search, bake_navmesh, set_graphics_settings, package_add, set_navmesh_settings, get_physics_settings, instantiate_prefab, screenshot, set_physics_settings, get_build_settings, open_scene, wait_for, search, set_serialized_field, create_scene, switch_build_target_status, build_status, add_animator_state, attach_script, set_audio_settings, set_tags_layers, rename_gameobject, clear_navmesh, run_script, create_prefab, revert_prefab_overrides, copy_asset, get_shader_properties, set_lighting_settings, menu, create_prefab_variant, set_import_settings, navmesh_bake_status, write_text_file, editor_play, list_open_scenes, set_selection, get_component_properties, find_gameobjects, build, set_build_settings, create_animator_controller, test_status, set_layer, create_timeline, create_asset, get_selection, package_status, cancel_tests, save_scene, capture_scene_view, editor_stop, audit, unpack_prefab, editor_pause, run_tests, apply_prefab_overrides, get_navmesh_settings, get_audio_settings, create_gameobjects, get_timeline, reload_file_player_interpreter, find_assets, get_animation_clip, editor_status, simulate_key, cleanup_codereload, set_timescale, runtime_status, console, codereload_status, console_status, eval_file, log, reload_file, clear_console, simulate_pointer, eval, reload_file_editor_interpreter, set_target_framerate, quit, report_evals]",
+          "stackTrace": "UnityEngine.Debug:LogError (object)\nUnity.Pipeline.BasePipelineServer:ResolveCommand (string) (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/BasePipelineServer.cs:2436)\nUnity.Pipeline.BasePipelineServer/<HandleExecRequest>d__115:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/BasePipelineServer.cs:1899)\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<int>:SetResult (int)\nUnity.Pipeline.MaxLengthStream/<ReadAsync>d__6:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/MaxLengthStream.cs:46)\nSystem.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()\n",
+          "seeded": false
+        }
+      ],
+      "cursor": 31,
+      "session": "6f086234c3c841feb379d75a882d814f",
+      "returned": 1,
+      "dropped": false,
+      "reset": false,
+      "counts": {
+        "error": 3,
+        "warn": 1,
+        "log": 27
+      },
+      "groundTruth": {
+        "sampledUtc": "2026-09-24T18:45:42.250779Z",
+        "ageMs": 70,
+        "compilationFailed": false,
+        "compiling": false,
+        "consoleErrors": 1,
+        "consoleWarnings": 0,
+        "consoleLogs": 7,
+        "seeded": true
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
