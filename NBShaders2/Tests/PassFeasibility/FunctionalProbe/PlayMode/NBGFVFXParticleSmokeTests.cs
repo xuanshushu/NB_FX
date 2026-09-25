@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.VFX;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -17,6 +18,7 @@ namespace NBFX.GF.URP.Tests
 #if UNITY_EDITOR
         const string VfxPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/SubTargetProbe/GF_VFXOutput_NBSubTarget.vfx";
         const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/SubTargetProbe/GF_URP_VFX_NBSubTarget.shadergraph";
+        const string MaskShaderPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/FunctionalProbe/NBGFMaskView.shader";
 
         static Color32[] Capture(Camera camera, RenderTexture target, Texture2D readback, string path)
         {
@@ -49,6 +51,10 @@ namespace NBFX.GF.URP.Tests
             Assert.That(asset, Is.Not.Null);
             var shader = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
             Assert.That(shader, Is.Not.Null);
+            var pipeline = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+            Assert.That(pipeline, Is.Not.Null);
+            var rendererData = pipeline.rendererDataList[0];
+            Assert.That(rendererData, Is.Not.Null);
             var cameraObject = new GameObject("NBGF_TMP_VFX_Camera");
             var vfxObject = new GameObject("NBGF_TMP_VFX_Particles");
             var background = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -56,6 +62,8 @@ namespace NBFX.GF.URP.Tests
             var readback = new Texture2D(128, 128, TextureFormat.RGBA32, false, true);
             var gradient = new Texture2D(128, 128, TextureFormat.RGBA32, false, true);
             var backgroundMaterial = new Material(shader);
+            Material maskMaterial = null;
+            NBGFMaskCaptureFeature maskFeature = null;
             float previousMode = Shader.GetGlobalFloat("_NBGFMode");
             try
             {
@@ -126,9 +134,43 @@ namespace NBFX.GF.URP.Tests
                 Assert.That(visiblePixels, Is.GreaterThan(0), "Particles must visibly render.");
                 Assert.That(deferredChanged, Is.GreaterThan(0), "Deferred-mode output must differ in the same frame.");
                 Assert.That(cameraChanged, Is.GreaterThan(0), "Camera-opaque-mode output must differ in the same frame.");
+
+                // Visual output alone cannot prove that the transient RenderGraph
+                // mask has the NBPostprocess data contract. Read it in a pass
+                // after the existing feature, without changing that feature.
+                var maskShader = AssetDatabase.LoadAssetAtPath<Shader>(MaskShaderPath);
+                Assert.That(maskShader, Is.Not.Null);
+                Assert.That(maskShader.isSupported, Is.True);
+                maskMaterial = new Material(maskShader);
+                maskFeature = ScriptableObject.CreateInstance<NBGFMaskCaptureFeature>();
+                maskFeature.material = maskMaterial;
+                maskFeature.Create();
+                maskFeature.SetActive(true);
+                rendererData.rendererFeatures.Add(maskFeature);
+                rendererData.SetDirty();
+
+                Shader.SetGlobalFloat("_NBGFMode", 0);
+                var clearMask = Capture(camera, target, readback, Path.Combine(outputDirectory, "gf_vfx_mask_clear.png"));
+                Shader.SetGlobalFloat("_NBGFMode", 1);
+                var deferredMask = Capture(camera, target, readback, Path.Combine(outputDirectory, "gf_vfx_mask_deferred.png"));
+                Shader.SetGlobalFloat("_NBGFMode", 2);
+                var cameraMask = Capture(camera, target, readback, Path.Combine(outputDirectory, "gf_vfx_mask_camera.png"));
+                int maskChanged = Changed(clearMask, deferredMask);
+                Debug.Log("NBFX GF VFX mask: deferredChanged=" + maskChanged +
+                          ", cameraChanged=" + Changed(clearMask, cameraMask));
+                Assert.That(maskChanged, Is.GreaterThan(0),
+                    "Transient deferred mask must receive actual VFX particles.");
             }
             finally
             {
+                if (maskFeature != null)
+                {
+                    rendererData.rendererFeatures.Remove(maskFeature);
+                    rendererData.SetDirty();
+                    UnityEngine.Object.DestroyImmediate(maskFeature);
+                }
+                if (maskMaterial != null)
+                    UnityEngine.Object.DestroyImmediate(maskMaterial);
                 Shader.SetGlobalFloat("_NBGFMode", previousMode);
                 var camera = cameraObject.GetComponent<Camera>();
                 if (camera != null)

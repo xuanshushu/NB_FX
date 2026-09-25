@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var a=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset;var d=a.rendererDataList[0];return UnityEditor.AssetDatabase.GetAssetPath(d)+\";featureCount=\"+d.rendererFeatures.Count+\";names=\"+string.Join(\",\",d.rendererFeatures.Select(x=>x.name))+\";dirty=\"+UnityEditor.EditorUtility.IsDirty(d);"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "Assets/Settings/URP-HighFidelity-Renderer.asset;featureCount=2;names=SSAO,NBPostProcess;dirty=False"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

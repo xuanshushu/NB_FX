@@ -52,6 +52,7 @@
       <tr><td>Q05</td><td>正式 Output 类型清单、必须覆盖的 VFX Mesh/VAT 数据组合。</td><td>T08 先最小验证，T09 前确认；不凭便利缩小范围。</td></tr>
       <tr><td>Q06</td><td>图像容差与新增路径性能预算。</td><td>基线校准后、全量验收前确认，不在失败后放宽。</td></tr>
       <tr><td>Q07</td><td>若共享重构影响原 ShaderLab 的旧版本兼容，如何处理？</td><td>主 Agent；当前没有放弃原兼容要求的批准。</td></tr>
+      <tr><td>Q08</td><td>当 HDRP 进入正式轮次时，如何处理 URP Editor <code>.asmref</code> 无条件绑定：URP 为 NB_FX 必需依赖，还是将 URP 扩展拆为独立 Package？</td><td><a href="reports/gf-functional-progress.html">GF 功能报告</a>已证实普通 asmdef 可按 Version Defines / Define Constraints 隔离，<code>.asmref</code> 自身不能；当前仅做 URP，未安装 HDRP、未改 package.json，不提前宣称 HDRP-only 导入通过。</td></tr>
     </tbody>
   </table>
 
