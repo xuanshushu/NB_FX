@@ -9,10 +9,10 @@
 <p><a href="../index.html">返回文档目录</a></p>
 <h1>T00A · 提前 Pass 可行性试验</h1>
 <p>在大规模 HLSL 重构前，以隔离的最小 Graph 验证自定义 Pass / LightMode 和原 NBPostprocess 链路；此任务不实现 NBShader_VFXGraph 产品。</p>
-<p><small>更新：2026-09-25 · 包内 SubTarget 功能 GF 进行中，未放行 · 不修改官方包</small></p>
+<p><small>更新：2026-09-26 · 包内 SubTarget 的 GF 已限定范围放行 · 不修改官方包</small></p>
 <hr>
 <blockquote><p><strong>用户已同意提前安排试验，但本轮仍只制定计划。</strong>该句是计划编写时历史状态。用户已授权、G0 已放行；隔离 Graph 已导入并完成 Mesh 与 Pass/重导入核验，两条精确 LightMode 不存在。<a href="../reports/gf-t00a-pass-feasibility.html">GF 报告</a>与<a href="../reports/gf-t00a-decision.html">待决策材料</a>记录实际范围；未获选择前停止受影响工作。</p></blockquote>
-<p><strong>最新状态：</strong>用户已按 D18 接受包内 .asmref / SubTarget 作为功能试验候选。<a href="../reports/gf-subtarget-feasibility.html">结构报告</a>证明 Graph 与 VFX Output 可生成双 Pass；<a href="../reports/gf-functional-progress.html">功能进度</a>证明真实 VFX 粒子、画面差分与独立 Mask 读回，但最终 Uber 合成未稳定复现、Player 未验，GF 仍未放行。生产架构仍待 GF 与包依赖隔离审查。</p>
+<p><strong>最终状态：</strong>用户按 D18 接受包内 .asmref / SubTarget 作为功能试验候选。<a href="../reports/gf-t00a-functional-gate.html">GF Gate 审核</a>已覆盖双 Pass、Mesh/VFX Mask、合成及 StandaloneOSX Player，在当前 URP/Metal 可行性范围放行；生产架构、optional Package 隔离、完整 NB 功能与 G3 仍须后续独立审查。</p>
 
 <h2 id="goal">目标与边界</h2>
 <p>优先检验：不修改官方包、不手改生成 Shader，是否能让启用 <code>Support VFX Graph</code> 的同一 Graph 资产生成所需自定义 Pass / LightMode，并由当前 NBPostprocess 的两个 RenderPass 选择和驱动。出口为 <strong>GF</strong>；GF 不是 G3，也不证明真正 VFX Output 可用。</p>
@@ -56,6 +56,6 @@
 <p>GF 阻塞时暂停 T02–T05 的大规模实现，主 Agent 用<a href="../templates/decision.html">决策模板</a>向用户提交可选择的取舍；不自行降级，也不把失败原型当作 G3 的最终结论。GF 通过后，T01 把实际限制纳入接口；T06 仍须在重构后、真实共享 HLSL 和产品候选 Graph 上重新完成 G3。</p>
 <p>所有 Unity Editor 变更与验证由主 Agent 串行安排。回退仅针对本任务资产，不覆盖用户或其他任务工作。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.4。GF 已试验但阻塞，G3 未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4。GF 已限定范围放行，G3 未执行。</small></p>
 </body>
 </html>

@@ -153,43 +153,6 @@ index 3b28cc5..d566f27 100644
    m_ShaderVariantLogLevel: 0
    m_ShadowCascades: 0
    m_Textures:
-diff --git a/Assets/UniversalRenderPipelineGlobalSettings.asset b/Assets/UniversalRenderPipelineGlobalSettings.asset
-index 5c4faca..77c58fb 100644
---- a/Assets/UniversalRenderPipelineGlobalSettings.asset
-+++ b/Assets/UniversalRenderPipelineGlobalSettings.asset
-@@ -68,7 +68,22 @@ MonoBehaviour:
-       - rid: 5372389149372317894
-       - rid: 5372389149372317895
-     m_RuntimeSettings:
--      m_List: []
-+      m_List:
-+      - rid: 5372388923258962114
-+      - rid: 5372388923258962116
-+      - rid: 5372388923258962118
-+      - rid: 5372388923258962119
-+      - rid: 5372388923258962121
-+      - rid: 5372388923258962122
-+      - rid: 5372388923258962123
-+      - rid: 5372388923258962125
-+      - rid: 5372388923258962130
-+      - rid: 5372388923258962133
-+      - rid: 5372389149372317885
-+      - rid: 5372389149372317888
-+      - rid: 5372389149372317891
-+      - rid: 5372389149372317893
-+      - rid: 5372389149372317895
-   m_AssetVersion: 10
-   m_ObsoleteDefaultVolumeProfile: {fileID: 0}
-   m_RenderingLayerNames:
-@@ -153,7 +168,7 @@ MonoBehaviour:
-         asm: Unity.RenderPipelines.Universal.Runtime}
-       data:
-         m_Version: 0
--        m_VolumeProfile: {fileID: 11400000, guid: e0c7a7de1ec6ae744b554bf9ede38e7d,
-+        m_VolumeProfile: {fileID: 11400000, guid: 10b41c594ff5746db88011c291d083a5,
-           type: 2}
-     - rid: 5372388923258962117
-       type: {class: UniversalRenderPipelineEditorMaterials, ns: UnityEngine.Rendering.Universal,
 diff --git a/ProjectSettings/GraphicsSettings.asset b/ProjectSettings/GraphicsSettings.asset
 index 88a1a67..bd6103b 100644
 --- a/ProjectSettings/GraphicsSettings.asset
@@ -222,19 +185,3 @@ index 88a1a67..bd6103b 100644
    m_LightProbeOutsideHullStrategy: 0
    m_CameraRelativeLightCulling: 0
    m_CameraRelativeShadowCulling: 0
-diff --git a/ProjectSettings/ProjectSettings.asset b/ProjectSettings/ProjectSettings.asset
-index 2093440..73ed2ca 100644
---- a/ProjectSettings/ProjectSettings.asset
-+++ b/ProjectSettings/ProjectSettings.asset
-@@ -525,7 +525,10 @@ PlayerSettings:
-       m_Height: 720
-       m_Kind: 1
-       m_SubKind:
--  m_BuildTargetBatching: []
-+  m_BuildTargetBatching:
-+  - m_BuildTarget: Standalone
-+    m_StaticBatching: 1
-+    m_DynamicBatching: 0
-   m_BuildTargetShaderSettings: []
-   m_BuildTargetGraphicsJobs: []
-   m_BuildTargetGraphicsJobMode: []

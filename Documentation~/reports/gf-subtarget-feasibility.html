@@ -5,6 +5,7 @@
 <p><a href="index.html">返回报告索引</a> · <a href="gf-t00a-pass-feasibility.html">原 GF 报告</a> · <a href="gf-t00a-decision.html">Q01 决策材料</a></p>
 <h1>GF 补充试验 · NB_FX 包内 SubTarget</h1>
 <p><small>主 Agent · 2026-09-25 · <strong>技术路径初步可行；GF 尚未放行</strong> · 未 push</small></p>
+<p><strong>后续状态：</strong>本页为结构性试验的时间点快照；<a href="gf-t00a-functional-gate.html">功能性 GF Gate</a>已于 2026-09-26 在当前 URP/Metal 范围放行，未将本页早期未运行项冒充当时已通过。</p>
 <blockquote><p>用户仅授权测试“自己包内扩展自定义 SubTarget”。本试验未修改官方包、产品 Shader、Target 或 NBPostprocess。它证明当前版本可从同一启用 VFX 的 Graph 与真实 VFX Output 生成两个精确 Pass / LightMode；不证明这两个 Pass 已输出正确扰动数据，也不证明 RT、合成、Player 或 G3。</p></blockquote>
 <h2>范围与做法</h2>
 <p>环境沿用 G0/GF：Unity 6000.3.18f1，URP / Shader Graph / VFX Graph 17.3.0，Metal，URP-HighFidelity。此会话无可调用的 unityMCP，Unity Editor 由主 Agent 串行通过 CLI/Pipeline 验证。实时 Git 起点为主工程 <code>d4f945e</code>、NB_FX <code>12da8e8</code>，两个工作区 clean，均未 push。</p>

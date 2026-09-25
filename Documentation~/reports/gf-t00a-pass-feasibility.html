@@ -6,7 +6,7 @@
 <h1>GF / T00A · 提前 Pass 可行性试验</h1>
 <p><small>执行与 Gate 审核：主 Agent · 2026-09-25 · 结论：<strong>GF 阻塞，等待用户决策</strong> · 未推送</small></p>
 <blockquote><p>结论仅针对 Unity 6000.3.18f1 / URP、Shader Graph、VFX Graph 17.3.0 当前版本和不修改官方包、不手改生成 Shader、保持现有 NBPostprocess 精确 LightMode 的约束。测试 Graph 能在 Mesh 渲染，且产生 VFX Graph 支持子资产；但导入后的 Shader 没有 <code>NBCameraOpaqueDistortPass</code> 或 <code>NBDeferredDistortPass</code>。不能把颜色可见当作原后处理链路可用；GF 不代替 G3。</p></blockquote>
-<p><strong>2026-09-25 补充：</strong>以上为<strong>官方内置 Unlit SubTarget</strong> 的原始试验结论，不改写历史证据。用户随后授权的<a href="gf-subtarget-feasibility.html">NB_FX 包内 .asmref / 自定义 SubTarget 隔离试验</a>已让 Graph 与 VFX Output 生成两条精确 Pass；功能数据、RT/合成与 Player 未验，GF 仍未放行。</p>
+<p><strong>历史结论说明：</strong>以上为<strong>官方内置 Unlit SubTarget</strong> 的 2026-09-25 原始试验结论，不改写历史证据。随后包内 .asmref / 自定义 SubTarget 候选完成了<a href="gf-t00a-functional-gate.html">功能性 GF Gate 审核</a>并于 2026-09-26 在当前 URP/Metal 范围通过；本报告中的“阻塞”只适用于原内置 SubTarget 路线。</p>
 <h2>输入、版本和复现</h2>
 <table border="1" cellpadding="6"><tbody>
 <tr><th>关联输入</th><td>G0 已放行。开工主工程 <code>e89066f347f8b5bdf23ffd38b4c673833a576d4d</code>、NB_FX <code>841760e252a5013350d377c1d90b71945990f68c</code>，双仓同在 <code>codex/nb-fx-vfxgraph-implementation</code> 且开工 clean；隔离 Graph 与原始证据已提交为 NB_FX <code>a5df27d2c0256ede227e9cf0012bd90bdedb7349</code>；本报告为独立文档切片。<a href="g0-t00-baseline.html">G0 报告</a>。</td></tr>

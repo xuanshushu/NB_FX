@@ -4,7 +4,7 @@
 <body>
 <p><a href="index.html">返回报告索引</a> · <a href="../decisions.html">决策记录</a> · <a href="gf-subtarget-feasibility.html">结构性试验</a></p>
 <h1>GF 功能验证进度 · 包内 SubTarget 候选</h1>
-<p><small>主 Agent · 2026-09-26 · <strong>扰动 Mask 已读回；最终合成未放行，GF 未放行</strong> · 未 push</small></p>
+<p><small>主 Agent · 2026-09-26 · <strong>中间进度快照；最终 GF 结论见<a href="gf-t00a-functional-gate.html">Gate 报告</a></strong> · 未 push</small></p>
 <blockquote><p>本轮依据 D18 只扩展隔离试验资产。没有修改官方包、UniversalTarget、生产 NBShader、NBPostprocess、Assets 或 ProjectSettings。URP 常规 Mesh 仍由现有 NBShader 支持；此处 Graph 是 URP VFX 候选，HDRP 延后。</p></blockquote>
 <h2>输入与实现边界</h2>
 <p>Unity 6000.3.18f1，URP / Shader Graph / VFX Graph 17.3.0，Metal，原 NBPostprocess RendererFeature 保持 active。当前会话没有暴露可用的 unityMCP，主 Agent 串行通过 Unity CLI / Pipeline 验证。Git 起点：主工程 <code>7bc396e</code>、NB_FX <code>264a4fd</code>，两个工作区 clean，位于 <code>codex/nb-fx-vfxgraph-implementation</code>；本次不 push。</p>
