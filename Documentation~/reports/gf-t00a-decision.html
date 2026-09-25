@@ -4,7 +4,7 @@
 <body>
 <p><a href="gf-t00a-pass-feasibility.html">返回 GF 报告</a> · <a href="../decisions.html">返回决策索引</a></p>
 <h1>Q01 / GF · 自定义 Pass 与 NBPostprocess 路线</h1>
-<p><small>提出：主 Agent · 2026-09-25 · <strong>产品路线待用户确认</strong>；D 的隔离技术试验已获授权并执行，生产实现未获批准，未 push。</small></p>
+<p><small>提出：主 Agent · 2026-09-25 · <strong>历史决策材料</strong>；用户随后按 D18 接受 D 为功能 GF 候选，<a href="gf-functional-progress.html">功能试验进行中</a>。GF 与生产架构未获放行，未 push。</small></p>
 <h2>问题与证据</h2>
 <p>已确认目标：同一启用 Support VFX Graph 的 Graph 资产在不修改官方包、不手改生成 Shader 下生成 <code>NBCameraOpaqueDistortPass</code> 和 <code>NBDeferredDistortPass</code>，由现有 NBPostprocess 精确选中并实现原功能。当前 6000.3.18f1 / URP、SG、VFX 17.3.0 的<a href="gf-t00a-pass-feasibility.html">GF 实测</a>：官方 VFX Unlit 模板的隔离副本支持 Mesh（4096 像素与背景不同）和 VFX 子资产，但 8 个 Pass 中没有这两条标签，<code>FindPass</code> 均为 -1；强制重导入仍缺失。Unity 官方<a href="https://docs.unity3d.com/ja/6000.0/Manual/urp/lighting/custom-lighting-introduction.html">说明 Custom Function 无法添加 Pass</a>，本地 SG/URP Pass 生成对象为 internal / sealed。现有 NBPostprocess 精确筛选不匹配；RT/合成和 Player 未运行，因此“无法在当前约束下直接使用现有链路”是由 Pass 缺失与源码筛选共同推得，不能写成已实测 RT 失败。</p>
 <h2>可选路线（均需明确授权）</h2>

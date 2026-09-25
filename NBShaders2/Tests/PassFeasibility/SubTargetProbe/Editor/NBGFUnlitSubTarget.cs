@@ -10,6 +10,9 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
     // changing any file in the official URP package.
     sealed class NBGFUnlitSubTarget : UniversalSubTarget
     {
+        const string kURPUnlitPass = "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/UnlitPass.hlsl";
+        const string kProbeRoot = "Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/SubTargetProbe/";
+
         public NBGFUnlitSubTarget()
         {
             displayName = "NB GF Unlit (test only)";
@@ -44,8 +47,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 passes.Add(item.descriptor, item.fieldConditions);
                 if (item.descriptor.referenceName == "SHADERPASS_UNLIT")
                 {
-                    AddProbePass(passes, item.descriptor, "NBCameraOpaqueDistortPass");
-                    AddProbePass(passes, item.descriptor, "NBDeferredDistortPass");
+                    AddProbePass(passes, item.descriptor, "NBCameraOpaqueDistortPass", "NBGFCameraOpaquePass.hlsl");
+                    AddProbePass(passes, item.descriptor, "NBDeferredDistortPass", "NBGFDeferredDistortPass.hlsl");
                     found = true;
                 }
             }
@@ -58,12 +61,32 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             context.subShaders[subShaderIndex] = PostProcessSubShader(subShader);
         }
 
-        static void AddProbePass(PassCollection passes, PassDescriptor forward, string lightMode)
+        static void AddProbePass(PassCollection passes, PassDescriptor forward, string lightMode, string probeInclude)
         {
             var pass = forward;
             pass.displayName = lightMode;
             pass.lightMode = lightMode;
             pass.useInPreview = false;
+            // Keep URP's own pre/post-graph includes. Replace only the final
+            // fragment entry point in this isolated GF probe, not the Forward pass.
+            var includes = new IncludeCollection();
+            bool replaced = false;
+            foreach (var include in forward.includes)
+            {
+                if (include.path == kURPUnlitPass)
+                {
+                    includes.Add(kProbeRoot + probeInclude, include.location);
+                    replaced = true;
+                }
+                else
+                {
+                    includes.AddInternal(include.guid, include.path, include.location,
+                        include.fieldConditions, include.shouldIncludeWithPragmas);
+                }
+            }
+            if (!replaced)
+                throw new InvalidOperationException("GF probe: URP Unlit fragment include not found.");
+            pass.includes = includes;
             passes.Add(pass);
         }
 
