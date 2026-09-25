@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var a=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset;var d=a.rendererDataList[0];return \"scene=\"+UnityEngine.SceneManagement.SceneManager.GetActiveScene().path+\";pipeline=\"+a.name+\";renderer=\"+UnityEditor.AssetDatabase.GetAssetPath(d)+\";features=\"+string.Join(\",\",d.rendererFeatures.Select(x=>x.name))+\";rendererDirty=\"+UnityEditor.EditorUtility.IsDirty(d)+\";compat=\"+UnityEngine.Rendering.GraphicsSettings.GetRenderPipelineSettings<UnityEngine.Rendering.Universal.RenderGraphSettings>().enableRenderCompatibilityMode+\";flags=\"+NBShader.NBPostProcess.NBPostProcessMaterial.GetInteger(\"_NBPostProcessFlags\");"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "scene=Assets/NBShaderSamples/NBShader_VFXGraphSample.unity;pipeline=URP-HighFidelity;renderer=Assets/Settings/URP-HighFidelity-Renderer.asset;features=SSAO,NBPostProcess;rendererDirty=False;compat=False;flags=113"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

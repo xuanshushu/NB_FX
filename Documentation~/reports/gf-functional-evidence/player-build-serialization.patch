@@ -1,0 +1,240 @@
+diff --git a/Assets/Settings/URP-Balanced.asset b/Assets/Settings/URP-Balanced.asset
+index 6bd124e..ee467dd 100644
+--- a/Assets/Settings/URP-Balanced.asset
++++ b/Assets/Settings/URP-Balanced.asset
+@@ -110,7 +110,7 @@ MonoBehaviour:
+   m_PrefilterDebugKeywords: 1
+   m_PrefilterWriteRenderingLayers: 1
+   m_PrefilterHDROutput: 1
+-  m_PrefilterAlphaOutput: 0
++  m_PrefilterAlphaOutput: 1
+   m_PrefilterSSAODepthNormals: 1
+   m_PrefilterSSAOSourceDepthLow: 0
+   m_PrefilterSSAOSourceDepthMedium: 1
+@@ -128,14 +128,14 @@ MonoBehaviour:
+   m_PrefilterSoftShadowsQualityHigh: 1
+   m_PrefilterSoftShadows: 0
+   m_PrefilterScreenCoord: 1
+-  m_PrefilterScreenSpaceIrradiance: 0
++  m_PrefilterScreenSpaceIrradiance: 1
+   m_PrefilterNativeRenderPass: 1
+   m_PrefilterUseLegacyLightmaps: 0
+-  m_PrefilterBicubicLightmapSampling: 0
+-  m_PrefilterReflectionProbeRotation: 0
+-  m_PrefilterReflectionProbeBlending: 0
+-  m_PrefilterReflectionProbeBoxProjection: 0
+-  m_PrefilterReflectionProbeAtlas: 0
++  m_PrefilterBicubicLightmapSampling: 1
++  m_PrefilterReflectionProbeRotation: 1
++  m_PrefilterReflectionProbeBlending: 1
++  m_PrefilterReflectionProbeBoxProjection: 1
++  m_PrefilterReflectionProbeAtlas: 1
+   m_ShaderVariantLogLevel: 0
+   m_ShadowCascades: 0
+   m_Textures:
+diff --git a/Assets/Settings/URP-HighFidelity.asset b/Assets/Settings/URP-HighFidelity.asset
+index 79cbddb..78a936b 100644
+--- a/Assets/Settings/URP-HighFidelity.asset
++++ b/Assets/Settings/URP-HighFidelity.asset
+@@ -33,6 +33,14 @@ MonoBehaviour:
+   m_EnableLODCrossFade: 1
+   m_LODCrossFadeDitheringType: 1
+   m_ShEvalMode: 0
++  m_LightProbeSystem: 0
++  m_ProbeVolumeMemoryBudget: 1024
++  m_ProbeVolumeBlendingMemoryBudget: 256
++  m_SupportProbeVolumeGPUStreaming: 0
++  m_SupportProbeVolumeDiskStreaming: 0
++  m_SupportProbeVolumeScenarios: 0
++  m_SupportProbeVolumeScenarioBlending: 0
++  m_ProbeVolumeSHBands: 1
+   m_MainLightRenderingMode: 1
+   m_MainLightShadowsSupported: 1
+   m_MainLightShadowmapResolution: 4096
+@@ -45,6 +53,7 @@ MonoBehaviour:
+   m_AdditionalLightsShadowResolutionTierHigh: 512
+   m_ReflectionProbeBlending: 1
+   m_ReflectionProbeBoxProjection: 1
++  m_ReflectionProbeAtlas: 1
+   m_ShadowDistance: 150
+   m_ShadowCascadeCount: 4
+   m_Cascade2Split: 0.25
+@@ -67,21 +76,30 @@ MonoBehaviour:
+   m_SupportsLightLayers: 0
+   m_DebugLevel: 0
+   m_StoreActionsOptimization: 0
+-  m_EnableRenderGraph: 0
+   m_UseAdaptivePerformance: 1
+   m_ColorGradingMode: 0
+   m_ColorGradingLutSize: 32
++  m_AllowPostProcessAlphaOutput: 0
+   m_UseFastSRGBLinearConversion: 0
+   m_SupportDataDrivenLensFlare: 1
++  m_SupportScreenSpaceLensFlare: 1
++  m_GPUResidentDrawerMode: 0
++  m_SmallMeshScreenPercentage: 0
++  m_GPUResidentDrawerEnableOcclusionCullingInCameras: 0
+   m_ShadowType: 1
+   m_LocalShadowsSupported: 0
+   m_LocalShadowsAtlasResolution: 256
+   m_MaxPixelLights: 0
+   m_ShadowAtlasResolution: 256
+   m_VolumeFrameworkUpdateMode: 0
+-  m_Textures:
+-    blueNoise64LTex: {fileID: 2800000, guid: e3d24661c1e055f45a7560c033dbb837, type: 3}
+-    bayerMatrixTex: {fileID: 2800000, guid: f9ee4ed84c1d10c49aabb9b210b0fc44, type: 3}
++  m_VolumeProfile: {fileID: 0}
++  apvScenesData:
++    obsoleteSceneBounds:
++      m_Keys: []
++      m_Values: []
++    obsoleteHasProbeVolumes:
++      m_Keys: []
++      m_Values:
+   m_PrefilteringModeMainLightShadows: 3
+   m_PrefilteringModeAdditionalLight: 3
+   m_PrefilteringModeAdditionalLightShadows: 2
+@@ -92,6 +110,7 @@ MonoBehaviour:
+   m_PrefilterDebugKeywords: 1
+   m_PrefilterWriteRenderingLayers: 1
+   m_PrefilterHDROutput: 1
++  m_PrefilterAlphaOutput: 1
+   m_PrefilterSSAODepthNormals: 0
+   m_PrefilterSSAOSourceDepthLow: 1
+   m_PrefilterSSAOSourceDepthMedium: 1
+@@ -109,6 +128,16 @@ MonoBehaviour:
+   m_PrefilterSoftShadowsQualityHigh: 1
+   m_PrefilterSoftShadows: 0
+   m_PrefilterScreenCoord: 1
++  m_PrefilterScreenSpaceIrradiance: 1
+   m_PrefilterNativeRenderPass: 1
++  m_PrefilterUseLegacyLightmaps: 0
++  m_PrefilterBicubicLightmapSampling: 1
++  m_PrefilterReflectionProbeRotation: 1
++  m_PrefilterReflectionProbeBlending: 0
++  m_PrefilterReflectionProbeBoxProjection: 0
++  m_PrefilterReflectionProbeAtlas: 1
+   m_ShaderVariantLogLevel: 0
+   m_ShadowCascades: 1
++  m_Textures:
++    blueNoise64LTex: {fileID: 2800000, guid: e3d24661c1e055f45a7560c033dbb837, type: 3}
++    bayerMatrixTex: {fileID: 2800000, guid: f9ee4ed84c1d10c49aabb9b210b0fc44, type: 3}
+diff --git a/Assets/Settings/URP-Performant.asset b/Assets/Settings/URP-Performant.asset
+index 3b28cc5..d566f27 100644
+--- a/Assets/Settings/URP-Performant.asset
++++ b/Assets/Settings/URP-Performant.asset
+@@ -110,7 +110,7 @@ MonoBehaviour:
+   m_PrefilterDebugKeywords: 1
+   m_PrefilterWriteRenderingLayers: 1
+   m_PrefilterHDROutput: 1
+-  m_PrefilterAlphaOutput: 0
++  m_PrefilterAlphaOutput: 1
+   m_PrefilterSSAODepthNormals: 1
+   m_PrefilterSSAOSourceDepthLow: 1
+   m_PrefilterSSAOSourceDepthMedium: 1
+@@ -128,14 +128,14 @@ MonoBehaviour:
+   m_PrefilterSoftShadowsQualityHigh: 1
+   m_PrefilterSoftShadows: 0
+   m_PrefilterScreenCoord: 1
+-  m_PrefilterScreenSpaceIrradiance: 0
++  m_PrefilterScreenSpaceIrradiance: 1
+   m_PrefilterNativeRenderPass: 1
+   m_PrefilterUseLegacyLightmaps: 0
+-  m_PrefilterBicubicLightmapSampling: 0
+-  m_PrefilterReflectionProbeRotation: 0
+-  m_PrefilterReflectionProbeBlending: 0
+-  m_PrefilterReflectionProbeBoxProjection: 0
+-  m_PrefilterReflectionProbeAtlas: 0
++  m_PrefilterBicubicLightmapSampling: 1
++  m_PrefilterReflectionProbeRotation: 1
++  m_PrefilterReflectionProbeBlending: 1
++  m_PrefilterReflectionProbeBoxProjection: 1
++  m_PrefilterReflectionProbeAtlas: 1
+   m_ShaderVariantLogLevel: 0
+   m_ShadowCascades: 0
+   m_Textures:
+diff --git a/Assets/UniversalRenderPipelineGlobalSettings.asset b/Assets/UniversalRenderPipelineGlobalSettings.asset
+index 5c4faca..77c58fb 100644
+--- a/Assets/UniversalRenderPipelineGlobalSettings.asset
++++ b/Assets/UniversalRenderPipelineGlobalSettings.asset
+@@ -68,7 +68,22 @@ MonoBehaviour:
+       - rid: 5372389149372317894
+       - rid: 5372389149372317895
+     m_RuntimeSettings:
+-      m_List: []
++      m_List:
++      - rid: 5372388923258962114
++      - rid: 5372388923258962116
++      - rid: 5372388923258962118
++      - rid: 5372388923258962119
++      - rid: 5372388923258962121
++      - rid: 5372388923258962122
++      - rid: 5372388923258962123
++      - rid: 5372388923258962125
++      - rid: 5372388923258962130
++      - rid: 5372388923258962133
++      - rid: 5372389149372317885
++      - rid: 5372389149372317888
++      - rid: 5372389149372317891
++      - rid: 5372389149372317893
++      - rid: 5372389149372317895
+   m_AssetVersion: 10
+   m_ObsoleteDefaultVolumeProfile: {fileID: 0}
+   m_RenderingLayerNames:
+@@ -153,7 +168,7 @@ MonoBehaviour:
+         asm: Unity.RenderPipelines.Universal.Runtime}
+       data:
+         m_Version: 0
+-        m_VolumeProfile: {fileID: 11400000, guid: e0c7a7de1ec6ae744b554bf9ede38e7d,
++        m_VolumeProfile: {fileID: 11400000, guid: 10b41c594ff5746db88011c291d083a5,
+           type: 2}
+     - rid: 5372388923258962117
+       type: {class: UniversalRenderPipelineEditorMaterials, ns: UnityEngine.Rendering.Universal,
+diff --git a/ProjectSettings/GraphicsSettings.asset b/ProjectSettings/GraphicsSettings.asset
+index 88a1a67..bd6103b 100644
+--- a/ProjectSettings/GraphicsSettings.asset
++++ b/ProjectSettings/GraphicsSettings.asset
+@@ -3,7 +3,7 @@
+ --- !u!30 &1
+ GraphicsSettings:
+   m_ObjectHideFlags: 0
+-  serializedVersion: 15
++  serializedVersion: 16
+   m_Deferred:
+     m_Mode: 1
+     m_Shader: {fileID: 69, guid: 0000000000000000f000000000000000, type: 0}
+@@ -62,13 +62,14 @@ GraphicsSettings:
+   m_FogKeepExp: 1
+   m_FogKeepExp2: 1
+   m_AlbedoSwatchInfos: []
++  m_RenderPipelineGlobalSettingsMap:
++    UnityEngine.Rendering.Universal.UniversalRenderPipeline: {fileID: 11400000, guid: 18dc0cd2c080841dea60987a38ce93fa,
++      type: 2}
++  m_ShaderBuildSettings:
++    keywordDeclarationOverrides: []
+   m_LightsUseLinearIntensity: 1
+   m_LightsUseColorTemperature: 1
+-  m_DefaultRenderingLayerMask: 1
+   m_LogWhenShaderIsCompiled: 0
+-  m_SRPDefaultSettings:
+-    UnityEngine.Rendering.Universal.UniversalRenderPipeline: {fileID: 11400000, guid: 18dc0cd2c080841dea60987a38ce93fa,
+-      type: 2}
+   m_LightProbeOutsideHullStrategy: 0
+   m_CameraRelativeLightCulling: 0
+   m_CameraRelativeShadowCulling: 0
+diff --git a/ProjectSettings/ProjectSettings.asset b/ProjectSettings/ProjectSettings.asset
+index 2093440..73ed2ca 100644
+--- a/ProjectSettings/ProjectSettings.asset
++++ b/ProjectSettings/ProjectSettings.asset
+@@ -525,7 +525,10 @@ PlayerSettings:
+       m_Height: 720
+       m_Kind: 1
+       m_SubKind:
+-  m_BuildTargetBatching: []
++  m_BuildTargetBatching:
++  - m_BuildTarget: Standalone
++    m_StaticBatching: 1
++    m_DynamicBatching: 0
+   m_BuildTargetShaderSettings: []
+   m_BuildTargetGraphicsJobs: []
+   m_BuildTargetGraphicsJobMode: []
