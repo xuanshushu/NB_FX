@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var shader = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/SubTargetProbe/GF_URP_VFX_NBSubTarget.shadergraph\");\nif (shader == null) return \"shader=null\";\nvar mat = new UnityEngine.Material(shader);\nvar quad = UnityEngine.GameObject.CreatePrimitive(UnityEngine.PrimitiveType.Quad);\nvar camObj = new UnityEngine.GameObject(\"NBFX_GF_TemporaryCamera\");\nvar cam = camObj.AddComponent<UnityEngine.Camera>();\nvar rt = new UnityEngine.RenderTexture(128, 128, 24, UnityEngine.RenderTextureFormat.ARGB32);\nvar prev = UnityEngine.RenderTexture.active;\nUnityEngine.Texture2D tex = null;\ntry {\n  mat.SetColor(\"_Color\", UnityEngine.Color.red);\n  mat.SetTexture(\"_BaseMap\", UnityEngine.Texture2D.whiteTexture);\n  mat.SetFloat(\"_Cull\", 0);\n  quad.layer = 2;\n  quad.transform.position = new UnityEngine.Vector3(0,0,2);\n  quad.GetComponent<UnityEngine.MeshRenderer>().sharedMaterial = mat;\n  cam.clearFlags = UnityEngine.CameraClearFlags.SolidColor;\n  cam.backgroundColor = new UnityEngine.Color(0.125f,0.25f,0.375f,1);\n  cam.orthographic = true; cam.orthographicSize = 1;\n  cam.nearClipPlane = 0.1f; cam.farClipPlane = 10;\n  cam.allowHDR = false; cam.allowMSAA = false;\n  cam.transform.position = new UnityEngine.Vector3(0,0,3);\n  cam.transform.rotation = UnityEngine.Quaternion.Euler(0,180,0);\n  cam.targetTexture = rt;\n  tex = new UnityEngine.Texture2D(128,128,UnityEngine.TextureFormat.RGBA32,false,false);\n  cam.cullingMask = 0;\n  cam.Render(); UnityEngine.RenderTexture.active = rt;\n  tex.ReadPixels(new UnityEngine.Rect(0,0,128,128),0,0);tex.Apply(false);\n  var bg = tex.GetPixels32();\n  cam.cullingMask = 1 << 2;\n  cam.Render(); UnityEngine.RenderTexture.active = rt;\n  tex.ReadPixels(new UnityEngine.Rect(0,0,128,128),0,0);tex.Apply(false);\n  var fg = tex.GetPixels32();\n  var n=0; for(var i=0;i<fg.Length;i++)if(fg[i].r!=bg[i].r||fg[i].g!=bg[i].g||fg[i].b!=bg[i].b||fg[i].a!=bg[i].a)n++;\n  var path=System.IO.Path.Combine(System.IO.Path.GetDirectoryName(UnityEngine.Application.dataPath),\"Temp/NBFXGF\");\n  System.IO.Directory.CreateDirectory(path);\n  System.IO.File.WriteAllBytes(System.IO.Path.Combine(path,\"GF_subtarget_mesh.png\"),tex.EncodeToPNG());\n  var c=fg[64*128+64]; var b=bg[64*128+64];\n  return \"size=128x128;changedPixels=\"+n+\";backgroundCenter=\"+b.r+\",\"+b.g+\",\"+b.b+\",\"+b.a+\";meshCenter=\"+c.r+\",\"+c.g+\",\"+c.b+\",\"+c.a+\";png=\"+path+\"/GF_subtarget_mesh.png\";\n}\nfinally {\n  cam.targetTexture=null; UnityEngine.RenderTexture.active=prev;\n  rt.Release();\n  if(tex!=null)UnityEngine.Object.DestroyImmediate(tex);\n  UnityEngine.Object.DestroyImmediate(rt); UnityEngine.Object.DestroyImmediate(camObj);\n  UnityEngine.Object.DestroyImmediate(quad); UnityEngine.Object.DestroyImmediate(mat);\n}"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "size=128x128;changedPixels=0;backgroundCenter=32,64,96,255;meshCenter=32,64,96,255;png=/Users/bytedance/UnityProject/NBUnityProject/Temp/NBFXGF/GF_subtarget_mesh.png"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

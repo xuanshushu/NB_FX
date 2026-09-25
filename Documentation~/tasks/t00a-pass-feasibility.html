@@ -12,6 +12,7 @@
 <p><small>更新：2026-09-25 · GF 已试验且阻塞 · 不修改官方包</small></p>
 <hr>
 <blockquote><p><strong>用户已同意提前安排试验，但本轮仍只制定计划。</strong>该句是计划编写时历史状态。用户已授权、G0 已放行；隔离 Graph 已导入并完成 Mesh 与 Pass/重导入核验，两条精确 LightMode 不存在。<a href="../reports/gf-t00a-pass-feasibility.html">GF 报告</a>与<a href="../reports/gf-t00a-decision.html">待决策材料</a>记录实际范围；未获选择前停止受影响工作。</p></blockquote>
+<p><strong>补充状态：</strong>用户随后授权隔离测试包内 .asmref / SubTarget；<a href="../reports/gf-subtarget-feasibility.html">补充报告</a>证明 Graph 与 VFX Output 可生成双 Pass，但实际扰动数据、RT/合成和 Player 未验，GF 仍未放行。生产路线仍待确认。</p>
 
 <h2 id="goal">目标与边界</h2>
 <p>优先检验：不修改官方包、不手改生成 Shader，是否能让启用 <code>Support VFX Graph</code> 的同一 Graph 资产生成所需自定义 Pass / LightMode，并由当前 NBPostprocess 的两个 RenderPass 选择和驱动。出口为 <strong>GF</strong>；GF 不是 G3，也不证明真正 VFX Output 可用。</p>

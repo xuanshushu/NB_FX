@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var t=System.AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType(\"UnityEditor.Rendering.Universal.ShaderGraph.NBGFUnlitSubTarget\")).FirstOrDefault(x=>x!=null); return t==null?\"missing\":t.Assembly.GetName().Name+\"|\"+t.FullName;"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "Unity.RenderPipelines.Universal.Editor|UnityEditor.Rendering.Universal.ShaderGraph.NBGFUnlitSubTarget"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

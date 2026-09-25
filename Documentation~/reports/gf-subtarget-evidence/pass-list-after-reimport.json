@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var gp=\"Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/SubTargetProbe/GF_URP_VFX_NBSubTarget.shadergraph\"; var vp=\"Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/SubTargetProbe/GF_VFXOutput_NBSubTarget.vfx\"; var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(gp); var vs=UnityEditor.AssetDatabase.LoadAllAssetsAtPath(vp).OfType<UnityEngine.Shader>().FirstOrDefault(); if(s==null||vs==null) return \"MISSING_SHADER\"; var m=new UnityEngine.Material(s); var vm=new UnityEngine.Material(vs); var a=new System.Collections.Generic.List<string>(); var b=new System.Collections.Generic.List<string>(); for(int i=0;i<m.passCount;i++)a.Add(i+\":\"+m.GetPassName(i)+\":\"+s.FindPassTagValue(i,new UnityEngine.Rendering.ShaderTagId(\"LightMode\")).name); for(int i=0;i<vm.passCount;i++)b.Add(i+\":\"+vm.GetPassName(i)+\":\"+vs.FindPassTagValue(i,new UnityEngine.Rendering.ShaderTagId(\"LightMode\")).name); var result=\"graph=\"+s.name+\";graphSupported=\"+s.isSupported+\";graphPasses=\"+m.passCount+\";graphFind=\"+m.FindPass(\"NBCameraOpaqueDistortPass\")+\",\"+m.FindPass(\"NBDeferredDistortPass\")+\";graphList=\"+string.Join(\"|\",a)+\";graphMessages=\"+string.Join(\"|\",System.Array.ConvertAll(UnityEditor.ShaderUtil.GetShaderMessages(s),x=>x.severity+\":\"+x.message))+\";vfx=\"+vs.name+\";vfxSupported=\"+vs.isSupported+\";vfxPasses=\"+vm.passCount+\";vfxFind=\"+vm.FindPass(\"NBCameraOpaqueDistortPass\")+\",\"+vm.FindPass(\"NBDeferredDistortPass\")+\";vfxList=\"+string.Join(\"|\",b)+\";vfxMessages=\"+string.Join(\"|\",System.Array.ConvertAll(UnityEditor.ShaderUtil.GetShaderMessages(vs),x=>x.severity+\":\"+x.message))+\";vfxAssets=\"+string.Join(\"|\",System.Array.ConvertAll(UnityEditor.AssetDatabase.LoadAllAssetsAtPath(vp),x=>x.GetType().FullName+\":\"+x.name)); UnityEngine.Object.DestroyImmediate(m);UnityEngine.Object.DestroyImmediate(vm);return result;"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "graph=VFX Graph/GF_URP_VFX_NBSubTarget;graphSupported=True;graphPasses=10;graphFind=8,9;graphList=0:Universal Forward:|1:DepthOnly:DepthOnly|2:MotionVectors:MOTIONVECTORS|3:DepthNormalsOnly:DepthNormalsOnly|4:ShadowCaster:SHADOWCASTER|5:GBuffer:UniversalGBuffer|6:SceneSelectionPass:SceneSelectionPass|7:ScenePickingPass:Picking|8:NBCameraOpaqueDistortPass:NBCameraOpaqueDistortPass|9:NBDeferredDistortPass:NBDeferredDistortPass;graphMessages=;vfx=Hidden/VFX/GF_VFXOutput_NBSubTarget/Simple Loop/Output Particle Shader Graph Quad - Unlit;vfxSupported=True;vfxPasses=8;vfxFind=6,7;vfxList=0:Universal Forward:|1:DepthOnly:DepthOnly|2:DepthNormalsOnly:DepthNormalsOnly|3:GBuffer:UniversalGBuffer|4:SceneSelectionPass:SceneSelectionPass|5:ScenePickingPass:Picking|6:NBCameraOpaqueDistortPass:NBCameraOpaqueDistortPass|7:NBDeferredDistortPass:NBDeferredDistortPass;vfxMessages=;vfxAssets=UnityEngine.VFX.VisualEffectAsset:GF_VFXOutput_NBSubTarget|UnityEngine.ComputeShader:[GF_VFXOutput_NBSubTarget] [Simple Loop] Initialize Particles|UnityEngine.ComputeShader:[GF_VFXOutput_NBSubTarget] [Simple Loop] Update Particles|UnityEngine.ComputeShader:[GF_VFXOutput_NBSubTarget] [Simple Loop] OutputUpdate|UnityEngine.Material:Hidden/VFX/GF_VFXOutput_NBSubTarget/Simple Loop/Output Particle Shader Graph Quad - Unlit|UnityEngine.Shader:Hidden/VFX/GF_VFXOutput_NBSubTarget/Simple Loop/Output Particle Shader Graph Quad - Unlit"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>GF 补充试验 · 包内 SubTarget 可行性 · NB_FX</title></head>
+<body>
+<p><a href="index.html">返回报告索引</a> · <a href="gf-t00a-pass-feasibility.html">原 GF 报告</a> · <a href="gf-t00a-decision.html">Q01 决策材料</a></p>
+<h1>GF 补充试验 · NB_FX 包内 SubTarget</h1>
+<p><small>主 Agent · 2026-09-25 · <strong>技术路径初步可行；GF 尚未放行</strong> · 未 push</small></p>
+<blockquote><p>用户仅授权测试“自己包内扩展自定义 SubTarget”。本试验未修改官方包、产品 Shader、Target 或 NBPostprocess。它证明当前版本可从同一启用 VFX 的 Graph 与真实 VFX Output 生成两个精确 Pass / LightMode；不证明这两个 Pass 已输出正确扰动数据，也不证明 RT、合成、Player 或 G3。</p></blockquote>
+<h2>范围与做法</h2>
+<p>环境沿用 G0/GF：Unity 6000.3.18f1，URP / Shader Graph / VFX Graph 17.3.0，Metal，URP-HighFidelity。此会话无可调用的 unityMCP，Unity Editor 由主 Agent 串行通过 CLI/Pipeline 验证。实时 Git 起点为主工程 <code>d4f945e</code>、NB_FX <code>12da8e8</code>，两个工作区 clean，均未 push。</p>
+<p>仅在 <code>NBShaders2/Tests/PassFeasibility/SubTargetProbe/</code> 新增隔离资产：<a href="../../NBShaders2/Tests/PassFeasibility/SubTargetProbe/Editor/NBGFSubTarget.asmref">.asmref</a> 通过 URP Editor asmdef 的 GUID 引用官方程序集；<a href="../../NBShaders2/Tests/PassFeasibility/SubTargetProbe/Editor/NBGFUnlitSubTarget.cs">测试 SubTarget</a> 仍以官方 <code>UniversalTarget</code> 为 Target，复用当前版本 URP Unlit 的 PassDescriptor，再插入两条测试 Pass。它们故意复用普通 Forward 着色，<strong>不是</strong> CameraOpaque 或 Deferred 扰动实现。隔离 <a href="../../NBShaders2/Tests/PassFeasibility/SubTargetProbe/GF_URP_VFX_NBSubTarget.shadergraph">Graph 副本</a> 保持 URP <code>m_SupportVFX=true</code>；<a href="../../NBShaders2/Tests/PassFeasibility/SubTargetProbe/GF_VFXOutput_NBSubTarget.vfx">VFX Output 副本</a> 从现有 <code>VFXSample.vfx</code> 复制，仅把其中 Shader Graph 引用改为隔离 Graph 的 GUID。原始输入 hash 见<a href="gf-subtarget-evidence/probe-input-hashes.json">清单</a>。</p>
+<h2>实际验证</h2>
+<table border="1" cellpadding="6"><thead><tr><th>Case</th><th>实测结果</th><th>证据 / 限制</th></tr></thead><tbody>
+<tr><td>SUB-ASM-01</td><td>测试类编译并加载于 <code>Unity.RenderPipelines.Universal.Editor</code> 程序集，Editor 编译成功。</td><td><a href="gf-subtarget-evidence/subtarget-assembly.json">类型查询</a>；这是 .asmref 的程序集归属，不是修改官方包源文件。</td></tr>
+<tr><td>SUB-GRAPH-01</td><td>强制重导入后，隔离 Graph 的 Shader supported、无 ShaderUtil 编译消息；10 个 Pass 中 <code>NBCameraOpaqueDistortPass</code> / <code>NBDeferredDistortPass</code> 为索引 1 / 2，名称和 LightMode 均精确匹配。</td><td><a href="gf-subtarget-evidence/final-pass-list.json">Graph Pass、FindPass、重导入后原始输出</a>。原官方 Unlit Graph 仍为 8 Pass。</td></tr>
+<tr><td>SUB-VFX-01</td><td>隔离 VFX 资产导入产生 VisualEffectAsset、3 个 ComputeShader、Material 和生成 Shader；生成 Shader supported、无 ShaderUtil 编译消息，8 个 Pass 中两条 NB 标签仍在索引 1 / 2。</td><td>同一<a href="gf-subtarget-evidence/final-pass-list.json">原始输出</a>；证明 VFX Output Shader 的生成，不等于粒子实际出屏或 Player 测试。</td></tr>
+<tr><td>SUB-MESH-01</td><td>受控 128×128 Quad 测试：暂时停用 NBPostProcess RendererFeature 时，4096 像素与背景不同，中心为红色 (255,0,0,255)。<code>finally</code> 恢复 Feature；Renderer asset 前后 SHA-256 相同且 Feature 前后均 active。</td><td><a href="gf-subtarget-evidence/mesh-render-postprocess-temporarily-disabled.json">渲染命令/读回</a>、<a href="gf-subtarget-evidence/mesh-isolation-state.json">恢复与 hash</a>、<a href="gf-subtarget-evidence/GF_subtarget_mesh_without_postprocess.png">PNG</a>。</td></tr>
+<tr><td>SUB-NBPOST-OBS</td><td>保持现有 NBPostprocess active 时，同一临时 Mesh 的中心为黑色 (0,0,0,255)，与暂时停用时的红色形成受控差异。测试 Pass 当前只复制 Forward 色值，不提供后处理期望的扰动数据。</td><td><a href="gf-subtarget-evidence/mesh-render-after-reimport.json">原始读回</a>、<a href="gf-subtarget-evidence/GF_subtarget_mesh_with_postprocess.png">PNG</a>。差异与现有 Feature 绘制/合成一致，但<strong>没有单独的 RendererList、RT 读回或 Frame Debugger 证据</strong>，不能据此宣称原链路功能已验证。</td></tr>
+<tr><td>SUB-INTEGRITY-01</td><td>此前 GF 记录的官方关键源码与 package.json hash 全部相同；产品文件无修改。最终 Editor ready、编译成功，Console 当前 groundTruth 0 Error / 0 Warning。</td><td><a href="gf-subtarget-evidence/official-package-hashes.json">官方包 hash 比较</a>、<a href="gf-subtarget-evidence/final-editor-status.json">Editor</a>、<a href="gf-subtarget-evidence/final-recompile-status.json">编译</a>、<a href="gf-subtarget-evidence/final-console.json">Console</a>。</td></tr>
+</tbody></table>
+<p>调试过程中有一次对 Color 属性误用 <code>GetFloat</code> 造成 2 条工具探针 Error，另一次以绝对 AssetDatabase 路径调用内部生成器造成 2 条路径 Warning；均保留在 Console 历史中，非 Shader 编译消息。最终 Console 的“当前 0”不表示历史记录已清除。</p>
+<h2>结论、风险和后续 Gate</h2>
+<p><strong>可行性结论：</strong>在本机当前版本，NB_FX 自己的 .asmref + 自定义 UniversalSubTarget，能够在不改官方包、不换 UniversalTarget 的情况下，给 Graph 和 VFX Output 生成两条精确 LightMode。<a href="https://docs.unity.com/en-us/engine/6000.3/manual/scripting/compilation-and-code-reload/script-compilation/assembly-definition-files/assembly-definitions-intro">Unity 官方 asmref 文档</a>描述引用程序集定义的机制；这里仅使用其程序集归属，并未声称 Shader Graph 内部的 SubTarget / PassDescriptor 是稳定公开 API。</p>
+<p><strong>维护风险：</strong>实现依赖 URP Editor asmdef GUID，以及 Shader Graph / URP 的 <code>internal</code> 类型、<code>UniversalUnlitSubTarget</code> 当前行为和生成器模板；升级 Unity/URP/SG/VFX 时必须重编译、重导入、重测。测试 SubTarget 没有保存完整 Unlit 属性 GUI 状态、没有实现 NB 功能 HLSL/RenderState，也没有进行变体、批处理、跨平台或 Player 审核，不能直接进入产品。</p>
+<p><strong>GF 仍阻塞：</strong>双 Pass 的结构性前置条件已获得实验性证据，但功能 Pass 数据、原 NBPostprocess 两条 RT/合成的独立读回、真实 VFX 粒子画面、Player 和回归仍未验证。此结果不等于 G3；是否将包内 .asmref 方案升为产品方向，应由用户确认后更新 T00A/T01/T06 与验收契约，再按可回退切片继续。</p>
+<hr><p><small>本报告只给“包内 SubTarget 可生成双 Pass”的狭义肯定结论。</small></p>
+</body></html>

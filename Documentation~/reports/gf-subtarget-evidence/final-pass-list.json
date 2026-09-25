@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var g=\"Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/SubTargetProbe/GF_URP_VFX_NBSubTarget.shadergraph\";var v=\"Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/SubTargetProbe/GF_VFXOutput_NBSubTarget.vfx\";var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(g);var vs=UnityEditor.AssetDatabase.LoadAllAssetsAtPath(v).OfType<UnityEngine.Shader>().FirstOrDefault();if(s==null||vs==null)return \"MISSING\";var m=new UnityEngine.Material(s);var vm=new UnityEngine.Material(vs);var a=string.Join(\"|\",System.Linq.Enumerable.Range(0,m.passCount).Select(i=>i+\":\"+m.GetPassName(i)+\":\"+s.FindPassTagValue(i,new UnityEngine.Rendering.ShaderTagId(\"LightMode\")).name));var b=string.Join(\"|\",System.Linq.Enumerable.Range(0,vm.passCount).Select(i=>i+\":\"+vm.GetPassName(i)+\":\"+vs.FindPassTagValue(i,new UnityEngine.Rendering.ShaderTagId(\"LightMode\")).name));var z=\"graph=\"+s.name+\";supported=\"+s.isSupported+\";count=\"+m.passCount+\";find=\"+m.FindPass(\"NBCameraOpaqueDistortPass\")+\",\"+m.FindPass(\"NBDeferredDistortPass\")+\";passes=\"+a+\";messages=\"+UnityEditor.ShaderUtil.GetShaderMessages(s).Length+\";vfx=\"+vs.name+\";supported=\"+vs.isSupported+\";count=\"+vm.passCount+\";find=\"+vm.FindPass(\"NBCameraOpaqueDistortPass\")+\",\"+vm.FindPass(\"NBDeferredDistortPass\")+\";passes=\"+b+\";messages=\"+UnityEditor.ShaderUtil.GetShaderMessages(vs).Length+\";vfxAsset=\"+UnityEditor.AssetDatabase.LoadAllAssetsAtPath(v).Any(x=>x is UnityEngine.VFX.VisualEffectAsset);UnityEngine.Object.DestroyImmediate(m);UnityEngine.Object.DestroyImmediate(vm);return z;"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "graph=VFX Graph/GF_URP_VFX_NBSubTarget;supported=True;count=10;find=1,2;passes=0:Universal Forward:|1:NBCameraOpaqueDistortPass:NBCameraOpaqueDistortPass|2:NBDeferredDistortPass:NBDeferredDistortPass|3:DepthOnly:DepthOnly|4:MotionVectors:MOTIONVECTORS|5:DepthNormalsOnly:DepthNormalsOnly|6:ShadowCaster:SHADOWCASTER|7:GBuffer:UniversalGBuffer|8:SceneSelectionPass:SceneSelectionPass|9:ScenePickingPass:Picking;messages=0;vfx=Hidden/VFX/GF_VFXOutput_NBSubTarget/Simple Loop/Output Particle Shader Graph Quad - Unlit;supported=True;count=8;find=1,2;passes=0:Universal Forward:|1:NBCameraOpaqueDistortPass:NBCameraOpaqueDistortPass|2:NBDeferredDistortPass:NBDeferredDistortPass|3:DepthOnly:DepthOnly|4:DepthNormalsOnly:DepthNormalsOnly|5:GBuffer:UniversalGBuffer|6:SceneSelectionPass:SceneSelectionPass|7:ScenePickingPass:Picking;messages=0;vfxAsset=True"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
