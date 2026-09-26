@@ -27,7 +27,7 @@
       <tr><td>平台</td><td>新 VFX 路径以较新 DirectX、Metal、Vulkan 为候选，具体最低版本待验证；不支持 OpenGL ES，XR 不在正式范围。原 ShaderLab 的兼容范围不因本决定缩减。</td></tr>
       <tr><td>禁止事项</td><td>不修改官方包；不擅自改用标准 Lit / Six-Way Target；不能自行接受能力降级。</td></tr>
       <tr><td>当前授权</td><td>用户于 2026-09-25 授权从 T00/G0 实施，G0 后进行 T00A/GF；不授权修改官方包、擅改 Target/NBPostprocess 或删减功能，未经再次要求不 push。</td></tr>
-      <tr><td>阶段顺序</td><td>URP 常规 Mesh 继续由现有 NBShader 支持；先做 URP Shader Graph + URP VFX。HDRP 作为最后轮次的待选目标；普通 asmdef 使用 Version Defines 隔离可选包，.asmref 的 URP Editor 绑定需在后续包级设计中单独处理。</td></tr>
+      <tr><td>阶段顺序</td><td>URP 常规 Mesh 继续由现有 NBShader 支持；先做 URP Shader Graph + URP VFX。HDRP 作为最后轮次的待选目标；进入 HDRP 实现前先设计用户按管线选择依赖内容的安装流程。普通 asmdef 使用 Version Defines 隔离可选包，.asmref 的 URP Editor 绑定需在后续安装单元设计中单独处理。见<a href="decisions.html">D20 / Q08</a>。</td></tr>
     </tbody>
   </table>
 

@@ -9,7 +9,7 @@
 <p><a href="index.html">返回文档目录</a></p>
 <h1>决策记录与待讨论事项</h1>
 <p>用户确认约束作为当前依据；技术可行性、实现选择与运行证据另行记录。</p>
-<p><small>更新：2026-09-26 · D18/D19 已记录；GF 已限定范围放行，产品方案仍待 G1/G3 · 不修改官方包</small></p>
+<p><small>更新：2026-09-26 · D18–D20 已记录；GF 已限定范围放行，产品方案仍待 G1/G3 · 不修改官方包</small></p>
 <hr>
 <h2 id="confirmed">已确认决策</h2>
 <table border="1" cellpadding="6">
@@ -36,6 +36,7 @@
       <tr><td>D17</td><td>用户于 2026-09-25 倾向 NB_FX 自己包内扩展自定义 SubTarget，并授权先测试可行性。</td><td>仅授权隔离 .asmref / SubTarget / Graph / VFX 试验；不等于批准生产实现或放行 GF/G3。<a href="reports/gf-subtarget-feasibility.html">补充试验</a>已证明双 Pass 结构可生成，功能与版本维护风险仍待决策。</td></tr>
       <tr><td>D18</td><td>用户于 2026-09-25 接受包内 <code>.asmref + UniversalSubTarget</code> 为候选实现，授权进入功能性 GF 验证；多管线与可选 Package 依赖代码使用 asmdef Version Defines 合理隔离。</td><td>这是候选与试验授权，不是 GF/G3 放行或生产合入授权；不修改官方包、现有 Target 或 NBPostprocess。<code>.asmref</code> 自身没有 Version Defines / Define Constraints，不能用 asmdef 的条件编译能力伪称已解决可选 URP 的程序集归属。</td></tr>
       <tr><td>D19</td><td>本阶段先完成 URP Shader Graph + URP VFX；URP 常规 Mesh 继续使用现有 NBShader。HDRP 作为最后轮次的待选目标。</td><td>本阶段不引入 HDRP Package、HDRP RendererPass 或双管线产品承诺；将来 HDRP 方案需另行验证与决策。</td></tr>
+      <tr><td>D20</td><td>多管线安装由用户按所用管线选择对应依赖内容：URP 用户安装 URP 专属内容，HDRP 用户安装 HDRP 专属内容。安装流程与依赖隔离设计安排在启动 HDRP 实现之前。</td><td>当前 URP 阶段不提前拆包、不改 <code>package.json</code>、不加入 HDRP 依赖；此方向不等于已验证 HDRP-only 导入，也未确定最终 Package 数量、双管线同时安装或升级/卸载细节。</td></tr>
     </tbody>
   </table>
 
@@ -52,7 +53,7 @@
       <tr><td>Q05</td><td>正式 Output 类型清单、必须覆盖的 VFX Mesh/VAT 数据组合。</td><td>T08 先最小验证，T09 前确认；不凭便利缩小范围。</td></tr>
       <tr><td>Q06</td><td>图像容差与新增路径性能预算。</td><td>基线校准后、全量验收前确认，不在失败后放宽。</td></tr>
       <tr><td>Q07</td><td>若共享重构影响原 ShaderLab 的旧版本兼容，如何处理？</td><td>主 Agent；当前没有放弃原兼容要求的批准。</td></tr>
-      <tr><td>Q08</td><td>当 HDRP 进入正式轮次时，如何处理 URP Editor <code>.asmref</code> 无条件绑定：URP 为 NB_FX 必需依赖，还是将 URP 扩展拆为独立 Package？</td><td><a href="reports/gf-functional-progress.html">GF 功能报告</a>已证实普通 asmdef 可按 Version Defines / Define Constraints 隔离，<code>.asmref</code> 自身不能；当前仅做 URP，未安装 HDRP、未改 package.json，不提前宣称 HDRP-only 导入通过。</td></tr>
+      <tr><td>Q08</td><td>D20 已确定由用户按管线选择安装内容；在 HDRP 实现前，仍需确定共享内容与 URP/HDRP 专属安装单元的边界、Package 依赖声明、<code>.asmref</code> 归属，以及双管线同时安装、升级和卸载流程。</td><td><a href="reports/gf-functional-progress.html">GF 功能报告</a>已证实普通 asmdef 可按 Version Defines / Define Constraints 隔离，<code>.asmref</code> 自身不能；设计后须在仅 URP、仅 HDRP 和所支持的组合中分别导入/编译验证。当前未安装 HDRP、未改 package.json，不提前宣称 HDRP-only 导入通过。</td></tr>
     </tbody>
   </table>
 
