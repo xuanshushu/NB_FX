@@ -1,0 +1,262 @@
+{
+  "source_sha256": {
+    "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9",
+    "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl": "18fd0be3b8e85e97a9c649ec97f480e7a705f8efb056019a3c71a0b3ff32da71"
+  },
+  "note": "Lexical direct assignments only. Conditional compilation and indirect mutation require human review. No claim that writes are legal or functional on every backend.",
+  "count": 26,
+  "fields": [
+    "_BaseColor",
+    "_BaseMapUVRotation",
+    "_Contrast",
+    "_DissolveMap_ST",
+    "_DissolveVoronoi_Vec4",
+    "_DistortionDirection",
+    "_FresnelUnit",
+    "_HueShift",
+    "_MaskMapUVRotation",
+    "_NoiseIntensity",
+    "_Saturability",
+    "_SharedUV_Vec",
+    "_VertexOffset_Map_ST",
+    "_VertexOffset_MaskMap_ST",
+    "_VertexOffset_Vec",
+    "time"
+  ],
+  "writes": [
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 938,
+      "function_candidate": "ProcessBaseUVs",
+      "field": "_SharedUV_Vec",
+      "component": ".z",
+      "operator": "+=",
+      "source": "_SharedUV_Vec.z += time * _SharedUV_Vec.w;"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 952,
+      "function_candidate": "ProcessBaseUVs",
+      "field": "_BaseMapUVRotation",
+      "component": "",
+      "operator": "+=",
+      "source": "_BaseMapUVRotation += time * _BaseMapUVRotationSpeed;"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 1017,
+      "function_candidate": "ParticleProcessUV",
+      "field": "_MaskMapUVRotation",
+      "component": "",
+      "operator": "+=",
+      "source": "_MaskMapUVRotation += time * _MaskMapRotationSpeed;"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 1064,
+      "function_candidate": "ParticleProcessUV",
+      "field": "_DissolveMap_ST",
+      "component": ".z",
+      "operator": "+=",
+      "source": "_DissolveMap_ST.z += GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 1065,
+      "function_candidate": "ParticleProcessUV",
+      "field": "_DissolveMap_ST",
+      "component": ".w",
+      "operator": "+=",
+      "source": "_DissolveMap_ST.w += GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 1082,
+      "function_candidate": "ParticleProcessUV",
+      "field": "_DissolveVoronoi_Vec4",
+      "component": ".x",
+      "operator": "+=",
+      "source": "_DissolveVoronoi_Vec4.x += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 1083,
+      "function_candidate": "ParticleProcessUV",
+      "field": "_DissolveVoronoi_Vec4",
+      "component": ".y",
+      "operator": "+=",
+      "source": "_DissolveVoronoi_Vec4.y += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 1090,
+      "function_candidate": "ParticleProcessUV",
+      "field": "_DissolveVoronoi_Vec4",
+      "component": ".z",
+      "operator": "+=",
+      "source": "_DissolveVoronoi_Vec4.z += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 1091,
+      "function_candidate": "ParticleProcessUV",
+      "field": "_DissolveVoronoi_Vec4",
+      "component": ".w",
+      "operator": "+=",
+      "source": "_DissolveVoronoi_Vec4.w += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 1763,
+      "function_candidate": "ColorAdjustment",
+      "field": "_HueShift",
+      "component": "",
+      "operator": "=",
+      "source": "_HueShift = GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,_HueShift,customData1,customData2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 1771,
+      "function_candidate": "ColorAdjustment",
+      "field": "_Contrast",
+      "component": "",
+      "operator": "=",
+      "source": "_Contrast = GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,_Contrast,customData1,customData2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "line": 1779,
+      "function_candidate": "ColorAdjustment",
+      "field": "_Saturability",
+      "component": "",
+      "operator": "=",
+      "source": "_Saturability = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_SATURATE,_Saturability,customData1,customData2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 128,
+      "function_candidate": "vertParticleUnlit",
+      "field": "time",
+      "component": "",
+      "operator": "=",
+      "source": "time = _Time.y;"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 291,
+      "function_candidate": "vertParticleUnlit",
+      "field": "_VertexOffset_Map_ST",
+      "component": ".z",
+      "operator": "+=",
+      "source": "_VertexOffset_Map_ST.z += GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X,0,input.Custom1,input.Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 292,
+      "function_candidate": "vertParticleUnlit",
+      "field": "_VertexOffset_Map_ST",
+      "component": ".w",
+      "operator": "+=",
+      "source": "_VertexOffset_Map_ST.w += GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_Y,0,input.Custom1,input.Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 293,
+      "function_candidate": "vertParticleUnlit",
+      "field": "_VertexOffset_Vec",
+      "component": ".z",
+      "operator": "=",
+      "source": "_VertexOffset_Vec.z = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_VERTEXOFFSET_INTENSITY,_VertexOffset_Vec.z,input.Custom1,input.Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 296,
+      "function_candidate": "vertParticleUnlit",
+      "field": "_VertexOffset_MaskMap_ST",
+      "component": ".z",
+      "operator": "+=",
+      "source": "_VertexOffset_MaskMap_ST.z += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X,0,input.Custom1,input.Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 297,
+      "function_candidate": "vertParticleUnlit",
+      "field": "_VertexOffset_MaskMap_ST",
+      "component": ".w",
+      "operator": "+=",
+      "source": "_VertexOffset_MaskMap_ST.w += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y,0,input.Custom1,input.Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 383,
+      "function_candidate": "fragParticleUnlit",
+      "field": "time",
+      "component": "",
+      "operator": "=",
+      "source": "time = _Time.y;"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 625,
+      "function_candidate": "fragParticleUnlit",
+      "field": "_DistortionDirection",
+      "component": ".x",
+      "operator": "+=",
+      "source": "_DistortionDirection.x += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 626,
+      "function_candidate": "fragParticleUnlit",
+      "field": "_DistortionDirection",
+      "component": ".y",
+      "operator": "+=",
+      "source": "_DistortionDirection.y += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 635,
+      "function_candidate": "fragParticleUnlit",
+      "field": "_NoiseIntensity",
+      "component": "",
+      "operator": "=",
+      "source": "_NoiseIntensity = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY,_NoiseIntensity,input.VaryingsP_Custom1,input.VaryingsP_Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 667,
+      "function_candidate": "fragParticleUnlit",
+      "field": "_BaseColor",
+      "component": "",
+      "operator": "=",
+      "source": "_BaseColor = facing > 0 ? _BaseColor : _BaseBackColor;"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 693,
+      "function_candidate": "fragParticleUnlit",
+      "field": "_DistortionDirection",
+      "component": ".z",
+      "operator": "=",
+      "source": "_DistortionDirection.z = GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY,_DistortionDirection.z,input.VaryingsP_Custom1,input.VaryingsP_Custom2);"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 694,
+      "function_candidate": "fragParticleUnlit",
+      "field": "_DistortionDirection",
+      "component": ".z",
+      "operator": "*=",
+      "source": "_DistortionDirection.z *= 0.1;"
+    },
+    {
+      "file": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "line": 1152,
+      "function_candidate": "fragParticleUnlit",
+      "field": "_FresnelUnit",
+      "component": ".x",
+      "operator": "+=",
+      "source": "_FresnelUnit.x += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);;"
+    }
+  ]
+}

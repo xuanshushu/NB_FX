@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T01 · G1 输入清单进度 · NB_FX</title></head>
 <body>
-<p><a href="index.html">返回报告索引</a> · <a href="../tasks/t01-contracts.html">T01 任务书</a> · <a href="../contracts.html">接口契约</a></p>
+<p><a href="index.html">返回报告索引</a> · <a href="../tasks/t01-contracts.html">T01 任务书</a> · <a href="../contracts.html">接口契约</a> · <a href="t01-contract-draft.html">后续语义/阶段草案</a></p>
 <h1>T01 · G1 输入清单与未决项</h1>
 <p><small>主 Agent · 2026-09-27 · <strong>T01 进行中，G1 未放行</strong> · 未 push</small></p>
 <blockquote><p>本页是只读调查与机器清单切片，不是接口 v1 或 G1 通过报告。开工输入为主工程 <code>89db651</code>、NB_FX <code>63d4e14</code>，双仓 clean；未修改 Shader、官方包、Target、NBPostprocess、Assets 或 ProjectSettings。Shader Graph 的 GF 固定数据原型不能替代产品候选。主 Agent 独占 Unity Editor 验证；三名 SubAgent 分别只读调查 Properties/Keywords、ShaderFlag、HLSL/Pass，后续只读补查依赖与未匹配属性。</p></blockquote>
@@ -23,5 +23,5 @@
 <li>明确当前 URP 新路径与原 ShaderLab 2021.3 的技术隔离方案。D20 的用户安装流程安排在 HDRP 实现前，不表示当前 GF <code>.asmref</code> 已在旧版或无 URP 环境安全；本机没有 2021.3 Editor，旧版烟测仍待环境。若最终方案要求修改 NBPostprocess 或削减兼容，先提交用户决策。</li>
 </ol>
 <h2>审核结论</h2>
-<p><strong>仅接受上述清单为 G1 输入证据；G1 未放行。</strong>当前可继续 T01 的语义归类、签名设计和文件所有权审核；不得派发依赖 G1 的 T02–T05 大规模重构。没有对官方包、Target、NBPostprocess 或旧材质作任何变更。证据文件的 SHA-256 见<a href="g1-evidence/sha256.txt">清单</a>。</p>
+<p><strong>仅接受上述清单为 G1 输入证据；G1 未放行。</strong>后续<a href="t01-contract-draft.html">语义、阶段与副作用草案</a>已补充候选逐属性归类、Flags 静态用例及依赖边界，仍非接口 v1。当前可继续 T01 的人工语义复核、签名设计和文件所有权审核；不得派发依赖 G1 的 T02–T05 大规模重构。没有对官方包、Target、NBPostprocess 或旧材质作任何变更。证据文件的 SHA-256 见<a href="g1-evidence/sha256.txt">清单</a>。</p>
 </body></html>

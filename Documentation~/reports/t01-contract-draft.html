@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T01 · 语义与阶段边界草案 · NB_FX</title></head>
+<body>
+<p><a href="index.html">返回报告索引</a> · <a href="../tasks/t01-contracts.html">T01 任务书</a> · <a href="t01-inventory-progress.html">前一清单切片</a></p>
+<h1>T01 · 语义、阶段与副作用边界草案</h1>
+<p><small>主 Agent 审核 · 2026-09-27 · <strong>G1 未放行</strong> · 未修改 Shader / 官方包 / NBPostprocess / Target · 未 push</small></p>
+<blockquote><p>这是继机器清单之后的第二个可回放切片，仍是<strong>候选契约</strong>，不是已经编译的共享 HLSL API。输入为主工程 <code>31ea499</code>、NB_FX <code>a73df4b</code>。所有候选行保留源码行、默认值、样例材质序列化与来源 hash；语义归类不能授权删除、改名或缩减功能。</p></blockquote>
+
+<h2>逐属性候选，不以名称推定功能可删</h2>
+<p><a href="g1-evidence/property-semantics-candidates.json">450 项候选机器表</a>由<a href="g1-evidence/classify_property_semantics.py">脚本</a>生成，并扩展到 <code>XuanXuanRenderUtility</code> 的 VAT / Six-Way HLSL 引用闭包。分类为：175 项有 HLSL 操作性词法候选、28 项纹理、14 项 packed 协议、13 项 ShaderLab RenderState、10 项宿主意图/模式、97 项 C# 宿主侧、71 项 Inspector 状态、11 项仅见 CBUFFER 声明、31 项无直接词法引用但已序列化。它们是互斥的<strong>审查队列</strong>，不是运行时可达性结论；宏、条件编译、C# 读写方向和用户材质尚待复核。31 项都保留兼容，不作自动迁移/删除。22 个无同名 Property 的 CBUFFER 字段中，16 个为纹理 ST 配套，2 个 AnimationSheetHelper、2 个 CustomLocalTransform 外部输入；<code>_ClipRect</code>、<code>_FresnelUnit2</code> 尚无已证明的读取用途，仍保留。</p>
+
+<h2>现有入口与必须保持的阶段</h2>
+<p>当前确有的 HLSL 入口为 <code>VaryingsParticle vertParticleUnlit(AttributesParticle input)</code> 与 <code>ParticleFragmentOutput fragParticleUnlit(VaryingsParticle input, half facing : VFACE)</code>；两个结构含具体顶点流、插值与可选 Six-Way 数据。现有辅助签名包括 <code>BaseUVs ProcessBaseUVs(float4 meshTexcoord0, float2 specialUVInTexcoord3, float4 Custom1, float4 Custom2, float3 positionOS, float3 positionWS, float2 screenUV)</code>（这里仅把原变量名缩写）、<code>void ParticleProcessUV(inout ParticleUVs, float4 meshTexcoord0, float4 Custom1, float4 Custom2, BaseUVs)</code>、<code>half3 VetexOffset(..., out half3 offsetOS)</code> 和 <code>void ColorAdjustment(inout half3 result, inout half alpha, half4 customData1, half4 customData2)</code>。完整原文以 <a href="../../NBShaders2/Shader/HLSL/NBShaderInput.hlsl">Input</a> 与 <a href="../../NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl">Forward</a> 为准；本段不宣称新接口已经存在。</p>
+<table border="1" cellpadding="6"><thead><tr><th>边界</th><th>源码事实</th><th>候选接口约束 / 待证明项</th></tr></thead><tbody>
+<tr><td>Geometry / 顶点</td><td>CustomLocal 变换先于 VAT；顶点位置、法线、切线与负缩放手性被使用。VertexOffset 后重算 WS/clip，ShadowCaster 再加偏移。<code>AttributesParticle</code> 可能读 TEXCOORD0–7、Custom1/2、Flipbook、VAT。</td><td>显式传入 OS/WS 矩阵、流来源、有效时间和变形结果；ShaderLab 语义及 URP 阴影偏移属于宿主适配。不能为 VFX 缺流而移除 Mesh VAT。</td></tr>
+<tr><td>UV 分配</td><td><code>isProcessUVInFrag()</code> 对 Twirl/Polar、DepthDecal、POM、屏幕扭曲等返回 true；否则顶点处理再插值。VertexOffset 有自己的顶点 UV 需求。</td><td>接口需同时描述 vertex UV 和 fragment UV，保留插值、导数、ST 应用次数、贴图 LOD/Wrap；不得统一改为片元算 UV。</td></tr>
+<tr><td>Surface / Alpha</td><td>PNoise→Normal/POM→Noise/Refraction→主色→光照→MatCap→Overlay1→Ramp→Dissolve→Overlay2→Mask→Fresnel→深度/淡出→顶点色/附加色→Fog/颜色调整→Alpha/Pass 输出。</td><td>建议显式的 <code>SurfaceState { color, alpha, UV, noise, distortion }</code> 与只读有效参数；<em>尚未冻结字段类型或函数签名</em>。Debug 中途返回、Depth/Shadow 裁剪及预乘位置需保持。</td></tr>
+<tr><td>Frame / Pass 输出</td><td>两个阶段把 <code>time</code> 置为 <code>_Time.y</code>；深度、屏幕 UV、Fog、相机数据取自 Unity/URP。两个 Distort Pass 在相同 Forward 函数尾部选择不同结果。</td><td>Frame 显式提供原时间、相机、深度与屏幕参数；Pass Output 区分 RGBA、clip、SV_Depth、扭曲向量/权重。<code>_UNSCALETIME</code>/<code>_SCRIPTABLETIME</code> 虽有 pragma，当前路径未见替代 <code>time</code> 的读取，记为基线语义待核，不借迁移修正。</td></tr>
+</tbody></table>
+
+<h2>全局参数写入：局部化前的等价义务</h2>
+<p><a href="g1-evidence/uniform-writes.json">机器清单</a> / <a href="g1-evidence/inventory_uniform_writes.py">重放脚本</a>在 Input/Forward 的函数体中找出 26 处对 16 个 <code>UnityPerMaterial</code> 字段（含 <code>time</code>）的直接赋值。按原调用链，它们不能简单删除或在 Graph Custom Function 间依赖可写全局状态：</p>
+<ul>
+<li>UV/时间：<code>_SharedUV_Vec.z</code>、<code>_BaseMapUVRotation</code>、<code>_MaskMapUVRotation</code> 在旋转使用前叠加时间；<code>_DissolveMap_ST.zw</code>、<code>_DissolveVoronoi_Vec4.xyzw</code> 加 CustomData 后用于同次 UV 计算。</li>
+<li>顶点：<code>_VertexOffset_Map_ST.zw</code>、<code>_VertexOffset_MaskMap_ST.zw</code>、<code>_VertexOffset_Vec.z</code> 在顶点采样和位移前被 CustomData 改写。</li>
+<li>片元：<code>_DistortionDirection.xy</code>、<code>_NoiseIntensity</code> 影响累计噪声；<code>_BaseColor</code> 根据 VFACE 选择背面色；<code>_DistortionDirection.z</code> 又在色散前读取 CustomData 并缩放 0.1；<code>_FresnelUnit.x</code> 在 Fresnel 重映射前加偏移。</li>
+<li>颜色调整：<code>_HueShift</code>、<code>_Contrast</code>、<code>_Saturability</code> 在操作前由 CustomData 得出有效值。该函数位于主色阶段或 Fog 后阶段的互斥分支，不能无意执行两次。</li>
+</ul>
+<p>候选迁移原则：每次调用从原 uniform 与该调用的 CustomData / 时间计算<strong>局部有效值</strong>，原精度与相同后续消费者不变；若一个调用内原写入会影响第二消费者，必须连同后续读取一起搬入同一显式状态。还需用原 ShaderLab A/B 证明多次调用、不同 Pass、Preview 没有交叉状态差异；当前尚未执行。</p>
+
+<h2>Pass 输出与用例挂钩（设计，未运行）</h2>
+<table border="1" cellpadding="6"><thead><tr><th>原 Pass / LightMode</th><th>源码分叉</th><th>计划用例</th></tr></thead><tbody>
+<tr><td>SRPDefaultUnlit / UniversalForward / Universal2D</td><td>常规颜色路径；前者 <code>Cull Front</code>，Universal2D 为旧宿主。</td><td>T01-STAGE-01：正反面、原 GUI 状态、UV 插值/时间与颜色顺序；Universal2D 只要求旧路径。</td></tr>
+<tr><td>DepthOnly / ShadowCaster</td><td><code>NB_DEPTH_ONLY_PASS</code> / <code>NB_SHADOW_CASTER_PASS</code>，相同位移但各自 AlphaClip；透明阴影有 dither 或固定阈值。</td><td>T01-STAGE-02：VAT/VertexOffset、裁剪、透明阴影及深度对照。</td></tr>
+<tr><td>NBCameraOpaqueDistortPass</td><td>精确 LightMode，采样 <code>_CameraOpaqueTexture</code> 并输出颜色/Alpha。</td><td>T01-STAGE-03：旧/Graph 路径 Pass 选择、源纹理、Mask、深度与合成；GF 固定噪声不是此用例。</td></tr>
+<tr><td>NBDeferredDistortPass</td><td>精确 LightMode，输出有符号 RG 扭曲量、Alpha 权重；<code>Blend SrcAlpha OneMinusSrcAlpha</code>。</td><td>T01-STAGE-04：矢量编码、RT、混合、时序与 NBPostprocess 对照。</td></tr>
+</tbody></table>
+<p>逐 keyword 的七 Pass 静态存在表见<a href="g1-evidence/keywords-static.json">原始清单</a>；以上 case 只是必要覆盖的索引，未形成 450 项逐属性闭环。真实 Graph/Player 输出仍应在 G3–G7 分别验证，GF 不可替代。</p>
+
+<h2>Flags 与版本隔离的审查结果</h2>
+<p><a href="g1-evidence/flags-mpb-graph-test-matrix.md">Flags / MPB / Graph 用例矩阵</a>与<a href="g1-evidence/static_bridge_matrix.json">静态模型</a>记录 728 个纯算术向量通过、两项静态风险及五项 Unity/GPU 未运行。尤其 bit31、Wrap 最高位、CustomData 高 nibble 必须在实际 Material/Player/GPU 中复验；未播种的 MPB 对 packed 字按整值覆盖原材质位的风险不能由算术结果冒充运行时结论。GF Graph 尚无产品 Flags 输入。</p>
+<p><a href="g1-evidence/dependency-isolation-audit.md">依赖隔离审计</a>确认当前 <code>.asmref</code> 不会按 URP 版本自动失效，且 2022.3 本地 URP14 的 Editor asmdef 与 URP17 使用同 GUID。Unity 2021.3 未安装，尚不能证明原 ShaderLab 在当前包版本中安全打开；D20 将用户安装流程放在 HDRP 阶段前，并不豁免 G1 的技术边界。G1 不会把未来拆包、<code>Samples~</code> 或 Version Defines 候选写成已批准产品方案。</p>
+
+<h2>审核与回退</h2>
+<p><strong>接受本切片为 T01 输入证据；G1 未放行。</strong>后续仍需逐属性 writer/read/Pass/case 人工闭环、共享 HLSL 可编译签名和文件所有权、Graph 参数频率/变体预算、2021.3 技术隔离验证。无产品源码变更，回退仅需回退本切片文档和证据，不影响 G0/GF。主 Agent 未启动 T02–T05，也未 push。</p>
+</body></html>

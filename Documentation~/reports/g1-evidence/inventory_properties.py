@@ -21,7 +21,7 @@ ctext=I.read_text(); cb=ctext.split('CBUFFER_START(UnityPerMaterial)',1)[1].spli
 cbfields=[]
 for i,line in enumerate(ctext.splitlines(),1):
     if 'CBUFFER_START(UnityPerMaterial)' in line: cbstart=i
-for i,line in enumerate(cb.splitlines(),cbstart+1):
+for i,line in enumerate(cb.splitlines()[1:],cbstart+1):
     m=re.match(r'^\s*((?:half|float|int|uint)(?:[1-4](?:x[1-4])?)?)\s+(_[A-Za-z0-9_]+)\s*;',line)
     if m: cbfields.append({'name':m.group(2),'line':i,'type':m.group(1)})
 csfiles=sorted(p for p in PACKAGE.rglob('*.cs') if '/Tests/' not in str(p) and '/Documentation~/' not in str(p)); hsfiles=sorted((B/'Shader/HLSL').rglob('*.hlsl'))

@@ -1,0 +1,180 @@
+{
+  "kind": "T01 pure static model; NOT Unity/GPU proof",
+  "tests": [
+    {
+      "name": "C#/HLSL constant parity",
+      "status": "static-pass",
+      "cases": 148,
+      "source": [
+        "NBShaderFlags.cs:114-215,323-357,629-644,719-728,762-766",
+        "NBShaderFlags.hlsl:4-176,275-279"
+      ],
+      "note": "Bump UV symbol alias BUMPMAP/BUMPTEX has the same numeric position 24."
+    },
+    {
+      "name": "ShaderLab packed defaults",
+      "status": "static-pass",
+      "cases": 9,
+      "source": [
+        "NBShader.shader:521-536"
+      ],
+      "note": ""
+    },
+    {
+      "name": "ShaderLab auxiliary defaults",
+      "status": "static-pass",
+      "cases": 6,
+      "source": [
+        "NBShader.shader:526-531"
+      ],
+      "note": ""
+    },
+    {
+      "name": "UnityPerMaterial uint declarations",
+      "status": "static-pass",
+      "cases": 6,
+      "source": [
+        "NBShaderInput.hlsl:222-240,251"
+      ],
+      "note": ""
+    },
+    {
+      "name": "bit31 and composite high bits round-trip in 32-bit model",
+      "status": "static-pass",
+      "cases": 3,
+      "source": [
+        "NBShaderFlags.cs:147-178",
+        "NBShaderFlags.hlsl:38-69",
+        "ShaderFlagsBase.cs:43-70",
+        "NBShaderInput.hlsl:371-374"
+      ],
+      "note": "Static signed/unsigned arithmetic only; Unity Material serialization and GPU uint behavior still require runtime checks."
+    },
+    {
+      "name": "Wrap 16x4 modes and field isolation",
+      "status": "static-pass",
+      "cases": 64,
+      "source": [
+        "NBShaderFlags.cs:181-196",
+        "NBShaderProtocolItems.cs:504-648",
+        "NBShaderInput.hlsl:375-399,432-479"
+      ],
+      "note": ""
+    },
+    {
+      "name": "UV 16 fields x 9 modes, including type word bit31",
+      "status": "static-pass",
+      "cases": 144,
+      "source": [
+        "NBShaderFlags.cs:599-692",
+        "NBShaderFlags.hlsl:150-165,241-264"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Color channel 10 fields x RGBA",
+      "status": "static-pass",
+      "cases": 40,
+      "source": [
+        "NBShaderFlags.cs:719-759",
+        "NBShaderFlags.hlsl:167-176"
+      ],
+      "note": ""
+    },
+    {
+      "name": "CustomData 4 words x 8 nibbles x 9 source choices",
+      "status": "static-pass",
+      "cases": 288,
+      "source": [
+        "NBShaderFlags.cs:300-371,466-507",
+        "NBShaderFlags.hlsl:109-148,178-225"
+      ],
+      "note": ""
+    },
+    {
+      "name": "PNoise 5 fields x 4 supported modes",
+      "status": "static-pass",
+      "cases": 20,
+      "source": [
+        "NBShaderFlags.cs:762-800",
+        "NBShaderFlags.hlsl:275-318"
+      ],
+      "note": ""
+    },
+    {
+      "name": "MPB unseeded packed write loses material bit0",
+      "status": "risk-confirmed-static",
+      "cases": 1,
+      "source": [
+        "ShaderFlagsBase.cs:43-55,58-70"
+      ],
+      "note": "A bridge must seed the entire packed property into MPB before OR/AND updates, or use an explicit full-value writer. Actual Unity MPB inheritance/batching not measured."
+    },
+    {
+      "name": "GF Graph is not a packed-protocol bridge",
+      "status": "risk-confirmed-static",
+      "cases": 1,
+      "source": [
+        "GF_URP_VFX_NBSubTarget.shadergraph:5-12,349-358,978-987",
+        "NBGFDistortPass.hlsl:1-3,28-42"
+      ],
+      "note": "GF Graph has only BaseMap/Color; it proves pass feasibility, not existing NBShader flag wiring."
+    },
+    {
+      "name": "Unity Material.SetInteger/GetInteger signed bit31 persistence",
+      "status": "unity-not-run",
+      "cases": 0,
+      "source": [
+        "ShaderFlagsBase.cs:34-70",
+        "NBShaderInput.hlsl:222-240"
+      ],
+      "note": "Material asset save/reload and Player GPU capture"
+    },
+    {
+      "name": "Unity MPB seed/inheritance and SRP Batcher impact",
+      "status": "unity-not-run",
+      "cases": 0,
+      "source": [
+        "ShaderFlagsBase.cs:43-70"
+      ],
+      "note": "Editor and Player, Mesh/VFX instancing paths"
+    },
+    {
+      "name": "Packed UV/Wrap/Channel/CustomData GPU decode",
+      "status": "unity-not-run",
+      "cases": 0,
+      "source": [
+        "NBShaderFlags.hlsl:109-264",
+        "NBShaderInput.hlsl:375-479"
+      ],
+      "note": "Compare pixel readback against integer test vectors, especially positions 28/30/31"
+    },
+    {
+      "name": "PNoise and ForceNoMip GPU/variant coverage",
+      "status": "unity-not-run",
+      "cases": 0,
+      "source": [
+        "NBShaderFlags.hlsl:275-318",
+        "NBShaderInput.hlsl:401-425"
+      ],
+      "note": "LOD difference requires mipmapped textures and platform-specific capture"
+    },
+    {
+      "name": "Graph/VFX product bridge and serialized material compatibility",
+      "status": "unity-not-run",
+      "cases": 0,
+      "source": [
+        "GF_URP_VFX_NBSubTarget.shadergraph:5-12",
+        "NBGFUnlitSubTarget.cs:1-18"
+      ],
+      "note": "Not implemented by GF probe; G3 and later required"
+    }
+  ],
+  "summary": {
+    "staticPassed": 10,
+    "staticFailed": 0,
+    "riskConfirmed": 2,
+    "unityNotRun": 5,
+    "modeledCases": 728
+  }
+}
