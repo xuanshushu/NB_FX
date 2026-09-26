@@ -1,0 +1,309 @@
+{
+  "package": {
+    "path": "Packages/NB_FX/package.json",
+    "sha256": "de72895c9d8e65c49ff94e4ac33556e4248d67637b3e3e10e0f53f4a7da3c34f",
+    "name": "com.xuanxuan.nb.fx",
+    "unity": "2021.1",
+    "dependencies": {}
+  },
+  "projectManifest": {
+    "path": "Packages/manifest.json",
+    "sha256": "011e2c28b6e51b42c61579d58f3f804244abd8a935a8680900b4ba6f158317d2",
+    "selectedDependencies": {
+      "com.unity.cinemachine": "3.1.0",
+      "com.unity.render-pipelines.universal": "17.3.0",
+      "com.unity.visualeffectgraph": "17.3.0"
+    }
+  },
+  "assemblies": [
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Editor/com.xuanxuan.nb.postprocessing.Editor.asmdef",
+      "sha256": "a0bd6e455997d2f9701f733737390d84c44a9f67d25773f592080de24ee06764",
+      "name": "com.xuanxuan.nb.postprocessing.Editor",
+      "includePlatforms": [
+        "Editor"
+      ],
+      "references": [
+        {
+          "reference": "GUID:a1f23b61b189bd949adfd0f7a353734f",
+          "resolved": {
+            "name": "com.xuanxuan.nb.postprocessing",
+            "path": "Packages/NB_FX/NBPostProcessing/Runtime/com.xuanxuan.nb.postprocessing.asmdef"
+          }
+        },
+        {
+          "reference": "GUID:8495541fcd41b0c40b5b6e6e7a7639d1",
+          "resolved": {
+            "name": "com.xuanxuan.render.utility.Editor",
+            "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/com.xuanxuan.render.utility.Editor.asmdef"
+          }
+        },
+        {
+          "reference": "GUID:8f9e4d586616f13449cfeb86c5f704c2",
+          "resolved": {
+            "name": "com.xuanxuan.render.utility",
+            "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/com.xuanxuan.render.utility.asmdef"
+          }
+        },
+        {
+          "reference": "GUID:4307f53044263cf4b835bd812fc161a4",
+          "resolved": {
+            "name": "Unity.Cinemachine",
+            "path": "Library/PackageCache/com.unity.cinemachine@ceed3a7f8d67/Runtime/Unity.Cinemachine.asmdef"
+          }
+        }
+      ],
+      "defineConstraints": [],
+      "versionDefines": [
+        {
+          "name": "com.unity.cinemachine",
+          "expression": "3.0",
+          "define": "CINIMACHINE_3_0"
+        }
+      ]
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/com.xuanxuan.nb.postprocessing.asmdef",
+      "sha256": "86c90b88e0f0c8051e8b862ffe9a6e174799c60a55f5fcc39f51564a83695420",
+      "name": "com.xuanxuan.nb.postprocessing",
+      "includePlatforms": [],
+      "references": [
+        {
+          "reference": "GUID:df380645f10b7bc4b97d4f5eb6303d95",
+          "resolved": {
+            "name": "Unity.RenderPipelines.Core.Runtime",
+            "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/Runtime/Unity.RenderPipelines.Core.Runtime.asmdef"
+          }
+        },
+        {
+          "reference": "GUID:15fc0a57446b3144c949da3e2b9737a9",
+          "resolved": {
+            "name": "Unity.RenderPipelines.Universal.Runtime",
+            "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/Runtime/Unity.RenderPipelines.Universal.Runtime.asmdef"
+          }
+        },
+        {
+          "reference": "GUID:4307f53044263cf4b835bd812fc161a4",
+          "resolved": {
+            "name": "Unity.Cinemachine",
+            "path": "Library/PackageCache/com.unity.cinemachine@ceed3a7f8d67/Runtime/Unity.Cinemachine.asmdef"
+          }
+        },
+        {
+          "reference": "GUID:8f9e4d586616f13449cfeb86c5f704c2",
+          "resolved": {
+            "name": "com.xuanxuan.render.utility",
+            "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/com.xuanxuan.render.utility.asmdef"
+          }
+        }
+      ],
+      "defineConstraints": [],
+      "versionDefines": [
+        {
+          "name": "com.unity.cinemachine",
+          "expression": "3.0",
+          "define": "CINIMACHINE_3_0"
+        },
+        {
+          "name": "com.unity.render-pipelines.universal",
+          "expression": "13.1.2",
+          "define": "UNIVERSAL_RP_13_1_2_OR_NEWER"
+        },
+        {
+          "name": "com.unity.render-pipelines.universal",
+          "expression": "17.0.0",
+          "define": "UNIVERSAL_RP_17_0_OR_NEWER"
+        }
+      ]
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Editor/com.xuanxuan.nb.shaders2.Editor.asmdef",
+      "sha256": "f3f2c22d95f15c155b9b7257d6f9f9f0940581d0f01fd8abb3de9a011a02eda5",
+      "name": "com.xuanxuan.nb.shaders2.Editor",
+      "includePlatforms": [
+        "Editor"
+      ],
+      "references": [
+        {
+          "reference": "GUID:8495541fcd41b0c40b5b6e6e7a7639d1",
+          "resolved": {
+            "name": "com.xuanxuan.render.utility.Editor",
+            "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/com.xuanxuan.render.utility.Editor.asmdef"
+          }
+        },
+        {
+          "reference": "GUID:8f9e4d586616f13449cfeb86c5f704c2",
+          "resolved": {
+            "name": "com.xuanxuan.render.utility",
+            "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/com.xuanxuan.render.utility.asmdef"
+          }
+        },
+        {
+          "reference": "GUID:aed681b6b9e69ff4dbd8d55e012b87ff",
+          "resolved": {
+            "name": "com.xuanxuan.nb.shaders2",
+            "path": "Packages/NB_FX/NBShaders2/Runtime/com.xuanxuan.nb.shaders2.asmdef"
+          }
+        }
+      ],
+      "defineConstraints": [],
+      "versionDefines": []
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/com.xuanxuan.nb.shaders2.asmdef",
+      "sha256": "3a191159e11f934781f57788c5e14e9bf30dae76e119048e57d505afbff1f379",
+      "name": "com.xuanxuan.nb.shaders2",
+      "includePlatforms": [],
+      "references": [
+        {
+          "reference": "GUID:8f9e4d586616f13449cfeb86c5f704c2",
+          "resolved": {
+            "name": "com.xuanxuan.render.utility",
+            "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/com.xuanxuan.render.utility.asmdef"
+          }
+        }
+      ],
+      "defineConstraints": [],
+      "versionDefines": []
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Tests/PassFeasibility/FunctionalProbe/PlayMode/NBFX.GF.URP.PlayMode.Tests.asmdef",
+      "sha256": "15efe6128561f16e635cc247a77fe9d7c8edb07a97e96caf3b05cfecc42e4a1c",
+      "name": "NBFX.GF.URP.PlayMode.Tests",
+      "includePlatforms": [],
+      "references": [
+        {
+          "reference": "Unity.RenderPipelines.Core.Runtime",
+          "resolved": null
+        },
+        {
+          "reference": "Unity.RenderPipelines.Universal.Runtime",
+          "resolved": null
+        },
+        {
+          "reference": "Unity.VisualEffectGraph.Runtime",
+          "resolved": null
+        }
+      ],
+      "defineConstraints": [
+        "NB_GF_HAS_URP",
+        "NB_GF_HAS_VFX"
+      ],
+      "versionDefines": [
+        {
+          "name": "com.unity.render-pipelines.universal",
+          "expression": "17.3.0",
+          "define": "NB_GF_HAS_URP"
+        },
+        {
+          "name": "com.unity.visualeffectgraph",
+          "expression": "17.3.0",
+          "define": "NB_GF_HAS_VFX"
+        }
+      ]
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/Tests/PassFeasibility/FunctionalProbe/PlayerProbe/NBFX.GF.URP.PlayerProbe.asmdef",
+      "sha256": "5222953c80b8b050b0a22ac2e98e8b45a22e6edb5b0df1ffefe896f0ccbdc6b1",
+      "name": "NBFX.GF.URP.PlayerProbe",
+      "includePlatforms": [],
+      "references": [
+        {
+          "reference": "Unity.VisualEffectGraph.Runtime",
+          "resolved": null
+        }
+      ],
+      "defineConstraints": [
+        "NB_GF_HAS_URP",
+        "NB_GF_HAS_VFX"
+      ],
+      "versionDefines": [
+        {
+          "name": "com.unity.render-pipelines.universal",
+          "expression": "17.3.0",
+          "define": "NB_GF_HAS_URP"
+        },
+        {
+          "name": "com.unity.visualeffectgraph",
+          "expression": "17.3.0",
+          "define": "NB_GF_HAS_VFX"
+        }
+      ]
+    },
+    {
+      "path": "Packages/NB_FX/Tests/Editor/NBFX.Baseline.Editor.Tests.asmdef",
+      "sha256": "5f27fdd853baed5057f399777a068b2f57de2baca93a3dd88c0ef2c84097ec5c",
+      "name": "NBFX.Baseline.Editor.Tests",
+      "includePlatforms": [
+        "Editor"
+      ],
+      "references": [],
+      "defineConstraints": [],
+      "versionDefines": []
+    },
+    {
+      "path": "Packages/NB_FX/Tests/PlayMode/NBFX.Baseline.PlayMode.Tests.asmdef",
+      "sha256": "4c8331fe88cb86150938385221fd90c4e2d89ed152514a690c61fdfbdf9502ed",
+      "name": "NBFX.Baseline.PlayMode.Tests",
+      "includePlatforms": [],
+      "references": [],
+      "defineConstraints": [],
+      "versionDefines": []
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Editor/com.xuanxuan.render.utility.Editor.asmdef",
+      "sha256": "b55b57359623f10c79982ea977bd9172eb40a58267be8866751ab327d3051b8e",
+      "name": "com.xuanxuan.render.utility.Editor",
+      "includePlatforms": [
+        "Editor"
+      ],
+      "references": [
+        {
+          "reference": "GUID:8f9e4d586616f13449cfeb86c5f704c2",
+          "resolved": {
+            "name": "com.xuanxuan.render.utility",
+            "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/com.xuanxuan.render.utility.asmdef"
+          }
+        },
+        {
+          "reference": "GUID:df380645f10b7bc4b97d4f5eb6303d95",
+          "resolved": {
+            "name": "Unity.RenderPipelines.Core.Runtime",
+            "path": "Library/PackageCache/com.unity.render-pipelines.core@43eeb73e554f/Runtime/Unity.RenderPipelines.Core.Runtime.asmdef"
+          }
+        }
+      ],
+      "defineConstraints": [],
+      "versionDefines": []
+    },
+    {
+      "path": "Packages/NB_FX/XuanXuanRenderUtility/Runtime/com.xuanxuan.render.utility.asmdef",
+      "sha256": "0ed17641c06b4e65c7666e24f91b0b866b4227c94c6a017711e4e3433c313247",
+      "name": "com.xuanxuan.render.utility",
+      "includePlatforms": [],
+      "references": [
+        {
+          "reference": "GUID:15fc0a57446b3144c949da3e2b9737a9",
+          "resolved": {
+            "name": "Unity.RenderPipelines.Universal.Runtime",
+            "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/Runtime/Unity.RenderPipelines.Universal.Runtime.asmdef"
+          }
+        }
+      ],
+      "defineConstraints": [],
+      "versionDefines": []
+    }
+  ],
+  "assemblyReferences": [
+    {
+      "path": "Packages/NB_FX/NBShaders2/Tests/PassFeasibility/SubTargetProbe/Editor/NBGFSubTarget.asmref",
+      "sha256": "84d62145d5515c67d0f72f2f4199574dfabf535439e2eaff23594f7ecb138054",
+      "reference": "GUID:c579267770062bf448e75eb160330b7f",
+      "resolved": {
+        "name": "Unity.RenderPipelines.Universal.Editor",
+        "path": "Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/Editor/Unity.RenderPipelines.Universal.Editor.asmdef"
+      }
+    }
+  ],
+  "note": "References are syntactic and unconditional unless their entire asmdef is excluded. Version Defines only supply symbols; this inventory does not prove behavior when a package is absent."
+}

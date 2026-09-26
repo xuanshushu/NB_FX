@@ -1,0 +1,4383 @@
+{
+  "summary": {
+    "source_sha256": {
+      "Packages/NB_FX/NBShaders2/Shader/NBShader.shader": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00",
+      "Packages/NB_FX/NBShaders2/Runtime/NBShaderFeatureCatalog.cs": "f639adda9df36642756fd138fb064a2e88b4b402de168fca978494001a838870",
+      "Packages/NB_FX/NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs": "1220576a61cc3c926bf26a3191e4512153cb682bc6521c12fcc46955c458d0aa"
+    },
+    "pass_count": 7,
+    "passes": [
+      {
+        "name": "SRPDefaultUnlit",
+        "line": 589,
+        "lightMode": "SRPDefaultUnlit",
+        "keyword_count": 70
+      },
+      {
+        "name": "UniversalForward",
+        "line": 726,
+        "lightMode": "UniversalForward",
+        "keyword_count": 70
+      },
+      {
+        "name": "DepthOnly",
+        "line": 852,
+        "lightMode": "DepthOnly",
+        "keyword_count": 31
+      },
+      {
+        "name": "ShadowCaster",
+        "line": 910,
+        "lightMode": "ShadowCaster",
+        "keyword_count": 32
+      },
+      {
+        "name": "NBCameraOpaqueDistortPass",
+        "line": 972,
+        "lightMode": "NBCameraOpaqueDistortPass",
+        "keyword_count": 35
+      },
+      {
+        "name": "NBDeferredDistortPass",
+        "line": 1096,
+        "lightMode": "NBDeferredDistortPass",
+        "keyword_count": 35
+      },
+      {
+        "name": "Universal2D",
+        "line": 1221,
+        "lightMode": "Universal2D",
+        "keyword_count": 39
+      }
+    ],
+    "pragma_count": 238,
+    "pragma_kind_counts": {
+      "shader_feature_local": 177,
+      "shader_feature_local_fragment": 25,
+      "shader_feature_local_vertex": 22,
+      "multi_compile": 6,
+      "multi_compile_fog": 5,
+      "multi_compile_local": 2,
+      "multi_compile_vertex": 1
+    },
+    "keyword_unique_count": 73,
+    "shader_feature_unique_count": 66,
+    "multi_compile_unique_count": 7,
+    "catalog_count": 65,
+    "catalog_missing_in_shader": [],
+    "shader_feature_not_in_catalog": [
+      "_CUSTOM_LOCAL_TRANSFORM"
+    ],
+    "keyword_toggle_binding_count": 37,
+    "multi_compile_keywords": [
+      "EVALUATE_SH_MIXED",
+      "EVALUATE_SH_VERTEX",
+      "SOFT_UI_FRAME",
+      "UNITY_UI_CLIP_RECT",
+      "_ADDITIONAL_LIGHTS",
+      "_ADDITIONAL_LIGHTS_VERTEX",
+      "_CASTING_PUNCTUAL_LIGHT_SHADOW"
+    ]
+  },
+  "passes": [
+    {
+      "line": 589,
+      "name": "SRPDefaultUnlit",
+      "lightMode": "SRPDefaultUnlit",
+      "keywords": {
+        "_DISTORT_REFRACTION": "shader_feature_local",
+        "_MASKMAP_ON": "shader_feature_local",
+        "_MASKMAP2_ON": "shader_feature_local",
+        "_MASKMAP3_ON": "shader_feature_local",
+        "_NOISEMAP": "shader_feature_local",
+        "_NOISE_MASKMAP": "shader_feature_local",
+        "_CHROMATIC_ABERRATION": "shader_feature_local_fragment",
+        "_EMISSION": "shader_feature_local",
+        "_DISSOLVE": "shader_feature_local",
+        "_DISSOLVE_MASK": "shader_feature_local",
+        "_DISSOLVE_RAMP": "shader_feature_local_fragment",
+        "_DISSOLVE_RAMP_MAP": "shader_feature_local_fragment",
+        "_PROGRAM_NOISE": "shader_feature_local",
+        "_PROGRAM_NOISE_SIMPLE": "shader_feature_local",
+        "_PROGRAM_NOISE_VORONOI": "shader_feature_local",
+        "_COLORMAPBLEND": "shader_feature_local",
+        "_COLOR_RAMP": "shader_feature_local",
+        "_COLOR_RAMP_MAP": "shader_feature_local_fragment",
+        "_SHARED_UV": "shader_feature_local",
+        "_VAT": "shader_feature_local",
+        "_FLIPBOOKBLENDING_ON": "shader_feature_local",
+        "_VAT_HOUDINI": "shader_feature_local",
+        "_VAT_TYFLOW": "shader_feature_local",
+        "_HOUDINI_VAT_SOFTBODY": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_RIGIDBODY": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_DYNAMIC_REMESH": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_PARTICLE_SPRITE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_ABSOLUTE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_RELATIVE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_R": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PR": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PRSAVE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PRSXYZ": "shader_feature_local_vertex",
+        "UNITY_UI_CLIP_RECT": "multi_compile",
+        "_ADDITIONAL_LIGHTS_VERTEX": "multi_compile",
+        "_ADDITIONAL_LIGHTS": "multi_compile",
+        "SOFT_UI_FRAME": "multi_compile",
+        "EVALUATE_SH_MIXED": "multi_compile",
+        "EVALUATE_SH_VERTEX": "multi_compile",
+        "_CUSTOM_LOCAL_TRANSFORM": "shader_feature_local",
+        "_VERTEX_OFFSET": "shader_feature_local_vertex",
+        "_VERTEX_OFFSET_MASKMAP": "shader_feature_local_vertex",
+        "_FRESNEL": "shader_feature_local_fragment",
+        "_ALPHAPREMULTIPLY_ON": "shader_feature_local",
+        "_ALPHAMODULATE_ON": "shader_feature_local",
+        "_ALPHATEST_ON": "shader_feature_local",
+        "_SOFTPARTICLES_ON": "shader_feature_local",
+        "_UNSCALETIME": "shader_feature_local",
+        "_SCRIPTABLETIME": "shader_feature_local",
+        "_DEPTH_DECAL": "shader_feature_local",
+        "_DEPTH_OUTLINE": "shader_feature_local",
+        "_DISTANCE_FADE": "shader_feature_local",
+        "_PARALLAX_MAPPING": "shader_feature_local",
+        "_OVERRIDE_Z": "shader_feature_local_fragment",
+        "_STENCIL_WITHOUT_PLAYER": "shader_feature_local",
+        "_FX_LIGHT_MODE_UNLIT": "shader_feature_local",
+        "_FX_LIGHT_MODE_BLINN_PHONG": "shader_feature_local",
+        "_FX_LIGHT_MODE_HALF_LAMBERT": "shader_feature_local",
+        "_FX_LIGHT_MODE_PBR": "shader_feature_local",
+        "_FX_LIGHT_MODE_SIX_WAY": "shader_feature_local",
+        "_NORMALMAP": "shader_feature_local",
+        "_MATCAP": "shader_feature_local",
+        "_SPECULAR_COLOR": "shader_feature_local",
+        "VFX_SIX_WAY_ABSORPTION": "shader_feature_local",
+        "NB_DEBUG_MASK": "shader_feature_local",
+        "NB_DEBUG_PNOISE": "shader_feature_local",
+        "NB_DEBUG_DISSOLVE": "shader_feature_local",
+        "NB_DEBUG_DISTORT": "shader_feature_local",
+        "NB_DEBUG_FRESNEL": "shader_feature_local",
+        "NB_DEBUG_VERTEX_OFFSET": "shader_feature_local"
+      }
+    },
+    {
+      "line": 726,
+      "name": "UniversalForward",
+      "lightMode": "UniversalForward",
+      "keywords": {
+        "_DISTORT_REFRACTION": "shader_feature_local",
+        "_MASKMAP_ON": "shader_feature_local",
+        "_MASKMAP2_ON": "shader_feature_local",
+        "_MASKMAP3_ON": "shader_feature_local",
+        "_NOISEMAP": "shader_feature_local",
+        "_NOISE_MASKMAP": "shader_feature_local",
+        "_CHROMATIC_ABERRATION": "shader_feature_local_fragment",
+        "_EMISSION": "shader_feature_local",
+        "_DISSOLVE": "shader_feature_local",
+        "_DISSOLVE_MASK": "shader_feature_local",
+        "_DISSOLVE_RAMP": "shader_feature_local_fragment",
+        "_DISSOLVE_RAMP_MAP": "shader_feature_local_fragment",
+        "_PROGRAM_NOISE": "shader_feature_local",
+        "_PROGRAM_NOISE_SIMPLE": "shader_feature_local",
+        "_PROGRAM_NOISE_VORONOI": "shader_feature_local",
+        "_COLORMAPBLEND": "shader_feature_local",
+        "_COLOR_RAMP": "shader_feature_local",
+        "_COLOR_RAMP_MAP": "shader_feature_local_fragment",
+        "_SHARED_UV": "shader_feature_local",
+        "_VAT": "shader_feature_local",
+        "_FLIPBOOKBLENDING_ON": "shader_feature_local",
+        "_VAT_HOUDINI": "shader_feature_local",
+        "_VAT_TYFLOW": "shader_feature_local",
+        "_HOUDINI_VAT_SOFTBODY": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_RIGIDBODY": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_DYNAMIC_REMESH": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_PARTICLE_SPRITE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_ABSOLUTE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_RELATIVE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_R": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PR": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PRSAVE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PRSXYZ": "shader_feature_local_vertex",
+        "UNITY_UI_CLIP_RECT": "multi_compile_local",
+        "_ADDITIONAL_LIGHTS_VERTEX": "multi_compile_local",
+        "_ADDITIONAL_LIGHTS": "multi_compile_local",
+        "_CUSTOM_LOCAL_TRANSFORM": "shader_feature_local",
+        "_VERTEX_OFFSET": "shader_feature_local_vertex",
+        "_VERTEX_OFFSET_MASKMAP": "shader_feature_local_vertex",
+        "_FRESNEL": "shader_feature_local_fragment",
+        "SOFT_UI_FRAME": "multi_compile",
+        "EVALUATE_SH_MIXED": "multi_compile",
+        "EVALUATE_SH_VERTEX": "multi_compile",
+        "_ALPHAPREMULTIPLY_ON": "shader_feature_local",
+        "_ALPHAMODULATE_ON": "shader_feature_local",
+        "_ALPHATEST_ON": "shader_feature_local",
+        "_SOFTPARTICLES_ON": "shader_feature_local",
+        "_UNSCALETIME": "shader_feature_local",
+        "_SCRIPTABLETIME": "shader_feature_local",
+        "_DEPTH_DECAL": "shader_feature_local",
+        "_DEPTH_OUTLINE": "shader_feature_local",
+        "_DISTANCE_FADE": "shader_feature_local",
+        "_PARALLAX_MAPPING": "shader_feature_local",
+        "_OVERRIDE_Z": "shader_feature_local_fragment",
+        "_STENCIL_WITHOUT_PLAYER": "shader_feature_local",
+        "_FX_LIGHT_MODE_UNLIT": "shader_feature_local",
+        "_FX_LIGHT_MODE_BLINN_PHONG": "shader_feature_local",
+        "_FX_LIGHT_MODE_HALF_LAMBERT": "shader_feature_local",
+        "_FX_LIGHT_MODE_PBR": "shader_feature_local",
+        "_FX_LIGHT_MODE_SIX_WAY": "shader_feature_local",
+        "_NORMALMAP": "shader_feature_local",
+        "_MATCAP": "shader_feature_local",
+        "_SPECULAR_COLOR": "shader_feature_local",
+        "VFX_SIX_WAY_ABSORPTION": "shader_feature_local",
+        "NB_DEBUG_MASK": "shader_feature_local",
+        "NB_DEBUG_PNOISE": "shader_feature_local",
+        "NB_DEBUG_DISSOLVE": "shader_feature_local",
+        "NB_DEBUG_DISTORT": "shader_feature_local",
+        "NB_DEBUG_FRESNEL": "shader_feature_local",
+        "NB_DEBUG_VERTEX_OFFSET": "shader_feature_local"
+      }
+    },
+    {
+      "line": 852,
+      "name": "DepthOnly",
+      "lightMode": "DepthOnly",
+      "keywords": {
+        "_MASKMAP_ON": "shader_feature_local",
+        "_MASKMAP2_ON": "shader_feature_local",
+        "_MASKMAP3_ON": "shader_feature_local",
+        "_NOISEMAP": "shader_feature_local",
+        "_NOISE_MASKMAP": "shader_feature_local",
+        "_DISSOLVE": "shader_feature_local",
+        "_DISSOLVE_MASK": "shader_feature_local",
+        "_PROGRAM_NOISE": "shader_feature_local",
+        "_PROGRAM_NOISE_SIMPLE": "shader_feature_local",
+        "_PROGRAM_NOISE_VORONOI": "shader_feature_local",
+        "_SHARED_UV": "shader_feature_local",
+        "_VAT": "shader_feature_local",
+        "_FLIPBOOKBLENDING_ON": "shader_feature_local",
+        "_VAT_HOUDINI": "shader_feature_local",
+        "_VAT_TYFLOW": "shader_feature_local",
+        "_HOUDINI_VAT_SOFTBODY": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_RIGIDBODY": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_DYNAMIC_REMESH": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_PARTICLE_SPRITE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_ABSOLUTE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_RELATIVE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_R": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PR": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PRSAVE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PRSXYZ": "shader_feature_local_vertex",
+        "_ALPHATEST_ON": "shader_feature_local",
+        "_CUSTOM_LOCAL_TRANSFORM": "shader_feature_local",
+        "_VERTEX_OFFSET": "shader_feature_local_vertex",
+        "_VERTEX_OFFSET_MASKMAP": "shader_feature_local_vertex",
+        "_UNSCALETIME": "shader_feature_local",
+        "_SCRIPTABLETIME": "shader_feature_local"
+      }
+    },
+    {
+      "line": 910,
+      "name": "ShadowCaster",
+      "lightMode": "ShadowCaster",
+      "keywords": {
+        "_MASKMAP_ON": "shader_feature_local",
+        "_MASKMAP2_ON": "shader_feature_local",
+        "_MASKMAP3_ON": "shader_feature_local",
+        "_NOISEMAP": "shader_feature_local",
+        "_NOISE_MASKMAP": "shader_feature_local",
+        "_DISSOLVE": "shader_feature_local",
+        "_DISSOLVE_MASK": "shader_feature_local",
+        "_PROGRAM_NOISE": "shader_feature_local",
+        "_PROGRAM_NOISE_SIMPLE": "shader_feature_local",
+        "_PROGRAM_NOISE_VORONOI": "shader_feature_local",
+        "_SHARED_UV": "shader_feature_local",
+        "_VAT": "shader_feature_local",
+        "_FLIPBOOKBLENDING_ON": "shader_feature_local",
+        "_VAT_HOUDINI": "shader_feature_local",
+        "_VAT_TYFLOW": "shader_feature_local",
+        "_HOUDINI_VAT_SOFTBODY": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_RIGIDBODY": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_DYNAMIC_REMESH": "shader_feature_local_vertex",
+        "_HOUDINI_VAT_PARTICLE_SPRITE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_ABSOLUTE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_RELATIVE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_R": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PR": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PRSAVE": "shader_feature_local_vertex",
+        "_TYFLOW_VAT_SKIN_PRSXYZ": "shader_feature_local_vertex",
+        "_ALPHATEST_ON": "shader_feature_local",
+        "_CUSTOM_LOCAL_TRANSFORM": "shader_feature_local",
+        "_VERTEX_OFFSET": "shader_feature_local_vertex",
+        "_VERTEX_OFFSET_MASKMAP": "shader_feature_local_vertex",
+        "_UNSCALETIME": "shader_feature_local",
+        "_SCRIPTABLETIME": "shader_feature_local",
+        "_CASTING_PUNCTUAL_LIGHT_SHADOW": "multi_compile_vertex"
+      }
+    },
+    {
+      "line": 972,
+      "name": "NBCameraOpaqueDistortPass",
+      "lightMode": "NBCameraOpaqueDistortPass",
+      "keywords": {
+        "_DISTORT_REFRACTION": "shader_feature_local",
+        "_MASKMAP_ON": "shader_feature_local",
+        "_MASKMAP2_ON": "shader_feature_local",
+        "_MASKMAP3_ON": "shader_feature_local",
+        "_NOISEMAP": "shader_feature_local",
+        "_NOISE_MASKMAP": "shader_feature_local",
+        "_CHROMATIC_ABERRATION": "shader_feature_local_fragment",
+        "_DISSOLVE": "shader_feature_local",
+        "_DISSOLVE_MASK": "shader_feature_local",
+        "_DISSOLVE_RAMP": "shader_feature_local_fragment",
+        "_DISSOLVE_RAMP_MAP": "shader_feature_local_fragment",
+        "_PROGRAM_NOISE": "shader_feature_local",
+        "_PROGRAM_NOISE_SIMPLE": "shader_feature_local",
+        "_PROGRAM_NOISE_VORONOI": "shader_feature_local",
+        "_SHARED_UV": "shader_feature_local",
+        "_CUSTOM_LOCAL_TRANSFORM": "shader_feature_local",
+        "_VERTEX_OFFSET": "shader_feature_local_vertex",
+        "_VERTEX_OFFSET_MASKMAP": "shader_feature_local_vertex",
+        "_FRESNEL": "shader_feature_local_fragment",
+        "SOFT_UI_FRAME": "multi_compile",
+        "EVALUATE_SH_MIXED": "multi_compile",
+        "EVALUATE_SH_VERTEX": "multi_compile",
+        "_ALPHAPREMULTIPLY_ON": "shader_feature_local",
+        "_ALPHAMODULATE_ON": "shader_feature_local",
+        "_ALPHATEST_ON": "shader_feature_local",
+        "_FLIPBOOKBLENDING_ON": "shader_feature_local",
+        "_SOFTPARTICLES_ON": "shader_feature_local",
+        "_UNSCALETIME": "shader_feature_local",
+        "_SCRIPTABLETIME": "shader_feature_local",
+        "_DEPTH_DECAL": "shader_feature_local",
+        "_DEPTH_OUTLINE": "shader_feature_local",
+        "_DISTANCE_FADE": "shader_feature_local",
+        "_STENCIL_WITHOUT_PLAYER": "shader_feature_local",
+        "_FX_LIGHT_MODE_UNLIT": "shader_feature_local",
+        "_NORMALMAP": "shader_feature_local"
+      }
+    },
+    {
+      "line": 1096,
+      "name": "NBDeferredDistortPass",
+      "lightMode": "NBDeferredDistortPass",
+      "keywords": {
+        "_DISTORT_REFRACTION": "shader_feature_local",
+        "_MASKMAP_ON": "shader_feature_local",
+        "_MASKMAP2_ON": "shader_feature_local",
+        "_MASKMAP3_ON": "shader_feature_local",
+        "_NOISEMAP": "shader_feature_local",
+        "_NOISE_MASKMAP": "shader_feature_local",
+        "_CHROMATIC_ABERRATION": "shader_feature_local_fragment",
+        "_DISSOLVE": "shader_feature_local",
+        "_DISSOLVE_MASK": "shader_feature_local",
+        "_DISSOLVE_RAMP": "shader_feature_local_fragment",
+        "_DISSOLVE_RAMP_MAP": "shader_feature_local_fragment",
+        "_PROGRAM_NOISE": "shader_feature_local",
+        "_PROGRAM_NOISE_SIMPLE": "shader_feature_local",
+        "_PROGRAM_NOISE_VORONOI": "shader_feature_local",
+        "_SHARED_UV": "shader_feature_local",
+        "_CUSTOM_LOCAL_TRANSFORM": "shader_feature_local",
+        "_VERTEX_OFFSET": "shader_feature_local_vertex",
+        "_VERTEX_OFFSET_MASKMAP": "shader_feature_local_vertex",
+        "_FRESNEL": "shader_feature_local_fragment",
+        "SOFT_UI_FRAME": "multi_compile",
+        "EVALUATE_SH_MIXED": "multi_compile",
+        "EVALUATE_SH_VERTEX": "multi_compile",
+        "_ALPHAPREMULTIPLY_ON": "shader_feature_local",
+        "_ALPHAMODULATE_ON": "shader_feature_local",
+        "_ALPHATEST_ON": "shader_feature_local",
+        "_FLIPBOOKBLENDING_ON": "shader_feature_local",
+        "_SOFTPARTICLES_ON": "shader_feature_local",
+        "_UNSCALETIME": "shader_feature_local",
+        "_SCRIPTABLETIME": "shader_feature_local",
+        "_DEPTH_DECAL": "shader_feature_local",
+        "_DEPTH_OUTLINE": "shader_feature_local",
+        "_DISTANCE_FADE": "shader_feature_local",
+        "_STENCIL_WITHOUT_PLAYER": "shader_feature_local",
+        "_FX_LIGHT_MODE_UNLIT": "shader_feature_local",
+        "_NORMALMAP": "shader_feature_local"
+      }
+    },
+    {
+      "line": 1221,
+      "name": "Universal2D",
+      "lightMode": "Universal2D",
+      "keywords": {
+        "_SCREEN_DISTORT_MODE": "shader_feature_local",
+        "_MASKMAP_ON": "shader_feature_local",
+        "_MASKMAP2_ON": "shader_feature_local",
+        "_MASKMAP3_ON": "shader_feature_local",
+        "_NOISEMAP": "shader_feature_local",
+        "_NOISE_MASKMAP": "shader_feature_local",
+        "_CHROMATIC_ABERRATION": "shader_feature_local_fragment",
+        "_EMISSION": "shader_feature_local",
+        "_DISSOLVE": "shader_feature_local",
+        "_DISSOLVE_MASK": "shader_feature_local",
+        "_DISSOLVE_RAMP": "shader_feature_local_fragment",
+        "_DISSOLVE_RAMP_MAP": "shader_feature_local_fragment",
+        "_PROGRAM_NOISE": "shader_feature_local",
+        "_PROGRAM_NOISE_SIMPLE": "shader_feature_local",
+        "_PROGRAM_NOISE_VORONOI": "shader_feature_local",
+        "_COLORMAPBLEND": "shader_feature_local",
+        "_COLOR_RAMP": "shader_feature_local",
+        "_COLOR_RAMP_MAP": "shader_feature_local_fragment",
+        "_SHARED_UV": "shader_feature_local",
+        "UNITY_UI_CLIP_RECT": "multi_compile_local",
+        "_ADDITIONAL_LIGHTS_VERTEX": "multi_compile_local",
+        "_ADDITIONAL_LIGHTS": "multi_compile_local",
+        "_PARCUSTOMDATA_ON": "shader_feature_local",
+        "_CUSTOM_LOCAL_TRANSFORM": "shader_feature_local",
+        "_VERTEX_OFFSET": "shader_feature_local_vertex",
+        "_VERTEX_OFFSET_MASKMAP": "shader_feature_local_vertex",
+        "_FRESNEL": "shader_feature_local_fragment",
+        "SOFT_UI_FRAME": "multi_compile",
+        "EVALUATE_SH_MIXED": "multi_compile",
+        "EVALUATE_SH_VERTEX": "multi_compile",
+        "_ALPHAPREMULTIPLY_ON": "shader_feature_local",
+        "_ALPHAMODULATE_ON": "shader_feature_local",
+        "_ALPHATEST_ON": "shader_feature_local",
+        "_FLIPBOOKBLENDING_ON": "shader_feature_local",
+        "_UNSCALETIME": "shader_feature_local",
+        "_SCRIPTABLETIME": "shader_feature_local",
+        "_STENCIL_WITHOUT_PLAYER": "shader_feature_local",
+        "_FX_LIGHT_MODE_UNLIT": "shader_feature_local",
+        "_NORMALMAP": "shader_feature_local"
+      }
+    }
+  ],
+  "pragmas": [
+    {
+      "line": 616,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISTORT_REFRACTION"
+      ]
+    },
+    {
+      "line": 617,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP_ON"
+      ]
+    },
+    {
+      "line": 618,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP2_ON"
+      ]
+    },
+    {
+      "line": 619,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP3_ON"
+      ]
+    },
+    {
+      "line": 623,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISEMAP"
+      ]
+    },
+    {
+      "line": 624,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISE_MASKMAP"
+      ]
+    },
+    {
+      "line": 625,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_CHROMATIC_ABERRATION"
+      ]
+    },
+    {
+      "line": 627,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_EMISSION"
+      ]
+    },
+    {
+      "line": 629,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE"
+      ]
+    },
+    {
+      "line": 630,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE_MASK"
+      ]
+    },
+    {
+      "line": 631,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_DISSOLVE_RAMP"
+      ]
+    },
+    {
+      "line": 632,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_DISSOLVE_RAMP_MAP"
+      ]
+    },
+    {
+      "line": 633,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE"
+      ]
+    },
+    {
+      "line": 634,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_SIMPLE"
+      ]
+    },
+    {
+      "line": 635,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_VORONOI"
+      ]
+    },
+    {
+      "line": 636,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_COLORMAPBLEND"
+      ]
+    },
+    {
+      "line": 637,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_COLOR_RAMP"
+      ]
+    },
+    {
+      "line": 638,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_COLOR_RAMP_MAP"
+      ]
+    },
+    {
+      "line": 639,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SHARED_UV"
+      ]
+    },
+    {
+      "line": 640,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_VAT",
+        "_FLIPBOOKBLENDING_ON"
+      ]
+    },
+    {
+      "line": 641,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_VAT_HOUDINI",
+        "_VAT_TYFLOW"
+      ]
+    },
+    {
+      "line": 642,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_HOUDINI_VAT_SOFTBODY",
+        "_HOUDINI_VAT_RIGIDBODY",
+        "_HOUDINI_VAT_DYNAMIC_REMESH",
+        "_HOUDINI_VAT_PARTICLE_SPRITE"
+      ]
+    },
+    {
+      "line": 643,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_TYFLOW_VAT_ABSOLUTE",
+        "_TYFLOW_VAT_RELATIVE",
+        "_TYFLOW_VAT_SKIN_R",
+        "_TYFLOW_VAT_SKIN_PR",
+        "_TYFLOW_VAT_SKIN_PRSAVE",
+        "_TYFLOW_VAT_SKIN_PRSXYZ"
+      ]
+    },
+    {
+      "line": 646,
+      "pass": "SRPDefaultUnlit",
+      "kind": "multi_compile",
+      "symbols": [
+        "UNITY_UI_CLIP_RECT",
+        "_ADDITIONAL_LIGHTS_VERTEX",
+        "_ADDITIONAL_LIGHTS"
+      ]
+    },
+    {
+      "line": 648,
+      "pass": "SRPDefaultUnlit",
+      "kind": "multi_compile",
+      "symbols": [
+        "SOFT_UI_FRAME",
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX"
+      ]
+    },
+    {
+      "line": 654,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ]
+    },
+    {
+      "line": 655,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET"
+      ]
+    },
+    {
+      "line": 656,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET_MASKMAP"
+      ]
+    },
+    {
+      "line": 658,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_FRESNEL"
+      ]
+    },
+    {
+      "line": 663,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHAPREMULTIPLY_ON",
+        "_ALPHAMODULATE_ON"
+      ]
+    },
+    {
+      "line": 664,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHATEST_ON"
+      ]
+    },
+    {
+      "line": 666,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SOFTPARTICLES_ON"
+      ]
+    },
+    {
+      "line": 671,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_UNSCALETIME"
+      ]
+    },
+    {
+      "line": 673,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SCRIPTABLETIME"
+      ]
+    },
+    {
+      "line": 676,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DEPTH_DECAL"
+      ]
+    },
+    {
+      "line": 677,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DEPTH_OUTLINE"
+      ]
+    },
+    {
+      "line": 678,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISTANCE_FADE"
+      ]
+    },
+    {
+      "line": 679,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PARALLAX_MAPPING"
+      ]
+    },
+    {
+      "line": 680,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_OVERRIDE_Z"
+      ]
+    },
+    {
+      "line": 682,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_STENCIL_WITHOUT_PLAYER"
+      ]
+    },
+    {
+      "line": 685,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_FX_LIGHT_MODE_UNLIT",
+        "_FX_LIGHT_MODE_BLINN_PHONG",
+        "_FX_LIGHT_MODE_HALF_LAMBERT",
+        "_FX_LIGHT_MODE_PBR",
+        "_FX_LIGHT_MODE_SIX_WAY"
+      ]
+    },
+    {
+      "line": 686,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NORMALMAP"
+      ]
+    },
+    {
+      "line": 687,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MATCAP"
+      ]
+    },
+    {
+      "line": 688,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SPECULAR_COLOR"
+      ]
+    },
+    {
+      "line": 689,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "VFX_SIX_WAY_ABSORPTION"
+      ]
+    },
+    {
+      "line": 690,
+      "pass": "SRPDefaultUnlit",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "NB_DEBUG_MASK",
+        "NB_DEBUG_PNOISE",
+        "NB_DEBUG_DISSOLVE",
+        "NB_DEBUG_DISTORT",
+        "NB_DEBUG_FRESNEL",
+        "NB_DEBUG_VERTEX_OFFSET"
+      ]
+    },
+    {
+      "line": 696,
+      "pass": "SRPDefaultUnlit",
+      "kind": "multi_compile_fog",
+      "symbols": []
+    },
+    {
+      "line": 751,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISTORT_REFRACTION"
+      ]
+    },
+    {
+      "line": 752,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP_ON"
+      ]
+    },
+    {
+      "line": 753,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP2_ON"
+      ]
+    },
+    {
+      "line": 754,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP3_ON"
+      ]
+    },
+    {
+      "line": 758,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISEMAP"
+      ]
+    },
+    {
+      "line": 759,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISE_MASKMAP"
+      ]
+    },
+    {
+      "line": 760,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_CHROMATIC_ABERRATION"
+      ]
+    },
+    {
+      "line": 762,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_EMISSION"
+      ]
+    },
+    {
+      "line": 764,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE"
+      ]
+    },
+    {
+      "line": 765,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE_MASK"
+      ]
+    },
+    {
+      "line": 766,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_DISSOLVE_RAMP"
+      ]
+    },
+    {
+      "line": 767,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_DISSOLVE_RAMP_MAP"
+      ]
+    },
+    {
+      "line": 768,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE"
+      ]
+    },
+    {
+      "line": 769,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_SIMPLE"
+      ]
+    },
+    {
+      "line": 770,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_VORONOI"
+      ]
+    },
+    {
+      "line": 771,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_COLORMAPBLEND"
+      ]
+    },
+    {
+      "line": 772,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_COLOR_RAMP"
+      ]
+    },
+    {
+      "line": 773,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_COLOR_RAMP_MAP"
+      ]
+    },
+    {
+      "line": 774,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SHARED_UV"
+      ]
+    },
+    {
+      "line": 775,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_VAT",
+        "_FLIPBOOKBLENDING_ON"
+      ]
+    },
+    {
+      "line": 776,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_VAT_HOUDINI",
+        "_VAT_TYFLOW"
+      ]
+    },
+    {
+      "line": 777,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_HOUDINI_VAT_SOFTBODY",
+        "_HOUDINI_VAT_RIGIDBODY",
+        "_HOUDINI_VAT_DYNAMIC_REMESH",
+        "_HOUDINI_VAT_PARTICLE_SPRITE"
+      ]
+    },
+    {
+      "line": 778,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_TYFLOW_VAT_ABSOLUTE",
+        "_TYFLOW_VAT_RELATIVE",
+        "_TYFLOW_VAT_SKIN_R",
+        "_TYFLOW_VAT_SKIN_PR",
+        "_TYFLOW_VAT_SKIN_PRSAVE",
+        "_TYFLOW_VAT_SKIN_PRSXYZ"
+      ]
+    },
+    {
+      "line": 782,
+      "pass": "UniversalForward",
+      "kind": "multi_compile_local",
+      "symbols": [
+        "UNITY_UI_CLIP_RECT",
+        "_ADDITIONAL_LIGHTS_VERTEX",
+        "_ADDITIONAL_LIGHTS"
+      ]
+    },
+    {
+      "line": 787,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ]
+    },
+    {
+      "line": 788,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET"
+      ]
+    },
+    {
+      "line": 789,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET_MASKMAP"
+      ]
+    },
+    {
+      "line": 791,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_FRESNEL"
+      ]
+    },
+    {
+      "line": 795,
+      "pass": "UniversalForward",
+      "kind": "multi_compile",
+      "symbols": [
+        "SOFT_UI_FRAME",
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX"
+      ]
+    },
+    {
+      "line": 798,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHAPREMULTIPLY_ON",
+        "_ALPHAMODULATE_ON"
+      ]
+    },
+    {
+      "line": 799,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHATEST_ON"
+      ]
+    },
+    {
+      "line": 801,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SOFTPARTICLES_ON"
+      ]
+    },
+    {
+      "line": 806,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_UNSCALETIME"
+      ]
+    },
+    {
+      "line": 808,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SCRIPTABLETIME"
+      ]
+    },
+    {
+      "line": 811,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DEPTH_DECAL"
+      ]
+    },
+    {
+      "line": 812,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DEPTH_OUTLINE"
+      ]
+    },
+    {
+      "line": 813,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISTANCE_FADE"
+      ]
+    },
+    {
+      "line": 814,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PARALLAX_MAPPING"
+      ]
+    },
+    {
+      "line": 815,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_OVERRIDE_Z"
+      ]
+    },
+    {
+      "line": 817,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_STENCIL_WITHOUT_PLAYER"
+      ]
+    },
+    {
+      "line": 820,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_FX_LIGHT_MODE_UNLIT",
+        "_FX_LIGHT_MODE_BLINN_PHONG",
+        "_FX_LIGHT_MODE_HALF_LAMBERT",
+        "_FX_LIGHT_MODE_PBR",
+        "_FX_LIGHT_MODE_SIX_WAY"
+      ]
+    },
+    {
+      "line": 821,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NORMALMAP"
+      ]
+    },
+    {
+      "line": 822,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MATCAP"
+      ]
+    },
+    {
+      "line": 823,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SPECULAR_COLOR"
+      ]
+    },
+    {
+      "line": 824,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "VFX_SIX_WAY_ABSORPTION"
+      ]
+    },
+    {
+      "line": 825,
+      "pass": "UniversalForward",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "NB_DEBUG_MASK",
+        "NB_DEBUG_PNOISE",
+        "NB_DEBUG_DISSOLVE",
+        "NB_DEBUG_DISTORT",
+        "NB_DEBUG_FRESNEL",
+        "NB_DEBUG_VERTEX_OFFSET"
+      ]
+    },
+    {
+      "line": 830,
+      "pass": "UniversalForward",
+      "kind": "multi_compile_fog",
+      "symbols": []
+    },
+    {
+      "line": 880,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP_ON"
+      ]
+    },
+    {
+      "line": 881,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP2_ON"
+      ]
+    },
+    {
+      "line": 882,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP3_ON"
+      ]
+    },
+    {
+      "line": 883,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISEMAP"
+      ]
+    },
+    {
+      "line": 884,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISE_MASKMAP"
+      ]
+    },
+    {
+      "line": 885,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE"
+      ]
+    },
+    {
+      "line": 886,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE_MASK"
+      ]
+    },
+    {
+      "line": 887,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE"
+      ]
+    },
+    {
+      "line": 888,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_SIMPLE"
+      ]
+    },
+    {
+      "line": 889,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_VORONOI"
+      ]
+    },
+    {
+      "line": 890,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SHARED_UV"
+      ]
+    },
+    {
+      "line": 891,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_VAT",
+        "_FLIPBOOKBLENDING_ON"
+      ]
+    },
+    {
+      "line": 892,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_VAT_HOUDINI",
+        "_VAT_TYFLOW"
+      ]
+    },
+    {
+      "line": 893,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_HOUDINI_VAT_SOFTBODY",
+        "_HOUDINI_VAT_RIGIDBODY",
+        "_HOUDINI_VAT_DYNAMIC_REMESH",
+        "_HOUDINI_VAT_PARTICLE_SPRITE"
+      ]
+    },
+    {
+      "line": 894,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_TYFLOW_VAT_ABSOLUTE",
+        "_TYFLOW_VAT_RELATIVE",
+        "_TYFLOW_VAT_SKIN_R",
+        "_TYFLOW_VAT_SKIN_PR",
+        "_TYFLOW_VAT_SKIN_PRSAVE",
+        "_TYFLOW_VAT_SKIN_PRSXYZ"
+      ]
+    },
+    {
+      "line": 895,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHATEST_ON"
+      ]
+    },
+    {
+      "line": 896,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ]
+    },
+    {
+      "line": 897,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET"
+      ]
+    },
+    {
+      "line": 898,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET_MASKMAP"
+      ]
+    },
+    {
+      "line": 899,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_UNSCALETIME"
+      ]
+    },
+    {
+      "line": 900,
+      "pass": "DepthOnly",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SCRIPTABLETIME"
+      ]
+    },
+    {
+      "line": 938,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP_ON"
+      ]
+    },
+    {
+      "line": 939,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP2_ON"
+      ]
+    },
+    {
+      "line": 940,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP3_ON"
+      ]
+    },
+    {
+      "line": 941,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISEMAP"
+      ]
+    },
+    {
+      "line": 942,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISE_MASKMAP"
+      ]
+    },
+    {
+      "line": 943,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE"
+      ]
+    },
+    {
+      "line": 944,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE_MASK"
+      ]
+    },
+    {
+      "line": 945,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE"
+      ]
+    },
+    {
+      "line": 946,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_SIMPLE"
+      ]
+    },
+    {
+      "line": 947,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_VORONOI"
+      ]
+    },
+    {
+      "line": 948,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SHARED_UV"
+      ]
+    },
+    {
+      "line": 949,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_VAT",
+        "_FLIPBOOKBLENDING_ON"
+      ]
+    },
+    {
+      "line": 950,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_VAT_HOUDINI",
+        "_VAT_TYFLOW"
+      ]
+    },
+    {
+      "line": 951,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_HOUDINI_VAT_SOFTBODY",
+        "_HOUDINI_VAT_RIGIDBODY",
+        "_HOUDINI_VAT_DYNAMIC_REMESH",
+        "_HOUDINI_VAT_PARTICLE_SPRITE"
+      ]
+    },
+    {
+      "line": 952,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_TYFLOW_VAT_ABSOLUTE",
+        "_TYFLOW_VAT_RELATIVE",
+        "_TYFLOW_VAT_SKIN_R",
+        "_TYFLOW_VAT_SKIN_PR",
+        "_TYFLOW_VAT_SKIN_PRSAVE",
+        "_TYFLOW_VAT_SKIN_PRSXYZ"
+      ]
+    },
+    {
+      "line": 953,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHATEST_ON"
+      ]
+    },
+    {
+      "line": 954,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ]
+    },
+    {
+      "line": 955,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET"
+      ]
+    },
+    {
+      "line": 956,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET_MASKMAP"
+      ]
+    },
+    {
+      "line": 957,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_UNSCALETIME"
+      ]
+    },
+    {
+      "line": 958,
+      "pass": "ShadowCaster",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SCRIPTABLETIME"
+      ]
+    },
+    {
+      "line": 960,
+      "pass": "ShadowCaster",
+      "kind": "multi_compile_vertex",
+      "symbols": [
+        "_CASTING_PUNCTUAL_LIGHT_SHADOW"
+      ]
+    },
+    {
+      "line": 998,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISTORT_REFRACTION"
+      ]
+    },
+    {
+      "line": 999,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP_ON"
+      ]
+    },
+    {
+      "line": 1000,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP2_ON"
+      ]
+    },
+    {
+      "line": 1001,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP3_ON"
+      ]
+    },
+    {
+      "line": 1005,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISEMAP"
+      ]
+    },
+    {
+      "line": 1006,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISE_MASKMAP"
+      ]
+    },
+    {
+      "line": 1007,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_CHROMATIC_ABERRATION"
+      ]
+    },
+    {
+      "line": 1011,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE"
+      ]
+    },
+    {
+      "line": 1012,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE_MASK"
+      ]
+    },
+    {
+      "line": 1013,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_DISSOLVE_RAMP"
+      ]
+    },
+    {
+      "line": 1014,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_DISSOLVE_RAMP_MAP"
+      ]
+    },
+    {
+      "line": 1015,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE"
+      ]
+    },
+    {
+      "line": 1016,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_SIMPLE"
+      ]
+    },
+    {
+      "line": 1017,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_VORONOI"
+      ]
+    },
+    {
+      "line": 1020,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SHARED_UV"
+      ]
+    },
+    {
+      "line": 1029,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ]
+    },
+    {
+      "line": 1030,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET"
+      ]
+    },
+    {
+      "line": 1031,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET_MASKMAP"
+      ]
+    },
+    {
+      "line": 1033,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_FRESNEL"
+      ]
+    },
+    {
+      "line": 1037,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "multi_compile",
+      "symbols": [
+        "SOFT_UI_FRAME",
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX"
+      ]
+    },
+    {
+      "line": 1040,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHAPREMULTIPLY_ON",
+        "_ALPHAMODULATE_ON"
+      ]
+    },
+    {
+      "line": 1041,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHATEST_ON"
+      ]
+    },
+    {
+      "line": 1043,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_FLIPBOOKBLENDING_ON"
+      ]
+    },
+    {
+      "line": 1044,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SOFTPARTICLES_ON"
+      ]
+    },
+    {
+      "line": 1049,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_UNSCALETIME"
+      ]
+    },
+    {
+      "line": 1051,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SCRIPTABLETIME"
+      ]
+    },
+    {
+      "line": 1054,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DEPTH_DECAL"
+      ]
+    },
+    {
+      "line": 1055,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DEPTH_OUTLINE"
+      ]
+    },
+    {
+      "line": 1056,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISTANCE_FADE"
+      ]
+    },
+    {
+      "line": 1059,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_STENCIL_WITHOUT_PLAYER"
+      ]
+    },
+    {
+      "line": 1063,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_FX_LIGHT_MODE_UNLIT"
+      ]
+    },
+    {
+      "line": 1064,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NORMALMAP"
+      ]
+    },
+    {
+      "line": 1072,
+      "pass": "NBCameraOpaqueDistortPass",
+      "kind": "multi_compile_fog",
+      "symbols": []
+    },
+    {
+      "line": 1122,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISTORT_REFRACTION"
+      ]
+    },
+    {
+      "line": 1124,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP_ON"
+      ]
+    },
+    {
+      "line": 1125,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP2_ON"
+      ]
+    },
+    {
+      "line": 1126,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP3_ON"
+      ]
+    },
+    {
+      "line": 1130,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISEMAP"
+      ]
+    },
+    {
+      "line": 1131,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISE_MASKMAP"
+      ]
+    },
+    {
+      "line": 1132,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_CHROMATIC_ABERRATION"
+      ]
+    },
+    {
+      "line": 1136,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE"
+      ]
+    },
+    {
+      "line": 1137,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE_MASK"
+      ]
+    },
+    {
+      "line": 1138,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_DISSOLVE_RAMP"
+      ]
+    },
+    {
+      "line": 1139,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_DISSOLVE_RAMP_MAP"
+      ]
+    },
+    {
+      "line": 1140,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE"
+      ]
+    },
+    {
+      "line": 1141,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_SIMPLE"
+      ]
+    },
+    {
+      "line": 1142,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_VORONOI"
+      ]
+    },
+    {
+      "line": 1145,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SHARED_UV"
+      ]
+    },
+    {
+      "line": 1154,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ]
+    },
+    {
+      "line": 1155,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET"
+      ]
+    },
+    {
+      "line": 1156,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET_MASKMAP"
+      ]
+    },
+    {
+      "line": 1158,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_FRESNEL"
+      ]
+    },
+    {
+      "line": 1162,
+      "pass": "NBDeferredDistortPass",
+      "kind": "multi_compile",
+      "symbols": [
+        "SOFT_UI_FRAME",
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX"
+      ]
+    },
+    {
+      "line": 1165,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHAPREMULTIPLY_ON",
+        "_ALPHAMODULATE_ON"
+      ]
+    },
+    {
+      "line": 1166,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHATEST_ON"
+      ]
+    },
+    {
+      "line": 1168,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_FLIPBOOKBLENDING_ON"
+      ]
+    },
+    {
+      "line": 1169,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SOFTPARTICLES_ON"
+      ]
+    },
+    {
+      "line": 1174,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_UNSCALETIME"
+      ]
+    },
+    {
+      "line": 1176,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SCRIPTABLETIME"
+      ]
+    },
+    {
+      "line": 1179,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DEPTH_DECAL"
+      ]
+    },
+    {
+      "line": 1180,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DEPTH_OUTLINE"
+      ]
+    },
+    {
+      "line": 1181,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISTANCE_FADE"
+      ]
+    },
+    {
+      "line": 1184,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_STENCIL_WITHOUT_PLAYER"
+      ]
+    },
+    {
+      "line": 1188,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_FX_LIGHT_MODE_UNLIT"
+      ]
+    },
+    {
+      "line": 1189,
+      "pass": "NBDeferredDistortPass",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NORMALMAP"
+      ]
+    },
+    {
+      "line": 1197,
+      "pass": "NBDeferredDistortPass",
+      "kind": "multi_compile_fog",
+      "symbols": []
+    },
+    {
+      "line": 1245,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SCREEN_DISTORT_MODE"
+      ]
+    },
+    {
+      "line": 1246,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP_ON"
+      ]
+    },
+    {
+      "line": 1247,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP2_ON"
+      ]
+    },
+    {
+      "line": 1248,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_MASKMAP3_ON"
+      ]
+    },
+    {
+      "line": 1252,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISEMAP"
+      ]
+    },
+    {
+      "line": 1253,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NOISE_MASKMAP"
+      ]
+    },
+    {
+      "line": 1254,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_CHROMATIC_ABERRATION"
+      ]
+    },
+    {
+      "line": 1256,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_EMISSION"
+      ]
+    },
+    {
+      "line": 1258,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE"
+      ]
+    },
+    {
+      "line": 1259,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_DISSOLVE_MASK"
+      ]
+    },
+    {
+      "line": 1260,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_DISSOLVE_RAMP"
+      ]
+    },
+    {
+      "line": 1261,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_DISSOLVE_RAMP_MAP"
+      ]
+    },
+    {
+      "line": 1262,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE"
+      ]
+    },
+    {
+      "line": 1263,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_SIMPLE"
+      ]
+    },
+    {
+      "line": 1264,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PROGRAM_NOISE_VORONOI"
+      ]
+    },
+    {
+      "line": 1265,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_COLORMAPBLEND"
+      ]
+    },
+    {
+      "line": 1266,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_COLOR_RAMP"
+      ]
+    },
+    {
+      "line": 1267,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_COLOR_RAMP_MAP"
+      ]
+    },
+    {
+      "line": 1268,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SHARED_UV"
+      ]
+    },
+    {
+      "line": 1272,
+      "pass": "Universal2D",
+      "kind": "multi_compile_local",
+      "symbols": [
+        "UNITY_UI_CLIP_RECT",
+        "_ADDITIONAL_LIGHTS_VERTEX",
+        "_ADDITIONAL_LIGHTS"
+      ]
+    },
+    {
+      "line": 1274,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_PARCUSTOMDATA_ON"
+      ]
+    },
+    {
+      "line": 1278,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ]
+    },
+    {
+      "line": 1279,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET"
+      ]
+    },
+    {
+      "line": 1280,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local_vertex",
+      "symbols": [
+        "_VERTEX_OFFSET_MASKMAP"
+      ]
+    },
+    {
+      "line": 1282,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local_fragment",
+      "symbols": [
+        "_FRESNEL"
+      ]
+    },
+    {
+      "line": 1286,
+      "pass": "Universal2D",
+      "kind": "multi_compile",
+      "symbols": [
+        "SOFT_UI_FRAME",
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX"
+      ]
+    },
+    {
+      "line": 1289,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHAPREMULTIPLY_ON",
+        "_ALPHAMODULATE_ON"
+      ]
+    },
+    {
+      "line": 1290,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_ALPHATEST_ON"
+      ]
+    },
+    {
+      "line": 1292,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_FLIPBOOKBLENDING_ON"
+      ]
+    },
+    {
+      "line": 1298,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_UNSCALETIME"
+      ]
+    },
+    {
+      "line": 1300,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_SCRIPTABLETIME"
+      ]
+    },
+    {
+      "line": 1306,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_STENCIL_WITHOUT_PLAYER"
+      ]
+    },
+    {
+      "line": 1310,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_FX_LIGHT_MODE_UNLIT"
+      ]
+    },
+    {
+      "line": 1311,
+      "pass": "Universal2D",
+      "kind": "shader_feature_local",
+      "symbols": [
+        "_NORMALMAP"
+      ]
+    },
+    {
+      "line": 1319,
+      "pass": "Universal2D",
+      "kind": "multi_compile_fog",
+      "symbols": []
+    }
+  ],
+  "keywords": {
+    "_DISTORT_REFRACTION": [
+      {
+        "line": 616,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 751,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 998,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1122,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_MASKMAP_ON": [
+      {
+        "line": 617,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 752,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 880,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 938,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 999,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1124,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1246,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_MASKMAP2_ON": [
+      {
+        "line": 618,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 753,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 881,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 939,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1000,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1125,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1247,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_MASKMAP3_ON": [
+      {
+        "line": 619,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 754,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 882,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 940,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1001,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1126,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1248,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_NOISEMAP": [
+      {
+        "line": 623,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 758,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 883,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 941,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1005,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1130,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1252,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_NOISE_MASKMAP": [
+      {
+        "line": 624,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 759,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 884,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 942,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1006,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1131,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1253,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_CHROMATIC_ABERRATION": [
+      {
+        "line": 625,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 760,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1007,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1132,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1254,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local_fragment"
+      }
+    ],
+    "_EMISSION": [
+      {
+        "line": 627,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 762,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1256,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_DISSOLVE": [
+      {
+        "line": 629,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 764,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 885,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 943,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1011,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1136,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1258,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_DISSOLVE_MASK": [
+      {
+        "line": 630,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 765,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 886,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 944,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1012,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1137,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1259,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_DISSOLVE_RAMP": [
+      {
+        "line": 631,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 766,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1013,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1138,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1260,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local_fragment"
+      }
+    ],
+    "_DISSOLVE_RAMP_MAP": [
+      {
+        "line": 632,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 767,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1014,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1139,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1261,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local_fragment"
+      }
+    ],
+    "_PROGRAM_NOISE": [
+      {
+        "line": 633,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 768,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 887,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 945,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1015,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1140,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1262,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_PROGRAM_NOISE_SIMPLE": [
+      {
+        "line": 634,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 769,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 888,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 946,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1016,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1141,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1263,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_PROGRAM_NOISE_VORONOI": [
+      {
+        "line": 635,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 770,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 889,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 947,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1017,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1142,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1264,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_COLORMAPBLEND": [
+      {
+        "line": 636,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 771,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1265,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_COLOR_RAMP": [
+      {
+        "line": 637,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 772,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1266,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_COLOR_RAMP_MAP": [
+      {
+        "line": 638,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 773,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1267,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local_fragment"
+      }
+    ],
+    "_SHARED_UV": [
+      {
+        "line": 639,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 774,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 890,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 948,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1020,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1145,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1268,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_VAT": [
+      {
+        "line": 640,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 775,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 891,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 949,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_FLIPBOOKBLENDING_ON": [
+      {
+        "line": 640,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 775,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 891,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 949,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1043,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1168,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1292,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_VAT_HOUDINI": [
+      {
+        "line": 641,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 776,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 892,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 950,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_VAT_TYFLOW": [
+      {
+        "line": 641,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 776,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 892,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 950,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_HOUDINI_VAT_SOFTBODY": [
+      {
+        "line": 642,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 777,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 893,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 951,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_HOUDINI_VAT_RIGIDBODY": [
+      {
+        "line": 642,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 777,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 893,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 951,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_HOUDINI_VAT_DYNAMIC_REMESH": [
+      {
+        "line": 642,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 777,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 893,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 951,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_HOUDINI_VAT_PARTICLE_SPRITE": [
+      {
+        "line": 642,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 777,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 893,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 951,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_TYFLOW_VAT_ABSOLUTE": [
+      {
+        "line": 643,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 778,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 894,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 952,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_TYFLOW_VAT_RELATIVE": [
+      {
+        "line": 643,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 778,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 894,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 952,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_TYFLOW_VAT_SKIN_R": [
+      {
+        "line": 643,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 778,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 894,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 952,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_TYFLOW_VAT_SKIN_PR": [
+      {
+        "line": 643,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 778,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 894,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 952,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_TYFLOW_VAT_SKIN_PRSAVE": [
+      {
+        "line": 643,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 778,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 894,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 952,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_TYFLOW_VAT_SKIN_PRSXYZ": [
+      {
+        "line": 643,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 778,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 894,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 952,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "UNITY_UI_CLIP_RECT": [
+      {
+        "line": 646,
+        "pass": "SRPDefaultUnlit",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 782,
+        "pass": "UniversalForward",
+        "kind": "multi_compile_local"
+      },
+      {
+        "line": 1272,
+        "pass": "Universal2D",
+        "kind": "multi_compile_local"
+      }
+    ],
+    "_ADDITIONAL_LIGHTS_VERTEX": [
+      {
+        "line": 646,
+        "pass": "SRPDefaultUnlit",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 782,
+        "pass": "UniversalForward",
+        "kind": "multi_compile_local"
+      },
+      {
+        "line": 1272,
+        "pass": "Universal2D",
+        "kind": "multi_compile_local"
+      }
+    ],
+    "_ADDITIONAL_LIGHTS": [
+      {
+        "line": 646,
+        "pass": "SRPDefaultUnlit",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 782,
+        "pass": "UniversalForward",
+        "kind": "multi_compile_local"
+      },
+      {
+        "line": 1272,
+        "pass": "Universal2D",
+        "kind": "multi_compile_local"
+      }
+    ],
+    "SOFT_UI_FRAME": [
+      {
+        "line": 648,
+        "pass": "SRPDefaultUnlit",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 795,
+        "pass": "UniversalForward",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 1037,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 1162,
+        "pass": "NBDeferredDistortPass",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 1286,
+        "pass": "Universal2D",
+        "kind": "multi_compile"
+      }
+    ],
+    "EVALUATE_SH_MIXED": [
+      {
+        "line": 648,
+        "pass": "SRPDefaultUnlit",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 795,
+        "pass": "UniversalForward",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 1037,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 1162,
+        "pass": "NBDeferredDistortPass",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 1286,
+        "pass": "Universal2D",
+        "kind": "multi_compile"
+      }
+    ],
+    "EVALUATE_SH_VERTEX": [
+      {
+        "line": 648,
+        "pass": "SRPDefaultUnlit",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 795,
+        "pass": "UniversalForward",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 1037,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 1162,
+        "pass": "NBDeferredDistortPass",
+        "kind": "multi_compile"
+      },
+      {
+        "line": 1286,
+        "pass": "Universal2D",
+        "kind": "multi_compile"
+      }
+    ],
+    "_CUSTOM_LOCAL_TRANSFORM": [
+      {
+        "line": 654,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 787,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 896,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 954,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1029,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1154,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1278,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_VERTEX_OFFSET": [
+      {
+        "line": 655,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 788,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 897,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 955,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 1030,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 1155,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 1279,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_VERTEX_OFFSET_MASKMAP": [
+      {
+        "line": 656,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 789,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 898,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 956,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 1031,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 1156,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local_vertex"
+      },
+      {
+        "line": 1280,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local_vertex"
+      }
+    ],
+    "_FRESNEL": [
+      {
+        "line": 658,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 791,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1033,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1158,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 1282,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local_fragment"
+      }
+    ],
+    "_ALPHAPREMULTIPLY_ON": [
+      {
+        "line": 663,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 798,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1040,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1165,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1289,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_ALPHAMODULATE_ON": [
+      {
+        "line": 663,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 798,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1040,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1165,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1289,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_ALPHATEST_ON": [
+      {
+        "line": 664,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 799,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 895,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 953,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1041,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1166,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1290,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_SOFTPARTICLES_ON": [
+      {
+        "line": 666,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 801,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1044,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1169,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_UNSCALETIME": [
+      {
+        "line": 671,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 806,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 899,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 957,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1049,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1174,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1298,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_SCRIPTABLETIME": [
+      {
+        "line": 673,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 808,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 900,
+        "pass": "DepthOnly",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 958,
+        "pass": "ShadowCaster",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1051,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1176,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1300,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_DEPTH_DECAL": [
+      {
+        "line": 676,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 811,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1054,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1179,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_DEPTH_OUTLINE": [
+      {
+        "line": 677,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 812,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1055,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1180,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_DISTANCE_FADE": [
+      {
+        "line": 678,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 813,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1056,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1181,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_PARALLAX_MAPPING": [
+      {
+        "line": 679,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 814,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_OVERRIDE_Z": [
+      {
+        "line": 680,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local_fragment"
+      },
+      {
+        "line": 815,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local_fragment"
+      }
+    ],
+    "_STENCIL_WITHOUT_PLAYER": [
+      {
+        "line": 682,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 817,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1059,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1184,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1306,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_FX_LIGHT_MODE_UNLIT": [
+      {
+        "line": 685,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 820,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1063,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1188,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1310,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_FX_LIGHT_MODE_BLINN_PHONG": [
+      {
+        "line": 685,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 820,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_FX_LIGHT_MODE_HALF_LAMBERT": [
+      {
+        "line": 685,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 820,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_FX_LIGHT_MODE_PBR": [
+      {
+        "line": 685,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 820,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_FX_LIGHT_MODE_SIX_WAY": [
+      {
+        "line": 685,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 820,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_NORMALMAP": [
+      {
+        "line": 686,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 821,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1064,
+        "pass": "NBCameraOpaqueDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1189,
+        "pass": "NBDeferredDistortPass",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 1311,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_MATCAP": [
+      {
+        "line": 687,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 822,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_SPECULAR_COLOR": [
+      {
+        "line": 688,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 823,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "VFX_SIX_WAY_ABSORPTION": [
+      {
+        "line": 689,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 824,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "NB_DEBUG_MASK": [
+      {
+        "line": 690,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 825,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "NB_DEBUG_PNOISE": [
+      {
+        "line": 690,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 825,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "NB_DEBUG_DISSOLVE": [
+      {
+        "line": 690,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 825,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "NB_DEBUG_DISTORT": [
+      {
+        "line": 690,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 825,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "NB_DEBUG_FRESNEL": [
+      {
+        "line": 690,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 825,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "NB_DEBUG_VERTEX_OFFSET": [
+      {
+        "line": 690,
+        "pass": "SRPDefaultUnlit",
+        "kind": "shader_feature_local"
+      },
+      {
+        "line": 825,
+        "pass": "UniversalForward",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_CASTING_PUNCTUAL_LIGHT_SHADOW": [
+      {
+        "line": 960,
+        "pass": "ShadowCaster",
+        "kind": "multi_compile_vertex"
+      }
+    ],
+    "_SCREEN_DISTORT_MODE": [
+      {
+        "line": 1245,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ],
+    "_PARCUSTOMDATA_ON": [
+      {
+        "line": 1274,
+        "pass": "Universal2D",
+        "kind": "shader_feature_local"
+      }
+    ]
+  },
+  "catalog": [
+    "NB_DEBUG_DISSOLVE",
+    "NB_DEBUG_DISTORT",
+    "NB_DEBUG_FRESNEL",
+    "NB_DEBUG_MASK",
+    "NB_DEBUG_PNOISE",
+    "NB_DEBUG_VERTEX_OFFSET",
+    "VFX_SIX_WAY_ABSORPTION",
+    "_ALPHAMODULATE_ON",
+    "_ALPHAPREMULTIPLY_ON",
+    "_ALPHATEST_ON",
+    "_CHROMATIC_ABERRATION",
+    "_COLORMAPBLEND",
+    "_COLOR_RAMP",
+    "_COLOR_RAMP_MAP",
+    "_DEPTH_DECAL",
+    "_DEPTH_OUTLINE",
+    "_DISSOLVE",
+    "_DISSOLVE_MASK",
+    "_DISSOLVE_RAMP",
+    "_DISSOLVE_RAMP_MAP",
+    "_DISTANCE_FADE",
+    "_DISTORT_REFRACTION",
+    "_EMISSION",
+    "_FLIPBOOKBLENDING_ON",
+    "_FRESNEL",
+    "_FX_LIGHT_MODE_BLINN_PHONG",
+    "_FX_LIGHT_MODE_HALF_LAMBERT",
+    "_FX_LIGHT_MODE_PBR",
+    "_FX_LIGHT_MODE_SIX_WAY",
+    "_FX_LIGHT_MODE_UNLIT",
+    "_HOUDINI_VAT_DYNAMIC_REMESH",
+    "_HOUDINI_VAT_PARTICLE_SPRITE",
+    "_HOUDINI_VAT_RIGIDBODY",
+    "_HOUDINI_VAT_SOFTBODY",
+    "_MASKMAP_ON",
+    "_MASKMAP2_ON",
+    "_MASKMAP3_ON",
+    "_MATCAP",
+    "_NOISEMAP",
+    "_NOISE_MASKMAP",
+    "_NORMALMAP",
+    "_OVERRIDE_Z",
+    "_PARALLAX_MAPPING",
+    "_PARCUSTOMDATA_ON",
+    "_PROGRAM_NOISE",
+    "_PROGRAM_NOISE_SIMPLE",
+    "_PROGRAM_NOISE_VORONOI",
+    "_SCREEN_DISTORT_MODE",
+    "_SCRIPTABLETIME",
+    "_SHARED_UV",
+    "_SOFTPARTICLES_ON",
+    "_SPECULAR_COLOR",
+    "_STENCIL_WITHOUT_PLAYER",
+    "_TYFLOW_VAT_ABSOLUTE",
+    "_TYFLOW_VAT_RELATIVE",
+    "_TYFLOW_VAT_SKIN_PR",
+    "_TYFLOW_VAT_SKIN_PRSAVE",
+    "_TYFLOW_VAT_SKIN_PRSXYZ",
+    "_TYFLOW_VAT_SKIN_R",
+    "_UNSCALETIME",
+    "_VAT",
+    "_VAT_HOUDINI",
+    "_VAT_TYFLOW",
+    "_VERTEX_OFFSET",
+    "_VERTEX_OFFSET_MASKMAP"
+  ],
+  "intent_bindings": [
+    {
+      "property": "_SoftParticlesEnabled",
+      "keyword": "_SOFTPARTICLES_ON",
+      "line": 15
+    },
+    {
+      "property": "_DistanceFade_Toggle",
+      "keyword": "_DISTANCE_FADE",
+      "line": 16
+    },
+    {
+      "property": "_StencilWithoutPlayerToggle",
+      "keyword": "_STENCIL_WITHOUT_PLAYER",
+      "line": 17
+    },
+    {
+      "property": "_Mask_Toggle",
+      "keyword": "_MASKMAP_ON",
+      "line": 18
+    },
+    {
+      "property": "_noisemapEnabled",
+      "keyword": "_NOISEMAP",
+      "line": 19
+    },
+    {
+      "property": "_EmissionEnabled",
+      "keyword": "_EMISSION",
+      "line": 20
+    },
+    {
+      "property": "_ColorBlendMap_Toggle",
+      "keyword": "_COLORMAPBLEND",
+      "line": 21
+    },
+    {
+      "property": "_RampColorToggle",
+      "keyword": "_COLOR_RAMP",
+      "line": 22
+    },
+    {
+      "property": "_Dissolve_Toggle",
+      "keyword": "_DISSOLVE",
+      "line": 23
+    },
+    {
+      "property": "_ProgramNoise_Toggle",
+      "keyword": "_PROGRAM_NOISE",
+      "line": 24
+    },
+    {
+      "property": "_SharedUVToggle",
+      "keyword": "_SHARED_UV",
+      "line": 25
+    },
+    {
+      "property": "_fresnelEnabled",
+      "keyword": "_FRESNEL",
+      "line": 26
+    },
+    {
+      "property": "_ParallaxMapping_Toggle",
+      "keyword": "_PARALLAX_MAPPING",
+      "line": 27
+    },
+    {
+      "property": "_VertexOffset_Toggle",
+      "keyword": "_VERTEX_OFFSET",
+      "line": 28
+    },
+    {
+      "property": "_FlipbookBlending",
+      "keyword": "_FLIPBOOKBLENDING_ON",
+      "line": 29
+    },
+    {
+      "property": "_BumpMapToggle",
+      "keyword": "_NORMALMAP",
+      "line": 30
+    },
+    {
+      "property": "_MatCapToggle",
+      "keyword": "_MATCAP",
+      "line": 31
+    },
+    {
+      "property": "_BlinnPhongSpecularToggle",
+      "keyword": "_SPECULAR_COLOR",
+      "line": 32
+    },
+    {
+      "property": "_SixWayColorAbsorptionToggle",
+      "keyword": "VFX_SIX_WAY_ABSORPTION",
+      "line": 33
+    },
+    {
+      "property": "_DepthDecal_Toggle",
+      "keyword": "_DEPTH_DECAL",
+      "line": 34
+    },
+    {
+      "property": "_DepthOutline_Toggle",
+      "keyword": "_DEPTH_OUTLINE",
+      "line": 35
+    },
+    {
+      "property": "_OverrideZ_Toggle",
+      "keyword": "_OVERRIDE_Z",
+      "line": 36
+    },
+    {
+      "property": "_Mask2_Toggle",
+      "keyword": "_MASKMAP2_ON",
+      "line": 37
+    },
+    {
+      "property": "_Mask3_Toggle",
+      "keyword": "_MASKMAP3_ON",
+      "line": 38
+    },
+    {
+      "property": "_noiseMaskMap_Toggle",
+      "keyword": "_NOISE_MASKMAP",
+      "line": 39
+    },
+    {
+      "property": "_Distortion_Choraticaberrat_Toggle",
+      "keyword": "_CHROMATIC_ABERRATION",
+      "line": 40
+    },
+    {
+      "property": "_DissolveMask_Toggle",
+      "keyword": "_DISSOLVE_MASK",
+      "line": 41
+    },
+    {
+      "property": "_Dissolve_useRampMap_Toggle",
+      "keyword": "_DISSOLVE_RAMP",
+      "line": 42
+    },
+    {
+      "property": "_ProgramNoise_Simple_Toggle",
+      "keyword": "_PROGRAM_NOISE_SIMPLE",
+      "line": 43
+    },
+    {
+      "property": "_ProgramNoise_Voronoi_Toggle",
+      "keyword": "_PROGRAM_NOISE_VORONOI",
+      "line": 44
+    },
+    {
+      "property": "_VertexOffset_Mask_Toggle",
+      "keyword": "_VERTEX_OFFSET_MASKMAP",
+      "line": 45
+    },
+    {
+      "property": "_NB_Debug_Dissolve",
+      "keyword": "NB_DEBUG_DISSOLVE",
+      "line": 46
+    },
+    {
+      "property": "_NB_Debug_Distort",
+      "keyword": "NB_DEBUG_DISTORT",
+      "line": 47
+    },
+    {
+      "property": "_NB_Debug_Fresnel",
+      "keyword": "NB_DEBUG_FRESNEL",
+      "line": 48
+    },
+    {
+      "property": "_NB_Debug_Mask",
+      "keyword": "NB_DEBUG_MASK",
+      "line": 49
+    },
+    {
+      "property": "_NB_Debug_PNoise",
+      "keyword": "NB_DEBUG_PNOISE",
+      "line": 50
+    },
+    {
+      "property": "_NB_Debug_VertexOffset",
+      "keyword": "NB_DEBUG_VERTEX_OFFSET",
+      "line": 51
+    }
+  ],
+  "note": "Static enabled pragma scan only; compiler/platform variant availability is not inferred."
+}

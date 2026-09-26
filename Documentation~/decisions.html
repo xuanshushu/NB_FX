@@ -53,7 +53,7 @@
       <tr><td>Q05</td><td>正式 Output 类型清单、必须覆盖的 VFX Mesh/VAT 数据组合。</td><td>T08 先最小验证，T09 前确认；不凭便利缩小范围。</td></tr>
       <tr><td>Q06</td><td>图像容差与新增路径性能预算。</td><td>基线校准后、全量验收前确认，不在失败后放宽。</td></tr>
       <tr><td>Q07</td><td>若共享重构影响原 ShaderLab 的旧版本兼容，如何处理？</td><td>主 Agent；当前没有放弃原兼容要求的批准。</td></tr>
-      <tr><td>Q08</td><td>D20 已确定由用户按管线选择安装内容；在 HDRP 实现前，仍需确定共享内容与 URP/HDRP 专属安装单元的边界、Package 依赖声明、<code>.asmref</code> 归属，以及双管线同时安装、升级和卸载流程。</td><td><a href="reports/gf-functional-progress.html">GF 功能报告</a>已证实普通 asmdef 可按 Version Defines / Define Constraints 隔离，<code>.asmref</code> 自身不能；设计后须在仅 URP、仅 HDRP 和所支持的组合中分别导入/编译验证。当前未安装 HDRP、未改 package.json，不提前宣称 HDRP-only 导入通过。</td></tr>
+      <tr><td>Q08</td><td>D20 已确定由用户按管线选择安装内容；在 HDRP 实现前，仍需确定共享内容与 URP/HDRP 专属安装单元的边界、Package 依赖声明、<code>.asmref</code> 归属，以及双管线同时安装、升级和卸载流程。</td><td><a href="reports/t01-inventory-progress.html">T01 依赖清单</a>显示不止 GF <code>.asmref</code>：XuanXuanRenderUtility Runtime 与 NBPostProcessing Runtime 还无条件引用 URP，后者并引用 Cinemachine；普通 asmdef 的 Version Defines 不会条件化这些 GUID 引用。设计后须在仅 URP、仅 HDRP 和所支持的组合中分别导入/编译验证。当前未安装 HDRP、未改 package.json，不提前宣称 HDRP-only 导入通过。</td></tr>
     </tbody>
   </table>
 

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T01 · G1 输入清单进度 · NB_FX</title></head>
+<body>
+<p><a href="index.html">返回报告索引</a> · <a href="../tasks/t01-contracts.html">T01 任务书</a> · <a href="../contracts.html">接口契约</a></p>
+<h1>T01 · G1 输入清单与未决项</h1>
+<p><small>主 Agent · 2026-09-27 · <strong>T01 进行中，G1 未放行</strong> · 未 push</small></p>
+<blockquote><p>本页是只读调查与机器清单切片，不是接口 v1 或 G1 通过报告。开工输入为主工程 <code>89db651</code>、NB_FX <code>63d4e14</code>，双仓 clean；未修改 Shader、官方包、Target、NBPostprocess、Assets 或 ProjectSettings。Shader Graph 的 GF 固定数据原型不能替代产品候选。主 Agent 独占 Unity Editor 验证；三名 SubAgent 分别只读调查 Properties/Keywords、ShaderFlag、HLSL/Pass，后续只读补查依赖与未匹配属性。</p></blockquote>
+<h2>已核对的输入</h2>
+<table border="1" cellpadding="6"><thead><tr><th>Case</th><th>实际结果与边界</th><th>可重放证据</th></tr></thead><tbody>
+<tr><td>T01-PROP-STATIC</td><td><a href="../../NBShaders2/Shader/NBShader.shader">NBShader.shader</a> 的 Properties 精确为 450 个且名称唯一，词法解析遗漏 0。<code>UnityPerMaterial</code> 有 191 个字段，其中 169 个与 Property 同名；另 22 个经人工复查分为 16 个纹理 ST、2 个外部 helper uniform、2 个动态矩阵及 2 个用途尚未证实的字段。31 个 Property 在本包扫描范围内无直接 C#/HLSL/ShaderLab body 词法引用，但已见于样例材质序列化；无直接引用不等于可删除，用户材质范围尚未审核。</td><td><a href="g1-evidence/properties-static.json">逐属性清单</a>、<a href="g1-evidence/inventory_properties.py">生成脚本</a>、<a href="g1-evidence/semantic-exceptions.json">31+22 分类</a>、<a href="g1-evidence/classify_semantic_exceptions.py">分类脚本</a></td></tr>
+<tr><td>T01-PROP-UNITY</td><td>Unity 6000.3.18f1 Editor 的 <code>Shader.GetPropertyCount/Name/Type</code> 返回 450 项；与静态清单的名称顺序及规范化类型逐项一致。Editor ready、编译未失败、当前 Console 0 Error；11 条当前 Warning 未在本切片归因。Unity MCP 在当前会话未暴露，使用 Unity CLI/Pipeline 串行只读核对。</td><td><a href="g1-evidence/unity-properties-command.json">原始命令/结果</a>、<a href="g1-evidence/property-crosscheck.json">交叉检查</a>、<a href="g1-evidence/compare_unity_properties.py">核对脚本</a>、<a href="g1-evidence/editor-status.json">Editor</a>、<a href="g1-evidence/compilation-status.json">编译</a>、<a href="g1-evidence/console-status.json">Console</a></td></tr>
+<tr><td>T01-FLAGS</td><td>当前仓的 <a href="../../NBShaders2/Runtime/NBShaderFlags.cs">C#</a> 与 <a href="../../NBShaders2/Shader/HLSL/NBShaderFlags.hlsl">HLSL</a> 各有 148 个活跃 <code>FLAG_</code>/<code>FLAGBIT_</code> 常量；148 对数值一致，Bump UV 名称 <code>BUMPMAP</code>/<code>BUMPTEX</code> 不同但同为位置 24。九个主存储槽、CustomData/UV/Wrap/Channel/PNoise/ForceNoMip 与 GUI Foldout 字段均在机器清单中。38 个样例材质含已序列化 Flag，不能重编号或凭默认值迁移。</td><td><a href="g1-evidence/flag_protocol_inventory.json">逐位清单与源 hash</a>、<a href="g1-evidence/replay_flag_protocol.py">生成脚本</a></td></tr>
+<tr><td>T01-KEYWORDS-PASSES</td><td>当前 Shader 有七个 Pass，238 行启用的相关 pragma，73 个唯一 keyword：66 个 <code>shader_feature</code>、7 个 <code>multi_compile</code>。FeatureCatalog 列出 65 个；额外的 <code>_CUSTOM_LOCAL_TRANSFORM</code> 由外部组件控制，须另审构建 stripping，不能当作可删除的孤立关键字。此为静态清单，不能推断 Player 变体实际可用。</td><td><a href="g1-evidence/keywords-static.json">逐 Pass/keyword 清单</a>、<a href="g1-evidence/inventory_keywords.py">生成脚本</a></td></tr>
+<tr><td>T01-ORDER-PASS</td><td>顶点按 CustomLocal→VAT→空间/UV→VertexOffset→重算位置/裁剪；片元按深度/UV→PNoise/POM/Normal→Noise/Refraction→主色/光照→Overlay/Ramp/Dissolve/Mask/Fresnel→深度淡出/颜色/Alpha→Pass 特有输出。<code>isProcessUVInFrag()</code> 由 Polar/Twirl、DepthDecal、POM 或 Distort 触发，不能统一移到片元。现有多个函数会临时写全局参数，提取共享函数前须固定有效参数与原顺序。</td><td><a href="../../NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl">ForwardPass</a>、<a href="../../NBShaders2/Shader/HLSL/NBShaderInput.hlsl">Input</a>、<a href="../../NBShaders2/Runtime/NBShaderPassFeatureCatalog.cs">Pass Catalog</a>、<a href="gf-t00a-functional-gate.html">GF 限定结论</a></td></tr>
+<tr><td>T01-DEPENDENCY</td><td>NB_FX <code>package.json</code> 无依赖声明；当前主工程安装 URP/VFX/Cinemachine。生产 XuanXuanRenderUtility Runtime 无条件引用 URP Runtime；NBPostProcessing Runtime 无条件引用 Core/URP/Cinemachine；GF <code>.asmref</code> 无条件指向 URP Editor。Version Defines 不会条件化这些引用。当前 GF Graph 还序列化了 URP 与 HDRP Target，不能直接作为 URP 产品 Graph。仅证实本工程依赖齐全时可编译；2021.3、URP 缺席与 HDRP-only 均未验证。</td><td><a href="g1-evidence/assembly-static.json">依赖清单</a>、<a href="g1-evidence/inventory_assemblies.py">生成脚本</a>、<a href="../decisions.html">D20 / Q08</a></td></tr>
+</tbody></table>
+<h2>G1 尚缺的关闭条件</h2>
+<ol>
+<li>为 450 个 Property 逐项确定渲染/RenderState/Editor/历史/外部用途、旧 ShaderLab 与新 Graph/VFX 去向、具体 writer/read/Pass/case；31 个无直接词法引用项保留序列化兼容状态，明确两个用途尚未证实的 CBUFFER 字段及外部数据绑定，不能自动标为死代码。</li>
+<li>固定 T02/T03/T04 可使用的实际 HLSL 签名与 FeatureState、Geometry/Frame/Surface/Pass Output 数据边界；保留坐标空间、精度、顶点/片元阶段、有效时间、贴图采样和临时全局写入的原语义。当前只有候选边界，没有通过编译与回归的接口 v1。</li>
+<li>给出 Feature→参数→Pass→case 完整矩阵，验证现有 Flag 高位/符号位、MPB 整值覆盖风险与 Graph 传输；量化 Graph/VFX 关键词、变体和参数频率，不能继承 GF 固定噪声的结论。</li>
+<li>明确当前 URP 新路径与原 ShaderLab 2021.3 的技术隔离方案。D20 的用户安装流程安排在 HDRP 实现前，不表示当前 GF <code>.asmref</code> 已在旧版或无 URP 环境安全；本机没有 2021.3 Editor，旧版烟测仍待环境。若最终方案要求修改 NBPostprocess 或削减兼容，先提交用户决策。</li>
+</ol>
+<h2>审核结论</h2>
+<p><strong>仅接受上述清单为 G1 输入证据；G1 未放行。</strong>当前可继续 T01 的语义归类、签名设计和文件所有权审核；不得派发依赖 G1 的 T02–T05 大规模重构。没有对官方包、Target、NBPostprocess 或旧材质作任何变更。证据文件的 SHA-256 见<a href="g1-evidence/sha256.txt">清单</a>。</p>
+</body></html>

@@ -1,0 +1,2892 @@
+{
+  "sourceFiles": {
+    "cs": {
+      "path": "Packages/NB_FX/NBShaders2/Runtime/NBShaderFlags.cs",
+      "sha256": "48b226ab9b6229a11782048f8d4ba765294347ada1c46cd60541fd78f61a4ec9"
+    },
+    "hlsl": {
+      "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderFlags.hlsl",
+      "sha256": "ff61aa9367577fed95fb4862b52f60520ad673243b87a99a697cac3d5b014df3"
+    },
+    "shader": {
+      "path": "Packages/NB_FX/NBShaders2/Shader/NBShader.shader",
+      "sha256": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00"
+    },
+    "input": {
+      "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "sha256": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9"
+    }
+  },
+  "parity": {
+    "csCount": 148,
+    "hlslCount": 148,
+    "pairedCount": 148,
+    "equalCount": 148,
+    "unmatchedHlsl": [],
+    "nameAliases": {
+      "FLAG_BIT_UVMODE_POS_0_BUMPMAP": "FLAG_BIT_UVMODE_POS_0_BUMPTEX"
+    }
+  },
+  "slots": [
+    {
+      "index": 0,
+      "property": "_W9ParticleShaderFlags",
+      "default": {
+        "value": 0,
+        "line": 521
+      }
+    },
+    {
+      "index": 1,
+      "property": "_W9ParticleShaderFlags1",
+      "default": {
+        "value": 1,
+        "line": 522
+      }
+    },
+    {
+      "index": 2,
+      "property": "_W9ParticleShaderWrapFlags",
+      "default": {
+        "value": 0,
+        "line": 523
+      }
+    },
+    {
+      "index": 3,
+      "property": "_NBShaderGUIFoldToggle",
+      "default": {
+        "value": 3,
+        "line": 532
+      }
+    },
+    {
+      "index": 4,
+      "property": "_NBShaderGUIFoldToggle1",
+      "default": {
+        "value": 255,
+        "line": 533
+      }
+    },
+    {
+      "index": 5,
+      "property": "_NBShaderGUIFoldToggle2",
+      "default": {
+        "value": 255,
+        "line": 534
+      }
+    },
+    {
+      "index": 6,
+      "property": "_W9ParticleShaderColorChannelFlag",
+      "default": {
+        "value": 3,
+        "line": 535
+      }
+    },
+    {
+      "index": 7,
+      "property": "_W9ParticleShaderPNoiseBlendFlag",
+      "default": {
+        "value": 0,
+        "line": 536
+      }
+    },
+    {
+      "index": 8,
+      "property": "_NBShaderForceNoMipFlags",
+      "default": {
+        "value": 0,
+        "line": 524
+      }
+    }
+  ],
+  "auxiliaryDefaults": {
+    "_W9ParticleShaderWrapFlags2": {
+      "value": 0,
+      "line": 525
+    },
+    "_W9ParticleCustomDataFlag0": {
+      "value": 0,
+      "line": 526
+    },
+    "_W9ParticleCustomDataFlag1": {
+      "value": 0,
+      "line": 527
+    },
+    "_W9ParticleCustomDataFlag2": {
+      "value": 0,
+      "line": 528
+    },
+    "_W9ParticleCustomDataFlag3": {
+      "value": 0,
+      "line": 529
+    },
+    "_UVModeFlag0": {
+      "value": 0,
+      "line": 530
+    },
+    "_UVModeFlagType0": {
+      "value": 0,
+      "line": 531
+    }
+  },
+  "fields": {
+    "customData": [
+      {
+        "csName": "FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY",
+        "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY",
+        "csValue": 28,
+        "hlslValue": 28,
+        "match": true,
+        "csLine": 330,
+        "hlslLine": 116
+      },
+      {
+        "csName": "FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY",
+        "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY",
+        "csValue": 8,
+        "hlslValue": 8,
+        "match": true,
+        "csLine": 325,
+        "hlslLine": 111
+      },
+      {
+        "csName": "FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET",
+        "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET",
+        "csValue": 24,
+        "hlslValue": 24,
+        "match": true,
+        "csLine": 329,
+        "hlslLine": 115
+      },
+      {
+        "csName": "FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT",
+        "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT",
+        "csValue": 12,
+        "hlslValue": 12,
+        "match": true,
+        "csLine": 326,
+        "hlslLine": 112
+      },
+      {
+        "csName": "FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X",
+        "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X",
+        "csValue": 0,
+        "hlslValue": 0,
+        "match": true,
+        "csLine": 323,
+        "hlslLine": 109
+      },
+      {
+        "csName": "FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y",
+        "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y",
+        "csValue": 4,
+        "hlslValue": 4,
+        "match": true,
+        "csLine": 324,
+        "hlslLine": 110
+      },
+      {
+        "csName": "FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X",
+        "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X",
+        "csValue": 16,
+        "hlslValue": 16,
+        "match": true,
+        "csLine": 327,
+        "hlslLine": 113
+      },
+      {
+        "csName": "FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y",
+        "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y",
+        "csValue": 20,
+        "hlslValue": 20,
+        "match": true,
+        "csLine": 328,
+        "hlslLine": 114
+      },
+      {
+        "csName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY",
+        "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY",
+        "csValue": 28,
+        "hlslValue": 28,
+        "match": true,
+        "csLine": 339,
+        "hlslLine": 125
+      },
+      {
+        "csName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X",
+        "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X",
+        "csValue": 0,
+        "hlslValue": 0,
+        "match": true,
+        "csLine": 332,
+        "hlslLine": 118
+      },
+      {
+        "csName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y",
+        "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y",
+        "csValue": 4,
+        "hlslValue": 4,
+        "match": true,
+        "csLine": 333,
+        "hlslLine": 119
+      },
+      {
+        "csName": "FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY",
+        "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY",
+        "csValue": 8,
+        "hlslValue": 8,
+        "match": true,
+        "csLine": 334,
+        "hlslLine": 120
+      },
+      {
+        "csName": "FLAGBIT_POS_1_CUSTOMDATA_SATURATE",
+        "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_SATURATE",
+        "csValue": 12,
+        "hlslValue": 12,
+        "match": true,
+        "csLine": 335,
+        "hlslLine": 121
+      },
+      {
+        "csName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEXOFFSET_INTENSITY",
+        "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEXOFFSET_INTENSITY",
+        "csValue": 24,
+        "hlslValue": 24,
+        "match": true,
+        "csLine": 338,
+        "hlslLine": 124
+      },
+      {
+        "csName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X",
+        "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X",
+        "csValue": 16,
+        "hlslValue": 16,
+        "match": true,
+        "csLine": 336,
+        "hlslLine": 122
+      },
+      {
+        "csName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_Y",
+        "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_Y",
+        "csValue": 20,
+        "hlslValue": 20,
+        "match": true,
+        "csLine": 337,
+        "hlslLine": 123
+      },
+      {
+        "csName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X",
+        "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X",
+        "csValue": 0,
+        "hlslValue": 0,
+        "match": true,
+        "csLine": 341,
+        "hlslLine": 127
+      },
+      {
+        "csName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y",
+        "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y",
+        "csValue": 4,
+        "hlslValue": 4,
+        "match": true,
+        "csLine": 342,
+        "hlslLine": 128
+      },
+      {
+        "csName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X",
+        "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X",
+        "csValue": 8,
+        "hlslValue": 8,
+        "match": true,
+        "csLine": 343,
+        "hlslLine": 129
+      },
+      {
+        "csName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y",
+        "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y",
+        "csValue": 12,
+        "hlslValue": 12,
+        "match": true,
+        "csLine": 344,
+        "hlslLine": 130
+      },
+      {
+        "csName": "FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST",
+        "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST",
+        "csValue": 24,
+        "hlslValue": 24,
+        "match": true,
+        "csLine": 347,
+        "hlslLine": 133
+      },
+      {
+        "csName": "FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X",
+        "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X",
+        "csValue": 16,
+        "hlslValue": 16,
+        "match": true,
+        "csLine": 345,
+        "hlslLine": 131
+      },
+      {
+        "csName": "FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y",
+        "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y",
+        "csValue": 20,
+        "hlslValue": 20,
+        "match": true,
+        "csLine": 346,
+        "hlslLine": 132
+      },
+      {
+        "csName": "FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME",
+        "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME",
+        "csValue": 28,
+        "hlslValue": 28,
+        "match": true,
+        "csLine": 348,
+        "hlslLine": 134
+      },
+      {
+        "csName": "FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X",
+        "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X",
+        "csValue": 24,
+        "hlslValue": 24,
+        "match": true,
+        "csLine": 356,
+        "hlslLine": 142
+      },
+      {
+        "csName": "FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y",
+        "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y",
+        "csValue": 28,
+        "hlslValue": 28,
+        "match": true,
+        "csLine": 357,
+        "hlslLine": 143
+      },
+      {
+        "csName": "FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X",
+        "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X",
+        "csValue": 16,
+        "hlslValue": 16,
+        "match": true,
+        "csLine": 354,
+        "hlslLine": 140
+      },
+      {
+        "csName": "FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y",
+        "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y",
+        "csValue": 20,
+        "hlslValue": 20,
+        "match": true,
+        "csLine": 355,
+        "hlslLine": 141
+      },
+      {
+        "csName": "FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X",
+        "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X",
+        "csValue": 8,
+        "hlslValue": 8,
+        "match": true,
+        "csLine": 352,
+        "hlslLine": 138
+      },
+      {
+        "csName": "FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y",
+        "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y",
+        "csValue": 12,
+        "hlslValue": 12,
+        "match": true,
+        "csLine": 353,
+        "hlslLine": 139
+      },
+      {
+        "csName": "FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X",
+        "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X",
+        "csValue": 0,
+        "hlslValue": 0,
+        "match": true,
+        "csLine": 350,
+        "hlslLine": 136
+      },
+      {
+        "csName": "FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y",
+        "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y",
+        "csValue": 4,
+        "hlslValue": 4,
+        "match": true,
+        "csLine": 351,
+        "hlslLine": 137
+      }
+    ],
+    "uv": [
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_BUMPMAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_BUMPTEX",
+        "csValue": 24,
+        "hlslValue": 24,
+        "match": true,
+        "csLine": 641,
+        "hlslLine": 162
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP",
+        "csValue": 18,
+        "hlslValue": 18,
+        "match": true,
+        "csLine": 638,
+        "hlslLine": 159
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP",
+        "csValue": 14,
+        "hlslValue": 14,
+        "match": true,
+        "csLine": 636,
+        "hlslLine": 157
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP",
+        "csValue": 16,
+        "hlslValue": 16,
+        "match": true,
+        "csLine": 637,
+        "hlslLine": 158
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_EMISSION_MAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_EMISSION_MAP",
+        "csValue": 12,
+        "hlslValue": 12,
+        "match": true,
+        "csLine": 635,
+        "hlslLine": 156
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_MAINTEX",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_MAINTEX",
+        "csValue": 0,
+        "hlslValue": 0,
+        "match": true,
+        "csLine": 629,
+        "hlslLine": 150
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_MASKMAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_MASKMAP",
+        "csValue": 2,
+        "hlslValue": 2,
+        "match": true,
+        "csLine": 630,
+        "hlslLine": 151
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_MASKMAP_2",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_MASKMAP_2",
+        "csValue": 4,
+        "hlslValue": 4,
+        "match": true,
+        "csLine": 631,
+        "hlslLine": 152
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_MASKMAP_3",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_MASKMAP_3",
+        "csValue": 6,
+        "hlslValue": 6,
+        "match": true,
+        "csLine": 632,
+        "hlslLine": 153
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_NOISE_MAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_NOISE_MAP",
+        "csValue": 8,
+        "hlslValue": 8,
+        "match": true,
+        "csLine": 633,
+        "hlslLine": 154
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP",
+        "csValue": 10,
+        "hlslValue": 10,
+        "match": true,
+        "csLine": 634,
+        "hlslLine": 155
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE",
+        "csValue": 28,
+        "hlslValue": 28,
+        "match": true,
+        "csLine": 643,
+        "hlslLine": 164
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_RAMP_COLOR_MAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_RAMP_COLOR_MAP",
+        "csValue": 26,
+        "hlslValue": 26,
+        "match": true,
+        "csLine": 642,
+        "hlslLine": 163
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_SHAREDUV",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_SHAREDUV",
+        "csValue": 30,
+        "hlslValue": 30,
+        "match": true,
+        "csLine": 644,
+        "hlslLine": 165
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MAP",
+        "csValue": 20,
+        "hlslValue": 20,
+        "match": true,
+        "csLine": 639,
+        "hlslLine": 160
+      },
+      {
+        "csName": "FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP",
+        "hlslName": "FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP",
+        "csValue": 22,
+        "hlslValue": 22,
+        "match": true,
+        "csLine": 640,
+        "hlslLine": 161
+      }
+    ],
+    "channel": [
+      {
+        "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP",
+        "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP",
+        "csValue": 10,
+        "hlslValue": 10,
+        "match": true,
+        "csLine": 724,
+        "hlslLine": 172
+      },
+      {
+        "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP",
+        "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP",
+        "csValue": 12,
+        "hlslValue": 12,
+        "match": true,
+        "csLine": 725,
+        "hlslLine": 173
+      },
+      {
+        "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA",
+        "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA",
+        "csValue": 0,
+        "hlslValue": 0,
+        "match": true,
+        "csLine": 719,
+        "hlslLine": 167
+      },
+      {
+        "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1",
+        "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1",
+        "csValue": 2,
+        "hlslValue": 2,
+        "match": true,
+        "csLine": 720,
+        "hlslLine": 168
+      },
+      {
+        "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2",
+        "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2",
+        "csValue": 4,
+        "hlslValue": 4,
+        "match": true,
+        "csLine": 721,
+        "hlslLine": 169
+      },
+      {
+        "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3",
+        "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3",
+        "csValue": 6,
+        "hlslValue": 6,
+        "match": true,
+        "csLine": 722,
+        "hlslLine": 170
+      },
+      {
+        "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK",
+        "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK",
+        "csValue": 8,
+        "hlslValue": 8,
+        "match": true,
+        "csLine": 723,
+        "hlslLine": 171
+      },
+      {
+        "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_RAMP_COLOR_MAP",
+        "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_RAMP_COLOR_MAP",
+        "csValue": 14,
+        "hlslValue": 14,
+        "match": true,
+        "csLine": 726,
+        "hlslLine": 174
+      },
+      {
+        "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MAP",
+        "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MAP",
+        "csValue": 16,
+        "hlslValue": 16,
+        "match": true,
+        "csLine": 727,
+        "hlslLine": 175
+      },
+      {
+        "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MASKMAP",
+        "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MASKMAP",
+        "csValue": 18,
+        "hlslValue": 18,
+        "match": true,
+        "csLine": 728,
+        "hlslLine": 176
+      }
+    ],
+    "pnoise": [
+      {
+        "csName": "FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND",
+        "hlslName": "FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND",
+        "csValue": 0,
+        "hlslValue": 0,
+        "match": true,
+        "csLine": 762,
+        "hlslLine": 275
+      },
+      {
+        "csName": "FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE",
+        "hlslName": "FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE",
+        "csValue": 6,
+        "hlslValue": 6,
+        "match": true,
+        "csLine": 764,
+        "hlslLine": 277
+      },
+      {
+        "csName": "FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT",
+        "hlslName": "FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT",
+        "csValue": 9,
+        "hlslValue": 9,
+        "match": true,
+        "csLine": 765,
+        "hlslLine": 278
+      },
+      {
+        "csName": "FLAG_BIT_PNOISE_BLEND_POS_0_MAINTEX",
+        "hlslName": "FLAG_BIT_PNOISE_BLEND_POS_0_MAINTEX",
+        "csValue": 12,
+        "hlslValue": 12,
+        "match": true,
+        "csLine": 766,
+        "hlslLine": 279
+      },
+      {
+        "csName": "FLAG_BIT_PNOISE_BLEND_POS_0_MASK",
+        "hlslName": "FLAG_BIT_PNOISE_BLEND_POS_0_MASK",
+        "csValue": 3,
+        "hlslValue": 3,
+        "match": true,
+        "csLine": 763,
+        "hlslLine": 276
+      }
+    ],
+    "wrap": [
+      {
+        "csName": "FLAG_BIT_WRAPMODE_BASEMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_BASEMAP",
+        "csValue": 1,
+        "hlslValue": 1,
+        "match": true,
+        "csLine": 181,
+        "hlslLine": 73
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_BUMPTEX",
+        "hlslName": "FLAG_BIT_WRAPMODE_BUMPTEX",
+        "csValue": 16384,
+        "hlslValue": 16384,
+        "match": true,
+        "csLine": 195,
+        "hlslLine": 87
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_COLORBLENDMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_COLORBLENDMAP",
+        "csValue": 256,
+        "hlslValue": 256,
+        "match": true,
+        "csLine": 189,
+        "hlslLine": 81
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_DISSOLVE_MAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_DISSOLVE_MAP",
+        "csValue": 32,
+        "hlslValue": 32,
+        "match": true,
+        "csLine": 186,
+        "hlslLine": 78
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP",
+        "csValue": 64,
+        "hlslValue": 64,
+        "match": true,
+        "csLine": 187,
+        "hlslLine": 79
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP",
+        "csValue": 128,
+        "hlslValue": 128,
+        "match": true,
+        "csLine": 188,
+        "hlslLine": 80
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_EMISSIONMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_EMISSIONMAP",
+        "csValue": 16,
+        "hlslValue": 16,
+        "match": true,
+        "csLine": 185,
+        "hlslLine": 77
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_MASKMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_MASKMAP",
+        "csValue": 2,
+        "hlslValue": 2,
+        "match": true,
+        "csLine": 182,
+        "hlslLine": 74
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_MASKMAP2",
+        "hlslName": "FLAG_BIT_WRAPMODE_MASKMAP2",
+        "csValue": 4,
+        "hlslValue": 4,
+        "match": true,
+        "csLine": 183,
+        "hlslLine": 75
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_MASKMAP3",
+        "hlslName": "FLAG_BIT_WRAPMODE_MASKMAP3",
+        "csValue": 2048,
+        "hlslValue": 2048,
+        "match": true,
+        "csLine": 192,
+        "hlslLine": 84
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_NOISEMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_NOISEMAP",
+        "csValue": 8,
+        "hlslValue": 8,
+        "match": true,
+        "csLine": 184,
+        "hlslLine": 76
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_NOISE_MASKMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_NOISE_MASKMAP",
+        "csValue": 4096,
+        "hlslValue": 4096,
+        "match": true,
+        "csLine": 193,
+        "hlslLine": 85
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP",
+        "csValue": 1024,
+        "hlslValue": 1024,
+        "match": true,
+        "csLine": 191,
+        "hlslLine": 83
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP",
+        "csValue": 32768,
+        "hlslValue": 32768,
+        "match": true,
+        "csLine": 196,
+        "hlslLine": 88
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP",
+        "csValue": 512,
+        "hlslValue": 512,
+        "match": true,
+        "csLine": 190,
+        "hlslLine": 82
+      },
+      {
+        "csName": "FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP",
+        "hlslName": "FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP",
+        "csValue": 8192,
+        "hlslValue": 8192,
+        "match": true,
+        "csLine": 194,
+        "hlslLine": 86
+      }
+    ],
+    "forceNoMip": [
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_BASEMAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_BASEMAP",
+        "csValue": 1,
+        "hlslValue": 1,
+        "match": true,
+        "csLine": 198,
+        "hlslLine": 90
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_BUMPTEX",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_BUMPTEX",
+        "csValue": 2,
+        "hlslValue": 2,
+        "match": true,
+        "csLine": 199,
+        "hlslLine": 91
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP",
+        "csValue": 4096,
+        "hlslValue": 4096,
+        "match": true,
+        "csLine": 210,
+        "hlslLine": 102
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP",
+        "csValue": 16384,
+        "hlslValue": 16384,
+        "match": true,
+        "csLine": 212,
+        "hlslLine": 104
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP",
+        "csValue": 32768,
+        "hlslValue": 32768,
+        "match": true,
+        "csLine": 213,
+        "hlslLine": 105
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP",
+        "csValue": 65536,
+        "hlslValue": 65536,
+        "match": true,
+        "csLine": 214,
+        "hlslLine": 106
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP",
+        "csValue": 2048,
+        "hlslValue": 2048,
+        "match": true,
+        "csLine": 209,
+        "hlslLine": 101
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP",
+        "csValue": 64,
+        "hlslValue": 64,
+        "match": true,
+        "csLine": 204,
+        "hlslLine": 96
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP2",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP2",
+        "csValue": 128,
+        "hlslValue": 128,
+        "match": true,
+        "csLine": 205,
+        "hlslLine": 97
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP3",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP3",
+        "csValue": 256,
+        "hlslValue": 256,
+        "match": true,
+        "csLine": 206,
+        "hlslLine": 98
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_MATCAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_MATCAP",
+        "csValue": 32,
+        "hlslValue": 32,
+        "match": true,
+        "csLine": 203,
+        "hlslLine": 95
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_NOISEMAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_NOISEMAP",
+        "csValue": 512,
+        "hlslValue": 512,
+        "match": true,
+        "csLine": 207,
+        "hlslLine": 99
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_NOISE_MASKMAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_NOISE_MASKMAP",
+        "csValue": 1024,
+        "hlslValue": 1024,
+        "match": true,
+        "csLine": 208,
+        "hlslLine": 100
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_PARALLAXMAPPINGMAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_PARALLAXMAPPINGMAP",
+        "csValue": 131072,
+        "hlslValue": 131072,
+        "match": true,
+        "csLine": 215,
+        "hlslLine": 107
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_RAMP_COLOR_MAP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_RAMP_COLOR_MAP",
+        "csValue": 8192,
+        "hlslValue": 8192,
+        "match": true,
+        "csLine": 211,
+        "hlslLine": 103
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_RIG_LBTF",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_RIG_LBTF",
+        "csValue": 8,
+        "hlslValue": 8,
+        "match": true,
+        "csLine": 201,
+        "hlslLine": 93
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_RIG_RTBK",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_RIG_RTBK",
+        "csValue": 4,
+        "hlslValue": 4,
+        "match": true,
+        "csLine": 200,
+        "hlslLine": 92
+      },
+      {
+        "csName": "FLAG_BIT_FORCE_NO_MIP_SIX_WAY_EMISSION_RAMP",
+        "hlslName": "FLAG_BIT_FORCE_NO_MIP_SIX_WAY_EMISSION_RAMP",
+        "csValue": 16,
+        "hlslValue": 16,
+        "match": true,
+        "csLine": 202,
+        "hlslLine": 94
+      }
+    ]
+  },
+  "foldoutConstants": {
+    "foldOutBitMeshOption": {
+      "name": "foldOutBitMeshOption",
+      "expression": "1 << 0",
+      "value": 1,
+      "line": 219
+    },
+    "foldOutBitMainTexOption": {
+      "name": "foldOutBitMainTexOption",
+      "expression": "1 << 1",
+      "value": 2,
+      "line": 220
+    },
+    "foldOutBitBaseOption": {
+      "name": "foldOutBitBaseOption",
+      "expression": "1 << 2",
+      "value": 4,
+      "line": 221
+    },
+    "foldOutBitFeatureOption": {
+      "name": "foldOutBitFeatureOption",
+      "expression": "1 << 3",
+      "value": 8,
+      "line": 222
+    },
+    "foldOutBitBaseMap": {
+      "name": "foldOutBitBaseMap",
+      "expression": "1 << 4",
+      "value": 16,
+      "line": 223
+    },
+    "foldOutBitMask": {
+      "name": "foldOutBitMask",
+      "expression": "1 << 5",
+      "value": 32,
+      "line": 224
+    },
+    "foldOutBitMaskMap": {
+      "name": "foldOutBitMaskMap",
+      "expression": "1 << 6",
+      "value": 64,
+      "line": 225
+    },
+    "foldOutBitMask2": {
+      "name": "foldOutBitMask2",
+      "expression": "1 << 7",
+      "value": 128,
+      "line": 226
+    },
+    "foldOutBitMask3": {
+      "name": "foldOutBitMask3",
+      "expression": "1 << 8",
+      "value": 256,
+      "line": 227
+    },
+    "foldOutBitTwril": {
+      "name": "foldOutBitTwril",
+      "expression": "1 << 9",
+      "value": 512,
+      "line": 228
+    },
+    "foldOutBitPolar": {
+      "name": "foldOutBitPolar",
+      "expression": "1 << 10",
+      "value": 1024,
+      "line": 229
+    },
+    "foldOutBitHueShift": {
+      "name": "foldOutBitHueShift",
+      "expression": "1 << 11",
+      "value": 2048,
+      "line": 230
+    },
+    "foldOutBitSaturability": {
+      "name": "foldOutBitSaturability",
+      "expression": "1 << 12",
+      "value": 4096,
+      "line": 231
+    },
+    "foldOutBitDistanceFade": {
+      "name": "foldOutBitDistanceFade",
+      "expression": "1 << 13",
+      "value": 8192,
+      "line": 232
+    },
+    "foldOutBitSoftParticles": {
+      "name": "foldOutBitSoftParticles",
+      "expression": "1 << 14",
+      "value": 16384,
+      "line": 233
+    },
+    "foldOutBitMaskRotate": {
+      "name": "foldOutBitMaskRotate",
+      "expression": "1 << 15",
+      "value": 32768,
+      "line": 234
+    },
+    "foldOutBitNoise": {
+      "name": "foldOutBitNoise",
+      "expression": "1 << 16",
+      "value": 65536,
+      "line": 235
+    },
+    "foldOutBitNoiseMap": {
+      "name": "foldOutBitNoiseMap",
+      "expression": "1 << 17",
+      "value": 131072,
+      "line": 236
+    },
+    "foldOutBitNoiseMaskToggle": {
+      "name": "foldOutBitNoiseMaskToggle",
+      "expression": "1 << 18",
+      "value": 262144,
+      "line": 237
+    },
+    "foldOutBitEmission": {
+      "name": "foldOutBitEmission",
+      "expression": "1 << 19",
+      "value": 524288,
+      "line": 238
+    },
+    "foldOutBitDistortionChoraticaberrat": {
+      "name": "foldOutBitDistortionChoraticaberrat",
+      "expression": "1 << 20",
+      "value": 1048576,
+      "line": 239
+    },
+    "foldOutDissolve": {
+      "name": "foldOutDissolve",
+      "expression": "1 << 21",
+      "value": 2097152,
+      "line": 240
+    },
+    "foldOutDissolveMap": {
+      "name": "foldOutDissolveMap",
+      "expression": "1 << 22",
+      "value": 4194304,
+      "line": 241
+    },
+    "foldOutProgramNoise": {
+      "name": "foldOutProgramNoise",
+      "expression": "1 << 23",
+      "value": 8388608,
+      "line": 242
+    },
+    "foldOutDissolveRampMap": {
+      "name": "foldOutDissolveRampMap",
+      "expression": "1 << 24",
+      "value": 16777216,
+      "line": 243
+    },
+    "foldOutDissolveMask": {
+      "name": "foldOutDissolveMask",
+      "expression": "1 << 25",
+      "value": 33554432,
+      "line": 244
+    },
+    "foldOutColorBlend": {
+      "name": "foldOutColorBlend",
+      "expression": "1 << 26",
+      "value": 67108864,
+      "line": 245
+    },
+    "foldOutFresnel": {
+      "name": "foldOutFresnel",
+      "expression": "1 << 27",
+      "value": 134217728,
+      "line": 246
+    },
+    "foldOutDepthOutline": {
+      "name": "foldOutDepthOutline",
+      "expression": "1 << 28",
+      "value": 268435456,
+      "line": 247
+    },
+    "foldOutVertexOffset": {
+      "name": "foldOutVertexOffset",
+      "expression": "1 << 29",
+      "value": 536870912,
+      "line": 248
+    },
+    "foldOutParallexMapping": {
+      "name": "foldOutParallexMapping",
+      "expression": "1 << 30",
+      "value": 1073741824,
+      "line": 249
+    },
+    "foldOutBit1UVModeMainTex": {
+      "name": "foldOutBit1UVModeMainTex",
+      "expression": "1 << 0",
+      "value": 1,
+      "line": 255
+    },
+    "foldOutBit1UVModeMaskMap": {
+      "name": "foldOutBit1UVModeMaskMap",
+      "expression": "1 << 1",
+      "value": 2,
+      "line": 256
+    },
+    "foldOutBit1UVModeMaskMap2": {
+      "name": "foldOutBit1UVModeMaskMap2",
+      "expression": "1 << 2",
+      "value": 4,
+      "line": 257
+    },
+    "foldOutBit1UVModeMaskMap3": {
+      "name": "foldOutBit1UVModeMaskMap3",
+      "expression": "1 << 3",
+      "value": 8,
+      "line": 258
+    },
+    "foldOutBit1UVModeNoiseMap": {
+      "name": "foldOutBit1UVModeNoiseMap",
+      "expression": "1 << 4",
+      "value": 16,
+      "line": 259
+    },
+    "foldOutBit1UVModeNoiseMaskMap": {
+      "name": "foldOutBit1UVModeNoiseMaskMap",
+      "expression": "1 << 5",
+      "value": 32,
+      "line": 260
+    },
+    "foldOutBit1UVModeEmissionMap": {
+      "name": "foldOutBit1UVModeEmissionMap",
+      "expression": "1 << 6",
+      "value": 64,
+      "line": 261
+    },
+    "foldOutBit1UVModeDissolveMap": {
+      "name": "foldOutBit1UVModeDissolveMap",
+      "expression": "1 << 7",
+      "value": 128,
+      "line": 262
+    },
+    "foldOutBit1UVModeDissolveMaskMap": {
+      "name": "foldOutBit1UVModeDissolveMaskMap",
+      "expression": "1 << 8",
+      "value": 256,
+      "line": 263
+    },
+    "foldOutBit1UVModeColorBlendMap": {
+      "name": "foldOutBit1UVModeColorBlendMap",
+      "expression": "1 << 9",
+      "value": 512,
+      "line": 264
+    },
+    "foldOutBit1UVModeVertexOffsetMap": {
+      "name": "foldOutBit1UVModeVertexOffsetMap",
+      "expression": "1 << 10",
+      "value": 1024,
+      "line": 265
+    },
+    "foldOutBit1UVModeVertexOffsetMaskMap": {
+      "name": "foldOutBit1UVModeVertexOffsetMaskMap",
+      "expression": "1 << 11",
+      "value": 2048,
+      "line": 266
+    },
+    "foldOutBit1UVModeBumpTex": {
+      "name": "foldOutBit1UVModeBumpTex",
+      "expression": "1 << 12",
+      "value": 4096,
+      "line": 267
+    },
+    "foldOutBit1UVModeRampColorMap": {
+      "name": "foldOutBit1UVModeRampColorMap",
+      "expression": "1 << 13",
+      "value": 8192,
+      "line": 268
+    },
+    "foldOutBit1UVModeProgramNoise": {
+      "name": "foldOutBit1UVModeProgramNoise",
+      "expression": "1 << 14",
+      "value": 16384,
+      "line": 269
+    },
+    "foldOutBit1Portal": {
+      "name": "foldOutBit1Portal",
+      "expression": "1 << 20",
+      "value": 1048576,
+      "line": 272
+    },
+    "foldOutBit1ZOffset": {
+      "name": "foldOutBit1ZOffset",
+      "expression": "1 << 21",
+      "value": 2097152,
+      "line": 273
+    },
+    "foldOutBit1CustomStencilTest": {
+      "name": "foldOutBit1CustomStencilTest",
+      "expression": "1 << 22",
+      "value": 4194304,
+      "line": 274
+    },
+    "foldOutBit1TaOption": {
+      "name": "foldOutBit1TaOption",
+      "expression": "1 << 23",
+      "value": 8388608,
+      "line": 275
+    },
+    "foldOutBit1MianTexContrast": {
+      "name": "foldOutBit1MianTexContrast",
+      "expression": "1 << 24",
+      "value": 16777216,
+      "line": 276
+    },
+    "foldOutBit1VertexOffsetMask": {
+      "name": "foldOutBit1VertexOffsetMask",
+      "expression": "1 << 25",
+      "value": 33554432,
+      "line": 277
+    },
+    "foldOutBit1MainTexColorRefine": {
+      "name": "foldOutBit1MainTexColorRefine",
+      "expression": "1 << 26",
+      "value": 67108864,
+      "line": 278
+    },
+    "foldOutBit1LightOption": {
+      "name": "foldOutBit1LightOption",
+      "expression": "1 << 27",
+      "value": 134217728,
+      "line": 279
+    },
+    "foldOutBit1ShaderKeyword": {
+      "name": "foldOutBit1ShaderKeyword",
+      "expression": "1 << 28",
+      "value": 268435456,
+      "line": 280
+    },
+    "foldOutBit1BumpTex": {
+      "name": "foldOutBit1BumpTex",
+      "expression": "1 << 29",
+      "value": 536870912,
+      "line": 281
+    },
+    "foldOutBit2BumpTexToggle": {
+      "name": "foldOutBit2BumpTexToggle",
+      "expression": "1 << 0",
+      "value": 1,
+      "line": 283
+    },
+    "foldOutBit2MatCapToggle": {
+      "name": "foldOutBit2MatCapToggle",
+      "expression": "1 << 1",
+      "value": 2,
+      "line": 284
+    },
+    "foldOutBit2RampColor": {
+      "name": "foldOutBit2RampColor",
+      "expression": "1 << 2",
+      "value": 4,
+      "line": 285
+    },
+    "foldOutBit2DissolveLine": {
+      "name": "foldOutBit2DissolveLine",
+      "expression": "1 << 3",
+      "value": 8,
+      "line": 286
+    },
+    "foldOutBit2BaseBackColor": {
+      "name": "foldOutBit2BaseBackColor",
+      "expression": "1 << 4",
+      "value": 16,
+      "line": 287
+    },
+    "foldOutBit2MaskRefine": {
+      "name": "foldOutBit2MaskRefine",
+      "expression": "1 << 5",
+      "value": 32,
+      "line": 288
+    },
+    "foldOutBit2ScreenDistortAlphaRefine": {
+      "name": "foldOutBit2ScreenDistortAlphaRefine",
+      "expression": "1 << 6",
+      "value": 64,
+      "line": 289
+    },
+    "foldOutBit2ProgramNoiseSimple": {
+      "name": "foldOutBit2ProgramNoiseSimple",
+      "expression": "1 << 7",
+      "value": 128,
+      "line": 290
+    },
+    "foldOutBit2ProgramNoiseVoronoi": {
+      "name": "foldOutBit2ProgramNoiseVoronoi",
+      "expression": "1 << 8",
+      "value": 256,
+      "line": 291
+    },
+    "foldOutBit2ColorAdjustment": {
+      "name": "foldOutBit2ColorAdjustment",
+      "expression": "1 << 9",
+      "value": 512,
+      "line": 292
+    },
+    "foldOutBit2SharedUV": {
+      "name": "foldOutBit2SharedUV",
+      "expression": "1 << 10",
+      "value": 1024,
+      "line": 293
+    },
+    "foldOutBit2SharedUVMode": {
+      "name": "foldOutBit2SharedUVMode",
+      "expression": "1 << 11",
+      "value": 2048,
+      "line": 294
+    },
+    "foldOutBit2VAT": {
+      "name": "foldOutBit2VAT",
+      "expression": "1 << 12",
+      "value": 4096,
+      "line": 295
+    }
+  },
+  "constantPairs": [
+    {
+      "csName": "FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY",
+      "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY",
+      "csValue": 28,
+      "hlslValue": 28,
+      "match": true,
+      "csLine": 330,
+      "hlslLine": 116
+    },
+    {
+      "csName": "FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY",
+      "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY",
+      "csValue": 8,
+      "hlslValue": 8,
+      "match": true,
+      "csLine": 325,
+      "hlslLine": 111
+    },
+    {
+      "csName": "FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET",
+      "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET",
+      "csValue": 24,
+      "hlslValue": 24,
+      "match": true,
+      "csLine": 329,
+      "hlslLine": 115
+    },
+    {
+      "csName": "FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT",
+      "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT",
+      "csValue": 12,
+      "hlslValue": 12,
+      "match": true,
+      "csLine": 326,
+      "hlslLine": 112
+    },
+    {
+      "csName": "FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X",
+      "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X",
+      "csValue": 0,
+      "hlslValue": 0,
+      "match": true,
+      "csLine": 323,
+      "hlslLine": 109
+    },
+    {
+      "csName": "FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y",
+      "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y",
+      "csValue": 4,
+      "hlslValue": 4,
+      "match": true,
+      "csLine": 324,
+      "hlslLine": 110
+    },
+    {
+      "csName": "FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X",
+      "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X",
+      "csValue": 16,
+      "hlslValue": 16,
+      "match": true,
+      "csLine": 327,
+      "hlslLine": 113
+    },
+    {
+      "csName": "FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y",
+      "hlslName": "FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y",
+      "csValue": 20,
+      "hlslValue": 20,
+      "match": true,
+      "csLine": 328,
+      "hlslLine": 114
+    },
+    {
+      "csName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY",
+      "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY",
+      "csValue": 28,
+      "hlslValue": 28,
+      "match": true,
+      "csLine": 339,
+      "hlslLine": 125
+    },
+    {
+      "csName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X",
+      "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X",
+      "csValue": 0,
+      "hlslValue": 0,
+      "match": true,
+      "csLine": 332,
+      "hlslLine": 118
+    },
+    {
+      "csName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y",
+      "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y",
+      "csValue": 4,
+      "hlslValue": 4,
+      "match": true,
+      "csLine": 333,
+      "hlslLine": 119
+    },
+    {
+      "csName": "FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY",
+      "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY",
+      "csValue": 8,
+      "hlslValue": 8,
+      "match": true,
+      "csLine": 334,
+      "hlslLine": 120
+    },
+    {
+      "csName": "FLAGBIT_POS_1_CUSTOMDATA_SATURATE",
+      "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_SATURATE",
+      "csValue": 12,
+      "hlslValue": 12,
+      "match": true,
+      "csLine": 335,
+      "hlslLine": 121
+    },
+    {
+      "csName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEXOFFSET_INTENSITY",
+      "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEXOFFSET_INTENSITY",
+      "csValue": 24,
+      "hlslValue": 24,
+      "match": true,
+      "csLine": 338,
+      "hlslLine": 124
+    },
+    {
+      "csName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X",
+      "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X",
+      "csValue": 16,
+      "hlslValue": 16,
+      "match": true,
+      "csLine": 336,
+      "hlslLine": 122
+    },
+    {
+      "csName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_Y",
+      "hlslName": "FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_Y",
+      "csValue": 20,
+      "hlslValue": 20,
+      "match": true,
+      "csLine": 337,
+      "hlslLine": 123
+    },
+    {
+      "csName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X",
+      "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X",
+      "csValue": 0,
+      "hlslValue": 0,
+      "match": true,
+      "csLine": 341,
+      "hlslLine": 127
+    },
+    {
+      "csName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y",
+      "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y",
+      "csValue": 4,
+      "hlslValue": 4,
+      "match": true,
+      "csLine": 342,
+      "hlslLine": 128
+    },
+    {
+      "csName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X",
+      "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X",
+      "csValue": 8,
+      "hlslValue": 8,
+      "match": true,
+      "csLine": 343,
+      "hlslLine": 129
+    },
+    {
+      "csName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y",
+      "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y",
+      "csValue": 12,
+      "hlslValue": 12,
+      "match": true,
+      "csLine": 344,
+      "hlslLine": 130
+    },
+    {
+      "csName": "FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST",
+      "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST",
+      "csValue": 24,
+      "hlslValue": 24,
+      "match": true,
+      "csLine": 347,
+      "hlslLine": 133
+    },
+    {
+      "csName": "FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X",
+      "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X",
+      "csValue": 16,
+      "hlslValue": 16,
+      "match": true,
+      "csLine": 345,
+      "hlslLine": 131
+    },
+    {
+      "csName": "FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y",
+      "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y",
+      "csValue": 20,
+      "hlslValue": 20,
+      "match": true,
+      "csLine": 346,
+      "hlslLine": 132
+    },
+    {
+      "csName": "FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME",
+      "hlslName": "FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME",
+      "csValue": 28,
+      "hlslValue": 28,
+      "match": true,
+      "csLine": 348,
+      "hlslLine": 134
+    },
+    {
+      "csName": "FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X",
+      "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X",
+      "csValue": 24,
+      "hlslValue": 24,
+      "match": true,
+      "csLine": 356,
+      "hlslLine": 142
+    },
+    {
+      "csName": "FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y",
+      "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y",
+      "csValue": 28,
+      "hlslValue": 28,
+      "match": true,
+      "csLine": 357,
+      "hlslLine": 143
+    },
+    {
+      "csName": "FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X",
+      "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X",
+      "csValue": 16,
+      "hlslValue": 16,
+      "match": true,
+      "csLine": 354,
+      "hlslLine": 140
+    },
+    {
+      "csName": "FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y",
+      "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y",
+      "csValue": 20,
+      "hlslValue": 20,
+      "match": true,
+      "csLine": 355,
+      "hlslLine": 141
+    },
+    {
+      "csName": "FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X",
+      "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X",
+      "csValue": 8,
+      "hlslValue": 8,
+      "match": true,
+      "csLine": 352,
+      "hlslLine": 138
+    },
+    {
+      "csName": "FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y",
+      "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y",
+      "csValue": 12,
+      "hlslValue": 12,
+      "match": true,
+      "csLine": 353,
+      "hlslLine": 139
+    },
+    {
+      "csName": "FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X",
+      "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X",
+      "csValue": 0,
+      "hlslValue": 0,
+      "match": true,
+      "csLine": 350,
+      "hlslLine": 136
+    },
+    {
+      "csName": "FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y",
+      "hlslName": "FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y",
+      "csValue": 4,
+      "hlslValue": 4,
+      "match": true,
+      "csLine": 351,
+      "hlslLine": 137
+    },
+    {
+      "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP",
+      "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP",
+      "csValue": 10,
+      "hlslValue": 10,
+      "match": true,
+      "csLine": 724,
+      "hlslLine": 172
+    },
+    {
+      "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP",
+      "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP",
+      "csValue": 12,
+      "hlslValue": 12,
+      "match": true,
+      "csLine": 725,
+      "hlslLine": 173
+    },
+    {
+      "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA",
+      "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA",
+      "csValue": 0,
+      "hlslValue": 0,
+      "match": true,
+      "csLine": 719,
+      "hlslLine": 167
+    },
+    {
+      "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1",
+      "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1",
+      "csValue": 2,
+      "hlslValue": 2,
+      "match": true,
+      "csLine": 720,
+      "hlslLine": 168
+    },
+    {
+      "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2",
+      "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2",
+      "csValue": 4,
+      "hlslValue": 4,
+      "match": true,
+      "csLine": 721,
+      "hlslLine": 169
+    },
+    {
+      "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3",
+      "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3",
+      "csValue": 6,
+      "hlslValue": 6,
+      "match": true,
+      "csLine": 722,
+      "hlslLine": 170
+    },
+    {
+      "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK",
+      "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK",
+      "csValue": 8,
+      "hlslValue": 8,
+      "match": true,
+      "csLine": 723,
+      "hlslLine": 171
+    },
+    {
+      "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_RAMP_COLOR_MAP",
+      "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_RAMP_COLOR_MAP",
+      "csValue": 14,
+      "hlslValue": 14,
+      "match": true,
+      "csLine": 726,
+      "hlslLine": 174
+    },
+    {
+      "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MAP",
+      "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MAP",
+      "csValue": 16,
+      "hlslValue": 16,
+      "match": true,
+      "csLine": 727,
+      "hlslLine": 175
+    },
+    {
+      "csName": "FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MASKMAP",
+      "hlslName": "FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MASKMAP",
+      "csValue": 18,
+      "hlslValue": 18,
+      "match": true,
+      "csLine": 728,
+      "hlslLine": 176
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_BASEMAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_BASEMAP",
+      "csValue": 1,
+      "hlslValue": 1,
+      "match": true,
+      "csLine": 198,
+      "hlslLine": 90
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_BUMPTEX",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_BUMPTEX",
+      "csValue": 2,
+      "hlslValue": 2,
+      "match": true,
+      "csLine": 199,
+      "hlslLine": 91
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP",
+      "csValue": 4096,
+      "hlslValue": 4096,
+      "match": true,
+      "csLine": 210,
+      "hlslLine": 102
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP",
+      "csValue": 16384,
+      "hlslValue": 16384,
+      "match": true,
+      "csLine": 212,
+      "hlslLine": 104
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP",
+      "csValue": 32768,
+      "hlslValue": 32768,
+      "match": true,
+      "csLine": 213,
+      "hlslLine": 105
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP",
+      "csValue": 65536,
+      "hlslValue": 65536,
+      "match": true,
+      "csLine": 214,
+      "hlslLine": 106
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP",
+      "csValue": 2048,
+      "hlslValue": 2048,
+      "match": true,
+      "csLine": 209,
+      "hlslLine": 101
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP",
+      "csValue": 64,
+      "hlslValue": 64,
+      "match": true,
+      "csLine": 204,
+      "hlslLine": 96
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP2",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP2",
+      "csValue": 128,
+      "hlslValue": 128,
+      "match": true,
+      "csLine": 205,
+      "hlslLine": 97
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP3",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_MASKMAP3",
+      "csValue": 256,
+      "hlslValue": 256,
+      "match": true,
+      "csLine": 206,
+      "hlslLine": 98
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_MATCAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_MATCAP",
+      "csValue": 32,
+      "hlslValue": 32,
+      "match": true,
+      "csLine": 203,
+      "hlslLine": 95
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_NOISEMAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_NOISEMAP",
+      "csValue": 512,
+      "hlslValue": 512,
+      "match": true,
+      "csLine": 207,
+      "hlslLine": 99
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_NOISE_MASKMAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_NOISE_MASKMAP",
+      "csValue": 1024,
+      "hlslValue": 1024,
+      "match": true,
+      "csLine": 208,
+      "hlslLine": 100
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_PARALLAXMAPPINGMAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_PARALLAXMAPPINGMAP",
+      "csValue": 131072,
+      "hlslValue": 131072,
+      "match": true,
+      "csLine": 215,
+      "hlslLine": 107
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_RAMP_COLOR_MAP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_RAMP_COLOR_MAP",
+      "csValue": 8192,
+      "hlslValue": 8192,
+      "match": true,
+      "csLine": 211,
+      "hlslLine": 103
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_RIG_LBTF",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_RIG_LBTF",
+      "csValue": 8,
+      "hlslValue": 8,
+      "match": true,
+      "csLine": 201,
+      "hlslLine": 93
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_RIG_RTBK",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_RIG_RTBK",
+      "csValue": 4,
+      "hlslValue": 4,
+      "match": true,
+      "csLine": 200,
+      "hlslLine": 92
+    },
+    {
+      "csName": "FLAG_BIT_FORCE_NO_MIP_SIX_WAY_EMISSION_RAMP",
+      "hlslName": "FLAG_BIT_FORCE_NO_MIP_SIX_WAY_EMISSION_RAMP",
+      "csValue": 16,
+      "hlslValue": 16,
+      "match": true,
+      "csLine": 202,
+      "hlslLine": 94
+    },
+    {
+      "csName": "FLAG_BIT_HUESHIFT_ON",
+      "hlslName": "FLAG_BIT_HUESHIFT_ON",
+      "csValue": 524288,
+      "hlslValue": 524288,
+      "match": true,
+      "csLine": 133,
+      "hlslLine": 23
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER",
+      "hlslName": "FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER",
+      "csValue": 32768,
+      "hlslValue": 32768,
+      "match": true,
+      "csLine": 162,
+      "hlslLine": 53
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_BUMP_TEX_UV_FOLLOW_MAINTEX",
+      "hlslName": "FLAG_BIT_PARTICLE_1_BUMP_TEX_UV_FOLLOW_MAINTEX",
+      "csValue": 268435456,
+      "hlslValue": 268435456,
+      "match": true,
+      "csLine": 175,
+      "hlslLine": 66
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY",
+      "hlslName": "FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY",
+      "csValue": 2147483648,
+      "hlslValue": 2147483648,
+      "match": true,
+      "csLine": 178,
+      "hlslLine": 69
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_2_ADD",
+      "hlslName": "FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_2_ADD",
+      "csValue": 65536,
+      "hlslValue": 65536,
+      "match": true,
+      "csLine": 163,
+      "hlslLine": 54
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE",
+      "hlslName": "FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE",
+      "csValue": 1048576,
+      "hlslValue": 1048576,
+      "match": true,
+      "csLine": 167,
+      "hlslLine": 58
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK",
+      "hlslName": "FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK",
+      "csValue": 32,
+      "hlslValue": 32,
+      "match": true,
+      "csLine": 152,
+      "hlslLine": 43
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY",
+      "hlslName": "FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY",
+      "csValue": 64,
+      "hlslValue": 64,
+      "match": true,
+      "csLine": 153,
+      "hlslLine": 44
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR",
+      "hlslName": "FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR",
+      "csValue": 512,
+      "hlslValue": 512,
+      "match": true,
+      "csLine": 156,
+      "hlslLine": 47
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM",
+      "hlslName": "FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM",
+      "csValue": 8388608,
+      "hlslValue": 8388608,
+      "match": true,
+      "csLine": 170,
+      "hlslLine": 61
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE",
+      "hlslName": "FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE",
+      "csValue": 134217728,
+      "hlslValue": 134217728,
+      "match": true,
+      "csLine": 174,
+      "hlslLine": 65
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST",
+      "hlslName": "FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST",
+      "csValue": 16777216,
+      "hlslValue": 16777216,
+      "match": true,
+      "csLine": 171,
+      "hlslLine": 62
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT",
+      "hlslName": "FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT",
+      "csValue": 8,
+      "hlslValue": 8,
+      "match": true,
+      "csLine": 150,
+      "hlslLine": 41
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT",
+      "hlslName": "FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT",
+      "csValue": 16,
+      "hlslValue": 16,
+      "match": true,
+      "csLine": 151,
+      "hlslLine": 42
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT",
+      "hlslName": "FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT",
+      "csValue": 4,
+      "hlslValue": 4,
+      "match": true,
+      "csLine": 149,
+      "hlslLine": 40
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_MASK_REFINE",
+      "hlslName": "FLAG_BIT_PARTICLE_1_MASK_REFINE",
+      "csValue": 128,
+      "hlslValue": 128,
+      "match": true,
+      "csLine": 154,
+      "hlslLine": 45
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_MATCAP_MULTY_MODE",
+      "hlslName": "FLAG_BIT_PARTICLE_1_MATCAP_MULTY_MODE",
+      "csValue": 1073741824,
+      "hlslValue": 1073741824,
+      "match": true,
+      "csLine": 177,
+      "hlslLine": 68
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE",
+      "hlslName": "FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE",
+      "csValue": 256,
+      "hlslValue": 256,
+      "match": true,
+      "csLine": 155,
+      "hlslLine": 46
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP",
+      "hlslName": "FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP",
+      "csValue": 536870912,
+      "hlslValue": 536870912,
+      "match": true,
+      "csLine": 176,
+      "hlslLine": 67
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_TRANSPARENT_MODE",
+      "hlslName": "FLAG_BIT_PARTICLE_1_TRANSPARENT_MODE",
+      "csValue": 1,
+      "hlslValue": 1,
+      "match": true,
+      "csLine": 147,
+      "hlslLine": 38
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_TRANSPARENT_SHADOW_DITHER",
+      "hlslName": "FLAG_BIT_PARTICLE_1_TRANSPARENT_SHADOW_DITHER",
+      "csValue": 2,
+      "hlslValue": 2,
+      "match": true,
+      "csLine": 148,
+      "hlslLine": 39
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE",
+      "hlslName": "FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE",
+      "csValue": 4194304,
+      "hlslValue": 4194304,
+      "match": true,
+      "csLine": 169,
+      "hlslLine": 60
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE",
+      "hlslName": "FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE",
+      "csValue": 131072,
+      "hlslValue": 131072,
+      "match": true,
+      "csLine": 164,
+      "hlslLine": 55
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_USE_TEXCOORD1",
+      "hlslName": "FLAG_BIT_PARTICLE_1_USE_TEXCOORD1",
+      "csValue": 262144,
+      "hlslValue": 262144,
+      "match": true,
+      "csLine": 165,
+      "hlslLine": 56
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_USE_TEXCOORD2",
+      "hlslName": "FLAG_BIT_PARTICLE_1_USE_TEXCOORD2",
+      "csValue": 524288,
+      "hlslValue": 524288,
+      "match": true,
+      "csLine": 166,
+      "hlslLine": 57
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_UV_FROM_MESH",
+      "hlslName": "FLAG_BIT_PARTICLE_1_UV_FROM_MESH",
+      "csValue": 2097152,
+      "hlslValue": 2097152,
+      "match": true,
+      "csLine": 168,
+      "hlslLine": 59
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_1_VERTEXOFFSET_START_FROM_ZERO",
+      "hlslName": "FLAG_BIT_PARTICLE_1_VERTEXOFFSET_START_FROM_ZERO",
+      "csValue": 33554432,
+      "hlslValue": 33554432,
+      "match": true,
+      "csLine": 172,
+      "hlslLine": 63
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_BACKCOLOR",
+      "hlslName": "FLAG_BIT_PARTICLE_BACKCOLOR",
+      "csValue": 268435456,
+      "hlslValue": 268435456,
+      "match": true,
+      "csLine": 142,
+      "hlslLine": 32
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX",
+      "hlslName": "FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX",
+      "csValue": 4194304,
+      "hlslValue": 4194304,
+      "match": true,
+      "csLine": 136,
+      "hlslLine": 26
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE",
+      "hlslName": "FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE",
+      "csValue": 33554432,
+      "hlslValue": 33554432,
+      "match": true,
+      "csLine": 139,
+      "hlslLine": 29
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA",
+      "hlslName": "FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA",
+      "csValue": 536870912,
+      "hlslValue": 536870912,
+      "match": true,
+      "csLine": 143,
+      "hlslLine": 33
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY",
+      "hlslName": "FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY",
+      "csValue": 32,
+      "hlslValue": 32,
+      "match": true,
+      "csLine": 119,
+      "hlslLine": 9
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_CUSTOMDATA1_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_CUSTOMDATA1_ON",
+      "csValue": 131072,
+      "hlslValue": 131072,
+      "match": true,
+      "csLine": 131,
+      "hlslLine": 21
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_CUSTOMDATA2_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_CUSTOMDATA2_ON",
+      "csValue": 1048576,
+      "hlslValue": 1048576,
+      "match": true,
+      "csLine": 134,
+      "hlslLine": 24
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA",
+      "hlslName": "FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA",
+      "csValue": 8192,
+      "hlslValue": 8192,
+      "match": true,
+      "csLine": 127,
+      "hlslLine": 17
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_FRESNEL_COLOR_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_FRESNEL_COLOR_ON",
+      "csValue": 8,
+      "hlslValue": 8,
+      "match": true,
+      "csLine": 117,
+      "hlslLine": 7
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_FRESNEL_FADE_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_FRESNEL_FADE_ON",
+      "csValue": 4,
+      "hlslValue": 4,
+      "match": true,
+      "csLine": 116,
+      "hlslLine": 6
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON",
+      "csValue": 262144,
+      "hlslValue": 262144,
+      "match": true,
+      "csLine": 132,
+      "hlslLine": 22
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_LINEARTOGAMMA_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_LINEARTOGAMMA_ON",
+      "csValue": 1024,
+      "hlslValue": 1024,
+      "match": true,
+      "csLine": 124,
+      "hlslLine": 14
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON",
+      "csValue": 4096,
+      "hlslValue": 4096,
+      "match": true,
+      "csLine": 126,
+      "hlslLine": 16
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE",
+      "hlslName": "FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE",
+      "csValue": 2,
+      "hlslValue": 2,
+      "match": true,
+      "csLine": 115,
+      "hlslLine": 5
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE",
+      "hlslName": "FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE",
+      "csValue": 2097152,
+      "hlslValue": 2097152,
+      "match": true,
+      "csLine": 135,
+      "hlslLine": 25
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_POLARCOORDINATES_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_POLARCOORDINATES_ON",
+      "csValue": 256,
+      "hlslValue": 256,
+      "match": true,
+      "csLine": 122,
+      "hlslLine": 12
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD",
+      "hlslName": "FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD",
+      "csValue": 16777216,
+      "hlslValue": 16777216,
+      "match": true,
+      "csLine": 138,
+      "hlslLine": 28
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_SCRIPTABLETIME_ON",
+      "csValue": 65536,
+      "hlslValue": 65536,
+      "match": true,
+      "csLine": 130,
+      "hlslLine": 20
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_UIEFFECT_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_UIEFFECT_ON",
+      "csValue": 16384,
+      "hlslValue": 16384,
+      "match": true,
+      "csLine": 128,
+      "hlslLine": 18
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_UNSCALETIME_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_UNSCALETIME_ON",
+      "csValue": 32768,
+      "hlslValue": 32768,
+      "match": true,
+      "csLine": 129,
+      "hlslLine": 19
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_USETEXCOORD2",
+      "hlslName": "FLAG_BIT_PARTICLE_USETEXCOORD2",
+      "csValue": 16,
+      "hlslValue": 16,
+      "match": true,
+      "csLine": 118,
+      "hlslLine": 8
+    },
+    {
+      "csName": "FLAG_BIT_PARTICLE_UTWIRL_ON",
+      "hlslName": "FLAG_BIT_PARTICLE_UTWIRL_ON",
+      "csValue": 512,
+      "hlslValue": 512,
+      "match": true,
+      "csLine": 123,
+      "hlslLine": 13
+    },
+    {
+      "csName": "FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON",
+      "hlslName": "FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON",
+      "csValue": 128,
+      "hlslValue": 128,
+      "match": true,
+      "csLine": 121,
+      "hlslLine": 11
+    },
+    {
+      "csName": "FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND",
+      "hlslName": "FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND",
+      "csValue": 0,
+      "hlslValue": 0,
+      "match": true,
+      "csLine": 762,
+      "hlslLine": 275
+    },
+    {
+      "csName": "FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE",
+      "hlslName": "FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE",
+      "csValue": 6,
+      "hlslValue": 6,
+      "match": true,
+      "csLine": 764,
+      "hlslLine": 277
+    },
+    {
+      "csName": "FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT",
+      "hlslName": "FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT",
+      "csValue": 9,
+      "hlslValue": 9,
+      "match": true,
+      "csLine": 765,
+      "hlslLine": 278
+    },
+    {
+      "csName": "FLAG_BIT_PNOISE_BLEND_POS_0_MAINTEX",
+      "hlslName": "FLAG_BIT_PNOISE_BLEND_POS_0_MAINTEX",
+      "csValue": 12,
+      "hlslValue": 12,
+      "match": true,
+      "csLine": 766,
+      "hlslLine": 279
+    },
+    {
+      "csName": "FLAG_BIT_PNOISE_BLEND_POS_0_MASK",
+      "hlslName": "FLAG_BIT_PNOISE_BLEND_POS_0_MASK",
+      "csValue": 3,
+      "hlslValue": 3,
+      "match": true,
+      "csLine": 763,
+      "hlslLine": 276
+    },
+    {
+      "csName": "FLAG_BIT_SATURABILITY_ON",
+      "hlslName": "FLAG_BIT_SATURABILITY_ON",
+      "csValue": 1,
+      "hlslValue": 1,
+      "match": true,
+      "csLine": 114,
+      "hlslLine": 4
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_BUMPMAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_BUMPTEX",
+      "csValue": 24,
+      "hlslValue": 24,
+      "match": true,
+      "csLine": 641,
+      "hlslLine": 162
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP",
+      "csValue": 18,
+      "hlslValue": 18,
+      "match": true,
+      "csLine": 638,
+      "hlslLine": 159
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP",
+      "csValue": 14,
+      "hlslValue": 14,
+      "match": true,
+      "csLine": 636,
+      "hlslLine": 157
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP",
+      "csValue": 16,
+      "hlslValue": 16,
+      "match": true,
+      "csLine": 637,
+      "hlslLine": 158
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_EMISSION_MAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_EMISSION_MAP",
+      "csValue": 12,
+      "hlslValue": 12,
+      "match": true,
+      "csLine": 635,
+      "hlslLine": 156
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_MAINTEX",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_MAINTEX",
+      "csValue": 0,
+      "hlslValue": 0,
+      "match": true,
+      "csLine": 629,
+      "hlslLine": 150
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_MASKMAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_MASKMAP",
+      "csValue": 2,
+      "hlslValue": 2,
+      "match": true,
+      "csLine": 630,
+      "hlslLine": 151
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_MASKMAP_2",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_MASKMAP_2",
+      "csValue": 4,
+      "hlslValue": 4,
+      "match": true,
+      "csLine": 631,
+      "hlslLine": 152
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_MASKMAP_3",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_MASKMAP_3",
+      "csValue": 6,
+      "hlslValue": 6,
+      "match": true,
+      "csLine": 632,
+      "hlslLine": 153
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_NOISE_MAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_NOISE_MAP",
+      "csValue": 8,
+      "hlslValue": 8,
+      "match": true,
+      "csLine": 633,
+      "hlslLine": 154
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP",
+      "csValue": 10,
+      "hlslValue": 10,
+      "match": true,
+      "csLine": 634,
+      "hlslLine": 155
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE",
+      "csValue": 28,
+      "hlslValue": 28,
+      "match": true,
+      "csLine": 643,
+      "hlslLine": 164
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_RAMP_COLOR_MAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_RAMP_COLOR_MAP",
+      "csValue": 26,
+      "hlslValue": 26,
+      "match": true,
+      "csLine": 642,
+      "hlslLine": 163
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_SHAREDUV",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_SHAREDUV",
+      "csValue": 30,
+      "hlslValue": 30,
+      "match": true,
+      "csLine": 644,
+      "hlslLine": 165
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MAP",
+      "csValue": 20,
+      "hlslValue": 20,
+      "match": true,
+      "csLine": 639,
+      "hlslLine": 160
+    },
+    {
+      "csName": "FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP",
+      "hlslName": "FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP",
+      "csValue": 22,
+      "hlslValue": 22,
+      "match": true,
+      "csLine": 640,
+      "hlslLine": 161
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_BASEMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_BASEMAP",
+      "csValue": 1,
+      "hlslValue": 1,
+      "match": true,
+      "csLine": 181,
+      "hlslLine": 73
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_BUMPTEX",
+      "hlslName": "FLAG_BIT_WRAPMODE_BUMPTEX",
+      "csValue": 16384,
+      "hlslValue": 16384,
+      "match": true,
+      "csLine": 195,
+      "hlslLine": 87
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_COLORBLENDMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_COLORBLENDMAP",
+      "csValue": 256,
+      "hlslValue": 256,
+      "match": true,
+      "csLine": 189,
+      "hlslLine": 81
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_DISSOLVE_MAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_DISSOLVE_MAP",
+      "csValue": 32,
+      "hlslValue": 32,
+      "match": true,
+      "csLine": 186,
+      "hlslLine": 78
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP",
+      "csValue": 64,
+      "hlslValue": 64,
+      "match": true,
+      "csLine": 187,
+      "hlslLine": 79
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP",
+      "csValue": 128,
+      "hlslValue": 128,
+      "match": true,
+      "csLine": 188,
+      "hlslLine": 80
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_EMISSIONMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_EMISSIONMAP",
+      "csValue": 16,
+      "hlslValue": 16,
+      "match": true,
+      "csLine": 185,
+      "hlslLine": 77
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_MASKMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_MASKMAP",
+      "csValue": 2,
+      "hlslValue": 2,
+      "match": true,
+      "csLine": 182,
+      "hlslLine": 74
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_MASKMAP2",
+      "hlslName": "FLAG_BIT_WRAPMODE_MASKMAP2",
+      "csValue": 4,
+      "hlslValue": 4,
+      "match": true,
+      "csLine": 183,
+      "hlslLine": 75
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_MASKMAP3",
+      "hlslName": "FLAG_BIT_WRAPMODE_MASKMAP3",
+      "csValue": 2048,
+      "hlslValue": 2048,
+      "match": true,
+      "csLine": 192,
+      "hlslLine": 84
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_NOISEMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_NOISEMAP",
+      "csValue": 8,
+      "hlslValue": 8,
+      "match": true,
+      "csLine": 184,
+      "hlslLine": 76
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_NOISE_MASKMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_NOISE_MASKMAP",
+      "csValue": 4096,
+      "hlslValue": 4096,
+      "match": true,
+      "csLine": 193,
+      "hlslLine": 85
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP",
+      "csValue": 1024,
+      "hlslValue": 1024,
+      "match": true,
+      "csLine": 191,
+      "hlslLine": 83
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP",
+      "csValue": 32768,
+      "hlslValue": 32768,
+      "match": true,
+      "csLine": 196,
+      "hlslLine": 88
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP",
+      "csValue": 512,
+      "hlslValue": 512,
+      "match": true,
+      "csLine": 190,
+      "hlslLine": 82
+    },
+    {
+      "csName": "FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP",
+      "hlslName": "FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP",
+      "csValue": 8192,
+      "hlslValue": 8192,
+      "match": true,
+      "csLine": 194,
+      "hlslLine": 86
+    }
+  ],
+  "sampleMaterials": {
+    "scannedRoot": "Assets/NBShaderSamples",
+    "materialCountWithFlags": 38,
+    "propertyCounts": {
+      "_NBShaderForceNoMipFlags": {
+        "present": 8,
+        "nonzero": 0,
+        "distinct": [
+          0
+        ]
+      },
+      "_UVModeFlag0": {
+        "present": 38,
+        "nonzero": 4,
+        "distinct": [
+          0,
+          8,
+          168
+        ]
+      },
+      "_UVModeFlagType0": {
+        "present": 38,
+        "nonzero": 2,
+        "distinct": [
+          0,
+          16777216
+        ]
+      },
+      "_W9ParticleCustomDataFlag0": {
+        "present": 38,
+        "nonzero": 0,
+        "distinct": [
+          0
+        ]
+      },
+      "_W9ParticleCustomDataFlag1": {
+        "present": 38,
+        "nonzero": 0,
+        "distinct": [
+          0
+        ]
+      },
+      "_W9ParticleCustomDataFlag2": {
+        "present": 38,
+        "nonzero": 0,
+        "distinct": [
+          0
+        ]
+      },
+      "_W9ParticleCustomDataFlag3": {
+        "present": 38,
+        "nonzero": 0,
+        "distinct": [
+          0
+        ]
+      },
+      "_W9ParticleShaderColorChannelFlag": {
+        "present": 38,
+        "nonzero": 38,
+        "distinct": [
+          3,
+          1027,
+          16387,
+          17411
+        ]
+      },
+      "_W9ParticleShaderFlags": {
+        "present": 38,
+        "nonzero": 38,
+        "distinct": [
+          8194,
+          8202,
+          8458,
+          10250,
+          10506,
+          12554,
+          270606,
+          2105610,
+          8397570,
+          25174786,
+          134225922,
+          268443650
+        ]
+      },
+      "_W9ParticleShaderFlags1": {
+        "present": 38,
+        "nonzero": 38,
+        "distinct": [
+          2097152,
+          2097153,
+          2359296,
+          8388608,
+          8388609,
+          8390657,
+          8402972,
+          8650752,
+          276824064,
+          276824069,
+          277086208,
+          545259521
+        ]
+      },
+      "_W9ParticleShaderPNoiseBlendFlag": {
+        "present": 38,
+        "nonzero": 0,
+        "distinct": [
+          0
+        ]
+      },
+      "_W9ParticleShaderWrapFlags": {
+        "present": 38,
+        "nonzero": 6,
+        "distinct": [
+          0,
+          2,
+          128,
+          134
+        ]
+      }
+    }
+  }
+}

@@ -8,11 +8,11 @@
 <body>
 <p><a href="index.html">返回文档目录</a></p>
 <h1>接口、参数与 GUI 契约</h1>
-<p>本页定义需在 G1 冻结的契约内容；示意结构名不是已实现 API。</p>
-<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<p>本页定义需在 G1 冻结的契约内容；示意结构名不是已实现 API。<a href="reports/t01-inventory-progress.html">T01 输入清单</a>已开始实测，尚未将候选接口签名当作 G1 放行结果。</p>
+<p><small>更新：2026-09-27 · T01 清单进行中，G1 未放行 · 不修改官方包</small></p>
 <hr>
 <h2 id="inventory">参数清单与来源</h2>
-<p>以实际 Shader Properties、CBUFFER、C# 写入者、HLSL 读取者和生成 Shader 为准。初步静态统计约 450 项 Properties、65 个目录管理关键字、7 个 Pass；数量只是调查起点，不代表覆盖通过。</p>
+<p>以实际 Shader Properties、CBUFFER、C# 写入者、HLSL 读取者和生成 Shader 为准。当前<a href="reports/t01-inventory-progress.html">T01 只读清单</a>和 Unity Editor API 核对：450 个 Properties、191 个 <code>UnityPerMaterial</code> 字段、7 个 Pass、73 个唯一 keyword（FeatureCatalog 管理 65 个）。这些是范围清点，不代表逐属性语义、Graph/VFX 去向或变体覆盖通过。</p>
 <table border="1" cellpadding="6">
     <thead>
       <tr><th scope="col">字段</th><th scope="col">必须记录</th></tr>
@@ -89,6 +89,6 @@
   <li>官方 VFX 17.3 不支持暴露的 Shader Graph Gradient Blackboard 属性；现有 NB 打包渐变应先核对 Vector 传输与解码，不直接认定功能缺失或改成第二套渐变算法。</li>
 </ul>
 <hr>
-<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>NB_FX 计划文档 v0.4；T01 清单已实测，G1 尚未放行。用户确认的约束与待验证方案分开记录。</small></p>
 </body>
 </html>
