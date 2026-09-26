@@ -9,7 +9,7 @@
 <p><a href="index.html">返回文档目录</a></p>
 <h1>决策记录与待讨论事项</h1>
 <p>用户确认约束作为当前依据；技术可行性、实现选择与运行证据另行记录。</p>
-<p><small>更新：2026-09-26 · D18–D20 已记录；GF 已限定范围放行，产品方案仍待 G1/G3 · 不修改官方包</small></p>
+<p><small>更新：2026-09-27 · D21 调整版本兼容的验收时序；GF 已限定范围放行，产品方案仍待 G1/G3 · 不修改官方包</small></p>
 <hr>
 <h2 id="confirmed">已确认决策</h2>
 <table border="1" cellpadding="6">
@@ -37,6 +37,7 @@
       <tr><td>D18</td><td>用户于 2026-09-25 接受包内 <code>.asmref + UniversalSubTarget</code> 为候选实现，授权进入功能性 GF 验证；多管线与可选 Package 依赖代码使用 asmdef Version Defines 合理隔离。</td><td>这是候选与试验授权，不是 GF/G3 放行或生产合入授权；不修改官方包、现有 Target 或 NBPostprocess。<code>.asmref</code> 自身没有 Version Defines / Define Constraints，不能用 asmdef 的条件编译能力伪称已解决可选 URP 的程序集归属。</td></tr>
       <tr><td>D19</td><td>本阶段先完成 URP Shader Graph + URP VFX；URP 常规 Mesh 继续使用现有 NBShader。HDRP 作为最后轮次的待选目标。</td><td>本阶段不引入 HDRP Package、HDRP RendererPass 或双管线产品承诺；将来 HDRP 方案需另行验证与决策。</td></tr>
       <tr><td>D20</td><td>多管线安装由用户按所用管线选择对应依赖内容：URP 用户安装 URP 专属内容，HDRP 用户安装 HDRP 专属内容。安装流程与依赖隔离设计安排在启动 HDRP 实现之前。</td><td>当前 URP 阶段不提前拆包、不改 <code>package.json</code>、不加入 HDRP 依赖；此方向不等于已验证 HDRP-only 导入，也未确定最终 Package 数量、双管线同时安装或升级/卸载细节。</td></tr>
+      <tr><td>D21</td><td>用户于 2026-09-27 澄清：当前阶段先在现有 Unity 6000.3.18f1 / URP、Shader Graph、VFX Graph 17.3 环境跑通 URP ShaderGraph + URP VFX；低版本兼容非当前必要条件，兼容性留在最后轮次评估。</td><td>本决定更新 D08、Q07、仓库旧兼容规则及旧任务书中“G1/G2 必须验证原 ShaderLab 2021.3”的时序要求。2021.3、旧 URP、无 URP 或 HDRP-only 不阻挡当前 G1/G2/G3；未验证也不得标称支持。仍保留当前环境的原 ShaderLab 行为、材质序列化、Flags、GUI、Pass、NBPostprocess 回归要求；不授权修改官方包、Target/NBPostprocess 或删减功能。</td></tr>
     </tbody>
   </table>
 
@@ -52,7 +53,7 @@
       <tr><td>Q04</td><td>最低 Unity 6000.x、DirectX/Metal/Vulkan 具体版本和 OS/GPU 设备矩阵。</td><td>T10，结合前序最小方案特性；OpenGL ES 已排除新 VFX 范围，不再作为悬而未决项。</td></tr>
       <tr><td>Q05</td><td>正式 Output 类型清单、必须覆盖的 VFX Mesh/VAT 数据组合。</td><td>T08 先最小验证，T09 前确认；不凭便利缩小范围。</td></tr>
       <tr><td>Q06</td><td>图像容差与新增路径性能预算。</td><td>基线校准后、全量验收前确认，不在失败后放宽。</td></tr>
-      <tr><td>Q07</td><td>若共享重构影响原 ShaderLab 的旧版本兼容，如何处理？</td><td>主 Agent；当前没有放弃原兼容要求的批准。</td></tr>
+      <tr><td>Q07</td><td>按 D21，旧版本兼容留待 T10/G7 评估；根据实际测试结果确定可声明的最低版本与支持矩阵。</td><td>当前不因缺少 2021.3 环境停止 URP 6000.3 功能工作；当前环境的原 ShaderLab 功能与旧材质协议仍须回归。若以后要宣称旧版本支持，必须另有独立证据。</td></tr>
       <tr><td>Q08</td><td>D20 已确定由用户按管线选择安装内容；在 HDRP 实现前，仍需确定共享内容与 URP/HDRP 专属安装单元的边界、Package 依赖声明、<code>.asmref</code> 归属，以及双管线同时安装、升级和卸载流程。</td><td><a href="reports/t01-inventory-progress.html">T01 依赖清单</a>显示不止 GF <code>.asmref</code>：XuanXuanRenderUtility Runtime 与 NBPostProcessing Runtime 还无条件引用 URP，后者并引用 Cinemachine；普通 asmdef 的 Version Defines 不会条件化这些 GUID 引用。设计后须在仅 URP、仅 HDRP 和所支持的组合中分别导入/编译验证。当前未安装 HDRP、未改 package.json，不提前宣称 HDRP-only 导入通过。</td></tr>
     </tbody>
   </table>

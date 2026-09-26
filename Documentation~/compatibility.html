@@ -8,8 +8,8 @@
 <body>
 <p><a href="index.html">返回文档目录</a></p>
 <h1>版本与图形 API 范围</h1>
-<p>新 VFX 路径不再以 Unity 2021.3 为目标；最低版本由实际依赖决定，先验证 6.3，再覆盖至 6.5。OpenGL ES 不属于新 VFX 路径的支持范围。</p>
-<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<p>按 D21，当前先在 Unity 6000.3.18f1 / URP、Shader Graph、VFX Graph 17.3 跑通功能；旧版本兼容留待 T10/G7 评估，不阻挡 G1–G6。OpenGL ES 不属于新 VFX 路径的支持范围。</p>
+<p><small>更新：2026-09-27 · 当前环境优先；旧版本支持不得未经验证宣称 · 不修改官方包</small></p>
 <hr>
 <h2 id="versions">版本范围与支持状态</h2>
 <table border="1" cellpadding="6">
@@ -17,9 +17,9 @@
       <tr><th scope="col">版本/路径</th><th scope="col">计划</th><th scope="col">当前证据</th></tr>
     </thead>
     <tbody>
-      <tr><td>原 ShaderLab</td><td>继续保留现有兼容设计；仓库原有 2021.3 要求不因新路径收缩自动失效。</td><td>本次未做版本回归；不得标记已通过。</td></tr>
+      <tr><td>原 ShaderLab</td><td>当前环境保持原行为、材质协议及所有现有宿主；2021.3 等旧版本留待 T10/G7 评估，不作为当前 G1/G2 门槛。</td><td>旧版本未做回归，不得标记已支持。</td></tr>
       <tr><td>新路径 Unity 6000.0–6000.2</td><td>只作为最低版本候选；若所需特性不足，可以讨论放弃这些低版本。</td><td>未验证，不保证全部候选版本都进入最终支持矩阵。</td></tr>
-      <tr><td>Unity 6000.3</td><td>当前主验证环境；Graph / VFX / NBPostprocess 先在此完成分阶段 Gate。</td><td>工程文件与包元数据已读取，功能未运行验证。</td></tr>
+      <tr><td>Unity 6000.3</td><td>当前主验证环境；Graph / VFX / NBPostprocess 先在此完成分阶段 Gate。</td><td>G0 基线和 GF 限定范围试验已执行；完整产品 Graph/VFX 尚未通过。</td></tr>
       <tr><td>Unity 6000.4–6000.5</td><td>后续兼容与发布验收覆盖至 6.5；检查中间版本族差异。</td><td>未安装/未测试状态不等于已支持；具体补丁与包版本待记录。</td></tr>
     </tbody>
   </table>
@@ -34,7 +34,7 @@
       <tr><td>DirectX</td><td>具体 DX11 / DX12 范围、Shader Model、Windows/GPU/驱动。</td><td>对应 Player 编译与真机运行；不以 Metal 成功推断。</td></tr>
       <tr><td>Metal</td><td>目标 macOS / iOS 范围、OS、GPU、MSL 与硬件能力。</td><td>确认的平台分别取证；不能把 API 名等同于所有 Apple 设备。</td></tr>
       <tr><td>Vulkan</td><td>桌面/Android 范围、版本、扩展、GPU/驱动与资源限制。</td><td>确认平台逐项构建和运行，检查采样/插值/RenderGraph。</td></tr>
-      <tr><td>OpenGL ES</td><td>新 VFX 路径已由用户确认排除；Unity VFX Graph 17.3 官方明确不支持 OpenGL ES。</td><td>不列入新 VFX Player 验收矩阵，不作为 G7 阻塞。原 ShaderLab 对应平台仍按原有兼容要求独立验证，不借此删除。</td></tr>
+      <tr><td>OpenGL ES</td><td>新 VFX 路径已由用户确认排除；Unity VFX Graph 17.3 官方明确不支持 OpenGL ES。</td><td>不列入新 VFX Player 验收矩阵，不作为 G7 阻塞。原 ShaderLab 对旧 API 的支持在最后轮次按实际证据评估；当前不因新路径改变其代码。</td></tr>
       <tr><td>XR</td><td>正式范围外。</td><td>不建设 XR 验收矩阵，也不宣称 XR 支持。原代码不做无关破坏。</td></tr>
     </tbody>
   </table>
@@ -44,7 +44,7 @@
 <ul>
   <li>共享 HLSL 保持一份；版本差异集中在小型宿主/URP/Graph 适配，不复制整套算法。</li>
   <li>Graph 资产格式按实际最低版本选择；若需少量版本族包装，先记录维护成本，不将高版本保存的 Graph 自动当作低版本可读。</li>
-  <li>原 ShaderLab 稳定 API、Flags 与材质协议保持；新路径依赖用适当程序集/条件隔离，不能令未使用 VFX 的原用户被迫安装高版本依赖。G1 必须列出 package.json、asmdef/versionDefines、Graph/VFX 资产放置与依赖策略；G2 做 Unity 2021.3 原路径 smoke，不把风险留到 T10。</li>
+  <li>当前环境原 ShaderLab 的属性、Flags、材质协议与行为保持。G1 只需明确现用 URP/Graph/VFX 组合的依赖、程序集和资产归属；跨版本、无 URP 与仅 HDRP 的安装隔离及旧版 smoke 留待 T10 或 D20 所规定的 HDRP 前安装设计，不阻挡当前功能 Gate。</li>
   <li>不同 Unity 版本使用隔离项目/checkout 与 Library；不能反复降级打开当前用户工程。</li>
   <li>CLI / Pipeline 是验证工具依赖，不默认打包成 NB_FX 产品依赖；若产品代码出现对此依赖，须说明理由并审核。</li>
   <li>保留已存在的 RenderGraph 与适用 Compatibility 路径；新版本缺失某路径时准确标记，不伪造等价测试。</li>

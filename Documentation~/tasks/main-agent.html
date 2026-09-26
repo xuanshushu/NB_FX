@@ -85,7 +85,7 @@ G2 → T06 → G3 → T07 → G4 → T08 → G5 → T09 → G6 → T10 → G7</c
 <h2 id="decisions">阻塞与用户决策</h2>
 <ul>
   <li>技术限制不是删范围的授权。使用决策模板提供最小复现、失败原因、影响功能、候选方案、版本/API/维护成本和推荐项。</li>
-  <li>重点升级：GF 或 G3 自定义 Pass 不可行；拟换标准 Lit/Six-Way Target；VFX GUI 不可复用；修改 NBPostprocess；降低旧路径兼容或进一步缩减已确认的 DirectX/Metal/Vulkan。新 VFX 路径的 OpenGL ES 排除已获批准。</li>
+  <li>重点升级：GF 或 G3 自定义 Pass 不可行；拟换标准 Lit/Six-Way Target；VFX GUI 不可复用；修改 NBPostprocess；破坏当前环境原路径的材质/行为或进一步缩减已确认的 DirectX/Metal/Vulkan。按 D21，旧版本兼容留待 T10/G7 评估，不因缺少 2021.3 环境暂停当前 Gate。新 VFX 路径的 OpenGL ES 排除已获批准。</li>
   <li>暂停受阻依赖链，允许无关的文档和只读调查继续；不要通过重复运行或让另一 Agent 同样失败来伪造进度。</li>
   <li>回退按切片恢复，维护基线只读；跨仓库版本关联必须保留，不能只记主工程 commit。</li>
 </ul>

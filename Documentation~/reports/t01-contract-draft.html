@@ -40,8 +40,8 @@
 
 <h2>Flags 与版本隔离的审查结果</h2>
 <p><a href="g1-evidence/flags-mpb-graph-test-matrix.md">Flags / MPB / Graph 用例矩阵</a>与<a href="g1-evidence/static_bridge_matrix.json">静态模型</a>记录 728 个纯算术向量通过、两项静态风险及五项 Unity/GPU 未运行。尤其 bit31、Wrap 最高位、CustomData 高 nibble 必须在实际 Material/Player/GPU 中复验；未播种的 MPB 对 packed 字按整值覆盖原材质位的风险不能由算术结果冒充运行时结论。GF Graph 尚无产品 Flags 输入。</p>
-<p><a href="g1-evidence/dependency-isolation-audit.md">依赖隔离审计</a>确认当前 <code>.asmref</code> 不会按 URP 版本自动失效，且 2022.3 本地 URP14 的 Editor asmdef 与 URP17 使用同 GUID。Unity 2021.3 未安装，尚不能证明原 ShaderLab 在当前包版本中安全打开；D20 将用户安装流程放在 HDRP 阶段前，并不豁免 G1 的技术边界。G1 不会把未来拆包、<code>Samples~</code> 或 Version Defines 候选写成已批准产品方案。</p>
+<p><a href="g1-evidence/dependency-isolation-audit.md">依赖隔离审计</a>确认当前 <code>.asmref</code> 不会按 URP 版本自动失效，且 2022.3 本地 URP14 的 Editor asmdef 与 URP17 使用同 GUID。Unity 2021.3 未安装，尚不能证明旧版可打开。<strong>2026-09-27 D21 时序更正：</strong>这项跨版本风险留待最后的 T10/G7 评估，不再阻挡当前 G1/G2；G1 只审核当前环境的程序集/Graph/资产边界。未来拆包、<code>Samples~</code> 或 Version Defines 候选仍不是已批准产品方案。</p>
 
 <h2>审核与回退</h2>
-<p><strong>接受本切片为 T01 输入证据；G1 未放行。</strong>后续仍需逐属性 writer/read/Pass/case 人工闭环、共享 HLSL 可编译签名和文件所有权、Graph 参数频率/变体预算、2021.3 技术隔离验证。无产品源码变更，回退仅需回退本切片文档和证据，不影响 G0/GF。主 Agent 未启动 T02–T05，也未 push。</p>
+<p><strong>接受本切片为 T01 输入证据；G1 未放行。</strong>后续仍需逐属性 writer/read/Pass/case 人工闭环、共享 HLSL 可编译签名和文件所有权、当前 Graph 参数频率/变体预算；2021.3 技术隔离已按 D21 移出当前 Gate。无产品源码变更，回退仅需回退本切片文档和证据，不影响 G0/GF。主 Agent 未启动 T02–T05，也未 push。</p>
 </body></html>

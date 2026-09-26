@@ -15,12 +15,13 @@
 <tr><td>T01-ORDER-PASS</td><td>顶点按 CustomLocal→VAT→空间/UV→VertexOffset→重算位置/裁剪；片元按深度/UV→PNoise/POM/Normal→Noise/Refraction→主色/光照→Overlay/Ramp/Dissolve/Mask/Fresnel→深度淡出/颜色/Alpha→Pass 特有输出。<code>isProcessUVInFrag()</code> 由 Polar/Twirl、DepthDecal、POM 或 Distort 触发，不能统一移到片元。现有多个函数会临时写全局参数，提取共享函数前须固定有效参数与原顺序。</td><td><a href="../../NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl">ForwardPass</a>、<a href="../../NBShaders2/Shader/HLSL/NBShaderInput.hlsl">Input</a>、<a href="../../NBShaders2/Runtime/NBShaderPassFeatureCatalog.cs">Pass Catalog</a>、<a href="gf-t00a-functional-gate.html">GF 限定结论</a></td></tr>
 <tr><td>T01-DEPENDENCY</td><td>NB_FX <code>package.json</code> 无依赖声明；当前主工程安装 URP/VFX/Cinemachine。生产 XuanXuanRenderUtility Runtime 无条件引用 URP Runtime；NBPostProcessing Runtime 无条件引用 Core/URP/Cinemachine；GF <code>.asmref</code> 无条件指向 URP Editor。Version Defines 不会条件化这些引用。当前 GF Graph 还序列化了 URP 与 HDRP Target，不能直接作为 URP 产品 Graph。仅证实本工程依赖齐全时可编译；2021.3、URP 缺席与 HDRP-only 均未验证。</td><td><a href="g1-evidence/assembly-static.json">依赖清单</a>、<a href="g1-evidence/inventory_assemblies.py">生成脚本</a>、<a href="../decisions.html">D20 / Q08</a></td></tr>
 </tbody></table>
+<p><strong>D21 后的当前环境复核（2026-09-27）：</strong>Unity MCP 在本会话未暴露，主 Agent 使用 Unity CLI 只读检查；Editor 6000.3.18f1 ready、非 Play，编译 completed 且未失败，当前 Console groundTruth 为 0 Error / 11 Warning。Console 累积计数不是当前错误数。证据：<a href="g1-evidence/current-editor-status.json">Editor</a>、<a href="g1-evidence/current-compilation-status.json">编译</a>、<a href="g1-evidence/current-console-status.json">Console</a>。这仅证明可继续当前环境实施，不是 G1/G3 功能通过。</p>
 <h2>G1 尚缺的关闭条件</h2>
 <ol>
 <li>为 450 个 Property 逐项确定渲染/RenderState/Editor/历史/外部用途、旧 ShaderLab 与新 Graph/VFX 去向、具体 writer/read/Pass/case；31 个无直接词法引用项保留序列化兼容状态，明确两个用途尚未证实的 CBUFFER 字段及外部数据绑定，不能自动标为死代码。</li>
 <li>固定 T02/T03/T04 可使用的实际 HLSL 签名与 FeatureState、Geometry/Frame/Surface/Pass Output 数据边界；保留坐标空间、精度、顶点/片元阶段、有效时间、贴图采样和临时全局写入的原语义。当前只有候选边界，没有通过编译与回归的接口 v1。</li>
 <li>给出 Feature→参数→Pass→case 完整矩阵，验证现有 Flag 高位/符号位、MPB 整值覆盖风险与 Graph 传输；量化 Graph/VFX 关键词、变体和参数频率，不能继承 GF 固定噪声的结论。</li>
-<li>明确当前 URP 新路径与原 ShaderLab 2021.3 的技术隔离方案。D20 的用户安装流程安排在 HDRP 实现前，不表示当前 GF <code>.asmref</code> 已在旧版或无 URP 环境安全；本机没有 2021.3 Editor，旧版烟测仍待环境。若最终方案要求修改 NBPostprocess 或削减兼容，先提交用户决策。</li>
+<li>按 D21，仅须明确当前 Unity 6000.3.18f1 / URP、SG、VFX 17.3 的程序集/Graph/资产归属与可导入编译路径；2021.3、无 URP、HDRP-only 等兼容风险继续登记，但不是当前 G1 放行条件。跨管线安装仍按 D20 在 HDRP 实现前设计；若拟修改 NBPostprocess 或削减效果功能，仍先提交用户决策。</li>
 </ol>
 <h2>审核结论</h2>
 <p><strong>仅接受上述清单为 G1 输入证据；G1 未放行。</strong>后续<a href="t01-contract-draft.html">语义、阶段与副作用草案</a>已补充候选逐属性归类、Flags 静态用例及依赖边界，仍非接口 v1。当前可继续 T01 的人工语义复核、签名设计和文件所有权审核；不得派发依赖 G1 的 T02–T05 大规模重构。没有对官方包、Target、NBPostprocess 或旧材质作任何变更。证据文件的 SHA-256 见<a href="g1-evidence/sha256.txt">清单</a>。</p>

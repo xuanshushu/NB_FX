@@ -23,8 +23,8 @@
       <tr><td>GUI</td><td>ShaderLab 与 Graph 尽量共用同一 NB GUI 实现；VFX Output 的接入或薄适配须单独验证，不维护两套独立 NB GUI。</td></tr>
       <tr><td>VFX 创作</td><td>直接在 Graph / Output 配置；连线与逐粒子数据由 VFX 管理。不建设材质导入、同步或转换工作流。</td></tr>
       <tr><td>Graph 材质</td><td>Mesh 验证阶段不要求与原材质序列化兼容；兼容仅为加分项。原 ShaderLab 材质兼容仍是硬要求。</td></tr>
-      <tr><td>版本</td><td>新路径可以 Unity 6000+ 起，具体最低版本由依赖能力确定；先验证 6.3，后续覆盖至 6.5。</td></tr>
-      <tr><td>平台</td><td>新 VFX 路径以较新 DirectX、Metal、Vulkan 为候选，具体最低版本待验证；不支持 OpenGL ES，XR 不在正式范围。原 ShaderLab 的兼容范围不因本决定缩减。</td></tr>
+      <tr><td>版本</td><td>当前先在 Unity 6000.3.18f1 / URP、SG、VFX 17.3 跑通；旧版本兼容最后评估，不阻挡当前 Gate。最终最低版本以实测为准。</td></tr>
+      <tr><td>平台</td><td>新 VFX 路径以较新 DirectX、Metal、Vulkan 为候选，具体最低版本待验证；不支持 OpenGL ES，XR 不在正式范围。原 ShaderLab 旧版/旧 API 范围后续按实测评估，当前环境行为须保留。</td></tr>
       <tr><td>禁止事项</td><td>不修改官方包；不擅自改用标准 Lit / Six-Way Target；不能自行接受能力降级。</td></tr>
       <tr><td>当前授权</td><td>用户于 2026-09-25 授权从 T00/G0 实施，G0 后进行 T00A/GF；不授权修改官方包、擅改 Target/NBPostprocess 或删减功能，未经再次要求不 push。</td></tr>
       <tr><td>阶段顺序</td><td>URP 常规 Mesh 继续由现有 NBShader 支持；先做 URP Shader Graph + URP VFX。HDRP 作为最后轮次的待选目标；进入 HDRP 实现前先设计用户按管线选择依赖内容的安装流程。普通 asmdef 使用 Version Defines 隔离可选包，.asmref 的 URP Editor 绑定需在后续安装单元设计中单独处理。见<a href="decisions.html">D20 / Q08</a>。</td></tr>
