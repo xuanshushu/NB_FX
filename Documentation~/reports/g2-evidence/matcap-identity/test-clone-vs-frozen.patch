@@ -1,0 +1,27 @@
+--- Temp/NBFXG2/matcap-clone-original-test.cs	2026-09-28 00:22:19
++++ Temp/NBFXG2/matcap-clone-identity/test-temporary.cs	2026-09-28 00:23:38
+@@ -9,18 +9,23 @@
+     {
+         private const string OriginalPath = "Assets/NBShaderSamples/NBShaderSamples/UnLit.mat";
+         private const string FrozenPath = "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/UnLit.mat";
++        private const string DiagnosticClonePath = "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShaderClone.shader";
+         private const int Size = 96;
+         private const int Layer = 2;
+
+         [Test]
+         public void MatCapViewUVAndBlendMatchFrozenWithVisibleControls()
+         {
+-            var source = AssetDatabase.LoadAssetAtPath<Material>(OriginalPath);
++            var source = AssetDatabase.LoadAssetAtPath<Material>(FrozenPath);
+             var frozen = AssetDatabase.LoadAssetAtPath<Material>(FrozenPath);
+             Assert.That(source, Is.Not.Null);
+             Assert.That(frozen, Is.Not.Null);
+             var currentMaterial = new Material(source);
+             var frozenMaterial = new Material(frozen);
++            var diagnosticClone = AssetDatabase.LoadAssetAtPath<Shader>(DiagnosticClonePath);
++            Assert.That(diagnosticClone, Is.Not.Null);
++            Assert.That(diagnosticClone.isSupported, Is.True);
++            currentMaterial.shader = diagnosticClone;
+             var texture = new Texture2D(32, 32, TextureFormat.RGBA32, false, false);
+             var colors = new Color32[32 * 32];
+             for (var y = 0; y < 32; y++)

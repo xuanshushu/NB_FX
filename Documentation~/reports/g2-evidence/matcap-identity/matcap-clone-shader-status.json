@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var p=\"Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShaderClone.shader\";var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(p);return \"name=\"+(s==null?\"null\":s.name)+\";supported=\"+(s!=null&&s.isSupported)+\";passes=\"+(s==null?-1:s.passCount)+\";messages=\"+(s==null?-1:UnityEditor.ShaderUtil.GetShaderMessages(s).Length);"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "name=Effects/NBShader_T00_Frozen_Clone;supported=True;passes=7;messages=18"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

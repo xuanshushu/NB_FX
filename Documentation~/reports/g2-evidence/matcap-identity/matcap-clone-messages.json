@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var a=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader\");var b=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShaderClone.shader\");var x=UnityEditor.ShaderUtil.GetShaderMessages(a);var y=UnityEditor.ShaderUtil.GetShaderMessages(b);return \"frozen=\"+a.name+\":\"+x.Length+\":\"+string.Join(\"|\",System.Array.ConvertAll(x,m=>m.severity+\":\"+m.message))+\";clone=\"+b.name+\":\"+y.Length+\":\"+string.Join(\"|\",System.Array.ConvertAll(y,m=>m.severity+\":\"+m.message));"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "frozen=Effects/NBShader_T00_Frozen:31:Warning:'Blend_HardLight': implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:'ProcessBaseUVs': implicit truncation of vector type|Warning:'TransformWorldToView': implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them|Warning:'NB_Remap01': implicit truncation of vector type|Warning:pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them|Warning:pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:'mul': implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:'mul': implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them|Warning:pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:signed/unsigned mismatch, unsigned assumed|Warning:use of potentially uninitialized variable (TyflowVatTex2DHalf)|Warning:array reference cannot be used as an l-value; not natively addressable, forcing loop to unroll|Warning:array reference cannot be used as an l-value; not natively addressable, forcing loop to unroll|Warning:pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them|Warning:pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them;clone=Effects/NBShader_T00_Frozen_Clone:19:Warning:'Blend_HardLight': implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:'ProcessBaseUVs': implicit truncation of vector type|Warning:'TransformWorldToView': implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:'mul': implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:'mul': implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them|Warning:implicit truncation of vector type|Warning:implicit truncation of vector type|Warning:signed/unsigned mismatch, unsigned assumed"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
