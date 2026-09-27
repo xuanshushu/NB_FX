@@ -4,6 +4,7 @@
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
     #include "NBShaderFlags.hlsl"
     #include "NBShaderGeometryV1.hlsl"
+    #include "NBShaderUVV1.hlsl"
    
     #if defined(_PROGRAM_NOISE) && (defined(_PROGRAM_NOISE_SIMPLE) || defined(_PROGRAM_NOISE_VORONOI))
         #define _PROGRAM_NOISE_ACTIVE
@@ -721,17 +722,6 @@
     //     return Out;
     // }
 
-    //漩涡 圆形区域内变形。圆圈中心处的像素会旋转指定角度；圆圈中其他像素的旋转会随着相对于中心距离的变化而减小，在圆圈边缘处减小为零
-    float2 UTwirl(float2 UV, float2 Center, float Strength)
-    {
-        float2 delta = UV - Center;
-        float angle = Strength * length(delta);
-        float x = cos(angle) * delta.x - sin(angle) * delta.y;
-        float y = sin(angle) * delta.x + cos(angle) * delta.y;
-        return float2(x + Center.x  , y + Center.y );
-
-    }
-    
     //Fresnel
     half4 Unity_FresnelEffect(float3 Normal, float3 ViewDir, float Power, float Dire,half fresnelPos)
     {
@@ -854,127 +844,40 @@
         float2 sharedUV;
     };
 
-    float2 getPosUVByPosUVMode(float3 pos,half posUVMode)
+    BaseUVs ProcessBaseUVs(float4 meshTexcoord0, float2 specialUVInTexcoord3, float4 VaryingsP_Custom1, float4 VaryingsP_Custom2, float3 postionOS, float3 positionWS, float2 screenUV)
     {
-        switch ((int)posUVMode)
-        {
-            case 0:
-                return pos.xy;
-            case 1:
-                return pos.xz;
-            case 2:
-                return pos.yz;
-            default:
-                return pos.xz;
-        }
-    }
+        NBFX_BaseUVInputV1 input = (NBFX_BaseUVInputV1)0;
+        input.meshTexcoord0 = meshTexcoord0;
+        input.specialUVInTexcoord3 = specialUVInTexcoord3;
+        input.custom1 = VaryingsP_Custom1;
+        input.custom2 = VaryingsP_Custom2;
+        input.positionOS = postionOS;
+        input.positionWS = positionWS;
+        input.screenUV = screenUV;
 
-    BaseUVs ProcessBaseUVs(float4 meshTexcoord0, float2 specialUVInTexcoord3,float4 VaryingsP_Custom1,float4 VaryingsP_Custom2,float3 postionOS,float3 positionWS,float2 screenUV)
-    {
-        //UV2的内容在外边就决定好。
-            float2 defaultUVChannel = meshTexcoord0.xy;
-            float2 specialUVChannel = meshTexcoord0.zw;
-            #if _FLIPBOOKBLENDING_ON
-                if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM) & CheckLocalFlags1(FLAG_BIT_PARTICLE_1_USE_TEXCOORD2))
-                {
-                    specialUVChannel = specialUVInTexcoord3;
-                }
-            #else
-                if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_UV_FROM_MESH))
-                {
-                    //Mesh条件下开启使用特殊UV通道的情况
-                    if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_USE_TEXCOORD1))
-                    {
-                        specialUVChannel = VaryingsP_Custom1.xy;
-                    }
-                    if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_USE_TEXCOORD2))
-                    {
-                        specialUVChannel = VaryingsP_Custom2.xy;
-                    }
-                }
-                else
-                {
-                    //只有在粒子系统下开启特殊通道的情况，会在面板层引导合并相关内容。UI/Mesh不开启特殊通道没有意义。
-                    specialUVChannel = meshTexcoord0.zw;
-                }
-            #endif
-          
-            
-            if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE))
-            {
-                defaultUVChannel = defaultUVChannel*_MainTex_Reverse_ST.xy +_MainTex_Reverse_ST.zw;
-            }
-            //TODO：补写MeshUV的实现
-            float2 cylinderUV = meshTexcoord0.xy;
-            if(CheckLocalFlags1(FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE))
-            {
-                float4x4 _CylinderUVMatrix = float4x4(_CylinderMatrix0,_CylinderMatrix1,_CylinderMatrix2,_CylinderMatrix3);
-                postionOS = mul(_CylinderUVMatrix,float4(postionOS,1));
-                cylinderUV = CylinderCoordinate(postionOS);
-            }
-            
-            float2 UVAfterTwirlPolar = defaultUVChannel;
-            if(CheckLocalFlags(FLAG_BIT_PARTICLE_UTWIRL_ON))
-            {
-               UVAfterTwirlPolar = UTwirl(defaultUVChannel,_TWParameter.xy, _TWStrength);
-            }
-            if(CheckLocalFlags(FLAG_BIT_PARTICLE_POLARCOORDINATES_ON))
-            {
-                float2 UVAfterTwirl = UVAfterTwirlPolar;
-                UVAfterTwirlPolar = PolarCoordinates(UVAfterTwirlPolar,_PCCenter.xy);
-                UVAfterTwirlPolar = lerp(UVAfterTwirl,UVAfterTwirlPolar,_PCCenter.z);
-            }
-            BaseUVs baseUVs = (BaseUVs)0;
-            baseUVs.defaultUVChannel = defaultUVChannel;
-            baseUVs.specialUVChannel = specialUVChannel;
-            baseUVs.uvAfterTwirlPolar = UVAfterTwirlPolar;
-            baseUVs.cylinderUV = cylinderUV;
-        
-            baseUVs.screenUV = screenUV;
-            baseUVs.worldPosUV = getPosUVByPosUVMode(positionWS,_WorldSpaceUVModeSelector);
-            baseUVs.objectPosUV = getPosUVByPosUVMode(postionOS,_ObjectSpaceUVModeSelector);
-
-            baseUVs.sharedUV = defaultUVChannel;
-            float2 sharedUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_SHAREDUV,baseUVs);
-            _SharedUV_Vec.z += time * _SharedUV_Vec.w;
-            sharedUV = Rotate_Radians_float(sharedUV, half2(0.5, 0.5), _SharedUV_Vec.z);  //主贴图旋转
-  
-            sharedUV.x += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-            sharedUV.y += GetCustomData(_W9ParticleCustomDataFlag3,FLAGBIT_POS_3_CUSTOMDATA_SHARED_UV_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
-            sharedUV = sharedUV *_SharedUV_ST.xy +_SharedUV_ST.zw ;  //主帖图UV重复和偏移
-        
-            sharedUV = UVOffsetAnimaiton(sharedUV,_SharedUV_Vec.xy);
-            baseUVs.sharedUV = sharedUV;
-        
-            baseUVs.mainTexUV = defaultUVChannel;
-            float2 baseMapUV = GetUVByUVMode(_UVModeFlag0,_UVModeFlagType0,FLAG_BIT_UVMODE_POS_0_MAINTEX,baseUVs);
-
-            float2 mainTexUV = 0;
-            _BaseMapUVRotation += time * _BaseMapUVRotationSpeed;
-            baseMapUV = Rotate_Radians_float(baseMapUV, half2(0.5, 0.5), _BaseMapUVRotation);  //主贴图旋转
-            UNITY_BRANCH
-            if(CheckLocalFlags(FLAG_BIT_PARTICLE_UIEFFECT_ON) & !CheckLocalFlags1(FLAG_BIT_PARTICLE_1_UIEFFECT_BASEMAP_MODE))
-            {
-                if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_UIEFFECT_SPRITE_MODE))
-                {
-                    float2 originUV = meshTexcoord0.xy;//精灵主贴图不调整。
-                    mainTexUV = originUV*_UI_MainTex_ST.xy+_UI_MainTex_ST.zw;
-                }
-                else
-                {
-                    mainTexUV = baseMapUV*_UI_MainTex_ST.xy+_UI_MainTex_ST.zw;
-                }
-            }
-            else
-            {
-                baseMapUV.x += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_X,0,VaryingsP_Custom1,VaryingsP_Custom2);
-                baseMapUV.y += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_MAINTEX_OFFSET_Y,0,VaryingsP_Custom1,VaryingsP_Custom2);
-                mainTexUV = TRANSFORM_TEX(baseMapUV, _BaseMap);  //主帖图UV重复和偏移
-            }
-            mainTexUV = UVOffsetAnimaiton(mainTexUV,_BaseMapMaskMapOffset.xy);
-            baseUVs.mainTexUV = mainTexUV;
-
-            return baseUVs;
+        NBFX_BaseUVParamsV1 parameters = (NBFX_BaseUVParamsV1)0;
+        parameters.flags0 = _W9ParticleShaderFlags;
+        parameters.flags1 = _W9ParticleShaderFlags1;
+        parameters.customDataFlag0 = _W9ParticleCustomDataFlag0;
+        parameters.customDataFlag3 = _W9ParticleCustomDataFlag3;
+        parameters.uvModeFlag0 = _UVModeFlag0;
+        parameters.uvModeFlagType0 = _UVModeFlagType0;
+        parameters.mainTexReverseST = _MainTex_Reverse_ST;
+        parameters.uiMainTexST = _UI_MainTex_ST;
+        parameters.baseMapST = _BaseMap_ST;
+        parameters.sharedUVST = _SharedUV_ST;
+        parameters.sharedUVVec = _SharedUV_Vec;
+        parameters.baseMapMaskMapOffset = _BaseMapMaskMapOffset;
+        parameters.twirlParameter = _TWParameter;
+        parameters.polarCenter = _PCCenter;
+        parameters.cylinderUVMatrix = float4x4(_CylinderMatrix0, _CylinderMatrix1, _CylinderMatrix2, _CylinderMatrix3);
+        parameters.twirlStrength = _TWStrength;
+        parameters.baseMapUVRotation = _BaseMapUVRotation;
+        parameters.baseMapUVRotationSpeed = _BaseMapUVRotationSpeed;
+        parameters.worldSpaceUVModeSelector = _WorldSpaceUVModeSelector;
+        parameters.objectSpaceUVModeSelector = _ObjectSpaceUVModeSelector;
+        parameters.timeY = time;
+        return NBFX_BuildBaseUVsV1(input, parameters);
     }
 
 

@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · BaseUV 接入检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-geometry-checkpoint.html">前一切片</a></p>
+<h1>T05/G2 · BaseUV 接入检查点</h1>
+<p><strong>状态：当前 ShaderLab BaseUV 首切片可回退，G2 未放行。</strong>2026-09-27，Unity 6000.3.18f1、URP 17.3.0、macOS/Metal；本会话未暴露 Unity MCP，使用 Unity CLI/Pipeline 串行验证。</p>
+<p>现有三个 <code>ProcessBaseUVs</code> 调用点保留 stage 和调用签名，函数本体改为组装 G1 的 <code>NBFX_BaseUVInputV1</code>/<code>NBFX_BaseUVParamsV1</code> 并调用 <code>NBFX_BuildBaseUVsV1</code>。原 <code>getPosUVByPosUVMode</code>/<code>UTwirl</code> 的孤立重复实现移除，纯函数在共享 UV 头中。原 <code>_SharedUV_Vec.z</code>/<code>_BaseMapUVRotation</code> 只在旧函数内被写读，现以局部值保留运算次序；Custom1/2 保持 float4 至既有解码边界。未改 Pass、Property、CBUFFER、keyword、官方包、Target、NBPostprocess。源码 SHA-256：Input <code>9c6e68d15afbb0d36c40b6a7ea7eaa6592106010f2230410ea3204b33d2faaf3</code>，UV <code>18760e871fe6ff409346b880dc9e7c431fdac533eff9f0d65a5fd2d67fd914c8</code>，测试 <code>d95df752b3d15f1aec65d832d4d9c3853ea03da7b20cfea5e3c3596795e9d9a0</code>。</p>
+<ul>
+<li><strong>T05-UV-AB</strong>：同一 64×64 RGBA32 Mesh/相机，内存生成的 16×16 Point/Repeat 彩色纹理，比较当前与 G0 冻结 Shader。<a href="g2-evidence/t05-uv-final-ab-tests.json">EditMode 5/5</a>：default、twirl、polar、shared UV、cylinder 五个受控模式逐像素相等，四种非默认模式均相对 default 改变采样像素；同时保留 G0、Surface、Geometry 用例。测试不写原材质/资产。</li>
+<li><strong>T05-UV-IMPORT</strong>：<a href="g2-evidence/t05-uv-final-import.json">强制导入</a>返回 supported=True、Error 0；messages=0 不是全变体无 warning 证明。<a href="g2-evidence/t05-uv-final-compilation.json">最终编译 completed、failed=false</a>；<a href="g2-evidence/t05-uv-final-console.json">Console ground truth 0 Error/1 Warning</a>；<a href="g2-evidence/t05-uv-final-editor.json">Editor ready、Play stopped</a>。</li>
+</ul>
+<p>特殊 UV 流、UI/Sprite、CustomData、全部 UVMode/Wrap/LOD、顶点/片元全组合、七 Pass、NBPostprocess 双路径、Graph/VFX、Player、性能尚未由本切片验证。G2 仍进行中，不以五个模式推出完整功能等价。回退仅撤销本 NB_FX 切片与主工程子模块指针；不修改 G0 冻结基线，不 push。</p>
+</body></html>
