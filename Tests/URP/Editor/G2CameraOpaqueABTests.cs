@@ -6,6 +6,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
 
 namespace NBFX.Baseline.Tests
@@ -19,6 +20,7 @@ namespace NBFX.Baseline.Tests
         private const string CurrentPath = "Assets/NBShaderSamples/NBShaderSamples/UnLit.mat";
         private const string FrozenPath = "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/UnLit.mat";
         private const string PassName = "NBCameraOpaqueDistortPass";
+        private const string OpaqueViewPath = "Packages/com.xuanxuan.nb.fx/Tests/URP/Editor/G2MaskView.shader";
         private const int Size = 128;
         private const int Layer = 2;
 
@@ -69,6 +71,8 @@ namespace NBFX.Baseline.Tests
             var target = new RenderTexture(Size, Size, 24, RenderTextureFormat.ARGB32);
             var previousActive = RenderTexture.active;
             Material postMaterial = null;
+            Material opaqueViewMaterial = null;
+            G2OpaqueViewFeature opaqueViewFeature = null;
             int previousPostFlags = 0;
             try
             {
@@ -140,6 +144,28 @@ namespace NBFX.Baseline.Tests
                 var frozenOn = Capture(camera, target, foregroundRenderer, frozen, true, true, 0.14f,
                     Path.Combine(output, "p4_frozen_on.png"));
 
+                // Read the actual URP opaque copy in the same camera, not only
+                // the final NBPostProcess result. The temporary feature is
+                // removed before this test returns and never saved to the asset.
+                var opaqueViewShader = AssetDatabase.LoadAssetAtPath<Shader>(OpaqueViewPath);
+                Assert.That(opaqueViewShader, Is.Not.Null);
+                Assert.That(opaqueViewShader.isSupported, Is.True);
+                opaqueViewMaterial = new Material(opaqueViewShader);
+                opaqueViewFeature = ScriptableObject.CreateInstance<G2OpaqueViewFeature>();
+                opaqueViewFeature.material = opaqueViewMaterial;
+                opaqueViewFeature.Create();
+                opaqueViewFeature.SetActive(true);
+                rendererData.rendererFeatures.Add(opaqueViewFeature);
+                rendererData.SetDirty();
+                var opaqueEmpty = Capture(camera, target, foregroundRenderer, current, false, true, 0.14f,
+                    Path.Combine(output, "p4_opaque_copy_empty.png"));
+                var opaqueOff = Capture(camera, target, foregroundRenderer, current, true, false, 0.14f,
+                    Path.Combine(output, "p4_opaque_copy_off.png"));
+                var opaqueCurrent = Capture(camera, target, foregroundRenderer, current, true, true, 0.14f,
+                    Path.Combine(output, "p4_opaque_copy_current.png"));
+                var opaqueFrozen = Capture(camera, target, foregroundRenderer, frozen, true, true, 0.14f,
+                    Path.Combine(output, "p4_opaque_copy_frozen.png"));
+
                 int offVersusEmpty = CountDifferent(noFront, currentOff, 0, false);
                 int frozenOffVersusEmpty = CountDifferent(noFront, frozenOff, 0, false);
                 int offAB = CountDifferent(currentOff, frozenOff, 0, false);
@@ -150,6 +176,9 @@ namespace NBFX.Baseline.Tests
                 int currentZeroVisible = CountDifferent(currentOff, currentZero, 4, true);
                 int frozenZeroVisible = CountDifferent(frozenOff, frozenZero, 4, true);
                 int outsideChanged = CountOutsideCenter(currentOff, currentOn, 4);
+                int opaqueOffEmpty = CountDifferent(opaqueEmpty, opaqueOff, 0, false);
+                int opaqueCurrentEmpty = CountDifferent(opaqueEmpty, opaqueCurrent, 0, false);
+                int opaqueAB = CountDifferent(opaqueCurrent, opaqueFrozen, 0, false);
                 string backgroundStats = "preFlagsWarmup=" + DescribeBackground(preFlagsWarmup) +
                     ", noFrontAfterFlags=" + DescribeBackground(noFront);
                 string metrics = "P4 RenderGraph 128x128 RGBA32, camera opaque copy required, original NBPostProcess active\n" +
@@ -159,6 +188,10 @@ namespace NBFX.Baseline.Tests
                     "currentVisibleROI(>4)=" + currentVisible + ", frozenVisibleROI(>4)=" + frozenVisible +
                     ", currentZeroROI(>4)=" + currentZeroVisible + ", frozenZeroROI(>4)=" + frozenZeroVisible +
                     ", outsideROI(>4)=" + outsideChanged + "\n";
+                metrics += "opaqueEmpty=" + DescribeBackground(opaqueEmpty) +
+                    ", opaqueOffEmpty=" + opaqueOffEmpty +
+                    ", opaqueCurrentEmpty=" + opaqueCurrentEmpty +
+                    ", opaqueAB=" + opaqueAB + "\n";
                 File.WriteAllText(Path.Combine(output, "p4_camera_opaque_metrics.txt"), metrics);
                 Debug.Log("NBFX-G2-P4: " + metrics);
 
@@ -176,9 +209,21 @@ namespace NBFX.Baseline.Tests
                 Assert.That(currentVisible, Is.GreaterThan(32), "The exact CameraOpaque Pass must visibly shift the controlled gradient.");
                 Assert.That(frozenVisible, Is.GreaterThan(32), "Frozen positive control must also draw.");
                 Assert.That(outsideChanged, Is.Zero, "Distortion escaped the foreground's central region.");
+                Assert.That(CountNonBlack(opaqueEmpty), Is.GreaterThan(1000),
+                    "_CameraOpaqueTexture must contain the actual background, not a black/default texture.");
+                Assert.That(CountDistinctRGB(opaqueEmpty), Is.GreaterThan(32));
+                Assert.That(opaqueOffEmpty, Is.Zero);
+                Assert.That(opaqueCurrentEmpty, Is.Zero,
+                    "The CameraOpaque distortion draw must not alter its earlier source copy.");
+                Assert.That(opaqueAB, Is.Zero, "Current and Frozen opaque copies must match.");
             }
             finally
             {
+                if (opaqueViewFeature != null)
+                {
+                    rendererData.rendererFeatures.Remove(opaqueViewFeature);
+                    rendererData.SetDirty();
+                }
                 if (postMaterial != null)
                     postMaterial.SetInteger("_NBPostProcessFlags", previousPostFlags);
                 camera.targetTexture = null;
@@ -193,6 +238,52 @@ namespace NBFX.Baseline.Tests
                 UnityEngine.Object.DestroyImmediate(noiseTexture);
                 UnityEngine.Object.DestroyImmediate(current);
                 UnityEngine.Object.DestroyImmediate(frozen);
+                UnityEngine.Object.DestroyImmediate(opaqueViewFeature);
+                UnityEngine.Object.DestroyImmediate(opaqueViewMaterial);
+            }
+        }
+
+        private sealed class G2OpaqueViewFeature : ScriptableRendererFeature
+        {
+            public Material material;
+            private G2OpaqueViewPass pass;
+
+            public override void Create()
+            {
+                pass = new G2OpaqueViewPass(material)
+                {
+                    renderPassEvent = RenderPassEvent.AfterRenderingTransparents + 1
+                };
+            }
+
+            public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
+            {
+                if (renderingData.cameraData.cameraType == CameraType.Game)
+                    renderer.EnqueuePass(pass);
+            }
+
+            private sealed class G2OpaqueViewPass : ScriptableRenderPass
+            {
+                private static readonly int OpaqueId = Shader.PropertyToID("_CameraOpaqueTexture");
+                private readonly Material material;
+                private sealed class PassData { public Material material; }
+
+                public G2OpaqueViewPass(Material material) { this.material = material; }
+
+                public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
+                {
+                    var resources = frameData.Get<UniversalResourceData>();
+                    if (!resources.activeColorTexture.IsValid()) return;
+                    using (var builder = renderGraph.AddRasterRenderPass<PassData>("G2 Camera Opaque Copy View", out var data))
+                    {
+                        data.material = material;
+                        builder.UseGlobalTexture(OpaqueId, AccessFlags.Read);
+                        builder.SetRenderAttachment(resources.activeColorTexture, 0, AccessFlags.ReadWrite);
+                        builder.AllowPassCulling(false);
+                        builder.SetRenderFunc(static (PassData d, RasterGraphContext context) =>
+                            context.cmd.DrawProcedural(Matrix4x4.identity, d.material, 2, MeshTopology.Triangles, 3, 1));
+                    }
+                }
             }
         }
 
