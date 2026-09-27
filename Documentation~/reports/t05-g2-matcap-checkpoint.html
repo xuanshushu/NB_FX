@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · MatCap 接入检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-featureuv-checkpoint.html">前一切片</a></p>
+<h1>T05/G2 · MatCap 纯数值核接入</h1>
+<p><strong>状态：T04/T05 可回退首切片通过其限定验证；G2 未放行。</strong>2026-09-27；Unity 6000.3.18f1、URP 17.3.0、macOS/Metal。Unity MCP 本会话未暴露，使用 Unity CLI/Pipeline 串行验证。</p>
+<p>主 Agent 审签 V2 的 UV 与 RGB 合成两入口，T04 仅新建 <code>NBShaderEnvironmentV2.hlsl</code>；主 Agent 在原 <code>_MATCAP</code> 分支将反射投影及 tint/add/multiply/opacity 算术转交纯函数。URP view-space normal/position、原采样器与 ForceNoMip、光照前后顺序、Alpha、keyword、七 Pass、Property/CBUFFER、官方包、Target、NBPostprocess 均未改。源码 SHA-256：Forward <code>872df9fed4dd37d154252166136099b861b02c5785933df932c1f137729a1b64</code>，Environment <code>722a539791e68c1e5bfe2a14112a9aa133d5ec87475c521338fb909f22c6b0e1</code>，测试 <code>6faba04aaa54720b99badf852731eb4bb19289c955e50f76af12cfaf0d4bb135</code>。</p>
+<ul>
+<li><strong>T05-MATCAP-AB</strong>：在内存克隆的 UnLit/G0 冻结材质上显式启用 <code>_MATCAP</code>，用非对称 32×32 彩色贴图、同位 96×96 RGBA32 Mesh/相机，分别测试正交和透视投影、add/multiply、opacity 0/0.5/1。最终 <a href="g2-evidence/t05-matcap-warmup-tests.json">EditMode 7/7</a>；MatCap 关闭、开启各组逐像素相等，0 opacity 不改变画面，开启效果及两混合分支均确实改变像素。<a href="g2-evidence/t05-matcap_current_alpha0.png">当前 alpha0</a>、<a href="g2-evidence/t05-matcap_frozen_alpha0.png">冻结 alpha0</a>、<a href="g2-evidence/t05-matcap_off.png">关闭</a>为诊断图。</li>
+<li>首次新增测试在冷 <code>_MATCAP</code> variant 上出现 <a href="g2-evidence/t05-matcap-ab-tests.json">2112 像素 A/B 差</a>；随后同一源码、材质不变的 <a href="g2-evidence/t05-matcap-diagnostic-tests.json">首次复测</a>、<a href="g2-evidence/t05-matcap-diagnostic-tests-repeat2.json">复测 2</a>、<a href="g2-evidence/t05-matcap-diagnostic-tests-repeat3.json">复测 3</a>均 7/7。夹具随后在比较前分别预渲染两侧局部 keyword variant，一次 <a href="g2-evidence/t05-matcap-warmup-tests.json">7/7</a>。首轮原因<strong>尚未精确证明</strong>，疑为首次变体准备/Editor 状态；未当作产品回归修复或隐藏原始失败，后续 G2 仍需正式变体/Player 复验。</li>
+<li><strong>T05-MATCAP-IMPORT</strong>：<a href="g2-evidence/t05-matcap-import.json">强制导入</a> supported=True、Error 0；<a href="g2-evidence/t05-matcap-warning-compare.json">当前 ShaderUtil 35、冻结 36 条消息，current-only 为空</a>。<a href="g2-evidence/t05-matcap-final-compilation.json">编译 completed、failed=false</a>，<a href="g2-evidence/t05-matcap-final-console.json">Console ground truth 0 Error/0 Warning</a>，<a href="g2-evidence/t05-matcap-final-editor.json">Editor ready</a>。</li>
+</ul>
+<p>本测试不覆盖 MatCap 的 NormalMap/非均匀缩放/背面、多种光照、LOD 与其他 Pass；VAT、五光照、深度/雾、NBPostprocess、Graph/VFX、Player、性能也未因该切片通过。G2 保持进行中。纯核与本接线分别可回退；不 push。</p>
+</body></html>

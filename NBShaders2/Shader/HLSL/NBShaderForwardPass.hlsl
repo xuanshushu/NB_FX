@@ -3,6 +3,7 @@
     #include "NBShaderInput.hlsl"
     #include "NBShaderSurfaceV1.hlsl"
     #include "NBShaderDistortionV1.hlsl"
+    #include "NBShaderEnvironmentV2.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
 
@@ -808,20 +809,10 @@
         //half3 positionVS = TransformWorldToView(input.positionWS);
 
 
-        float3 r = reflect(positionVS, normalVS);
-        r = normalize(r);
-        float m = 2.828427f * sqrt(r.z + 1.0);
-        float2 matCapUV = r.xy / m + 0.5;
+        float2 matCapUV = NBFX_MatCapUVV2(positionVS, normalVS);
         bool forceMatCapLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_MATCAP);
         half3 matCapSample = SampleTexture2D(_MatCapTex,matCapUV,sampler_linear_clamp,forceMatCapLod0);
-
-        matCapSample *= _MatCapColor.rgb;
-
-        half3 matCapMutilResult = result * matCapSample;
-        half3 matAddResult = result + matCapSample;
-        half3 matCapResult = lerp(matAddResult,matCapMutilResult,_MatCapInfo.x);
-
-        result = lerp(result,matCapResult,_MatCapColor.a);
+        result = NBFX_CompositeMatCapV2(result, matCapSample, _MatCapColor, _MatCapInfo.x);
         #endif
 
 
