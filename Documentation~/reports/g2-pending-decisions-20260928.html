@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>G2 待用户决定：MatCap、Dissolve 首帧与 Universal2D Tier</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="../decisions.html">决策总表</a> · <a href="t05-g2-gate-audit-20260928.html">G2 Gate 复核</a></p>
+<h1>G2 待用户决定 · 2026-09-28</h1>
+<p><strong>状态：待用户确认；不是已批准的 D22–D24。</strong>主 Agent 已停止受影响的放行、容差、预热策略及 FeatureTier/Pass 配置修改；无关的原路径宿主 A/B 已继续验证。当前生效 D16/D21：未经明确决定，不修改官方包、Target、NBPostprocess，不删减原功能，不以 GF/G3 替代 G2，不自行改变严格验收。未 push。</p>
+<h2 id="matcap">Q09 · MatCap 跨 Shader 身份的数值判据</h2>
+<p><strong>事实：</strong>正式当前/Frozen 在渐变纹理固定点 (50,46) 为 R140/R139，严格 0 差失败；<a href="t05-g2-matcap-identity-control.html">同源仅改 Shader 名称的两个独立 Shader 资产</a>也稳定产生该 1 像素差，各自自重画为 0。故差值不能单独归因于本次 HLSL 重构，但尚未确定 Unity/Metal 导入、代码生成或数值来源。<a href="t05-g2-gate-audit-20260928.html">最近 Gate 复核</a>仍见 12/13。</p>
+<table border="1" cellpadding="6"><thead><tr><th>选择</th><th>功能/维护影响</th><th>验证与回退</th></tr></thead><tbody>
+<tr><td>A · 坚持跨 Shader RGBA32 每像素 0 差</td><td>不改规则；G2 继续阻塞，继续定位 GPU/导入与 HLSL 数值链。</td><td>保持正式夹具；若找到差异源，最小修复后全量重跑。</td></tr>
+<tr><td>B · 批准建立独立标定的 MatCap 数值容差版本</td><td>仅改变验收规则，不先改产品；需把不可见量化差与实质回归区分。不能直接把观测到的 1 LSB/1 像素抄成阈值。</td><td>预先用同源不同名、多纹理/投影/设备重复标定，再冻结阈值；生产/Frozen 全量重跑，保留严格原始数据；若超过阈值仍失败。</td></tr>
+</tbody></table>
+<p><strong>建议：</strong>若业务接受感知/数值容差，选 B，但必须先独立标定；否则选 A。未答复时维持 A 的严格未通过状态，不擅自采用 B。</p>
+<h2 id="dissolve">Q10 · Dissolve 首帧是否必须正确</h2>
+<p><strong>事实：</strong><a href="t05-g2-cold-variant-investigation.html">双 Shader 强制导入 → 正式 P4 → Dissolve</a>下，mode0 首次当前/Frozen 1090 像素差；同一个生产 Shader 的首次→自身复画也差 1090，Frozen 自身为 0，复画后 A/B 为 0。临时预热可使随后严格循环通过，但首帧仍失败；影响可能在变体/状态/编译/Renderer 等，未定位根因。<a href="t05-g2-mpb-bit31-checkpoint.html">MPB 夹具</a>另发现清缓存时首帧黑图，说明非空对照也要防止占位帧误过。</p>
+<table border="1" cellpadding="6"><thead><tr><th>选择</th><th>功能/维护影响</th><th>验证与回退</th></tr></thead><tbody>
+<tr><td>A · 生产首帧必须正确</td><td>不允许把测试预热当通过；G2 继续阻塞，追查根因及必要的产品修复。</td><td>正式夹具不预热；新 Editor/Player、冷导入、P4 前后均复验首帧。</td></tr>
+<tr><td>B · 可接受明确的产品预热协议</td><td>必须设计真正运行时预热及首次可见帧保证，不能只在测试中画两次或降低断言。若需改 NBPostprocess/Renderer 合约另请批准。</td><td>先证明用户可见首帧与 Player 正确，再将协议写入产品与文档；保留无预热负对照和回退方式。</td></tr>
+</tbody></table>
+<p><strong>建议：</strong>选 A；现有证据不足以批准 B 或把首次失败视为无关噪声。</p>
+<h2 id="universal2d">Q11 · Universal2D 在原 NBShader FeatureTier 中的产品意图</h2>
+<p><strong>事实：</strong><a href="t05-g2-universal2d-p6-checkpoint.html">P6</a>在隔离 Renderer2D/SpriteRenderer 中手动打开 Pass 后可见并 A/B 0；<a href="t05-g2-gui-backend-checkpoint.html">GUI 状态后端</a>显示所有 Tier 的 <code>pass.universal2D</code> 均不允许，SyncMaterialState 将其关闭。包内默认 Tier 与主工程 Tier 配置均缺此 ID，原/冻结 UnLit 样例也序列化为关闭。这是 2026-06-07 已存在的配置改变（commit <code>c99774e</code>），不是本轮 G2 引入；提交说明未记载产品意图。当前测试仅证明 Pass 能画，不证明 Inspector 后 2D 工作流可用。</p>
+<table border="1" cellpadding="6"><thead><tr><th>选择</th><th>功能/维护影响</th><th>验证与回退</th></tr></thead><tbody>
+<tr><td>A · 保持当前 Tier 策略，标记 2D 仅手动 Pass 能力</td><td>不改原路径状态，G2 不把 P6 夸称为默认 2D 用户流程；产品若要求 2D 则仍有范围缺口。</td><td>在 G2 文档明确限制；冻结/生产相同配置下验证无新回归。</td></tr>
+<tr><td>B · 明确要求 NBShaderGUI 同步后仍支持 2D</td><td>需改包内默认 Tier 及相应工程/安装配置或提供启用流程；这是产品策略变更，不是测试修补。</td><td>隔离工程先验证 Sync → 保存/重导入/Undo → 真 Renderer2D → Player 变体裁剪；确认 tier/材质迁移和回退，不在用户主工程直接试改。</td></tr>
+</tbody></table>
+<p><strong>建议：</strong>G2 对既有行为暂按 A 记录，不私改 Tier；若本轮产品要求真实 2D 用户流程，明确选 B 后另开最小切片验证。无答复不等于批准削减或增加功能。</p>
+<h2 id="followup">获答复后的闭环</h2>
+<p>逐项写入 <a href="../decisions.html">decisions.html</a> 的已确认表，记录原话/时间；更新 <a href="../gates.html">G2</a>、<a href="../validation.html">用例矩阵</a>与受影响报告；只在被批准范围内实施，隔离复验后按可回退切片提交。任何方案都不自动放行 G2；GUI/Undo/序列化、UIParticle、Player/SVC/FeatureTier、性能/SRP Batcher 等缺口仍须独立证据。</p>
+</body></html>

@@ -55,6 +55,7 @@
       <tr><td>Q06</td><td>图像容差与新增路径性能预算。</td><td>基线校准后、全量验收前确认，不在失败后放宽。</td></tr>
       <tr><td>Q07</td><td>按 D21，旧版本兼容留待 T10/G7 评估；根据实际测试结果确定可声明的最低版本与支持矩阵。</td><td>当前不因缺少 2021.3 环境停止 URP 6000.3 功能工作；当前环境的原 ShaderLab 功能与旧材质协议仍须回归。若以后要宣称旧版本支持，必须另有独立证据。</td></tr>
       <tr><td>Q08</td><td>D20 已确定由用户按管线选择安装内容；在 HDRP 实现前，仍需确定共享内容与 URP/HDRP 专属安装单元的边界、Package 依赖声明、<code>.asmref</code> 归属，以及双管线同时安装、升级和卸载流程。</td><td><a href="reports/t01-inventory-progress.html">T01 依赖清单</a>显示不止 GF <code>.asmref</code>：XuanXuanRenderUtility Runtime 与 NBPostProcessing Runtime 还无条件引用 URP，后者并引用 Cinemachine；普通 asmdef 的 Version Defines 不会条件化这些 GUID 引用。设计后须在仅 URP、仅 HDRP 和所支持的组合中分别导入/编译验证。当前未安装 HDRP、未改 package.json，不提前宣称 HDRP-only 导入通过。</td></tr>
+      <tr><td>Q09–Q11</td><td><a href="reports/g2-pending-decisions-20260928.html">G2 MatCap 数值判据、Dissolve 首帧与 Universal2D Tier 产品意图</a>均待用户明确选择；报告中的方案不是已批准决定。</td><td>受影响的 G2 放行/阈值/预热/Tier 变更停止；其他已授权且独立的原路径验证可继续。不得把稳态通过、手动打开 Pass 或同源对照误记为全 Gate 通过。</td></tr>
     </tbody>
   </table>
 
