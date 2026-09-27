@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader\"); var m=new UnityEngine.Material(s); var f=new NBShader.NBShaderFlags(m); var p=new UnityEngine.MaterialPropertyBlock(); int id=NBShader.NBShaderFlags.Flags1Id; m.SetInteger(id,1); p.SetInteger(id,m.GetInteger(id)); f.SetFlagBits(unchecked((int)0x80000000u),p,1); f.SetFlagBits(1<<23,p,1); f.ClearFlagBits(unchecked((int)0x80000000u),p,1); int h1=p.GetInteger(id); bool h1ok=h1==0x00800001 && f.CheckFlagBits(1<<23,p,1) && !f.CheckFlagBits(unchecked((int)0x80000000u),p,1) && f.CheckFlagBits(1,p,1); var q=new UnityEngine.MaterialPropertyBlock(); f.SetFlagBits(unchecked((int)0x80000000u),q,1); int h2=q.GetInteger(id); bool h2ok=h2==unchecked((int)0x80000000u) && f.CheckFlagBits(unchecked((int)0x80000000u),q,1) && !f.CheckFlagBits(1,q,1); m.SetInteger(id,unchecked((int)0xC0800001u)); var r=new UnityEngine.MaterialPropertyBlock(); r.SetInteger(id,m.GetInteger(id)); f.SetFlagBits(1<<2,r,1); f.ClearFlagBits(unchecked((int)0x80000000u),r,1); int h3=r.GetInteger(id); bool h3ok=h3==0x40800005 && f.CheckFlagBits(1<<2,r,1) && f.CheckFlagBits(1,r,1); var ps=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/NBPostProcessing/Shader/NBPostProcessUber.shader\"); var pm=new UnityEngine.Material(ps); var pf=new NBShader.NBPostProcessFlags(pm); pf.SetFlagBits(NBShader.NBPostProcessFlags.FLAG_BIT_NB_POSTPROCESS_ON); pf.SetFlagBits(NBShader.NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE); pf.ClearFlagBits(NBShader.NBPostProcessFlags.FLAG_BIT_NB_POSTPROCESS_ON); int h4=pm.GetInteger(NBShader.NBPostProcessFlags.FlagsId); bool h4ok=h4==NBShader.NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE && pf.CheckFlagBits(NBShader.NBPostProcessFlags.FLAG_BIT_FLASHTEXTURE) && !pf.CheckFlagBits(NBShader.NBPostProcessFlags.FLAG_BIT_NB_POSTPROCESS_ON); UnityEngine.Object.DestroyImmediate(m); UnityEngine.Object.DestroyImmediate(pm); return \"H1=\"+h1ok+\":0x\"+((uint)h1).ToString(\"X8\")+\";H2=\"+h2ok+\":0x\"+((uint)h2).ToString(\"X8\")+\";H3=\"+h3ok+\":0x\"+((uint)h3).ToString(\"X8\")+\";H4=\"+h4ok+\":0x\"+((uint)h4).ToString(\"X8\");"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "H1=True:0x00800001;H2=True:0x80000000;H3=True:0x40800005;H4=True:0x00002000"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

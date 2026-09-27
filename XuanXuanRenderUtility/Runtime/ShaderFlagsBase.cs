@@ -50,8 +50,8 @@ namespace NBShader
             }
             else
             {
-                int flags = propertyBlock.GetInt(GetShaderFlagsId(index));
-                propertyBlock.SetInt(GetShaderFlagsId(index), flags | flagBits);
+                int flags = propertyBlock.GetInteger(GetShaderFlagsId(index));
+                propertyBlock.SetInteger(GetShaderFlagsId(index), flags | flagBits);
             }
         }
 

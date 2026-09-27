@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T01 · MPB packed Flags 通道修复</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t01-contract-draft.html">T01 契约草案</a></p>
+<h1>T01 · 当前 Unity 的 MPB packed Flags 通道修复</h1>
+<p><strong>状态：</strong>两行产品修复已实施，当前 Editor API 边界用例通过；不代表 Graph/VFX GPU、Player 或 G1 通过。环境：Unity 6000.3.18f1、URP/SG/VFX 17.3.0，macOS/Metal。unityMCP 本会话未暴露，串行使用 Unity CLI。未修改官方包、Shader、Target、NBPostprocess 或原材质，未 push。</p>
+<h2>输入与根因</h2>
+<p><code>XuanXuanRenderUtility/Runtime/ShaderFlagsBase.cs</code> 输入 SHA-256 <code>14047e8f0b03c779ccd6bcbee3d055e42819bc1356a9cccdd0b7f4d4af621ab7</code>；修改后 <code>40073af325968afee866efdc69043f2abb647d995afbaf97789a4c4846c5dc0d</code>。原 <code>SetFlagBits(MPB)</code> 使用 <code>GetInt/SetInt</code>，而 <code>Clear/Check</code> 使用 <code>GetInteger/SetInteger</code>。先前<a href="g1-evidence/current-helper-mpb-command.json">原始 Editor 复现</a>中 Set bit31 后 Check 为 false，<a href="g1-evidence/current-material-setint-command.json">混用通道/精度探针</a>还显示低位丢失。只将 MPB Set 分支的两处调用改为 <code>GetInteger/SetInteger</code>；Material 分支、位号、默认值及公开签名不变。</p>
+<h2>复测</h2>
+<p><a href="g1-evidence/current-helper-fix-h1-h4-command.json">H1–H4 原始 CLI eval</a>在内存 Material/MPB 上得到：H1 已播种 slot1 后 Set bit31/bit23、Clear bit31 → <code>0x00800001</code>；H2 未播种 → <code>0x80000000</code>，证明播种是独立责任；H3 混合高低位 → <code>0x40800005</code>；H4 <code>NBPostProcessFlags</code> 的 Material 分支 Set/Clear/Check → <code>0x00002000</code>。四项断言均为 true，临时对象已销毁，未保存资产。该证据只证明当前 Editor C# API 路径，不证明 Renderer/GPU/Player 输出或外部调用者。</p>
+<p>改脚本后一次 <a href="g1-evidence/current-helper-fix-recompile.json">CLI recompile 命令</a>在 Domain Reload 时断连并返回 network error；重新发现 Editor 后，<a href="g1-evidence/current-helper-fix-editor-status.json">Editor ready</a>、<a href="g1-evidence/current-helper-fix-compilation-status.json">编译 completed/failed=false</a>。<a href="g1-evidence/current-helper-fix-console-status.json">Console groundTruth</a> 为 1 Error、11 Warning；这一条 Error 是修复前刻意对 Integer Property 调用 <code>SetInt</code> 的探针日志，已<a href="g1-evidence/current-setint-console-error.json">保留原文</a>，不是本次编译错误，未通过清空 Console 掩盖。Unity MCP 不可用，故以上均为 CLI/Pipeline 证据。</p>
+<h2>未完成与回退</h2>
+<p>MPB 初次覆写整个 packed 字前须显式从材质播种，或写入调用方持有的完整 32-bit 值；不能把两行修复误当自动继承。实际 Renderer/GPU、SRP Batcher、Player 及 Graph/VFX 的双 16-bit 浮点桥还未验证，分别进入后续功能 Gate。仅回退本两行即可恢复源文件；G0 冻结副本与原 ShaderLab 保持不变。</p>
+</body></html>
