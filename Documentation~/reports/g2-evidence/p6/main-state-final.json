@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var s=UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene(); var p=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset; var d=p.rendererDataList[0]; return s.path+\"|sceneDirty=\"+s.isDirty+\"|pipeline=\"+UnityEditor.AssetDatabase.GetAssetPath(p)+\"|quality=\"+UnityEditor.AssetDatabase.GetAssetPath(UnityEngine.QualitySettings.renderPipeline)+\"|rendererFeatures=\"+d.rendererFeatures.Count+\"|rendererDirty=\"+UnityEditor.EditorUtility.IsDirty(d);"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "Assets/NBShaderSamples/NBShader_VFXGraphSample.unity|sceneDirty=False|pipeline=Assets/Settings/URP-HighFidelity.asset|quality=Assets/Settings/URP-HighFidelity.asset|rendererFeatures=2|rendererDirty=False"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

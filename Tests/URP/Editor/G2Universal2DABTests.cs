@@ -43,6 +43,12 @@ namespace NBFX.Baseline.Tests
         [Test]
         public void RealRenderer2DUniversal2DPassMatchesFrozenWithVisibleControls()
         {
+            // Unity may serialize QualitySettings after Test Runner returns,
+            // despite restoring the override and passing immediate file hashes.
+            // Run this pipeline-switch test only in a disposable project copy.
+            if (Environment.GetEnvironmentVariable("NBFX_G2_P6_ISOLATED_PROJECT") != "1")
+                Assert.Ignore("P6 switches QualitySettings; run only in a disposable project copy with NBFX_G2_P6_ISOLATED_PROJECT=1.");
+
             var currentSource = AssetDatabase.LoadAssetAtPath<Material>(CurrentPath);
             var frozenSource = AssetDatabase.LoadAssetAtPath<Material>(FrozenPath);
             Assert.That(currentSource, Is.Not.Null);
