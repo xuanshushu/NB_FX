@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader\"); var m=new UnityEngine.Material(s); var p=new UnityEngine.MaterialPropertyBlock(); var f=new NBShader.NBShaderFlags(m); m.SetInteger(\"_W9ParticleShaderFlags1\",1); f.SetFlagBits(unchecked((int)0x80000000u),p,1); string result=\"material=\"+m.GetInteger(\"_W9ParticleShaderFlags1\")+\";blockInt=\"+p.GetInt(\"_W9ParticleShaderFlags1\")+\";blockInteger=\"+p.GetInteger(\"_W9ParticleShaderFlags1\")+\";helperCheck=\"+f.CheckFlagBits(unchecked((int)0x80000000u),p,1); UnityEngine.Object.DestroyImmediate(m); return result;"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "material=1;blockInt=-2147483648;blockInteger=0;helperCheck=False"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

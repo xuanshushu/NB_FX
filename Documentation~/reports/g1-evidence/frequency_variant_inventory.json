@@ -1,0 +1,3183 @@
+{
+  "scope": "static ShaderLab/source inventory, not compiled variant count",
+  "shaderFile": "Packages/NB_FX/NBShaders2/Shader/NBShader.shader",
+  "shaderSha256": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00",
+  "passCount": 7,
+  "passes": [
+    {
+      "name": "SRPDefaultUnlit",
+      "lightMode": "SRPDefaultUnlit",
+      "line": 589,
+      "groups": [
+        {
+          "line": 616,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_DISTORT_REFRACTION"
+          ],
+          "namedKeywords": [
+            "_DISTORT_REFRACTION"
+          ]
+        },
+        {
+          "line": 617,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_MASKMAP_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP_ON"
+          ]
+        },
+        {
+          "line": 618,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP2_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP2_ON"
+          ]
+        },
+        {
+          "line": 619,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP3_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP3_ON"
+          ]
+        },
+        {
+          "line": 623,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISEMAP"
+          ],
+          "namedKeywords": [
+            "_NOISEMAP"
+          ]
+        },
+        {
+          "line": 624,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISE_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_NOISE_MASKMAP"
+          ]
+        },
+        {
+          "line": 625,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_CHROMATIC_ABERRATION"
+          ],
+          "namedKeywords": [
+            "_CHROMATIC_ABERRATION"
+          ]
+        },
+        {
+          "line": 627,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_EMISSION"
+          ],
+          "namedKeywords": [
+            "_EMISSION"
+          ]
+        },
+        {
+          "line": 629,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE"
+          ]
+        },
+        {
+          "line": 630,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE_MASK"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_MASK"
+          ]
+        },
+        {
+          "line": 631,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_DISSOLVE_RAMP"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_RAMP"
+          ]
+        },
+        {
+          "line": 632,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_DISSOLVE_RAMP_MAP"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_RAMP_MAP"
+          ]
+        },
+        {
+          "line": 633,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE"
+          ]
+        },
+        {
+          "line": 634,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ]
+        },
+        {
+          "line": 635,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_VORONOI"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_VORONOI"
+          ]
+        },
+        {
+          "line": 636,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_COLORMAPBLEND"
+          ],
+          "namedKeywords": [
+            "_COLORMAPBLEND"
+          ]
+        },
+        {
+          "line": 637,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_COLOR_RAMP"
+          ],
+          "namedKeywords": [
+            "_COLOR_RAMP"
+          ]
+        },
+        {
+          "line": 638,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_COLOR_RAMP_MAP"
+          ],
+          "namedKeywords": [
+            "_COLOR_RAMP_MAP"
+          ]
+        },
+        {
+          "line": 639,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SHARED_UV"
+          ],
+          "namedKeywords": [
+            "_SHARED_UV"
+          ]
+        },
+        {
+          "line": 640,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_VAT",
+            "_FLIPBOOKBLENDING_ON"
+          ],
+          "namedKeywords": [
+            "_VAT",
+            "_FLIPBOOKBLENDING_ON"
+          ]
+        },
+        {
+          "line": 641,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_VAT_HOUDINI",
+            "_VAT_TYFLOW"
+          ],
+          "namedKeywords": [
+            "_VAT_HOUDINI",
+            "_VAT_TYFLOW"
+          ]
+        },
+        {
+          "line": 642,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_",
+            "_HOUDINI_VAT_SOFTBODY",
+            "_HOUDINI_VAT_RIGIDBODY",
+            "_HOUDINI_VAT_DYNAMIC_REMESH",
+            "_HOUDINI_VAT_PARTICLE_SPRITE"
+          ],
+          "namedKeywords": [
+            "_HOUDINI_VAT_SOFTBODY",
+            "_HOUDINI_VAT_RIGIDBODY",
+            "_HOUDINI_VAT_DYNAMIC_REMESH",
+            "_HOUDINI_VAT_PARTICLE_SPRITE"
+          ]
+        },
+        {
+          "line": 643,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_",
+            "_TYFLOW_VAT_ABSOLUTE",
+            "_TYFLOW_VAT_RELATIVE",
+            "_TYFLOW_VAT_SKIN_R",
+            "_TYFLOW_VAT_SKIN_PR",
+            "_TYFLOW_VAT_SKIN_PRSAVE",
+            "_TYFLOW_VAT_SKIN_PRSXYZ"
+          ],
+          "namedKeywords": [
+            "_TYFLOW_VAT_ABSOLUTE",
+            "_TYFLOW_VAT_RELATIVE",
+            "_TYFLOW_VAT_SKIN_R",
+            "_TYFLOW_VAT_SKIN_PR",
+            "_TYFLOW_VAT_SKIN_PRSAVE",
+            "_TYFLOW_VAT_SKIN_PRSXYZ"
+          ]
+        },
+        {
+          "line": 646,
+          "directive": "multi_compile",
+          "tokens": [
+            "_",
+            "UNITY_UI_CLIP_RECT",
+            "_ADDITIONAL_LIGHTS_VERTEX",
+            "_ADDITIONAL_LIGHTS"
+          ],
+          "namedKeywords": [
+            "UNITY_UI_CLIP_RECT",
+            "_ADDITIONAL_LIGHTS_VERTEX",
+            "_ADDITIONAL_LIGHTS"
+          ]
+        },
+        {
+          "line": 648,
+          "directive": "multi_compile",
+          "tokens": [
+            "_",
+            "SOFT_UI_FRAME",
+            "EVALUATE_SH_MIXED",
+            "EVALUATE_SH_VERTEX"
+          ],
+          "namedKeywords": [
+            "SOFT_UI_FRAME",
+            "EVALUATE_SH_MIXED",
+            "EVALUATE_SH_VERTEX"
+          ]
+        },
+        {
+          "line": 654,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ],
+          "namedKeywords": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ]
+        },
+        {
+          "line": 655,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET"
+          ]
+        },
+        {
+          "line": 656,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ]
+        },
+        {
+          "line": 658,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_FRESNEL"
+          ],
+          "namedKeywords": [
+            "_FRESNEL"
+          ]
+        },
+        {
+          "line": 663,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_ALPHAPREMULTIPLY_ON",
+            "_ALPHAMODULATE_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHAPREMULTIPLY_ON",
+            "_ALPHAMODULATE_ON"
+          ]
+        },
+        {
+          "line": 664,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_ALPHATEST_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHATEST_ON"
+          ]
+        },
+        {
+          "line": 666,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SOFTPARTICLES_ON"
+          ],
+          "namedKeywords": [
+            "_SOFTPARTICLES_ON"
+          ]
+        },
+        {
+          "line": 671,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_UNSCALETIME"
+          ],
+          "namedKeywords": [
+            "_UNSCALETIME"
+          ]
+        },
+        {
+          "line": 673,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SCRIPTABLETIME"
+          ],
+          "namedKeywords": [
+            "_SCRIPTABLETIME"
+          ]
+        },
+        {
+          "line": 676,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DEPTH_DECAL"
+          ],
+          "namedKeywords": [
+            "_DEPTH_DECAL"
+          ]
+        },
+        {
+          "line": 677,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DEPTH_OUTLINE"
+          ],
+          "namedKeywords": [
+            "_DEPTH_OUTLINE"
+          ]
+        },
+        {
+          "line": 678,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISTANCE_FADE"
+          ],
+          "namedKeywords": [
+            "_DISTANCE_FADE"
+          ]
+        },
+        {
+          "line": 679,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PARALLAX_MAPPING"
+          ],
+          "namedKeywords": [
+            "_PARALLAX_MAPPING"
+          ]
+        },
+        {
+          "line": 680,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_OVERRIDE_Z"
+          ],
+          "namedKeywords": [
+            "_OVERRIDE_Z"
+          ]
+        },
+        {
+          "line": 682,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_STENCIL_WITHOUT_PLAYER"
+          ],
+          "namedKeywords": [
+            "_STENCIL_WITHOUT_PLAYER"
+          ]
+        },
+        {
+          "line": 685,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_FX_LIGHT_MODE_UNLIT",
+            "_FX_LIGHT_MODE_BLINN_PHONG",
+            "_FX_LIGHT_MODE_HALF_LAMBERT",
+            "_FX_LIGHT_MODE_PBR",
+            "_FX_LIGHT_MODE_SIX_WAY"
+          ],
+          "namedKeywords": [
+            "_FX_LIGHT_MODE_UNLIT",
+            "_FX_LIGHT_MODE_BLINN_PHONG",
+            "_FX_LIGHT_MODE_HALF_LAMBERT",
+            "_FX_LIGHT_MODE_PBR",
+            "_FX_LIGHT_MODE_SIX_WAY"
+          ]
+        },
+        {
+          "line": 686,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_NORMALMAP"
+          ],
+          "namedKeywords": [
+            "_NORMALMAP"
+          ]
+        },
+        {
+          "line": 687,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_MATCAP"
+          ],
+          "namedKeywords": [
+            "_MATCAP"
+          ]
+        },
+        {
+          "line": 688,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_SPECULAR_COLOR"
+          ],
+          "namedKeywords": [
+            "_SPECULAR_COLOR"
+          ]
+        },
+        {
+          "line": 689,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "VFX_SIX_WAY_ABSORPTION"
+          ],
+          "namedKeywords": [
+            "VFX_SIX_WAY_ABSORPTION"
+          ]
+        },
+        {
+          "line": 690,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "NB_DEBUG_MASK",
+            "NB_DEBUG_PNOISE",
+            "NB_DEBUG_DISSOLVE",
+            "NB_DEBUG_DISTORT",
+            "NB_DEBUG_FRESNEL",
+            "NB_DEBUG_VERTEX_OFFSET"
+          ],
+          "namedKeywords": [
+            "NB_DEBUG_MASK",
+            "NB_DEBUG_PNOISE",
+            "NB_DEBUG_DISSOLVE",
+            "NB_DEBUG_DISTORT",
+            "NB_DEBUG_FRESNEL",
+            "NB_DEBUG_VERTEX_OFFSET"
+          ]
+        }
+      ],
+      "specialPragmas": [
+        {
+          "line": 696,
+          "directive": "multi_compile_fog",
+          "tokens": [],
+          "namedKeywords": []
+        }
+      ],
+      "groupCount": 46,
+      "shaderFeatureGroups": 44,
+      "multiCompileGroups": 2,
+      "uniqueNamedKeywordCount": 70,
+      "uniqueNamedKeywords": [
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX",
+        "NB_DEBUG_DISSOLVE",
+        "NB_DEBUG_DISTORT",
+        "NB_DEBUG_FRESNEL",
+        "NB_DEBUG_MASK",
+        "NB_DEBUG_PNOISE",
+        "NB_DEBUG_VERTEX_OFFSET",
+        "SOFT_UI_FRAME",
+        "UNITY_UI_CLIP_RECT",
+        "VFX_SIX_WAY_ABSORPTION",
+        "_ADDITIONAL_LIGHTS",
+        "_ADDITIONAL_LIGHTS_VERTEX",
+        "_ALPHAMODULATE_ON",
+        "_ALPHAPREMULTIPLY_ON",
+        "_ALPHATEST_ON",
+        "_CHROMATIC_ABERRATION",
+        "_COLORMAPBLEND",
+        "_COLOR_RAMP",
+        "_COLOR_RAMP_MAP",
+        "_CUSTOM_LOCAL_TRANSFORM",
+        "_DEPTH_DECAL",
+        "_DEPTH_OUTLINE",
+        "_DISSOLVE",
+        "_DISSOLVE_MASK",
+        "_DISSOLVE_RAMP",
+        "_DISSOLVE_RAMP_MAP",
+        "_DISTANCE_FADE",
+        "_DISTORT_REFRACTION",
+        "_EMISSION",
+        "_FLIPBOOKBLENDING_ON",
+        "_FRESNEL",
+        "_FX_LIGHT_MODE_BLINN_PHONG",
+        "_FX_LIGHT_MODE_HALF_LAMBERT",
+        "_FX_LIGHT_MODE_PBR",
+        "_FX_LIGHT_MODE_SIX_WAY",
+        "_FX_LIGHT_MODE_UNLIT",
+        "_HOUDINI_VAT_DYNAMIC_REMESH",
+        "_HOUDINI_VAT_PARTICLE_SPRITE",
+        "_HOUDINI_VAT_RIGIDBODY",
+        "_HOUDINI_VAT_SOFTBODY",
+        "_MASKMAP2_ON",
+        "_MASKMAP3_ON",
+        "_MASKMAP_ON",
+        "_MATCAP",
+        "_NOISEMAP",
+        "_NOISE_MASKMAP",
+        "_NORMALMAP",
+        "_OVERRIDE_Z",
+        "_PARALLAX_MAPPING",
+        "_PROGRAM_NOISE",
+        "_PROGRAM_NOISE_SIMPLE",
+        "_PROGRAM_NOISE_VORONOI",
+        "_SCRIPTABLETIME",
+        "_SHARED_UV",
+        "_SOFTPARTICLES_ON",
+        "_SPECULAR_COLOR",
+        "_STENCIL_WITHOUT_PLAYER",
+        "_TYFLOW_VAT_ABSOLUTE",
+        "_TYFLOW_VAT_RELATIVE",
+        "_TYFLOW_VAT_SKIN_PR",
+        "_TYFLOW_VAT_SKIN_PRSAVE",
+        "_TYFLOW_VAT_SKIN_PRSXYZ",
+        "_TYFLOW_VAT_SKIN_R",
+        "_UNSCALETIME",
+        "_VAT",
+        "_VAT_HOUDINI",
+        "_VAT_TYFLOW",
+        "_VERTEX_OFFSET",
+        "_VERTEX_OFFSET_MASKMAP"
+      ],
+      "managedNamedKeywordCount": 63,
+      "catalogExternalNamedKeywords": [
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX",
+        "SOFT_UI_FRAME",
+        "UNITY_UI_CLIP_RECT",
+        "_ADDITIONAL_LIGHTS",
+        "_ADDITIONAL_LIGHTS_VERTEX",
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ],
+      "hasIncludeWithPragmas": true
+    },
+    {
+      "name": "UniversalForward",
+      "lightMode": "UniversalForward",
+      "line": 726,
+      "groups": [
+        {
+          "line": 751,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_DISTORT_REFRACTION"
+          ],
+          "namedKeywords": [
+            "_DISTORT_REFRACTION"
+          ]
+        },
+        {
+          "line": 752,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_MASKMAP_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP_ON"
+          ]
+        },
+        {
+          "line": 753,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP2_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP2_ON"
+          ]
+        },
+        {
+          "line": 754,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP3_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP3_ON"
+          ]
+        },
+        {
+          "line": 758,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISEMAP"
+          ],
+          "namedKeywords": [
+            "_NOISEMAP"
+          ]
+        },
+        {
+          "line": 759,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISE_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_NOISE_MASKMAP"
+          ]
+        },
+        {
+          "line": 760,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_CHROMATIC_ABERRATION"
+          ],
+          "namedKeywords": [
+            "_CHROMATIC_ABERRATION"
+          ]
+        },
+        {
+          "line": 762,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_EMISSION"
+          ],
+          "namedKeywords": [
+            "_EMISSION"
+          ]
+        },
+        {
+          "line": 764,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE"
+          ]
+        },
+        {
+          "line": 765,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE_MASK"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_MASK"
+          ]
+        },
+        {
+          "line": 766,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_DISSOLVE_RAMP"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_RAMP"
+          ]
+        },
+        {
+          "line": 767,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_DISSOLVE_RAMP_MAP"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_RAMP_MAP"
+          ]
+        },
+        {
+          "line": 768,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE"
+          ]
+        },
+        {
+          "line": 769,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ]
+        },
+        {
+          "line": 770,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_VORONOI"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_VORONOI"
+          ]
+        },
+        {
+          "line": 771,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_COLORMAPBLEND"
+          ],
+          "namedKeywords": [
+            "_COLORMAPBLEND"
+          ]
+        },
+        {
+          "line": 772,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_COLOR_RAMP"
+          ],
+          "namedKeywords": [
+            "_COLOR_RAMP"
+          ]
+        },
+        {
+          "line": 773,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_COLOR_RAMP_MAP"
+          ],
+          "namedKeywords": [
+            "_COLOR_RAMP_MAP"
+          ]
+        },
+        {
+          "line": 774,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SHARED_UV"
+          ],
+          "namedKeywords": [
+            "_SHARED_UV"
+          ]
+        },
+        {
+          "line": 775,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_VAT",
+            "_FLIPBOOKBLENDING_ON"
+          ],
+          "namedKeywords": [
+            "_VAT",
+            "_FLIPBOOKBLENDING_ON"
+          ]
+        },
+        {
+          "line": 776,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_VAT_HOUDINI",
+            "_VAT_TYFLOW"
+          ],
+          "namedKeywords": [
+            "_VAT_HOUDINI",
+            "_VAT_TYFLOW"
+          ]
+        },
+        {
+          "line": 777,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_",
+            "_HOUDINI_VAT_SOFTBODY",
+            "_HOUDINI_VAT_RIGIDBODY",
+            "_HOUDINI_VAT_DYNAMIC_REMESH",
+            "_HOUDINI_VAT_PARTICLE_SPRITE"
+          ],
+          "namedKeywords": [
+            "_HOUDINI_VAT_SOFTBODY",
+            "_HOUDINI_VAT_RIGIDBODY",
+            "_HOUDINI_VAT_DYNAMIC_REMESH",
+            "_HOUDINI_VAT_PARTICLE_SPRITE"
+          ]
+        },
+        {
+          "line": 778,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_",
+            "_TYFLOW_VAT_ABSOLUTE",
+            "_TYFLOW_VAT_RELATIVE",
+            "_TYFLOW_VAT_SKIN_R",
+            "_TYFLOW_VAT_SKIN_PR",
+            "_TYFLOW_VAT_SKIN_PRSAVE",
+            "_TYFLOW_VAT_SKIN_PRSXYZ"
+          ],
+          "namedKeywords": [
+            "_TYFLOW_VAT_ABSOLUTE",
+            "_TYFLOW_VAT_RELATIVE",
+            "_TYFLOW_VAT_SKIN_R",
+            "_TYFLOW_VAT_SKIN_PR",
+            "_TYFLOW_VAT_SKIN_PRSAVE",
+            "_TYFLOW_VAT_SKIN_PRSXYZ"
+          ]
+        },
+        {
+          "line": 782,
+          "directive": "multi_compile_local",
+          "tokens": [
+            "_",
+            "UNITY_UI_CLIP_RECT",
+            "_ADDITIONAL_LIGHTS_VERTEX",
+            "_ADDITIONAL_LIGHTS"
+          ],
+          "namedKeywords": [
+            "UNITY_UI_CLIP_RECT",
+            "_ADDITIONAL_LIGHTS_VERTEX",
+            "_ADDITIONAL_LIGHTS"
+          ]
+        },
+        {
+          "line": 787,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ],
+          "namedKeywords": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ]
+        },
+        {
+          "line": 788,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET"
+          ]
+        },
+        {
+          "line": 789,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ]
+        },
+        {
+          "line": 791,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_FRESNEL"
+          ],
+          "namedKeywords": [
+            "_FRESNEL"
+          ]
+        },
+        {
+          "line": 795,
+          "directive": "multi_compile",
+          "tokens": [
+            "_",
+            "SOFT_UI_FRAME",
+            "EVALUATE_SH_MIXED",
+            "EVALUATE_SH_VERTEX"
+          ],
+          "namedKeywords": [
+            "SOFT_UI_FRAME",
+            "EVALUATE_SH_MIXED",
+            "EVALUATE_SH_VERTEX"
+          ]
+        },
+        {
+          "line": 798,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_ALPHAPREMULTIPLY_ON",
+            "_ALPHAMODULATE_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHAPREMULTIPLY_ON",
+            "_ALPHAMODULATE_ON"
+          ]
+        },
+        {
+          "line": 799,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_ALPHATEST_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHATEST_ON"
+          ]
+        },
+        {
+          "line": 801,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SOFTPARTICLES_ON"
+          ],
+          "namedKeywords": [
+            "_SOFTPARTICLES_ON"
+          ]
+        },
+        {
+          "line": 806,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_UNSCALETIME"
+          ],
+          "namedKeywords": [
+            "_UNSCALETIME"
+          ]
+        },
+        {
+          "line": 808,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SCRIPTABLETIME"
+          ],
+          "namedKeywords": [
+            "_SCRIPTABLETIME"
+          ]
+        },
+        {
+          "line": 811,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DEPTH_DECAL"
+          ],
+          "namedKeywords": [
+            "_DEPTH_DECAL"
+          ]
+        },
+        {
+          "line": 812,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DEPTH_OUTLINE"
+          ],
+          "namedKeywords": [
+            "_DEPTH_OUTLINE"
+          ]
+        },
+        {
+          "line": 813,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISTANCE_FADE"
+          ],
+          "namedKeywords": [
+            "_DISTANCE_FADE"
+          ]
+        },
+        {
+          "line": 814,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PARALLAX_MAPPING"
+          ],
+          "namedKeywords": [
+            "_PARALLAX_MAPPING"
+          ]
+        },
+        {
+          "line": 815,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_OVERRIDE_Z"
+          ],
+          "namedKeywords": [
+            "_OVERRIDE_Z"
+          ]
+        },
+        {
+          "line": 817,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_STENCIL_WITHOUT_PLAYER"
+          ],
+          "namedKeywords": [
+            "_STENCIL_WITHOUT_PLAYER"
+          ]
+        },
+        {
+          "line": 820,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_FX_LIGHT_MODE_UNLIT",
+            "_FX_LIGHT_MODE_BLINN_PHONG",
+            "_FX_LIGHT_MODE_HALF_LAMBERT",
+            "_FX_LIGHT_MODE_PBR",
+            "_FX_LIGHT_MODE_SIX_WAY"
+          ],
+          "namedKeywords": [
+            "_FX_LIGHT_MODE_UNLIT",
+            "_FX_LIGHT_MODE_BLINN_PHONG",
+            "_FX_LIGHT_MODE_HALF_LAMBERT",
+            "_FX_LIGHT_MODE_PBR",
+            "_FX_LIGHT_MODE_SIX_WAY"
+          ]
+        },
+        {
+          "line": 821,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_NORMALMAP"
+          ],
+          "namedKeywords": [
+            "_NORMALMAP"
+          ]
+        },
+        {
+          "line": 822,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_MATCAP"
+          ],
+          "namedKeywords": [
+            "_MATCAP"
+          ]
+        },
+        {
+          "line": 823,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_SPECULAR_COLOR"
+          ],
+          "namedKeywords": [
+            "_SPECULAR_COLOR"
+          ]
+        },
+        {
+          "line": 824,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "VFX_SIX_WAY_ABSORPTION"
+          ],
+          "namedKeywords": [
+            "VFX_SIX_WAY_ABSORPTION"
+          ]
+        },
+        {
+          "line": 825,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "NB_DEBUG_MASK",
+            "NB_DEBUG_PNOISE",
+            "NB_DEBUG_DISSOLVE",
+            "NB_DEBUG_DISTORT",
+            "NB_DEBUG_FRESNEL",
+            "NB_DEBUG_VERTEX_OFFSET"
+          ],
+          "namedKeywords": [
+            "NB_DEBUG_MASK",
+            "NB_DEBUG_PNOISE",
+            "NB_DEBUG_DISSOLVE",
+            "NB_DEBUG_DISTORT",
+            "NB_DEBUG_FRESNEL",
+            "NB_DEBUG_VERTEX_OFFSET"
+          ]
+        }
+      ],
+      "specialPragmas": [
+        {
+          "line": 830,
+          "directive": "multi_compile_fog",
+          "tokens": [],
+          "namedKeywords": []
+        }
+      ],
+      "groupCount": 46,
+      "shaderFeatureGroups": 44,
+      "multiCompileGroups": 2,
+      "uniqueNamedKeywordCount": 70,
+      "uniqueNamedKeywords": [
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX",
+        "NB_DEBUG_DISSOLVE",
+        "NB_DEBUG_DISTORT",
+        "NB_DEBUG_FRESNEL",
+        "NB_DEBUG_MASK",
+        "NB_DEBUG_PNOISE",
+        "NB_DEBUG_VERTEX_OFFSET",
+        "SOFT_UI_FRAME",
+        "UNITY_UI_CLIP_RECT",
+        "VFX_SIX_WAY_ABSORPTION",
+        "_ADDITIONAL_LIGHTS",
+        "_ADDITIONAL_LIGHTS_VERTEX",
+        "_ALPHAMODULATE_ON",
+        "_ALPHAPREMULTIPLY_ON",
+        "_ALPHATEST_ON",
+        "_CHROMATIC_ABERRATION",
+        "_COLORMAPBLEND",
+        "_COLOR_RAMP",
+        "_COLOR_RAMP_MAP",
+        "_CUSTOM_LOCAL_TRANSFORM",
+        "_DEPTH_DECAL",
+        "_DEPTH_OUTLINE",
+        "_DISSOLVE",
+        "_DISSOLVE_MASK",
+        "_DISSOLVE_RAMP",
+        "_DISSOLVE_RAMP_MAP",
+        "_DISTANCE_FADE",
+        "_DISTORT_REFRACTION",
+        "_EMISSION",
+        "_FLIPBOOKBLENDING_ON",
+        "_FRESNEL",
+        "_FX_LIGHT_MODE_BLINN_PHONG",
+        "_FX_LIGHT_MODE_HALF_LAMBERT",
+        "_FX_LIGHT_MODE_PBR",
+        "_FX_LIGHT_MODE_SIX_WAY",
+        "_FX_LIGHT_MODE_UNLIT",
+        "_HOUDINI_VAT_DYNAMIC_REMESH",
+        "_HOUDINI_VAT_PARTICLE_SPRITE",
+        "_HOUDINI_VAT_RIGIDBODY",
+        "_HOUDINI_VAT_SOFTBODY",
+        "_MASKMAP2_ON",
+        "_MASKMAP3_ON",
+        "_MASKMAP_ON",
+        "_MATCAP",
+        "_NOISEMAP",
+        "_NOISE_MASKMAP",
+        "_NORMALMAP",
+        "_OVERRIDE_Z",
+        "_PARALLAX_MAPPING",
+        "_PROGRAM_NOISE",
+        "_PROGRAM_NOISE_SIMPLE",
+        "_PROGRAM_NOISE_VORONOI",
+        "_SCRIPTABLETIME",
+        "_SHARED_UV",
+        "_SOFTPARTICLES_ON",
+        "_SPECULAR_COLOR",
+        "_STENCIL_WITHOUT_PLAYER",
+        "_TYFLOW_VAT_ABSOLUTE",
+        "_TYFLOW_VAT_RELATIVE",
+        "_TYFLOW_VAT_SKIN_PR",
+        "_TYFLOW_VAT_SKIN_PRSAVE",
+        "_TYFLOW_VAT_SKIN_PRSXYZ",
+        "_TYFLOW_VAT_SKIN_R",
+        "_UNSCALETIME",
+        "_VAT",
+        "_VAT_HOUDINI",
+        "_VAT_TYFLOW",
+        "_VERTEX_OFFSET",
+        "_VERTEX_OFFSET_MASKMAP"
+      ],
+      "managedNamedKeywordCount": 63,
+      "catalogExternalNamedKeywords": [
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX",
+        "SOFT_UI_FRAME",
+        "UNITY_UI_CLIP_RECT",
+        "_ADDITIONAL_LIGHTS",
+        "_ADDITIONAL_LIGHTS_VERTEX",
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ],
+      "hasIncludeWithPragmas": true
+    },
+    {
+      "name": "DepthOnly",
+      "lightMode": "DepthOnly",
+      "line": 852,
+      "groups": [
+        {
+          "line": 880,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_MASKMAP_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP_ON"
+          ]
+        },
+        {
+          "line": 881,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP2_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP2_ON"
+          ]
+        },
+        {
+          "line": 882,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP3_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP3_ON"
+          ]
+        },
+        {
+          "line": 883,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISEMAP"
+          ],
+          "namedKeywords": [
+            "_NOISEMAP"
+          ]
+        },
+        {
+          "line": 884,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISE_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_NOISE_MASKMAP"
+          ]
+        },
+        {
+          "line": 885,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE"
+          ]
+        },
+        {
+          "line": 886,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE_MASK"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_MASK"
+          ]
+        },
+        {
+          "line": 887,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE"
+          ]
+        },
+        {
+          "line": 888,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ]
+        },
+        {
+          "line": 889,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_VORONOI"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_VORONOI"
+          ]
+        },
+        {
+          "line": 890,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SHARED_UV"
+          ],
+          "namedKeywords": [
+            "_SHARED_UV"
+          ]
+        },
+        {
+          "line": 891,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_VAT",
+            "_FLIPBOOKBLENDING_ON"
+          ],
+          "namedKeywords": [
+            "_VAT",
+            "_FLIPBOOKBLENDING_ON"
+          ]
+        },
+        {
+          "line": 892,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_VAT_HOUDINI",
+            "_VAT_TYFLOW"
+          ],
+          "namedKeywords": [
+            "_VAT_HOUDINI",
+            "_VAT_TYFLOW"
+          ]
+        },
+        {
+          "line": 893,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_",
+            "_HOUDINI_VAT_SOFTBODY",
+            "_HOUDINI_VAT_RIGIDBODY",
+            "_HOUDINI_VAT_DYNAMIC_REMESH",
+            "_HOUDINI_VAT_PARTICLE_SPRITE"
+          ],
+          "namedKeywords": [
+            "_HOUDINI_VAT_SOFTBODY",
+            "_HOUDINI_VAT_RIGIDBODY",
+            "_HOUDINI_VAT_DYNAMIC_REMESH",
+            "_HOUDINI_VAT_PARTICLE_SPRITE"
+          ]
+        },
+        {
+          "line": 894,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_",
+            "_TYFLOW_VAT_ABSOLUTE",
+            "_TYFLOW_VAT_RELATIVE",
+            "_TYFLOW_VAT_SKIN_R",
+            "_TYFLOW_VAT_SKIN_PR",
+            "_TYFLOW_VAT_SKIN_PRSAVE",
+            "_TYFLOW_VAT_SKIN_PRSXYZ"
+          ],
+          "namedKeywords": [
+            "_TYFLOW_VAT_ABSOLUTE",
+            "_TYFLOW_VAT_RELATIVE",
+            "_TYFLOW_VAT_SKIN_R",
+            "_TYFLOW_VAT_SKIN_PR",
+            "_TYFLOW_VAT_SKIN_PRSAVE",
+            "_TYFLOW_VAT_SKIN_PRSXYZ"
+          ]
+        },
+        {
+          "line": 895,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_ALPHATEST_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHATEST_ON"
+          ]
+        },
+        {
+          "line": 896,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ],
+          "namedKeywords": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ]
+        },
+        {
+          "line": 897,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET"
+          ]
+        },
+        {
+          "line": 898,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ]
+        },
+        {
+          "line": 899,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_UNSCALETIME"
+          ],
+          "namedKeywords": [
+            "_UNSCALETIME"
+          ]
+        },
+        {
+          "line": 900,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SCRIPTABLETIME"
+          ],
+          "namedKeywords": [
+            "_SCRIPTABLETIME"
+          ]
+        }
+      ],
+      "specialPragmas": [],
+      "groupCount": 21,
+      "shaderFeatureGroups": 21,
+      "multiCompileGroups": 0,
+      "uniqueNamedKeywordCount": 31,
+      "uniqueNamedKeywords": [
+        "_ALPHATEST_ON",
+        "_CUSTOM_LOCAL_TRANSFORM",
+        "_DISSOLVE",
+        "_DISSOLVE_MASK",
+        "_FLIPBOOKBLENDING_ON",
+        "_HOUDINI_VAT_DYNAMIC_REMESH",
+        "_HOUDINI_VAT_PARTICLE_SPRITE",
+        "_HOUDINI_VAT_RIGIDBODY",
+        "_HOUDINI_VAT_SOFTBODY",
+        "_MASKMAP2_ON",
+        "_MASKMAP3_ON",
+        "_MASKMAP_ON",
+        "_NOISEMAP",
+        "_NOISE_MASKMAP",
+        "_PROGRAM_NOISE",
+        "_PROGRAM_NOISE_SIMPLE",
+        "_PROGRAM_NOISE_VORONOI",
+        "_SCRIPTABLETIME",
+        "_SHARED_UV",
+        "_TYFLOW_VAT_ABSOLUTE",
+        "_TYFLOW_VAT_RELATIVE",
+        "_TYFLOW_VAT_SKIN_PR",
+        "_TYFLOW_VAT_SKIN_PRSAVE",
+        "_TYFLOW_VAT_SKIN_PRSXYZ",
+        "_TYFLOW_VAT_SKIN_R",
+        "_UNSCALETIME",
+        "_VAT",
+        "_VAT_HOUDINI",
+        "_VAT_TYFLOW",
+        "_VERTEX_OFFSET",
+        "_VERTEX_OFFSET_MASKMAP"
+      ],
+      "managedNamedKeywordCount": 30,
+      "catalogExternalNamedKeywords": [
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ],
+      "hasIncludeWithPragmas": false
+    },
+    {
+      "name": "ShadowCaster",
+      "lightMode": "ShadowCaster",
+      "line": 910,
+      "groups": [
+        {
+          "line": 938,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_MASKMAP_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP_ON"
+          ]
+        },
+        {
+          "line": 939,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP2_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP2_ON"
+          ]
+        },
+        {
+          "line": 940,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP3_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP3_ON"
+          ]
+        },
+        {
+          "line": 941,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISEMAP"
+          ],
+          "namedKeywords": [
+            "_NOISEMAP"
+          ]
+        },
+        {
+          "line": 942,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISE_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_NOISE_MASKMAP"
+          ]
+        },
+        {
+          "line": 943,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE"
+          ]
+        },
+        {
+          "line": 944,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE_MASK"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_MASK"
+          ]
+        },
+        {
+          "line": 945,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE"
+          ]
+        },
+        {
+          "line": 946,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ]
+        },
+        {
+          "line": 947,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_VORONOI"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_VORONOI"
+          ]
+        },
+        {
+          "line": 948,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SHARED_UV"
+          ],
+          "namedKeywords": [
+            "_SHARED_UV"
+          ]
+        },
+        {
+          "line": 949,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_VAT",
+            "_FLIPBOOKBLENDING_ON"
+          ],
+          "namedKeywords": [
+            "_VAT",
+            "_FLIPBOOKBLENDING_ON"
+          ]
+        },
+        {
+          "line": 950,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_VAT_HOUDINI",
+            "_VAT_TYFLOW"
+          ],
+          "namedKeywords": [
+            "_VAT_HOUDINI",
+            "_VAT_TYFLOW"
+          ]
+        },
+        {
+          "line": 951,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_",
+            "_HOUDINI_VAT_SOFTBODY",
+            "_HOUDINI_VAT_RIGIDBODY",
+            "_HOUDINI_VAT_DYNAMIC_REMESH",
+            "_HOUDINI_VAT_PARTICLE_SPRITE"
+          ],
+          "namedKeywords": [
+            "_HOUDINI_VAT_SOFTBODY",
+            "_HOUDINI_VAT_RIGIDBODY",
+            "_HOUDINI_VAT_DYNAMIC_REMESH",
+            "_HOUDINI_VAT_PARTICLE_SPRITE"
+          ]
+        },
+        {
+          "line": 952,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_",
+            "_TYFLOW_VAT_ABSOLUTE",
+            "_TYFLOW_VAT_RELATIVE",
+            "_TYFLOW_VAT_SKIN_R",
+            "_TYFLOW_VAT_SKIN_PR",
+            "_TYFLOW_VAT_SKIN_PRSAVE",
+            "_TYFLOW_VAT_SKIN_PRSXYZ"
+          ],
+          "namedKeywords": [
+            "_TYFLOW_VAT_ABSOLUTE",
+            "_TYFLOW_VAT_RELATIVE",
+            "_TYFLOW_VAT_SKIN_R",
+            "_TYFLOW_VAT_SKIN_PR",
+            "_TYFLOW_VAT_SKIN_PRSAVE",
+            "_TYFLOW_VAT_SKIN_PRSXYZ"
+          ]
+        },
+        {
+          "line": 953,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_ALPHATEST_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHATEST_ON"
+          ]
+        },
+        {
+          "line": 954,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ],
+          "namedKeywords": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ]
+        },
+        {
+          "line": 955,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET"
+          ]
+        },
+        {
+          "line": 956,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ]
+        },
+        {
+          "line": 957,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_UNSCALETIME"
+          ],
+          "namedKeywords": [
+            "_UNSCALETIME"
+          ]
+        },
+        {
+          "line": 958,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SCRIPTABLETIME"
+          ],
+          "namedKeywords": [
+            "_SCRIPTABLETIME"
+          ]
+        },
+        {
+          "line": 960,
+          "directive": "multi_compile_vertex",
+          "tokens": [
+            "_",
+            "_CASTING_PUNCTUAL_LIGHT_SHADOW"
+          ],
+          "namedKeywords": [
+            "_CASTING_PUNCTUAL_LIGHT_SHADOW"
+          ]
+        }
+      ],
+      "specialPragmas": [],
+      "groupCount": 22,
+      "shaderFeatureGroups": 21,
+      "multiCompileGroups": 1,
+      "uniqueNamedKeywordCount": 32,
+      "uniqueNamedKeywords": [
+        "_ALPHATEST_ON",
+        "_CASTING_PUNCTUAL_LIGHT_SHADOW",
+        "_CUSTOM_LOCAL_TRANSFORM",
+        "_DISSOLVE",
+        "_DISSOLVE_MASK",
+        "_FLIPBOOKBLENDING_ON",
+        "_HOUDINI_VAT_DYNAMIC_REMESH",
+        "_HOUDINI_VAT_PARTICLE_SPRITE",
+        "_HOUDINI_VAT_RIGIDBODY",
+        "_HOUDINI_VAT_SOFTBODY",
+        "_MASKMAP2_ON",
+        "_MASKMAP3_ON",
+        "_MASKMAP_ON",
+        "_NOISEMAP",
+        "_NOISE_MASKMAP",
+        "_PROGRAM_NOISE",
+        "_PROGRAM_NOISE_SIMPLE",
+        "_PROGRAM_NOISE_VORONOI",
+        "_SCRIPTABLETIME",
+        "_SHARED_UV",
+        "_TYFLOW_VAT_ABSOLUTE",
+        "_TYFLOW_VAT_RELATIVE",
+        "_TYFLOW_VAT_SKIN_PR",
+        "_TYFLOW_VAT_SKIN_PRSAVE",
+        "_TYFLOW_VAT_SKIN_PRSXYZ",
+        "_TYFLOW_VAT_SKIN_R",
+        "_UNSCALETIME",
+        "_VAT",
+        "_VAT_HOUDINI",
+        "_VAT_TYFLOW",
+        "_VERTEX_OFFSET",
+        "_VERTEX_OFFSET_MASKMAP"
+      ],
+      "managedNamedKeywordCount": 30,
+      "catalogExternalNamedKeywords": [
+        "_CASTING_PUNCTUAL_LIGHT_SHADOW",
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ],
+      "hasIncludeWithPragmas": false
+    },
+    {
+      "name": "NBCameraOpaqueDistortPass",
+      "lightMode": "NBCameraOpaqueDistortPass",
+      "line": 972,
+      "groups": [
+        {
+          "line": 998,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_DISTORT_REFRACTION"
+          ],
+          "namedKeywords": [
+            "_DISTORT_REFRACTION"
+          ]
+        },
+        {
+          "line": 999,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_MASKMAP_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP_ON"
+          ]
+        },
+        {
+          "line": 1000,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP2_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP2_ON"
+          ]
+        },
+        {
+          "line": 1001,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP3_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP3_ON"
+          ]
+        },
+        {
+          "line": 1005,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISEMAP"
+          ],
+          "namedKeywords": [
+            "_NOISEMAP"
+          ]
+        },
+        {
+          "line": 1006,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISE_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_NOISE_MASKMAP"
+          ]
+        },
+        {
+          "line": 1007,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_CHROMATIC_ABERRATION"
+          ],
+          "namedKeywords": [
+            "_CHROMATIC_ABERRATION"
+          ]
+        },
+        {
+          "line": 1011,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE"
+          ]
+        },
+        {
+          "line": 1012,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE_MASK"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_MASK"
+          ]
+        },
+        {
+          "line": 1013,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_DISSOLVE_RAMP"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_RAMP"
+          ]
+        },
+        {
+          "line": 1014,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_DISSOLVE_RAMP_MAP"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_RAMP_MAP"
+          ]
+        },
+        {
+          "line": 1015,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE"
+          ]
+        },
+        {
+          "line": 1016,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ]
+        },
+        {
+          "line": 1017,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_VORONOI"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_VORONOI"
+          ]
+        },
+        {
+          "line": 1020,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SHARED_UV"
+          ],
+          "namedKeywords": [
+            "_SHARED_UV"
+          ]
+        },
+        {
+          "line": 1029,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ],
+          "namedKeywords": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ]
+        },
+        {
+          "line": 1030,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET"
+          ]
+        },
+        {
+          "line": 1031,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ]
+        },
+        {
+          "line": 1033,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_FRESNEL"
+          ],
+          "namedKeywords": [
+            "_FRESNEL"
+          ]
+        },
+        {
+          "line": 1037,
+          "directive": "multi_compile",
+          "tokens": [
+            "_",
+            "SOFT_UI_FRAME",
+            "EVALUATE_SH_MIXED",
+            "EVALUATE_SH_VERTEX"
+          ],
+          "namedKeywords": [
+            "SOFT_UI_FRAME",
+            "EVALUATE_SH_MIXED",
+            "EVALUATE_SH_VERTEX"
+          ]
+        },
+        {
+          "line": 1040,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_ALPHAPREMULTIPLY_ON",
+            "_ALPHAMODULATE_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHAPREMULTIPLY_ON",
+            "_ALPHAMODULATE_ON"
+          ]
+        },
+        {
+          "line": 1041,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_ALPHATEST_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHATEST_ON"
+          ]
+        },
+        {
+          "line": 1043,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_FLIPBOOKBLENDING_ON"
+          ],
+          "namedKeywords": [
+            "_FLIPBOOKBLENDING_ON"
+          ]
+        },
+        {
+          "line": 1044,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SOFTPARTICLES_ON"
+          ],
+          "namedKeywords": [
+            "_SOFTPARTICLES_ON"
+          ]
+        },
+        {
+          "line": 1049,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_UNSCALETIME"
+          ],
+          "namedKeywords": [
+            "_UNSCALETIME"
+          ]
+        },
+        {
+          "line": 1051,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SCRIPTABLETIME"
+          ],
+          "namedKeywords": [
+            "_SCRIPTABLETIME"
+          ]
+        },
+        {
+          "line": 1054,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DEPTH_DECAL"
+          ],
+          "namedKeywords": [
+            "_DEPTH_DECAL"
+          ]
+        },
+        {
+          "line": 1055,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DEPTH_OUTLINE"
+          ],
+          "namedKeywords": [
+            "_DEPTH_OUTLINE"
+          ]
+        },
+        {
+          "line": 1056,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISTANCE_FADE"
+          ],
+          "namedKeywords": [
+            "_DISTANCE_FADE"
+          ]
+        },
+        {
+          "line": 1059,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_STENCIL_WITHOUT_PLAYER"
+          ],
+          "namedKeywords": [
+            "_STENCIL_WITHOUT_PLAYER"
+          ]
+        },
+        {
+          "line": 1063,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_FX_LIGHT_MODE_UNLIT"
+          ],
+          "namedKeywords": [
+            "_FX_LIGHT_MODE_UNLIT"
+          ]
+        },
+        {
+          "line": 1064,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_NORMALMAP"
+          ],
+          "namedKeywords": [
+            "_NORMALMAP"
+          ]
+        }
+      ],
+      "specialPragmas": [
+        {
+          "line": 1072,
+          "directive": "multi_compile_fog",
+          "tokens": [],
+          "namedKeywords": []
+        }
+      ],
+      "groupCount": 32,
+      "shaderFeatureGroups": 31,
+      "multiCompileGroups": 1,
+      "uniqueNamedKeywordCount": 35,
+      "uniqueNamedKeywords": [
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX",
+        "SOFT_UI_FRAME",
+        "_ALPHAMODULATE_ON",
+        "_ALPHAPREMULTIPLY_ON",
+        "_ALPHATEST_ON",
+        "_CHROMATIC_ABERRATION",
+        "_CUSTOM_LOCAL_TRANSFORM",
+        "_DEPTH_DECAL",
+        "_DEPTH_OUTLINE",
+        "_DISSOLVE",
+        "_DISSOLVE_MASK",
+        "_DISSOLVE_RAMP",
+        "_DISSOLVE_RAMP_MAP",
+        "_DISTANCE_FADE",
+        "_DISTORT_REFRACTION",
+        "_FLIPBOOKBLENDING_ON",
+        "_FRESNEL",
+        "_FX_LIGHT_MODE_UNLIT",
+        "_MASKMAP2_ON",
+        "_MASKMAP3_ON",
+        "_MASKMAP_ON",
+        "_NOISEMAP",
+        "_NOISE_MASKMAP",
+        "_NORMALMAP",
+        "_PROGRAM_NOISE",
+        "_PROGRAM_NOISE_SIMPLE",
+        "_PROGRAM_NOISE_VORONOI",
+        "_SCRIPTABLETIME",
+        "_SHARED_UV",
+        "_SOFTPARTICLES_ON",
+        "_STENCIL_WITHOUT_PLAYER",
+        "_UNSCALETIME",
+        "_VERTEX_OFFSET",
+        "_VERTEX_OFFSET_MASKMAP"
+      ],
+      "managedNamedKeywordCount": 31,
+      "catalogExternalNamedKeywords": [
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX",
+        "SOFT_UI_FRAME",
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ],
+      "hasIncludeWithPragmas": true
+    },
+    {
+      "name": "NBDeferredDistortPass",
+      "lightMode": "NBDeferredDistortPass",
+      "line": 1096,
+      "groups": [
+        {
+          "line": 1122,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_DISTORT_REFRACTION"
+          ],
+          "namedKeywords": [
+            "_DISTORT_REFRACTION"
+          ]
+        },
+        {
+          "line": 1124,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_MASKMAP_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP_ON"
+          ]
+        },
+        {
+          "line": 1125,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP2_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP2_ON"
+          ]
+        },
+        {
+          "line": 1126,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP3_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP3_ON"
+          ]
+        },
+        {
+          "line": 1130,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISEMAP"
+          ],
+          "namedKeywords": [
+            "_NOISEMAP"
+          ]
+        },
+        {
+          "line": 1131,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISE_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_NOISE_MASKMAP"
+          ]
+        },
+        {
+          "line": 1132,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_CHROMATIC_ABERRATION"
+          ],
+          "namedKeywords": [
+            "_CHROMATIC_ABERRATION"
+          ]
+        },
+        {
+          "line": 1136,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE"
+          ]
+        },
+        {
+          "line": 1137,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE_MASK"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_MASK"
+          ]
+        },
+        {
+          "line": 1138,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_DISSOLVE_RAMP"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_RAMP"
+          ]
+        },
+        {
+          "line": 1139,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_DISSOLVE_RAMP_MAP"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_RAMP_MAP"
+          ]
+        },
+        {
+          "line": 1140,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE"
+          ]
+        },
+        {
+          "line": 1141,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ]
+        },
+        {
+          "line": 1142,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_VORONOI"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_VORONOI"
+          ]
+        },
+        {
+          "line": 1145,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SHARED_UV"
+          ],
+          "namedKeywords": [
+            "_SHARED_UV"
+          ]
+        },
+        {
+          "line": 1154,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ],
+          "namedKeywords": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ]
+        },
+        {
+          "line": 1155,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET"
+          ]
+        },
+        {
+          "line": 1156,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ]
+        },
+        {
+          "line": 1158,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_FRESNEL"
+          ],
+          "namedKeywords": [
+            "_FRESNEL"
+          ]
+        },
+        {
+          "line": 1162,
+          "directive": "multi_compile",
+          "tokens": [
+            "_",
+            "SOFT_UI_FRAME",
+            "EVALUATE_SH_MIXED",
+            "EVALUATE_SH_VERTEX"
+          ],
+          "namedKeywords": [
+            "SOFT_UI_FRAME",
+            "EVALUATE_SH_MIXED",
+            "EVALUATE_SH_VERTEX"
+          ]
+        },
+        {
+          "line": 1165,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_ALPHAPREMULTIPLY_ON",
+            "_ALPHAMODULATE_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHAPREMULTIPLY_ON",
+            "_ALPHAMODULATE_ON"
+          ]
+        },
+        {
+          "line": 1166,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_ALPHATEST_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHATEST_ON"
+          ]
+        },
+        {
+          "line": 1168,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_FLIPBOOKBLENDING_ON"
+          ],
+          "namedKeywords": [
+            "_FLIPBOOKBLENDING_ON"
+          ]
+        },
+        {
+          "line": 1169,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SOFTPARTICLES_ON"
+          ],
+          "namedKeywords": [
+            "_SOFTPARTICLES_ON"
+          ]
+        },
+        {
+          "line": 1174,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_UNSCALETIME"
+          ],
+          "namedKeywords": [
+            "_UNSCALETIME"
+          ]
+        },
+        {
+          "line": 1176,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SCRIPTABLETIME"
+          ],
+          "namedKeywords": [
+            "_SCRIPTABLETIME"
+          ]
+        },
+        {
+          "line": 1179,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DEPTH_DECAL"
+          ],
+          "namedKeywords": [
+            "_DEPTH_DECAL"
+          ]
+        },
+        {
+          "line": 1180,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DEPTH_OUTLINE"
+          ],
+          "namedKeywords": [
+            "_DEPTH_OUTLINE"
+          ]
+        },
+        {
+          "line": 1181,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISTANCE_FADE"
+          ],
+          "namedKeywords": [
+            "_DISTANCE_FADE"
+          ]
+        },
+        {
+          "line": 1184,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_STENCIL_WITHOUT_PLAYER"
+          ],
+          "namedKeywords": [
+            "_STENCIL_WITHOUT_PLAYER"
+          ]
+        },
+        {
+          "line": 1188,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_FX_LIGHT_MODE_UNLIT"
+          ],
+          "namedKeywords": [
+            "_FX_LIGHT_MODE_UNLIT"
+          ]
+        },
+        {
+          "line": 1189,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_NORMALMAP"
+          ],
+          "namedKeywords": [
+            "_NORMALMAP"
+          ]
+        }
+      ],
+      "specialPragmas": [
+        {
+          "line": 1197,
+          "directive": "multi_compile_fog",
+          "tokens": [],
+          "namedKeywords": []
+        }
+      ],
+      "groupCount": 32,
+      "shaderFeatureGroups": 31,
+      "multiCompileGroups": 1,
+      "uniqueNamedKeywordCount": 35,
+      "uniqueNamedKeywords": [
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX",
+        "SOFT_UI_FRAME",
+        "_ALPHAMODULATE_ON",
+        "_ALPHAPREMULTIPLY_ON",
+        "_ALPHATEST_ON",
+        "_CHROMATIC_ABERRATION",
+        "_CUSTOM_LOCAL_TRANSFORM",
+        "_DEPTH_DECAL",
+        "_DEPTH_OUTLINE",
+        "_DISSOLVE",
+        "_DISSOLVE_MASK",
+        "_DISSOLVE_RAMP",
+        "_DISSOLVE_RAMP_MAP",
+        "_DISTANCE_FADE",
+        "_DISTORT_REFRACTION",
+        "_FLIPBOOKBLENDING_ON",
+        "_FRESNEL",
+        "_FX_LIGHT_MODE_UNLIT",
+        "_MASKMAP2_ON",
+        "_MASKMAP3_ON",
+        "_MASKMAP_ON",
+        "_NOISEMAP",
+        "_NOISE_MASKMAP",
+        "_NORMALMAP",
+        "_PROGRAM_NOISE",
+        "_PROGRAM_NOISE_SIMPLE",
+        "_PROGRAM_NOISE_VORONOI",
+        "_SCRIPTABLETIME",
+        "_SHARED_UV",
+        "_SOFTPARTICLES_ON",
+        "_STENCIL_WITHOUT_PLAYER",
+        "_UNSCALETIME",
+        "_VERTEX_OFFSET",
+        "_VERTEX_OFFSET_MASKMAP"
+      ],
+      "managedNamedKeywordCount": 31,
+      "catalogExternalNamedKeywords": [
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX",
+        "SOFT_UI_FRAME",
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ],
+      "hasIncludeWithPragmas": true
+    },
+    {
+      "name": "Universal2D",
+      "lightMode": "Universal2D",
+      "line": 1221,
+      "groups": [
+        {
+          "line": 1245,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_SCREEN_DISTORT_MODE"
+          ],
+          "namedKeywords": [
+            "_SCREEN_DISTORT_MODE"
+          ]
+        },
+        {
+          "line": 1246,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_MASKMAP_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP_ON"
+          ]
+        },
+        {
+          "line": 1247,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP2_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP2_ON"
+          ]
+        },
+        {
+          "line": 1248,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_MASKMAP3_ON"
+          ],
+          "namedKeywords": [
+            "_MASKMAP3_ON"
+          ]
+        },
+        {
+          "line": 1252,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISEMAP"
+          ],
+          "namedKeywords": [
+            "_NOISEMAP"
+          ]
+        },
+        {
+          "line": 1253,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_NOISE_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_NOISE_MASKMAP"
+          ]
+        },
+        {
+          "line": 1254,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_CHROMATIC_ABERRATION"
+          ],
+          "namedKeywords": [
+            "_CHROMATIC_ABERRATION"
+          ]
+        },
+        {
+          "line": 1256,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_EMISSION"
+          ],
+          "namedKeywords": [
+            "_EMISSION"
+          ]
+        },
+        {
+          "line": 1258,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE"
+          ]
+        },
+        {
+          "line": 1259,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_DISSOLVE_MASK"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_MASK"
+          ]
+        },
+        {
+          "line": 1260,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_DISSOLVE_RAMP"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_RAMP"
+          ]
+        },
+        {
+          "line": 1261,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_DISSOLVE_RAMP_MAP"
+          ],
+          "namedKeywords": [
+            "_DISSOLVE_RAMP_MAP"
+          ]
+        },
+        {
+          "line": 1262,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE"
+          ]
+        },
+        {
+          "line": 1263,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_SIMPLE"
+          ]
+        },
+        {
+          "line": 1264,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PROGRAM_NOISE_VORONOI"
+          ],
+          "namedKeywords": [
+            "_PROGRAM_NOISE_VORONOI"
+          ]
+        },
+        {
+          "line": 1265,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_COLORMAPBLEND"
+          ],
+          "namedKeywords": [
+            "_COLORMAPBLEND"
+          ]
+        },
+        {
+          "line": 1266,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_COLOR_RAMP"
+          ],
+          "namedKeywords": [
+            "_COLOR_RAMP"
+          ]
+        },
+        {
+          "line": 1267,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_COLOR_RAMP_MAP"
+          ],
+          "namedKeywords": [
+            "_COLOR_RAMP_MAP"
+          ]
+        },
+        {
+          "line": 1268,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SHARED_UV"
+          ],
+          "namedKeywords": [
+            "_SHARED_UV"
+          ]
+        },
+        {
+          "line": 1272,
+          "directive": "multi_compile_local",
+          "tokens": [
+            "_",
+            "UNITY_UI_CLIP_RECT",
+            "_ADDITIONAL_LIGHTS_VERTEX",
+            "_ADDITIONAL_LIGHTS"
+          ],
+          "namedKeywords": [
+            "UNITY_UI_CLIP_RECT",
+            "_ADDITIONAL_LIGHTS_VERTEX",
+            "_ADDITIONAL_LIGHTS"
+          ]
+        },
+        {
+          "line": 1274,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_PARCUSTOMDATA_ON"
+          ],
+          "namedKeywords": [
+            "_PARCUSTOMDATA_ON"
+          ]
+        },
+        {
+          "line": 1278,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ],
+          "namedKeywords": [
+            "_CUSTOM_LOCAL_TRANSFORM"
+          ]
+        },
+        {
+          "line": 1279,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET"
+          ]
+        },
+        {
+          "line": 1280,
+          "directive": "shader_feature_local_vertex",
+          "tokens": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ],
+          "namedKeywords": [
+            "_VERTEX_OFFSET_MASKMAP"
+          ]
+        },
+        {
+          "line": 1282,
+          "directive": "shader_feature_local_fragment",
+          "tokens": [
+            "_FRESNEL"
+          ],
+          "namedKeywords": [
+            "_FRESNEL"
+          ]
+        },
+        {
+          "line": 1286,
+          "directive": "multi_compile",
+          "tokens": [
+            "_",
+            "SOFT_UI_FRAME",
+            "EVALUATE_SH_MIXED",
+            "EVALUATE_SH_VERTEX"
+          ],
+          "namedKeywords": [
+            "SOFT_UI_FRAME",
+            "EVALUATE_SH_MIXED",
+            "EVALUATE_SH_VERTEX"
+          ]
+        },
+        {
+          "line": 1289,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_ALPHAPREMULTIPLY_ON",
+            "_ALPHAMODULATE_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHAPREMULTIPLY_ON",
+            "_ALPHAMODULATE_ON"
+          ]
+        },
+        {
+          "line": 1290,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_ALPHATEST_ON"
+          ],
+          "namedKeywords": [
+            "_ALPHATEST_ON"
+          ]
+        },
+        {
+          "line": 1292,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_FLIPBOOKBLENDING_ON"
+          ],
+          "namedKeywords": [
+            "_FLIPBOOKBLENDING_ON"
+          ]
+        },
+        {
+          "line": 1298,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_UNSCALETIME"
+          ],
+          "namedKeywords": [
+            "_UNSCALETIME"
+          ]
+        },
+        {
+          "line": 1300,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_SCRIPTABLETIME"
+          ],
+          "namedKeywords": [
+            "_SCRIPTABLETIME"
+          ]
+        },
+        {
+          "line": 1306,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_STENCIL_WITHOUT_PLAYER"
+          ],
+          "namedKeywords": [
+            "_STENCIL_WITHOUT_PLAYER"
+          ]
+        },
+        {
+          "line": 1310,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_FX_LIGHT_MODE_UNLIT"
+          ],
+          "namedKeywords": [
+            "_FX_LIGHT_MODE_UNLIT"
+          ]
+        },
+        {
+          "line": 1311,
+          "directive": "shader_feature_local",
+          "tokens": [
+            "_",
+            "_NORMALMAP"
+          ],
+          "namedKeywords": [
+            "_NORMALMAP"
+          ]
+        }
+      ],
+      "specialPragmas": [
+        {
+          "line": 1319,
+          "directive": "multi_compile_fog",
+          "tokens": [],
+          "namedKeywords": []
+        }
+      ],
+      "groupCount": 34,
+      "shaderFeatureGroups": 32,
+      "multiCompileGroups": 2,
+      "uniqueNamedKeywordCount": 39,
+      "uniqueNamedKeywords": [
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX",
+        "SOFT_UI_FRAME",
+        "UNITY_UI_CLIP_RECT",
+        "_ADDITIONAL_LIGHTS",
+        "_ADDITIONAL_LIGHTS_VERTEX",
+        "_ALPHAMODULATE_ON",
+        "_ALPHAPREMULTIPLY_ON",
+        "_ALPHATEST_ON",
+        "_CHROMATIC_ABERRATION",
+        "_COLORMAPBLEND",
+        "_COLOR_RAMP",
+        "_COLOR_RAMP_MAP",
+        "_CUSTOM_LOCAL_TRANSFORM",
+        "_DISSOLVE",
+        "_DISSOLVE_MASK",
+        "_DISSOLVE_RAMP",
+        "_DISSOLVE_RAMP_MAP",
+        "_EMISSION",
+        "_FLIPBOOKBLENDING_ON",
+        "_FRESNEL",
+        "_FX_LIGHT_MODE_UNLIT",
+        "_MASKMAP2_ON",
+        "_MASKMAP3_ON",
+        "_MASKMAP_ON",
+        "_NOISEMAP",
+        "_NOISE_MASKMAP",
+        "_NORMALMAP",
+        "_PARCUSTOMDATA_ON",
+        "_PROGRAM_NOISE",
+        "_PROGRAM_NOISE_SIMPLE",
+        "_PROGRAM_NOISE_VORONOI",
+        "_SCREEN_DISTORT_MODE",
+        "_SCRIPTABLETIME",
+        "_SHARED_UV",
+        "_STENCIL_WITHOUT_PLAYER",
+        "_UNSCALETIME",
+        "_VERTEX_OFFSET",
+        "_VERTEX_OFFSET_MASKMAP"
+      ],
+      "managedNamedKeywordCount": 32,
+      "catalogExternalNamedKeywords": [
+        "EVALUATE_SH_MIXED",
+        "EVALUATE_SH_VERTEX",
+        "SOFT_UI_FRAME",
+        "UNITY_UI_CLIP_RECT",
+        "_ADDITIONAL_LIGHTS",
+        "_ADDITIONAL_LIGHTS_VERTEX",
+        "_CUSTOM_LOCAL_TRANSFORM"
+      ],
+      "hasIncludeWithPragmas": true
+    }
+  ],
+  "frequencyMap": [
+    {
+      "source": "NBShaderInput.hlsl:222-251",
+      "class": "per-material uniform",
+      "fields": "flags0/1, wrap, ForceNoMip, CustomData selectors0..3, UV low/type, Channel, PNoise, feature scalars/textures",
+      "proved": "Declared inside UnityPerMaterial CBUFFER; Material/GUI setters write packed integers. Not particle-varying by declaration."
+    },
+    {
+      "source": "ShaderFlagsBase.cs:43-70",
+      "class": "per-renderer MPB override candidate",
+      "fields": "same packed material properties through MaterialPropertyBlock SetInt/SetInteger",
+      "proved": "Runtime writer API path exists. Actual MPB inheritance, VFX applicability, batching and GPU behavior not tested."
+    },
+    {
+      "source": "NBShaderInput.hlsl:1393-1394,1436-1437; NBShaderForwardPass.hlsl:117-122; NBShaderFlags.hlsl:178-225",
+      "class": "per-vertex/custom stream, interpolated fragment; potentially per-particle provider",
+      "fields": "Custom1/Custom2 input TEXCOORD1/2 -> varyings TEXCOORD8/9 -> GetCustomData source",
+      "proved": "Vertex-to-fragment path shown. Per-particle VFX binding is not proved by this source."
+    },
+    {
+      "source": "NBShader.shader:616-690,751-825,880-901,938-961,998-1072,1122-1197,1245-1274",
+      "class": "compile-time variant",
+      "fields": "shader_feature(_local/_vertex/_fragment), multi_compile, fog",
+      "proved": "Seven ShaderLab passes declare keyword groups; exact compiled/imported/stripped variants unmeasured."
+    },
+    {
+      "source": "NBShader.shader:589-1226; NBShaderPassFeatureCatalog.cs:11-27; NBGFUnlitSubTarget.cs:43-61",
+      "class": "pass identity/render pipeline selection",
+      "fields": "LightMode values incl NBCameraOpaqueDistortPass and NBDeferredDistortPass",
+      "proved": "Production NBShader pass labels and GF-created Graph pass labels are source-visible; Graph Player pass presence was proved by GF, full product feature path not."
+    },
+    {
+      "source": "NBGFDistortPass.hlsl:10,28-42; NBGFPlayerProbe.cs:82,114-160",
+      "class": "GF-only global uniform",
+      "fields": "_NBGFMode",
+      "proved": "Global mode differentiates controlled probe passes. Not an NBShader product parameter contract."
+    },
+    {
+      "source": "GF_URP_VFX_NBSubTarget.shadergraph:5-12,349-358,978-987",
+      "class": "Graph-exposed material properties in GF only",
+      "fields": "BaseMap and Color",
+      "proved": "Two Graph properties and zero declared Graph keywords; no NB packed properties/CustomData bridge in GF asset."
+    }
+  ],
+  "existingStripper": {
+    "source": "NBShaderVariantStripper.cs:22-45,65-111",
+    "predicate": "shader.name == NBShaderFeatureLevelCatalog.ShaderName",
+    "targetName": "Effects/NBShader",
+    "implication": "Existing tier/pass variant stripper is restricted to production NBShader. It cannot be assumed to strip a differently named SG/VFX generated shader.",
+    "catalog": "NBShaderFeatureCatalog.cs:14,23-93; NBShaderPassFeatureCatalog.cs:11-27"
+  },
+  "managedKeywordCatalog": {
+    "path": "Packages/NB_FX/NBShaders2/Runtime/NBShaderFeatureCatalog.cs",
+    "count": 65,
+    "keywords": [
+      "NB_DEBUG_DISSOLVE",
+      "NB_DEBUG_DISTORT",
+      "NB_DEBUG_FRESNEL",
+      "NB_DEBUG_MASK",
+      "NB_DEBUG_PNOISE",
+      "NB_DEBUG_VERTEX_OFFSET",
+      "VFX_SIX_WAY_ABSORPTION",
+      "_ALPHAMODULATE_ON",
+      "_ALPHAPREMULTIPLY_ON",
+      "_ALPHATEST_ON",
+      "_CHROMATIC_ABERRATION",
+      "_COLORMAPBLEND",
+      "_COLOR_RAMP",
+      "_COLOR_RAMP_MAP",
+      "_DEPTH_DECAL",
+      "_DEPTH_OUTLINE",
+      "_DISSOLVE",
+      "_DISSOLVE_MASK",
+      "_DISSOLVE_RAMP",
+      "_DISSOLVE_RAMP_MAP",
+      "_DISTANCE_FADE",
+      "_DISTORT_REFRACTION",
+      "_EMISSION",
+      "_FLIPBOOKBLENDING_ON",
+      "_FRESNEL",
+      "_FX_LIGHT_MODE_BLINN_PHONG",
+      "_FX_LIGHT_MODE_HALF_LAMBERT",
+      "_FX_LIGHT_MODE_PBR",
+      "_FX_LIGHT_MODE_SIX_WAY",
+      "_FX_LIGHT_MODE_UNLIT",
+      "_HOUDINI_VAT_DYNAMIC_REMESH",
+      "_HOUDINI_VAT_PARTICLE_SPRITE",
+      "_HOUDINI_VAT_RIGIDBODY",
+      "_HOUDINI_VAT_SOFTBODY",
+      "_MASKMAP2_ON",
+      "_MASKMAP3_ON",
+      "_MASKMAP_ON",
+      "_MATCAP",
+      "_NOISEMAP",
+      "_NOISE_MASKMAP",
+      "_NORMALMAP",
+      "_OVERRIDE_Z",
+      "_PARALLAX_MAPPING",
+      "_PARCUSTOMDATA_ON",
+      "_PROGRAM_NOISE",
+      "_PROGRAM_NOISE_SIMPLE",
+      "_PROGRAM_NOISE_VORONOI",
+      "_SCREEN_DISTORT_MODE",
+      "_SCRIPTABLETIME",
+      "_SHARED_UV",
+      "_SOFTPARTICLES_ON",
+      "_SPECULAR_COLOR",
+      "_STENCIL_WITHOUT_PLAYER",
+      "_TYFLOW_VAT_ABSOLUTE",
+      "_TYFLOW_VAT_RELATIVE",
+      "_TYFLOW_VAT_SKIN_PR",
+      "_TYFLOW_VAT_SKIN_PRSAVE",
+      "_TYFLOW_VAT_SKIN_PRSXYZ",
+      "_TYFLOW_VAT_SKIN_R",
+      "_UNSCALETIME",
+      "_VAT",
+      "_VAT_HOUDINI",
+      "_VAT_TYFLOW",
+      "_VERTEX_OFFSET",
+      "_VERTEX_OFFSET_MASKMAP"
+    ]
+  },
+  "limitations": [
+    "Keyword groups are counted lexically; conditional pragma branches, Unity generated SG/VFX pragmas, platform exclusions, mutual exclusivity, SRP variants and Unity stripping are not evaluated.",
+    "No shader variant compilation, Player build, GPU readback or VFX parameter-frequency test was run.",
+    "D21 current Unity 6000.3/URP17.3 only; older-version compatibility is deferred."
+  ]
+}

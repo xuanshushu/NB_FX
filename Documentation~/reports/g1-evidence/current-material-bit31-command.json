@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader\"); if(s==null) throw new System.Exception(\"NBShader not found\"); var m=new UnityEngine.Material(s); var p=new UnityEngine.MaterialPropertyBlock(); int v=unchecked((int)0xC0800001u); m.SetInteger(\"_W9ParticleShaderFlags1\",v); p.SetInteger(\"_W9ParticleShaderFlags1\",v); string result=\"input=\"+v+\";material=\"+m.GetInteger(\"_W9ParticleShaderFlags1\")+\";mpb=\"+p.GetInteger(\"_W9ParticleShaderFlags1\")+\";mpbGetInt=\"+p.GetInt(\"_W9ParticleShaderFlags1\"); UnityEngine.Object.DestroyImmediate(m); return result;"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "input=-1065353215;material=-1065353215;mpb=-1065353215;mpbGetInt=0"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
