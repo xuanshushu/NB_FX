@@ -74,8 +74,11 @@ namespace NBFX.Baseline.Tests
                     frozenMaterial.EnableKeyword("_MATCAP");
                     // Do not compare a cold local-keyword variant against an
                     // already compiled one on the first Editor render.
-                    Capture(camera, renderer, currentMaterial, target);
-                    Capture(camera, renderer, frozenMaterial, target);
+                    for (var warmup = 0; warmup < 3; warmup++)
+                    {
+                        Capture(camera, renderer, currentMaterial, target);
+                        Capture(camera, renderer, frozenMaterial, target);
+                    }
 
                     Color32[] additive = null;
                     for (var blend = 0; blend <= 1; blend++)
@@ -88,6 +91,24 @@ namespace NBFX.Baseline.Tests
                             }
                             var current = Capture(camera, renderer, currentMaterial, target);
                             var reference = Capture(camera, renderer, frozenMaterial, target);
+                            var different = CountDifferent(current, reference);
+                            if (different != 0)
+                            {
+                                var path = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG2");
+                                Directory.CreateDirectory(path);
+                                var stem = "matcap_diff_p" + projection + "_b" + blend + "_a" + opacity;
+                                WritePng(Path.Combine(path, stem + "_current.png"), current);
+                                WritePng(Path.Combine(path, stem + "_frozen.png"), reference);
+                                var currentRepeat = Capture(camera, renderer, currentMaterial, target);
+                                var frozenRepeat = Capture(camera, renderer, frozenMaterial, target);
+                                WritePng(Path.Combine(path, stem + "_current_repeat.png"), currentRepeat);
+                                WritePng(Path.Combine(path, stem + "_frozen_repeat.png"), frozenRepeat);
+                                Assert.Fail("MatCap projection=" + projection + ", blend=" + blend + ", opacity=" + opacity +
+                                    ", firstDifference=" + FirstDifference(current, reference) +
+                                    ", repeatCrossDifference=" + CountDifferent(currentRepeat, frozenRepeat) +
+                                    ", currentSelfDifference=" + CountDifferent(current, currentRepeat) +
+                                    ", frozenSelfDifference=" + CountDifferent(reference, frozenRepeat));
+                            }
                             if (projection == 0 && blend == 0 && opacity == 0)
                             {
                                 var path = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG2");
@@ -96,8 +117,9 @@ namespace NBFX.Baseline.Tests
                                 WritePng(Path.Combine(path, "matcap_frozen_alpha0.png"), reference);
                                 WritePng(Path.Combine(path, "matcap_off.png"), withoutMatCap);
                             }
-                            Assert.That(CountDifferent(current, reference), Is.Zero,
+                            Assert.That(different, Is.Zero,
                                 "MatCap projection=" + projection + ", blend=" + blend + ", opacity=" + opacity +
+                                ", firstDifference=" + FirstDifference(current, reference) +
                                 ", currentCenter=" + current[Size * Size / 2 + Size / 2] +
                                 ", frozenCenter=" + reference[Size * Size / 2 + Size / 2]);
                             if (opacity == 0)
@@ -156,6 +178,15 @@ namespace NBFX.Baseline.Tests
                     left[i].b != right[i].b || left[i].a != right[i].a)
                     count++;
             return count;
+        }
+
+        private static string FirstDifference(Color32[] left, Color32[] right)
+        {
+            for (var i = 0; i < left.Length; i++)
+                if (left[i].r != right[i].r || left[i].g != right[i].g ||
+                    left[i].b != right[i].b || left[i].a != right[i].a)
+                    return "(" + i % Size + "," + i / Size + ") current=" + left[i] + " frozen=" + right[i];
+            return "none";
         }
 
         private static void WritePng(string path, Color32[] pixels)
