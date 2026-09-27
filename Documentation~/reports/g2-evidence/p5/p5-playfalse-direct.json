@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var t=System.AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType(\"NBFX.Baseline.Tests.G2DeferredDistortABTests\")).FirstOrDefault(x=>x!=null);if(t==null)return \"TYPE_MISSING\";try{t.GetMethod(\"ExistingDeferredPassCompositesLikeFrozenWithVisibleControls\").Invoke(System.Activator.CreateInstance(t),null);return \"P5_PLAY_POST_FALSE_PASS\";}catch(System.Reflection.TargetInvocationException ex){return \"P5_PLAY_POST_FALSE_FAIL:\"+ex.InnerException;}"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "P5_PLAY_POST_FALSE_PASS"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

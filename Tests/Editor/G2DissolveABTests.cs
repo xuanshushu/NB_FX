@@ -1,3 +1,4 @@
+using System.IO;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -81,6 +82,7 @@ namespace NBFX.Baseline.Tests
                 Capture(camera, renderer, frozenMaterial, target);
 
                 Color32[] noMask = null;
+                Color32[] noMaskFrozen = null;
                 foreach (var mode in new[] { -1f, 0f, 0.5f, 1f })
                 {
                     foreach (var material in new[] { currentMaterial, frozenMaterial })
@@ -91,11 +93,39 @@ namespace NBFX.Baseline.Tests
                     }
                     var current = Capture(camera, renderer, currentMaterial, target);
                     var reference = Capture(camera, renderer, frozenMaterial, target);
-                    Assert.That(CountDifferent(current, reference), Is.Zero,
-                        "Dissolve mask mode " + mode + " differs from frozen ShaderLab.");
+                    var different = CountDifferent(current, reference);
+                    if (different != 0)
+                    {
+                        var output = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG2");
+                        Directory.CreateDirectory(output);
+                        var stem = "dissolve_diff_mode" + mode;
+                        var currentRepeat = Capture(camera, renderer, currentMaterial, target);
+                        var frozenRepeat = Capture(camera, renderer, frozenMaterial, target);
+                        var frozenFirst = Capture(camera, renderer, frozenMaterial, target);
+                        var currentSecond = Capture(camera, renderer, currentMaterial, target);
+                        WritePng(Path.Combine(output, stem + "_current.png"), current);
+                        WritePng(Path.Combine(output, stem + "_frozen.png"), reference);
+                        WritePng(Path.Combine(output, stem + "_current_repeat.png"), currentRepeat);
+                        WritePng(Path.Combine(output, stem + "_frozen_repeat.png"), frozenRepeat);
+                        WritePng(Path.Combine(output, stem + "_no_mask_current.png"), noMask);
+                        WritePng(Path.Combine(output, stem + "_no_mask_frozen.png"), noMaskFrozen);
+                        var metrics = "mode=" + mode + ", firstAB=" + different +
+                            ", firstDifference=" + FirstDifference(current, reference) +
+                            ", currentVsNoMask=" + (noMask == null ? -1 : CountDifferent(current, noMask)) +
+                            ", frozenVsNoMask=" + (noMaskFrozen == null ? -1 : CountDifferent(reference, noMaskFrozen)) +
+                            ", repeatAB=" + CountDifferent(currentRepeat, frozenRepeat) +
+                            ", currentSelf=" + CountDifferent(current, currentRepeat) +
+                            ", frozenSelf=" + CountDifferent(reference, frozenRepeat) +
+                            ", reverseAB=" + CountDifferent(currentSecond, frozenFirst) +
+                            ", currentMaskKeyword=" + currentMaterial.IsKeywordEnabled("_DISSOLVE_MASK") +
+                            ", frozenMaskKeyword=" + frozenMaterial.IsKeywordEnabled("_DISSOLVE_MASK");
+                        File.WriteAllText(Path.Combine(output, stem + "_metrics.txt"), metrics + "\n");
+                        Assert.Fail("Dissolve mask differs from frozen ShaderLab: " + metrics);
+                    }
                     if (mode < 0)
                     {
                         noMask = current;
+                        noMaskFrozen = reference;
                         Assert.That(CountDifferent(without, current), Is.GreaterThan(0),
                             "Dissolve must visibly affect the image.");
                     }
@@ -158,6 +188,28 @@ namespace NBFX.Baseline.Tests
                     left[i].b != right[i].b || left[i].a != right[i].a)
                     count++;
             return count;
+        }
+
+        private static string FirstDifference(Color32[] left, Color32[] right)
+        {
+            for (var i = 0; i < left.Length; i++)
+                if (left[i].r != right[i].r || left[i].g != right[i].g ||
+                    left[i].b != right[i].b || left[i].a != right[i].a)
+                    return "(" + i % Size + "," + i / Size + ") current=" + left[i] + " frozen=" + right[i];
+            return "none";
+        }
+
+        private static void WritePng(string path, Color32[] pixels)
+        {
+            if (pixels == null) return;
+            var image = new Texture2D(Size, Size, TextureFormat.RGBA32, false, false);
+            try
+            {
+                image.SetPixels32(pixels);
+                image.Apply(false);
+                File.WriteAllBytes(path, image.EncodeToPNG());
+            }
+            finally { Object.DestroyImmediate(image); }
         }
     }
 }

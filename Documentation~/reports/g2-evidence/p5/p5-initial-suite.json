@@ -1,0 +1,50 @@
+{
+  "success": true,
+  "command": "command run_tests",
+  "data": {
+    "command": "run_tests",
+    "parameters": {
+      "mode": "editor",
+      "filter": "NBFX.G2.URP.Editor.Tests",
+      "filter_type": "assembly"
+    },
+    "result": {
+      "Summary": {
+        "Total": 2,
+        "Passed": 1,
+        "Failed": 1,
+        "Skipped": 0,
+        "Inconclusive": 0
+      },
+      "Results": [
+        {
+          "FullName": "NBFX.Baseline.Tests.G2CameraOpaqueABTests.ExistingCameraOpaquePassMatchesFrozenAndHasVisibleControls",
+          "Status": "Passed",
+          "Duration": 0.0996824,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "NBFX.Baseline.Tests.G2DeferredDistortABTests.ExistingDeferredPassCompositesLikeFrozenWithVisibleControls",
+          "Status": "Failed",
+          "Duration": 0.0355106,
+          "Message": "  Original deferred Pass + Mask + Uber must visibly shift the gradient.\n  Expected: greater than 32\n  But was:  0\n",
+          "StackTrace": "at NBFX.Baseline.Tests.G2DeferredDistortABTests.ExistingDeferredPassCompositesLikeFrozenWithVisibleControls () [0x0087f] in ./Packages/NB_FX/Tests/URP/Editor/G2DeferredDistortABTests.cs:167\n"
+        }
+      ],
+      "Duration": 8.33,
+      "StatusPath": null,
+      "Mode": "EditMode",
+      "FilterApplied": "assembly: NBFX.G2.URP.Editor.Tests",
+      "success": true,
+      "result": null
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,35 @@
+{
+  "success": true,
+  "command": "command run_tests",
+  "data": {
+    "command": "run_tests",
+    "parameters": {
+      "mode": "play",
+      "filter": "NBFX.G2.URP.PlayMode.Tests",
+      "filter_type": "assembly"
+    },
+    "result": {
+      "Summary": {
+        "Total": 0,
+        "Passed": 0,
+        "Failed": 0,
+        "Skipped": 0,
+        "Inconclusive": 0
+      },
+      "Results": [],
+      "Duration": 0,
+      "StatusPath": null,
+      "Mode": null,
+      "FilterApplied": null,
+      "success": false,
+      "error": "PlayMode tests cannot run synchronously over HTTP: entering play mode triggers a domain reload that drops the request. Re-run asynchronously (run_tests --mode playmode --async_tests) and poll the test_status command for results."
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

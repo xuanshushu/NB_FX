@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var p=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset;var d=p.rendererDataList[0];var f=d.rendererFeatures.Find(x=>x!=null&&x.GetType().FullName==\"NBShader.NBPostProcess\");var s=UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene();var cur=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader\");var fro=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader\");return \"unity=\"+Application.unityVersion+\";pipeline=\"+UnityEditor.AssetDatabase.GetAssetPath(p)+\";renderer0=\"+UnityEditor.AssetDatabase.GetAssetPath(d)+\";rendererFeatureCount=\"+d.rendererFeatures.Count+\";nbFeatureActive=\"+f.isActive+\";downSampling=\"+f.GetType().GetField(\"downSampling\").GetValue(f)+\";renderGraph=\"+!UnityEngine.Rendering.GraphicsSettings.GetRenderPipelineSettings<UnityEngine.Rendering.Universal.RenderGraphSettings>().enableRenderCompatibilityMode+\";scene=\"+s.path+\";sceneDirty=\"+s.isDirty+\";rendererDirty=\"+UnityEditor.EditorUtility.IsDirty(d)+\";currentPass=\"+new UnityEngine.Material(cur).FindPass(\"NBDeferredDistortPass\")+\";frozenPass=\"+new UnityEngine.Material(fro).FindPass(\"NBDeferredDistortPass\");"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "unity=6000.3.18f1;pipeline=Assets/Settings/URP-HighFidelity.asset;renderer0=Assets/Settings/URP-HighFidelity-Renderer.asset;rendererFeatureCount=2;nbFeatureActive=True;downSampling=None;renderGraph=True;scene=Assets/NBShaderSamples/NBShader_VFXGraphSample.unity;sceneDirty=False;rendererDirty=False;currentPass=5;frozenPass=5"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
