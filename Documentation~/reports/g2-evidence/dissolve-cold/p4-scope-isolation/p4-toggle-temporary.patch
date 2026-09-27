@@ -1,0 +1,10 @@
+--- a/Tests/URP/Editor/G2CameraOpaqueABTests.cs
++++ b/Tests/URP/Editor/G2CameraOpaqueABTests.cs
+@@ -128,4 +128,7 @@
+                 var noFront = Capture(camera, target, foregroundRenderer, current, false, true, 0.14f,
+                     Path.Combine(output, "p4_no_front.png"));
++                // Diagnostic: toggle current Pass off without drawing foreground.
++                current.SetShaderPassEnabled(PassName, false);
++                return;
+                 var currentOff = Capture(camera, target, foregroundRenderer, current, true, false, 0.14f,
+                     Path.Combine(output, "p4_current_pass_off.png"));

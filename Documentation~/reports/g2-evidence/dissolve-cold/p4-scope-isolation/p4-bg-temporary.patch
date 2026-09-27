@@ -1,0 +1,9 @@
+--- a/Tests/URP/Editor/G2CameraOpaqueABTests.cs
++++ b/Tests/URP/Editor/G2CameraOpaqueABTests.cs
+@@ -116,4 +116,6 @@
+                 var preFlagsWarmup = ReadCurrentTarget(target,
+                     Path.Combine(output, "p4_background_pre_flags_warmup.png"));
++                // Diagnostic: background-only Camera.Render.
++                return;
+                 var field = nbFeature.GetType().GetField("NBPostProcessMaterial", BindingFlags.Public | BindingFlags.Static);
+                 Assert.That(field, Is.Not.Null, "The current NBPostProcess static material contract changed.");

@@ -1,0 +1,9 @@
+--- a/Tests/URP/Editor/G2CameraOpaqueABTests.cs
++++ b/Tests/URP/Editor/G2CameraOpaqueABTests.cs
+@@ -132,4 +132,6 @@
+                 var frozenOff = Capture(camera, target, foregroundRenderer, frozen, true, false, 0.14f,
+                     Path.Combine(output, "p4_frozen_pass_off.png"));
++                // Diagnostic: stop after both Pass-off captures.
++                return;
+                 var currentZero = Capture(camera, target, foregroundRenderer, current, true, true, 0,
+                     Path.Combine(output, "p4_current_zero.png"));

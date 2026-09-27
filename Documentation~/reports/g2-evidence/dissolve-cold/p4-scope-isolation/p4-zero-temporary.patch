@@ -1,0 +1,9 @@
+--- a/Tests/URP/Editor/G2CameraOpaqueABTests.cs
++++ b/Tests/URP/Editor/G2CameraOpaqueABTests.cs
+@@ -136,4 +136,6 @@
+                 var frozenZero = Capture(camera, target, foregroundRenderer, frozen, true, true, 0,
+                     Path.Combine(output, "p4_frozen_zero.png"));
++                // Diagnostic: stop after both zero-strength captures.
++                return;
+                 var currentOn = Capture(camera, target, foregroundRenderer, current, true, true, 0.14f,
+                     Path.Combine(output, "p4_current_on.png"));
