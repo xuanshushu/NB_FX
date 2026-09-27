@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · 原 UGUI RawImage 宿主 A/B</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-gate-audit-20260928.html">G2 Gate 审核</a></p>
+<h1>T05/G2 · 原 UGUI RawImage 宿主 A/B</h1>
+<p><strong>结论：隔离工程真实 UGUI RawImage 宿主 1/1，通过该切片；G2 仍未放行。</strong>采用 PreviewScene 内临时 world-space Canvas + RawImage + CanvasRenderer，当前/冻结 Shader 只装在内存材质克隆上；测试末销毁对象，不保存场景或修改原材质。独立 Editor test asmdef 用 <code>com.unity.ugui</code> VersionDefine 隔离 UI 依赖，不改生产程序集。</p>
+<p>源码 <code>Tests/UGUI/Editor/G2RawImageHostABTests.cs</code>；<a href="g2-evidence/g2-ugui-rawimage-20260928/protected-input-sha256.txt">源码、asmdef、原/冻结材质与主工程 QualitySettings SHA-256</a>。Unity 6000.3.18f1 / URP 17.3 / Metal，96×96 RGBA32 GPU readback；原 Editor 已退出、unityMCP 未暴露，主 Agent 串行在 /tmp 一次性工程副本验证。</p>
+<table border="1" cellpadding="6"><thead><tr><th>控制</th><th>结果（像素）</th></tr></thead><tbody>
+<tr><td>空 Canvas vs RawImage 禁用</td><td>差异 0</td></tr>
+<tr><td>内建 UI Default 材质正对照</td><td>可见 3364</td></tr>
+<tr><td>UIEffect RawImage 红贴图：当前 vs Frozen</td><td>A/B 差异 0；双方可见 3364</td></tr>
+<tr><td>UIEffect RawImage 绿贴图：当前 vs Frozen</td><td>A/B 差异 0；双方可见 3364</td></tr>
+<tr><td>仅变更 RawImage.texture 红 → 绿</td><td>当前与 Frozen 均改变 3364</td></tr>
+</tbody></table>
+<p><a href="g2-evidence/g2-ugui-rawimage-20260928/rawimage-passed.xml">NUnit 1/1、Unity exit 0</a> · <a href="g2-evidence/g2-ugui-rawimage-20260928/G2RawImage-AB.txt">数值</a> · <a href="g2-evidence/g2-ugui-rawimage-20260928/G2RawImage-red-current.png">红当前</a> · <a href="g2-evidence/g2-ugui-rawimage-20260928/G2RawImage-red-frozen.png">红 Frozen</a> · <a href="g2-evidence/g2-ugui-rawimage-20260928/G2RawImage-green-current.png">绿当前</a>。CanvasRenderer 材质回读确认提交的 Shader 身份；主 Agent 目视图像非空。</p>
+<p>批处理仅在隔离进程设置本地 Burst 包支持的 <code>UNITY_BURST_DISABLE_COMPILATION=1</code>，规避此前 Burst CompilerServer SIGBUS；未更改官方包、主工程设置或 Shader 验收。<a href="g2-evidence/g2-ugui-rawimage-20260928/run-manifest.txt">执行边界</a>。尚未测 UI Image/Sprite、UIParticle、裁剪/Mask、Stencil/Portal、Undo/序列化、PlayMode/Player 或性能。</p>
+</body></html>
