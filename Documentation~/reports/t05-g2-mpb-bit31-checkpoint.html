@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · ShaderFlags1 bit31 / MPB GPU 对照</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-gate-audit-20260928.html">G2 Gate 审核</a></p>
+<h1>T05/G2 · ShaderFlags1 bit31 / MaterialPropertyBlock GPU 对照</h1>
+<p><strong>结论：稳态隔离工程通过，冷态不能放行；G2 仍未放行。</strong>原 ShaderLab 与 G0 Frozen 在五种状态下的稳态 GPU A/B 均为 0 差异，且整个 packed word 种子 + bit31 的 MPB 路径与 Material 全字写入同图。首次冷态 A/B 失败和清 ShaderCache 后首帧黑图，禁止将后续通过倒填为首次冷态通过。</p>
+<p>测试源码：<code>Tests/Editor/G2ShaderFlagMPBABTests.cs</code>，<a href="g2-evidence/g2-mpb-bit31-20260928/protected-input-sha256.txt">源码、原/冻结材质与主工程 QualitySettings SHA-256</a>。环境：Unity 6000.3.18f1、URP 17.3、Metal、EditMode；原 Editor 退出且 unityMCP 未暴露，主 Agent 串行用无符号链接的 /tmp 一次性工程副本批处理；主工程未运行或修改 ProjectSettings。</p>
+<table border="1" cellpadding="6"><thead><tr><th>状态</th><th>字值/控制</th><th>稳态当前/冻结 A/B</th></tr></thead><tbody>
+<tr><td>Base</td><td><code>_W9ParticleShaderFlags1=0x00000201</code>（透明模式 bit0、忽略顶点色 bit9）</td><td>0 / 可见 4624 像素</td></tr>
+<tr><td>MaterialFullWord</td><td>Material 直接写 <code>0x80000201</code>（Overlay1 alpha-multiply bit31）</td><td>0 / 可见 4624</td></tr>
+<tr><td>SeededMPB</td><td>先以 Material 字值填充 MPB，再经生产 <code>ShaderFlagsBase.SetFlagBits</code> 写 bit31；MPB 回读 <code>0x80000201</code></td><td>0 / 可见 4624；与 MaterialFullWord 同图</td></tr>
+<tr><td>UnseededMPB</td><td>空 MPB 经同一 helper 写入，实际为 <code>0x80000000</code></td><td>0 / 可见 4624；与 SeededMPB 相差 4624</td></tr>
+<tr><td>MaterialUnseededWord</td><td>Material 直接写 <code>0x80000000</code> 诊断对照</td><td>0 / 可见 4624；与 UnseededMPB 同图</td></tr>
+</tbody></table>
+<p><a href="g2-evidence/g2-mpb-bit31-20260928/strict-steady-passed.xml">最终严格源码稳态 NUnit 1/1、Unity exit 0</a> · <a href="g2-evidence/g2-mpb-bit31-20260928/G2ShaderFlagMPB-Bit31.txt">逐状态像素数值</a> · <a href="g2-evidence/g2-mpb-bit31-20260928/G2ShaderFlagMPB-SeededMPB-current.png">SeededMPB 当前图</a> · <a href="g2-evidence/g2-mpb-bit31-20260928/G2ShaderFlagMPB-SeededMPB-frozen.png">Frozen 图</a> · <a href="g2-evidence/g2-mpb-bit31-20260928/G2ShaderFlagMPB-UnseededMPB-current.png">Unseeded 诊断图</a>。测试仅改内存 Material/MPB，结束核对原、冻结材质字节未变；主工程 QualitySettings SHA 未变。</p>
+<p><strong>冷态与工具限制：</strong><a href="g2-evidence/g2-mpb-bit31-20260928/first-cold-ab-failed.xml">初次隔离运行 0/1</a>，Base A/B 4624 差异。另一个清 ShaderCache 的副本在旧版测试控制下 <a href="g2-evidence/g2-mpb-bit31-20260928/cache-cleared-before-black-guard-passed.xml">1/1</a>，但 Base 中心黑色 (0,0,0)；这不是可接受的可见功能控制。因此最终源码增加 Base 中心非黑断言。最终严格源码的清缓存尝试在 NUnit 产生 XML 之前遇到 Unity/Burst CompilerServer SIGBUS（exit 138）；一次稳态运行虽 NUnit 通过也在退出时 SIGBUS，随后同源码重试 exit 0。<a href="g2-evidence/g2-mpb-bit31-20260928/run-manifest.txt">完整执行顺序/未验证项</a>。不把 Burst 崩溃归因于 NBShader，也不声称严格冷态通过。</p>
+<p>协议核对：slot 1、bit31；C# <code>NBShaderFlags</code> / <code>ShaderFlagsBase</code>、ShaderLab Integer 属性、HLSL <code>NBShaderForwardPass.hlsl</code> 的 Overlay1 alpha 分支均已对应检查。本切片未改生产协议、Shader、材质、Pass、关键字或容差。性能、Player、SRP Batcher 与真实 Particle/UI 宿主未验证。</p>
+</body></html>

@@ -1,0 +1,7 @@
+T05/G2 original ShaderLab GUI-state backend, 2026-09-28 local, Unity 6000.3.18f1 / URP 17.3, EditMode batchmode in /tmp/NBFXG2P6Isolated-20260928.
+Main Unity Editor had exited before this test. unityMCP not exposed; main project was not opened by batchmode.
+First test source: Unity exit=2, NUnit 2 passed/1 failed. The tier transition test expected _SCREEN_DISTORT_MODE true at Ultra, but its fixture had not enabled the required _NOISEMAP parent. This was a fixture invalidity, not a product failure. XML initial-fixture-failed.xml.
+Diagnostic source logged Ultra: mask3=True screen=False main=True deferred=False, with required parent missing. XML parent-dependency-diagnostic.xml.
+Final test source enables _noisemapEnabled intent; Low tier does not allow _NOISEMAP, so low dependency correctly filters; Ultra allows both _NOISEMAP and _SCREEN_DISTORT_MODE. Unity exit=0, NUnit 3/3, XML final-backend-passed.xml.
+All tests clone source Material in memory. SetUp/TearDown hash-protect sample Material and ProjectSettings/NBShaderFeatureLevels.asset. No actual NBShaderGUI.OnGUI click, Undo, multi-select IMGUI, save/reload, material persistence, or Player test.
+Observed across backend cases: Universal2D pass enabled=False, tierAllows(pass.universal2D)=False. Both project and package default tier sets omit pass.universal2D. This is an existing tier-policy observation, not a product change or approval to add/remove Pass functionality. The earlier P6 renderer test manually enabled Universal2D; it does not cover a GUI-synchronized 2D material.

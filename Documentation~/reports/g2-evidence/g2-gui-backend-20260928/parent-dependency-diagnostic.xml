@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Failed(Child)" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-27 17:51:40Z" end-time="2026-09-27 17:51:40Z" duration="0.0609852">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="23" result="Failed" site="Child" start-time="2026-09-27 17:51:40Z" end-time="2026-09-27 17:51:40Z" duration="0.060985" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1032" name="NBFX.G2.ShaderGUIState.Editor.Tests.dll" fullname="/private/tmp/NBFXG2P6Isolated-20260928/Library/ScriptAssemblies/NBFX.G2.ShaderGUIState.Editor.Tests.dll" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-09-27 17:51:40Z" end-time="2026-09-27 17:51:40Z" duration="0.056517" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="66387" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1033" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-09-27 17:51:40Z" end-time="2026-09-27 17:51:40Z" duration="0.056226" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1034" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-09-27 17:51:40Z" end-time="2026-09-27 17:51:40Z" duration="0.056014" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1035" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-09-27 17:51:40Z" end-time="2026-09-27 17:51:40Z" duration="0.055748" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1028" name="G2ShaderGUIStateABTests" fullname="NBFX.Baseline.Tests.G2ShaderGUIStateABTests" classname="NBFX.Baseline.Tests.G2ShaderGUIStateABTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-09-27 17:51:40Z" end-time="2026-09-27 17:51:40Z" duration="0.055144" total="3" passed="2" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1031" name="MultiMaterialBackendSynchronizationKeepsPerMaterialIntentSeparate" fullname="NBFX.Baseline.Tests.G2ShaderGUIStateABTests.MultiMaterialBackendSynchronizationKeepsPerMaterialIntentSeparate" methodname="MultiMaterialBackendSynchronizationKeepsPerMaterialIntentSeparate" classname="NBFX.Baseline.Tests.G2ShaderGUIStateABTests" runstate="Runnable" seed="1241322966" result="Passed" start-time="2026-09-27 17:51:40Z" end-time="2026-09-27 17:51:40Z" duration="0.037283" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1030" name="TierAndTransparentModesResolveBackendStateWithoutNormalizingRenderQueue" fullname="NBFX.Baseline.Tests.G2ShaderGUIStateABTests.TierAndTransparentModesResolveBackendStateWithoutNormalizingRenderQueue" methodname="TierAndTransparentModesResolveBackendStateWithoutNormalizingRenderQueue" classname="NBFX.Baseline.Tests.G2ShaderGUIStateABTests" runstate="Runnable" seed="1485586386" result="Failed" start-time="2026-09-27 17:51:40Z" end-time="2026-09-27 17:51:40Z" duration="0.007552" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at NBFX.Baseline.Tests.G2ShaderGUIStateABTests.TierAndTransparentModesResolveBackendStateWithoutNormalizingRenderQueue () [0x0034e] in ./Packages/NB_FX/Tests/Editor/G2ShaderGUIState/G2ShaderGUIStateABTests.cs:169
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[NBFX-G2-GUI-BACKEND low-cutoff: Universal2D enabled=False, tierAllows=False. Observation only; this fixture does not assert desired 2D policy.
+ultra: mask3=True screen=False main=True deferred=False opaque=False
+]]></output>
+              </test-case>
+              <test-case id="1029" name="UltraMeshStateSynchronizesPackedFlagsKeywordsAndPassesIdempotently" fullname="NBFX.Baseline.Tests.G2ShaderGUIStateABTests.UltraMeshStateSynchronizesPackedFlagsKeywordsAndPassesIdempotently" methodname="UltraMeshStateSynchronizesPackedFlagsKeywordsAndPassesIdempotently" classname="NBFX.Baseline.Tests.G2ShaderGUIStateABTests" runstate="Runnable" seed="1989130798" result="Passed" start-time="2026-09-27 17:51:40Z" end-time="2026-09-27 17:51:40Z" duration="0.003498" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[NBFX-G2-GUI-BACKEND ultra-mesh: Universal2D enabled=False, tierAllows=False. Observation only; this fixture does not assert desired 2D policy.
+Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

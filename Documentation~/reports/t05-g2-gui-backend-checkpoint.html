@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · 原 NBShader GUI 状态后端</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-gate-audit-20260928.html">G2 Gate 审核</a></p>
+<h1>T05/G2 · 原 NBShader GUI 状态后端</h1>
+<p><strong>结论：仅 SyncMaterialState 后端切片在隔离工程 3/3；并非 GUI 端到端放行，G2 仍未放行。</strong>测试直接调用原 <code>NBShaderSyncService.SyncMaterialState</code>，不伪装成点击 Inspector、Undo、多选或序列化验证。</p>
+<p>测试源码：<code>Tests/Editor/G2ShaderGUIState/G2ShaderGUIStateABTests.cs</code>，独立 Editor test asmdef 引用产品 Editor/Runtime 程序集，不改变既有 G0 Baseline asmdef。<a href="g2-evidence/g2-gui-backend-20260928/protected-input-sha256.txt">源码与受保护 Material/FeatureLevel 设置 SHA-256</a>。Unity 6000.3.18f1 / URP 17.3，在无符号链接的 /tmp 一次性工程副本串行 EditMode batchmode；原 Editor 已退出、unityMCP 未暴露，主工程未进入测试。</p>
+<ul>
+<li>Ultra/Mesh：packed flags（含 slot1 bit31）、Mask/Emission 关键字、主 Pass 与两个 Distort Pass、第二次同步幂等、Toggle 恢复。</li>
+<li>Low CutOff → Ultra Deferred → CameraOpaque → Transparent：FeatureTier 过滤、透明混合/ZWrite、主/深度/Distort Pass、未由后端偷偷改 renderQueue=2777、每阶段幂等。</li>
+<li>两个内存材质同时同步：各自 MeshSourceMode、MaskRefine、BaseColor 和 packed bits 独立；重复同步无交叉污染。</li>
+</ul>
+<p><a href="g2-evidence/g2-gui-backend-20260928/final-backend-passed.xml">最终 NUnit 3/3、Unity exit 0</a>。最初 <a href="g2-evidence/g2-gui-backend-20260928/initial-fixture-failed.xml">2/3</a> 是测试夹具未开启 <code>_NOISEMAP</code> 父功能却期待其子关键字 <code>_SCREEN_DISTORT_MODE</code>；经<a href="g2-evidence/g2-gui-backend-20260928/parent-dependency-diagnostic.xml">诊断</a>、仅修夹具后，Low tier 不允许父关键字而正确过滤，Ultra tier 双关键字允许并按 Deferred/CameraOpaque 意图选择 Pass。<a href="g2-evidence/g2-gui-backend-20260928/run-manifest.txt">执行顺序与边界</a>。</p>
+<p><strong>P6 交叉发现（未改策略）：</strong>这三种后端情形的日志均显示 <code>Universal2D enabled=False</code> 且 <code>tierAllows(pass.universal2D)=False</code>；当前项目和包内默认 FeatureTier Pass 集合都没有该 ID。前述 P6 真实 Renderer2D 测试是手动打开该 Pass 后通过，不能据此宣称经 NBShaderGUI 同步的 2D 材质仍可显示。这是当前策略/原路径覆盖缺口，不擅自修改 ProjectSettings、默认 Tier、Shader Pass 或削减功能。</p>
+<p>未验证：<code>NBShaderGUI.OnGUI</code> 控件触发、Undo/Redo、真实多选 Inspector、保存/Reload 后序列化、材质改动后实际 Mesh/2D/Particle/UI GPU 结果、Player 与性能。SetUp/TearDown 对原样例 Material 和 FeatureLevel 设置文件作哈希保护，测试仅用内存克隆。</p>
+</body></html>
