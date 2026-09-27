@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · Vertex Offset 接入检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-surface-distortion-checkpoint.html">前一切片</a></p>
+<h1>T05/G2 · Vertex Offset 接入检查点</h1>
+<p><strong>状态：当前 ShaderLab Geometry 首切片可回退，G2 未放行。</strong>2026-09-27，Unity 6000.3.18f1、URP 17.3.0、macOS/Metal；Unity MCP 在本会话未暴露，使用 Unity CLI/Pipeline 串行验证。</p>
+<p>只将原 <code>VetexOffset</code> 的四种方向分支转交 G1 的 <code>NBFX_ComputeVertexOffsetOSV1</code>；贴图采样、StartFromZero、mask、仅 mode 2/3 的可选 WS→OS 非归一化转换仍由 ShaderLab host 完成。未改 ShaderLab Pass、材质属性、keyword 布局、官方包、Target 或 NBPostprocess。输入为当前生产 Shader 与 G0 冻结 Shader/材质，原资产未写入。源码 SHA-256：Input <code>7d87a37821a82c555438ff09472d9eb7b22cf89134487fd5587a60db1955f643</code>，Geometry <code>36cd42e949ac9dd64e8804906d751e2a522e75d42eff8f3ec6c5abb603455c6b</code>，测试 <code>5a7c2e02302e86456b369004090caa70867fc9854ee55f84f6e5965a25b5a045</code>。</p>
+<ul>
+<li><strong>T05-GEOM-IMPORT</strong>：<a href="g2-evidence/t05-geometry-force-import.json">强制导入</a>显示 Shader supported=True、Error 0；该次返回 messages=0 不等于全变体无 warning。</li>
+<li><strong>T05-GEOM-AB</strong>：<a href="g2-evidence/t05-geometry-mode-ab-tests-retry.json">EditMode 4/4</a>，包括 mode 0/1/2/3 在 64×64 RGBA32 同位逐像素匹配冻结 Shader，且每个 mode 的非零位移相对零强度确实改变像素；mode 3 测试 WS→OS。只覆盖这个受控 mesh/贴图/变体，不扩展为所有 VAT/Geometry。</li>
+<li><strong>T05-GEOM-EDITOR</strong>：首次 refresh 后 Editor 正在 reload，<a href="g2-evidence/t05-geometry-mode-ab-tests.json">第一次测试请求发生网络错误</a>，Editor 恢复 ready 后重试通过；不是测试失败。<a href="g2-evidence/t05-geometry-final-compilation.json">最终编译 completed、failed=false</a>，<a href="g2-evidence/t05-geometry-final-console.json">Console ground truth 0 Error/0 Warning</a>，<a href="g2-evidence/t05-geometry-final-editor.json">Editor ready、Play stopped</a>。</li>
+</ul>
+<p>BaseUV 尚未接入；七 Pass、全材质/GUI、NBPostprocess 双路径、Graph/VFX、Player 和性能未由本切片验证。G2 仍进行中。回退只需撤销本 NB_FX 切片及主工程子模块指针，不修改 G0 冻结基线；无 push。</p>
+</body></html>

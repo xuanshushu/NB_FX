@@ -3,6 +3,7 @@
     
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
     #include "NBShaderFlags.hlsl"
+    #include "NBShaderGeometryV1.hlsl"
    
     #if defined(_PROGRAM_NOISE) && (defined(_PROGRAM_NOISE_SIMPLE) || defined(_PROGRAM_NOISE_VORONOI))
         #define _PROGRAM_NOISE_ACTIVE
@@ -1173,24 +1174,20 @@
         }
         #endif
      
-        UNITY_BRANCH
-        switch (directionMode)
-        {
-            case 1:
-                offsetOS = normalOS*_VertexOffset_Vec.z*vertexOffsetSample*vertexOffsetMask;
-                break;
-            case 2:
-            case 3:
-                // RGB encodes a displacement vector, including magnitude. Do not normalize.
-                if (_VertexOffset_DirectionSpace > 0.5)
-                    directionSample = TransformWorldToObjectDir_NB(directionSample,false);
-                offsetOS = directionSample*_VertexOffset_Vec.z*vertexOffsetMask;
-                break;
-            case 0:
-            default:
-                offsetOS = _VertexOffset_CustomDir*_VertexOffset_Vec.z*vertexOffsetSample*vertexOffsetMask;
-                break;
-        }
+        // Keep the space conversion in the ShaderLab host: Graph/VFX hosts may
+        // prepare the same direction from different, explicitly supplied inputs.
+        if ((directionMode == 2 || directionMode == 3) && _VertexOffset_DirectionSpace > 0.5)
+            directionSample = TransformWorldToObjectDir_NB(directionSample, false);
+
+        NBFX_VertexOffsetPreparedV1 prepared = (NBFX_VertexOffsetPreparedV1)0;
+        prepared.normalOS = normalOS;
+        prepared.directionOS = directionSample;
+        prepared.customDirectionOS = _VertexOffset_CustomDir;
+        prepared.sampledScalar = vertexOffsetSample;
+        prepared.maskWeight = vertexOffsetMask;
+        prepared.intensity = _VertexOffset_Vec.z;
+        prepared.directionMode = directionMode;
+        offsetOS = NBFX_ComputeVertexOffsetOSV1(prepared);
 
         return positionOS + offsetOS;
         

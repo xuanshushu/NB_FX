@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "UnityEditor.AssetDatabase.ImportAsset(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader\",UnityEditor.ImportAssetOptions.ForceUpdate); var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader\"); var messages=UnityEditor.ShaderUtil.GetShaderMessages(s); int errors=0; foreach(var x in messages) if(x.severity.ToString()==\"Error\") errors++; return \"shader=\"+s.name+\";supported=\"+s.isSupported+\";messages=\"+messages.Length+\";errors=\"+errors;"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "shader=Effects/NBShader;supported=True;messages=0;errors=0"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

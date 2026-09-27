@@ -77,6 +77,82 @@ namespace NBFX.Baseline.Tests
             }
         }
 
+        [Test]
+        public void VertexOffsetModesMatchFrozenAndMovePixels()
+        {
+            var source = AssetDatabase.LoadAssetAtPath<Material>(OriginalPath);
+            var frozen = AssetDatabase.LoadAssetAtPath<Material>(FrozenPath);
+            Assert.That(source, Is.Not.Null);
+            Assert.That(frozen, Is.Not.Null);
+
+            var currentMaterial = new Material(source);
+            var frozenMaterial = new Material(frozen);
+            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            var cameraObject = new GameObject("NBFX_G2_VertexOffsetCamera");
+            var camera = cameraObject.AddComponent<Camera>();
+            var target = new RenderTexture(Size, Size, 24, RenderTextureFormat.ARGB32);
+            var previousActive = RenderTexture.active;
+            try
+            {
+                foreach (var material in new[] { currentMaterial, frozenMaterial })
+                {
+                    material.SetColor("_BaseColor", Color.red);
+                    material.SetFloat("_Cull", 0);
+                    material.EnableKeyword("_VERTEX_OFFSET");
+                    material.SetTexture("_VertexOffset_Map", Texture2D.whiteTexture);
+                    material.SetVector("_VertexOffset_Map_ST", new Vector4(1, 1, 0, 0));
+                    material.SetVector("_VertexOffset_CustomDir", new Vector4(1, 0, 0, 0));
+                }
+
+                quad.layer = Layer;
+                quad.transform.position = new Vector3(0, 0, 2);
+                quad.transform.rotation = Quaternion.Euler(0, 35, 0);
+                var renderer = quad.GetComponent<MeshRenderer>();
+                camera.clearFlags = CameraClearFlags.SolidColor;
+                camera.backgroundColor = new Color(0.125f, 0.25f, 0.375f, 1);
+                camera.orthographic = true;
+                camera.orthographicSize = 1;
+                camera.nearClipPlane = 0.1f;
+                camera.farClipPlane = 10;
+                camera.allowHDR = false;
+                camera.allowMSAA = false;
+                camera.transform.position = new Vector3(0, 0, 3);
+                camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+                camera.cullingMask = 1 << Layer;
+                camera.targetTexture = target;
+
+                for (var mode = 0; mode <= 3; mode++)
+                {
+                    foreach (var material in new[] { currentMaterial, frozenMaterial })
+                    {
+                        material.SetFloat("_VertexOffset_NormalDir_Toggle", mode);
+                        material.SetFloat("_VertexOffset_DirectionSpace", mode == 3 ? 1 : 0);
+                        material.SetVector("_VertexOffset_Vec", new Vector4(0, 0, 0, 0));
+                    }
+                    var zero = Capture(camera, renderer, currentMaterial, target);
+                    foreach (var material in new[] { currentMaterial, frozenMaterial })
+                        material.SetVector("_VertexOffset_Vec", new Vector4(0, 0, 0.35f, 0));
+                    var currentOffset = Capture(camera, renderer, currentMaterial, target);
+                    var frozenOffset = Capture(camera, renderer, frozenMaterial, target);
+                    Assert.That(CountDifferent(currentOffset, frozenOffset), Is.Zero,
+                        "Vertex offset mode " + mode + " differs from the frozen ShaderLab reference.");
+                    Assert.That(CountDifferent(zero, currentOffset), Is.GreaterThan(0),
+                        "Vertex offset mode " + mode + " did not move visible pixels.");
+                }
+            }
+            finally
+            {
+                camera.targetTexture = null;
+                RenderTexture.active = previousActive;
+                target.Release();
+                Object.DestroyImmediate(target);
+                Object.DestroyImmediate(cameraObject);
+                Object.DestroyImmediate(quad);
+                Object.DestroyImmediate(currentMaterial);
+                Object.DestroyImmediate(frozenMaterial);
+            }
+        }
+
         private static Color32[] Capture(Camera camera, MeshRenderer renderer, Material material, RenderTexture target)
         {
             renderer.sharedMaterial = material;
