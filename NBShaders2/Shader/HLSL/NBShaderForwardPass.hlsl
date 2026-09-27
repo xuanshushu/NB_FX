@@ -5,6 +5,7 @@
     #include "NBShaderDistortionV1.hlsl"
     #include "NBShaderEnvironmentV2.hlsl"
     #include "NBShaderMaskV3.hlsl"
+    #include "NBShaderDissolveV3.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
 
@@ -899,11 +900,6 @@
             #endif
 
 
-            dissolveValue = pow(dissolveValue,_Dissolve.y);
-
-
-
-
             half dissolveMaskValue = 0;
             half dissolveMaskStrength = 0;
             #if defined(_DISSOLVE_MASK)
@@ -913,35 +909,37 @@
                 dissolveMaskValue = GetColorChannel(dissolveMaskSample,FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP);
                 dissolveMaskStrength = _Dissolve.z + GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
 
-                if (_DissolveMaskMode < 0.5)
-                {
-                    dissolveMaskValue = lerp(dissolveValue, dissolveMaskValue, dissolveMaskStrength);
-                    dissolveValue = (dissolveValue +dissolveMaskValue)*0.5;//Smart Way By Panda
-                }
             }
             #endif
+
+            NBFX_DissolvePrepareInputV3 dissolvePrepareInput = (NBFX_DissolvePrepareInputV3)0;
+            dissolvePrepareInput.decodedAndNoiseBlendedValue = dissolveValue;
+            dissolvePrepareInput.exponent = _Dissolve.y;
+            #if defined(_DISSOLVE_MASK)
+                dissolvePrepareInput.hasMask = true;
+            #endif
+            dissolvePrepareInput.decodedMaskValue = dissolveMaskValue;
+            dissolvePrepareInput.maskStrength = dissolveMaskStrength;
+            dissolvePrepareInput.maskMode = _DissolveMaskMode;
+            NBFX_DissolvePreparedV3 dissolvePrepared = NBFX_PrepareDissolveV3(dissolvePrepareInput);
+            dissolveValue = dissolvePrepared.valueForDebugAndSoftStep;
 
             #ifdef NB_DEBUG_DISSOLVE      //后续Test类的关键字要找机会排除
                 return MakeParticleFragmentOutput(half4(dissolveValue.rrr,1));
             #endif
             half dissolveStrenth = _Dissolve.x + GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
-
-            half invSoftStep = 1/_Dissolve.w;
-            half dissolveValueBeforeSoftStep = dissolveValue - ((dissolveStrenth)*(invSoftStep + 1)-1)*_Dissolve.w ;
-            dissolveValue = dissolveValue*invSoftStep -(1+invSoftStep)*dissolveStrenth +1;
-            // dissolveValue = smoothstep(dissolveStrenth-_Dissolve.w,dissolveStrenth,dissolveValue);//Smart Way By Panda
-
-
-            dissolveValue = saturate(dissolveValue);
+            NBFX_DissolveResolveInputV3 dissolveResolveInput = (NBFX_DissolveResolveInputV3)0;
+            dissolveResolveInput.prepared = dissolvePrepared;
+            dissolveResolveInput.threshold = dissolveStrenth;
+            dissolveResolveInput.softWidth = _Dissolve.w;
             #if defined(_DISSOLVE_MASK)
-            if(_DissolveMaskMode > 0.5)
-            {
-                dissolveMaskStrength = dissolveMaskStrength -1;
-                dissolveMaskValue = saturate(dissolveMaskValue - dissolveMaskStrength);
-                dissolveValue = lerp(1, dissolveValue, dissolveMaskValue);
-            }
+                dissolveResolveInput.hasMask = true;
             #endif
-
+            dissolveResolveInput.maskStrength = dissolveMaskStrength;
+            dissolveResolveInput.maskMode = _DissolveMaskMode;
+            NBFX_DissolveResolvedV3 dissolveResolved = NBFX_ResolveDissolveV3(dissolveResolveInput);
+            half dissolveValueBeforeSoftStep = dissolveResolved.valueBeforeSoftStep;
+            dissolveValue = dissolveResolved.coverage;
             alpha  *= dissolveValue;
             #if !defined(NB_DEPTH_SHADOW_PASS)
             #if defined(_DISSOLVE_RAMP)

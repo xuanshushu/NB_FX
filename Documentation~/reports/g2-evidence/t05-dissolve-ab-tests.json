@@ -1,0 +1,99 @@
+{
+  "success": true,
+  "command": "command run_tests",
+  "data": {
+    "command": "run_tests",
+    "parameters": {
+      "mode": "editor",
+      "filter": "NBFX.Baseline.Editor.Tests",
+      "filter_type": "assembly"
+    },
+    "result": {
+      "Summary": {
+        "Total": 9,
+        "Passed": 8,
+        "Failed": 1,
+        "Skipped": 0,
+        "Inconclusive": 0
+      },
+      "Results": [
+        {
+          "FullName": "NBFX.Baseline.Tests.G0FrozenShaderTests.FrozenShaderIsDistinctAndSupported",
+          "Status": "Passed",
+          "Duration": 0.0013032,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "NBFX.Baseline.Tests.G0FrozenShaderTests.OriginalAndFrozenRenderEqualAndInjectedDifferenceFails",
+          "Status": "Passed",
+          "Duration": 0.4304243,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "NBFX.Baseline.Tests.G2DissolveABTests.DissolveMaskModesAndDebugBoundaryMatchFrozen",
+          "Status": "Passed",
+          "Duration": 2.2267804,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "NBFX.Baseline.Tests.G2MaskABTests.MaskCoverageAndRefineMatchFrozenWithVisibleControls",
+          "Status": "Passed",
+          "Duration": 0.9029917,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "NBFX.Baseline.Tests.G2MatCapABTests.MatCapViewUVAndBlendMatchFrozenWithVisibleControls",
+          "Status": "Failed",
+          "Duration": 0.4482843,
+          "Message": "  MatCap projection=0, blend=0, opacity=1, currentCenter=RGBA(131, 165, 165, 255), frozenCenter=RGBA(131, 165, 165, 255)\n  Expected: 0\n  But was:  1\n",
+          "StackTrace": "at NBFX.Baseline.Tests.G2MatCapABTests.MatCapViewUVAndBlendMatchFrozenWithVisibleControls () [0x004b0] in ./Packages/NB_FX/Tests/Editor/G2MatCapABTests.cs:99\n"
+        },
+        {
+          "FullName": "NBFX.Baseline.Tests.G2SampleMaterialMeshABTests.AllFrozenSampleMaterialsMatchCurrentOnIsolatedMesh",
+          "Status": "Passed",
+          "Duration": 11.7440301,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "NBFX.Baseline.Tests.G2SharedSliceTests.BaseAndFeatureUVModesMatchFrozenAndChangeSampledPixels",
+          "Status": "Passed",
+          "Duration": 0.4759417,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "NBFX.Baseline.Tests.G2SharedSliceTests.BaseColorTimelineMatchesFrozenAndChangesPixels",
+          "Status": "Passed",
+          "Duration": 0.0089715,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "NBFX.Baseline.Tests.G2SharedSliceTests.VertexOffsetModesMatchFrozenAndMovePixels",
+          "Status": "Passed",
+          "Duration": 0.5041869,
+          "Message": null,
+          "StackTrace": null
+        }
+      ],
+      "Duration": 22.61,
+      "StatusPath": null,
+      "Mode": "EditMode",
+      "FilterApplied": "assembly: NBFX.Baseline.Editor.Tests",
+      "success": true,
+      "result": null
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
