@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · Mask 后处理接入检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-matcap-checkpoint.html">前一切片</a></p>
+<h1>T05/G2 · Mask 后处理纯数值核接入</h1>
+<p><strong>状态：T03/T05 Mask 限定切片已验证；G2 未放行。</strong>2026-09-27；Unity 6000.3.18f1、URP 17.3.0、macOS/Metal。Unity MCP 本会话未暴露，使用 Unity CLI/Pipeline 串行验证。</p>
+<p>主 Agent 审签 V3 契约，T03 新建纯 Mask/Dissolve 核；本次仅在原 <code>_MASKMAP_ON</code> 分支将三路 mask、梯度、PNoise 完成后的 <code>pow→mul→add→lerp→saturate</code> 交给 <code>NBFX_ResolveMaskCoverageV3</code>。原 <code>NB_DEBUG_MASK</code> 早退与 <code>alpha *= mask1</code> 的顺序不变；采样/Wrap/LOD、packed Flags、七 Pass、材质/CBUFFER、官方包、Target、NBPostprocess 未改。源码 SHA-256：Forward <code>5ba41212d6f4f3af336a419a3c90a8922ef77fb0a95bf8808258a5beca6b1988</code>，Mask <code>6d33c9c35f20f569ccf5135209f99afadcb558a4df8a313e9491c6646fcc3775</code>，夹具 <code>646051d3dbc4a86c5c40a8ab54389601cc01823b8fac85d1374266c4eaefe182</code>。</p>
+<ul>
+<li><strong>T05-MASK-AB</strong>：接入前 <a href="g2-evidence/t05-mask-baseline-tests.json">8/8</a>；接入后首轮 <a href="g2-evidence/t05-mask-ab-tests.json">7/8</a>，失败项是前一 MatCap 测试中一次 96×96 的<strong>1 像素严格差异</strong>，Mask 定向测试本身通过。随后<a href="g2-evidence/t05-mask-ab-tests-retry.json">重试</a>及<a href="g2-evidence/t05-mask-ab-repeat2.json">重复 2</a>、<a href="g2-evidence/t05-mask-ab-repeat3.json">重复 3</a>、<a href="g2-evidence/t05-mask-ab-repeat4.json">重复 4</a>、<a href="g2-evidence/t05-mask-ab-repeat5.json">重复 5</a>均 8/8；MatCap 首轮差异仍记为未归因的夹具/数值稳定性风险，不用重试抹去失败证据。</li>
+<li>Mask 定向夹具使用内存 alpha 梯度贴图、<code>_MASKMAP_ON</code> 与 Flags1 refine bit：整体强度 0 为中性，1 时遮罩确实影响像素，pow/mul/add refine 再次改变像素；四个模式的当前/冻结同位 96×96 RGBA32 全图严格相等。仅覆盖 Mask1 的受控 Mesh 配置，不推断 Mask2/3、梯度、PNoise 或各 Pass 全部组合。</li>
+<li><strong>T05-MASK-IMPORT</strong>：<a href="g2-evidence/t05-mask-import.json">强制导入</a> supported=True、Error 0；<a href="g2-evidence/t05-mask-warning-compare.json">ShaderUtil 当前 35、冻结 36 条消息，current-only 为空</a>。<a href="g2-evidence/t05-mask-final-compilation.json">最终编译 completed、failed=false</a>，<a href="g2-evidence/t05-mask-final-editor.json">Editor ready</a>。<a href="g2-evidence/t05-mask-final-console.json">Console ground truth 1 Error/1 Warning</a>保留首轮失败及一次<a href="g2-evidence/t05-mask-final-console-entries.json">AssetDB 修改时间竞态 warning</a>的诊断现场；本次最终编译无失败，未清空历史 Console。</li>
+</ul>
+<p>Dissolve 两阶段尚未接入，Mask2/3 与 Depth/Shadow、NBPostprocess、Graph/VFX、Player、性能尚未由本切片验证。G2 保持进行中；V3 纯核与 Mask 接线分别可回退；不 push。</p>
+</body></html>

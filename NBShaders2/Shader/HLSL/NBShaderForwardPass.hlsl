@@ -4,6 +4,7 @@
     #include "NBShaderSurfaceV1.hlsl"
     #include "NBShaderDistortionV1.hlsl"
     #include "NBShaderEnvironmentV2.hlsl"
+    #include "NBShaderMaskV3.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
 
@@ -1113,15 +1114,12 @@
             #endif
 
 
-            if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MASK_REFINE))
-            {
-                mask1 = pow(mask1,_MaskRefineVec.x);
-                mask1 = mask1 * _MaskRefineVec.y;
-                mask1 += _MaskRefineVec.z;
-            }
-
-            mask1 = lerp(1,mask1,_MaskMapVec.x);
-            mask1 = saturate(mask1);
+            NBFX_MaskCoverageInputV3 maskCoverageInput = (NBFX_MaskCoverageInputV3)0;
+            maskCoverageInput.combinedMaskAfterNoise = mask1;
+            maskCoverageInput.refine = CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MASK_REFINE);
+            maskCoverageInput.refinePowMulAdd = _MaskRefineVec.xyz;
+            maskCoverageInput.overallStrength = _MaskMapVec.x;
+            mask1 = NBFX_ResolveMaskCoverageV3(maskCoverageInput);
 
             #ifdef NB_DEBUG_MASK
                 return MakeParticleFragmentOutput(half4(mask1.rrr,1));
