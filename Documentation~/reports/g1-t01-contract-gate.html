@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>G1 / T01 · 当前环境接口 Gate</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="../gates.html">Gate 规则</a> · <a href="../tasks/t01-contracts.html">T01 任务书</a></p>
+<h1>G1 / T01 · 当前环境接口与拆分规则</h1>
+<p><strong>主 Agent 审核：设计 Gate 通过，仅放行四个 v1 跨模块入口的实现切片。</strong>2026-09-27，Unity 6000.3.18f1、URP/Shader Graph/VFX Graph 17.3.0、macOS/Metal。G1 不是 HLSL 编译、Graph/VFX 功能、七 Pass 等价或 Player 回归通过；G2–G7 仍分别验证。低版本/HDRP-only 根据 D21/D20 留待后续，不构成当前放行条件。未修改官方包、URP Target、NBPostprocess 或旧 ShaderLab Pass。</p>
+<h2>输入、回放与审查</h2>
+<ul>
+<li><a href="g0-t00-baseline.html">G0 冻结 ShaderLab</a>与<a href="gf-t00a-functional-gate.html">GF 双 Pass 可行性</a>已分别放行，GF 不代替产品 G3。当前项目依赖审计见<a href="g1-evidence/dependency-current-g1.md">URP17.3 边界</a>；包内 <code>.asmref + UniversalSubTarget</code> 在本项目可解析，生产实现仍需重验。</li>
+<li><a href="g1-evidence/properties-static.json">450 Properties、191 CBUFFER 字段</a>、<a href="g1-evidence/flag_protocol_inventory.json">packed Flags 槽位</a>、<a href="g1-evidence/keywords-static.json">七 Pass/keyword 清单</a>均保留源码位置与 hash。<a href="g1-evidence/feature-trace-coverage-audit.json">writer/read/Pass 句法审查</a>与<a href="g1-evidence/g1-property-routing.json">主 Agent 逐项路由</a>覆盖 450 Property + 22 个无同名 Property 的 CBUFFER 字段，每项带原 ShaderLab 保留策略、模块负责人、候选 Pass/用例。146 项无静态 Pass 提示、398 项无精确逐属性 Pass 链接不是缺失功能判定，运行时可达性仍须 G2–G6 逐项关闭。</li>
+<li><a href="g1-evidence/hlsl-v1-interface-final.md">审签的共享 HLSL v1 类型、四个入口、阶段与所有权</a>以既有 <code>BaseUVs</code>、唯一 <code>NBShaderFlags.hlsl</code> 为协议源；对原 <code>Input/Forward</code> 的 16 字段/26 个临时写点使用<a href="g1-evidence/uniform-writes.json">写入清单</a>限制局部化次序。主 Agent 将 agent 初稿的 <code>custom1/custom2</code> 改回 <code>float4</code>，避免 special UV 从原 <code>VaryingsParticle</code> 的 float4 降为 half4；<code>GetCustomData</code> 自身仍按原 half4 参数转换。</li>
+<li><a href="g1-evidence/frequency-variant-budget-draft.md">频率与关键字预算</a>：保留材质 uniform、顶点/粒子流、编译期 keyword、Pass 的不同频率；零新增未经审查的 <code>multi_compile</code> 或 keyword。当前非公开 <code>ShaderUtil.GetVariantCount</code> 的<a href="g1-evidence/current-variant-baseline-command.json">理论组合 9091715745054720 / 场景样本 59</a>不是已编译或 Player 保留数，产品 Graph 需实测。</li>
+<li><a href="t01-helper-mpb-fix.html">MPB Integer 通道两行修复</a>在当前 Editor H1–H4 通过；完整 packed 字的首次 MPB 覆写必须显式播种或由调用方写全值。当前 SG17.3 Integer 黑板在<a href="g1-evidence/T01-current-bridge-fix-proposal.md">本地源码审查</a>中为 float/HLSL float，不能视为无损 uint；双 16-bit float 仅为<a href="g1-evidence/split16_bridge_static.json">静态候选</a>，Graph/VFX GPU 和 Player 高位验证在 G3/G5，旧 ShaderLab 的 uint 协议不变。</li>
+</ul>
+<h2>冻结内容与文件所有权</h2>
+<p>仅冻结 <code>NBFX_BuildBaseUVsV1</code>、<code>NBFX_ComposeBaseColorV1</code>、<code>NBFX_BuildDistortionPayloadV1</code>、<code>NBFX_ComputeVertexOffsetOSV1</code> 及其六个完整结构；它们是拟实现的 NB 内部 API，不是假定的 Unity API。公共契约头、原 <code>NBShaderFlags.hlsl</code>、证据和 Gate 由主 Agent 独占；T02 仅可写 <code>NBShaderUVV1.hlsl</code>，T03 仅可写 <code>NBShaderSurfaceV1.hlsl</code>/<code>NBShaderDistortionV1.hlsl</code>，T04 仅可写 <code>NBShaderGeometryV1.hlsl</code>。原 <code>NBShader.shader</code>/<code>NBShaderInput.hlsl</code>/<code>NBShaderForwardPass.hlsl</code> 由 T05/主 Agent 单写，按函数逐切片接入与 A/B。各新文件的 .meta 由同一所有者随资产提交。中央入口、Flags 布局、旧材质、七 Pass 与 GF 试验资产不由 T02–T04 修改。</p>
+<p>其他 Feature UV/采样、Surface、VAT、URP Lighting 的<strong>跨模块签名尚未冻结</strong>，不得用未定义占位 API 并行集成。模块内部可只读调查；每次扩展先由负责人提交字段/默认值/阶段/用例提案、主 Agent 审签接口增量，然后单独进入 T05。此规则防止用 G1 v1 的窄首切片假称完整 450 项已迁移，同时允许当前环境马上开发闭合功能切片。</p>
+<h2>判定、未运行项与回退</h2>
+<p>G1 审核的是<strong>路由、协议和职责设计</strong>，而不是产品运行结果。旧 ShaderLab 所有 450 Property、191 CBUFFER 布局、关键字、Pass 名称、序列化原样保留；无直接句法读点的 31 项与 CBUFFER 未明字段不据此删除，按路由表保留并在后续 Gate 复核外部/宏绑定。T02–T04 只获上述四函数实现权限；首次编译和 A/B 属 T05/G2。Graph Float 半字、Mesh/真实 VFX Output、精确双 Pass、NBPostprocess RT/合成、Player、性能、不同 API/版本均尚未由 G1 证明。若实现必须修改官方包、Target、NBPostprocess、删减功能或破坏原材质行为，停止受影响链并向用户提交决策。</p>
+<p>回退按独立切片：G1 设计文档/路由可撤销而不动 G0/GF 基线；MPB helper 修复另见其报告。无 push。</p>
+</body></html>

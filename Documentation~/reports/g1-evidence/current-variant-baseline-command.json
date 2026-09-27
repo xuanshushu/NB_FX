@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader\"); var m=typeof(UnityEditor.ShaderUtil).GetMethod(\"GetVariantCount\",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static); var w=System.Diagnostics.Stopwatch.StartNew(); var all=m.Invoke(null,new object[]{s,false}); var scene=m.Invoke(null,new object[]{s,true}); w.Stop(); return \"shader=\"+s.name+\";allVariants=\"+all+\";sceneVariants=\"+scene+\";elapsedMs=\"+w.ElapsedMilliseconds+\";methodPublic=\"+m.IsPublic;"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "shader=Effects/NBShader;allVariants=9091715745054720;sceneVariants=59;elapsedMs=1;methodPublic=False"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

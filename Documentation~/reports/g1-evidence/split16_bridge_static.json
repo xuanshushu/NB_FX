@@ -1,0 +1,80 @@
+{
+  "kind": "pure Python float32 model; not Unity/SG HLSL/GPU proof",
+  "source": {
+    "path": "Library/PackageCache/com.unity.shadergraph@2b401d56d4b3/Editor/Data/Graphs/Vector1ShaderProperty.cs",
+    "sha256": "5ac5099904bb2fa0c3705fd08798f111a54dd7d34e69fa225c74dc00f22604a2",
+    "facts": [
+      "Vector1ShaderProperty<float>",
+      "PropertyType.Float",
+      "FloatType.Integer emits ShaderLab Int but HLSLType._float"
+    ]
+  },
+  "all65536HalfwordIntegersExactInFloat32": true,
+  "vectors": [
+    {
+      "uintHex": "0x00000000",
+      "low16": 0,
+      "high16": 0,
+      "roundTrip": "0x00000000"
+    },
+    {
+      "uintHex": "0x00000001",
+      "low16": 1,
+      "high16": 0,
+      "roundTrip": "0x00000001"
+    },
+    {
+      "uintHex": "0x7FFFFFFF",
+      "low16": 65535,
+      "high16": 32767,
+      "roundTrip": "0x7FFFFFFF"
+    },
+    {
+      "uintHex": "0x80000000",
+      "low16": 0,
+      "high16": 32768,
+      "roundTrip": "0x80000000"
+    },
+    {
+      "uintHex": "0x80000001",
+      "low16": 1,
+      "high16": 32768,
+      "roundTrip": "0x80000001"
+    },
+    {
+      "uintHex": "0xC0800001",
+      "low16": 1,
+      "high16": 49280,
+      "roundTrip": "0xC0800001"
+    },
+    {
+      "uintHex": "0xF0000000",
+      "low16": 0,
+      "high16": 61440,
+      "roundTrip": "0xF0000000"
+    },
+    {
+      "uintHex": "0xFFFFFFFF",
+      "low16": 65535,
+      "high16": 65535,
+      "roundTrip": "0xFFFFFFFF"
+    },
+    {
+      "uintHex": "0x00010000",
+      "low16": 0,
+      "high16": 1,
+      "roundTrip": "0x00010000"
+    },
+    {
+      "uintHex": "0xFFFF0001",
+      "low16": 1,
+      "high16": 65535,
+      "roundTrip": "0xFFFF0001"
+    }
+  ],
+  "requiredNextEvidence": [
+    "Generated Graph HLSL must declare both halves as full float, not half.",
+    "Unity Material/MPB.SetFloat with serialized Graph Material and Player VFX output must preserve the halves.",
+    "Graph Custom Function must reconstruct with uint(round(clamp(...,0,65535))) and never interpolate the halves."
+  ]
+}
