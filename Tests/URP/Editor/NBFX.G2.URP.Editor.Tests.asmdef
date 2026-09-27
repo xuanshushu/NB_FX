@@ -1,0 +1,17 @@
+{
+  "name": "NBFX.G2.URP.Editor.Tests",
+  "rootNamespace": "NBFX.Baseline.Tests",
+  "references": [
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.Universal.Runtime"
+  ],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "overrideReferences": true,
+  "precompiledReferences": ["nunit.framework.dll"],
+  "autoReferenced": false,
+  "defineConstraints": ["NB_G2_HAS_URP"],
+  "versionDefines": [
+    { "name": "com.unity.render-pipelines.universal", "expression": "17.3.0", "define": "NB_G2_HAS_URP" }
+  ]
+}
