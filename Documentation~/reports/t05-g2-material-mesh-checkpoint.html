@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · 19 材质 Mesh A/B 检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-baseuv-checkpoint.html">前一切片</a></p>
+<h1>T05/G2 · 19 个冻结材质的隔离 Mesh A/B</h1>
+<p><strong>状态：夹具与时间混杂已排查；G2 未放行。</strong>2026-09-27；Unity 6000.3.18f1、URP 17.3.0、macOS/Metal。Unity MCP 本会话未暴露，使用 Unity CLI/Pipeline。测试源码 SHA-256 <code>143430caa4e7b03899a0e6c061f4d74e7006901e389d64deff41053224997e37</code>；19 对原/冻结材质的输入 GUID/hash 在 <a href="g0-evidence/material-map.json">G0 material-map</a>。</p>
+<p>新 EditMode 夹具读取 G0 的 19 对材质，仅克隆内存副本，以同一 128×128 RGBA32 Mesh/相机、无 HDR/MSAA 顺序渲染；记录每对差异像素与相对空画面的可见像素，不保存原资产。<a href="g2-evidence/t05-19mesh-visframe-tests.json">最终测试 6/6</a>；<a href="g2-evidence/t05-19mesh-visframe-cases.json">逐材质原始结果</a>：19 对差异像素均为 0，<strong>只有 2 对在此单 Quad 宿主下实际可见</strong>（TyFlow Sculpture 4096 像素、Houdini ParticleSprite 2940 像素）；另外 17 对的可见像素为 0，不得据零差宣称功能已覆盖。</p>
+<p>初版保留 ParticleSprite 自播放，先 current 再 frozen 两次 <code>Camera.Render</code> 出现 3225、重跑 9 个差异像素，见<a href="g2-evidence/t05-19mesh-tests.json">初跑</a>与<a href="g2-evidence/t05-19mesh-tests-retry.json">重跑</a>。该材质 <code>_B_autoPlayback=1</code>；原/冻结 <code>HoudiniVAT.hlsl</code> 字节相同（SHA-256 均 <code>5984e8aecc20c3fe99f929eab385f94f8c29b7c07be47fb4b7090ea063346317</code>），而其帧选择直接读 <code>_Time.y</code>。这是强烈的时间混杂证据，不直接视为产品回归。首次在克隆材质中禁自播放后虽 <a href="g2-evidence/t05-19mesh-fixed-tests.json">6/6</a>，原静态帧却不可见；随后夹具扫描固定帧，选中<strong>可见帧 66</strong>，两侧均设相同帧，得到 2940 可见/0 差异。扫描与材质覆写仅用于确定性测试，原材质文件和 VAT 行为未改。</p>
+<p><a href="g2-evidence/t05-19mesh-visframe-final-compilation.json">最终编译 completed、failed=false</a>、<a href="g2-evidence/t05-19mesh-visframe-final-editor.json">Editor ready</a>。<a href="g2-evidence/t05-19mesh-visframe-console-tail500.json">Console 完整尾部</a>显示本次区间无新增 Error；ground truth 的 1 条 Error 是 2026-09-26 18:03 UTC 既有的 Integer Property 类型探针日志（seq 246），非本次编译/测试失败，不清除历史证据。</p>
+<p>此夹具只证明两个可见 Mesh 样例在固定输入下等价，另外 17 个必须配原宿主/纹理/流逐项验证；七 Pass、NBPostprocess RT/合成、UI/Particle、Graph/VFX、Player、性能仍未由此通过。G2 保持进行中；测试代码与证据独立提交、可单独回退；不 push。</p>
+</body></html>
