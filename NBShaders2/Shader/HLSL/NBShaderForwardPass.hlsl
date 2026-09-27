@@ -1,6 +1,8 @@
 #ifndef NBSHADER_FORWARD_PASS
     #define NBSHADER_FORWARD_PASS
     #include "NBShaderInput.hlsl"
+    #include "NBShaderSurfaceV1.hlsl"
+    #include "NBShaderDistortionV1.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
 
@@ -703,12 +705,15 @@
 
         // #ifndef _CAMERA_OPAQUE_DISTORT_PASS
 
-        albedo.a = GetColorChannel(albedo,FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA);
-
-        albedo *= _BaseColor ;
+        NBFX_BaseColorInputV1 baseColorInput = (NBFX_BaseColorInputV1)0;
+        baseColorInput.sampledAlbedo = albedo;
+        baseColorInput.selectedAlpha = GetColorChannel(albedo, FLAG_BIT_COLOR_CHANNEL_POS_0_MAINTEX_ALPHA);
+        baseColorInput.effectiveBaseColor = _BaseColor;
+        baseColorInput.timelineIntensity = _BaseColorIntensityForTimeline;
         #if !defined(NB_DEPTH_SHADOW_PASS)
-        albedo.rgb *= _BaseColorIntensityForTimeline;
+        baseColorInput.applyTimelineIntensity = true;
         #endif
+        albedo = NBFX_ComposeBaseColorV1(baseColorInput);
             // #endif
 
 
@@ -1314,22 +1319,24 @@
 
         #ifdef _SCREEN_DISTORT_MODE
 
-        //在这里可以进行Alpha的修改
-        half screenDistortAlpha = alphaStrength * screenDistort_Noise.z;
-        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE))
-        {
-            screenDistortAlpha = pow(screenDistortAlpha,_ScreenDistortAlphaPow);
-            screenDistortAlpha *= _ScreenDistortAlphaMulti;
-            screenDistortAlpha += _ScreenDistortAlphaAdd;
-        }
+        NBFX_DistortionInputV1 distortionInput = (NBFX_DistortionInputV1)0;
+        distortionInput.signedNoise = screenDistort_Noise.xy;
+        distortionInput.noiseMask = screenDistort_Noise.z;
+        distortionInput.alphaBeforePremultiply = alphaStrength;
+        distortionInput.refineAlpha = CheckLocalFlags1(FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE);
+        distortionInput.alphaPow = _ScreenDistortAlphaPow;
+        distortionInput.alphaMultiplier = _ScreenDistortAlphaMulti;
+        distortionInput.alphaAdd = _ScreenDistortAlphaAdd;
+        distortionInput.intensity = _ScreenDistortIntensity;
+        NBFX_DistortionPayloadV1 distortion = NBFX_BuildDistortionPayloadV1(distortionInput);
         #ifdef _DEFERRED_DISTORT_PASS
-            result = half3(screenDistort_Noise.xy,1.0);
-            alpha = screenDistortAlpha * _ScreenDistortIntensity;
+            result = half3(distortion.signedRG,1.0);
+            alpha = distortion.coverage * distortion.intensity;
         #endif
 
         #ifdef _CAMERA_OPAQUE_DISTORT_PASS
             float2 screenDistortUV = screenUV;
-            screenDistortUV = screenDistortUV + screenDistort_Noise.xy * screenDistortAlpha * _ScreenDistortIntensity;
+            screenDistortUV = screenDistortUV + distortion.signedRG * distortion.coverage * distortion.intensity;
             half4 screenTexDistortSample = SampleTexture2DWithWrapFlags(_CameraOpaqueTexture,screenDistortUV,FLAG_BIT_WRAPMODE_BASEMAP,false);
             result = screenTexDistortSample.xyz;
             alpha = 1;

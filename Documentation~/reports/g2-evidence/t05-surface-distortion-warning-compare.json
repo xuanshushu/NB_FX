@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var a=UnityEditor.ShaderUtil.GetShaderMessages(UnityEngine.Shader.Find(\"Effects/NBShader\")); var b=UnityEditor.ShaderUtil.GetShaderMessages(UnityEngine.Shader.Find(\"Effects/NBShader_T00_Frozen\")); var x=System.Array.ConvertAll(a,m=>m.severity+\":\"+m.message); var y=System.Array.ConvertAll(b,m=>m.severity+\":\"+m.message); System.Array.Sort(x);System.Array.Sort(y); return \"current=\"+a.Length+\";frozen=\"+b.Length+\";sameMessages=\"+(string.Join(\"|\",x)==string.Join(\"|\",y))+\";currentOnly=\"+string.Join(\"|\",System.Array.FindAll(x,m=>System.Array.IndexOf(y,m)<0));"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "current=18;frozen=31;sameMessages=False;currentOnly="
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · Surface 与 Distortion 接入检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="../gates.html">Gate 规则</a></p>
+<h1>T05/G2 · Surface 与 Distortion 接入检查点</h1>
+<p><strong>状态：已验证的可回退切片；G2 未放行。</strong>2026-09-27；Unity 6000.3.18f1、URP 17.3.0、macOS/Metal。用户需要关机，因此主 Agent 在此切片提交后暂停；不开始 UV/Geometry 接入，不 push。</p>
+<h2>范围与输入</h2>
+<p>在现有 <code>NBShaderForwardPass.hlsl</code> 接入 G1 审签的 <code>NBFX_ComposeBaseColorV1</code> 与 <code>NBFX_BuildDistortionPayloadV1</code>；新增的 Surface/Distortion 纯函数头在前一独立提交。保留七个 ShaderLab Pass、LightMode、关键字、Property/CBUFFER、NBPostprocess、官方包和 Target 原样。输入为 G0 冻结的原 Shader/材质与当前生产 Shader；源码 SHA-256：Forward <code>88a2bdd59f8edcf67e7c8201fe82fad3fbd81d041db86cfe8c1bed0deadab1ff</code>，Surface <code>b8138233f3349a7c0d69b0c6c06fa43df8975f14a97bc82164fcba9413dbe48a</code>，Distortion <code>87ed6e55eb70c4564d9143f306e5b2fd95e29509d53003492dd836d915086a43</code>，A/B 测试 <code>d0e959fb9a80d88895f982ca1657accb059e040b62081f5edec50ab82cf3460a</code>。</p>
+<h2>执行与结果</h2>
+<ul>
+<li><strong>T05-SURFACE-AB</strong>：在同一相机/四边形位置、64×64 RGBA32 读回上，对当前与 G0 冻结材质分别以 timeline 强度 1 和 0.375 A/B；两档均逐像素相等，强度变化确实改变像素。<a href="g2-evidence/t05-surface-distortion-ab-tests.json">EditMode 原始结果</a>：G0 两项 + 新增测试共 3/3 通过。此测试不覆盖 distortion。</li>
+<li><strong>T05-IMPORT</strong>：强制导入生产 Shader 后 <code>isSupported=True</code>，ShaderUtil 消息 18 条、Error 0 条。<a href="g2-evidence/t05-surface-distortion-force-import.json">导入记录</a>；<a href="g2-evidence/t05-surface-distortion-shader-messages.json">消息全文</a>。18 条当前 warning 相对于冻结 Shader 的 31 条没有 current-only 文本，<a href="g2-evidence/t05-surface-distortion-warning-compare.json">差异原始记录</a>；消息条数只反映此次导入覆盖的变体，不是全变体证明。</li>
+<li><strong>T05-EDITOR</strong>：测试后 <a href="g2-evidence/t05-surface-distortion-posttest-compilation.json">编译 completed、failed=false</a>；<a href="g2-evidence/t05-surface-distortion-posttest-console.json">Console ground truth：0 Error、1 Warning</a>；<a href="g2-evidence/t05-surface-distortion-editor-status.json">Editor ready、Play stopped</a>。</li>
+</ul>
+<h2>边界、待做与回退</h2>
+<p>Distortion 当前仅证明源级接线与 Shader 导入，不声称扭曲 RT、NBPostprocess 合成或像素等价；后续必须以精确两个 Pass 标签验证 G3。Geometry、BaseUV 尚未接入；也未执行全部 450 Property/材质、Mesh/VFX Graph、Player、性能/变体完整回归。G2 因此仍为进行中而非通过。当前切片可按 NB_FX 提交单独回退，再回退主工程子模块指针；此前纯函数提交独立保留。</p>
+<p>Unity MCP 在本会话未暴露可调用工具，按既定降级使用本机 Unity CLI/Pipeline 读取 Editor 状态、强制导入、运行 EditMode 测试和查询编译/Console。没有要求用户决策的官方包、Target、NBPostprocess 或功能削减变更。</p>
+</body></html>

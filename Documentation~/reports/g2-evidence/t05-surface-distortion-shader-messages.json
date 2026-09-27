@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var s=UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Shader>(\"Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader\"); var m=UnityEditor.ShaderUtil.GetShaderMessages(s); return string.Join(\" || \",System.Array.ConvertAll(m,x=>x.severity+\":\"+x.message.Replace(\"\\n\",\" \")));"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "Warning:'Blend_HardLight': implicit truncation of vector type || Warning:implicit truncation of vector type || Warning:'ProcessBaseUVs': implicit truncation of vector type || Warning:'TransformWorldToView': implicit truncation of vector type || Warning:implicit truncation of vector type || Warning:implicit truncation of vector type || Warning:'mul': implicit truncation of vector type || Warning:implicit truncation of vector type || Warning:implicit truncation of vector type || Warning:'mul': implicit truncation of vector type || Warning:implicit truncation of vector type || Warning:implicit truncation of vector type || Warning:implicit truncation of vector type || Warning:implicit truncation of vector type || Warning:pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them || Warning:implicit truncation of vector type || Warning:implicit truncation of vector type || Warning:signed/unsigned mismatch, unsigned assumed"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
