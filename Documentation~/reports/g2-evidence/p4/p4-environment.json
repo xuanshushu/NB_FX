@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var p=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset; var d=p.rendererDataList[0]; return \"unity=\"+UnityEngine.Application.unityVersion+\";gpu=\"+UnityEngine.SystemInfo.graphicsDeviceName+\";api=\"+UnityEngine.SystemInfo.graphicsDeviceType+\";pipeline=\"+p.name+\";renderer=\"+UnityEditor.AssetDatabase.GetAssetPath(d)+\";feature=\"+string.Join(\",\", d.rendererFeatures.ConvertAll(f=>f==null?\"null\":f.GetType().FullName+\":\"+f.isActive));"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "unity=6000.3.18f1;gpu=Apple M3 Pro;api=Metal;pipeline=URP-HighFidelity;renderer=Assets/Settings/URP-HighFidelity-Renderer.asset;feature=UnityEngine.Rendering.Universal.ScreenSpaceAmbientOcclusion:True,NBShader.NBPostProcess:True"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

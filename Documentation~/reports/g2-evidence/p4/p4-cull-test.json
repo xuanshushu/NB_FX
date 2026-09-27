@@ -1,0 +1,43 @@
+{
+  "success": true,
+  "command": "command run_tests",
+  "data": {
+    "command": "run_tests",
+    "parameters": {
+      "mode": "editor",
+      "filter": "NBFX.G2.URP.Editor.Tests",
+      "filter_type": "assembly"
+    },
+    "result": {
+      "Summary": {
+        "Total": 1,
+        "Passed": 0,
+        "Failed": 1,
+        "Skipped": 0,
+        "Inconclusive": 0
+      },
+      "Results": [
+        {
+          "FullName": "NBFX.Baseline.Tests.G2CameraOpaqueABTests.ExistingCameraOpaquePassMatchesFrozenAndHasVisibleControls",
+          "Status": "Failed",
+          "Duration": 0.0996707,
+          "Message": "Unhandled log message: '[Error] Material 'XuanXuan/Postprocess/NBPostProcessUber' with Shader 'XuanXuan/Postprocess/NBPostProcessUber' doesn't have a float or range property '_NBPostProcessFlags''. Use UnityEngine.TestTools.LogAssert.Expect",
+          "StackTrace": "UnityEngine.Material:GetInt (string)\nNBFX.Baseline.Tests.G2CameraOpaqueABTests:ExistingCameraOpaquePassMatchesFrozenAndHasVisibleControls () (at ./Packages/NB_FX/Tests/URP/Editor/G2CameraOpaqueABTests.cs:125)\nSystem.Reflection.MethodBase:Invoke (object,object[])\nNUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])\nNUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])\nNUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)\nNUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)\nNUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)\nUnityEditor.EditorApplication:Internal_CallUpdateFunctions ()\n\n"
+        }
+      ],
+      "Duration": 8.2,
+      "StatusPath": null,
+      "Mode": "EditMode",
+      "FilterApplied": "assembly: NBFX.G2.URP.Editor.Tests",
+      "success": true,
+      "result": null
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
