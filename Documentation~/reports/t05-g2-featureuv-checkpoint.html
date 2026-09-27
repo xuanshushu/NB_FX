@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · Feature UV 接入检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-material-mesh-checkpoint.html">前一切片</a></p>
+<h1>T05/G2 · Feature UV 共用变换接入</h1>
+<p><strong>状态：T02/T05 可回退首切片通过其限定验证；G2 未放行。</strong>2026-09-27；Unity 6000.3.18f1、URP 17.3.0、macOS/Metal。Unity MCP 本会话未暴露，使用 Unity CLI/Pipeline 串行验证。</p>
+<p>主 Agent 审签新增 V2 纯数值接口，T02 仅写 <code>NBShaderUVV2.hlsl</code>，主 Agent 独写契约与中央 Input 接线。原 <code>ParticleUVCommonProcess</code> 保持七处消费者、调用签名、默认参数和顶点/片元阶段不变，改为传显式 <code>time</code> 与输入结构给 <code>NBFX_TransformFeatureUVV2</code>；函数顺序仍为旋转→ST→half2 动画速度。采样/Wrap/LOD、CustomData 前置调整、Pass、Property、CBUFFER、keyword、官方包、Target 与 NBPostprocess 均未改。源码 SHA-256：Input <code>273603043c6d992602bbbc9972c2248f8e969d70d4dcb72e62932ad8694b334d</code>，V2 UV <code>ad61bf130a6dc7b49137cd0413664548b2b71f06a3c9ad3139f75f35f29f0eb3</code>，测试 <code>d0955d5422c28a7aacc4fdde744f82bb2333b36a8d7181bed09527d06b7f6e9a</code>。</p>
+<ul>
+<li><strong>T05-FUV-AB</strong>：<a href="g2-evidence/t05-featureuv-targeted-ab-tests.json">EditMode 6/6</a>；受控渐变贴图的 Emission 消费端在非均匀 ST 与 47° 旋转时，当前/冻结同位 64×64 RGBA32 逐像素相等；Emission 开关和 ST/旋转各自确实改变像素。原 BaseUV 五模式、Vertex Offset 四模式、Surface timeline、G0 和 19 材质 Mesh 夹具同时通过。仅 Emission 为本次七消费者中的定向功能 A/B；另外六个未因本结果自动通过。</li>
+<li><strong>T05-FUV-IMPORT</strong>：<a href="g2-evidence/t05-featureuv-import.json">强制导入</a> supported=True、Error 0。<a href="g2-evidence/t05-featureuv-warning-compare.json">当前 ShaderUtil 消息 35、冻结 36，current-only 文本为空</a>；导入消息不是全部变体/Player 证明。<a href="g2-evidence/t05-featureuv-final-compilation.json">编译 completed、failed=false</a>；<a href="g2-evidence/t05-featureuv-final-console.json">Console ground truth 0 Error/0 Warning</a>；<a href="g2-evidence/t05-featureuv-final-editor.json">Editor ready、Play stopped</a>。</li>
+</ul>
+<p>Dissolve/Noise/Mask/ColorBlend/ColorRamp 等其他 Feature UV 消费端、特殊流/CustomData、全部 Wrap/LOD、七 Pass、NBPostprocess、Graph/VFX、Player、性能仍待后续用例。G2 保持进行中。V2 纯核独立提交，本接线切片可单独回退；不 push。</p>
+</body></html>

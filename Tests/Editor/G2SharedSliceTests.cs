@@ -154,7 +154,7 @@ namespace NBFX.Baseline.Tests
         }
 
         [Test]
-        public void BaseUVModesMatchFrozenAndChangeSampledPixels()
+        public void BaseAndFeatureUVModesMatchFrozenAndChangeSampledPixels()
         {
             var source = AssetDatabase.LoadAssetAtPath<Material>(OriginalPath);
             var frozen = AssetDatabase.LoadAssetAtPath<Material>(FrozenPath);
@@ -234,6 +234,39 @@ namespace NBFX.Baseline.Tests
                         Assert.That(CountDifferent(defaultPixels, current), Is.GreaterThan(0),
                             "BaseUV mode " + mode + " did not change sampled pixels.");
                 }
+
+                // The same shared Feature UV helper is used by seven existing
+                // consumers. Exercise its Emission path with a nonuniform ST
+                // and rotation while keeping time-dependent offset speed zero.
+                foreach (var material in new[] { currentMaterial, frozenMaterial })
+                {
+                    material.SetInteger("_W9ParticleShaderFlags", 0);
+                    material.SetInteger("_W9ParticleShaderFlags1", 1);
+                    material.SetInteger("_UVModeFlag0", 0);
+                    material.SetInteger("_UVModeFlagType0", 0);
+                    material.EnableKeyword("_EMISSION");
+                    material.SetTexture("_EmissionMap", texture);
+                    material.SetColor("_EmissionMapColor", Color.white);
+                    material.SetFloat("_EmissionMapColorIntensity", 1);
+                    material.SetFloat("_EmissionAlphaIntensity", 1);
+                    material.SetVector("_EmissionMapUVOffset", Vector4.zero);
+                    material.SetVector("_EmissionMap_ST", new Vector4(1, 1, 0, 0));
+                    material.SetFloat("_EmissionMapUVRotation", 0);
+                }
+                var plainEmission = Capture(camera, renderer, currentMaterial, target);
+                Assert.That(CountDifferent(defaultPixels, plainEmission), Is.GreaterThan(0),
+                    "The Emission consumer must visibly affect the image.");
+                foreach (var material in new[] { currentMaterial, frozenMaterial })
+                {
+                    material.SetVector("_EmissionMap_ST", new Vector4(0.7f, 1.3f, 0.12f, -0.2f));
+                    material.SetFloat("_EmissionMapUVRotation", 47);
+                }
+                var transformedEmission = Capture(camera, renderer, currentMaterial, target);
+                var frozenEmission = Capture(camera, renderer, frozenMaterial, target);
+                Assert.That(CountDifferent(transformedEmission, frozenEmission), Is.Zero,
+                    "Feature UV Emission ST/rotation differs from the frozen ShaderLab reference.");
+                Assert.That(CountDifferent(plainEmission, transformedEmission), Is.GreaterThan(0),
+                    "Feature UV ST/rotation must change sampled pixels.");
             }
             finally
             {

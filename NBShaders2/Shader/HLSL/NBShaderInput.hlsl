@@ -5,6 +5,7 @@
     #include "NBShaderFlags.hlsl"
     #include "NBShaderGeometryV1.hlsl"
     #include "NBShaderUVV1.hlsl"
+    #include "NBShaderUVV2.hlsl"
    
     #if defined(_PROGRAM_NOISE) && (defined(_PROGRAM_NOISE_SIMPLE) || defined(_PROGRAM_NOISE_VORONOI))
         #define _PROGRAM_NOISE_ACTIVE
@@ -814,13 +815,14 @@
 
     float2 ParticleUVCommonProcess(float2 originUVAfterTwirlPolar,float4 scaleTilling,float2 offset = float2(0,0),float rotation = 0,float2 rotationCenter = float2(0.5,0.5))
     {
-        float2 uv = originUVAfterTwirlPolar;
-        uv = Rotate_Radians_float(uv,rotationCenter,rotation);
-        uv = uv*scaleTilling.xy + scaleTilling.zw;
-        
-        uv = UVOffsetAnimaiton(uv,offset);
-        
-        return uv;
+        NBFX_FeatureUVTransformInputV2 input = (NBFX_FeatureUVTransformInputV2)0;
+        input.originUV = originUVAfterTwirlPolar;
+        input.scaleOffset = scaleTilling;
+        input.offsetSpeed = offset;
+        input.rotationDegrees = rotation;
+        input.rotationCenter = rotationCenter;
+        input.timeY = time;
+        return NBFX_TransformFeatureUVV2(input);
     }
 
     struct ParticleUVs
