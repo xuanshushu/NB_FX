@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · 原 ParticleSystem 宿主 A/B</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-gate-audit-20260928.html">G2 Gate 审核</a></p>
+<h1>T05/G2 · 原 ParticleSystem Billboard 宿主 A/B</h1>
+<p><strong>结论：隔离工程单粒子 Billboard 宿主 1/1，通过该切片；G2 仍未放行。</strong>使用真实 <code>ParticleSystemRenderer</code>（Billboard/View，Position/Color/UV 顶点流），而不是 MeshRenderer 代用品。内存克隆当前 <code>Effects/NBShader</code> 与 G0 Frozen，保留 Particle source slot-1 bit23 与透明 bit0；不改原材质或生产 Shader。</p>
+<p>测试源码 <code>Tests/Editor/G2ParticleSystemHostABTests.cs</code>；<a href="g2-evidence/g2-particle-host-20260928/protected-input-sha256.txt">源码、材质与主工程 QualitySettings SHA-256</a>。Unity 6000.3.18f1 / URP 17.3 / Metal，96×96 RGBA32，独立 /tmp 工程副本 EditMode batchmode。原 Editor 已退出、unityMCP 未暴露，主工程没有运行该测试。</p>
+<table border="1" cellpadding="6"><thead><tr><th>同一位置控制</th><th>GPU 像素结果</th></tr></thead><tbody>
+<tr><td>Renderer disabled/空系统 → Renderer enabled/空系统</td><td>差异 0</td></tr>
+<tr><td>有一个存活粒子但 Renderer disabled</td><td>相对空背景差异 0</td></tr>
+<tr><td>红色粒子当前 vs Frozen</td><td>A/B 差异 0；双方可见 2304</td></tr>
+<tr><td>绿色粒子当前 vs Frozen</td><td>A/B 差异 0；双方可见 2304</td></tr>
+<tr><td>红 → 绿，仅更改 EmitParams.startColor</td><td>差异 2304；非空功能控制成立</td></tr>
+</tbody></table>
+<p><a href="g2-evidence/g2-particle-host-20260928/particle-billboard-passed.xml">NUnit 1/1，Unity exit 0</a> · <a href="g2-evidence/g2-particle-host-20260928/G2ParticleHost-AB.txt">数值</a> · <a href="g2-evidence/g2-particle-host-20260928/G2ParticleHost-red-current.png">红当前图</a> · <a href="g2-evidence/g2-particle-host-20260928/G2ParticleHost-red-frozen.png">红 Frozen 图</a> · <a href="g2-evidence/g2-particle-host-20260928/G2ParticleHost-green-current.png">绿当前图</a>。主 Agent 目视确认两个截图为中央非空方形。</p>
+<p>首次正常 Burst 的隔离批处理在运行 NUnit 前于 <code>Burst.Compiler.IL.Server</code> SIGBUS（exit 138），不能给该次运行记通过/失败；随后只对隔离进程设置本地 Burst 包支持的 <code>UNITY_BURST_DISABLE_COMPILATION=1</code>，Unity 日志确认禁用且该测试干净退出。未改官方包、主工程设置或验收阈值；<a href="g2-evidence/g2-particle-host-20260928/run-manifest.txt">执行边界</a>。单个暂停 Billboard 不覆盖 Particle Mesh、VAT、Flipbook、CustomData、PlayMode/Player、UI/UIParticle 或性能。</p>
+</body></html>
