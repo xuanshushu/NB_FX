@@ -1,0 +1,9 @@
+--- a/Tests/Editor/G2DissolveABTests.cs
++++ b/Tests/Editor/G2DissolveABTests.cs
+@@ -17,5 +17,5 @@
+         {
+             var source = AssetDatabase.LoadAssetAtPath<Material>(OriginalPath);
+-            var frozen = AssetDatabase.LoadAssetAtPath<Material>(FrozenPath);
++            var frozen = AssetDatabase.LoadAssetAtPath<Material>(OriginalPath);
+             Assert.That(source, Is.Not.Null);
+             Assert.That(frozen, Is.Not.Null);

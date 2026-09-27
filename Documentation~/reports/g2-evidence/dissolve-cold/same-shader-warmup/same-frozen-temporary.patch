@@ -1,0 +1,9 @@
+--- a/Tests/Editor/G2DissolveABTests.cs
++++ b/Tests/Editor/G2DissolveABTests.cs
+@@ -16,5 +16,5 @@
+         public void DissolveMaskModesAndDebugBoundaryMatchFrozen()
+         {
+-            var source = AssetDatabase.LoadAssetAtPath<Material>(OriginalPath);
++            var source = AssetDatabase.LoadAssetAtPath<Material>(FrozenPath);
+             var frozen = AssetDatabase.LoadAssetAtPath<Material>(FrozenPath);
+             Assert.That(source, Is.Not.Null);

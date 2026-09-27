@@ -1,0 +1,30 @@
+--- Temp/NBFXG2/dissolve-original-before-same-shader.cs	2026-09-28 00:42:01
++++ Packages/NB_FX/Tests/Editor/G2DissolveABTests.cs	2026-09-28 00:44:51
+@@ -81,6 +81,27 @@
+                 Capture(camera, renderer, currentMaterial, target);
+                 Capture(camera, renderer, frozenMaterial, target);
+
++                // Temporary diagnostic: expose cold mask-on capture, then prewarm both sides.
++                currentMaterial.EnableKeyword("_DISSOLVE_MASK");
++                frozenMaterial.EnableKeyword("_DISSOLVE_MASK");
++                currentMaterial.SetFloat("_DissolveMaskMode", 0);
++                frozenMaterial.SetFloat("_DissolveMaskMode", 0);
++                var coldCurrent = Capture(camera, renderer, currentMaterial, target);
++                var coldFrozen = Capture(camera, renderer, frozenMaterial, target);
++                var warmCurrent = Capture(camera, renderer, currentMaterial, target);
++                var warmFrozen = Capture(camera, renderer, frozenMaterial, target);
++                var warmOutput = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG2");
++                Directory.CreateDirectory(warmOutput);
++                WritePng(Path.Combine(warmOutput, "dissolve_prewarm_cold_current.png"), coldCurrent);
++                WritePng(Path.Combine(warmOutput, "dissolve_prewarm_cold_frozen.png"), coldFrozen);
++                WritePng(Path.Combine(warmOutput, "dissolve_prewarm_warm_current.png"), warmCurrent);
++                WritePng(Path.Combine(warmOutput, "dissolve_prewarm_warm_frozen.png"), warmFrozen);
++                File.WriteAllText(Path.Combine(warmOutput, "dissolve_prewarm_metrics.txt"),
++                    "coldAB=" + CountDifferent(coldCurrent, coldFrozen) +
++                    ", warmAB=" + CountDifferent(warmCurrent, warmFrozen) +
++                    ", currentSelf=" + CountDifferent(coldCurrent, warmCurrent) +
++                    ", frozenSelf=" + CountDifferent(coldFrozen, warmFrozen) + "\n");
++
+                 Color32[] noMask = null;
+                 Color32[] noMaskFrozen = null;
+                 foreach (var mode in new[] { -1f, 0f, 0.5f, 1f })
