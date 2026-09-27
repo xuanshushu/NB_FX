@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · 七 Pass 静态协议 P0</title></head><body>
+<p><a href="index.html">返回报告索引</a></p>
+<h1>T05/G2 · 七 Pass 静态协议 P0</h1>
+<p><strong>状态：P0 通过；Pass 运行与 G2 均未放行。</strong>2026-09-27；Unity 6000.3.18f1、URP 17.3.0、macOS/Metal。Unity MCP 本会话未暴露，由主 Agent 用 Unity CLI/Pipeline 在当前 Editor 只读查询；无产品或项目配置改动，未 push。当前 ShaderLab SHA-256 <code>9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00</code>，G0 冻结 ShaderLab <code>a27e705c3ac3a83d932a8745a48f4ac45f31a5fb1b945fa5a66f38c99c742a8d</code>。</p>
+<p><a href="g2-evidence/t05-pass-p0-static.json">原始 Unity 查询</a>用 <code>Material.passCount/GetPassName</code> 与当前 Unity 公开的 <code>Shader.FindPassTagValue(0,index,LightMode)</code> 检查生产和冻结 Shader：两者均 supported、7 Pass、ShaderUtil Error 0；顺序和 LightMode 一一相同。七项依次是 <code>SRPDefaultUnlit</code>、<code>UniversalForward</code>、<code>DepthOnly</code>、<code>ShadowCaster</code>、<code>NBCameraOpaqueDistortPass</code>、<code>NBDeferredDistortPass</code>、<code>Universal2D</code>。Unity API 对首项及 ShadowCaster 返回大写标准化 LightMode，当前与冻结相同；两个 NBPostprocess 自定义标签字节名称保持精确。</p>
+<p><strong>本次没有证明七 Pass 被真实绘制。</strong>尤其没有证明 NBPostprocess 精确 RendererList 选择、Mask/Copy RT 或合成，也没有证明 DepthOnly、ShadowCaster、Universal2D 宿主、RenderGraph/Compatibility、Player。P1–P7 仍按<a href="../validation.html">验证矩阵</a>逐项实施；P0 不得替代 G2 或未来 Graph 的 G3。</p>
+</body></html>

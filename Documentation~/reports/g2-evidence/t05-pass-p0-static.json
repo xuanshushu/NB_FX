@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var a=UnityEngine.Shader.Find(\"Effects/NBShader\"); var b=UnityEngine.Shader.Find(\"Effects/NBShader_T00_Frozen\"); var ma=new UnityEngine.Material(a); var mb=new UnityEngine.Material(b); try { var rows=new System.Collections.Generic.List<string>(); var tag=new UnityEngine.Rendering.ShaderTagId(\"LightMode\"); for(int i=0;i<ma.passCount;i++) rows.Add(i+\":\"+ma.GetPassName(i)+\":\"+a.FindPassTagValue(0,i,tag).name+\"|\"+mb.GetPassName(i)+\":\"+b.FindPassTagValue(0,i,tag).name); int ea=0,eb=0; foreach(var x in UnityEditor.ShaderUtil.GetShaderMessages(a)) if(x.severity.ToString()==\"Error\") ea++; foreach(var x in UnityEditor.ShaderUtil.GetShaderMessages(b)) if(x.severity.ToString()==\"Error\") eb++; return \"currentSupported=\"+a.isSupported+\";frozenSupported=\"+b.isSupported+\";currentPasses=\"+ma.passCount+\";frozenPasses=\"+mb.passCount+\";currentErrors=\"+ea+\";frozenErrors=\"+eb+\";rows=\"+string.Join(\",\",rows); } finally { UnityEngine.Object.DestroyImmediate(ma); UnityEngine.Object.DestroyImmediate(mb); }"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "currentSupported=True;frozenSupported=True;currentPasses=7;frozenPasses=7;currentErrors=0;frozenErrors=0;rows=0:SRPDefaultUnlit:SRPDEFAULTUNLIT|SRPDefaultUnlit:SRPDEFAULTUNLIT,1:UniversalForward:UniversalForward|UniversalForward:UniversalForward,2:DepthOnly:DepthOnly|DepthOnly:DepthOnly,3:ShadowCaster:SHADOWCASTER|ShadowCaster:SHADOWCASTER,4:NBCameraOpaqueDistortPass:NBCameraOpaqueDistortPass|NBCameraOpaqueDistortPass:NBCameraOpaqueDistortPass,5:NBDeferredDistortPass:NBDeferredDistortPass|NBDeferredDistortPass:NBDeferredDistortPass,6:Universal2D:Universal2D|Universal2D:Universal2D"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}
