@@ -1,0 +1,73 @@
+using System;
+using System.IO;
+using NBShader;
+using NBShaders2.Editor.FeatureLevel;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+public static class NBFXG2PlayerBuildProbe
+{
+    private const string Output = "/tmp/nbfx-g2-player-build-20260929";
+    private const string SvcFolder = "Assets/Resources/__NBFXG2PlayerSVC";
+    private const string Scene = "Assets/NBShaderSamples/NBShaderSamples.unity";
+    [Serializable] private class Result
+    {
+        public string unityVersion;
+        public string graphicsDevice;
+        public string activeBuildTarget;
+        public string scene;
+        public string tier;
+        public int materialCount;
+        public int expectedVariantCount;
+        public int actualSvcVariantCount;
+        public string svcAssetPath;
+        public string buildResult;
+        public int errors;
+        public int warnings;
+        public long totalSize;
+        public string appPath;
+        public bool pass;
+        public string error;
+    }
+    public static void Build()
+    {
+        Directory.CreateDirectory(Output);
+        var r = new Result { unityVersion = Application.unityVersion, graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
+            activeBuildTarget = EditorUserBuildSettings.activeBuildTarget.ToString(), scene = Scene, tier = NBShaderFeatureTier.Ultra.ToString(),
+            appPath = Path.Combine(Output,"NBShaderUltra.app") };
+        try
+        {
+            if (AssetDatabase.IsValidFolder(SvcFolder)) throw new Exception("Temporary SVC folder already exists");
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(Scene) == null) throw new Exception("Sample scene missing");
+            var result = NBShaderVariantCollectionBuilder.Generate(new[] { "Assets/NBShaderSamples/NBShaderSamples" }, SvcFolder,
+                new[] { NBShaderFeatureTier.Ultra });
+            if (!result.succeeded || result.tiers.Length != 1) throw new Exception("SVC generation failed: " + result.firstErrorMessage);
+            var tier = result.tiers[0];
+            var svc = AssetDatabase.LoadAssetAtPath<ShaderVariantCollection>(tier.outputAssetPath);
+            if (svc == null || svc.variantCount != tier.variantCount) throw new Exception("SVC count mismatch");
+            r.materialCount = result.materialCount; r.expectedVariantCount = tier.variantCount;
+            r.actualSvcVariantCount = svc.variantCount; r.svcAssetPath = tier.outputAssetPath;
+            File.Copy(Path.Combine(Path.GetDirectoryName(Application.dataPath), tier.outputAssetPath), Path.Combine(Output,"NBShader_Ultra.shadervariants"), true);
+            AssetDatabase.SaveAssets();
+            using (NBShaderFeatureLevelEditorAPI.OverrideBuildStripExplicitTier(NBShaderFeatureTier.Ultra))
+            {
+                Debug.Log("NBFX-G2-BUILD-TIER active=" + NBShaderFeatureLevelBuildStripOverride.hasOverride + " tier=Ultra");
+                var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = new[] { Scene }, locationPathName = r.appPath,
+                    target = BuildTarget.StandaloneOSX, options = BuildOptions.Development });
+                r.buildResult = report.summary.result.ToString(); r.errors = report.summary.totalErrors;
+                r.warnings = report.summary.totalWarnings; r.totalSize = (long)report.summary.totalSize;
+            }
+            if (r.buildResult != BuildResult.Succeeded.ToString() || r.errors != 0) throw new Exception("Player build failed: " + r.buildResult + " errors=" + r.errors);
+            r.pass = true;
+        }
+        catch (Exception ex) { r.error = ex.ToString(); Debug.LogError("NBFX-G2-PLAYER-BUILD failed: " + ex); }
+        finally
+        {
+            AssetDatabase.DeleteAsset(SvcFolder);
+            File.WriteAllText(Path.Combine(Output,"build-result.json"), JsonUtility.ToJson(r,true));
+            Debug.Log("NBFX-G2-PLAYER-BUILD pass=" + r.pass + " result=" + r.buildResult + " errors=" + r.errors + " warnings=" + r.warnings);
+        }
+    }
+}
