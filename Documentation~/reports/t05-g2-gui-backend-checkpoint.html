@@ -10,6 +10,6 @@
 <li>两个内存材质同时同步：各自 MeshSourceMode、MaskRefine、BaseColor 和 packed bits 独立；重复同步无交叉污染。</li>
 </ul>
 <p><a href="g2-evidence/g2-gui-backend-20260928/final-backend-passed.xml">最终 NUnit 3/3、Unity exit 0</a>。最初 <a href="g2-evidence/g2-gui-backend-20260928/initial-fixture-failed.xml">2/3</a> 是测试夹具未开启 <code>_NOISEMAP</code> 父功能却期待其子关键字 <code>_SCREEN_DISTORT_MODE</code>；经<a href="g2-evidence/g2-gui-backend-20260928/parent-dependency-diagnostic.xml">诊断</a>、仅修夹具后，Low tier 不允许父关键字而正确过滤，Ultra tier 双关键字允许并按 Deferred/CameraOpaque 意图选择 Pass。<a href="g2-evidence/g2-gui-backend-20260928/run-manifest.txt">执行顺序与边界</a>。</p>
-<p><strong>P6 交叉发现（未改策略）：</strong>这三种后端情形的日志均显示 <code>Universal2D enabled=False</code> 且 <code>tierAllows(pass.universal2D)=False</code>；当前项目和包内默认 FeatureTier Pass 集合都没有该 ID。前述 P6 真实 Renderer2D 测试是手动打开该 Pass 后通过，不能据此宣称经 NBShaderGUI 同步的 2D 材质仍可显示。这是当前策略/原路径覆盖缺口，不擅自修改 ProjectSettings、默认 Tier、Shader Pass 或削减功能。</p>
+<p><strong>P6 交叉发现（未改策略）：</strong>这三种后端情形的日志均显示 <code>Universal2D enabled=False</code> 且 <code>tierAllows(pass.universal2D)=False</code>；当前项目和包内默认 FeatureTier Pass 集合都没有该 ID。前述 P6 真实 Renderer2D 测试是手动打开该 Pass 后通过，不能据此宣称经 NBShaderGUI 同步的 2D 材质仍可显示。用户随后以 <a href="../decisions.html">D22</a> 确认手动开启 Pass、保留当前主观配置；因此这是被接受的现有使用前提，不改 ProjectSettings、默认 Tier 或 Shader Pass。</p>
 <p>未验证：<code>NBShaderGUI.OnGUI</code> 控件触发、Undo/Redo、真实多选 Inspector、保存/Reload 后序列化、材质改动后实际 Mesh/2D/Particle/UI GPU 结果、Player 与性能。SetUp/TearDown 对原样例 Material 和 FeatureLevel 设置文件作哈希保护，测试仅用内存克隆。</p>
 </body></html>

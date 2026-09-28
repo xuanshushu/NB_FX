@@ -60,7 +60,7 @@
       <tr><td>几何</td><td>Custom Local Transform、位移方向、负缩放、VAT 所有确认模式、法线、Bounds。</td><td>几何/normal/depth/shadow、关键帧序列。</td></tr>
       <tr><td>光照</td><td>Unlit、Blinn-Phong、Half-Lambert、PBR、Six-Way、MatCap、雾。</td><td>主/附加灯、阴影、SH、双面与精度对比。</td></tr>
       <tr><td>Pass / 状态</td><td>七个原 Pass、深度、透明阴影、Override Z、背面先绘制、Stencil/Portal、Blend/ZWrite/ZTest/ColorMask。</td><td>生成代码、Frame Debugger 或等价绘制记录、RT 读回。</td></tr>
-      <tr><td>原路径宿主</td><td>Mesh、ParticleSystem、UI、Sprite、UIParticle、Universal2D。</td><td>确认现有行为无回归；新 Graph 不承担后四类宿主。</td></tr>
+      <tr><td>原路径宿主</td><td>Mesh、ParticleSystem、UI、Sprite、UIParticle、Universal2D。</td><td>确认现有行为无回归；Universal2D 按 D22 以手动开启 Pass 的现有配置验证，不要求默认 Tier 自动允许；新 Graph 不承担后四类宿主。</td></tr>
       <tr><td>VFX</td><td>确认的 Quad/Mesh/Strip，常量/连线/逐粒子输入，空间、Flipbook、Mesh VAT、GUI。</td><td>真实 Output、参数和数据链证据，不能用 Mesh 替代。</td></tr>
       <tr><td>构建</td><td>Editor/Player、裁剪、SVC、Feature Tier、AssetBundle 使用路径、重新导入与 Domain Reload。</td><td>构建日志、实际运行、缺失变体检测。</td></tr>
     </tbody>
