@@ -1,0 +1,10 @@
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
+public static class NBFXG2MatCapSceneMatrix
+{
+ private const string Old = "Assets/NBShaderSamples/NBShaderSamples.unity";
+ private const string Vfx = "Assets/NBShaderSamples/NBShader_VFXGraphSample.unity";
+ public static string OldOnly() { var s=EditorSceneManager.OpenScene(Old,OpenSceneMode.Single); return "old="+s.path+",roots="+s.rootCount; }
+ public static string VfxOnly() { var s=EditorSceneManager.OpenScene(Vfx,OpenSceneMode.Single); return "vfx="+s.path+",roots="+s.rootCount; }
+ public static string Both() { var s=EditorSceneManager.OpenScene(Old,OpenSceneMode.Single); var v=EditorSceneManager.OpenScene(Vfx,OpenSceneMode.Additive); return "old="+s.path+",vfx="+v.path; }
+}

@@ -1,0 +1,15 @@
+using System;
+using System.IO;
+using System.Linq;
+using UnityEngine.SceneManagement;
+public static class NBFXG2SampleSingleGroup
+{
+ public static string Run()
+ {
+  var s=SceneManager.GetActiveScene();if(s.name!="NBShader_VFXGraphSample")throw new Exception("Unexpected scene");
+  var r=s.GetRootGameObjects().First(g=>g.name=="SamplesRoot");
+  int keep=int.Parse(File.ReadAllText("/tmp/nbfx_g2_matcap_keep_group.txt"));
+  for(int i=0;i<r.transform.childCount;i++)r.transform.GetChild(i).gameObject.SetActive(i==keep);
+  return "only group "+keep+" active "+(keep<0?"none":r.transform.GetChild(keep).name);
+ }
+}

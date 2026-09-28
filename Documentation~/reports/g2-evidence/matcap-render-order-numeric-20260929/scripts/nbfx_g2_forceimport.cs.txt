@@ -1,0 +1,16 @@
+using UnityEditor;
+using UnityEngine;
+public static class NBFXG2ForceImport
+{
+    public static string Run()
+    {
+        var current = AssetDatabase.LoadAssetAtPath<Material>("Assets/NBShaderSamples/NBShaderSamples/UnLit.mat");
+        var frozen = AssetDatabase.LoadAssetAtPath<Material>("Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/UnLit.mat");
+        if (current == null || frozen == null) throw new System.Exception("G2 material missing");
+        string a = AssetDatabase.GetAssetPath(current.shader);
+        string b = AssetDatabase.GetAssetPath(frozen.shader);
+        AssetDatabase.ImportAsset(a, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+        AssetDatabase.ImportAsset(b, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+        return "Force imported " + a + " and " + b;
+    }
+}

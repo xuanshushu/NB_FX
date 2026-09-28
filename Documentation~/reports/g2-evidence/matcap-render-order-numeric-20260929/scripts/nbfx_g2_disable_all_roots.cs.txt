@@ -1,0 +1,13 @@
+using UnityEngine;
+using UnityEngine.SceneManagement;
+public static class NBFXG2DisableAllRoots
+{
+    public static string Run()
+    {
+        var scene = SceneManager.GetActiveScene();
+        if (scene.name != "NBShader_VFXGraphSample") throw new System.Exception("Unexpected scene");
+        int count = 0;
+        foreach (var root in scene.GetRootGameObjects()) { root.SetActive(false); count++; }
+        return "Disabled " + count + " roots in memory";
+    }
+}

@@ -1,0 +1,8 @@
+Environment: Unity 6000.3.18f1, URP 17.3, macOS Metal, isolated project copy; no interactive Unity Editor required for the batch probe.
+1. Copy NBFXG2MatCapBatchProbe.cs.txt to <isolated-project>/Assets/Editor/NBFXG2MatCapBatchProbe.cs.
+2. With the original G2MatCapABTests.cs and shaders, run:
+   UNITY_BURST_DISABLE_COMPILATION=1 <Unity executable> -batchmode -quit -projectPath <isolated-project> -executeMethod NBFXG2MatCapBatchProbe.Run -logFile <log path>
+   The probe opens the VFX sample scene, force-imports both material shaders, explicitly renders its Main Camera, then invokes the strict MatCap test twice by reflection. The result is written to /tmp/nbfx-g2-matcap-batch-20260928/result.json.
+3. For stage capture only, replace the isolated test file with scripts/G2MatCapABTests-diagnostic.cs.txt. Apply one stage edit from stage-edits.txt to both isolated ForwardPass files, run the same batch command, save /tmp/nbfx-g2-matcap-stage-output/{count.txt,float.txt,current.png,frozen.png}. Restore both HLSL files before the next stage.
+4. Restore the original test and both HLSL files, rerun step 2, then remove the temporary batch script and run a compile-only -batchmode -quit. The three restored input SHA-256 values are in input-hashes.txt.
+Do not treat diagnostic-stage tests or the UV-round experiment as G2 Gate passes.

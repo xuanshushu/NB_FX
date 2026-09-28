@@ -1,0 +1,112 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public static class NBFXG2MatCapBatchProbe
+{
+    [Serializable]
+    private sealed class Entry
+    {
+        public string scenario;
+        public string scene;
+        public bool explicitCameraRender;
+        public int mainCameraCullingMask;
+        public bool passed;
+        public string result;
+        public bool repeatPassed;
+        public string repeatResult;
+    }
+
+    [Serializable]
+    private sealed class Report
+    {
+        public string unityVersion;
+        public string graphicsDevice;
+        public string project;
+        public List<Entry> entries = new List<Entry>();
+    }
+
+    private const string VfxScene = "Assets/NBShaderSamples/NBShader_VFXGraphSample.unity";
+    private const string OldScene = "Assets/NBShaderSamples/NBShaderSamples.unity";
+    private const string CurrentMat = "Assets/NBShaderSamples/NBShaderSamples/UnLit.mat";
+    private const string FrozenMat = "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/UnLit.mat";
+
+    public static void Run()
+    {
+        const string output = "/tmp/nbfx-g2-matcap-batch-20260928";
+        Directory.CreateDirectory(output);
+        var report = new Report { unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString(), project = Application.dataPath };
+        try
+        {
+            Probe(report, "vfx-camera-render", VfxScene, true, false);
+        }
+        finally
+        {
+            File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(report, true));
+            Debug.Log("NBFX-G2-MATCAP-BATCH " + JsonUtility.ToJson(report));
+        }
+    }
+
+    private static void Probe(Report report, string name, string path, bool renderMain, bool emptyMask)
+    {
+        var entry = new Entry { scenario = name, explicitCameraRender = renderMain };
+        report.entries.Add(entry);
+        try
+        {
+            Scene scene = path == null
+                ? EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single)
+                : EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+            entry.scene = scene.path;
+            var current = AssetDatabase.LoadAssetAtPath<Material>(CurrentMat);
+            var frozen = AssetDatabase.LoadAssetAtPath<Material>(FrozenMat);
+            if (current == null || frozen == null) throw new Exception("Missing material asset");
+            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(current.shader), ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(frozen.shader), ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+            if (renderMain)
+            {
+                var cameraObject = GameObject.Find("Main Camera");
+                if (cameraObject == null) throw new Exception("Main Camera not found");
+                var camera = cameraObject.GetComponent<Camera>();
+                if (emptyMask) camera.cullingMask = 0;
+                entry.mainCameraCullingMask = camera.cullingMask;
+                camera.Render();
+            }
+            var type = Type.GetType("NBFX.Baseline.Tests.G2MatCapABTests, NBFX.Baseline.Editor.Tests");
+            if (type == null) throw new Exception("MatCap test type missing");
+            try
+            {
+                type.GetMethod("MatCapViewUVAndBlendMatchFrozenWithVisibleControls").Invoke(Activator.CreateInstance(type), null);
+                entry.passed = true;
+                entry.result = "strict MatCap A/B passed";
+            }
+            catch (TargetInvocationException ex)
+            {
+                entry.passed = false;
+                entry.result = (ex.InnerException ?? ex).ToString();
+            }
+            try
+            {
+                type.GetMethod("MatCapViewUVAndBlendMatchFrozenWithVisibleControls").Invoke(Activator.CreateInstance(type), null);
+                entry.repeatPassed = true;
+                entry.repeatResult = "strict MatCap A/B passed on immediate repeat";
+            }
+            catch (TargetInvocationException ex)
+            {
+                entry.repeatPassed = false;
+                entry.repeatResult = (ex.InnerException ?? ex).ToString();
+            }
+        }
+        catch (Exception ex)
+        {
+            entry.passed = false;
+            entry.result = "probe error: " + ex;
+        }
+        Debug.Log("NBFX-G2-MATCAP-BATCH-SCENARIO " + name + " passed=" + entry.passed + " " + entry.result);
+    }
+}

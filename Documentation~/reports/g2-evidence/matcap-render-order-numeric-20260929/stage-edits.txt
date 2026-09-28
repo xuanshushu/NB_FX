@@ -1,0 +1,22 @@
+All edits below were applied only to /tmp/NBFXG2DissolveMaskProbe-20260928 and restored after each batch run.
+Both HLSL files began from the SHA-256 values in input-hashes.txt.
+The full batch probe and diagnostic test source are in scripts/.
+
+UV stage: immediately after the MatCap UV assignment in both ForwardPass files, insert:
+    return MakeParticleFragmentOutput(half4(frac(matCapUV * 32.0), 0, 1));
+The current assignment is "float2 matCapUV = NBFX_MatCapUVV2(positionVS, normalVS);".
+The Frozen assignment is "float2 matCapUV = r.xy / m + 0.5;".
+
+Sample stage: immediately after the MatCap sample assignment in both files, insert:
+    return MakeParticleFragmentOutput(half4(matCapSample, 1));
+The assignment is "half3 matCapSample = SampleTexture2D(_MatCapTex,matCapUV,sampler_linear_clamp,forceMatCapLod0);".
+
+Composite stage: immediately after the final MatCap composite assignment in both files, insert:
+    return MakeParticleFragmentOutput(half4(result, 1));
+The current assignment calls NBFX_CompositeMatCapV2; Frozen uses the original final lerp.
+
+UV-round diagnostic: immediately after each MatCap UV assignment, insert:
+    matCapUV = round(matCapUV * 256.0) / 256.0;
+This changes rendering and was never proposed or applied as a product fix. It only tests whether making both UVs land on the same grid removes the difference.
+
+A separate attempt changed only the test Texture2D.filterMode to Point and did not change the result. It is not evidence for point sampling: both shaders explicitly pass sampler_linear_clamp to SampleTexture2D, so that test property does not select this sampler.

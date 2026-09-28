@@ -1,0 +1,14 @@
+using System;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+public static class NBFXG2MatCapCameraMaskZero
+{
+ public static string Run()
+ {
+  var s=SceneManager.GetActiveScene();if(s.name!="NBShader_VFXGraphSample")throw new Exception("Unexpected scene");
+  var c=s.GetRootGameObjects().First(g=>g.name=="Main Camera").GetComponent<Camera>();
+  int old=c.cullingMask;c.cullingMask=0;
+  return "camera mask "+old+" -> "+c.cullingMask+",enabled="+c.enabled;
+ }
+}

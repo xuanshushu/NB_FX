@@ -1,0 +1,15 @@
+using System;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+public static class NBFXG2ListGroupMaterials
+{
+ public static string Run()
+ {
+  var s=SceneManager.GetActiveScene();var root=s.GetRootGameObjects().First(g=>g.name=="SamplesRoot");
+  return string.Join("\n",root.GetComponentsInChildren<Renderer>(true).Select(r => {
+   var m=r.sharedMaterial;
+   return r.transform.parent.name+"/"+r.name+" active="+r.gameObject.activeInHierarchy+" mat="+(m?m.name:"null")+" shader="+(m&&m.shader?m.shader.name:"null")+" matcap="+(m&&m.IsKeywordEnabled("_MATCAP"))+" path="+(m?UnityEditor.AssetDatabase.GetAssetPath(m):"null");
+  }));
+ }
+}

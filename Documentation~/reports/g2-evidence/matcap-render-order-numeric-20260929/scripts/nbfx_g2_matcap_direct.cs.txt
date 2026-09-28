@@ -1,0 +1,13 @@
+using System;
+using System.Reflection;
+public static class NBFXG2MatCapDirect
+{
+ public static string Run()
+ {
+  var t=Type.GetType("NBFX.Baseline.Tests.G2MatCapABTests, NBFX.Baseline.Editor.Tests");
+  if(t==null)throw new Exception("MatCap test type missing");
+  try { t.GetMethod("MatCapViewUVAndBlendMatchFrozenWithVisibleControls").Invoke(Activator.CreateInstance(t), null); }
+  catch(TargetInvocationException e){throw e.InnerException??e;}
+  return "MatCap direct strict pass";
+ }
+}

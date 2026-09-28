@@ -1,0 +1,17 @@
+using System;
+using System.IO;
+using UnityEngine.SceneManagement;
+public static class NBFXG2DisableRootFromFile
+{
+ public static string Run()
+ {
+  var s=SceneManager.GetActiveScene();
+  if(s.name!="NBShader_VFXGraphSample")throw new Exception("Unexpected scene "+s.name);
+  int index=int.Parse(File.ReadAllText("/tmp/nbfx_g2_matcap_root_index.txt"));
+  var roots=s.GetRootGameObjects();
+  if(index<0||index>=roots.Length)throw new Exception("Bad root index");
+  bool was=roots[index].activeSelf;
+  roots[index].SetActive(false);
+  return "disabled "+index+":"+roots[index].name+" wasActive="+was;
+ }
+}
