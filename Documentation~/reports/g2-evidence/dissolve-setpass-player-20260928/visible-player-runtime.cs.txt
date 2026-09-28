@@ -1,0 +1,147 @@
+using System;
+using System.Collections;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+[DefaultExecutionOrder(-10000)]
+public sealed class NBFXG2VisiblePlayerProbe : MonoBehaviour
+{
+    public Material sceneMaterial;
+    public MeshRenderer subject;
+    private const int Size = 32;
+    private Material runtimeMaterial;
+    private Texture2D dissolveTexture;
+    private Texture2D maskTexture;
+
+    [Serializable]
+    private sealed class Result
+    {
+        public string unityVersion;
+        public string graphicsDevice;
+        public string scene;
+        public int screenWidth;
+        public int screenHeight;
+        public int firstFrameCount;
+        public int secondFrameCount;
+        public int noMaskFrameCount;
+        public int firstVsSecond;
+        public int secondVsNoMask;
+        public int firstVsNoMask;
+        public string firstCenter;
+        public string secondCenter;
+        public string noMaskCenter;
+        public string error;
+    }
+
+    private void Awake()
+    {
+        Application.runInBackground = true;
+        Application.targetFrameRate = 30;
+        if (sceneMaterial == null || subject == null) throw new Exception("Missing serialized scene material or renderer");
+        runtimeMaterial = new Material(sceneMaterial);
+        dissolveTexture = MakeGradient(false);
+        maskTexture = MakeGradient(true);
+        runtimeMaterial.SetColor("_BaseColor", Color.red);
+        runtimeMaterial.SetFloat("_Cull", 0);
+        runtimeMaterial.SetTexture("_DissolveMap", dissolveTexture);
+        runtimeMaterial.SetTexture("_DissolveMaskMap", maskTexture);
+        runtimeMaterial.SetInteger("_W9ParticleShaderColorChannelFlag", (3 << 10) | (3 << 12));
+        runtimeMaterial.SetVector("_Dissolve", new Vector4(0.5f, 1.5f, 0.6f, 0.2f));
+        runtimeMaterial.SetVector("_DissolveOffsetRotateDistort", Vector4.zero);
+        runtimeMaterial.SetFloat("_DissolveMaskMode", 0);
+        runtimeMaterial.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+        runtimeMaterial.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+        runtimeMaterial.SetFloat("_ZWrite", 0);
+        runtimeMaterial.renderQueue = 3000;
+        runtimeMaterial.EnableKeyword("_DISSOLVE");
+        runtimeMaterial.EnableKeyword("_DISSOLVE_MASK");
+        subject.sharedMaterial = runtimeMaterial;
+    }
+
+    private static Texture2D MakeGradient(bool mask)
+    {
+        var texture = new Texture2D(Size, Size, TextureFormat.RGBA32, false, false);
+        var pixels = new Color32[Size * Size];
+        for (int y = 0; y < Size; ++y)
+            for (int x = 0; x < Size; ++x)
+                pixels[y * Size + x] = new Color32(255, 255, 255, (byte)((mask ? y : x) * 8));
+        texture.SetPixels32(pixels);
+        texture.filterMode = FilterMode.Point;
+        texture.wrapMode = TextureWrapMode.Clamp;
+        texture.Apply(false, false);
+        return texture;
+    }
+
+    private static int CountDifferent(Color32[] a, Color32[] b)
+    {
+        if (a.Length != b.Length) return -1;
+        int count = 0;
+        for (int i = 0; i < a.Length; ++i)
+            if (a[i].r != b[i].r || a[i].g != b[i].g || a[i].b != b[i].b || a[i].a != b[i].a) ++count;
+        return count;
+    }
+
+    private static string Center(Color32[] p, int width, int height)
+    {
+        Color32 c = p[(height / 2) * width + width / 2];
+        return c.r + "," + c.g + "," + c.b + "," + c.a;
+    }
+
+    private static Color32[] SaveScreen(string path, out int width, out int height)
+    {
+        var t = ScreenCapture.CaptureScreenshotAsTexture();
+        try
+        {
+            width = t.width; height = t.height;
+            File.WriteAllBytes(path, t.EncodeToPNG());
+            return t.GetPixels32();
+        }
+        finally { Destroy(t); }
+    }
+
+    private IEnumerator Start()
+    {
+        string output = null;
+        foreach (var arg in Environment.GetCommandLineArgs())
+            if (arg.StartsWith("--g2-output=", StringComparison.Ordinal)) output = arg.Substring("--g2-output=".Length);
+        if (string.IsNullOrEmpty(output)) yield break;
+        Directory.CreateDirectory(output);
+        var result = new Result
+        {
+            unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
+            scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
+        };
+        yield return new WaitForEndOfFrame();
+            result.firstFrameCount = Time.frameCount;
+            int w, h, w2, h2, w3, h3;
+            var first = SaveScreen(Path.Combine(output, "first-visible.png"), out w, out h);
+            yield return new WaitForEndOfFrame();
+            result.secondFrameCount = Time.frameCount;
+            var second = SaveScreen(Path.Combine(output, "second-visible.png"), out w2, out h2);
+            runtimeMaterial.DisableKeyword("_DISSOLVE_MASK");
+            yield return new WaitForEndOfFrame();
+            result.noMaskFrameCount = Time.frameCount;
+            var noMask = SaveScreen(Path.Combine(output, "no-mask-control.png"), out w3, out h3);
+            result.screenWidth = w; result.screenHeight = h;
+            if (w != w2 || h != h2 || w != w3 || h != h3) throw new Exception("Screen resolution changed during capture");
+            result.firstVsSecond = CountDifferent(first, second);
+            result.secondVsNoMask = CountDifferent(second, noMask);
+            result.firstVsNoMask = CountDifferent(first, noMask);
+            result.firstCenter = Center(first, w, h);
+            result.secondCenter = Center(second, w, h);
+            result.noMaskCenter = Center(noMask, w, h);
+        File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(result, true));
+        Debug.Log("NBFX-G2-VISIBLE-PLAYER " + JsonUtility.ToJson(result));
+        yield return null;
+        Application.Quit(result.error == null ? 0 : 1);
+    }
+
+    private void OnDestroy()
+    {
+        if (runtimeMaterial != null) Destroy(runtimeMaterial);
+        if (dissolveTexture != null) Destroy(dissolveTexture);
+        if (maskTexture != null) Destroy(maskTexture);
+    }
+}

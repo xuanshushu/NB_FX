@@ -1,0 +1,12 @@
+using UnityEditor;
+public static class NBFXG2RestoreSplash
+{
+ public static string Run()
+ {
+  bool before = PlayerSettings.SplashScreen.show;
+  PlayerSettings.SplashScreen.show = false;
+  PlayerSettings.SplashScreen.show = true;
+  AssetDatabase.SaveAssets();
+  return "before="+before+",after="+PlayerSettings.SplashScreen.show;
+ }
+}

@@ -1,0 +1,5 @@
+Base: setpass-both-diagnostic.cs.txt
+Replace every G2DissolveSetPassProbe with G2DissolveSetPassProbe_current_only.
+Replace: bool frozenPrepared = frozenMaterial.SetPass(1);
+With:    bool frozenPrepared = frozenMaterial.shader != null;
+Only currentMaterial.SetPass(1) is called. The full executed script was /tmp/nbfx_g2_dissolve_setpass_current_only.cs.

@@ -1,0 +1,84 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public static class NBFXG2VisiblePlayerBuild
+{
+    private const string Root = "Assets/NBFXG2VisiblePlayer";
+    private const string OriginalPath = "Assets/NBShaderSamples/NBShaderSamples/UnLit.mat";
+    private const string FrozenPath = "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/UnLit.mat";
+
+    [MenuItem("NBFX/Probe/Build Visible Dissolve Players")]
+    public static void Build()
+    {
+        string outRoot = "/tmp/nbfx-g2-visible-player-20260928";
+        Directory.CreateDirectory(outRoot);
+        bool originalSplash = PlayerSettings.SplashScreen.show;
+        PlayerSettings.SplashScreen.show = false;
+        try
+        {
+        foreach (var pair in new [] { new [] {"Current", OriginalPath}, new [] {"Frozen", FrozenPath} })
+        {
+            var name = pair[0];
+            var source = AssetDatabase.LoadAssetAtPath<Material>(pair[1]);
+            if (source == null) throw new Exception("Missing source material " + pair[1]);
+            var copyPath = Root + "/" + name + "Probe.mat";
+            AssetDatabase.DeleteAsset(copyPath);
+            var copy = new Material(source);
+            copy.name = name + "Probe";
+            copy.EnableKeyword("_DISSOLVE");
+            copy.EnableKeyword("_DISSOLVE_MASK");
+            copy.SetFloat("_DissolveMaskMode", 0);
+            copy.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            copy.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            copy.SetFloat("_ZWrite", 0);
+            copy.renderQueue = 3000;
+            AssetDatabase.CreateAsset(copy, copyPath);
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var cameraObject = new GameObject("G2VisibleCamera");
+            var camera = cameraObject.AddComponent<Camera>();
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color(0.125f, 0.25f, 0.375f, 1);
+            camera.orthographic = true;
+            camera.orthographicSize = 1;
+            camera.nearClipPlane = 0.1f;
+            camera.farClipPlane = 10;
+            camera.allowHDR = false;
+            camera.allowMSAA = false;
+            camera.transform.position = new Vector3(0, 0, 3);
+            camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+            camera.cullingMask = 1 << 2;
+            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.name = "G2VisibleDissolveQuad";
+            quad.layer = 2;
+            quad.transform.position = new Vector3(0, 0, 2);
+            quad.transform.localScale = new Vector3(2, 2, 1);
+            var renderer = quad.GetComponent<MeshRenderer>();
+            renderer.sharedMaterial = copy;
+            var probe = new GameObject("G2VisibleCapture").AddComponent<NBFXG2VisiblePlayerProbe>();
+            probe.sceneMaterial = copy;
+            probe.subject = renderer;
+            var scenePath = Root + "/" + name + "Visible.unity";
+            if (!EditorSceneManager.SaveScene(scene, scenePath)) throw new Exception("Cannot save " + scenePath);
+            AssetDatabase.SaveAssets();
+            var appPath = Path.Combine(outRoot, name + ".app");
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            {
+                scenes = new[] { scenePath },
+                locationPathName = appPath,
+                target = BuildTarget.StandaloneOSX,
+                options = BuildOptions.None
+            });
+            var line = name + ": " + report.summary.result + ", errors=" + report.summary.totalErrors + ", warnings=" + report.summary.totalWarnings + ", output=" + appPath;
+            File.WriteAllText(Path.Combine(outRoot, name + "-build.txt"), line + "\n");
+            Debug.Log("NBFX-G2-VISIBLE-BUILD " + line);
+            if (report.summary.result != BuildResult.Succeeded) throw new Exception(line);
+        }
+        }
+        finally { PlayerSettings.SplashScreen.show = originalSplash; }
+    }
+}
