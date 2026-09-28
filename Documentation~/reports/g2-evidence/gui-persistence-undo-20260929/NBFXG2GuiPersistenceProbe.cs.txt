@@ -1,0 +1,163 @@
+using System;
+using System.Globalization;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using NBShader;
+using NBShaderEditor;
+using UnityEditor;
+using UnityEngine;
+
+public static class NBFXG2GuiPersistenceProbe
+{
+    private const string Source = "Assets/NBShaderSamples/NBShaderSamples/UnLit.mat";
+    private const string TempAsset = "Assets/__NBFXG2GuiPersistenceProbe.mat";
+    private const string TierSettings = "ProjectSettings/NBShaderFeatureLevels.asset";
+    private const string Output = "/tmp/nbfx-g2-gui-persistence-20260929";
+
+    [Serializable]
+    private class Result
+    {
+        public string phase;
+        public string unityVersion;
+        public string graphicsDevice;
+        public string sourceHashBefore;
+        public string sourceHashAfter;
+        public string tierHashBefore;
+        public string tierHashAfter;
+        public string assetHash;
+        public string initialSnapshot;
+        public string reloadedSnapshot;
+        public string syncAgainSnapshot;
+        public string changedSnapshot;
+        public string undoSnapshot;
+        public string redoSnapshot;
+        public bool pass;
+        public string error;
+    }
+
+    public static void Create()
+    {
+        Run("create", r =>
+        {
+            if (AssetDatabase.LoadAssetAtPath<Material>(TempAsset) != null)
+                throw new Exception("Temporary material already exists");
+            var source = AssetDatabase.LoadAssetAtPath<Material>(Source);
+            if (source == null || source.shader == null || source.shader.name != "Effects/NBShader")
+                throw new Exception("Source NBShader material missing");
+            var mat = new Material(source);
+            mat.name = "NBFX G2 GUI persistence probe";
+            mat.SetFloat("_NBShaderFeatureTier", (float)NBShaderFeatureTier.Ultra);
+            mat.SetFloat("_MeshSourceMode", 1);
+            mat.SetFloat("_Mask_Toggle", 1);
+            mat.SetFloat("_MaskRefineToggle", 1);
+            mat.SetFloat("_EmissionEnabled", 1);
+            mat.SetFloat("_EmissionAlphaMultiplyMode", 1);
+            mat.SetColor("_BaseColor", new Color(0.21f, 0.43f, 0.67f, 1f));
+            NBShaderSyncService.SyncMaterialState(mat);
+            r.initialSnapshot = Snapshot(mat);
+            Need(mat.IsKeywordEnabled("_MASKMAP_ON"), "Mask keyword not enabled after sync");
+            Need(mat.IsKeywordEnabled("_EMISSION"), "Emission keyword not enabled after sync");
+            Need((mat.GetInteger("_W9ParticleShaderFlags1") & NBShaderFlags.FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY) != 0,
+                "packed bit31 not enabled after sync");
+            AssetDatabase.CreateAsset(mat, TempAsset);
+            AssetDatabase.SaveAssets();
+            r.assetHash = Hash(TempAsset);
+            File.WriteAllText(Path.Combine(Output, "expected-snapshot.txt"), r.initialSnapshot);
+            File.Copy(Absolute(TempAsset), Path.Combine(Output, "created-material.yaml"), true);
+        });
+    }
+
+    public static void ReloadAndUndo()
+    {
+        Run("reload-undo", r =>
+        {
+            try
+            {
+                var mat = AssetDatabase.LoadAssetAtPath<Material>(TempAsset);
+                Need(mat != null, "Temporary material missing in fresh Unity process");
+                var expected = File.ReadAllText(Path.Combine(Output, "expected-snapshot.txt"));
+                r.assetHash = Hash(TempAsset);
+                r.reloadedSnapshot = Snapshot(mat);
+                Need(r.reloadedSnapshot == expected, "Fresh-process reload changed material state");
+                NBShaderSyncService.SyncMaterialState(mat);
+                r.syncAgainSnapshot = Snapshot(mat);
+                Need(r.syncAgainSnapshot == expected, "Sync after fresh-process reload was not idempotent");
+
+                Undo.RegisterCompleteObjectUndo(mat, "G2 GUI material state probe");
+                mat.SetFloat("_Mask_Toggle", 0);
+                NBShaderSyncService.SyncMaterialState(mat);
+                Undo.FlushUndoRecordObjects();
+                r.changedSnapshot = Snapshot(mat);
+                Need(r.changedSnapshot != expected, "Toggle change did not affect material state");
+                Need(!mat.IsKeywordEnabled("_MASKMAP_ON"), "Mask keyword remained enabled after toggle off");
+                Undo.PerformUndo();
+                r.undoSnapshot = Snapshot(mat);
+                Need(r.undoSnapshot == expected, "Undo did not restore material state");
+                Undo.PerformRedo();
+                r.redoSnapshot = Snapshot(mat);
+                Need(r.redoSnapshot == r.changedSnapshot, "Redo did not restore changed material state");
+            }
+            finally
+            {
+                AssetDatabase.DeleteAsset(TempAsset);
+                Need(AssetDatabase.LoadAssetAtPath<Material>(TempAsset) == null, "Temporary material deletion failed");
+            }
+        });
+    }
+
+    private static void Run(string phase, Action<Result> action)
+    {
+        Directory.CreateDirectory(Output);
+        var r = new Result { phase = phase, unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString() };
+        r.sourceHashBefore = Hash(Source);
+        r.tierHashBefore = Hash(TierSettings);
+        try
+        {
+            action(r);
+            r.pass = true;
+        }
+        catch (Exception e)
+        {
+            r.error = e.ToString();
+            Debug.LogError("NBFX-G2-GUI-PERSISTENCE " + phase + " failed: " + e);
+        }
+        finally
+        {
+            r.sourceHashAfter = Hash(Source);
+            r.tierHashAfter = Hash(TierSettings);
+            if (r.sourceHashBefore != r.sourceHashAfter || r.tierHashBefore != r.tierHashAfter)
+            { r.pass = false; r.error += " Protected input hash changed."; }
+            File.WriteAllText(Path.Combine(Output, phase + ".json"), JsonUtility.ToJson(r, true));
+            Debug.Log("NBFX-G2-GUI-PERSISTENCE " + phase + " pass=" + r.pass);
+        }
+    }
+
+    private static string Snapshot(Material m)
+    {
+        var b = new StringBuilder();
+        b.Append("shader=").Append(m.shader.name).Append(";queue=").Append(m.renderQueue);
+        foreach (var name in new[] { "_NBShaderFeatureTier", "_MeshSourceMode", "_Mask_Toggle", "_MaskRefineToggle", "_EmissionEnabled", "_EmissionAlphaMultiplyMode" })
+            b.Append(';').Append(name).Append('=').Append(m.GetFloat(name).ToString("R", CultureInfo.InvariantCulture));
+        foreach (var name in new[] { "_W9ParticleShaderFlags", "_W9ParticleShaderFlags1", "_W9ParticleShaderWrapFlags", "_NBShaderForceNoMipFlags" })
+            b.Append(';').Append(name).Append("=0x").Append(unchecked((uint)m.GetInteger(name)).ToString("X8", CultureInfo.InvariantCulture));
+        foreach (var name in new[] { "_MASKMAP_ON", "_EMISSION", "_SCREEN_DISTORT_MODE" })
+            b.Append(";keyword:").Append(name).Append('=').Append(m.IsKeywordEnabled(name));
+        foreach (var name in new[] { "UniversalForward", "DepthOnly", "NBCameraOpaqueDistortPass", "NBDeferredDistortPass", "Universal2D" })
+            b.Append(";pass:").Append(name).Append('=').Append(m.GetShaderPassEnabled(name));
+        b.Append(";color=").Append(m.GetColor("_BaseColor").ToString());
+        return b.ToString();
+    }
+
+    private static string Absolute(string path) => Path.Combine(Path.GetDirectoryName(Application.dataPath), path);
+    private static string Hash(string path)
+    {
+        using (var sha = SHA256.Create())
+            return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(Absolute(path)))).Replace("-", "");
+    }
+    private static void Need(bool condition, string message)
+    {
+        if (!condition) throw new Exception(message);
+    }
+}

@@ -1,0 +1,13 @@
+G2 original-NBShader material persistence / programmatic Undo probe (2026-09-29)
+Environment: Unity 6000.3.18f1, URP 17.3.0, Metal, isolated full project copy /tmp/NBFXG2DissolveMaskProbe-20260928. No interactive Editor. unityMCP was not exposed in this session.
+The probe source is NBFXG2GuiPersistenceProbe.cs.txt. Copy it to <isolated-project>/Assets/Editor/NBFXG2GuiPersistenceProbe.cs; do not put it in the main project.
+1. UNITY_BURST_DISABLE_COMPILATION=1 <Unity 6000.3.18f1 executable> -batchmode -quit -projectPath <isolated-project> -executeMethod NBFXG2GuiPersistenceProbe.Create -logFile <create log>
+2. Start a separate Unity process:
+   UNITY_BURST_DISABLE_COMPILATION=1 <Unity executable> -batchmode -quit -projectPath <isolated-project> -executeMethod NBFXG2GuiPersistenceProbe.ReloadAndUndo -logFile <reload log>
+3. The second phase deletes its temporary Assets/__NBFXG2GuiPersistenceProbe.mat. Remove the copied script and .meta from the isolated project, then run Unity -batchmode -quit for compilation cleanup.
+Both phase JSON results must say pass=true; compare initialSnapshot, reloadedSnapshot, syncAgainSnapshot, undoSnapshot, and changedSnapshot/redoSnapshot. The source material and tier settings hashes must be unchanged. Console log must have no compiler error markers.
+Boundaries: the probe directly sets Material properties and calls the original NBShaderSyncService, then uses Unity Undo API. It does not click NBShaderGUI.OnGUI controls or exercise an actual multi-selection Inspector; no G2 GUI end-to-end claim.
+The protected original material SHA-256 was ddfe43517e79ae6bb99666a96a31c2fd8c6388f9cf94fc1edf27f20d0f42b0ff; tier settings SHA-256 was 461420836cdbcaa16c8f493f5589a0d1b094c88fe4fd635f5dee511d82248185; NBShaderSyncService.cs SHA-256 was a87fdec040f404206f2021d27524a951048ef08ae28f8dfe9e7601f4b8f221fa. All match the main project before/after the probe.
+Probe script SHA-256: a85783310cde623914d492e5668abc1e712ffa1cc9c8e8d4e68462c89582d373.
+Package HEAD at execution: 7c1f5fdedc07fcb4b3c51986c6f726e50d7a52c1. Main-project HEAD at execution: a7ef1b9d8454f3e603dec5777dd094563f779e6d.
+The full Unity logs stayed outside Git under /tmp; their SHA-256 and relevant status lines are preserved in *-log-check.txt. JSON phase results and created-material.yaml.gz (gzip-compressed byte-exact YAML) are the raw committed outputs. material-yaml-excerpt.txt is a human-readable excerpt.
