@@ -12,6 +12,7 @@
 <h2 id="matcap">Q09 · MatCap 跨 Shader 身份的数值判据</h2>
 <p><strong>事实：</strong>正式当前/Frozen 在渐变纹理固定点 (50,46) 为 R140/R139，严格 0 差失败；<a href="t05-g2-matcap-identity-control.html">同源仅改 Shader 名称的两个独立 Shader 资产</a>也稳定产生该 1 像素差，各自自重画为 0。故差值不能单独归因于本次 HLSL 重构，但尚未确定 Unity/Metal 导入、代码生成或数值来源。<a href="t05-g2-gate-audit-20260928.html">最近 Gate 复核</a>仍见 12/13。</p>
 <p><strong>2026-09-29 补证：</strong><a href="t05-g2-matcap-render-order-numeric-checkpoint.html">场景顺序与数值链检查点</a>在隔离批处理中复现正式 1 像素差；更高精度诊断显示 MatCap 采样红值差约 0.000244，合成后线性红值差约 0.000220，最后 8 位读回为 140/139。VFX 样例场景的相机绘制是此测试的一项触发条件，具体 GPU/编译根因未证实。无产品修复、无容差变更，默认继续执行 A 的严格规则；用户无需为本次补证再次值守或决定。</p>
+<p><strong>用户后续指示（2026-09-29）：</strong>“那么微弱的颜色差异别查了。直接继续吧。”主 Agent 停止进一步追查这个 MatCap 数字差，把证据保留并转做其他 G2 缺口。此话并未明确批准把 R140/R139 视为严格 0 差通过，故不改原断言、容差或 Gate 结论；待最终 Gate 审核时仍须按当时有效规则处理这一未通过项。</p>
 <table border="1" cellpadding="6"><thead><tr><th>选择</th><th>功能/维护影响</th><th>验证与回退</th></tr></thead><tbody>
 <tr><td>A · 坚持跨 Shader RGBA32 每像素 0 差</td><td>不改规则；G2 继续阻塞，继续定位 GPU/导入与 HLSL 数值链。</td><td>保持正式夹具；若找到差异源，最小修复后全量重跑。</td></tr>
 <tr><td>B · 批准建立独立标定的 MatCap 数值容差版本</td><td>仅改变验收规则，不先改产品；需把不可见量化差与实质回归区分。不能直接把观测到的 1 LSB/1 像素抄成阈值。</td><td>预先用同源不同名、多纹理/投影/设备重复标定，再冻结阈值；生产/Frozen 全量重跑，保留严格原始数据；若超过阈值仍失败。</td></tr>
