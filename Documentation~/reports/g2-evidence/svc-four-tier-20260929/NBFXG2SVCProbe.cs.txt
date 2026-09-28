@@ -1,0 +1,151 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Security.Cryptography;
+using NBShader;
+using NBShaders2.Editor.FeatureLevel;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+public static class NBFXG2SVCProbe
+{
+    private const string SourceFolder = "Assets/NBShaderSamples/NBShaderSamples";
+    private const string OutputFolder = "Assets/__NBFXG2SVCProbe";
+    private const string Output = "/tmp/nbfx-g2-svc-probe-20260929";
+    private const string Sample = "Assets/NBShaderSamples/NBShaderSamples/UnLit.mat";
+    private const string TierSettings = "ProjectSettings/NBShaderFeatureLevels.asset";
+    private static readonly NBShaderFeatureTier[] Tiers = { NBShaderFeatureTier.Low, NBShaderFeatureTier.Medium, NBShaderFeatureTier.High, NBShaderFeatureTier.Ultra };
+
+    [Serializable] private class Row
+    {
+        public string tier;
+        public int materialCount;
+        public int passCount;
+        public int previewVariantCount;
+        public int generatedVariantCount;
+        public int actualVariantCount;
+        public string outputPath;
+        public string assetHash;
+        public bool generated;
+        public string error;
+    }
+    [Serializable] private class Result
+    {
+        public string phase;
+        public string unityVersion;
+        public string graphicsDevice;
+        public string sourceHashBefore;
+        public string sourceHashAfter;
+        public string tierHashBefore;
+        public string tierHashAfter;
+        public int materialCount;
+        public string[] materialPaths;
+        public Row[] rows;
+        public bool pass;
+        public string error;
+    }
+
+    public static void Generate()
+    {
+        Run("generate", r =>
+        {
+            Need(!AssetDatabase.IsValidFolder(OutputFolder), "Temporary SVC output folder already exists");
+            var preview = NBShaderVariantCollectionBuilder.Preview(new[] { SourceFolder }, OutputFolder, Tiers);
+            var generated = NBShaderVariantCollectionBuilder.Generate(new[] { SourceFolder }, OutputFolder, Tiers);
+            Need(!preview.hasError, "Preview error: " + preview.firstErrorMessage);
+            Need(generated.succeeded, "Generate error: " + generated.firstErrorMessage);
+            Need(preview.materialCount == generated.materialCount && generated.materialCount > 0, "Material count changed");
+            r.materialCount = generated.materialCount;
+            var materials = generated.materials;
+            r.materialPaths = new string[materials.Length];
+            for (var i = 0; i < materials.Length; i++) r.materialPaths[i] = AssetDatabase.GetAssetPath(materials[i]);
+            Array.Sort(r.materialPaths, StringComparer.Ordinal);
+            var rows = new List<Row>();
+            for (var i = 0; i < Tiers.Length; i++)
+            {
+                var a = preview.tiers[i]; var b = generated.tiers[i];
+                var svc = AssetDatabase.LoadAssetAtPath<ShaderVariantCollection>(b.outputAssetPath);
+                var row = new Row { tier = b.tier.ToString(), materialCount = b.materialCount,
+                    passCount = b.passCount, previewVariantCount = a.variantCount,
+                    generatedVariantCount = b.variantCount, actualVariantCount = svc == null ? -1 : svc.variantCount,
+                    outputPath = b.outputAssetPath, generated = b.generated, error = b.errorMessage ?? "",
+                    assetHash = svc == null ? "" : Hash(b.outputAssetPath) };
+                rows.Add(row);
+                Need(a.variantCount == b.variantCount, "Preview/Generate count mismatch for " + row.tier);
+                Need(svc != null && svc.variantCount == b.variantCount, "SVC actual/expected count mismatch for " + row.tier);
+            }
+            r.rows = rows.ToArray();
+            AssetDatabase.SaveAssets();
+            File.WriteAllText(Path.Combine(Output, "expected-counts.tsv"), ToTsv(r.rows));
+        });
+    }
+
+    public static void ReloadAndClean()
+    {
+        Run("reload-clean", r =>
+        {
+            try
+            {
+                var lines = File.ReadAllLines(Path.Combine(Output, "expected-counts.tsv"));
+                Need(lines.Length == Tiers.Length, "Expected counts file incomplete");
+                var rows = new List<Row>();
+                foreach (var line in lines)
+                {
+                    var v = line.Split('\t');
+                    Need(v.Length == 4, "Bad count line");
+                    var svc = AssetDatabase.LoadAssetAtPath<ShaderVariantCollection>(v[1]);
+                    var expected = int.Parse(v[2], CultureInfo.InvariantCulture);
+                    var hash = v[3];
+                    var row = new Row { tier = v[0], outputPath = v[1], generatedVariantCount = expected,
+                        actualVariantCount = svc == null ? -1 : svc.variantCount,
+                        assetHash = svc == null ? "" : Hash(v[1]) };
+                    rows.Add(row);
+                    Need(svc != null && svc.variantCount == expected, "Reload count mismatch for " + row.tier);
+                    Need(row.assetHash == hash, "SVC serialized asset hash changed on fresh process for " + row.tier);
+                }
+                r.rows = rows.ToArray();
+            }
+            finally
+            {
+                AssetDatabase.DeleteAsset(OutputFolder);
+                Need(!AssetDatabase.IsValidFolder(OutputFolder), "Temporary SVC folder not deleted");
+            }
+        });
+    }
+
+    private static void Run(string phase, Action<Result> action)
+    {
+        Directory.CreateDirectory(Output);
+        var r = new Result { phase = phase, unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString() };
+        r.sourceHashBefore = Hash(Sample); r.tierHashBefore = Hash(TierSettings);
+        try { action(r); r.pass = true; }
+        catch (Exception ex) { r.error = ex.ToString(); Debug.LogError("NBFX-G2-SVC-PROBE " + phase + " failed: " + ex); }
+        finally
+        {
+            r.sourceHashAfter = Hash(Sample); r.tierHashAfter = Hash(TierSettings);
+            if (r.sourceHashBefore != r.sourceHashAfter || r.tierHashBefore != r.tierHashAfter)
+            { r.pass = false; r.error += " Protected inputs changed."; }
+            File.WriteAllText(Path.Combine(Output, phase + ".json"), JsonUtility.ToJson(r, true));
+            Debug.Log("NBFX-G2-SVC-PROBE " + phase + " pass=" + r.pass);
+        }
+    }
+    private static string ToTsv(Row[] rows)
+    {
+        var s = "";
+        foreach (var row in rows) s += row.tier + "\t" + row.outputPath + "\t" + row.actualVariantCount + "\t" + row.assetHash + "\n";
+        return s;
+    }
+    private static string Absolute(string path) => Path.Combine(Path.GetDirectoryName(Application.dataPath), path);
+    private static string Hash(string path)
+    {
+        using (var sha = SHA256.Create())
+            return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(Absolute(path)))).Replace("-", "");
+    }
+    private static void Need(bool condition, string message)
+    {
+        if (!condition) throw new Exception(message);
+    }
+}

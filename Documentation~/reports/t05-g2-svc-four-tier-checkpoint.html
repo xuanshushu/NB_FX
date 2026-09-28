@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · 四档 FeatureTier SVC 保存与重载</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t05-g2-gate-audit-20260928.html">G2 Gate 复核</a></p>
+<h1>T05/G2 · 当前四档 FeatureTier 的 SVC 生成/重载检查点</h1>
+<p><strong>结论：隔离工程里，从现有 19 个 NBShader 样例材质为 Low/Medium/High/Ultra 生成的四份 Shader Variant Collection，预览数、生成数与资产实际变体数一致；退出并重新启动 Unity 后，四份资产的变体数与文件 SHA-256 也保持一致。这里只证明生成和序列化切片，不证明 Player 中不会被剥离、所有 Pass/材质均被收录或运行时画面正确；G2 未放行。</strong></p>
+<p>Unity 6000.3.18f1 / URP 17.3.0 / Metal；两个独立无界面 <code>-batchmode -quit</code> 进程串行运行。unityMCP 本会话未暴露，改用 Unity CLI。临时脚本和生成的 SVC 只放在完整隔离工程副本，结束后删除并进行第三次编译检查；主工程 Assets/ProjectSettings、生产代码和官方包未改。<a href="g2-evidence/svc-four-tier-20260929/NBFXG2SVCProbe.cs.txt">实际脚本</a> · <a href="g2-evidence/svc-four-tier-20260929/replay.txt">重放、hash 与边界</a>。</p>
+<table border="1" cellpadding="6"><thead><tr><th>Tier</th><th>材料数</th><th>本输入覆盖的 Pass 数</th><th>预览 / 生成 / 实际 / 重载后的变体数</th></tr></thead><tbody>
+<tr><td>Low</td><td>19</td><td>2</td><td>6 / 6 / 6 / 6</td></tr>
+<tr><td>Medium</td><td>19</td><td>2</td><td>11 / 11 / 11 / 11</td></tr>
+<tr><td>High</td><td>19</td><td>5</td><td>16 / 16 / 16 / 16</td></tr>
+<tr><td>Ultra</td><td>19</td><td>5</td><td>29 / 29 / 29 / 29</td></tr>
+</tbody></table>
+<p>逐 Tier 资产 hash 也在第二个 Unity 进程中逐字匹配第一进程；原 <code>UnLit.mat</code> 和 FeatureTier 设置文件的 SHA-256 在两轮开始/结束均不变。原始<a href="g2-evidence/svc-four-tier-20260929/generate.json">生成 JSON（含 19 个输入路径）</a>、<a href="g2-evidence/svc-four-tier-20260929/reload-clean.json">重载 JSON</a>、<a href="g2-evidence/svc-four-tier-20260929/expected-counts.tsv">预期数量与资产 hash</a>、<a href="g2-evidence/svc-four-tier-20260929/generate-log-check.txt">生成日志核对</a>、<a href="g2-evidence/svc-four-tier-20260929/reload-log-check.txt">重载日志核对</a>、<a href="g2-evidence/svc-four-tier-20260929/cleanup-log-check.txt">清理日志核对</a>可复核。三个 Unity 进程退出码均为 0，日志无 C# 编译或 Shader error 标记。</p>
+<p><strong>不外推：</strong>这些数字只适用于当前 19 个样例材质及当前 Tier 设置；Low/Medium 仅 2 个、High/Ultra 仅 5 个 Pass 进入这个输入集合，不等于原 Shader 的七个 Pass 已全部覆盖。生成器可保存 SVC 不等于实际 Player build 的 Shader stripping、运行时预热、NBPostprocess、Graph/VFX 或性能通过。本轮没有调用 <code>ShaderVariantCollection.WarmUp</code>，也没有改 Tier/Universal2D 配置。后续仍需在真实 Player/构建链中补证。</p>
+</body></html>

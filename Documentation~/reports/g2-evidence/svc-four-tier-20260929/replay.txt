@@ -1,0 +1,9 @@
+G2 original NBShader SVC four-tier generation/reload probe (2026-09-29)
+Environment: isolated complete project copy /tmp/NBFXG2DissolveMaskProbe-20260928, Unity 6000.3.18f1, URP 17.3.0, Metal; no interactive Editor. unityMCP unavailable in this session.
+Temporary script: NBFXG2SVCProbe.cs.txt, SHA-256 3b9b1f4431f5adf5220364b1b5065fc63b40cceb4171ec4d0b3721c28e4bfc67 (verify before reuse).
+Copy script to <isolated-project>/Assets/Editor/NBFXG2SVCProbe.cs. Then run two separate Unity processes:
+1. UNITY_BURST_DISABLE_COMPILATION=1 <Unity executable> -batchmode -quit -projectPath <isolated-project> -executeMethod NBFXG2SVCProbe.Generate -logFile <generate log>
+2. UNITY_BURST_DISABLE_COMPILATION=1 <Unity executable> -batchmode -quit -projectPath <isolated-project> -executeMethod NBFXG2SVCProbe.ReloadAndClean -logFile <reload log>
+Step 1 previews and generates SVCs for the 19 NBShader materials found under Assets/NBShaderSamples/NBShaderSamples into isolated Assets/__NBFXG2SVCProbe. Step 2 checks all four assets survive a fresh process with unchanged variantCount and asset SHA-256, then deletes that folder. Remove temporary script/.meta and run Unity -batchmode -quit once more for cleanup compilation check.
+Main-package HEAD at execution: 8a14ac1; main-project HEAD: 9e3a881. Product code and sample material unchanged. Original UnLit.mat SHA-256 ddfe43517e79ae6bb99666a96a31c2fd8c6388f9cf94fc1edf27f20d0f42b0ff; tier settings SHA-256 461420836cdbcaa16c8f493f5589a0d1b094c88fe4fd635f5dee511d82248185. Full logs remain outside Git under /tmp; SHA-256 and status excerpts are in *-log-check.txt.
+This does not run Player builds, ShaderVariantCollection.WarmUp, variant stripping in a real build, other material folders, or all Pass combinations. Do not treat this slice as full G2 SVC/Player acceptance.
