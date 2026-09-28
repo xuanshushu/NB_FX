@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "/tmp/nbfx_g2_direct_sequence.cs",
+      "entry": "NBFXG2DirectSequence.Run"
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 135,
+      "executeMs": 662,
+      "assemblyName": "PipelineRunScript_nbfx_g2_direct_sequence_95076c34d7ab4f819cb8f23a899b1ef2",
+      "success": false,
+      "error": "Runtime Error",
+      "errorDetails": "AssertionException: Dissolve mask differs from frozen ShaderLab: mode=0, firstAB=1090, firstDifference=(24,24) current=RGBA(255, 0, 0, 202) frozen=RGBA(255, 0, 0, 255), currentVsNoMask=701, frozenVsNoMask=1008, repeatAB=0, currentSelf=0, frozenSelf=1090, reverseAB=0, currentMaskKeyword=True, frozenMaskKeyword=True\n  at NBFXG2DirectSequence.Invoke (System.String typeName, System.String methodName) [0x00060] in /tmp/nbfx_g2_direct_sequence.cs:20 \n  at NBFXG2DirectSequence.Run () [0x00017] in /tmp/nbfx_g2_direct_sequence.cs:10 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 "
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/private/tmp/NBFXG2DissolveMaskProbe-20260928"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

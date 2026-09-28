@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "/tmp/nbfx_g2_dissolve_rebind_probe.cs",
+      "entry": "NBFX.Baseline.Tests.G2DissolveRebindProbe.Run"
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 113,
+      "executeMs": 208,
+      "assemblyName": "PipelineRunScript_nbfx_g2_dissolve_rebind_probe_e9c45e3f5bec45dbbc68a9c91f3b6389",
+      "success": false,
+      "error": "Runtime Error",
+      "errorDetails": "AssertionException: Dissolve mask differs from frozen ShaderLab: mode=0, firstAB=1090, firstDifference=(24,24) current=RGBA(255, 0, 0, 255) frozen=RGBA(255, 0, 0, 202), currentVsNoMask=1008, frozenVsNoMask=701, repeatAB=0, currentSelf=1090, frozenSelf=0, reverseAB=0, currentMaskKeyword=True, frozenMaskKeyword=True\n  at NUnit.Framework.Assert.Fail (System.String message, System.Object[] args) [0x00022] in <f577cd9686154d6ab10efd7e65e64366>:0 \n  at NUnit.Framework.Assert.Fail (System.String message) [0x00000] in <f577cd9686154d6ab10efd7e65e64366>:0 \n  at NBFX.Baseline.Tests.G2DissolveRebindProbe.DissolveMaskModesAndDebugBoundaryMatchFrozen () [0x0076d] in /tmp/nbfx_g2_dissolve_rebind_probe.cs:136 \n  at NBFX.Baseline.Tests.G2DissolveRebindProbe.Run () [0x00001] in /tmp/nbfx_g2_dissolve_rebind_probe.cs:12 \n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 "
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

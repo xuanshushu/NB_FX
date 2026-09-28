@@ -1,0 +1,27 @@
+--- formal-prepatch/G2DissolveABTests.cs
++++ temporary/nbfx_g2_dissolve_blackrgb_probe.cs
+@@ -5,8 +5,14 @@
+
+ namespace NBFX.Baseline.Tests
+ {
+-    public sealed class G2DissolveABTests
++    public sealed class G2DissolveBlackRGBProbe
+     {
++        public static string Run()
++        {
++            new G2DissolveBlackRGBProbe().DissolveMaskModesAndDebugBoundaryMatchFrozen();
++            return "Dissolve black-RGB probe passed strict A/B";
++        }
++
+         private const string OriginalPath = "Assets/NBShaderSamples/NBShaderSamples/UnLit.mat";
+         private const string FrozenPath = "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/UnLit.mat";
+         private const int Size = 96;
+@@ -29,7 +35,7 @@
+                 for (var x = 0; x < 32; x++)
+                 {
+                     dissolvePixels[y * 32 + x] = new Color32(255, 255, 255, (byte)(x * 8));
+-                    maskPixels[y * 32 + x] = new Color32(255, 255, 255, (byte)(y * 8));
++                    maskPixels[y * 32 + x] = new Color32(0, 0, 0, (byte)(y * 8));
+                 }
+             dissolveTexture.SetPixels32(dissolvePixels);
+             maskTexture.SetPixels32(maskPixels);

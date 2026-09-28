@@ -94,6 +94,31 @@ namespace NBFX.Baseline.Tests
                     var current = Capture(camera, renderer, currentMaterial, target);
                     var reference = Capture(camera, renderer, frozenMaterial, target);
                     var different = CountDifferent(current, reference);
+                    // Two identical cold first frames are not evidence that the
+                    // first visible Dissolve frame is correct.
+                    if (mode == 0f && different == 0)
+                    {
+                        var currentRepeat = Capture(camera, renderer, currentMaterial, target);
+                        var frozenRepeat = Capture(camera, renderer, frozenMaterial, target);
+                        var currentSelf = CountDifferent(current, currentRepeat);
+                        var frozenSelf = CountDifferent(reference, frozenRepeat);
+                        if (currentSelf != 0 || frozenSelf != 0)
+                        {
+                            var output = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG2");
+                            Directory.CreateDirectory(output);
+                            const string stem = "dissolve_unstable_mode0";
+                            WritePng(Path.Combine(output, stem + "_current.png"), current);
+                            WritePng(Path.Combine(output, stem + "_frozen.png"), reference);
+                            WritePng(Path.Combine(output, stem + "_current_repeat.png"), currentRepeat);
+                            WritePng(Path.Combine(output, stem + "_frozen_repeat.png"), frozenRepeat);
+                            var metrics = "mode=0, firstAB=" + different +
+                                ", currentSelf=" + currentSelf + ", frozenSelf=" + frozenSelf +
+                                ", repeatAB=" + CountDifferent(currentRepeat, frozenRepeat) +
+                                ", firstDifference=" + FirstDifference(current, reference);
+                            File.WriteAllText(Path.Combine(output, stem + "_metrics.txt"), metrics + "\n");
+                            Assert.Fail("Dissolve first frame changed on redraw: " + metrics);
+                        }
+                    }
                     if (different != 0)
                     {
                         var output = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG2");

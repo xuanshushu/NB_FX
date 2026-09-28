@@ -18,6 +18,7 @@
 <p><strong>建议：</strong>若业务接受感知/数值容差，选 B，但必须先独立标定；否则选 A。未答复时维持 A 的严格未通过状态，不擅自采用 B。</p>
 <h2 id="dissolve">Q10 · Dissolve 首帧是否必须正确</h2>
 <p><strong>事实：</strong><a href="t05-g2-cold-variant-investigation.html">双 Shader 强制导入 → 正式 P4 → Dissolve</a>下，mode0 首次当前/Frozen 1090 像素差；同一个生产 Shader 的首次→自身复画也差 1090，Frozen 自身为 0，复画后 A/B 为 0。临时预热可使随后严格循环通过，但首帧仍失败；影响可能在变体/状态/编译/Renderer 等，未定位根因。<a href="t05-g2-mpb-bit31-checkpoint.html">MPB 夹具</a>另发现清缓存时首帧黑图，说明非空对照也要防止占位帧误过。</p>
+<p><strong>新增验证：</strong><a href="t05-g2-dissolve-firstframe-scene-checkpoint.html">场景加载对照</a>显示：空场景里当前与 Frozen 第一张图同时错了 1090 像素，原本仅比较两张图会假通过；原样例与 Frozen 样例分别加载时，出错的一侧会对调。正式测试已增加各自首帧自重画检查，不允许“两边一起错”通过。这仍不是产品首帧修复，也不改变 Q10 的严格默认要求。</p>
 <table border="1" cellpadding="6"><thead><tr><th>选择</th><th>功能/维护影响</th><th>验证与回退</th></tr></thead><tbody>
 <tr><td>A · 生产首帧必须正确</td><td>不允许把测试预热当通过；G2 继续阻塞，追查根因及必要的产品修复。</td><td>正式夹具不预热；新 Editor/Player、冷导入、P4 前后均复验首帧。</td></tr>
 <tr><td>B · 可接受明确的产品预热协议</td><td>必须设计真正运行时预热及首次可见帧保证，不能只在测试中画两次或降低断言。若需改 NBPostprocess/Renderer 合约另请批准。</td><td>先证明用户可见首帧与 Player 正确，再将协议写入产品与文档；保留无预热负对照和回退方式。</td></tr>

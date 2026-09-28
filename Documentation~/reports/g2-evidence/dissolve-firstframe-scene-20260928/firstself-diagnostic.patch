@@ -1,0 +1,44 @@
+--- formal-prepatch/G2DissolveABTests.cs
++++ temporary/nbfx_g2_dissolve_firstself_probe.cs
+@@ -5,8 +5,14 @@
+
+ namespace NBFX.Baseline.Tests
+ {
+-    public sealed class G2DissolveABTests
++    public sealed class G2DissolveFirstSelfProbe
+     {
++        public static string Run()
++        {
++            new G2DissolveFirstSelfProbe().DissolveMaskModesAndDebugBoundaryMatchFrozen();
++            return "Dissolve first-self probe finished";
++        }
++
+         private const string OriginalPath = "Assets/NBShaderSamples/NBShaderSamples/UnLit.mat";
+         private const string FrozenPath = "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/UnLit.mat";
+         private const int Size = 96;
+@@ -94,6 +100,25 @@
+                     var current = Capture(camera, renderer, currentMaterial, target);
+                     var reference = Capture(camera, renderer, frozenMaterial, target);
+                     var different = CountDifferent(current, reference);
++                    if (mode == 0f)
++                    {
++                        var probeDir = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG2");
++                        Directory.CreateDirectory(probeDir);
++                        var currentRepeat0 = Capture(camera, renderer, currentMaterial, target);
++                        var frozenRepeat0 = Capture(camera, renderer, frozenMaterial, target);
++                        WritePng(Path.Combine(probeDir, "first_self_mode0_current.png"), current);
++                        WritePng(Path.Combine(probeDir, "first_self_mode0_frozen.png"), reference);
++                        WritePng(Path.Combine(probeDir, "first_self_mode0_current_repeat.png"), currentRepeat0);
++                        WritePng(Path.Combine(probeDir, "first_self_mode0_frozen_repeat.png"), frozenRepeat0);
++                        var firstSelfMetrics = "firstAB=" + different +
++                            ", currentSelf=" + CountDifferent(current, currentRepeat0) +
++                            ", frozenSelf=" + CountDifferent(reference, frozenRepeat0) +
++                            ", repeatAB=" + CountDifferent(currentRepeat0, frozenRepeat0) +
++                            ", firstCurrent=" + current[24 * Size + 24] +
++                            ", firstFrozen=" + reference[24 * Size + 24];
++                        File.WriteAllText(Path.Combine(probeDir, "first_self_mode0_metrics.txt"), firstSelfMetrics + "\n");
++                        Debug.Log("NBFX-FIRST-SELF-PROBE " + firstSelfMetrics);
++                    }
+                     if (different != 0)
+                     {
+                         var output = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG2");

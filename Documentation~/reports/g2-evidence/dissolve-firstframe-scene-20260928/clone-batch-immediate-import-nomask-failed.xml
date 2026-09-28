@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-28 13:33:59Z" end-time="2026-09-28 13:34:04Z" duration="4.8836348">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-09-28 13:33:59Z" end-time="2026-09-28 13:34:04Z" duration="4.883635" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1026" name="NBFX.Baseline.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.Baseline.Editor.Tests.dll" runstate="Runnable" testcasecount="15" result="Failed" site="Child" start-time="2026-09-28 13:33:59Z" end-time="2026-09-28 13:34:04Z" duration="4.879359" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="74318" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1027" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="15" result="Failed" site="Child" start-time="2026-09-28 13:33:59Z" end-time="2026-09-28 13:34:04Z" duration="4.878837" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1028" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="15" result="Failed" site="Child" start-time="2026-09-28 13:33:59Z" end-time="2026-09-28 13:34:04Z" duration="4.878538" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1029" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="15" result="Failed" site="Child" start-time="2026-09-28 13:33:59Z" end-time="2026-09-28 13:34:04Z" duration="4.878184" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1006" name="G2DissolveColdMaskProbe" fullname="NBFX.Baseline.Tests.G2DissolveColdMaskProbe" classname="NBFX.Baseline.Tests.G2DissolveColdMaskProbe" runstate="Runnable" testcasecount="1" result="Failed" site="Child" start-time="2026-09-28 13:33:59Z" end-time="2026-09-28 13:34:04Z" duration="4.876920" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1007" name="ForceImportThenP4ThenDissolveWithBlackMaskRGB" fullname="NBFX.Baseline.Tests.G2DissolveColdMaskProbe.ForceImportThenP4ThenDissolveWithBlackMaskRGB" methodname="ForceImportThenP4ThenDissolveWithBlackMaskRGB" classname="NBFX.Baseline.Tests.G2DissolveColdMaskProbe" runstate="Runnable" seed="799207684" result="Failed" start-time="2026-09-28 13:33:59Z" end-time="2026-09-28 13:34:04Z" duration="4.870651" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: 0
+  But was:  2304
+]]></message>
+                  <stack-trace><![CDATA[at NBFX.Baseline.Tests.G2DissolveABTests.DissolveMaskModesAndDebugBoundaryMatchFrozen () [0x00347] in ./Packages/NB_FX/Tests/Editor/G2DissolveABTests.cs:78
+at NBFX.Baseline.Tests.G2DissolveColdMaskProbe.ForceImportThenP4ThenDissolveWithBlackMaskRGB () [0x000ea] in ./Packages/NB_FX/Tests/Editor/G2DissolveColdMaskProbe.cs:30
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[NBFX-COLD-PROBE import current=Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader, frozen=Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader
+NBFX-COLD-PROBE imports finished, running P4
+NBFX-G2-P4: P4 RenderGraph 128x128 RGBA32, camera opaque copy required, original NBPostProcess active
+preFlagsWarmup=centerRGBA=(185,186,137,255),nonBlackRGB=16384,distinctRGB=5625, noFrontAfterFlags=centerRGBA=(185,186,137,255),nonBlackRGB=16384,distinctRGB=5625
+noFront-vs-currentOff=0, noFront-vs-frozenOff=0, offAB=0, zeroAB=0, onAB=0
+currentVisibleROI(>4)=5776, frozenVisibleROI(>4)=5776, currentZeroROI(>4)=0, frozenZeroROI(>4)=0, outsideROI(>4)=0
+opaqueEmpty=centerRGBA=(185,186,137,255),nonBlackRGB=16384,distinctRGB=8464, opaqueOffEmpty=0, opaqueCurrentEmpty=0, opaqueAB=0
+
+NBFX-COLD-PROBE P4 finished, running Dissolve
+Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

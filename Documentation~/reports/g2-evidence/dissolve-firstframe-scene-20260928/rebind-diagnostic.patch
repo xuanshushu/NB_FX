@@ -1,0 +1,32 @@
+--- formal-prepatch/G2DissolveABTests.cs
++++ temporary/nbfx_g2_dissolve_rebind_probe.cs
+@@ -5,8 +5,14 @@
+
+ namespace NBFX.Baseline.Tests
+ {
+-    public sealed class G2DissolveABTests
++    public sealed class G2DissolveRebindProbe
+     {
++        public static string Run()
++        {
++            new G2DissolveRebindProbe().DissolveMaskModesAndDebugBoundaryMatchFrozen();
++            return "Dissolve rebind probe passed strict A/B";
++        }
++
+         private const string OriginalPath = "Assets/NBShaderSamples/NBShaderSamples/UnLit.mat";
+         private const string FrozenPath = "Assets/NBShaderSamples/NBShader_VFXGraphValidation/Materials/UnLit.mat";
+         private const int Size = 96;
+@@ -90,6 +96,13 @@
+                         if (mode < 0) material.DisableKeyword("_DISSOLVE_MASK");
+                         else material.EnableKeyword("_DISSOLVE_MASK");
+                         material.SetFloat("_DissolveMaskMode", mode);
++                    }
++                    if (mode == 0f)
++                    {
++                        Debug.Log("NBFX-REBIND-PROBE mask before=" + currentMaterial.GetTexture("_DissolveMaskMap").GetInstanceID() +
++                            " expected=" + maskTexture.GetInstanceID());
++                        currentMaterial.SetTexture("_DissolveMaskMap", maskTexture);
++                        Debug.Log("NBFX-REBIND-PROBE mask after=" + currentMaterial.GetTexture("_DissolveMaskMap").GetInstanceID());
+                     }
+                     var current = Capture(camera, renderer, currentMaterial, target);
+                     var reference = Capture(camera, renderer, frozenMaterial, target);

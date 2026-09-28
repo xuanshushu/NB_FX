@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "command": "command run_tests",
+  "data": {
+    "command": "run_tests",
+    "parameters": {
+      "mode": "editor",
+      "filter": "NBFX.Baseline.Tests.G2DissolveABTests.DissolveMaskModesAndDebugBoundaryMatchFrozen"
+    },
+    "result": {
+      "Summary": {
+        "Total": 1,
+        "Passed": 0,
+        "Failed": 1,
+        "Skipped": 0,
+        "Inconclusive": 0
+      },
+      "Results": [
+        {
+          "FullName": "NBFX.Baseline.Tests.G2DissolveABTests.DissolveMaskModesAndDebugBoundaryMatchFrozen",
+          "Status": "Failed",
+          "Duration": 0.1751832,
+          "Message": "Dissolve mask differs from frozen ShaderLab: mode=0, firstAB=1090, firstDifference=(24,24) current=RGBA(255, 0, 0, 255) frozen=RGBA(255, 0, 0, 202), currentVsNoMask=1008, frozenVsNoMask=701, repeatAB=0, currentSelf=1090, frozenSelf=0, reverseAB=0, currentMaskKeyword=True, frozenMaskKeyword=True",
+          "StackTrace": "at NBFX.Baseline.Tests.G2DissolveABTests.DissolveMaskModesAndDebugBoundaryMatchFrozen () [0x00860] in ./Packages/NB_FX/Tests/Editor/G2DissolveABTests.cs:148\n"
+        }
+      ],
+      "Duration": 6.11,
+      "StatusPath": null,
+      "Mode": "EditMode",
+      "FilterApplied": "testname: NBFX.Baseline.Tests.G2DissolveABTests.DissolveMaskModesAndDebugBoundaryMatchFrozen",
+      "success": true,
+      "result": null
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/bytedance/UnityProject/NBUnityProject"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -65,6 +65,7 @@
       <tr><td>构建</td><td>Editor/Player、裁剪、SVC、Feature Tier、AssetBundle 使用路径、重新导入与 Domain Reload。</td><td>构建日志、实际运行、缺失变体检测。</td></tr>
     </tbody>
   </table>
+<p><strong>G2 首帧补充：</strong>Dissolve/Mask 的静态夹具除当前/Frozen 逐像素 0 差，还需检查两侧各自首帧到紧接着重画均为 0 差；<a href="reports/t05-g2-dissolve-firstframe-scene-checkpoint.html">场景加载对照</a>发现空场景中两侧同错会让单纯 A/B 误报通过。重画仅用于诊断首帧是否稳定，不得取代用户可见首帧的验收。</p>
 <h3>高风险组合</h3>
 <ul>
   <li>Twirl / Polar＋Shared UV＋CustomData；Flipbook＋特殊 UV。</li>
