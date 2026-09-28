@@ -25,10 +25,11 @@
   </table>
 
 <h2 id="gates">工程验证状态</h2>
-<p>G2 最新补证：<a href="t05-g2-matcap-render-order-numeric-checkpoint.html">MatCap 场景顺序与数值链检查点（2026-09-29）</a>。它解释一个像素的数字差，但不改变 G2 未通过状态。</p>
+<p>G2 状态：<a href="t05-g2-gate-audit-20260928.html">Gate 复核</a>持续记录严格失败与未测项；按用户指示不再追查 MatCap 微弱色差，转做其他功能证据。<a href="t05-g2-matcap-render-order-numeric-checkpoint.html">既有数值记录</a>保留，G2 未放行。</p>
 <p>原 ShaderGUI 状态补证：<a href="t05-g2-gui-persistence-undo-checkpoint.html">隔离双进程材质保存/重载与程序化 Undo/Redo（2026-09-29）</a>；尚非 Inspector 端到端验证。</p>
 <p>变体资产补证：<a href="t05-g2-svc-four-tier-checkpoint.html">四档 FeatureTier SVC 从样例材质生成并跨 Unity 进程重载（2026-09-29）</a>；尚非真实 Player/SVC 构建验收。</p>
 <p>原后处理双路径补证：<a href="t05-g2-compat-p4-p5-final-checkpoint.html">当前 URP Compatibility 的 P4/P5 最终颜色 A/B（2026-09-29）</a>，限定输入下与 RenderGraph 截图一致；中间 RT、Player 和完整 Controller 组合未由此通过。</p>
+<p>原后处理中间数据补证：<a href="t05-g2-compat-intermediate-checkpoint.html">Compatibility 下 P4 opaque copy 与 P5 Mask/ScreenColorCopy 读回（2026-09-29）</a>；当前/Frozen 在受控输入下相同，不代表完整 G2。</p>
 <p>原 ShaderLab 构建补证：<a href="t05-g2-player-tier-build-checkpoint.html">StandaloneOSX 的 Ultra/Low 构建与实际 Tier 剥离回调（2026-09-29）</a>；未启动 Player，不宣称运行时画面或 SVC 预载通过。</p>
 <table border="1" cellpadding="6">
     <thead>
