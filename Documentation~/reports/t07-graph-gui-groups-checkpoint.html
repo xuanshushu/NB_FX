@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph GUI 分组检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-gui-adapter-checkpoint.html">先前 GUI 路由检查点</a></p>
+<h1>T07 · Graph Mesh GUI 安全分组检查点</h1>
+<p><strong>限定结论：</strong>包内 <a href="../../NBShaders2/Editor/NBShaderGraphRootItem.cs">NBShaderGraphRootItem</a> 现在按 Base、Mask、Dissolve、Distortion 对已有且可见的 Graph 属性显示标题；复用共享 <code>SectionLabelItem</code> 与 NB 本地化，属性本体仍用 Unity <code>MaterialEditor.ShaderProperty</code> 绘制。未覆盖的新属性保持原生回退且每个 reference 最多绘制一次；不调用旧 ShaderLab 的 SyncService、折叠属性或 packed flag 写入。这仅是 UI 排列，不是完整 NB 功能面板。</p>
+<p>同一产品状态在 Unity 6000.3.18f1 隔离 CLI 导入/编译退出 0。实际 CustomEditor 路由仍为 Mesh Graph = <code>NBShaderGraphGUI</code>、旧 NBShader = <code>NBShaderGUI</code>、VFX Output = 官方 <code>VFXShaderGraphUnlitGUI</code>；Graph 透明材质经 GUI 校验仍为 SrcBlend 5/DstBlend 10/ZWrite 0/Queue 3000。<a href="t07-evidence/graph-mask-gradient/gui-routing.log.gz">路由/状态日志</a>与<a href="t07-evidence/graph-mask-gradient/import.log.gz">编译日志</a>。静态核查当前分组 26 个 reference 在 Graph 内存在、15 个复用本地化 key 在 CSV 内存在，<code>git diff --check</code> 通过。</p>
+<p>未在可见 Editor 中检查真实排版、鼠标多选、Undo/Redo、PropertyDrawer、重载；VFX Output 的槽仍由官方 Inspector 管理，不把材质分组误称为 VFX 端口编辑。完整旧 NB GUI 规则、Flags 编辑、VFX 端口可用性仍是 G4/G5 缺口，最终人工一起测。没有可用 unityMCP，未触碰官方包、UniversalTarget、NBPostprocess、主工程 Assets/ProjectSettings，未 push。</p>
+</body></html>
