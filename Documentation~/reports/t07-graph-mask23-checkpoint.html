@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph Mask2/Mask3 检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="../tasks/t07-graph-parity-gui.html">T07 任务书</a></p>
+<h1>T07 · Graph Mask2/Mask3 纹理子路径检查点</h1>
+<p><strong>结论：</strong>当前 Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal，产品 Graph 在原单层 Mask 之后增加可选的 Mask2/Mask3 纹理层：按原 ShaderLab 顺序将三层通道值相乘，再统一调用共享 <code>NBFX_ResolveMaskCoverageV3</code>。受控 Mesh 中单开/叠加、R/A 通道、各自旋转/ST/时间滚动均引起画面变化；默认关闭时先前六张 PNG 逐字节不变。仅为三层遮罩的纹理子路径，不含 Gradient/Noise 等完整 Mask 功能，G4/G5 未放行。</p>
+<p>新增原 ShaderLab 同名 <code>_MaskMap2</code>/<code>_MaskMap3</code>（白图默认）、<code>_Mask2_Toggle</code>/<code>_Mask3_Toggle</code>（默认 0）及 <code>_MaskMap3OffsetAnition</code>。复用 <code>_MaskMapVec.y/z</code> 旋转、<code>_MaskMapOffsetAnition.zw</code> 与 <code>_MaskMap3OffsetAnition.xy</code> 滚动。各层只在主 Mask 和本层 Toggle 同开时采样；ColorChannel bits4–5/6–7 控制其通道。未新增 keyword、Pass 或并行算术核。</p>
+<table border="1" cellpadding="6"><thead><tr><th>用例</th><th>实际结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>T07-MASK23-MESH</td><td>相对仅 Mask1，打开 Mask2/Mask3 各改变 1250 像素；两层叠加相对仅 Mask2 改变 1122；Mask2/3 各自 R/A 互差 1192/1192；旋转 1130/1130、ST 762/762、滚动 1250/1250（任意 RGB 通道差&gt;2）。这里两层使用相同受控贴图，数值相同不代表层输入被错误共用；独立 Toggle/通道/UV 均由探针单独设置。六张旧回归 PNG 逐字节相同，双扭曲 Pass 仍在 1/2。</td><td><a href="t07-evidence/mask23/NBFXT07Mask23Probe.cs.txt">可重放探针</a> · <a href="t07-evidence/mask23/mesh-regression.log.gz">Unity 日志</a> · <a href="t07-evidence/mask23/png-byte-comparison.txt">PNG 对照</a> · <a href="t07-evidence/mask23/t07_mask23_mask1.png">Mask1</a>/<a href="t07-evidence/mask23/t07_mask23_mask2.png">+Mask2</a>/<a href="t07-evidence/mask23/t07_mask23_mask3.png">+Mask3</a>/<a href="t07-evidence/mask23/t07_mask23_both.png">+Both</a></td></tr>
+<tr><td>T07-MASK23-VFX</td><td>产品 VFX Mesh 强制导入生成 4 段源码；StandaloneOSX 构建成功，Metal Player 默认关闭的 Mesh 粒子与精确双 Pass 保持。这里只是默认值回归，未测试 VFX Output 主动开启 Mask2/3。</td><td><a href="t07-evidence/mask23/vfx-import.log.gz">导入日志</a> · <a href="t07-evidence/mask23/vfx-generated.shader.gz">生成 VFX Shader</a> · <a href="t07-evidence/mask23/player-build.log.gz">构建日志</a> · <a href="t07-evidence/mask23/player-run.log.gz">运行日志</a> · <a href="t07-evidence/mask23/result.json">结果 JSON</a></td></tr>
+</tbody></table>
+<p>未实现/未验证：三层各自 Gradient 路径、Noise/Wrap/ForceNoMip、非 UV0/CustomData、VFX 主动值、完整 ShaderLab B/C 与性能。无可用 unityMCP，仅隔离克隆无可见窗口 CLI；未改官方包、UniversalTarget、NBPostprocess、主工程 Assets/ProjectSettings，未 push。<a href="t07-evidence/mask23/sha256.txt">源码/证据 SHA-256</a>。</p>
+</body></html>

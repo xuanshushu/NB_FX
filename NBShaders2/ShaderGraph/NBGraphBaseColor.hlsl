@@ -38,6 +38,20 @@ float4 NBGraphSampleMap(UnityTexture2D map, float2 transformedUV)
     return sampled;
 }
 
+// Texture-only layer 2/3 adapter. Both layers multiply before the one shared
+// NBFX_ResolveMaskCoverageV3 call, matching the ShaderLab sampling branch.
+half NBGraphSampleMaskLayer(UnityTexture2D map, float2 originUV,
+    float rotationDegrees, float2 offsetSpeed, uint packedChannels,
+    uint channelPosition)
+{
+    float2 uv = NBGraphFeatureUV(map, originUV, rotationDegrees, offsetSpeed);
+    half4 sampled = (half4)NBGraphSampleMap(map, uv);
+    uint channel = (packedChannels >> channelPosition) & 3u;
+    return channel == 0u ? sampled.r :
+        channel == 1u ? sampled.g :
+        channel == 2u ? sampled.b : sampled.a;
+}
+
 // The optional process/late mask uses the same two-stage numeric contract as
 // ShaderLab. The host owns texture/channel selection; custom data, noise,
 // wrap overrides and non-UV0 modes remain separate slices.
@@ -100,6 +114,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 DissolveOffsetRotateDistort,
     UnityTexture2D DissolveMaskMap, float DissolveMaskToggle, float DissolveMaskMode,
     float2 DissolveMaskUV,
+    UnityTexture2D MaskMap2, float Mask2Toggle,
+    UnityTexture2D MaskMap3, float Mask3Toggle, float4 MaskMap3OffsetAnition,
+    float2 Mask2UV, float2 Mask3UV,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -132,10 +149,19 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
             maskRotation, MaskMapOffsetAnition.xy);
         half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, maskUV);
-        uint maskChannel = (NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0) >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
+        uint packedChannels = NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0);
+        uint maskChannel = (packedChannels >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
         half channelValue = maskChannel == 0u ? sampledMask.r :
             maskChannel == 1u ? sampledMask.g :
             maskChannel == 2u ? sampledMask.b : sampledMask.a;
+        if (Mask2Toggle > 0.5)
+            channelValue *= NBGraphSampleMaskLayer(MaskMap2, Mask2UV,
+                MaskMapVec.y, MaskMapOffsetAnition.zw, packedChannels,
+                FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2);
+        if (Mask3Toggle > 0.5)
+            channelValue *= NBGraphSampleMaskLayer(MaskMap3, Mask3UV,
+                MaskMapVec.z, MaskMap3OffsetAnition.xy, packedChannels,
+                FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3);
         NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
         maskInput.combinedMaskAfterNoise = channelValue;
         maskInput.refine = (NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
@@ -164,6 +190,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half4 DissolveOffsetRotateDistort,
     UnityTexture2D DissolveMaskMap, float DissolveMaskToggle, float DissolveMaskMode,
     float2 DissolveMaskUV,
+    UnityTexture2D MaskMap2, float Mask2Toggle,
+    UnityTexture2D MaskMap3, float Mask3Toggle, half4 MaskMap3OffsetAnition,
+    float2 Mask2UV, float2 Mask3UV,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -196,10 +225,19 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
             maskRotation, MaskMapOffsetAnition.xy);
         half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, maskUV);
-        uint maskChannel = (NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0) >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
+        uint packedChannels = NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0);
+        uint maskChannel = (packedChannels >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
         half channelValue = maskChannel == 0u ? sampledMask.r :
             maskChannel == 1u ? sampledMask.g :
             maskChannel == 2u ? sampledMask.b : sampledMask.a;
+        if (Mask2Toggle > 0.5)
+            channelValue *= NBGraphSampleMaskLayer(MaskMap2, Mask2UV,
+                MaskMapVec.y, MaskMapOffsetAnition.zw, packedChannels,
+                FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2);
+        if (Mask3Toggle > 0.5)
+            channelValue *= NBGraphSampleMaskLayer(MaskMap3, Mask3UV,
+                MaskMapVec.z, MaskMap3OffsetAnition.xy, packedChannels,
+                FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3);
         NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
         maskInput.combinedMaskAfterNoise = channelValue;
         maskInput.refine = (NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
