@@ -4,6 +4,7 @@
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderMaskV3.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDissolveV3.hlsl"
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderPackedGradientV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderUVV2.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 
@@ -50,6 +51,26 @@ half NBGraphSampleMaskLayer(UnityTexture2D map, float2 originUV,
     return channel == 0u ? sampled.r :
         channel == 1u ? sampled.g :
         channel == 2u ? sampled.b : sampled.a;
+}
+
+// The two bits for each legacy wrap slot live 16 positions apart. Gradient
+// mode uses the already transformed UV but does not sample the texture.
+uint NBGraphMaskWrapMode(uint packedWrapFlags, uint bit)
+{
+    return ((packedWrapFlags & bit) != 0u ? 1u : 0u) |
+        ((packedWrapFlags & (bit << 16)) != 0u ? 2u : 0u);
+}
+
+half NBGraphSampleMaskGradient(half4 pack0, half4 pack1, half4 pack2,
+    float keyCount, float2 transformedUV, uint wrapMode, bool useY)
+{
+    float coordinate = useY ? transformedUV.y : transformedUV.x;
+    // Mask 1/3 use U (repeat for modes 0/2); Mask 2 uses V (0/3).
+    bool repeatAxis = useY ? (wrapMode == 0u || wrapMode == 3u) :
+        (wrapMode == 0u || wrapMode == 2u);
+    half gradientTime = (half)(repeatAxis ? frac(coordinate) : saturate(coordinate));
+    return SamplePackedGradientAlpha(pack0, pack1, pack2, (int)keyCount,
+        gradientTime);
 }
 
 // The optional process/late mask uses the same two-stage numeric contract as
@@ -117,6 +138,13 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     UnityTexture2D MaskMap2, float Mask2Toggle,
     UnityTexture2D MaskMap3, float Mask3Toggle, float4 MaskMap3OffsetAnition,
     float2 Mask2UV, float2 Mask3UV,
+    float NB_WrapFlagsLo16, float NB_WrapFlagsHi16,
+    float MaskMapGradientCount, float4 MaskMapGradientFloat0,
+    float4 MaskMapGradientFloat1, float4 MaskMapGradientFloat2,
+    float MaskMap2GradientCount, float4 MaskMap2GradientFloat0,
+    float4 MaskMap2GradientFloat1, float4 MaskMap2GradientFloat2,
+    float MaskMap3GradientCount, float4 MaskMap3GradientFloat0,
+    float4 MaskMap3GradientFloat1, float4 MaskMap3GradientFloat2,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -145,26 +173,61 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     }
     if (MaskToggle > 0.5)
     {
+        uint maskFlags = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
+        uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
         float maskRotation = MaskMapUVRotation + _Time.y * MaskMapRotationSpeed;
         float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
             maskRotation, MaskMapOffsetAnition.xy);
-        half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, maskUV);
         uint packedChannels = NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0);
-        uint maskChannel = (packedChannels >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
-        half channelValue = maskChannel == 0u ? sampledMask.r :
-            maskChannel == 1u ? sampledMask.g :
-            maskChannel == 2u ? sampledMask.b : sampledMask.a;
+        half channelValue;
+        if ((maskFlags & FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT) != 0u)
+            channelValue = NBGraphSampleMaskGradient(
+                (half4)MaskMapGradientFloat0, (half4)MaskMapGradientFloat1,
+                (half4)MaskMapGradientFloat2, MaskMapGradientCount, maskUV,
+                NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP), false);
+        else
+        {
+            half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, maskUV);
+            uint maskChannel = (packedChannels >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
+            channelValue = maskChannel == 0u ? sampledMask.r :
+                maskChannel == 1u ? sampledMask.g :
+                maskChannel == 2u ? sampledMask.b : sampledMask.a;
+        }
         if (Mask2Toggle > 0.5)
-            channelValue *= NBGraphSampleMaskLayer(MaskMap2, Mask2UV,
-                MaskMapVec.y, MaskMapOffsetAnition.zw, packedChannels,
-                FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2);
+        {
+            if ((maskFlags & FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT) != 0u)
+            {
+                float2 mask2UV = NBGraphFeatureUV(MaskMap2, Mask2UV,
+                    MaskMapVec.y, MaskMapOffsetAnition.zw);
+                channelValue *= NBGraphSampleMaskGradient(
+                    (half4)MaskMap2GradientFloat0, (half4)MaskMap2GradientFloat1,
+                    (half4)MaskMap2GradientFloat2, MaskMap2GradientCount, mask2UV,
+                    NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP2), true);
+            }
+            else
+                channelValue *= NBGraphSampleMaskLayer(MaskMap2, Mask2UV,
+                    MaskMapVec.y, MaskMapOffsetAnition.zw, packedChannels,
+                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2);
+        }
         if (Mask3Toggle > 0.5)
-            channelValue *= NBGraphSampleMaskLayer(MaskMap3, Mask3UV,
-                MaskMapVec.z, MaskMap3OffsetAnition.xy, packedChannels,
-                FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3);
+        {
+            if ((maskFlags & FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT) != 0u)
+            {
+                float2 mask3UV = NBGraphFeatureUV(MaskMap3, Mask3UV,
+                    MaskMapVec.z, MaskMap3OffsetAnition.xy);
+                channelValue *= NBGraphSampleMaskGradient(
+                    (half4)MaskMap3GradientFloat0, (half4)MaskMap3GradientFloat1,
+                    (half4)MaskMap3GradientFloat2, MaskMap3GradientCount, mask3UV,
+                    NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP3), false);
+            }
+            else
+                channelValue *= NBGraphSampleMaskLayer(MaskMap3, Mask3UV,
+                    MaskMapVec.z, MaskMap3OffsetAnition.xy, packedChannels,
+                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3);
+        }
         NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
         maskInput.combinedMaskAfterNoise = channelValue;
-        maskInput.refine = (NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
+        maskInput.refine = (maskFlags & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
         maskInput.refinePowMulAdd = (half3)MaskRefineVec.xyz;
         maskInput.overallStrength = (half)MaskMapVec.x;
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
@@ -193,6 +256,13 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     UnityTexture2D MaskMap2, float Mask2Toggle,
     UnityTexture2D MaskMap3, float Mask3Toggle, half4 MaskMap3OffsetAnition,
     float2 Mask2UV, float2 Mask3UV,
+    float NB_WrapFlagsLo16, float NB_WrapFlagsHi16,
+    float MaskMapGradientCount, half4 MaskMapGradientFloat0,
+    half4 MaskMapGradientFloat1, half4 MaskMapGradientFloat2,
+    float MaskMap2GradientCount, half4 MaskMap2GradientFloat0,
+    half4 MaskMap2GradientFloat1, half4 MaskMap2GradientFloat2,
+    float MaskMap3GradientCount, half4 MaskMap3GradientFloat0,
+    half4 MaskMap3GradientFloat1, half4 MaskMap3GradientFloat2,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -221,26 +291,61 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     }
     if (MaskToggle > 0.5)
     {
+        uint maskFlags = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
+        uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
         float maskRotation = MaskMapUVRotation + _Time.y * MaskMapRotationSpeed;
         float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
             maskRotation, MaskMapOffsetAnition.xy);
-        half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, maskUV);
         uint packedChannels = NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0);
-        uint maskChannel = (packedChannels >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
-        half channelValue = maskChannel == 0u ? sampledMask.r :
-            maskChannel == 1u ? sampledMask.g :
-            maskChannel == 2u ? sampledMask.b : sampledMask.a;
+        half channelValue;
+        if ((maskFlags & FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT) != 0u)
+            channelValue = NBGraphSampleMaskGradient(
+                MaskMapGradientFloat0, MaskMapGradientFloat1,
+                MaskMapGradientFloat2, MaskMapGradientCount, maskUV,
+                NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP), false);
+        else
+        {
+            half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, maskUV);
+            uint maskChannel = (packedChannels >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
+            channelValue = maskChannel == 0u ? sampledMask.r :
+                maskChannel == 1u ? sampledMask.g :
+                maskChannel == 2u ? sampledMask.b : sampledMask.a;
+        }
         if (Mask2Toggle > 0.5)
-            channelValue *= NBGraphSampleMaskLayer(MaskMap2, Mask2UV,
-                MaskMapVec.y, MaskMapOffsetAnition.zw, packedChannels,
-                FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2);
+        {
+            if ((maskFlags & FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT) != 0u)
+            {
+                float2 mask2UV = NBGraphFeatureUV(MaskMap2, Mask2UV,
+                    MaskMapVec.y, MaskMapOffsetAnition.zw);
+                channelValue *= NBGraphSampleMaskGradient(
+                    MaskMap2GradientFloat0, MaskMap2GradientFloat1,
+                    MaskMap2GradientFloat2, MaskMap2GradientCount, mask2UV,
+                    NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP2), true);
+            }
+            else
+                channelValue *= NBGraphSampleMaskLayer(MaskMap2, Mask2UV,
+                    MaskMapVec.y, MaskMapOffsetAnition.zw, packedChannels,
+                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2);
+        }
         if (Mask3Toggle > 0.5)
-            channelValue *= NBGraphSampleMaskLayer(MaskMap3, Mask3UV,
-                MaskMapVec.z, MaskMap3OffsetAnition.xy, packedChannels,
-                FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3);
+        {
+            if ((maskFlags & FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT) != 0u)
+            {
+                float2 mask3UV = NBGraphFeatureUV(MaskMap3, Mask3UV,
+                    MaskMapVec.z, MaskMap3OffsetAnition.xy);
+                channelValue *= NBGraphSampleMaskGradient(
+                    MaskMap3GradientFloat0, MaskMap3GradientFloat1,
+                    MaskMap3GradientFloat2, MaskMap3GradientCount, mask3UV,
+                    NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP3), false);
+            }
+            else
+                channelValue *= NBGraphSampleMaskLayer(MaskMap3, Mask3UV,
+                    MaskMapVec.z, MaskMap3OffsetAnition.xy, packedChannels,
+                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3);
+        }
         NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
         maskInput.combinedMaskAfterNoise = channelValue;
-        maskInput.refine = (NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
+        maskInput.refine = (maskFlags & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
         maskInput.refinePowMulAdd = MaskRefineVec.xyz;
         maskInput.overallStrength = MaskMapVec.x;
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
