@@ -157,6 +157,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float MaskMap3GradientCount, float4 MaskMap3GradientFloat0,
     float4 MaskMap3GradientFloat1, float4 MaskMap3GradientFloat2,
     float AlphaAll, float4 ColorA, float4 VertexColor,
+    float BaseColorIntensityForTimeline,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -166,8 +167,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     input.selectedAlpha = NBGraphSelectBaseAlpha((half4)SampledAlbedo,
         NB_ColorChannelLo16);
     input.effectiveBaseColor = (half4)EffectiveBaseColor;
-    input.timelineIntensity = 1.0h;
-    input.applyTimelineIntensity = false;
+    input.timelineIntensity = (half)BaseColorIntensityForTimeline;
+    input.applyTimelineIntensity = true;
     Out = (float4)NBFX_ComposeBaseColorV1(input);
     if (DissolveToggle > 0.5)
     {
@@ -288,6 +289,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float MaskMap3GradientCount, half4 MaskMap3GradientFloat0,
     half4 MaskMap3GradientFloat1, half4 MaskMap3GradientFloat2,
     float AlphaAll, half4 ColorA, half4 VertexColor,
+    float BaseColorIntensityForTimeline,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -295,8 +297,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     input.selectedAlpha = NBGraphSelectBaseAlpha(SampledAlbedo,
         NB_ColorChannelLo16);
     input.effectiveBaseColor = EffectiveBaseColor;
-    input.timelineIntensity = 1.0h;
-    input.applyTimelineIntensity = false;
+    input.timelineIntensity = (half)BaseColorIntensityForTimeline;
+    input.applyTimelineIntensity = true;
     Out = NBFX_ComposeBaseColorV1(input);
     if (DissolveToggle > 0.5)
     {
