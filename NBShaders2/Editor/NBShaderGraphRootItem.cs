@@ -16,7 +16,8 @@ namespace NBShaderEditor
         // inspector implementation or any NBShaderSyncService side effects.
         static readonly string[] BaseProperties =
         {
-            "_BaseMap", "_Color", "_BaseMap_ST", "_BaseMapUVRotation",
+            "_BaseMap", "_Color", "_BaseBackColor", "_BaseColorIntensityForTimeline",
+            "_ColorA", "_BaseMap_ST", "_BaseMapUVRotation",
             "_BaseMapUVRotationSpeed", "_BaseMapMaskMapOffset"
         };
 
@@ -124,6 +125,7 @@ namespace NBShaderEditor
             switch (property.name)
             {
                 case "_BaseMap": key = "maintex.basemap"; break;
+                case "_BaseBackColor": key = "base.backColor.color"; break;
                 case "_BaseMapUVRotation": key = "maintex.rotation"; break;
                 case "_BaseMapUVRotationSpeed": key = "maintex.rotationspeed"; break;
                 case "_MaskMap": key = "feature.遮罩贴图"; break;

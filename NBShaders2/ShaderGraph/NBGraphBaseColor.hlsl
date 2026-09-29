@@ -157,7 +157,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float MaskMap3GradientCount, float4 MaskMap3GradientFloat0,
     float4 MaskMap3GradientFloat1, float4 MaskMap3GradientFloat2,
     float AlphaAll, float4 ColorA, float4 VertexColor,
-    float BaseColorIntensityForTimeline,
+    float BaseColorIntensityForTimeline, float4 BaseBackColor, float IsFrontFace,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -167,6 +167,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     input.selectedAlpha = NBGraphSelectBaseAlpha((half4)SampledAlbedo,
         NB_ColorChannelLo16);
     input.effectiveBaseColor = (half4)EffectiveBaseColor;
+    if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
+        FLAG_BIT_PARTICLE_BACKCOLOR) != 0u && IsFrontFace < 0.5)
+        input.effectiveBaseColor = (half4)BaseBackColor;
     input.timelineIntensity = (half)BaseColorIntensityForTimeline;
     input.applyTimelineIntensity = true;
     Out = (float4)NBFX_ComposeBaseColorV1(input);
@@ -289,7 +292,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float MaskMap3GradientCount, half4 MaskMap3GradientFloat0,
     half4 MaskMap3GradientFloat1, half4 MaskMap3GradientFloat2,
     float AlphaAll, half4 ColorA, half4 VertexColor,
-    float BaseColorIntensityForTimeline,
+    float BaseColorIntensityForTimeline, half4 BaseBackColor, float IsFrontFace,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -297,6 +300,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     input.selectedAlpha = NBGraphSelectBaseAlpha(SampledAlbedo,
         NB_ColorChannelLo16);
     input.effectiveBaseColor = EffectiveBaseColor;
+    if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
+        FLAG_BIT_PARTICLE_BACKCOLOR) != 0u && IsFrontFace < 0.5)
+        input.effectiveBaseColor = BaseBackColor;
     input.timelineIntensity = (half)BaseColorIntensityForTimeline;
     input.applyTimelineIntensity = true;
     Out = NBFX_ComposeBaseColorV1(input);
