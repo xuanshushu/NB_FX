@@ -73,6 +73,17 @@ half NBGraphSampleMaskGradient(half4 pack0, half4 pack1, half4 pack2,
         gradientTime);
 }
 
+// ShaderLab GetColorChannel selects the BaseMap alpha source from the first
+// two bits of the shared packed channel word (default 3 = A). Keep this in
+// the Graph host because it owns the sampled RGBA value.
+half NBGraphSelectBaseAlpha(half4 albedo, float packedChannelsLo16)
+{
+    uint channel = NBGraphDecodeUInt32(packedChannelsLo16, 0.0) & 3u;
+    return channel == 0u ? albedo.r :
+        channel == 1u ? albedo.g :
+        channel == 2u ? albedo.b : albedo.a;
+}
+
 // The optional process/late mask uses the same two-stage numeric contract as
 // ShaderLab. The host owns texture/channel selection; custom data, noise,
 // wrap overrides and non-UV0 modes remain separate slices.
@@ -150,7 +161,10 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     input.sampledAlbedo = (half4)SampledAlbedo;
-    input.selectedAlpha = (half)SelectedAlpha;
+    // The historical SG A input remains serialized for existing Graph edges;
+    // the packed channel word is the authoritative ShaderLab selector.
+    input.selectedAlpha = NBGraphSelectBaseAlpha((half4)SampledAlbedo,
+        NB_ColorChannelLo16);
     input.effectiveBaseColor = (half4)EffectiveBaseColor;
     input.timelineIntensity = 1.0h;
     input.applyTimelineIntensity = false;
@@ -278,7 +292,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     input.sampledAlbedo = SampledAlbedo;
-    input.selectedAlpha = SelectedAlpha;
+    input.selectedAlpha = NBGraphSelectBaseAlpha(SampledAlbedo,
+        NB_ColorChannelLo16);
     input.effectiveBaseColor = EffectiveBaseColor;
     input.timelineIntensity = 1.0h;
     input.applyTimelineIntensity = false;
