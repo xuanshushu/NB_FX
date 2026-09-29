@@ -6,6 +6,7 @@
     #include "NBShaderGeometryV1.hlsl"
     #include "NBShaderUVV1.hlsl"
     #include "NBShaderUVV2.hlsl"
+    #include "NBShaderPackedGradientV1.hlsl"
    
     #if defined(_PROGRAM_NOISE) && (defined(_PROGRAM_NOISE_SIMPLE) || defined(_PROGRAM_NOISE_VORONOI))
         #define _PROGRAM_NOISE_ACTIVE
@@ -1556,26 +1557,6 @@
         return key5.a;
     }
 
-    half GetPackedGradientAlphaKey(half4 pack0, half4 pack1, half4 pack2, int index)
-    {
-        if (index <= 0) return pack0.x;
-        if (index == 1) return pack0.z;
-        if (index == 2) return pack1.x;
-        if (index == 3) return pack1.z;
-        if (index == 4) return pack2.x;
-        return pack2.z;
-    }
-
-    half GetPackedGradientAlphaTime(half4 pack0, half4 pack1, half4 pack2, int index)
-    {
-        if (index <= 0) return pack0.y;
-        if (index == 1) return pack0.w;
-        if (index == 2) return pack1.y;
-        if (index == 3) return pack1.w;
-        if (index == 4) return pack2.y;
-        return pack2.w;
-    }
-
     int2 GetPackedGradientColorIndex(half4 key0, half4 key1, half4 key2, half4 key3, half4 key4, half4 key5, int arrCount, half gradientTime)
     {
         int2 indexes = int2(-1, 0);
@@ -1584,22 +1565,6 @@
         for (int i = 0; i < 6; i++)
         {
             if (!found && i < arrCount && GetPackedGradientColorTime(key0, key1, key2, key3, key4, key5, i) > gradientTime)
-            {
-                indexes = int2(i - 1, i);
-                found = true;
-            }
-        }
-        return indexes;
-    }
-
-    int2 GetPackedGradientAlphaIndex(half4 pack0, half4 pack1, half4 pack2, int arrCount, half gradientTime)
-    {
-        int2 indexes = int2(-1, 0);
-        bool found = false;
-        [unroll]
-        for (int i = 0; i < 6; i++)
-        {
-            if (!found && i < arrCount && GetPackedGradientAlphaTime(pack0, pack1, pack2, i) > gradientTime)
             {
                 indexes = int2(i - 1, i);
                 found = true;
@@ -1628,31 +1593,6 @@
                 GetPackedGradientColorKey(key0, key1, key2, key3, key4, key5, indexes.x),
                 GetPackedGradientColorKey(key0, key1, key2, key3, key4, key5, indexes.y),
                 interval);
-        }
-    }
-
-    half SamplePackedGradientAlpha(half4 pack0, half4 pack1, half4 pack2, int arrCount, half gradientTime)
-    {
-        if (gradientTime <= GetPackedGradientAlphaTime(pack0, pack1, pack2, 0))
-        {
-            return GetPackedGradientAlphaKey(pack0, pack1, pack2, 0);
-        }
-        else if (gradientTime >= GetPackedGradientAlphaTime(pack0, pack1, pack2, arrCount - 1))
-        {
-            return GetPackedGradientAlphaKey(pack0, pack1, pack2, arrCount - 1);
-        }
-        else
-        {
-            int2 indexes = GetPackedGradientAlphaIndex(pack0, pack1, pack2, arrCount, gradientTime);
-            half smallVal = GetPackedGradientAlphaTime(pack0, pack1, pack2, indexes.x);
-            half bigVal = GetPackedGradientAlphaTime(pack0, pack1, pack2, indexes.y);
-            half interval = SmoothStep01((gradientTime - smallVal) / (bigVal - smallVal));
-            half alpha = lerp(
-                GetPackedGradientAlphaKey(pack0, pack1, pack2, indexes.x),
-                GetPackedGradientAlphaKey(pack0, pack1, pack2, indexes.y),
-                interval);
-            alpha *= alpha;
-            return alpha;
         }
     }
 
