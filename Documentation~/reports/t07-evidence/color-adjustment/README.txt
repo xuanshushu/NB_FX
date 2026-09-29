@@ -34,4 +34,6 @@ Mesh PNGs byte-identical. Fresh VFX sample imported and retained custom
 Pass tags but active VFX adjustment is a separate test. No Gate release.
 
 Test-only sources, old variant source and logs/PNGs are archived. Do not
-copy them to product or main project Assets. No push.
+copy them to product or main project Assets. Test-only clone files were
+removed; cleanup compile exit0, ProjectSettings and renderer/global hashes
+unchanged. No push.

@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""Generate test-only ColorAdjustment VFX Mesh variants in this /tmp dir."""
+from __future__ import annotations
+import gzip,hashlib,pathlib,re,shutil,uuid
+ROOT=pathlib.Path(__file__).resolve().parent;OUT=ROOT/'Assets'
+ARCH=pathlib.Path('/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t08-evidence/vfx-basecolor-active')
+SRC=ARCH/'NBFXBCA1.vfx.gz'
+OUTPUT=8926484042661614853
+BASEMAP=8926484042661614854
+COLOR=8926484042661614855
+SCALAR=8926484042661614869
+VECTOR=8926484042661614903
+FLAGS0LO=8926484042661614869
+FLAGS0HI=8926484042661614870
+FLAGS1HI=8926484042661614872
+HUE=8926484042661616600
+CONTRAST=8926484042661616601
+SATURATION=8926484042661616602
+MID=8926484042661616610
+REFINE=8926484042661616620
+STRUCTS=(MID,REFINE)
+MASTERS=(HUE,CONTRAST,MID,SATURATION,REFINE)
+IDS=(HUE,CONTRAST,SATURATION,*[x for m in STRUCTS for x in range(m,m+5)])
+BASE_NAME='NBFXAdjustBaseRGBA_64_128_160_192.png'
+VARIANTS=(('Off',0,0,0),('Contrast',0,0,256),
+          ('Saturation0',1,0,0),('Hue',0,8,0),('Refine',0,0,2048))
+
+def guid(name:str)->str:return uuid.uuid5(uuid.NAMESPACE_URL,'nbfx-vfx-coloradjust-probe-20260930/'+name).hex
+
+def once(s:str,a:str,b:str,what:str)->str:
+    n=s.count(a)
+    if n!=1:raise ValueError(f'{what}: expected one {a!r}, got {n}')
+    return s.replace(a,b,1)
+
+def match(s:str,id:int)->re.Match[str]:
+    m=re.search(rf'(?ms)^--- !u!114 &{id}\n.*?(?=^--- !u!|\Z)',s)
+    if not m:raise ValueError(f'missing VFX object {id}')
+    return m
+
+def change(s:str,id:int,a:str,b:str)->str:
+    m=match(s,id);body=once(m.group(),a,b,str(id))
+    return s[:m.start()]+body+s[m.end():]
+
+def meta(src:pathlib.Path,name:str)->str:
+    s=src.read_text();m=re.search(r'(?m)^guid: ([a-f0-9]{32})$',s)
+    if not m:raise ValueError('meta GUID absent: '+str(src))
+    return once(s,m.group(1),guid(name),name)
+
+def clone_scalar(s:str,id:int,name:str,value:str)->str:
+    b=match(s,SCALAR).group().replace(str(SCALAR),str(id))
+    b=once(b,'name: _NB_Flags0Lo16\n',f'name: {name}\n',name)
+    return once(b,'m_SerializableObject: 0\n',f'm_SerializableObject: {value}\n',name)
+
+def clone_struct(s:str,src:int,id:int,old_name:str,name:str,old_value:str,new_value:str)->list[str]:
+    master=match(s,src).group().replace(str(src),str(id))
+    for k in range(1,5):master=master.replace(str(src+k),str(id+k))
+    master=once(master,f'name: {old_name}\n',f'name: {name}\n',name)
+    if old_value!=new_value:master=once(master,old_value,new_value,name+' value')
+    children=[match(s,src+k).group().replace(str(src),str(id)).replace(str(src+k),str(id+k))
+              for k in range(1,5)]
+    return [master,*children]
+
+def main()->None:
+    OUT.mkdir(exist_ok=True)
+    s=gzip.decompress(SRC.read_bytes()).decode()
+    for id in IDS:
+        if str(id) in s:raise ValueError(f'private test anchor collision {id}')
+    if '  capacity: 1\n' not in s or '  cullMode: 0\n' not in match(s,OUTPUT).group():
+        raise ValueError('not archived one-particle Cube/CullOff fixture')
+    for old,new in {'NBFXBCGray.png':'NBFXAdjustGray.png',
+        'NBFXBCWhite.png':'NBFXAdjustWhite.png',
+        'NBFXBC_RGBA_64_128_160_192.png':BASE_NAME}.items():
+        shutil.copyfile(ARCH/old,OUT/new)
+        raw=(ARCH/(old+'.meta.txt')).read_text();old_guid=re.search(r'(?m)^guid: ([a-f0-9]{32})$',raw).group(1)
+        (OUT/(new+'.meta')).write_text(meta(ARCH/(old+'.meta.txt'),new))
+        s=s.replace(old_guid,guid(new))
+    white="'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0}'"
+    zero="'{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}'"
+    slots=[clone_scalar(s,HUE,'_HueShift','0.5'),
+           clone_scalar(s,CONTRAST,'_Contrast','0.5'),
+           clone_scalar(s,SATURATION,'_Saturability','0')]
+    slots+=clone_struct(s,COLOR,MID,'_Color','_ContrastMidColor',white,
+        "'{\"r\":0.5,\"g\":0.2,\"b\":0.4,\"a\":1.0}'")
+    slots+=clone_struct(s,VECTOR,REFINE,'_BaseMapMaskMapOffset','_BaseMapColorRefine',zero,
+        "'{\"x\":2.0,\"y\":1.0,\"z\":1.0,\"w\":0.0}'")
+    attach=''.join(f'  - {{fileID: {id}}}\n' for id in MASTERS)
+    s=change(s,OUTPUT,'  m_OutputSlots: []\n',attach+'  m_OutputSlots: []\n')
+    s+='\n'+'\n'.join(slots)
+    normalized=[]
+    for label,lo,hi,flags1hi in VARIANTS:
+        value=change(s,FLAGS0LO,'m_SerializableObject: 0\n',f'm_SerializableObject: {lo}\n')
+        value=change(value,FLAGS0HI,'m_SerializableObject: 0\n',f'm_SerializableObject: {hi}\n')
+        value=change(value,FLAGS1HI,'m_SerializableObject: 0\n',f'm_SerializableObject: {flags1hi}\n')
+        fn=f'NBFXAdjust{label}.vfx';(OUT/fn).write_text(value)
+        (OUT/(fn+'.meta')).write_text(meta(ARCH/'NBFXBCA1.vfx.meta.txt',fn))
+        for id,current in ((FLAGS0LO,lo),(FLAGS0HI,hi),(FLAGS1HI,flags1hi)):
+            value=change(value,id,f'm_SerializableObject: {current}\n','m_SerializableObject: VARIANT\n')
+        normalized.append(value)
+    if len(set(normalized))!=1:raise ValueError('variants differ outside three flag slices')
+    for p in sorted(OUT.iterdir()):
+        if p.is_file():print(hashlib.sha256(p.read_bytes()).hexdigest(),p)
+
+if __name__=='__main__':main()
