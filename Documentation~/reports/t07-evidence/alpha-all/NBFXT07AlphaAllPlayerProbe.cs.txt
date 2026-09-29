@@ -1,0 +1,70 @@
+using System;
+using System.Collections;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
+
+public sealed class NBFXT07AlphaAllPlayerProbe : MonoBehaviour
+{
+    public VisualEffectAsset vfxAsset;
+    public Shader graphShader;
+    public Shader generatedVfxShader;
+    const int Size = 128;
+    [Serializable] sealed class Result
+    {
+        public string unityVersion, graphicsDevice, shaderName, error;
+        public int alive, visible, passes, cameraPass, deferredPass;
+        public bool culled, passed;
+    }
+    static Color32[] Capture(Camera cam, RenderTexture rt, Texture2D read, string path)
+    {
+        cam.Render(); var previous = RenderTexture.active; RenderTexture.active = rt;
+        try { read.ReadPixels(new Rect(0,0,Size,Size),0,0); read.Apply(false); File.WriteAllBytes(path,read.EncodeToPNG()); return read.GetPixels32(); }
+        finally { RenderTexture.active=previous; }
+    }
+    static int Changed(Color32[] a, Color32[] b)
+    {
+        int count=0; for(int i=0;i<a.Length;i++) if(Math.Abs(a[i].r-b[i].r)>2||Math.Abs(a[i].g-b[i].g)>2||Math.Abs(a[i].b-b[i].b)>2) count++; return count;
+    }
+    IEnumerator Start()
+    {
+        string output=null;
+        foreach(var arg in Environment.GetCommandLineArgs()) if(arg.StartsWith("--nbfx-t08-output=",StringComparison.Ordinal)) output=arg.Substring("--nbfx-t08-output=".Length);
+        if(string.IsNullOrEmpty(output)) yield break;
+        Directory.CreateDirectory(output);
+        var result=new Result{unityVersion=Application.unityVersion,graphicsDevice=SystemInfo.graphicsDeviceType.ToString()};
+        RenderTexture rt=null;Texture2D read=null,gradient=null; Material backgroundMaterial=null,vfxMaterial=null;GameObject background=null,camObject=null,vfxObject=null;
+        try
+        {
+            if(!vfxAsset||!graphShader||!generatedVfxShader) throw new Exception("Serialized VFX asset or Shader missing");
+            gradient=new Texture2D(Size,Size,TextureFormat.RGBA32,false,true);var px=new Color32[Size*Size];
+            for(int y=0;y<Size;y++)for(int x=0;x<Size;x++)px[y*Size+x]=new Color32((byte)(x*255/127),(byte)(y*255/127),50,255);
+            gradient.SetPixels32(px);gradient.Apply(false);gradient.filterMode=FilterMode.Point;
+            backgroundMaterial=new Material(graphShader);backgroundMaterial.SetTexture("_BaseMap",gradient);backgroundMaterial.SetColor("_Color",Color.white);
+            backgroundMaterial.SetFloat("_Surface",0);backgroundMaterial.SetFloat("_SrcBlend",(float)BlendMode.One);
+            backgroundMaterial.SetFloat("_DstBlend",(float)BlendMode.Zero);backgroundMaterial.SetFloat("_ZWrite",1);
+            backgroundMaterial.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");backgroundMaterial.renderQueue=2000;
+            background=GameObject.CreatePrimitive(PrimitiveType.Quad);background.layer=2;background.transform.position=new Vector3(0,1,1);background.transform.localScale=new Vector3(6,6,1);background.GetComponent<MeshRenderer>().sharedMaterial=backgroundMaterial;
+            camObject=new GameObject("NBFX T08 Camera");var cam=camObject.AddComponent<Camera>();cam.orthographic=true;cam.orthographicSize=3;cam.nearClipPlane=.1f;cam.farClipPlane=20;
+            cam.cullingMask=1<<2;cam.transform.position=new Vector3(0,1,8);cam.transform.rotation=Quaternion.Euler(0,180,0);cam.clearFlags=CameraClearFlags.SolidColor;cam.backgroundColor=Color.black;cam.allowHDR=false;cam.allowMSAA=false;
+            rt=new RenderTexture(Size,Size,24,RenderTextureFormat.ARGB32);rt.Create();cam.targetTexture=rt;read=new Texture2D(Size,Size,TextureFormat.RGBA32,false,true);
+            var baseline=Capture(cam,rt,read,Path.Combine(output,"player_no_particle.png"));
+            vfxObject=new GameObject("NBFX T08 VFX Mesh");vfxObject.layer=2;vfxObject.transform.position=new Vector3(0,0,2);
+            var vfx=vfxObject.AddComponent<VisualEffect>();vfx.resetSeedOnPlay=false;vfx.startSeed=12345;vfx.visualEffectAsset=vfxAsset;vfx.Reinit();
+            for(int i=0;i<60;i++){cam.Render();yield return null;}
+            var info=vfx.GetParticleSystemInfo("Simple Loop");result.alive=(int)info.aliveCount;result.culled=vfx.culled;
+            var withVfx=Capture(cam,rt,read,Path.Combine(output,"player_vfx_mesh.png"));result.visible=Changed(baseline,withVfx);
+            vfxMaterial=new Material(generatedVfxShader);result.shaderName=generatedVfxShader.name;result.passes=vfxMaterial.passCount;
+            result.cameraPass=vfxMaterial.FindPass("NBCameraOpaqueDistortPass");result.deferredPass=vfxMaterial.FindPass("NBDeferredDistortPass");
+            result.passed=result.graphicsDevice=="Metal"&&result.alive>0&&!result.culled&&result.visible>0&&result.shaderName.Contains("Mesh")&&result.cameraPass==1&&result.deferredPass==2;
+        }
+        finally
+        {
+            File.WriteAllText(Path.Combine(output,"result.json"),JsonUtility.ToJson(result,true));Debug.Log("NBFX_T08_PLAYER "+JsonUtility.ToJson(result));
+            if(rt){rt.Release();Destroy(rt);}if(read)Destroy(read);if(gradient)Destroy(gradient);if(backgroundMaterial)Destroy(backgroundMaterial);if(vfxMaterial)Destroy(vfxMaterial);
+            if(background)Destroy(background);if(camObject)Destroy(camObject);if(vfxObject)Destroy(vfxObject);
+            Application.Quit(result.passed?0:1);
+        }
+    }
+}
