@@ -21,6 +21,10 @@ These counts are RGB pixels with >2 byte-channel difference, not a GPU alpha
 readback or old ShaderLab B/C numeric parity. The no-COLOR primitive default
 PNG SHA-256 equals the archived T07 ColorA baseline. Gamma color-space
 conversion and active VFX source-mesh/particle color require separate tests.
-Remove the C# test asset; the later T08 Player build and final cleanup import
-did so. No visible Editor, official package, NBPostprocess, UniversalTarget,
-main Assets/ProjectSettings or push was involved.
+The archived age/lifetime VFX layer-1 fixture was also rebuilt against this
+Graph. Its Player result JSON and all eight PNGs match the earlier result
+byte-for-byte; see age-replay-compare.txt and age-result-current.json. This
+controls default VFX Mesh color and active particle Color/Alpha, but not a
+nonwhite source Mesh COLOR. Test assets were removed and a final isolated Unity
+import exited 0; age-cleanup.log.gz records it. No visible Editor, official
+package, NBPostprocess, UniversalTarget, main Assets/ProjectSettings or push.
