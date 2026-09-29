@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph 可选采样保护检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="../tasks/t07-graph-parity-gui.html">T07 任务书</a></p>
+<h1>T07 · Mask / Dissolve 关闭时采样保护</h1>
+<p><strong>结论：</strong>产品 Graph 不再把 Mask 和 Dissolve 的 Sample Texture 2D 节点放在无条件求值链路上。纹理与 UV 直接进入包内 Custom Function，仅在相应 Toggle 打开时才执行采样；保留原 Texture ST 和 HDR decode 语义。当前 Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 的 Mesh 截图回归、VFX Mesh 导入及默认关闭 Player 冒烟通过。没有 GPU 指令/耗时实测，不能据此声称性能已改善或 G4/G5 放行。</p>
+<p>本切片只改包内 <a href="../../NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl">NBGraphBaseColor.hlsl</a> 与 <a href="../../NBShaders2/ShaderGraph/NBShaderGraph.shadergraph">NBShaderGraph.shadergraph</a>，未新增 keyword，未改官方包、UniversalTarget、NBPostprocess、主工程 Assets/ProjectSettings，未 push。无可用 unityMCP，以隔离克隆无可见窗口 Unity CLI 验证。</p>
+<table border="1" cellpadding="6"><thead><tr><th>用例</th><th>观察结果</th><th>原始证据</th></tr></thead><tbody>
+<tr><td>Mesh 回归</td><td>产品 Mesh 渲染后 10 Pass，两个精确自定义 Pass 索引 1/2；Flags0 bit29 1408、Flags1 bit8 1392 个变化像素；Mask off/R/A/refine 为 1354/1372/1165；Dissolve off/R/A/threshold/pow/soft 为 810/1392/709/549/512；BaseUV rotation/ST/scroll/rotationSpeed 为 1760/1596/1764/1764。先前归档的 Mask off/R、Dissolve R/pow、BaseUV 原点/旋转六张 PNG 与本次逐字节相同。ShaderUtil 仍有 5 条静态 warning，无编译错误。</td><td><a href="t07-evidence/sample-guard/mesh-regression.log.gz">回归日志</a> · <a href="t07-evidence/sample-guard/mesh-generated.shader.gz">生成 Mesh Shader</a> · <a href="t07-evidence/sample-guard/png-byte-comparison.txt">PNG 逐字节对照</a></td></tr>
+<tr><td>VFX 导入/Player</td><td>产品 VFX Mesh 样例强制导入成功；生成 Shader 中 Mask/Dissolve Texture struct 和 ST 进入 live fragment Custom Function。StandaloneOSX 构建成功（0 error、28 warning）；Metal Player 退出 0，alive=2、visible=18、运行时 5 Pass、自定义 Pass 索引 1/2。这里只验证默认关闭，未验证 VFX 主动开关。</td><td><a href="t07-evidence/sample-guard/vfx-import.log.gz">导入日志</a> · <a href="t07-evidence/sample-guard/vfx-generated.shader.gz">生成 VFX Shader</a> · <a href="t07-evidence/sample-guard/player-build.log.gz">构建日志</a> · <a href="t07-evidence/sample-guard/player-run.log.gz">运行日志</a> · <a href="t07-evidence/sample-guard/result.json">结果 JSON</a> · <a href="t07-evidence/sample-guard/player_vfx_mesh.png">粒子截图</a></td></tr>
+</tbody></table>
+<p><a href="t07-evidence/sample-guard/sha256.txt">证据 SHA-256</a>。未测/限制：GPU 是否实际跳过纹理指令、动态分支性能与粒子逐实例发散/导数、VFX 非零开关与 mip 选择、完整原 ShaderLab B/C、其他功能组。HLSL 条件分支不能代替 GPU 性能测量。</p>
+</body></html>

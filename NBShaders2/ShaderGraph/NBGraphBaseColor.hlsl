@@ -6,9 +6,18 @@
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDissolveV3.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 
+// Match Shader Graph's Sample Texture 2D node, including the texture's _ST and
+// optional HDR decode. The caller invokes this only inside an enabled feature.
+float4 NBGraphSampleMap(UnityTexture2D map, float2 uv)
+{
+    float4 sampled = SAMPLE_TEXTURE2D(map.tex, map.samplerstate, map.GetTransformedUV(uv));
+    if (map.hdrDecode.x > 0.0)
+        sampled = DecodeHDRSample(sampled, map.hdrDecode);
+    return sampled;
+}
+
 // Basic single-map dissolve keeps the original two-stage numeric contract.
-// The host supplies a sampled texture and the original packed channel slot;
-// mask, procedural noise, ramp, custom data and animated UVs are later slices.
+// Mask, procedural noise, ramp, custom data and animated UVs are later slices.
 half NBGraphResolveDissolveCoverage(half4 sampledDissolve, half4 dissolve,
     float colorChannelLo16)
 {
@@ -42,9 +51,10 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NB_Flags1Lo16, float NB_Flags1Hi16,
     float2 NB_DistortionNoise, float NB_DistortionIntensity, float NB_DistortionMode,
     float NB_DistortionAlphaPow, float NB_DistortionAlphaMultiplier, float NB_DistortionAlphaAdd,
-    float4 SampledMask, float MaskToggle, float4 MaskMapVec, float4 MaskRefineVec,
+    UnityTexture2D MaskMap, float MaskToggle, float4 MaskMapVec, float4 MaskRefineVec,
     float NB_ColorChannelLo16,
-    float4 SampledDissolve, float DissolveToggle, float4 Dissolve,
+    UnityTexture2D DissolveMap, float DissolveToggle, float4 Dissolve,
+    float2 MaskUV, float2 DissolveUV,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -55,14 +65,18 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     input.applyTimelineIntensity = false;
     Out = (float4)NBFX_ComposeBaseColorV1(input);
     if (DissolveToggle > 0.5)
-        Out.a *= NBGraphResolveDissolveCoverage((half4)SampledDissolve,
+    {
+        half4 sampledDissolve = (half4)NBGraphSampleMap(DissolveMap, DissolveUV);
+        Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve,
             (half4)Dissolve, NB_ColorChannelLo16);
+    }
     if (MaskToggle > 0.5)
     {
+        half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, MaskUV);
         uint maskChannel = (NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0) >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
-        half channelValue = maskChannel == 0u ? (half)SampledMask.r :
-            maskChannel == 1u ? (half)SampledMask.g :
-            maskChannel == 2u ? (half)SampledMask.b : (half)SampledMask.a;
+        half channelValue = maskChannel == 0u ? sampledMask.r :
+            maskChannel == 1u ? sampledMask.g :
+            maskChannel == 2u ? sampledMask.b : sampledMask.a;
         NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
         maskInput.combinedMaskAfterNoise = channelValue;
         maskInput.refine = (NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
@@ -83,9 +97,10 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NB_Flags1Lo16, float NB_Flags1Hi16,
     float2 NB_DistortionNoise, float NB_DistortionIntensity, float NB_DistortionMode,
     float NB_DistortionAlphaPow, float NB_DistortionAlphaMultiplier, float NB_DistortionAlphaAdd,
-    half4 SampledMask, float MaskToggle, half4 MaskMapVec, half4 MaskRefineVec,
+    UnityTexture2D MaskMap, float MaskToggle, half4 MaskMapVec, half4 MaskRefineVec,
     float NB_ColorChannelLo16,
-    half4 SampledDissolve, float DissolveToggle, half4 Dissolve,
+    UnityTexture2D DissolveMap, float DissolveToggle, half4 Dissolve,
+    float2 MaskUV, float2 DissolveUV,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -96,14 +111,18 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     input.applyTimelineIntensity = false;
     Out = NBFX_ComposeBaseColorV1(input);
     if (DissolveToggle > 0.5)
-        Out.a *= NBGraphResolveDissolveCoverage(SampledDissolve, Dissolve,
+    {
+        half4 sampledDissolve = (half4)NBGraphSampleMap(DissolveMap, DissolveUV);
+        Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve, Dissolve,
             NB_ColorChannelLo16);
+    }
     if (MaskToggle > 0.5)
     {
+        half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, MaskUV);
         uint maskChannel = (NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0) >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
-        half channelValue = maskChannel == 0u ? SampledMask.r :
-            maskChannel == 1u ? SampledMask.g :
-            maskChannel == 2u ? SampledMask.b : SampledMask.a;
+        half channelValue = maskChannel == 0u ? sampledMask.r :
+            maskChannel == 1u ? sampledMask.g :
+            maskChannel == 2u ? sampledMask.b : sampledMask.a;
         NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
         maskInput.combinedMaskAfterNoise = channelValue;
         maskInput.refine = (NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
