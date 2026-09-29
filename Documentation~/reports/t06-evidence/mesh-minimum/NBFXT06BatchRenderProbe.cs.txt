@@ -1,0 +1,156 @@
+using System;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering.RenderGraphModule;
+
+public static class NBFXT06BatchRenderProbe
+{
+    const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    static Color32[] Capture(Camera cam, RenderTexture rt, Texture2D readback, string name)
+    {
+        cam.Render();
+        var prev = RenderTexture.active;
+        RenderTexture.active = rt;
+        readback.ReadPixels(new Rect(0, 0, 128, 128), 0, 0);
+        readback.Apply(false);
+        RenderTexture.active = prev;
+        var bytes = readback.EncodeToPNG();
+        File.WriteAllBytes("/tmp/nbfx-t06-20260930/" + name + ".png", bytes);
+        return readback.GetPixels32();
+    }
+    static int Changed(Color32[] a, Color32[] b)
+    {
+        int n = 0;
+        for (int i = 0; i < a.Length; ++i)
+            if (Math.Abs(a[i].r-b[i].r)>2 || Math.Abs(a[i].g-b[i].g)>2 || Math.Abs(a[i].b-b[i].b)>2) ++n;
+        return n;
+    }
+    public static void Run()
+    {
+        AssetDatabase.ImportAsset(GraphPath, ImportAssetOptions.ForceUpdate);
+        var shader = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+        var pipeline = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+        Debug.Log("NBFX_T06_SHADER name=" + (shader ? shader.name : "null") + " supported=" + (shader && shader.isSupported) + " passCount=" + (shader ? new Material(shader).passCount : -1));
+        foreach(var asm in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            var t=asm.GetType("UnityEditor.ShaderGraph.ShaderGraphImporter");
+            if(t==null) continue;
+            foreach(var m in t.GetMethods(BindingFlags.NonPublic|BindingFlags.Static))
+            {
+                if(m.Name!="GetShaderText" || m.GetParameters().Length!=4 || !m.GetParameters()[3].ParameterType.IsByRef) continue;
+                object[] args={GraphPath,null,null,null};
+                var source=(string)m.Invoke(null,args);
+                File.WriteAllText("/tmp/nbfx-t06-20260930/generated-current.shader",source);
+                Debug.Log("NBFX_T06_GENERATED chars="+source.Length);
+                goto doneGenerate;
+            }
+        }
+        doneGenerate:;
+        Debug.Log("NBFX_T06_PIPELINE=" + (pipeline ? pipeline.name : "null"));
+        if (!shader || !pipeline) throw new Exception("Graph or URP missing");
+        var gradient = new Texture2D(128, 128, TextureFormat.RGBA32, false, true);
+        var pixels = new Color32[128*128];
+        for (int y=0;y<128;y++) for(int x=0;x<128;x++) pixels[y*128+x]=new Color32((byte)(x*255/127),(byte)(y*255/127),50,255);
+        gradient.SetPixels32(pixels); gradient.Apply(false); gradient.filterMode=FilterMode.Point;
+        var back = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        back.layer=2; back.transform.position = new Vector3(0,1,1); back.transform.localScale = new Vector3(6,6,1);
+        var backMat = new Material(shader);
+        backMat.SetTexture("_BaseMap", gradient); backMat.SetColor("_Color", Color.white);
+        backMat.SetFloat("_NB_DistortionMode",0); backMat.renderQueue=2000;
+        backMat.SetFloat("_Surface",0); backMat.SetFloat("_ZWrite",1);
+        back.GetComponent<MeshRenderer>().sharedMaterial=backMat;
+        var front = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        front.layer=2; front.transform.position = new Vector3(0,1,2); front.transform.localScale = new Vector3(2,2,1);
+        var frontMat = new Material(shader);
+        frontMat.SetColor("_Color", new Color(1,1,1,0.5f));
+        frontMat.SetFloat("_NB_DistortionIntensity",0.25f);
+        frontMat.SetVector("_NB_DistortionNoise",new Vector4(0.25f,0,0,0));
+        frontMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        frontMat.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+        frontMat.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+        frontMat.SetFloat("_SrcBlendAlpha", (float)BlendMode.One);
+        frontMat.SetFloat("_DstBlendAlpha", (float)BlendMode.OneMinusSrcAlpha);
+        frontMat.renderQueue=3000;
+        front.GetComponent<MeshRenderer>().sharedMaterial=frontMat;
+        var camGo = new GameObject("NBFX_T06_Camera");
+        var cam=camGo.AddComponent<Camera>(); cam.orthographic=true; cam.orthographicSize=3; cam.nearClipPlane=0.1f; cam.farClipPlane=20;
+        cam.cullingMask=1<<2; cam.transform.position=new Vector3(0,1,8); cam.transform.rotation=Quaternion.Euler(0,180,0);
+        cam.clearFlags=CameraClearFlags.SolidColor; cam.backgroundColor=Color.black; cam.allowHDR=false; cam.allowMSAA=false;
+        var rt=new RenderTexture(128,128,24,RenderTextureFormat.ARGB32); rt.Create(); cam.targetTexture=rt;
+        var tex=new Texture2D(128,128,TextureFormat.RGBA32,false,true);
+        try {
+            front.SetActive(false);
+            var bg=Capture(cam,rt,tex,"t06_background");
+            front.SetActive(true);
+            frontMat.SetFloat("_NB_DistortionMode",0);
+            var mode0=Capture(cam,rt,tex,"t06_mode0");
+            frontMat.SetFloat("_NB_DistortionMode",1);
+            var deferred=Capture(cam,rt,tex,"t06_deferred");
+            frontMat.SetFloat("_NB_DistortionMode",2);
+            var camera=Capture(cam,rt,tex,"t06_camera");
+            foreach (var message in ShaderUtil.GetShaderMessages(shader)) Debug.Log("NBFX_T06_MESSAGE " + message.message);
+            Debug.Log("NBFX_T06_POST_RENDER passes=" + frontMat.passCount + " p1=" + frontMat.FindPass("NBCameraOpaqueDistortPass") + " p2=" + frontMat.FindPass("NBDeferredDistortPass") + " messages=" + ShaderUtil.GetShaderMessages(shader).Length);
+            var rendererData = pipeline.rendererDataList[0];
+            var maskShader = AssetDatabase.LoadAssetAtPath<Shader>("Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/FunctionalProbe/NBGFMaskView.shader");
+            var maskMaterial = new Material(maskShader);
+            var maskFeature = ScriptableObject.CreateInstance<NBFXT06MaskCaptureFeature>();
+            maskFeature.material=maskMaterial; maskFeature.Create(); maskFeature.SetActive(true);
+            rendererData.rendererFeatures.Add(maskFeature); rendererData.SetDirty();
+            try {
+                frontMat.SetFloat("_NB_DistortionMode",0);
+                var mask0=Capture(cam,rt,tex,"t06_mask0");
+                frontMat.SetFloat("_NB_DistortionMode",1);
+                var mask1=Capture(cam,rt,tex,"t06_mask_deferred");
+                frontMat.SetFloat("_NB_DistortionMode",2);
+                var mask2=Capture(cam,rt,tex,"t06_mask_camera");
+                Debug.Log("NBFX_T06_MASK deferred="+Changed(mask0,mask1)+" camera="+Changed(mask0,mask2)+
+                    " clearCenter="+mask0[64*128+64].r+" deferredCenter="+mask1[64*128+64].r+" cameraCenter="+mask2[64*128+64].r);
+            } finally {
+                rendererData.rendererFeatures.Remove(maskFeature); rendererData.SetDirty();
+                UnityEngine.Object.DestroyImmediate(maskFeature); UnityEngine.Object.DestroyImmediate(maskMaterial);
+            }
+            Debug.Log("NBFX_T06_RESULT visible="+Changed(bg,mode0)+" deferred="+Changed(mode0,deferred)+" camera="+Changed(mode0,camera)+
+              " bgCenter="+bg[64*128+64].r+","+bg[64*128+64].g+","+bg[64*128+64].b+
+              " mode0Center="+mode0[64*128+64].r+","+mode0[64*128+64].g+","+mode0[64*128+64].b);
+        } finally {
+            cam.targetTexture=null; rt.Release();
+            UnityEngine.Object.DestroyImmediate(rt); UnityEngine.Object.DestroyImmediate(tex);
+            UnityEngine.Object.DestroyImmediate(gradient); UnityEngine.Object.DestroyImmediate(backMat); UnityEngine.Object.DestroyImmediate(frontMat);
+            UnityEngine.Object.DestroyImmediate(back); UnityEngine.Object.DestroyImmediate(front); UnityEngine.Object.DestroyImmediate(camGo);
+        }
+    }
+}
+
+internal sealed class NBFXT06MaskCaptureFeature : ScriptableRendererFeature
+{
+    public Material material;
+    Pass pass;
+    public override void Create() { pass=new Pass(material) {renderPassEvent=RenderPassEvent.AfterRenderingTransparents+1}; }
+    public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
+    { if (renderingData.cameraData.cameraType==CameraType.Game) renderer.EnqueuePass(pass); }
+    sealed class Pass : ScriptableRenderPass
+    {
+        static readonly int MaskId=Shader.PropertyToID("_DisturbanceMaskTex");
+        readonly Material material;
+        sealed class PassData { public Material material; }
+        public Pass(Material material) { this.material=material; }
+        public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
+        {
+            var resources=frameData.Get<UniversalResourceData>();
+            if (!resources.activeColorTexture.IsValid()) return;
+            using(var builder=renderGraph.AddRasterRenderPass<PassData>("NBFX T06 Mask View",out var data))
+            {
+                data.material=material;
+                builder.UseGlobalTexture(MaskId,AccessFlags.Read);
+                builder.SetRenderAttachment(resources.activeColorTexture,0,AccessFlags.ReadWrite);
+                builder.AllowPassCulling(false);
+                builder.SetRenderFunc((PassData d,RasterGraphContext context)=>
+                { context.cmd.DrawProcedural(Matrix4x4.identity,d.material,0,MeshTopology.Triangles,3,1); });
+            }
+        }
+    }
+}
