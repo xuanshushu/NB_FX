@@ -38,24 +38,43 @@ float4 NBGraphSampleMap(UnityTexture2D map, float2 transformedUV)
     return sampled;
 }
 
-// Basic single-map dissolve keeps the original two-stage numeric contract.
-// Mask, procedural noise, ramp, custom data and animated UVs are later slices.
-half NBGraphResolveDissolveCoverage(half4 sampledDissolve, half4 dissolve,
-    float colorChannelLo16)
+// The optional process/late mask uses the same two-stage numeric contract as
+// ShaderLab. The host owns texture/channel selection; custom data, noise,
+// wrap overrides and non-UV0 modes remain separate slices.
+half NBGraphResolveDissolveCoverage(half4 sampledDissolve,
+    half4 sampledDissolveMask, bool hasDissolveMask, half4 dissolve,
+    half dissolveMaskMode, float colorChannelLo16)
 {
-    uint channel = (NBGraphDecodeUInt32(colorChannelLo16, 0.0) >>
+    uint channels = NBGraphDecodeUInt32(colorChannelLo16, 0.0);
+    uint channel = (channels >>
         FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP) & 3u;
     half value = channel == 0u ? sampledDissolve.r :
         channel == 1u ? sampledDissolve.g :
         channel == 2u ? sampledDissolve.b : sampledDissolve.a;
+    half maskValue = 0.0h;
+    if (hasDissolveMask)
+    {
+        uint maskChannel = (channels >>
+            FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP) & 3u;
+        maskValue = maskChannel == 0u ? sampledDissolveMask.r :
+            maskChannel == 1u ? sampledDissolveMask.g :
+            maskChannel == 2u ? sampledDissolveMask.b : sampledDissolveMask.a;
+    }
     NBFX_DissolvePrepareInputV3 prepareInput = (NBFX_DissolvePrepareInputV3)0;
     prepareInput.decodedAndNoiseBlendedValue = value;
     prepareInput.exponent = dissolve.y;
+    prepareInput.hasMask = hasDissolveMask;
+    prepareInput.decodedMaskValue = maskValue;
+    prepareInput.maskStrength = dissolve.z;
+    prepareInput.maskMode = dissolveMaskMode;
     NBFX_DissolvePreparedV3 prepared = NBFX_PrepareDissolveV3(prepareInput);
     NBFX_DissolveResolveInputV3 resolveInput = (NBFX_DissolveResolveInputV3)0;
     resolveInput.prepared = prepared;
     resolveInput.threshold = dissolve.x;
     resolveInput.softWidth = dissolve.w;
+    resolveInput.hasMask = hasDissolveMask;
+    resolveInput.maskStrength = dissolve.z;
+    resolveInput.maskMode = dissolveMaskMode;
     NBFX_DissolveResolvedV3 resolved = NBFX_ResolveDissolveV3(resolveInput);
     return resolved.coverage;
 }
@@ -79,6 +98,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float2 MaskUV, float2 DissolveUV,
     float MaskMapUVRotation, float MaskMapRotationSpeed, float4 MaskMapOffsetAnition,
     float4 DissolveOffsetRotateDistort,
+    UnityTexture2D DissolveMaskMap, float DissolveMaskToggle, float DissolveMaskMode,
+    float2 DissolveMaskUV,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -93,8 +114,17 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
             DissolveOffsetRotateDistort.z, DissolveOffsetRotateDistort.xy);
         half4 sampledDissolve = (half4)NBGraphSampleMap(DissolveMap, dissolveUV);
+        bool hasDissolveMask = DissolveMaskToggle > 0.5;
+        half4 sampledDissolveMask = (half4)0;
+        if (hasDissolveMask)
+        {
+            float2 dissolveMaskUV = NBGraphFeatureUV(DissolveMaskMap, DissolveMaskUV,
+                DissolveOffsetRotateDistort.z, float2(0.0, 0.0));
+            sampledDissolveMask = (half4)NBGraphSampleMap(DissolveMaskMap, dissolveMaskUV);
+        }
         Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve,
-            (half4)Dissolve, NB_ColorChannelLo16);
+            sampledDissolveMask, hasDissolveMask, (half4)Dissolve,
+            (half)DissolveMaskMode, NB_ColorChannelLo16);
     }
     if (MaskToggle > 0.5)
     {
@@ -132,6 +162,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float2 MaskUV, float2 DissolveUV,
     float MaskMapUVRotation, float MaskMapRotationSpeed, half4 MaskMapOffsetAnition,
     half4 DissolveOffsetRotateDistort,
+    UnityTexture2D DissolveMaskMap, float DissolveMaskToggle, float DissolveMaskMode,
+    float2 DissolveMaskUV,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -146,8 +178,17 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
             DissolveOffsetRotateDistort.z, DissolveOffsetRotateDistort.xy);
         half4 sampledDissolve = (half4)NBGraphSampleMap(DissolveMap, dissolveUV);
-        Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve, Dissolve,
-            NB_ColorChannelLo16);
+        bool hasDissolveMask = DissolveMaskToggle > 0.5;
+        half4 sampledDissolveMask = (half4)0;
+        if (hasDissolveMask)
+        {
+            float2 dissolveMaskUV = NBGraphFeatureUV(DissolveMaskMap, DissolveMaskUV,
+                DissolveOffsetRotateDistort.z, float2(0.0, 0.0));
+            sampledDissolveMask = (half4)NBGraphSampleMap(DissolveMaskMap, dissolveMaskUV);
+        }
+        Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve,
+            sampledDissolveMask, hasDissolveMask, Dissolve,
+            (half)DissolveMaskMode, NB_ColorChannelLo16);
     }
     if (MaskToggle > 0.5)
     {
