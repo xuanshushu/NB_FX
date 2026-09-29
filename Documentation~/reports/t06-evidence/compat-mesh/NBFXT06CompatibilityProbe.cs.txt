@@ -1,0 +1,68 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEditor.Build;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
+public static class NBFXT06CompatibilityProbe
+{
+    private const string Output = "/tmp/nbfx-t06-20260930/compat";
+    [Serializable] private class Result
+    {
+        public string phase;
+        public string unityVersion;
+        public string graphicsDevice;
+        public string definesBefore;
+        public string definesAfter;
+        public bool compatibilityEnabled;
+        public bool pass;
+        public string error;
+    }
+    public static void EnableDefine()
+    {
+        Run("enable-define", r =>
+        {
+            var target = NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            r.definesBefore = PlayerSettings.GetScriptingDefineSymbols(target);
+            if (!HasDefine(r.definesBefore, "URP_COMPATIBILITY_MODE"))
+                PlayerSettings.SetScriptingDefineSymbols(target, string.IsNullOrEmpty(r.definesBefore) ? "URP_COMPATIBILITY_MODE" : r.definesBefore + ";URP_COMPATIBILITY_MODE");
+            r.definesAfter = PlayerSettings.GetScriptingDefineSymbols(target);
+            if (!HasDefine(r.definesAfter, "URP_COMPATIBILITY_MODE")) throw new Exception("Compatibility define not set");
+        });
+    }
+    public static void EnableCompatibility()
+    {
+        Run("enable-compatibility", r =>
+        {
+            var target = NamedBuildTarget.FromBuildTargetGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            r.definesBefore = PlayerSettings.GetScriptingDefineSymbols(target);
+            if (!HasDefine(r.definesBefore, "URP_COMPATIBILITY_MODE")) throw new Exception("Define missing in fresh process");
+#if URP_COMPATIBILITY_MODE
+            var settings = GraphicsSettings.GetRenderPipelineSettings<RenderGraphSettings>();
+            if (settings == null) throw new Exception("RenderGraphSettings missing");
+            settings.enableRenderCompatibilityMode = true;
+            AssetDatabase.SaveAssets();
+            r.compatibilityEnabled = GraphicsSettings.GetRenderPipelineSettings<RenderGraphSettings>().enableRenderCompatibilityMode;
+            if (!r.compatibilityEnabled) throw new Exception("Compatibility setting failed");
+#else
+            throw new Exception("Script was not compiled with URP_COMPATIBILITY_MODE");
+#endif
+            r.definesAfter = PlayerSettings.GetScriptingDefineSymbols(target);
+        });
+    }
+    private static void Run(string phase, Action<Result> action)
+    {
+        Directory.CreateDirectory(Output);
+        var r = new Result { phase = phase, unityVersion = Application.unityVersion, graphicsDevice = SystemInfo.graphicsDeviceType.ToString() };
+        try { action(r); r.pass = true; }
+        catch (Exception ex) { r.error = ex.ToString(); Debug.LogError("NBFX-G2-COMPAT " + phase + " failed: " + ex); }
+        finally { File.WriteAllText(Path.Combine(Output, phase + ".json"), JsonUtility.ToJson(r, true)); Debug.Log("NBFX-G2-COMPAT " + phase + " pass=" + r.pass); }
+    }
+    private static bool HasDefine(string all, string find)
+    {
+        foreach (var part in all.Split(';')) if (part.Trim() == find) return true;
+        return false;
+    }
+}
