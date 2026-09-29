@@ -175,7 +175,10 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     {
         uint maskFlags = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
         uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
-        float maskRotation = MaskMapUVRotation + _Time.y * MaskMapRotationSpeed;
+        float maskRotation = MaskMapUVRotation;
+        if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
+            FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON) != 0u)
+            maskRotation += _Time.y * MaskMapRotationSpeed;
         float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
             maskRotation, MaskMapOffsetAnition.xy);
         uint packedChannels = NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0);
@@ -293,7 +296,10 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     {
         uint maskFlags = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
         uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
-        float maskRotation = MaskMapUVRotation + _Time.y * MaskMapRotationSpeed;
+        float maskRotation = MaskMapUVRotation;
+        if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
+            FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON) != 0u)
+            maskRotation += _Time.y * MaskMapRotationSpeed;
         float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
             maskRotation, MaskMapOffsetAnition.xy);
         uint packedChannels = NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0);
