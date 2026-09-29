@@ -87,6 +87,12 @@ void NBFX_ApplyColorOverlayV1(inout half3 baseColor, inout half baseAlpha,
     half overlayAlphaIntensity, bool multiplyMode, bool alphaMultiplyMode);
 void NBFX_ApplyColorRampV1(inout half3 baseColor, inout half baseAlpha,
     half4 rampSample, half4 rampTint, bool addMode);
+void NBFX_ApplyColorAdjustmentV1(inout half3 color, half alpha,
+    bool hueOn, half hueShift,
+    bool contrastOn, half contrast, half3 contrastMidColor,
+    bool saturationOn, half saturability,
+    bool refineOn, half4 baseMapColorRefine,
+    bool premultiplyRGB);
 NBFX_DistortionPayloadV1 NBFX_BuildDistortionPayloadV1(NBFX_DistortionInputV1 input);
 half3 NBFX_ComputeVertexOffsetOSV1(NBFX_VertexOffsetPreparedV1 input);
 

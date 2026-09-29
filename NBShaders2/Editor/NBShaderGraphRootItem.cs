@@ -50,6 +50,12 @@ namespace NBShaderEditor
             "_RampColorCount", "_RampColorBlendColor"
         };
 
+        static readonly string[] AdjustmentProperties =
+        {
+            "_HueShift", "_Contrast", "_ContrastMidColor",
+            "_Saturability", "_BaseMapColorRefine"
+        };
+
         static readonly string[] DissolveProperties =
         {
             "_Dissolve_Toggle", "_DissolveMap", "_Dissolve",
@@ -80,6 +86,7 @@ namespace NBShaderEditor
             DrawGroup(Overlay1Properties, "feature.叠加贴图1", "Overlay 1");
             DrawGroup(Overlay2Properties, "feature.叠加贴图2", "Overlay 2");
             DrawGroup(RampProperties, "feature.颜色映射", "Color Ramp");
+            DrawGroup(AdjustmentProperties, "feature.颜色调整", "Color Adjustment");
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
             DrawGroup(DistortionProperties, "feature.扭曲", "Distort");

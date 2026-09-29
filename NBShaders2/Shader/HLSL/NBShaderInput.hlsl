@@ -1539,45 +1539,24 @@
 
     void ColorAdjustment(inout half3 result,inout half alpha,half4 customData1,half4 customData2)
     {
-        UNITY_BRANCH
-        if(CheckLocalFlags(FLAG_BIT_HUESHIFT_ON))
-        {
-            half3 hsv = RgbToHsv(result);
-            _HueShift = GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,_HueShift,customData1,customData2);
-            hsv.r += _HueShift;
-            result = HsvToRgb(hsv);
-        }
-        
-        UNITY_BRANCH
-        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST))
-        {
-            _Contrast = GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,_Contrast,customData1,customData2);
-            result.rgb = lerp(_ContrastMidColor,result.rgb,_Contrast);
-        }
-
-        UNITY_BRANCH
-        if(CheckLocalFlags(FLAG_BIT_SATURABILITY_ON))
-        {
-            half3 resultWB = luminance(result);
-            _Saturability = GetCustomData(_W9ParticleCustomDataFlag1,FLAGBIT_POS_1_CUSTOMDATA_SATURATE,_Saturability,customData1,customData2);
-            result.rgb = lerp(resultWB.rgb, result.rgb, _Saturability);
-        }
-        
-
-        
-        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE))
-        {
-            half3 colorA = result.rgb*_BaseMapColorRefine.x;
-            half3 colorB = pow(result.rgb,_BaseMapColorRefine.y)*_BaseMapColorRefine.z;
-            result.rgb = lerp(colorA,colorB,_BaseMapColorRefine.w);
-        }
-
-        if (CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA))
-        {
-            result.rgb *= alpha;
-        }
-        
-        
+        bool hueOn = CheckLocalFlags(FLAG_BIT_HUESHIFT_ON);
+        bool contrastOn = CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST);
+        bool saturationOn = CheckLocalFlags(FLAG_BIT_SATURABILITY_ON);
+        if (hueOn)
+            _HueShift = GetCustomData(_W9ParticleCustomDataFlag0,
+                FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,_HueShift,customData1,customData2);
+        if (contrastOn)
+            _Contrast = GetCustomData(_W9ParticleCustomDataFlag2,
+                FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,_Contrast,customData1,customData2);
+        if (saturationOn)
+            _Saturability = GetCustomData(_W9ParticleCustomDataFlag1,
+                FLAGBIT_POS_1_CUSTOMDATA_SATURATE,_Saturability,customData1,customData2);
+        NBFX_ApplyColorAdjustmentV1(result, alpha,
+            hueOn, _HueShift, contrastOn, _Contrast, _ContrastMidColor,
+            saturationOn, _Saturability,
+            CheckLocalFlags1(FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE),
+            _BaseMapColorRefine,
+            CheckLocalFlags(FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA));
     }
 
 #endif

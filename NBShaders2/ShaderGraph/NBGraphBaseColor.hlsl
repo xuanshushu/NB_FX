@@ -170,6 +170,25 @@ half4 NBGraphApplyColorRamp(half4 color, UnityTexture2D map, float2 originUV,
     return color;
 }
 
+half4 NBGraphApplyColorAdjustment(half4 color,
+    half hueShift, half contrast, half3 contrastMidColor,
+    half saturability, half4 baseMapColorRefine,
+    float flags0Lo16, float flags0Hi16,
+    float flags1Lo16, float flags1Hi16)
+{
+    uint flags0 = NBGraphDecodeUInt32(flags0Lo16, flags0Hi16);
+    uint flags1 = NBGraphDecodeUInt32(flags1Lo16, flags1Hi16);
+    NBFX_ApplyColorAdjustmentV1(color.rgb, color.a,
+        (flags0 & FLAG_BIT_HUESHIFT_ON) != 0u, hueShift,
+        (flags1 & FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST) != 0u,
+        contrast, contrastMidColor,
+        (flags0 & FLAG_BIT_SATURABILITY_ON) != 0u, saturability,
+        (flags1 & FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE) != 0u,
+        baseMapColorRefine,
+        (flags0 & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u);
+    return color;
+}
+
 // SHADERGRAPH_PREVIEW and runtime execute the same numeric shared function;
 // no preview-only camera/scene substitute is needed.
 // Stage: fragment BaseColor/Alpha. Preserve the GF BaseMap and Color controls.
@@ -218,6 +237,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 RampColor5, float4 RampColorAlpha0, float4 RampColorAlpha1,
     float4 RampColorAlpha2, float RampColorCount,
     float4 RampColorBlendColor,
+    float HueShift, float Contrast, float4 ContrastMidColor,
+    float Saturability, float4 BaseMapColorRefine,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -233,6 +254,12 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     input.timelineIntensity = (half)BaseColorIntensityForTimeline;
     input.applyTimelineIntensity = true;
     Out = (float4)NBFX_ComposeBaseColorV1(input);
+    uint adjustmentFlags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
+    if ((adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) != 0u)
+        Out = (float4)NBGraphApplyColorAdjustment((half4)Out,
+            (half)HueShift, (half)Contrast, (half3)ContrastMidColor.rgb,
+            (half)Saturability, (half4)BaseMapColorRefine,
+            NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
     if (EmissionEnabled > 0.5)
     {
         float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
@@ -363,11 +390,11 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         Out *= VertexColor;
     Out.rgb *= ColorA.rgb;
     Out.a *= ColorA.a;
-    // Original ColorAdjustment applies this flag after the base sample. In this
-    // minimum Unlit Graph, no intervening lighting/effects alter that ordering.
-    // It follows the Mask alpha multiplication in the ShaderLab path as well.
-    if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u)
-        Out.rgb *= Out.a;
+    if ((adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) == 0u)
+        Out = (float4)NBGraphApplyColorAdjustment((half4)Out,
+            (half)HueShift, (half)Contrast, (half3)ContrastMidColor.rgb,
+            (half)Saturability, (half4)BaseMapColorRefine,
+            NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
     Out.a = saturate(Out.a * AlphaAll);
 }
 
@@ -412,6 +439,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half4 RampColor5, half4 RampColorAlpha0, half4 RampColorAlpha1,
     half4 RampColorAlpha2, float RampColorCount,
     half4 RampColorBlendColor,
+    float HueShift, float Contrast, half4 ContrastMidColor,
+    float Saturability, half4 BaseMapColorRefine,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -425,6 +454,12 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     input.timelineIntensity = (half)BaseColorIntensityForTimeline;
     input.applyTimelineIntensity = true;
     Out = NBFX_ComposeBaseColorV1(input);
+    uint adjustmentFlags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
+    if ((adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) != 0u)
+        Out = NBGraphApplyColorAdjustment(Out,
+            (half)HueShift, (half)Contrast, ContrastMidColor.rgb,
+            (half)Saturability, BaseMapColorRefine,
+            NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
     if (EmissionEnabled > 0.5)
     {
         float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
@@ -546,8 +581,11 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         Out *= VertexColor;
     Out.rgb *= ColorA.rgb;
     Out.a *= ColorA.a;
-    if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u)
-        Out.rgb *= Out.a;
+    if ((adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) == 0u)
+        Out = NBGraphApplyColorAdjustment(Out,
+            (half)HueShift, (half)Contrast, ContrastMidColor.rgb,
+            (half)Saturability, BaseMapColorRefine,
+            NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
     Out.a = saturate(Out.a * (half)AlphaAll);
 }
 
