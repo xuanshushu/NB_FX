@@ -17,7 +17,7 @@
 <p>证明不修改官方包的 Graph 路径能接入共享 HLSL、所需 Pass / LightMode 并被原 NBPostprocess 正确驱动。Custom Function 可显示颜色只是子测试。</p><p>出口：<strong>G3</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
 
 <h2 id="preconditions">前置条件</h2>
-<p>GF、G1 与 G2 已通过。T00A 是独立 Pass 风险试验，本任务须在共享 HLSL 与产品候选 Graph 上重新验证。仅在 Mesh 上验证，不开始真正 VFX Output。</p>
+<p>通常要求 GF、G1 与 G2 已通过。按用户 2026-09-30 的 <a href="../decisions.html">D23 实施顺序例外</a>，本轮可在 G2 保留已知失败及未测项时启动 T06，但这不等于 G2 放行；任何依赖原 ShaderLab 行为的结论仍需独立 A/B 证据。T00A 是独立 Pass 风险试验，本任务须在共享 HLSL 与产品候选 Graph 上重新验证。仅在 Mesh 上验证，不开始真正 VFX Output。</p>
 
 <h2 id="scope">修改范围与所有权</h2>
 <ul>

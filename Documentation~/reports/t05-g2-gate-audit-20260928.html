@@ -2,6 +2,7 @@
 <html lang="zh-CN"><head><meta charset="utf-8"><title>T05/G2 · 2026-09-28 Gate 复核</title></head><body>
 <p><a href="index.html">返回报告索引</a> · <a href="t05-g2-matcap-identity-control.html">MatCap 同源对照</a> · <a href="t05-g2-cold-variant-investigation.html">Dissolve 冷态分析</a></p>
 <h1>T05/G2 · 2026-09-28 Gate 复核</h1>
+<p><strong>2026-09-30 D23：</strong>用户要求首帧异常也暂时放过，先完成其余实现，最终一次性人工测试；此前已要求停止追查 MatCap 微差。两项原始失败仍保持失败，正式夹具不改，但不再阻断 T06–T10 的独立实施。所有未解决问题和人工复现步骤在最终交付汇总；这不是 G2 放行，也不覆盖其余未测项。<a href="../decisions.html">决策记录</a>。</p>
 <p><strong>结论：G2 不放行。</strong>当前 Unity 6000.3.18f1 / URP 17.3 / Metal / RenderGraph，原 ShaderLab 当前对 G0 Frozen 的多个可见切片已通过，但严格 MatCap 与 Dissolve 冷态失败仍可复现，且 GUI、宿主、Compatibility、Player、性能尚未形成 Gate 必备证据。unityMCP 未暴露，由主 Agent 串行使用 Unity CLI/Pipeline；未改验收阈值、生产 Shader、NBPostprocess 或官方包，未 push。</p>
 <table border="1" cellpadding="6"><thead><tr><th>实际顺序</th><th>原始结果</th><th>审核</th></tr></thead><tbody>
 <tr><td>当前/冻结 Shader <a href="g2-evidence/g2-gate-audit-20260928/dual-import.json">双强制导入</a> → G0/G2 Baseline Editor 套件</td><td><a href="g2-evidence/g2-gate-audit-20260928/baseline-editor-suite.json">12/13</a>：MatCap 渐变 projection0/blend0/opacity1 在 (50,46) R 当前 140 / 冻结 139，self 0，repeat cross 1。</td><td>原同源不同 Shader 身份对照能复现该 1px，但尚未批准新容差，不改严格断言；<a href="g2-evidence/g2-gate-audit-20260928/matcap_diff_p0_b0_a1_current.png">当前图</a> · <a href="g2-evidence/g2-gate-audit-20260928/matcap_diff_p0_b0_a1_frozen.png">冻结图</a>。</td></tr>

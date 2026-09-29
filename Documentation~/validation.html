@@ -66,6 +66,7 @@
     </tbody>
   </table>
 <p><strong>G2 首帧补充：</strong>Dissolve/Mask 的静态夹具除当前/Frozen 逐像素 0 差，还需检查两侧各自首帧到紧接着重画均为 0 差；<a href="reports/t05-g2-dissolve-firstframe-scene-checkpoint.html">场景加载对照</a>发现空场景中两侧同错会让单纯 A/B 误报通过。重画仅用于诊断首帧是否稳定，不得取代用户可见首帧的验收。</p>
+<p><strong>D23 执行例外：</strong>上述首帧测试与 MatCap 严格 0 差测试保持原断言和原始失败状态。用户要求暂不追查这两项、先做完其它内容，最终提供复现步骤供其一次性人工测试；不得将“暂缓”填为“通过”，其余功能测试照常执行。</p>
 <h3>高风险组合</h3>
 <ul>
   <li>Twirl / Polar＋Shared UV＋CustomData；Flipbook＋特殊 UV。</li>
