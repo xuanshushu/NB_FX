@@ -4,13 +4,35 @@
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderMaskV3.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDissolveV3.hlsl"
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderUVV2.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 
-// Match Shader Graph's Sample Texture 2D node, including the texture's _ST and
-// optional HDR decode. The caller invokes this only inside an enabled feature.
-float4 NBGraphSampleMap(UnityTexture2D map, float2 uv)
+// UnityTexture2D already carries the Graph texture's _ST in scaleTranslate.
+// Transform it exactly once, before sampling, rather than asking the sampler
+// to apply GetTransformedUV to an already transformed coordinate.
+float2 NBGraphFeatureUV(UnityTexture2D map, float2 uv, float rotationDegrees,
+    float2 offsetSpeed)
 {
-    float4 sampled = SAMPLE_TEXTURE2D(map.tex, map.samplerstate, map.GetTransformedUV(uv));
+    // Keep the previous Graph sampling expression for the zero-control case;
+    // in particular non-identity texture ST retains its original arithmetic.
+    if (rotationDegrees == 0.0 && offsetSpeed.x == 0.0 && offsetSpeed.y == 0.0)
+        return map.GetTransformedUV(uv);
+
+    NBFX_FeatureUVTransformInputV2 input = (NBFX_FeatureUVTransformInputV2)0;
+    input.originUV = uv;
+    input.scaleOffset = map.scaleTranslate;
+    input.offsetSpeed = offsetSpeed;
+    input.rotationDegrees = rotationDegrees;
+    input.rotationCenter = float2(0.5, 0.5);
+    input.timeY = _Time.y;
+    return NBFX_TransformFeatureUVV2(input);
+}
+
+// Match Shader Graph's Sample Texture 2D node, including optional HDR decode.
+// The caller invokes this only inside an enabled feature, with transformed UV.
+float4 NBGraphSampleMap(UnityTexture2D map, float2 transformedUV)
+{
+    float4 sampled = SAMPLE_TEXTURE2D(map.tex, map.samplerstate, transformedUV);
     if (map.hdrDecode.x > 0.0)
         sampled = DecodeHDRSample(sampled, map.hdrDecode);
     return sampled;
@@ -55,6 +77,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NB_ColorChannelLo16,
     UnityTexture2D DissolveMap, float DissolveToggle, float4 Dissolve,
     float2 MaskUV, float2 DissolveUV,
+    float MaskMapUVRotation, float MaskMapRotationSpeed, float4 MaskMapOffsetAnition,
+    float4 DissolveOffsetRotateDistort,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -66,13 +90,18 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     Out = (float4)NBFX_ComposeBaseColorV1(input);
     if (DissolveToggle > 0.5)
     {
-        half4 sampledDissolve = (half4)NBGraphSampleMap(DissolveMap, DissolveUV);
+        float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
+            DissolveOffsetRotateDistort.z, DissolveOffsetRotateDistort.xy);
+        half4 sampledDissolve = (half4)NBGraphSampleMap(DissolveMap, dissolveUV);
         Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve,
             (half4)Dissolve, NB_ColorChannelLo16);
     }
     if (MaskToggle > 0.5)
     {
-        half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, MaskUV);
+        float maskRotation = MaskMapUVRotation + _Time.y * MaskMapRotationSpeed;
+        float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
+            maskRotation, MaskMapOffsetAnition.xy);
+        half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, maskUV);
         uint maskChannel = (NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0) >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
         half channelValue = maskChannel == 0u ? sampledMask.r :
             maskChannel == 1u ? sampledMask.g :
@@ -101,6 +130,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NB_ColorChannelLo16,
     UnityTexture2D DissolveMap, float DissolveToggle, half4 Dissolve,
     float2 MaskUV, float2 DissolveUV,
+    float MaskMapUVRotation, float MaskMapRotationSpeed, half4 MaskMapOffsetAnition,
+    half4 DissolveOffsetRotateDistort,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -112,13 +143,18 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     Out = NBFX_ComposeBaseColorV1(input);
     if (DissolveToggle > 0.5)
     {
-        half4 sampledDissolve = (half4)NBGraphSampleMap(DissolveMap, DissolveUV);
+        float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
+            DissolveOffsetRotateDistort.z, DissolveOffsetRotateDistort.xy);
+        half4 sampledDissolve = (half4)NBGraphSampleMap(DissolveMap, dissolveUV);
         Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve, Dissolve,
             NB_ColorChannelLo16);
     }
     if (MaskToggle > 0.5)
     {
-        half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, MaskUV);
+        float maskRotation = MaskMapUVRotation + _Time.y * MaskMapRotationSpeed;
+        float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
+            maskRotation, MaskMapOffsetAnition.xy);
+        half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, maskUV);
         uint maskChannel = (NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0) >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
         half channelValue = maskChannel == 0u ? sampledMask.r :
             maskChannel == 1u ? sampledMask.g :

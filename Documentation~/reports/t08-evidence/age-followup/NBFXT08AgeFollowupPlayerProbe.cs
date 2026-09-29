@@ -1,0 +1,243 @@
+using System;
+using System.Collections;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
+
+// Test-only isolated clone probe. Never include this script or the variant VFX assets in the package.
+public sealed class NBFXT08AgeFollowupPlayerProbe : MonoBehaviour
+{
+    public VisualEffectAsset constantAsset, ageAlphaAsset, ageRedAsset;
+    public Shader graphShader, constantShader, ageAlphaShader, ageRedShader;
+    const int Size = 128;
+    const int BackgroundLayer = 4, ConstantLayer = 2, AgeAlphaLayer = 3, AgeRedLayer = 5;
+
+    [Serializable] sealed class StageResult
+    {
+        public string label;
+        public int frame, aliveConstant, aliveAgeAlpha, aliveAgeRed;
+        public bool culledConstant, culledAgeAlpha, culledAgeRed;
+        public int visibleConstant, visibleAgeAlpha, visibleAgeRed;
+        public int changedAgeAlphaVsConstant, changedAgeRedVsConstant;
+        public float meanRedConstantOnSupport, meanRedAgeRedOnSupport;
+    }
+    [Serializable] sealed class Result
+    {
+        public string unityVersion, graphicsDevice, error;
+        public StageResult early, late;
+        public int constantPasses, ageAlphaPasses, ageRedPasses;
+        public int constantOpaqueIndex, ageAlphaOpaqueIndex, ageRedOpaqueIndex;
+        public int constantDeferredIndex, ageAlphaDeferredIndex, ageRedDeferredIndex;
+        public bool passedAgeRedTransport, passedAgeAlphaVisibility, passed;
+    }
+
+    static Color32[] Capture(Camera camera, RenderTexture target, Texture2D read, string path)
+    {
+        camera.Render();
+        var previous = RenderTexture.active;
+        RenderTexture.active = target;
+        try
+        {
+            read.ReadPixels(new Rect(0, 0, Size, Size), 0, 0);
+            read.Apply(false);
+            File.WriteAllBytes(path, read.EncodeToPNG());
+            return read.GetPixels32();
+        }
+        finally { RenderTexture.active = previous; }
+    }
+    static bool PixelChanged(Color32 a, Color32 b)
+    {
+        return Math.Abs(a.r - b.r) > 2 || Math.Abs(a.g - b.g) > 2 || Math.Abs(a.b - b.b) > 2;
+    }
+    static int Changed(Color32[] a, Color32[] b)
+    {
+        int count = 0;
+        for (int i = 0; i < a.Length; i++) if (PixelChanged(a[i], b[i])) count++;
+        return count;
+    }
+    static void MeanRedOnSupport(Color32[] background, Color32[] constant, Color32[] ageRed,
+        out float meanConstant, out float meanAgeRed)
+    {
+        long sumConstant = 0, sumAgeRed = 0;
+        int count = 0;
+        for (int i = 0; i < background.Length; i++)
+        {
+            if (!PixelChanged(background[i], constant[i]) && !PixelChanged(background[i], ageRed[i])) continue;
+            sumConstant += constant[i].r;
+            sumAgeRed += ageRed[i].r;
+            count++;
+        }
+        meanConstant = count > 0 ? (float)sumConstant / count : 0;
+        meanAgeRed = count > 0 ? (float)sumAgeRed / count : 0;
+    }
+    static StageResult CaptureStage(string label, string output, Camera camera, RenderTexture target,
+        Texture2D read, VisualEffect constant, VisualEffect ageAlpha, VisualEffect ageRed)
+    {
+        camera.cullingMask = 1 << BackgroundLayer;
+        var baseline = Capture(camera, target, read, Path.Combine(output, label + "-background.png"));
+        camera.cullingMask = (1 << BackgroundLayer) | (1 << ConstantLayer);
+        var control = Capture(camera, target, read, Path.Combine(output, label + "-constant.png"));
+        camera.cullingMask = (1 << BackgroundLayer) | (1 << AgeAlphaLayer);
+        var alpha = Capture(camera, target, read, Path.Combine(output, label + "-age-alpha.png"));
+        camera.cullingMask = (1 << BackgroundLayer) | (1 << AgeRedLayer);
+        var red = Capture(camera, target, read, Path.Combine(output, label + "-age-red.png"));
+        var stage = new StageResult
+        {
+            label = label,
+            frame = Time.frameCount,
+            aliveConstant = (int)constant.GetParticleSystemInfo("Simple Loop").aliveCount,
+            aliveAgeAlpha = (int)ageAlpha.GetParticleSystemInfo("Simple Loop").aliveCount,
+            aliveAgeRed = (int)ageRed.GetParticleSystemInfo("Simple Loop").aliveCount,
+            culledConstant = constant.culled,
+            culledAgeAlpha = ageAlpha.culled,
+            culledAgeRed = ageRed.culled,
+            visibleConstant = Changed(baseline, control),
+            visibleAgeAlpha = Changed(baseline, alpha),
+            visibleAgeRed = Changed(baseline, red),
+            changedAgeAlphaVsConstant = Changed(control, alpha),
+            changedAgeRedVsConstant = Changed(control, red)
+        };
+        MeanRedOnSupport(baseline, control, red,
+            out stage.meanRedConstantOnSupport, out stage.meanRedAgeRedOnSupport);
+        Debug.Log("NBFX_T08_AGE_FOLLOWUP_STAGE " + JsonUtility.ToJson(stage));
+        return stage;
+    }
+    static VisualEffect AddVFX(string name, int layer, VisualEffectAsset asset)
+    {
+        var go = new GameObject(name);
+        go.layer = layer;
+        go.transform.position = new Vector3(0, 0, 2);
+        var effect = go.AddComponent<VisualEffect>();
+        effect.resetSeedOnPlay = false;
+        effect.startSeed = 12345;
+        effect.visualEffectAsset = asset;
+        effect.Reinit();
+        return effect;
+    }
+
+    IEnumerator Start()
+    {
+        string output = null;
+        foreach (var arg in Environment.GetCommandLineArgs())
+            if (arg.StartsWith("--nbfx-age-followup-output=", StringComparison.Ordinal))
+                output = arg.Substring("--nbfx-age-followup-output=".Length);
+        if (string.IsNullOrEmpty(output)) yield break;
+        Directory.CreateDirectory(output);
+        var result = new Result { unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString() };
+        RenderTexture target = null;
+        Texture2D read = null, gradient = null;
+        Material backgroundMaterial = null, constantMaterial = null, ageAlphaMaterial = null, ageRedMaterial = null;
+        GameObject background = null, cameraObject = null;
+        VisualEffect constant = null, ageAlpha = null, ageRed = null;
+        try
+        {
+            if (!constantAsset || !ageAlphaAsset || !ageRedAsset || !graphShader ||
+                !constantShader || !ageAlphaShader || !ageRedShader)
+                throw new Exception("Serialized test assets absent");
+            gradient = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            var pixels = new Color32[Size * Size];
+            for (int y = 0; y < Size; y++) for (int x = 0; x < Size; x++)
+                pixels[y * Size + x] = new Color32((byte)(x * 255 / 127), (byte)(y * 255 / 127), 50, 255);
+            gradient.SetPixels32(pixels);
+            gradient.Apply(false);
+            gradient.filterMode = FilterMode.Point;
+            backgroundMaterial = new Material(graphShader);
+            backgroundMaterial.SetTexture("_BaseMap", gradient);
+            backgroundMaterial.SetColor("_Color", Color.white);
+            backgroundMaterial.SetFloat("_Surface", 0);
+            backgroundMaterial.SetFloat("_SrcBlend", (float)BlendMode.One);
+            backgroundMaterial.SetFloat("_DstBlend", (float)BlendMode.Zero);
+            backgroundMaterial.SetFloat("_ZWrite", 1);
+            backgroundMaterial.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            backgroundMaterial.renderQueue = 2000;
+            background = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            background.layer = BackgroundLayer;
+            background.transform.position = new Vector3(0, 1, 1);
+            background.transform.localScale = new Vector3(6, 6, 1);
+            background.GetComponent<MeshRenderer>().sharedMaterial = backgroundMaterial;
+            cameraObject = new GameObject("Age Followup Probe Camera");
+            var camera = cameraObject.AddComponent<Camera>();
+            camera.orthographic = true;
+            camera.orthographicSize = 3;
+            camera.nearClipPlane = .1f;
+            camera.farClipPlane = 20;
+            camera.transform.position = new Vector3(0, 1, 8);
+            camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = Color.black;
+            camera.allowHDR = false;
+            camera.allowMSAA = false;
+            target = new RenderTexture(Size, Size, 24, RenderTextureFormat.ARGB32);
+            target.Create();
+            camera.targetTexture = target;
+            read = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            constant = AddVFX("Constant1 VFX", ConstantLayer, constantAsset);
+            ageAlpha = AddVFX("Age Alpha VFX", AgeAlphaLayer, ageAlphaAsset);
+            ageRed = AddVFX("Age Red VFX", AgeRedLayer, ageRedAsset);
+            camera.cullingMask = (1 << BackgroundLayer) | (1 << ConstantLayer) |
+                (1 << AgeAlphaLayer) | (1 << AgeRedLayer);
+            for (int i = 0; i < 3; i++) { camera.Render(); yield return null; }
+
+            // Explicit simulation avoids treating Thread.Sleep wall time as VFX simulation time.
+            const float Step = 1f / 60f;
+            constant.Simulate(Step, 9u);
+            ageAlpha.Simulate(Step, 9u);
+            ageRed.Simulate(Step, 9u);
+            for (int i = 0; i < 2; i++) { camera.Render(); yield return null; }
+            result.early = CaptureStage("after-015s", output, camera, target, read,
+                constant, ageAlpha, ageRed);
+            camera.cullingMask = (1 << BackgroundLayer) | (1 << ConstantLayer) |
+                (1 << AgeAlphaLayer) | (1 << AgeRedLayer);
+            constant.Simulate(Step, 12u);
+            ageAlpha.Simulate(Step, 12u);
+            ageRed.Simulate(Step, 12u);
+            for (int i = 0; i < 2; i++) { camera.Render(); yield return null; }
+            result.late = CaptureStage("after-035s", output, camera, target, read,
+                constant, ageAlpha, ageRed);
+            constantMaterial = new Material(constantShader);
+            ageAlphaMaterial = new Material(ageAlphaShader);
+            ageRedMaterial = new Material(ageRedShader);
+            result.constantPasses = constantMaterial.passCount;
+            result.ageAlphaPasses = ageAlphaMaterial.passCount;
+            result.ageRedPasses = ageRedMaterial.passCount;
+            result.constantOpaqueIndex = constantMaterial.FindPass("NBCameraOpaqueDistortPass");
+            result.ageAlphaOpaqueIndex = ageAlphaMaterial.FindPass("NBCameraOpaqueDistortPass");
+            result.ageRedOpaqueIndex = ageRedMaterial.FindPass("NBCameraOpaqueDistortPass");
+            result.constantDeferredIndex = constantMaterial.FindPass("NBDeferredDistortPass");
+            result.ageAlphaDeferredIndex = ageAlphaMaterial.FindPass("NBDeferredDistortPass");
+            result.ageRedDeferredIndex = ageRedMaterial.FindPass("NBDeferredDistortPass");
+            bool live = result.late.aliveConstant > 0 && result.late.aliveAgeAlpha > 0 &&
+                result.late.aliveAgeRed > 0 && !result.late.culledConstant &&
+                !result.late.culledAgeAlpha && !result.late.culledAgeRed;
+            result.passedAgeRedTransport = live && result.late.visibleConstant > 0 &&
+                result.late.visibleAgeRed > 0 && result.late.changedAgeRedVsConstant > 0;
+            result.passedAgeAlphaVisibility = live && result.late.visibleAgeAlpha > 0;
+            result.passed = result.graphicsDevice == "Metal" && result.passedAgeRedTransport &&
+                result.passedAgeAlphaVisibility && result.constantPasses == 5 &&
+                result.ageAlphaPasses == 5 && result.ageRedPasses == 5 &&
+                result.constantOpaqueIndex == 1 && result.ageAlphaOpaqueIndex == 1 &&
+                result.ageRedOpaqueIndex == 1 && result.constantDeferredIndex == 2 &&
+                result.ageAlphaDeferredIndex == 2 && result.ageRedDeferredIndex == 2;
+        }
+        finally
+        {
+            File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(result, true));
+            Debug.Log("NBFX_T08_AGE_FOLLOWUP_PLAYER " + JsonUtility.ToJson(result));
+            if (target) { target.Release(); Destroy(target); }
+            if (read) Destroy(read);
+            if (gradient) Destroy(gradient);
+            if (backgroundMaterial) Destroy(backgroundMaterial);
+            if (constantMaterial) Destroy(constantMaterial);
+            if (ageAlphaMaterial) Destroy(ageAlphaMaterial);
+            if (ageRedMaterial) Destroy(ageRedMaterial);
+            if (background) Destroy(background);
+            if (cameraObject) Destroy(cameraObject);
+            if (constant) Destroy(constant.gameObject);
+            if (ageAlpha) Destroy(ageAlpha.gameObject);
+            if (ageRed) Destroy(ageRed.gameObject);
+            Application.Quit(result.passed ? 0 : 1);
+        }
+    }
+}
