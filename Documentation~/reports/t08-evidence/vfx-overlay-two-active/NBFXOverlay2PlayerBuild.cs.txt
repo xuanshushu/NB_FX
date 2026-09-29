@@ -1,0 +1,194 @@
+// Isolated clone only: inspect real VFX Mesh Overlay2 Outputs, build Metal Player.
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXOverlay2PlayerBuild
+{
+    const string Root = "/tmp/nbfx-vfx-overlay2-probe-20260930/run";
+    const string ScenePath = "Assets/NBFXOverlay2Player.unity";
+    const string AppPath = Root + "/player/NBFXOverlay2Player.app";
+    const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string BaseTexturePath = "Assets/NBFXOverlay2BaseRGBA_64_128_160_192.png";
+    const string BaseTextureGuid = "bf39a680379758b593e4d0565404c4f6";
+    const string OverlayTexturePath = "Assets/NBFXOverlay2RGBA_80_40_80_128.png";
+    const string OverlayTextureGuid = "872d8fb1abfe569084a21977158e7a18";
+    const long OutputId = 8926484042661614853;
+    const long BaseMapId = 8926484042661614854;
+    const long Flags0HiId = 8926484042661614870;
+    const long Flags1HiId = 8926484042661614872;
+    const long OverlayMapId = 8926484042661616300;
+    const long ToggleId = 8926484042661616301;
+    const long IntensityId = 8926484042661616302;
+    const long ColorId = 8926484042661616310;
+    const long VecId = 8926484042661616320;
+    const long OffsetId = 8926484042661616330;
+    static readonly string[] Names = { "Off", "Multiply", "Add", "MulAlpha", "AddAlpha" };
+    static readonly string[] Guids = {
+        "3e385e737f485543b249242811cc31f1", "813c72ed0c295b6cbcb6486bde19dd36",
+        "23ffa62886dd5ff498c6e9ca04d01ed6", "5e3145855039549db5b0b5a553b46bc3",
+        "087fcdf728ad50b5873a1691288ad6d1"
+    };
+    static readonly int[] Toggle = { 0, 1, 1, 1, 1 };
+    static readonly int[] Flags0Hi = { 0, 0, 0, 512, 512 };
+    static readonly int[] Flags1Hi = { 0, 0, 1, 0, 1 };
+
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        using (var report = new StreamWriter(Path.Combine(Root, "editor-inspection.txt")))
+        {
+            ValidateTexture(BaseTexturePath, BaseTextureGuid,
+                new Color(64f/255f,128f/255f,160f/255f,192f/255f), report);
+            ValidateTexture(OverlayTexturePath, OverlayTextureGuid,
+                new Color(80f/255f,40f/255f,80f/255f,128f/255f), report);
+            var graph = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            if (!graph || !graph.isSupported) throw new Exception("Product Graph unavailable");
+            var assets = new VisualEffectAsset[Names.Length];
+            var shaders = new Shader[Names.Length];
+            for (int i=0;i<Names.Length;i++)
+            {
+                string path="Assets/NBFXOverlay2"+Names[i]+".vfx";
+                AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+                if (AssetDatabase.AssetPathToGUID(path)!=Guids[i])
+                    throw new Exception("VFX GUID mismatch: "+path);
+                ValidateSerialized(path,Toggle[i],Flags0Hi[i],Flags1Hi[i],report);
+                assets[i]=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+                shaders[i]=FindShader(path);
+                if (!assets[i] || !shaders[i] || !shaders[i].isSupported ||
+                    !shaders[i].name.Contains("Mesh"))
+                    throw new Exception("Real VFX Mesh Output import failed: "+path);
+                ValidateGenerated(path,Toggle[i],Flags0Hi[i],Flags1Hi[i],report);
+                var material=new Material(shaders[i]);
+                try { report.WriteLine(path+" lazyEditorPassCount="+material.passCount); }
+                finally { UnityEngine.Object.DestroyImmediate(material); }
+            }
+            var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            var host=new GameObject("NBFX Overlay2 VFX Player Probe");
+            var probe=host.AddComponent<NBFXOverlay2PlayerProbe>();
+            probe.graphShader=graph;
+            probe.offAsset=assets[0];probe.multiplyAsset=assets[1];
+            probe.addAsset=assets[2];probe.mulAlphaAsset=assets[3];
+            probe.addAlphaAsset=assets[4];
+            probe.offShader=shaders[0];probe.multiplyShader=shaders[1];
+            probe.addShader=shaders[2];probe.mulAlphaShader=shaders[3];
+            probe.addAlphaShader=shaders[4];
+            if (!EditorSceneManager.SaveScene(scene,ScenePath))
+                throw new Exception("Could not save clone-only Player scene");
+            report.Flush();
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(AppPath));
+        var build=BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+            scenes=new[]{ScenePath},locationPathName=AppPath,
+            target=BuildTarget.StandaloneOSX,options=BuildOptions.None
+        });
+        Debug.Log("NBFX_OVERLAY2_BUILD result="+build.summary.result+
+            " errors="+build.summary.totalErrors+" warnings="+build.summary.totalWarnings);
+        if (build.summary.result!=BuildResult.Succeeded || build.summary.totalErrors!=0)
+            throw new Exception("Overlay2 VFX Player build failed");
+    }
+    static void ValidateTexture(string path,string guid,Color expected,TextWriter report)
+    {
+        AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+        var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+        var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        if (!importer || !texture || AssetDatabase.AssetPathToGUID(path)!=guid ||
+            importer.sRGBTexture || importer.mipmapEnabled || !importer.isReadable ||
+            importer.textureCompression!=TextureImporterCompression.Uncompressed ||
+            texture.width!=1 || texture.height!=1 ||
+            importer.filterMode!=FilterMode.Point || importer.wrapMode!=TextureWrapMode.Clamp)
+            throw new Exception("Explicit RGBA import contract failed: "+path);
+        var pixel=texture.GetPixel(0,0);
+        for (int i=0;i<4;i++)
+            if (Mathf.Abs(pixel[i]-expected[i])>0.003f)
+                throw new Exception("RGBA pixel mismatch: "+path+" "+pixel);
+        report.WriteLine(path+" linearRGBA="+pixel+" mip=false uncompressed point/clamp");
+    }
+    static string Body(string text,long fileId)
+    {
+        var m=Regex.Match(text,@"(?ms)^--- !u!114 &"+fileId+@"\n.*?(?=^--- !u!|\z)");
+        if (!m.Success)throw new Exception("Missing VFX object "+fileId);
+        return m.Value;
+    }
+    static bool Scalar(string text,long id,string name,int value)
+    {
+        string b=Body(text,id);
+        return b.Contains("name: "+name) &&
+            b.Contains("m_SerializableObject: "+value+"\n");
+    }
+    static bool Vector(string text,long id,string name,string value)
+    {
+        string b=Body(text,id);
+        return b.Contains("name: "+name) && b.Contains(value);
+    }
+    static void ValidateSerialized(string path,int toggle,int flag0,int flag1,TextWriter report)
+    {
+        string text=File.ReadAllText(Path.Combine(Directory.GetParent(Application.dataPath).FullName,path));
+        string output=Body(text,OutputId);
+        if (!text.Contains("  capacity: 1\n") ||
+            !output.Contains("  cullMode: 0\n") || !output.Contains("  blendMode: 1\n") ||
+            !Body(text,BaseMapId).Contains(BaseTextureGuid) ||
+            !Body(text,OverlayMapId).Contains("name: _ColorBlendMap") ||
+            !Body(text,OverlayMapId).Contains(OverlayTextureGuid) ||
+            !Body(text,ColorId).Contains("name: _ColorBlendColor") ||
+            !Body(text,ColorId).Contains("{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0}") ||
+            !Scalar(text,ToggleId,"_ColorBlendMap_Toggle",toggle) ||
+            !Scalar(text,Flags0HiId,"_NB_Flags0Hi16",flag0) ||
+            !Scalar(text,Flags1HiId,"_NB_Flags1Hi16",flag1) ||
+            !Scalar(text,IntensityId,"_ColorBlendColorIntensity",1) ||
+            !Vector(text,VecId,"_ColorBlendVec","{\"x\":0.0,\"y\":0.0,\"z\":1.0,\"w\":0.0}") ||
+            !Vector(text,OffsetId,"_ColorBlendMapOffset","{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}"))
+            throw new Exception("Overlay2 serialized Output contract invalid: "+path);
+        foreach (long id in new[]{OverlayMapId,ToggleId,ColorId,IntensityId,VecId,OffsetId})
+            if (!output.Contains("  - {fileID: "+id+"}\n"))
+                throw new Exception("Output missing ColorBlend slot "+id+": "+path);
+        report.WriteLine(path+" toggle="+toggle+" flags0Hi="+flag0+
+            " flags1Hi="+flag1+" mapRGBA=(80,40,80,128) vec=(0,0,1,0)");
+    }
+    static Shader FindShader(string path)
+    {
+        foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(path))
+            if (obj is Shader shader && shader.name.Contains("Mesh"))return shader;
+        return null;
+    }
+    static void ValidateGenerated(string path,int toggle,int flag0,int flag1,TextWriter report)
+    {
+        const BindingFlags flags=BindingFlags.Public|BindingFlags.NonPublic|
+            BindingFlags.Static|BindingFlags.Instance;
+        Type type=null;
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {type=assembly.GetType("UnityEditor.VFX.VisualEffectResource");if(type!=null)break;}
+        if(type==null)throw new Exception("VFX generated-resource reflection unavailable");
+        var resource=type.GetMethod("GetResourceAtPath",flags).Invoke(null,new object[]{path});
+        if(resource==null)throw new Exception("VFX generated-resource missing: "+path);
+        int count=(int)type.GetMethod("GetShaderSourceCount",flags).Invoke(resource,null);
+        var getter=type.GetMethod("GetShaderSource",flags);
+        bool found=false;
+        for(int i=0;i<count;i++)
+        {
+            string source=(string)getter.Invoke(resource,new object[]{i});
+            if(!source.Contains("output._ColorBlendMap_Toggle"))continue;
+            File.WriteAllText(Path.Combine(Root,Path.GetFileNameWithoutExtension(path)+"-"+i+".shader"),source);
+            bool values=source.Contains("output._ColorBlendMap_Toggle = (float)"+toggle+";") &&
+                source.Contains("output._NB_Flags0Hi16 = (float)"+flag0+";") &&
+                source.Contains("output._NB_Flags1Hi16 = (float)"+flag1+";") &&
+                source.Contains("output._ColorBlendColorIntensity = (float)1;") &&
+                Regex.IsMatch(source,@"output\._ColorBlendColor\s*=\s*float4\(\s*1\s*,\s*1\s*,\s*1\s*,\s*1\s*\)") &&
+                Regex.IsMatch(source,@"output\._ColorBlendVec\s*=\s*float4\(\s*0\s*,\s*0\s*,\s*1\s*,\s*0\s*\)") &&
+                Regex.IsMatch(source,@"output\._ColorBlendMapOffset\s*=\s*float4\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\s*\)");
+            bool passes=source.Contains("\"LightMode\" = \"NBCameraOpaqueDistortPass\"") &&
+                source.Contains("\"LightMode\" = \"NBDeferredDistortPass\"");
+            bool map=source.Contains("_ColorBlendMap") && source.Contains("NBGraphBaseColor");
+            report.WriteLine(path+" generatedSource="+i+" exactValues="+values+
+                " exactPasses="+passes+" colorBlendMapReference="+map);
+            found|=values&&passes&&map;
+        }
+        if(!found)throw new Exception("ColorBlend Output bindings or custom Passes absent: "+path);
+    }
+}

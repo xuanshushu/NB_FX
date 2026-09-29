@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+"""Generate isolated Overlay2 VFX Mesh variants; writes only this /tmp dir."""
+from __future__ import annotations
+import gzip, hashlib, pathlib, re, shutil, uuid, zlib, struct
+ROOT=pathlib.Path(__file__).resolve().parent
+OUT=ROOT/'Assets'
+ARCH=pathlib.Path('/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t08-evidence/vfx-basecolor-active')
+SRC=ARCH/'NBFXBCA1.vfx.gz'
+OUTPUT=8926484042661614853
+BASEMAP=8926484042661614854
+COLOR=8926484042661614855
+SCALAR=8926484042661614869
+VECTOR=8926484042661614878
+ZERO_VECTOR=8926484042661614903
+FLAGS0_HI=8926484042661614870
+FLAGS1_HI=8926484042661614872
+MAP_ID=8926484042661616300
+TOGGLE_ID=8926484042661616301
+INTENSITY_ID=8926484042661616302
+TINT_ID=8926484042661616310
+TINT_CHILDREN=tuple(range(TINT_ID+1,TINT_ID+5))
+VEC_ID=8926484042661616320
+VEC_CHILDREN=tuple(range(VEC_ID+1,VEC_ID+5))
+OFFSET_ID=8926484042661616330
+OFFSET_CHILDREN=tuple(range(OFFSET_ID+1,OFFSET_ID+5))
+NEW_IDS=(MAP_ID,TOGGLE_ID,INTENSITY_ID,TINT_ID,*TINT_CHILDREN,
+         VEC_ID,*VEC_CHILDREN,OFFSET_ID,*OFFSET_CHILDREN)
+BASE_NAME='NBFXOverlay2BaseRGBA_64_128_160_192.png'
+OVERLAY_NAME='NBFXOverlay2RGBA_80_40_80_128.png'
+VARIANTS=(('Off',0,0,0),('Multiply',1,0,0),('Add',1,0,1),
+          ('MulAlpha',1,512,0),('AddAlpha',1,512,1))
+
+def guid(name:str)->str:return uuid.uuid5(uuid.NAMESPACE_URL,'nbfx-vfx-overlay2-probe-20260930/'+name).hex
+
+def once(s:str,old:str,new:str,what:str)->str:
+    n=s.count(old)
+    if n!=1:raise ValueError(f'{what}: expected one {old!r}, got {n}')
+    return s.replace(old,new,1)
+
+def match(s:str,fid:int)->re.Match[str]:
+    m=re.search(rf'(?ms)^--- !u!114 &{fid}\n.*?(?=^--- !u!|\Z)',s)
+    if not m:raise ValueError(f'missing VFX object {fid}')
+    return m
+
+def change(s:str,fid:int,old:str,new:str)->str:
+    m=match(s,fid); b=once(m.group(),old,new,str(fid))
+    return s[:m.start()]+b+s[m.end():]
+
+def meta(src:pathlib.Path,filename:str)->str:
+    s=src.read_text();m=re.search(r'(?m)^guid: ([a-f0-9]{32})$',s)
+    if not m:raise ValueError('missing meta GUID '+str(src))
+    return once(s,m.group(1),guid(filename),filename)
+
+def png_rgba(path:pathlib.Path,rgba:tuple[int,int,int,int])->None:
+    def chunk(kind:bytes,data:bytes)->bytes:
+        return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
+    path.write_bytes(b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',1,1,8,6,0,0,0))+
+                     chunk(b'IDAT',zlib.compress(b'\0'+bytes(rgba),9))+chunk(b'IEND',b''))
+
+def clone_scalar(s:str,new_id:int,name:str,value:int)->str:
+    b=match(s,SCALAR).group().replace(str(SCALAR),str(new_id))
+    b=once(b,'name: _NB_Flags0Lo16\n',f'name: {name}\n',name)
+    return once(b,'m_SerializableObject: 0\n',f'm_SerializableObject: {value}\n',name)
+
+def clone_struct(s:str,source_id:int,new_id:int,new_name:str,old_name:str,
+                 old_value:str,new_value:str)->list[str]:
+    old_children=tuple(range(source_id+1,source_id+5))
+    new_children=tuple(range(new_id+1,new_id+5))
+    master=match(s,source_id).group().replace(str(source_id),str(new_id))
+    for old,new in zip(old_children,new_children):master=master.replace(str(old),str(new))
+    master=once(master,f'name: {old_name}\n',f'name: {new_name}\n',new_name)
+    if old_value!=new_value:master=once(master,old_value,new_value,new_name+' value')
+    children=[]
+    for old,new in zip(old_children,new_children):
+        children.append(match(s,old).group().replace(str(source_id),str(new_id)).replace(str(old),str(new)))
+    return [master,*children]
+
+def main()->None:
+    OUT.mkdir(exist_ok=True)
+    s=gzip.decompress(SRC.read_bytes()).decode()
+    for fid in NEW_IDS:
+        if str(fid) in s:raise ValueError(f'private test slot ID collision: {fid}')
+    if '  capacity: 1\n' not in s or '  cullMode: 0\n' not in match(s,OUTPUT).group():
+        raise ValueError('not known one-particle CullOff fixture')
+    copied={
+        'NBFXBCGray.png':'NBFXOverlay2Gray.png',
+        'NBFXBCWhite.png':'NBFXOverlay2White.png',
+        'NBFXBC_RGBA_64_128_160_192.png':BASE_NAME
+    }
+    for old_name,new_name in copied.items():
+        shutil.copyfile(ARCH/old_name,OUT/new_name)
+        raw=(ARCH/(old_name+'.meta.txt')).read_text()
+        old_guid=re.search(r'(?m)^guid: ([a-f0-9]{32})$',raw).group(1)
+        (OUT/(new_name+'.meta')).write_text(meta(ARCH/(old_name+'.meta.txt'),new_name))
+        s=s.replace(old_guid,guid(new_name))
+    png_rgba(OUT/OVERLAY_NAME,(80,40,80,128))
+    (OUT/(OVERLAY_NAME+'.meta')).write_text(meta(ARCH/'NBFXBC_RGBA_64_128_160_192.png.meta.txt',OVERLAY_NAME))
+    tex=match(s,BASEMAP).group().replace(str(BASEMAP),str(MAP_ID))
+    tex=once(tex,'name: _BaseMap\n','name: _ColorBlendMap\n','ColorBlendMap name')
+    tex=once(tex,guid(BASE_NAME),guid(OVERLAY_NAME),'ColorBlendMap RGBA')
+    tint=clone_struct(s,COLOR,TINT_ID,'_ColorBlendColor','_Color',
+        "'\u007b\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0\u007d'",
+        "'\u007b\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0\u007d'")
+    vec=clone_struct(s,VECTOR,VEC_ID,'_ColorBlendVec','_MaskMapVec',
+        "'{\"x\":1.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}'",
+        "'{\"x\":0.0,\"y\":0.0,\"z\":1.0,\"w\":0.0}'")
+    offset=clone_struct(s,ZERO_VECTOR,OFFSET_ID,'_ColorBlendMapOffset','_BaseMapMaskMapOffset',
+        "'{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}'",
+        "'{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}'")
+    slots=[tex,clone_scalar(s,TOGGLE_ID,'_ColorBlendMap_Toggle',0),
+           clone_scalar(s,INTENSITY_ID,'_ColorBlendColorIntensity',1),
+           *tint,*vec,*offset]
+    tops=(MAP_ID,TOGGLE_ID,TINT_ID,INTENSITY_ID,VEC_ID,OFFSET_ID)
+    attach=''.join(f'  - {{fileID: {fid}}}\n' for fid in tops)
+    s=change(s,OUTPUT,'  m_OutputSlots: []\n',attach+'  m_OutputSlots: []\n')
+    s+='\n'+'\n'.join(slots)
+    normalized=[]
+    for label,toggle,flags0hi,flags1hi in VARIANTS:
+        value=change(s,TOGGLE_ID,'m_SerializableObject: 0\n',f'm_SerializableObject: {toggle}\n')
+        value=change(value,FLAGS0_HI,'m_SerializableObject: 0\n',f'm_SerializableObject: {flags0hi}\n')
+        value=change(value,FLAGS1_HI,'m_SerializableObject: 0\n',f'm_SerializableObject: {flags1hi}\n')
+        name=f'NBFXOverlay2{label}.vfx'
+        (OUT/name).write_text(value)
+        (OUT/(name+'.meta')).write_text(meta(ARCH/'NBFXBCA1.vfx.meta.txt',name))
+        for fid,current in ((TOGGLE_ID,toggle),(FLAGS0_HI,flags0hi),(FLAGS1_HI,flags1hi)):
+            value=change(value,fid,f'm_SerializableObject: {current}\n','m_SerializableObject: VARIANT\n')
+        normalized.append(value)
+    if len(set(normalized))!=1:raise ValueError('variants differ outside toggle/2 flag slices')
+    for p in sorted(OUT.iterdir()):
+        if p.is_file():print(hashlib.sha256(p.read_bytes()).hexdigest(),p)
+
+if __name__=='__main__':main()

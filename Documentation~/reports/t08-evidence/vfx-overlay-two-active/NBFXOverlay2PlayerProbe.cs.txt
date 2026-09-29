@@ -1,0 +1,365 @@
+// Test-only real one-particle VFX Mesh Output Overlay2 numeric Player probe.
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
+
+public sealed class NBFXOverlay2PlayerProbe : MonoBehaviour
+{
+    public VisualEffectAsset offAsset, addAsset, multiplyAsset, addAlphaAsset, mulAlphaAsset;
+    public Shader graphShader, offShader, addShader, multiplyShader, addAlphaShader, mulAlphaShader;
+    const int Size = 256;
+    const float RepeatTolerance = 0.005f;
+    static readonly string[] Names = { "Off", "Multiply", "Add", "MulAlpha", "AddAlpha" };
+    static readonly int[] Layers = { 0, 1, 2, 4, 5 }; // prior HighFidelity layer mask 55
+    static readonly Vector3 BaseRGB = new Vector3(64f/255f, 128f/255f, 160f/255f);
+    static readonly Vector3 BlendRGB = new Vector3(80f/255f, 40f/255f, 80f/255f);
+    const float BaseAlpha = 192f/255f, BlendAlpha = 128f/255f;
+
+    [Serializable] sealed class CaseInfo
+    {
+        public string name;
+        public int alive, passCount, opaquePass, deferredPass, visiblePixels, changedVsOffPixels;
+        public bool culled;
+        public float repeatMaxRGB, effectiveAlphaMedian, effectiveAlphaP10, effectiveAlphaP90;
+        public float expectedEffectiveAlpha, expectedSourceR, expectedSourceG, expectedSourceB;
+        public float sourceRMedian, sourceGMedian, sourceBMedian;
+        public float sourceErrorMedian, sourceErrorP90;
+        public bool numericPass;
+    }
+    [Serializable] sealed class Result
+    {
+        public string unityVersion, graphicsDevice, status, error, note;
+        public bool linearTarget, fixtureValid, pass;
+        public int roiPixels;
+        public float blackBaselineMaxRGB, whiteBaselineMinRGB;
+        public CaseInfo off, add, multiply, addAlpha, mulAlpha;
+    }
+    sealed class Context
+    {
+        public Camera camera;
+        public GameObject cameraObject;
+        public RenderTexture target;
+        public Texture2D readback;
+        public VisualEffect[] effects;
+    }
+    static string OutputPath()
+    {
+        foreach (string arg in Environment.GetCommandLineArgs())
+            if (arg.StartsWith("--nbfx-overlay2-output=", StringComparison.Ordinal))
+                return arg.Substring("--nbfx-overlay2-output=".Length);
+        return null;
+    }
+
+    IEnumerator Start()
+    {
+        string output = OutputPath();
+        if (string.IsNullOrEmpty(output)) { Application.Quit(2); yield break; }
+        Directory.CreateDirectory(output);
+        var result = new Result {
+            unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
+            note = "Final-color test of real frozen one-particle VFX Mesh Output ColorBlend/Overlay2. Two explicit 1x1 RGBA texture samples; black/white clear-color pairs solve effective alpha and source RGB. Closed Cube/CullOff predicts two source-over faces. This is alpha inferred from final linear RGB, not direct GPU alpha channel readback."
+        };
+        Context context = null;
+        int exitCode = 2;
+        try { context = Setup(); }
+        catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        if (context != null && result.error == null)
+        {
+            // Proven t08 one-particle Mesh Output warmup/freeze schedule.
+            for (int frame = 0; frame < 3; frame++) { context.camera.Render(); yield return null; }
+            foreach (var vfx in context.effects) vfx.Simulate(1f/60f, 21u);
+            for (int frame = 0; frame < 2; frame++) { context.camera.Render(); yield return null; }
+            foreach (var vfx in context.effects) vfx.pause = true;
+            try
+            {
+                Run(context, output, result);
+                result.fixtureValid = FixtureValid(result);
+                result.pass = result.fixtureValid && result.off.numericPass &&
+                    result.add.numericPass && result.multiply.numericPass &&
+                    result.addAlpha.numericPass && result.mulAlpha.numericPass &&
+                    result.add.changedVsOffPixels >= 100 &&
+                    result.multiply.changedVsOffPixels >= 100 &&
+                    result.addAlpha.changedVsOffPixels >= 100 &&
+                    result.mulAlpha.changedVsOffPixels >= 100;
+                result.status = result.pass ? "PASS" :
+                    result.fixtureValid ? "NUMERIC_MISMATCH" : "FIXTURE_INVALID";
+                exitCode = result.pass ? 0 : 1;
+            }
+            catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        }
+        try { Cleanup(context); }
+        catch (Exception ex) { result.status = "CLEANUP_FAILED"; result.error = (result.error ?? "") + "\n" + ex; exitCode = 2; }
+        File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(result, true));
+        Debug.Log("NBFX_OVERLAY2_PLAYER " + JsonUtility.ToJson(result));
+        Application.Quit(exitCode);
+    }
+
+    Context Setup()
+    {
+        var assets = new[] { offAsset, multiplyAsset, addAsset, mulAlphaAsset, addAlphaAsset };
+        var shaders = new[] { offShader, multiplyShader, addShader, mulAlphaShader, addAlphaShader };
+        if (!graphShader) throw new Exception("Graph reference missing");
+        foreach (var asset in assets) if (!asset) throw new Exception("VFX Output reference missing");
+        foreach (var shader in shaders) if (!shader) throw new Exception("Generated VFX shader missing");
+        if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.Metal ||
+            !SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf))
+            throw new Exception("Requires Metal and ARGBHalf RenderTexture");
+        var c = new Context();
+        try
+        {
+            c.cameraObject = new GameObject("NBFX Overlay2 VFX Camera");
+            c.camera = c.cameraObject.AddComponent<Camera>();
+            c.camera.orthographic = true;
+            c.camera.orthographicSize = 0.5f;
+            c.camera.nearClipPlane = 0.1f;
+            c.camera.farClipPlane = 20f;
+            c.camera.transform.position = new Vector3(0, 0, 8);
+            c.camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+            c.camera.clearFlags = CameraClearFlags.SolidColor;
+            c.camera.backgroundColor = Color.black;
+            c.camera.allowHDR = true;
+            c.camera.allowMSAA = false;
+            c.camera.cullingMask = 55;
+            c.target = new RenderTexture(Size, Size, 24,
+                RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
+            c.target.antiAliasing = 1;
+            c.target.Create();
+            if (!c.target.IsCreated() || c.target.sRGB)
+                throw new Exception("Linear ARGBHalf target failed");
+            c.camera.targetTexture = c.target;
+            c.readback = new Texture2D(Size, Size, TextureFormat.RGBAHalf, false, true);
+            c.effects = new VisualEffect[Names.Length];
+            for (int i = 0; i < Names.Length; i++)
+                c.effects[i] = CreateEffect(Names[i], Layers[i], assets[i]);
+            return c;
+        }
+        catch { Cleanup(c); throw; }
+    }
+    static VisualEffect CreateEffect(string name, int layer, VisualEffectAsset asset)
+    {
+        var go = new GameObject("NBFX Overlay2 " + name);
+        go.layer = layer;
+        go.transform.position = new Vector3(0, 0, 2);
+        go.transform.localScale = Vector3.one * 4f;
+        var vfx = go.AddComponent<VisualEffect>();
+        vfx.resetSeedOnPlay = false;
+        vfx.startSeed = 12345;
+        vfx.visualEffectAsset = asset;
+        vfx.Reinit();
+        return vfx;
+    }
+    static Color[] Capture(Context c, string path)
+    {
+        c.camera.Render();
+        var previous = RenderTexture.active;
+        try
+        {
+            RenderTexture.active = c.target;
+            c.readback.ReadPixels(new Rect(0, 0, Size, Size), 0, 0);
+            c.readback.Apply(false);
+            var colors = c.readback.GetPixels();
+            var preview = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            try
+            {
+                preview.SetPixels(colors);
+                preview.Apply(false);
+                File.WriteAllBytes(path, preview.EncodeToPNG());
+            }
+            finally { Destroy(preview); }
+            return colors;
+        }
+        finally { RenderTexture.active = previous; }
+    }
+    static float MaxRGB(Color a, Color b) => Mathf.Max(
+        Mathf.Abs(a.r-b.r), Mathf.Abs(a.g-b.g), Mathf.Abs(a.b-b.b));
+    static float MaxRGB(Color[] a, Color[] b)
+    {
+        float max = 0;
+        for (int i = 0; i < a.Length; i++) max = Mathf.Max(max, MaxRGB(a[i],b[i]));
+        return max;
+    }
+    static int Changed(Color[] a, Color[] b, float tolerance)
+    {
+        int count = 0;
+        for (int i=0; i<a.Length; i++) if (MaxRGB(a[i],b[i]) > tolerance) count++;
+        return count;
+    }
+    static int ChangedAt(List<int> roi, Color[] a, Color[] b, float tolerance)
+    {
+        int count=0;
+        foreach (int i in roi) if (MaxRGB(a[i],b[i]) > tolerance) count++;
+        return count;
+    }
+    static float Quantile(List<float> values, float p)
+    {
+        if (values.Count == 0) throw new Exception("No safe numeric samples");
+        values.Sort();
+        float at = p*(values.Count-1);
+        int low=Mathf.FloorToInt(at), high=Mathf.CeilToInt(at);
+        return Mathf.Lerp(values[low], values[high], at-low);
+    }
+    static Vector3 PredictedSource(int index)
+    {
+        switch (index)
+        {
+            case 0: return BaseRGB;
+            case 1: return new Vector3(
+                BaseRGB.x*(1f-BlendAlpha+BlendAlpha*BlendRGB.x),
+                BaseRGB.y*(1f-BlendAlpha+BlendAlpha*BlendRGB.y),
+                BaseRGB.z*(1f-BlendAlpha+BlendAlpha*BlendRGB.z));
+            case 2: return BaseRGB + BlendRGB*BlendAlpha;
+            case 3: return Vector3.Scale(BaseRGB,BlendRGB);
+            case 4: return BaseRGB + BlendRGB;
+            default: throw new ArgumentOutOfRangeException("index");
+        }
+    }
+    static float PredictedEffectiveAlpha(int index)
+    {
+        float sourceAlpha = index >= 3 ? BaseAlpha*BlendAlpha : BaseAlpha;
+        return 1f-(1f-sourceAlpha)*(1f-sourceAlpha);
+    }
+    static CaseInfo Describe(int index, VisualEffect effect, Shader shader,
+        Color[] black, Color[] white, Color[] frameBlack, Color[] frameWhite,
+        Color[] repeatBlack, Color[] repeatWhite, List<int> roi, Color[] offBlack)
+    {
+        var mat = new Material(shader);
+        try
+        {
+            var prediction=PredictedSource(index);
+            var info=new CaseInfo {
+                name=Names[index],
+                alive=(int)effect.GetParticleSystemInfo("Simple Loop").aliveCount,
+                culled=effect.culled,
+                passCount=mat.passCount,
+                opaquePass=mat.FindPass("NBCameraOpaqueDistortPass"),
+                deferredPass=mat.FindPass("NBDeferredDistortPass"),
+                visiblePixels=Changed(black,frameBlack,0.02f),
+                changedVsOffPixels=ChangedAt(roi,offBlack,frameBlack,0.05f),
+                repeatMaxRGB=Mathf.Max(MaxRGB(frameBlack,repeatBlack),MaxRGB(frameWhite,repeatWhite)),
+                expectedEffectiveAlpha=PredictedEffectiveAlpha(index),
+                expectedSourceR=prediction.x, expectedSourceG=prediction.y,
+                expectedSourceB=prediction.z
+            };
+            var covers=new List<float>(); var red=new List<float>();
+            var green=new List<float>(); var blue=new List<float>();
+            var errors=new List<float>();
+            foreach (int i in roi)
+            {
+                var b0=black[i]; var b1=white[i];
+                var f0=frameBlack[i]; var f1=frameWhite[i];
+                var alphaChannels=new float[3];
+                for (int ch=0; ch<3; ch++)
+                {
+                    float denom=b1[ch]-b0[ch];
+                    if (denom < 0.8f) throw new Exception("Black/white clear delta too small");
+                    alphaChannels[ch]=1f-(f1[ch]-f0[ch])/denom;
+                }
+                float alpha=(alphaChannels[0]+alphaChannels[1]+alphaChannels[2])/3f;
+                if (alpha<0.1f || alpha>1.05f)
+                    throw new Exception("Unphysical inferred effective alpha: "+alpha);
+                float r=(f0.r-(1f-alpha)*b0.r)/alpha;
+                float g=(f0.g-(1f-alpha)*b0.g)/alpha;
+                float b=(f0.b-(1f-alpha)*b0.b)/alpha;
+                covers.Add(alpha); red.Add(r); green.Add(g); blue.Add(b);
+                errors.Add(Mathf.Max(Mathf.Abs(r-prediction.x),
+                    Mathf.Abs(g-prediction.y),Mathf.Abs(b-prediction.z)));
+            }
+            info.effectiveAlphaMedian=Quantile(covers,0.5f);
+            info.effectiveAlphaP10=Quantile(covers,0.1f);
+            info.effectiveAlphaP90=Quantile(covers,0.9f);
+            info.sourceRMedian=Quantile(red,0.5f);
+            info.sourceGMedian=Quantile(green,0.5f);
+            info.sourceBMedian=Quantile(blue,0.5f);
+            info.sourceErrorMedian=Quantile(errors,0.5f);
+            info.sourceErrorP90=Quantile(errors,0.9f);
+            info.numericPass=Mathf.Abs(info.effectiveAlphaMedian-info.expectedEffectiveAlpha)<0.08f &&
+                info.sourceErrorMedian<0.08f && info.sourceErrorP90<0.12f;
+            return info;
+        }
+        finally { Destroy(mat); }
+    }
+    void Run(Context c, string output, Result r)
+    {
+        r.linearTarget=!c.target.sRGB;
+        c.camera.cullingMask=0;
+        c.camera.backgroundColor=Color.black;
+        var black=Capture(c,Path.Combine(output,"black.png"));
+        c.camera.backgroundColor=Color.white;
+        var white=Capture(c,Path.Combine(output,"white.png"));
+        var blackFrames=new Color[Names.Length][];
+        var whiteFrames=new Color[Names.Length][];
+        var blackRepeats=new Color[Names.Length][];
+        var whiteRepeats=new Color[Names.Length][];
+        for (int i=0; i<Names.Length; i++)
+        {
+            c.camera.cullingMask=1<<Layers[i];
+            string stem=Names[i].ToLowerInvariant();
+            c.camera.backgroundColor=Color.black;
+            blackFrames[i]=Capture(c,Path.Combine(output,stem+"-black.png"));
+            blackRepeats[i]=Capture(c,Path.Combine(output,stem+"-black-repeat.png"));
+            c.camera.backgroundColor=Color.white;
+            whiteFrames[i]=Capture(c,Path.Combine(output,stem+"-white.png"));
+            whiteRepeats[i]=Capture(c,Path.Combine(output,stem+"-white-repeat.png"));
+        }
+        // Safe interior from the Off particle on both clear colors; exclude
+        // antialiasing edges and nonparticle image area using 3x3 neighbours.
+        var roi=new List<int>();
+        for (int y=1; y<Size-1; y++) for (int x=1; x<Size-1; x++)
+        {
+            bool safe=true;
+            for (int dy=-1; dy<=1 && safe; dy++)
+                for (int dx=-1; dx<=1 && safe; dx++)
+                {
+                    int n=(y+dy)*Size+x+dx;
+                    if (MaxRGB(black[n],blackFrames[0][n])<0.08f ||
+                        MaxRGB(white[n],whiteFrames[0][n])<0.08f)
+                        safe=false;
+                }
+            if (safe) roi.Add(y*Size+x);
+        }
+        r.roiPixels=roi.Count;
+        if (roi.Count<100) throw new Exception("Not enough safe particle pixels: "+roi.Count);
+        var infos=new CaseInfo[Names.Length];
+        var shaders=new[] { offShader,multiplyShader,addShader,mulAlphaShader,addAlphaShader };
+        for (int i=0; i<Names.Length; i++)
+            infos[i]=Describe(i,c.effects[i],shaders[i],black,white,
+                blackFrames[i],whiteFrames[i],blackRepeats[i],whiteRepeats[i],roi,blackFrames[0]);
+        r.off=infos[0]; r.multiply=infos[1]; r.add=infos[2];
+        r.mulAlpha=infos[3]; r.addAlpha=infos[4];
+        float maxBlack=0, minWhite=float.MaxValue;
+        foreach (int i in roi)
+        {
+            maxBlack=Mathf.Max(maxBlack,black[i].r,black[i].g,black[i].b);
+            minWhite=Mathf.Min(minWhite,white[i].r,white[i].g,white[i].b);
+        }
+        r.blackBaselineMaxRGB=maxBlack;
+        r.whiteBaselineMinRGB=minWhite;
+    }
+    static bool FixtureValid(Result r)
+    {
+        if (!r.linearTarget || r.roiPixels<100 ||
+            r.blackBaselineMaxRGB>0.05f || r.whiteBaselineMinRGB<0.9f)
+            return false;
+        foreach (var c in new[] { r.off,r.add,r.multiply,r.addAlpha,r.mulAlpha })
+            if (c==null || c.alive!=1 || c.culled || c.visiblePixels<=100 ||
+                c.repeatMaxRGB>RepeatTolerance || c.passCount<3 ||
+                c.opaquePass!=1 || c.deferredPass!=2)
+                return false;
+        return true;
+    }
+    static void Cleanup(Context c)
+    {
+        if (c==null) return;
+        if (c.camera) c.camera.targetTexture=null;
+        if (c.target) { c.target.Release(); Destroy(c.target); }
+        if (c.readback) Destroy(c.readback);
+        if (c.cameraObject) Destroy(c.cameraObject);
+        if (c.effects!=null) foreach (var effect in c.effects)
+            if (effect) Destroy(effect.gameObject);
+    }
+}
