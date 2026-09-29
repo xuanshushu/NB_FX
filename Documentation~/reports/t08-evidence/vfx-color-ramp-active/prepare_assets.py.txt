@@ -1,0 +1,129 @@
+#!/usr/bin/env python3
+"""Generate test-only real VFX Mesh Ramp Output variants in /tmp only."""
+from __future__ import annotations
+import gzip,hashlib,pathlib,re,shutil,uuid,zlib,struct
+ROOT=pathlib.Path(__file__).resolve().parent; OUT=ROOT/'Assets'
+ARCH=pathlib.Path('/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t08-evidence/vfx-basecolor-active')
+SRC=ARCH/'NBFXBCA1.vfx.gz'
+OUTPUT=8926484042661614853; BASEMAP=8926484042661614854
+COLOR=8926484042661614855; SCALAR=8926484042661614869
+VECTOR=8926484042661614903; FLAGS0HI=8926484042661614870
+BASE_NAME='NBFXRampBaseRGBA_64_128_160_192.png'
+RAMP_NAME='NBFXRampSampleRGBA_64_200_50_128.png'
+MAP=8926484042661616400; TOGGLE=8926484042661616401
+MODE=8926484042661616402; COUNT=8926484042661616403
+OFFSET=8926484042661616410
+COLORS=tuple(8926484042661616420+10*i for i in range(6))
+ALPHAS=tuple(8926484042661616480+10*i for i in range(3))
+TINT=8926484042661616510
+MASTERS=(MAP,TOGGLE,MODE,OFFSET,*COLORS,*ALPHAS,COUNT,TINT)
+STRUCTS=(OFFSET,*COLORS,*ALPHAS,TINT)
+IDS=(MAP,TOGGLE,MODE,COUNT,*[x for m in STRUCTS for x in range(m,m+5)])
+VARIANTS=(('Off',0,1,0),('Multiply',1,1,0),('Add',1,1,256),('UVMultiply',1,0,0))
+
+# Explicit nontrivial two-key ramp. Count=2+(2<<16). With map R=64/255,
+# SmoothStep01 gives a constant but nonendpoint color in source mode 1.
+COLOR_VALUES=((0.2,0.8,0.3,0.0),(0.8,0.2,0.6,1.0),
+              (0.0,0.0,0.0,0.0),(0.0,0.0,0.0,0.0),
+              (0.0,0.0,0.0,0.0),(0.0,0.0,0.0,0.0))
+ALPHA_VALUES=((1.0,0.0,1.0,1.0),(0.0,0.0,0.0,0.0),(0.0,0.0,0.0,0.0))
+TINT_VALUE=(0.5,0.5,0.5,0.2)
+
+def guid(name:str)->str:return uuid.uuid5(uuid.NAMESPACE_URL,'nbfx-vfx-ramp-probe-20260930/'+name).hex
+
+def once(s:str,a:str,b:str,label:str)->str:
+    n=s.count(a)
+    if n!=1:raise ValueError(f'{label}: expected one {a!r}, found {n}')
+    return s.replace(a,b,1)
+
+def match(s:str,fid:int)->re.Match[str]:
+    m=re.search(rf'(?ms)^--- !u!114 &{fid}\n.*?(?=^--- !u!|\Z)',s)
+    if not m:raise ValueError(f'missing VFX object {fid}')
+    return m
+
+def change(s:str,fid:int,a:str,b:str)->str:
+    m=match(s,fid);body=once(m.group(),a,b,str(fid))
+    return s[:m.start()]+body+s[m.end():]
+
+def meta(src:pathlib.Path,name:str)->str:
+    s=src.read_text();m=re.search(r'(?m)^guid: ([a-f0-9]{32})$',s)
+    if not m:raise ValueError('meta missing GUID: '+str(src))
+    return once(s,m.group(1),guid(name),name)
+
+def png(path:pathlib.Path,rgba:tuple[int,int,int,int])->None:
+    def chunk(t:bytes,b:bytes)->bytes:
+        return struct.pack('>I',len(b))+t+b+struct.pack('>I',zlib.crc32(t+b)&0xffffffff)
+    path.write_bytes(b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',1,1,8,6,0,0,0))+
+        chunk(b'IDAT',zlib.compress(b'\0'+bytes(rgba),9))+chunk(b'IEND',b''))
+
+def clone_scalar(s:str,id:int,name:str,value:int)->str:
+    b=match(s,SCALAR).group().replace(str(SCALAR),str(id))
+    b=once(b,'name: _NB_Flags0Lo16\n',f'name: {name}\n',name)
+    return once(b,'m_SerializableObject: 0\n',f'm_SerializableObject: {value}\n',name)
+
+def color_json(v:tuple[float,...])->str:
+    return "'{\"r\":"+format(v[0],'.1f')+",\"g\":"+format(v[1],'.1f')+",\"b\":"+format(v[2],'.1f')+",\"a\":"+format(v[3],'.1f')+"}'"
+
+def vector_json(v:tuple[float,...])->str:
+    return "'{\"x\":"+format(v[0],'.1f')+",\"y\":"+format(v[1],'.1f')+",\"z\":"+format(v[2],'.1f')+",\"w\":"+format(v[3],'.1f')+"}'"
+
+def clone_struct(s:str,src:int,id:int,old_name:str,name:str,old_value:str,new_value:str)->list[str]:
+    master=match(s,src).group().replace(str(src),str(id))
+    for k in range(1,5):master=master.replace(str(src+k),str(id+k))
+    master=once(master,f'name: {old_name}\n',f'name: {name}\n',name)
+    if old_value!=new_value:master=once(master,old_value,new_value,name+' value')
+    children=[match(s,src+k).group().replace(str(src),str(id)).replace(str(src+k),str(id+k))
+              for k in range(1,5)]
+    return [master,*children]
+
+def main()->None:
+    OUT.mkdir(exist_ok=True)
+    s=gzip.decompress(SRC.read_bytes()).decode()
+    for fid in IDS:
+        if str(fid) in s:raise ValueError(f'test-private slot ID collision: {fid}')
+    if '  capacity: 1\n' not in s or '  cullMode: 0\n' not in match(s,OUTPUT).group():
+        raise ValueError('archived one-particle Cube/CullOff schema changed')
+    for old,new in {'NBFXBCGray.png':'NBFXRampGray.png',
+        'NBFXBCWhite.png':'NBFXRampWhite.png',
+        'NBFXBC_RGBA_64_128_160_192.png':BASE_NAME}.items():
+        shutil.copyfile(ARCH/old,OUT/new)
+        raw=(ARCH/(old+'.meta.txt')).read_text()
+        old_guid=re.search(r'(?m)^guid: ([a-f0-9]{32})$',raw).group(1)
+        (OUT/(new+'.meta')).write_text(meta(ARCH/(old+'.meta.txt'),new))
+        s=s.replace(old_guid,guid(new))
+    png(OUT/RAMP_NAME,(64,200,50,128))
+    (OUT/(RAMP_NAME+'.meta')).write_text(meta(ARCH/'NBFXBC_RGBA_64_128_160_192.png.meta.txt',RAMP_NAME))
+    tex=match(s,BASEMAP).group().replace(str(BASEMAP),str(MAP))
+    tex=once(tex,'name: _BaseMap\n','name: _RampColorMap\n','RampColorMap')
+    tex=once(tex,guid(BASE_NAME),guid(RAMP_NAME),'RampColorMap RGBA')
+    slots=[tex,clone_scalar(s,TOGGLE,'_RampColorToggle',0),
+           clone_scalar(s,MODE,'_RampColorSourceMode',1),
+           clone_scalar(s,COUNT,'_RampColorCount',131074)]
+    slots+=clone_struct(s,VECTOR,OFFSET,'_BaseMapMaskMapOffset','_RampColorMapOffset',
+        vector_json((0.,0.,0.,0.)),vector_json((0.,0.,0.,0.)))
+    white=color_json((1.,1.,1.,1.))
+    for i,id in enumerate(COLORS):
+        slots+=clone_struct(s,COLOR,id,'_Color',f'_RampColor{i}',white,color_json(COLOR_VALUES[i]))
+    zero=vector_json((0.,0.,0.,0.))
+    for i,id in enumerate(ALPHAS):
+        slots+=clone_struct(s,VECTOR,id,'_BaseMapMaskMapOffset',f'_RampColorAlpha{i}',
+            zero,vector_json(ALPHA_VALUES[i]))
+    slots+=clone_struct(s,COLOR,TINT,'_Color','_RampColorBlendColor',white,color_json(TINT_VALUE))
+    attachment=''.join(f'  - {{fileID: {id}}}\n' for id in MASTERS)
+    s=change(s,OUTPUT,'  m_OutputSlots: []\n',attachment+'  m_OutputSlots: []\n')
+    s+='\n'+'\n'.join(slots)
+    normalized=[]
+    for name,toggle,mode,flags0hi in VARIANTS:
+        value=change(s,TOGGLE,'m_SerializableObject: 0\n',f'm_SerializableObject: {toggle}\n')
+        value=change(value,MODE,'m_SerializableObject: 1\n',f'm_SerializableObject: {mode}\n')
+        value=change(value,FLAGS0HI,'m_SerializableObject: 0\n',f'm_SerializableObject: {flags0hi}\n')
+        fn=f'NBFXRamp{name}.vfx';(OUT/fn).write_text(value)
+        (OUT/(fn+'.meta')).write_text(meta(ARCH/'NBFXBCA1.vfx.meta.txt',fn))
+        for fid,current in ((TOGGLE,toggle),(MODE,mode),(FLAGS0HI,flags0hi)):
+            value=change(value,fid,f'm_SerializableObject: {current}\n','m_SerializableObject: VARIANT\n')
+        normalized.append(value)
+    if len(set(normalized))!=1:raise ValueError('Ramp VFX variants differ outside 3 controls')
+    for p in sorted(OUT.iterdir()):
+        if p.is_file():print(hashlib.sha256(p.read_bytes()).hexdigest(),p)
+
+if __name__=='__main__':main()

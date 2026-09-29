@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T08 · VFX Color Ramp 主动值</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-color-ramp-checkpoint.html">Mesh/产品切片</a></p>
+<h1>T08 · 真正 VFX Mesh Output 的颜色映射 Ramp</h1>
+<p><strong>限定结论：</strong>产品代码 <code>44d0307</code> 的 Ramp 在 Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 的真正单粒子 VFX Mesh Output 中，关闭、贴图源乘/加、UV0 源乘四例均可见并按共享算术响应。隔离 StandaloneOSX 构建 0 errors/33 warnings；Player exit 0、<code>PASS</code>。未修改官方包、原 NBPostprocess、Target 或主工程设置；<strong>不是完整 G5/G6 放行</strong>。</p>
+<table border="1" cellpadding="6"><thead><tr><th>项</th><th>原始结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>生成/Pass</td><td>四个 Output 的显式键值、Count=131074、源模式、贴图、Flags0 bit24 被 Editor 接受，生成源码含双精确 LightMode；Player 每例 alive=1、Pass=5、自定义索引 1/2、可见 676 像素、重复帧差 0。Editor lazy 1 Pass 不当作最终判据。</td><td><a href="t08-evidence/vfx-color-ramp-active/editor-inspection.txt">Editor 检查</a> · <a href="t08-evidence/vfx-color-ramp-active/editor-build.log.gz">构建日志</a> · <a href="t08-evidence/vfx-color-ramp-active/NBFXRampAdd-2.shader.gz">生成源码</a></td></tr>
+<tr><td>最终色/有效 Alpha</td><td>线性 ARGBHalf 黑/白底配对，共同内区 576 像素；三个启用模式相对关闭均改变全部 576 像素。有效覆盖率：关闭 .938965（预测 .938962），贴图乘 .278992（预测 .278500），贴图加 .997640（预测 .997785），UV0 乘 .278945（预测 .278500）。贴图模式源 RGB 中位误差低于 .0005；UV0 源仅验证渐变范围及相对贴图源的显著变化，未猜测精确 UV。这里的 Alpha 由最终色反推，并非 GPU 单片 Alpha 直接读回。</td><td><a href="t08-evidence/vfx-color-ramp-active/result.json">完整数值 JSON</a> · <a href="t08-evidence/vfx-color-ramp-active/player.log.gz">Player 日志</a> · <a href="t08-evidence/vfx-color-ramp-active/add-black.png">Add 黑底</a>/<a href="t08-evidence/vfx-color-ramp-active/add-white.png">Add 白底</a></td></tr>
+</tbody></table>
+<p><strong>未验证/保留问题：</strong>任意关键帧数、旋转/滚动、Noise/CustomData/特殊 UV、wrap/ForceNoMip、原 ShaderLab T00 Frozen B/C、NBPostprocess RT/Uber、Output GUI/持久化、其它平台。Player 日志有 fallback shader not found 字样，但受控样本可见且数值通过；不声称干净 Console。<a href="t08-evidence/vfx-color-ramp-active/README.txt">重放与限制</a> · <a href="t08-evidence/vfx-color-ramp-active/sha256.txt">附件哈希</a>。unityMCP 未暴露，隔离无可见 Editor 窗口 CLI；不 push。</p>
+</body></html>
