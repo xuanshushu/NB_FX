@@ -3,7 +3,31 @@
 
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderMaskV3.hlsl"
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDissolveV3.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
+
+// Basic single-map dissolve keeps the original two-stage numeric contract.
+// The host supplies a sampled texture and the original packed channel slot;
+// mask, procedural noise, ramp, custom data and animated UVs are later slices.
+half NBGraphResolveDissolveCoverage(half4 sampledDissolve, half4 dissolve,
+    float colorChannelLo16)
+{
+    uint channel = (NBGraphDecodeUInt32(colorChannelLo16, 0.0) >>
+        FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP) & 3u;
+    half value = channel == 0u ? sampledDissolve.r :
+        channel == 1u ? sampledDissolve.g :
+        channel == 2u ? sampledDissolve.b : sampledDissolve.a;
+    NBFX_DissolvePrepareInputV3 prepareInput = (NBFX_DissolvePrepareInputV3)0;
+    prepareInput.decodedAndNoiseBlendedValue = value;
+    prepareInput.exponent = dissolve.y;
+    NBFX_DissolvePreparedV3 prepared = NBFX_PrepareDissolveV3(prepareInput);
+    NBFX_DissolveResolveInputV3 resolveInput = (NBFX_DissolveResolveInputV3)0;
+    resolveInput.prepared = prepared;
+    resolveInput.threshold = dissolve.x;
+    resolveInput.softWidth = dissolve.w;
+    NBFX_DissolveResolvedV3 resolved = NBFX_ResolveDissolveV3(resolveInput);
+    return resolved.coverage;
+}
 
 // SHADERGRAPH_PREVIEW and runtime execute the same numeric shared function;
 // no preview-only camera/scene substitute is needed.
@@ -20,6 +44,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NB_DistortionAlphaPow, float NB_DistortionAlphaMultiplier, float NB_DistortionAlphaAdd,
     float4 SampledMask, float MaskToggle, float4 MaskMapVec, float4 MaskRefineVec,
     float NB_ColorChannelLo16,
+    float4 SampledDissolve, float DissolveToggle, float4 Dissolve,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -29,6 +54,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     input.timelineIntensity = 1.0h;
     input.applyTimelineIntensity = false;
     Out = (float4)NBFX_ComposeBaseColorV1(input);
+    if (DissolveToggle > 0.5)
+        Out.a *= NBGraphResolveDissolveCoverage((half4)SampledDissolve,
+            (half4)Dissolve, NB_ColorChannelLo16);
     if (MaskToggle > 0.5)
     {
         uint maskChannel = (NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0) >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
@@ -57,6 +85,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NB_DistortionAlphaPow, float NB_DistortionAlphaMultiplier, float NB_DistortionAlphaAdd,
     half4 SampledMask, float MaskToggle, half4 MaskMapVec, half4 MaskRefineVec,
     float NB_ColorChannelLo16,
+    half4 SampledDissolve, float DissolveToggle, half4 Dissolve,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -66,6 +95,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     input.timelineIntensity = 1.0h;
     input.applyTimelineIntensity = false;
     Out = NBFX_ComposeBaseColorV1(input);
+    if (DissolveToggle > 0.5)
+        Out.a *= NBGraphResolveDissolveCoverage(SampledDissolve, Dissolve,
+            NB_ColorChannelLo16);
     if (MaskToggle > 0.5)
     {
         uint maskChannel = (NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0) >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
