@@ -1,0 +1,30 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXT08PlayerBuild
+{
+    public static void Run()
+    {
+        const string vfxPath="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx";
+        const string graphPath="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+        const string scenePath="Assets/NBFXT08Player.unity";
+        AssetDatabase.ImportAsset(vfxPath,ImportAssetOptions.ForceUpdate);
+        var asset=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(vfxPath);
+        var graph=AssetDatabase.LoadAssetAtPath<Shader>(graphPath);
+        Shader generated=null;
+        foreach(var subAsset in AssetDatabase.LoadAllAssetsAtPath(vfxPath)) if(subAsset is Shader shader){generated=shader;break;}
+        if(!asset||!graph||!generated)throw new Exception("Product VFX, Graph, or generated Shader missing");
+        var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+        var go=new GameObject("NBFX T08 Player Probe");var probe=go.AddComponent<NBFXT08PlayerProbe>();probe.vfxAsset=asset;probe.graphShader=graph;probe.generatedVfxShader=generated;
+        EditorSceneManager.SaveScene(scene,scenePath);
+        const string output="/tmp/nbfx-t08-mesh-20260930/player/T08Player.app";Directory.CreateDirectory(Path.GetDirectoryName(output));
+        var result=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{scenePath},locationPathName=output,target=BuildTarget.StandaloneOSX,options=BuildOptions.None});
+        Debug.Log("NBFX_T08_BUILD result="+result.summary.result+" errors="+result.summary.totalErrors+" warnings="+result.summary.totalWarnings+" output="+result.summary.outputPath);
+        if(result.summary.result!=BuildResult.Succeeded)throw new Exception("T08 Player build failed");
+    }
+}
