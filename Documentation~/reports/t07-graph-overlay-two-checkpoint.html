@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph 叠加贴图 2 切片</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-overlay-one-checkpoint.html">叠加贴图 1</a></p>
+<h1>T07 · Graph 叠加贴图 2 / ColorBlend 切片</h1>
+<p><strong>限定结论：</strong>产品代码 <code>6a0329e</code> 接入原有 <code>_ColorBlendMap</code> 等属性及共享叠加算术；按原 ShaderLab 顺序放在 Dissolve 后、Mask 前，默认乘法，Flags1 bit16 切换加法，Flags0 bit25 控制 Alpha 乘。无新 keyword/Pass，不修改原 ShaderLab、官方包或 NBPostprocess。Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 的隔离 Mesh 算术测试通过；<strong>不是完整功能或 G4/G5 放行</strong>。</p>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>原始结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>Mesh 加/乘及 Alpha</td><td>线性 ARGBHalf 中心：关闭 (0.033,0.073,0.133,0.600)；加法 (0.417,0.171,0.229,0.600)；乘法 (0.025,0.033,0.060,0.600)；加法且 Alpha 乘 (0.633,0.226,0.283,0.385)；乘法且 Alpha 乘 (0.020,0.011,0.020,0.385)。独立公式期望差约 0–0.001；实际 Graph 10 Pass、自定义索引 1/2、ShaderUtil 消息 4。</td><td><a href="t07-evidence/overlay-two/NBFXT07Overlay2Mesh.cs.txt">探针</a> · <a href="t07-evidence/overlay-two/mesh.log.gz">日志</a> · <a href="t07-evidence/overlay-two/add.png">加法</a>/<a href="t07-evidence/overlay-two/multiply.png">乘法</a></td></tr>
+<tr><td>默认关闭回归</td><td>加入第二层后重新运行第一层五模式探针，关闭、加、乘及两种 Alpha 组合的五张 PNG 均与前序归档逐字节相同。只说明这些受控输入未回归。</td><td><a href="t07-evidence/overlay-two/overlay1-regression.log.gz">日志</a> · <a href="t07-evidence/overlay-two/overlay1-regression-comparison.json">比较 JSON</a></td></tr>
+</tbody></table>
+<p><strong>未验证：</strong>非零 UV 动画/旋转、Noise/CustomData、wrap/ForceNoMip、两层组合顺序、原 ShaderLab T00 Frozen 严格 B/C、真实 VFX 主动值、GUI 保存交互、性能和其它平台。<a href="t07-evidence/overlay-two/README.txt">限制与重放</a> · <a href="t07-evidence/overlay-two/sha256.txt">附件哈希</a>。unityMCP 未暴露，隔离无可见 Editor 窗口 CLI；不 push。</p>
+</body></html>
