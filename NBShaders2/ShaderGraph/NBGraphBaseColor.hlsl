@@ -2,6 +2,7 @@
 #define NB_GRAPH_BASE_COLOR_INCLUDED
 
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl"
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderMaskV3.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 
 // SHADERGRAPH_PREVIEW and runtime execute the same numeric shared function;
@@ -17,6 +18,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NB_Flags1Lo16, float NB_Flags1Hi16,
     float2 NB_DistortionNoise, float NB_DistortionIntensity, float NB_DistortionMode,
     float NB_DistortionAlphaPow, float NB_DistortionAlphaMultiplier, float NB_DistortionAlphaAdd,
+    float4 SampledMask, float MaskToggle, float4 MaskMapVec, float4 MaskRefineVec,
+    float NB_ColorChannelLo16,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -26,8 +29,22 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     input.timelineIntensity = 1.0h;
     input.applyTimelineIntensity = false;
     Out = (float4)NBFX_ComposeBaseColorV1(input);
+    if (MaskToggle > 0.5)
+    {
+        uint maskChannel = (NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0) >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
+        half channelValue = maskChannel == 0u ? (half)SampledMask.r :
+            maskChannel == 1u ? (half)SampledMask.g :
+            maskChannel == 2u ? (half)SampledMask.b : (half)SampledMask.a;
+        NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
+        maskInput.combinedMaskAfterNoise = channelValue;
+        maskInput.refine = (NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
+        maskInput.refinePowMulAdd = (half3)MaskRefineVec.xyz;
+        maskInput.overallStrength = (half)MaskMapVec.x;
+        Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
+    }
     // Original ColorAdjustment applies this flag after the base sample. In this
     // minimum Unlit Graph, no intervening lighting/effects alter that ordering.
+    // It follows the Mask alpha multiplication in the ShaderLab path as well.
     if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u)
         Out.rgb *= Out.a;
 }
@@ -38,6 +55,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NB_Flags1Lo16, float NB_Flags1Hi16,
     float2 NB_DistortionNoise, float NB_DistortionIntensity, float NB_DistortionMode,
     float NB_DistortionAlphaPow, float NB_DistortionAlphaMultiplier, float NB_DistortionAlphaAdd,
+    half4 SampledMask, float MaskToggle, half4 MaskMapVec, half4 MaskRefineVec,
+    float NB_ColorChannelLo16,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -47,6 +66,19 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     input.timelineIntensity = 1.0h;
     input.applyTimelineIntensity = false;
     Out = NBFX_ComposeBaseColorV1(input);
+    if (MaskToggle > 0.5)
+    {
+        uint maskChannel = (NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0) >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
+        half channelValue = maskChannel == 0u ? SampledMask.r :
+            maskChannel == 1u ? SampledMask.g :
+            maskChannel == 2u ? SampledMask.b : SampledMask.a;
+        NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
+        maskInput.combinedMaskAfterNoise = channelValue;
+        maskInput.refine = (NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
+        maskInput.refinePowMulAdd = MaskRefineVec.xyz;
+        maskInput.overallStrength = MaskMapVec.x;
+        Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
+    }
     if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u)
         Out.rgb *= Out.a;
 }
