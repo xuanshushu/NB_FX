@@ -1,0 +1,18 @@
+using System;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.VFX;
+public static class NBFXT07OverlayImport
+{
+ const string Root="/tmp/nbfx-overlay1-20260930";
+ const string Graph="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+ const string Old="Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader";
+ const string Vfx="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx";
+ static void Check(Shader sh,string label){if(!sh||!sh.isSupported)throw new Exception(label+" shader unsupported");var m=new Material(sh);Debug.Log("NBFX_OVERLAY_IMPORT "+label+" passes="+m.passCount+" camera="+m.FindPass("NBCameraOpaqueDistortPass")+" deferred="+m.FindPass("NBDeferredDistortPass")+" messages="+ShaderUtil.GetShaderMessages(sh).Length);foreach(var msg in ShaderUtil.GetShaderMessages(sh)){Debug.Log("NBFX_OVERLAY_MESSAGE "+label+" "+msg.severity+" "+msg.message);if(msg.severity.ToString()=="Error")throw new Exception(label+" shader compile error");}UnityEngine.Object.DestroyImmediate(m);}
+ public static void Run(){Directory.CreateDirectory(Root);AssetDatabase.ImportAsset(Old,ImportAssetOptions.ForceUpdate);var old=AssetDatabase.LoadAssetAtPath<Shader>(Old);Check(old,"old");AssetDatabase.ImportAsset(Graph,ImportAssetOptions.ForceUpdate);var graph=AssetDatabase.LoadAssetAtPath<Shader>(Graph);Check(graph,"graph");var mat=new Material(graph);foreach(var n in new[]{"_EmissionMap","_EmissionEnabled","_EmissionMapColor","_EmissionMapColorIntensity","_EmissionAlphaIntensity","_EmissionMapUVOffset","_EmissionMapUVRotation"})if(!mat.HasProperty(n))throw new Exception("missing "+n);UnityEngine.Object.DestroyImmediate(mat);
+  foreach(var asm in AppDomain.CurrentDomain.GetAssemblies()){var t=asm.GetType("UnityEditor.ShaderGraph.ShaderGraphImporter");if(t==null)continue;foreach(var m in t.GetMethods(BindingFlags.NonPublic|BindingFlags.Static)){if(m.Name!="GetShaderText"||m.GetParameters().Length!=4||!m.GetParameters()[3].ParameterType.IsByRef)continue;object[] args={Graph,null,null,null};var s=(string)m.Invoke(null,args);File.WriteAllText(Root+"/graph.shader",s);if(!s.Contains("NBGraphBaseColor_float")||!s.Contains("_EmissionMap")||!s.Contains("NBCameraOpaqueDistortPass")||!s.Contains("NBDeferredDistortPass"))throw new Exception("Graph generated missing Overlay/Pass");goto done;}}done:;
+  AssetDatabase.ImportAsset(Vfx,ImportAssetOptions.ForceUpdate);var vfx=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(Vfx);if(!vfx)throw new Exception("VFX missing");Type rt=null;foreach(var asm in AppDomain.CurrentDomain.GetAssemblies()){rt=asm.GetType("UnityEditor.VFX.VisualEffectResource");if(rt!=null)break;}var flags=BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Static|BindingFlags.Instance;var res=rt.GetMethod("GetResourceAtPath",flags).Invoke(null,new object[]{Vfx});int c=(int)rt.GetMethod("GetShaderSourceCount",flags).Invoke(res,null);bool found=false;for(int i=0;i<c;i++){var s=(string)rt.GetMethod("GetShaderSource",flags).Invoke(res,new object[]{i});if(!s.Contains("output._EmissionEnabled"))continue;File.WriteAllText(Root+"/vfx-"+i+".shader",s);Debug.Log("NBFX_OVERLAY_VFXSRC chars="+s.Length+" defaultOff="+s.Contains("output._EmissionEnabled = (float)0;")+" hasOverlay="+s.Contains("NBFX_ApplyColorOverlayV1"));found=true;}if(!found)throw new Exception("VFX generated Overlay missing");
+ }
+}

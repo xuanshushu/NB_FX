@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+"""Prepare test-only VFX Mesh BackColor variants in /tmp; no Unity/project writes."""
+from __future__ import annotations
+import gzip, hashlib, pathlib, re, shutil, uuid
+
+ROOT = pathlib.Path(__file__).resolve().parent
+OUT = ROOT/'Assets'
+ARCH = pathlib.Path('/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t08-evidence/vfx-basecolor-active')
+SRC = ARCH/'NBFXBCA1.vfx.gz'
+OUTPUT = 8926484042661614853
+MESH = 8926484042661614862
+COLOR = 8926484042661614855
+FLAGS_HI = 8926484042661614870
+BACK_COLOR = 8926484042661616002
+BACK_COMPONENTS = (8926484042661616003,8926484042661616004,8926484042661616005,8926484042661616006)
+# Build script replaces this known Cube Mesh reference with the actual local
+# fileID/GUID of a Quad mesh it creates in the isolated clone.
+CUBE_REF = '{"obj":{"fileID":10202,"guid":"0000000000000000e000000000000000","type":0}}'
+
+def guid(name:str)->str: return uuid.uuid5(uuid.NAMESPACE_URL,'nbfx-vfx-backcolor-probe-20260930/'+name).hex
+
+def once(s:str,old:str,new:str,what:str)->str:
+    if s.count(old)!=1: raise ValueError(f'{what}: expected one {old!r}, got {s.count(old)}')
+    return s.replace(old,new,1)
+
+def match(s:str,fid:int)->re.Match[str]:
+    m=re.search(rf'(?ms)^--- !u!114 &{fid}\n.*?(?=^--- !u!|\Z)',s)
+    if not m: raise ValueError(f'missing VFX object {fid}')
+    return m
+
+def change(s:str,fid:int,old:str,new:str)->str:
+    m=match(s,fid)
+    b=once(m.group(),old,new,str(fid))
+    return s[:m.start()]+b+s[m.end():]
+
+def meta(src:pathlib.Path,filename:str)->str:
+    s=src.read_text(); m=re.search(r'(?m)^guid: ([a-f0-9]{32})$',s)
+    if not m: raise ValueError('no GUID in '+str(src))
+    return once(s,m.group(1),guid(filename),filename)
+
+def main()->None:
+    OUT.mkdir(exist_ok=True)
+    s=gzip.decompress(SRC.read_bytes()).decode()
+    if str(BACK_COLOR) in s or 'name: _BaseBackColor' in s:
+        raise ValueError('archived source already has BackColor; do not duplicate')
+    if CUBE_REF not in match(s,MESH).group() or '  capacity: 1\n' not in s or '  cullMode: 0\n' not in s:
+        raise ValueError('source is not the expected one-particle Cube/CullOff fixture')
+    # Keep archived OFF-state auxiliary textures but force BaseMap to explicit
+    # white to make front expected white and back red (no texture tint confound).
+    for name in ('NBFXBCGray.png','NBFXBCWhite.png','NBFXBC_RGBA_64_128_160_192.png'):
+        shutil.copyfile(ARCH/name,OUT/name)
+        old_meta=(ARCH/(name+'.meta.txt')).read_text()
+        old_guid=re.search(r'(?m)^guid: ([a-f0-9]{32})$',old_meta).group(1)
+        (OUT/(name+'.meta')).write_text(meta(ARCH/(name+'.meta.txt'),name))
+        s=s.replace(old_guid,guid(name))
+    rgba_guid=guid('NBFXBC_RGBA_64_128_160_192.png')
+    white_guid=guid('NBFXBCWhite.png')
+    s=change(s,8926484042661614854,rgba_guid,white_guid)
+    # Clone the known VFXSlotColor shape AND all four component children. A
+    # scalar/Vector4-only slot would not match the archived VFX serializer.
+    color_master=match(s,COLOR).group()
+    if 'name: _Color' not in color_master or 'VFXSlotColor' not in color_master:
+        raise ValueError('source Color slot schema changed')
+    new_master=color_master.replace(str(COLOR),str(BACK_COLOR))
+    for old,new in zip(range(COLOR+1,COLOR+5),BACK_COMPONENTS):
+        new_master=new_master.replace(str(old),str(new))
+    new_master=once(new_master,'name: _Color\n','name: _BaseBackColor\n','BackColor name')
+    new_master=once(new_master,
+        """'{"r":1.0,"g":1.0,"b":1.0,"a":1.0}'""",
+        """'{"r":1.0,"g":0.0,"b":0.0,"a":1.0}'""",
+        'BackColor red')
+    new_objects=[new_master]
+    for old,new in zip(range(COLOR+1,COLOR+5),BACK_COMPONENTS):
+        child=match(s,old).group().replace(str(COLOR),str(BACK_COLOR)).replace(str(old),str(new))
+        new_objects.append(child)
+    s=change(s,OUTPUT,'  m_OutputSlots: []\n',f'  - {{fileID: {BACK_COLOR}}}\n  m_OutputSlots: []\n')
+    s+='\n'+'\n'.join(new_objects)
+    variants=[]
+    for label,flag in (('Off',0),('On',4096)):
+        value=change(s,FLAGS_HI,'m_SerializableObject: 0\n',f'm_SerializableObject: {flag}\n')
+        fn=f'NBFXBack{label}.vfx'
+        (OUT/fn).write_text(value)
+        (OUT/(fn+'.meta')).write_text(meta(ARCH/'NBFXBCA1.vfx.meta.txt',fn))
+        variants.append((flag,value))
+    normalized=[]
+    for flag,value in variants:
+        normalized.append(change(value,FLAGS_HI,f'm_SerializableObject: {flag}\n','m_SerializableObject: FLAG\n'))
+    if normalized[0]!=normalized[1]: raise ValueError('Off/On differ outside bit28 high16 slot')
+    for p in sorted(OUT.iterdir()):
+        if p.is_file(): print(hashlib.sha256(p.read_bytes()).hexdigest(),p)
+
+if __name__=='__main__': main()

@@ -1,0 +1,315 @@
+// Test-only one-particle VFX Mesh BackColor Player probe. No product mutations.
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
+
+public sealed class NBFXBackPlayerProbe : MonoBehaviour
+{
+    public VisualEffectAsset offAsset, onAsset;
+    public Shader graphShader, offShader, onShader;
+    public Mesh quadMesh;
+    const int Size = 256;
+    const int Off0Layer = 0, Off180Layer = 1, On0Layer = 2, On180Layer = 5;
+    const float RepeatTolerance = 0.005f;
+
+    [Serializable] sealed class CaseInfo
+    {
+        public string name;
+        public int alive, passCount, opaquePass, deferredPass, visiblePixels;
+        public bool culled;
+        public float repeatMaxRGB;
+        public float medianR, medianG, medianB;
+    }
+    [Serializable] sealed class Result
+    {
+        public string unityVersion, graphicsDevice, status, error, note;
+        public bool linearTarget, fixtureValid, facingSeparated, pass;
+        public int roiPixels, offFacingChangedPixels, onFacingChangedPixels;
+        public int offVsOn0ChangedPixels, offVsOn180ChangedPixels;
+        public float offFacingMedianMaxRGB;
+        public CaseInfo off0, off180, on0, on180;
+    }
+    sealed class Context
+    {
+        public Camera camera;
+        public GameObject cameraObject;
+        public RenderTexture target;
+        public Texture2D readback;
+        public VisualEffect off0, off180, on0, on180;
+    }
+
+    static string OutputPath()
+    {
+        foreach (string arg in Environment.GetCommandLineArgs())
+            if (arg.StartsWith("--nbfx-back-output=", StringComparison.Ordinal))
+                return arg.Substring("--nbfx-back-output=".Length);
+        return null;
+    }
+
+    IEnumerator Start()
+    {
+        string output = OutputPath();
+        if (string.IsNullOrEmpty(output)) { Application.Quit(2); yield break; }
+        Directory.CreateDirectory(output);
+        var result = new Result
+        {
+            unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
+            note = "Four frozen one-particle VFX Mesh cases: bit28 off/on x camera +Z/-Z. White BaseMap and white _Color; enabled _BaseBackColor=(1,0,0,1). This is final RGB evidence, not VFX internal face-sign readback. Both VFX objects use the same transform; the camera moves between +Z and -Z to observe opposite Quad faces, independent of VFX world/local simulation transforms."
+        };
+        Context context = null;
+        int exitCode = 2;
+        try { context = Setup(); }
+        catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        if (context != null && result.error == null)
+        {
+            // Same proven warmup/freeze sequence as archived t08 numeric VFX Player.
+            for (int frame = 0; frame < 3; frame++) { context.camera.Render(); yield return null; }
+            foreach (var vfx in Effects(context)) vfx.Simulate(1f / 60f, 21u);
+            for (int frame = 0; frame < 2; frame++) { context.camera.Render(); yield return null; }
+            foreach (var vfx in Effects(context)) vfx.pause = true;
+            try
+            {
+                Run(context, output, result);
+                result.fixtureValid = FixtureValid(result);
+                bool red0 = IsRed(result.on0), red180 = IsRed(result.on180);
+                bool white0 = IsWhite(result.on0), white180 = IsWhite(result.on180);
+                bool changed0 = result.offVsOn0ChangedPixels >= 100;
+                bool changed180 = result.offVsOn180ChangedPixels >= 100;
+                result.facingSeparated = result.fixtureValid &&
+                    result.offFacingMedianMaxRGB < 0.05f &&
+                    result.offFacingChangedPixels <= 5 &&
+                    result.onFacingChangedPixels >= 100 &&
+                    ((changed0 && !changed180 && red0 && white180) ||
+                     (!changed0 && changed180 && white0 && red180));
+                result.pass = result.facingSeparated;
+                result.status = result.pass ? "PASS" :
+                    result.fixtureValid ? "FACING_OR_COLOR_MISMATCH" : "FIXTURE_INVALID";
+                exitCode = result.pass ? 0 : 1;
+            }
+            catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        }
+        try { Cleanup(context); }
+        catch (Exception ex) { result.status = "CLEANUP_FAILED"; result.error = (result.error ?? "") + "\n" + ex; exitCode = 2; }
+        File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(result, true));
+        Debug.Log("NBFX_BACK_PLAYER " + JsonUtility.ToJson(result));
+        Application.Quit(exitCode);
+    }
+
+    static VisualEffect[] Effects(Context c) => new[] { c.off0, c.off180, c.on0, c.on180 };
+
+    Context Setup()
+    {
+        if (!offAsset || !onAsset || !offShader || !onShader || !graphShader || !quadMesh)
+            throw new Exception("Serialized Graph/VFX/Quad references missing");
+        if (quadMesh.vertexCount != 4 || quadMesh.triangles.Length != 6)
+            throw new Exception("Expected test-only single-sided Quad Mesh");
+        if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.Metal ||
+            !SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf))
+            throw new Exception("Requires Metal and ARGBHalf RenderTexture");
+        var c = new Context();
+        try
+        {
+            c.cameraObject = new GameObject("NBFX BackColor VFX Camera");
+            c.camera = c.cameraObject.AddComponent<Camera>();
+            c.camera.orthographic = true;
+            c.camera.orthographicSize = 0.5f;
+            c.camera.nearClipPlane = 0.1f;
+            c.camera.farClipPlane = 20f;
+            c.camera.transform.position = new Vector3(0, 0, 8);
+            c.camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+            c.camera.clearFlags = CameraClearFlags.SolidColor;
+            c.camera.backgroundColor = Color.black;
+            c.camera.allowHDR = true;
+            c.camera.allowMSAA = false;
+            c.camera.cullingMask = 55; // HighFidelity Renderer includes layers 0/1/2/5.
+            c.target = new RenderTexture(Size, Size, 24,
+                RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
+            c.target.antiAliasing = 1;
+            c.target.Create();
+            if (!c.target.IsCreated() || c.target.sRGB)
+                throw new Exception("Linear ARGBHalf target failed");
+            c.camera.targetTexture = c.target;
+            c.readback = new Texture2D(Size, Size, TextureFormat.RGBAHalf, false, true);
+            c.off0 = CreateEffect("Off0", Off0Layer, offAsset, 0);
+            c.off180 = CreateEffect("Off180", Off180Layer, offAsset, 0);
+            c.on0 = CreateEffect("On0", On0Layer, onAsset, 0);
+            c.on180 = CreateEffect("On180", On180Layer, onAsset, 0);
+            return c;
+        }
+        catch { Cleanup(c); throw; }
+    }
+
+    static VisualEffect CreateEffect(string name, int layer, VisualEffectAsset asset, float yRotation)
+    {
+        var go = new GameObject("NBFX BackColor " + name);
+        go.layer = layer;
+        go.transform.position = new Vector3(0, 0, 2);
+        go.transform.rotation = Quaternion.Euler(0, yRotation, 0);
+        go.transform.localScale = Vector3.one * 4f;
+        var effect = go.AddComponent<VisualEffect>();
+        effect.resetSeedOnPlay = false;
+        effect.startSeed = 12345;
+        effect.visualEffectAsset = asset;
+        effect.Reinit();
+        return effect;
+    }
+
+    static Color[] Capture(Context c, string path)
+    {
+        c.camera.Render();
+        var previous = RenderTexture.active;
+        try
+        {
+            RenderTexture.active = c.target;
+            c.readback.ReadPixels(new Rect(0, 0, Size, Size), 0, 0);
+            c.readback.Apply(false);
+            var colors = c.readback.GetPixels();
+            var preview = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            try
+            {
+                preview.SetPixels(colors);
+                preview.Apply(false);
+                File.WriteAllBytes(path, preview.EncodeToPNG());
+            }
+            finally { Destroy(preview); }
+            return colors;
+        }
+        finally { RenderTexture.active = previous; }
+    }
+
+    static float MaxRGB(Color a, Color b) => Mathf.Max(
+        Mathf.Abs(a.r - b.r), Mathf.Abs(a.g - b.g), Mathf.Abs(a.b - b.b));
+    static float MaxRGB(Color[] a, Color[] b)
+    {
+        float max = 0;
+        for (int i = 0; i < a.Length; i++) max = Mathf.Max(max, MaxRGB(a[i], b[i]));
+        return max;
+    }
+    static int Changed(Color[] a, Color[] b, float tolerance)
+    {
+        int count = 0;
+        for (int i = 0; i < a.Length; i++) if (MaxRGB(a[i], b[i]) > tolerance) count++;
+        return count;
+    }
+    static float Median(List<float> samples)
+    {
+        if (samples.Count == 0) throw new Exception("No safe interior pixels");
+        samples.Sort();
+        int middle = samples.Count / 2;
+        return samples.Count % 2 == 0 ?
+            0.5f * (samples[middle - 1] + samples[middle]) : samples[middle];
+    }
+    static CaseInfo Describe(string name, VisualEffect effect, Shader shader,
+        Color[] black, Color[] frame, Color[] repeat, List<int> roi)
+    {
+        var material = new Material(shader);
+        try
+        {
+            var info = new CaseInfo
+            {
+                name = name,
+                alive = (int)effect.GetParticleSystemInfo("Simple Loop").aliveCount,
+                culled = effect.culled,
+                passCount = material.passCount,
+                opaquePass = material.FindPass("NBCameraOpaqueDistortPass"),
+                deferredPass = material.FindPass("NBDeferredDistortPass"),
+                visiblePixels = Changed(black, frame, 0.02f),
+                repeatMaxRGB = MaxRGB(frame, repeat)
+            };
+            var red = new List<float>(); var green = new List<float>(); var blue = new List<float>();
+            foreach (int i in roi) { red.Add(frame[i].r); green.Add(frame[i].g); blue.Add(frame[i].b); }
+            info.medianR = Median(red); info.medianG = Median(green); info.medianB = Median(blue);
+            return info;
+        }
+        finally { Destroy(material); }
+    }
+
+    void Run(Context c, string output, Result r)
+    {
+        r.linearTarget = !c.target.sRGB;
+        c.camera.cullingMask = 0;
+        var black = Capture(c, Path.Combine(output, "black.png"));
+        c.camera.cullingMask = 1 << Off0Layer;
+        var off0 = Capture(c, Path.Combine(output, "off0.png"));
+        var off0Repeat = Capture(c, Path.Combine(output, "off0-repeat.png"));
+        c.camera.transform.position = new Vector3(0, 0, -8); c.camera.transform.rotation = Quaternion.identity;
+        c.camera.cullingMask = 1 << Off180Layer;
+        var off180 = Capture(c, Path.Combine(output, "off180.png"));
+        var off180Repeat = Capture(c, Path.Combine(output, "off180-repeat.png"));
+        c.camera.transform.position = new Vector3(0, 0, 8); c.camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+        c.camera.cullingMask = 1 << On0Layer;
+        var on0 = Capture(c, Path.Combine(output, "on0.png"));
+        var on0Repeat = Capture(c, Path.Combine(output, "on0-repeat.png"));
+        c.camera.transform.position = new Vector3(0, 0, -8); c.camera.transform.rotation = Quaternion.identity;
+        c.camera.cullingMask = 1 << On180Layer;
+        var on180 = Capture(c, Path.Combine(output, "on180.png"));
+        var on180Repeat = Capture(c, Path.Combine(output, "on180-repeat.png"));
+        var roi = new List<int>();
+        // All four captures must contain the SAME safe particle interior. The
+        // 3x3 neighbourhood excludes antialiased edges and orientation drift.
+        var frames = new[] { off0, off180, on0, on180 };
+        for (int y = 1; y < Size - 1; y++) for (int x = 1; x < Size - 1; x++)
+        {
+            bool safe = true;
+            for (int dy = -1; dy <= 1 && safe; dy++)
+                for (int dx = -1; dx <= 1 && safe; dx++)
+                {
+                    int n = (y + dy) * Size + x + dx;
+                    foreach (var frame in frames)
+                        if (MaxRGB(black[n], frame[n]) < 0.25f) { safe = false; break; }
+                }
+            if (safe) roi.Add(y * Size + x);
+        }
+        r.roiPixels = roi.Count;
+        if (roi.Count < 100) throw new Exception("Not enough common safe VFX Quad pixels: " + roi.Count);
+        r.off0 = Describe("off0", c.off0, offShader, black, off0, off0Repeat, roi);
+        r.off180 = Describe("off180", c.off180, offShader, black, off180, off180Repeat, roi);
+        r.on0 = Describe("on0", c.on0, onShader, black, on0, on0Repeat, roi);
+        r.on180 = Describe("on180", c.on180, onShader, black, on180, on180Repeat, roi);
+        r.offFacingChangedPixels = ChangedAt(roi, off0, off180, 0.1f);
+        r.onFacingChangedPixels = ChangedAt(roi, on0, on180, 0.1f);
+        r.offVsOn0ChangedPixels = ChangedAt(roi, off0, on0, 0.1f);
+        r.offVsOn180ChangedPixels = ChangedAt(roi, off180, on180, 0.1f);
+        r.offFacingMedianMaxRGB = Mathf.Max(
+            Mathf.Abs(r.off0.medianR - r.off180.medianR),
+            Mathf.Abs(r.off0.medianG - r.off180.medianG),
+            Mathf.Abs(r.off0.medianB - r.off180.medianB));
+    }
+
+    static int ChangedAt(List<int> roi, Color[] a, Color[] b, float tolerance)
+    {
+        int count = 0;
+        foreach (int i in roi) if (MaxRGB(a[i], b[i]) > tolerance) count++;
+        return count;
+    }
+    static bool IsWhite(CaseInfo c) => c.medianR > 0.8f && c.medianG > 0.8f && c.medianB > 0.8f;
+    static bool IsRed(CaseInfo c) => c.medianR > 0.8f && c.medianG < 0.1f && c.medianB < 0.1f;
+    static bool FixtureValid(Result r)
+    {
+        if (!r.linearTarget || r.roiPixels < 100 || !IsWhite(r.off0) || !IsWhite(r.off180))
+            return false;
+        foreach (var info in new[] { r.off0, r.off180, r.on0, r.on180 })
+            if (info == null || info.alive != 1 || info.culled ||
+                info.visiblePixels <= 100 || info.repeatMaxRGB > RepeatTolerance ||
+                info.passCount < 3 || info.opaquePass != 1 || info.deferredPass != 2)
+                return false;
+        return true;
+    }
+    static void Cleanup(Context c)
+    {
+        if (c == null) return;
+        if (c.camera) c.camera.targetTexture = null;
+        if (c.target) { c.target.Release(); Destroy(c.target); }
+        if (c.readback) Destroy(c.readback);
+        if (c.cameraObject) Destroy(c.cameraObject);
+        if (c.off0) Destroy(c.off0.gameObject);
+        if (c.off180) Destroy(c.off180.gameObject);
+        if (c.on0) Destroy(c.on0.gameObject);
+        if (c.on180) Destroy(c.on180.gameObject);
+    }
+}

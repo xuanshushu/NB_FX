@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T08 · VFX 背面色主动值检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-back-face-color-checkpoint.html">Mesh/产品切片</a></p>
+<h1>T08 · 真正 VFX Mesh Output 背面色主动值</h1>
+<p><strong>限定结论：</strong>包内 Graph 产品提交 <code>38c114d</code> 的 Flags0 bit28 + <code>_BaseBackColor</code> 在 Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 的真正单粒子 VFX Mesh Output 中可见。隔离 Player 输出 <code>PASS</code>、退出码 0；未修改官方包、原 ShaderLab、NBPostprocess 或项目 Renderer 设置。此证据不放行 G5。</p>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>结果</th><th>原始证据</th></tr></thead><tbody>
+<tr><td>测试有效性与 Pass</td><td>显式单面 Quad、相同 VFX 对象变换；相机移动至 +Z/-Z 两侧，不依赖 VFX 旋转语义。生成源码含 Off=0/On=4096、红色 BackColor、FaceSign 与两个精确 LightMode；四种情况均 alive=1、Pass=5、自定义索引=1/2、可见像素 676。</td><td><a href="t08-evidence/vfx-backcolor-active/run_editor-inspection.txt">Editor 检查</a> · <a href="t08-evidence/vfx-backcolor-active/editor-build-camera-sides.log.gz">构建日志</a> · <a href="t08-evidence/vfx-backcolor-active/NBFXBackOn-2.shader.gz">生成源码</a></td></tr>
+<tr><td>最终颜色 A/B</td><td>线性 ARGBHalf 共同内区 576 像素。bit28 关闭时两侧都是白色、差 0；开启后 +Z 仍白色、-Z 红色，576 像素改变。四种情况重复帧最大 RGB 差均 0。</td><td><a href="t08-evidence/vfx-backcolor-active/run_output-camera-sides_result.json">结果 JSON</a> · <a href="t08-evidence/vfx-backcolor-active/player-camera-sides.log.gz">Player 日志</a> · <a href="t08-evidence/vfx-backcolor-active/on0.png">On +Z</a>/<a href="t08-evidence/vfx-backcolor-active/on180.png">On -Z</a></td></tr>
+<tr><td>测试夹具纠正</td><td>初版让 VFX 对象旋转 180°，却未造成预期的网格正背面对照，两张 On 图仍白；不能因此认定产品失效。仅在隔离 clone 临时强制背色的诊断证明属性绑定，之后恢复产品 HLSL 并改用相机换侧重新构建/运行，最终通过。原失败与诊断均保留。</td><td><a href="t08-evidence/vfx-backcolor-active/run_output_result.json">初版结果</a> · <a href="t08-evidence/vfx-backcolor-active/run_output-forceback-diagnostic_result.json">诊断结果</a> · <a href="t08-evidence/vfx-backcolor-active/player-forceback-diagnostic.log.gz">诊断日志</a></td></tr>
+</tbody></table>
+<p><strong>仍未验证：</strong>原 ShaderLab 数值 B/C、透明双面排序、与两条扭曲 RT/Uber 的组合、真实 Output GUI/重开后持久化、其它 Mesh 与平台。<a href="t08-evidence/vfx-backcolor-active/README.txt">重放说明</a> · <a href="t08-evidence/vfx-backcolor-active/sha256.txt">附件哈希</a>。unityMCP 未暴露，采用无可见 Editor 窗口的隔离 CLI；未经用户再次要求不 push。</p>
+</body></html>
