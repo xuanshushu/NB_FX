@@ -27,6 +27,13 @@ namespace NBShaderEditor
             "_MaskMapUVRotation", "_MaskMapRotationSpeed", "_MaskMapOffsetAnition"
         };
 
+        static readonly string[] Overlay1Properties =
+        {
+            "_EmissionEnabled", "_EmissionMap", "_EmissionMapUVRotation",
+            "_EmissionMapUVOffset", "_EmissionMapColor",
+            "_EmissionMapColorIntensity", "_EmissionAlphaIntensity"
+        };
+
         static readonly string[] DissolveProperties =
         {
             "_Dissolve_Toggle", "_DissolveMap", "_Dissolve",
@@ -54,6 +61,7 @@ namespace NBShaderEditor
         {
             _drawnProperties.Clear();
             DrawGroup(BaseProperties, "block.maintex", "Main Texture");
+            DrawGroup(Overlay1Properties, "feature.叠加贴图1", "Overlay 1");
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
             DrawGroup(DistortionProperties, "feature.扭曲", "Distort");

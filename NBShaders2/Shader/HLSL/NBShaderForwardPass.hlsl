@@ -63,62 +63,6 @@
         return output;
     }
 
-    void ApplyColorOverlay(
-        inout half3 baseColor,
-        inout half baseAlpha,
-        half4 overlaySample,
-        half4 overlayTint,
-        half overlayColorIntensity,
-        half overlayAlphaIntensity,
-        bool multiplyMode,
-        bool alphaMultiplyMode)
-    {
-        half3 overlayColor = overlaySample.rgb;
-        half overlayAlpha = overlaySample.a * overlayTint.a;
-        half3 overlayTintWithIntensity = overlayTint.rgb * overlayColorIntensity;
-
-        UNITY_BRANCH
-        if (overlayAlphaIntensity != 1.0h)
-        {
-            overlayAlpha = lerp(1.0h, overlayAlpha, overlayAlphaIntensity);
-        }
-
-        UNITY_BRANCH
-        if (multiplyMode)
-        {
-            overlayColor *= overlayTintWithIntensity;
-
-            UNITY_BRANCH
-            if (alphaMultiplyMode)
-            {
-                baseColor *= overlayColor;
-            }
-            else
-            {
-                baseColor = lerp(baseColor, baseColor * overlayColor, overlayAlpha);
-            }
-        }
-        else
-        {
-            UNITY_BRANCH
-            if (!alphaMultiplyMode)
-            {
-                overlayColor *= overlayAlpha;
-            }
-
-            overlayColor *= overlayTintWithIntensity;
-            baseColor += overlayColor;
-        }
-
-        UNITY_BRANCH
-        if (alphaMultiplyMode)
-        {
-            baseAlpha *= overlayAlpha;
-        }
-    }
-
-
-
     VaryingsParticle vertParticleUnlit(AttributesParticle input)
     {
         VaryingsParticle output = (VaryingsParticle)0;
@@ -826,7 +770,7 @@
             #endif
             bool forceEmissionLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP);
             half4 emission = SampleTexture2DWithWrapFlags(_EmissionMap,emission_uv,FLAG_BIT_WRAPMODE_EMISSIONMAP,forceEmissionLod0);
-            ApplyColorOverlay(
+            NBFX_ApplyColorOverlayV1(
                 result,
                 alpha,
                 emission,
@@ -1006,7 +950,7 @@
             #endif
             bool forceColorBlendLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP);
             half4 colorBlend = SampleTexture2DWithWrapFlags(_ColorBlendMap,colorBlendMap_uv,FLAG_BIT_WRAPMODE_COLORBLENDMAP,forceColorBlendLod0);
-            ApplyColorOverlay(
+            NBFX_ApplyColorOverlayV1(
                 result,
                 alpha,
                 colorBlend,

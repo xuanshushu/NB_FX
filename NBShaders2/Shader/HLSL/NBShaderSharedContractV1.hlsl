@@ -82,6 +82,9 @@ struct NBFX_VertexOffsetPreparedV1
 
 BaseUVs NBFX_BuildBaseUVsV1(NBFX_BaseUVInputV1 input, NBFX_BaseUVParamsV1 parameters);
 half4 NBFX_ComposeBaseColorV1(NBFX_BaseColorInputV1 input);
+void NBFX_ApplyColorOverlayV1(inout half3 baseColor, inout half baseAlpha,
+    half4 overlaySample, half4 overlayTint, half overlayColorIntensity,
+    half overlayAlphaIntensity, bool multiplyMode, bool alphaMultiplyMode);
 NBFX_DistortionPayloadV1 NBFX_BuildDistortionPayloadV1(NBFX_DistortionInputV1 input);
 half3 NBFX_ComputeVertexOffsetOSV1(NBFX_VertexOffsetPreparedV1 input);
 

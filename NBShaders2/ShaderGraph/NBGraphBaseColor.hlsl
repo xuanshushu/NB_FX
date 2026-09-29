@@ -158,6 +158,10 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 MaskMap3GradientFloat1, float4 MaskMap3GradientFloat2,
     float AlphaAll, float4 ColorA, float4 VertexColor,
     float BaseColorIntensityForTimeline, float4 BaseBackColor, float IsFrontFace,
+    UnityTexture2D EmissionMap, float EmissionEnabled, float2 EmissionUV,
+    float4 EmissionMapUVOffset, float EmissionMapUVRotation,
+    float4 EmissionMapColor, float EmissionMapColorIntensity,
+    float EmissionAlphaIntensity,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -173,6 +177,22 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     input.timelineIntensity = (half)BaseColorIntensityForTimeline;
     input.applyTimelineIntensity = true;
     Out = (float4)NBFX_ComposeBaseColorV1(input);
+    if (EmissionEnabled > 0.5)
+    {
+        float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
+            EmissionMapUVRotation, EmissionMapUVOffset.xy);
+        half4 emission = (half4)NBGraphSampleMap(EmissionMap, emissionUV);
+        half3 result = (half3)Out.rgb;
+        half alpha = (half)Out.a;
+        uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
+        uint flags1 = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
+        NBFX_ApplyColorOverlayV1(result, alpha, emission,
+            (half4)EmissionMapColor, (half)EmissionMapColorIntensity,
+            (half)EmissionAlphaIntensity,
+            (flags0 & FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY) != 0u,
+            (flags1 & FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY) != 0u);
+        Out = float4(result, alpha);
+    }
     if (DissolveToggle > 0.5)
     {
         float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
@@ -293,6 +313,10 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half4 MaskMap3GradientFloat1, half4 MaskMap3GradientFloat2,
     float AlphaAll, half4 ColorA, half4 VertexColor,
     float BaseColorIntensityForTimeline, half4 BaseBackColor, float IsFrontFace,
+    UnityTexture2D EmissionMap, float EmissionEnabled, float2 EmissionUV,
+    half4 EmissionMapUVOffset, float EmissionMapUVRotation,
+    half4 EmissionMapColor, float EmissionMapColorIntensity,
+    float EmissionAlphaIntensity,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -306,6 +330,19 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     input.timelineIntensity = (half)BaseColorIntensityForTimeline;
     input.applyTimelineIntensity = true;
     Out = NBFX_ComposeBaseColorV1(input);
+    if (EmissionEnabled > 0.5)
+    {
+        float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
+            EmissionMapUVRotation, EmissionMapUVOffset.xy);
+        half4 emission = (half4)NBGraphSampleMap(EmissionMap, emissionUV);
+        uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
+        uint flags1 = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
+        NBFX_ApplyColorOverlayV1(Out.rgb, Out.a, emission,
+            EmissionMapColor, (half)EmissionMapColorIntensity,
+            (half)EmissionAlphaIntensity,
+            (flags0 & FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY) != 0u,
+            (flags1 & FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY) != 0u);
+    }
     if (DissolveToggle > 0.5)
     {
         float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
