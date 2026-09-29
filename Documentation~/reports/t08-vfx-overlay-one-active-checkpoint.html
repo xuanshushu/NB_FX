@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T08 · VFX 叠加贴图 1 主动值</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-overlay-one-checkpoint.html">Graph Mesh/共享算术</a></p>
+<h1>T08 · 真正 VFX Mesh Output 的叠加贴图 1</h1>
+<p><strong>限定结论：</strong>产品代码 <code>5c94de7</code> 的 Overlay 1/Emission 在 Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 的真正单粒子 VFX Mesh Output 中，关闭、加法、乘法及两种 Alpha 乘组合均按原共享算术响应。隔离 StandaloneOSX 构建 0 errors/35 warnings；Player exit 0、<code>PASS</code>。未修改官方包、原 NBPostprocess、Target 或主工程设置；<strong>不是完整 G5/G6 放行</strong>。</p>
+<table border="1" cellpadding="6"><thead><tr><th>项</th><th>原始结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>生成与 Pass</td><td>五个 Output 的显式纹理/开关/Flags/颜色槽被 Editor 接受，生成 Shader 均保留双精确 LightMode；Player 每例 alive=1、Pass=5、自定义索引 1/2、可见 676 像素、重复帧差 0。Editor 隐藏材质 lazy 1 Pass 不当作判据。</td><td><a href="t08-evidence/vfx-overlay-one-active/editor-inspection.txt">导入检查</a> · <a href="t08-evidence/vfx-overlay-one-active/editor-build.log.gz">构建日志</a> · <a href="t08-evidence/vfx-overlay-one-active/NBFXOverlayAdd-2.shader.gz">生成源码</a></td></tr>
+<tr><td>最终色和有效 Alpha</td><td>线性 ARGBHalf 黑/白背景成对读回，共同内区 576 像素。所有启用模式相对关闭改变 576 像素。关闭/加/乘的有效覆盖率约 0.938965（预测 0.938962）；两种 Alpha 乘约 0.6132/0.61338（预测 0.61305）。五例推算源 RGB 的最大单例中位误差低于 0.0008。这里的 Alpha 是从最终色反算的合成有效量，不是 GPU 单片 Alpha 直接读回。</td><td><a href="t08-evidence/vfx-overlay-one-active/result.json">完整数值 JSON</a> · <a href="t08-evidence/vfx-overlay-one-active/player.log.gz">Player 日志</a> · <a href="t08-evidence/vfx-overlay-one-active/add-black.png">Add 黑底</a>/<a href="t08-evidence/vfx-overlay-one-active/add-white.png">Add 白底</a></td></tr>
+</tbody></table>
+<p><strong>未验证/保留问题：</strong>原 ShaderLab T00 Frozen B/C、Noise/CustomData/特殊 UV/wrap/ForceNoMip、另一叠加层/Ramp、动态多粒子、NBPostprocess RT/Uber、Output GUI/重开持久化、其它平台。Player 日志出现 fallback shader not found 字样，但上述样本实际可见且数值通过；不把它写成完全无警告。<a href="t08-evidence/vfx-overlay-one-active/README.txt">重放说明</a> · <a href="t08-evidence/vfx-overlay-one-active/sha256.txt">证据哈希</a>。unityMCP 未暴露，采用隔离无可见 Editor 窗口 CLI；不 push。</p>
+</body></html>

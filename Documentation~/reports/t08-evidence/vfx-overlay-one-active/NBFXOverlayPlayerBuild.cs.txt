@@ -1,0 +1,191 @@
+// Isolated clone only: import/inspect five VFX Outputs, then build a Metal Player.
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXOverlayPlayerBuild
+{
+    const string Root = "/tmp/nbfx-vfx-overlay1-probe-20260930/run";
+    const string ScenePath = "Assets/NBFXOverlayPlayer.unity";
+    const string AppPath = Root + "/player/NBFXOverlayPlayer.app";
+    const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string BaseTexturePath = "Assets/NBFXOverlayBaseRGBA_64_128_160_192.png";
+    const string BaseTextureGuid = "60c09f4620c556e0b20dfb101d8346bf";
+    const string EmissionTexturePath = "Assets/NBFXOverlayRGBA_80_40_80_128.png";
+    const string EmissionTextureGuid = "3c710d292aae5ef7bb7904600bcafcee";
+    const long OutputId = 8926484042661614853;
+    const long BaseMapId = 8926484042661614854;
+    const long Flags0LoId = 8926484042661614869;
+    const long Flags1HiId = 8926484042661614872;
+    const long EmissionMapId = 8926484042661616200;
+    const long EmissionEnabledId = 8926484042661616201;
+    const long EmissionColorId = 8926484042661616210;
+    const long ColorIntensityId = 8926484042661616202;
+    const long AlphaIntensityId = 8926484042661616203;
+    static readonly string[] Names = { "Off", "Add", "Multiply", "AddAlpha", "MulAlpha" };
+    static readonly string[] Guids = {
+        "c114509fbe7b54ed8a4a7f80f3be08d4", "f4438baef1f652f88c0b10b8294c35fd",
+        "8a123e5709d654ecb7dd37c23e435d26", "cdb7c9396afb5460b0ca68afc89a5f4b",
+        "1f146f43a03d52a4847cf74733b83d36"
+    };
+    static readonly int[] Enabled = { 0, 1, 1, 1, 1 };
+    static readonly int[] Flags0Lo = { 0, 0, 32, 0, 32 };
+    static readonly int[] Flags1Hi = { 0, 0, 0, 32768, 32768 };
+
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        using (var report = new StreamWriter(Path.Combine(Root, "editor-inspection.txt")))
+        {
+            ValidateTexture(BaseTexturePath, BaseTextureGuid,
+                new Color(64f/255f, 128f/255f, 160f/255f, 192f/255f), report);
+            ValidateTexture(EmissionTexturePath, EmissionTextureGuid,
+                new Color(80f/255f, 40f/255f, 80f/255f, 128f/255f), report);
+            var graph = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            if (!graph || !graph.isSupported) throw new Exception("Product Graph unavailable");
+            var assets = new VisualEffectAsset[Names.Length];
+            var shaders = new Shader[Names.Length];
+            for (int i = 0; i < Names.Length; i++)
+            {
+                string path = "Assets/NBFXOverlay" + Names[i] + ".vfx";
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+                if (AssetDatabase.AssetPathToGUID(path) != Guids[i])
+                    throw new Exception("VFX GUID mismatch: " + path);
+                ValidateSerialized(path, Enabled[i], Flags0Lo[i], Flags1Hi[i], report);
+                assets[i] = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+                shaders[i] = FindShader(path);
+                if (!assets[i] || !shaders[i] || !shaders[i].isSupported ||
+                    !shaders[i].name.Contains("Mesh"))
+                    throw new Exception("Real VFX Mesh Output failed to import: " + path);
+                ValidateGenerated(path, Enabled[i], Flags0Lo[i], Flags1Hi[i], report);
+                var material = new Material(shaders[i]);
+                try { report.WriteLine(path + " lazyEditorPassCount=" + material.passCount); }
+                finally { UnityEngine.Object.DestroyImmediate(material); }
+            }
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var host = new GameObject("NBFX Overlay1 VFX Player Probe");
+            var probe = host.AddComponent<NBFXOverlayPlayerProbe>();
+            probe.graphShader = graph;
+            probe.offAsset = assets[0]; probe.addAsset = assets[1];
+            probe.multiplyAsset = assets[2]; probe.addAlphaAsset = assets[3];
+            probe.mulAlphaAsset = assets[4];
+            probe.offShader = shaders[0]; probe.addShader = shaders[1];
+            probe.multiplyShader = shaders[2]; probe.addAlphaShader = shaders[3];
+            probe.mulAlphaShader = shaders[4];
+            if (!EditorSceneManager.SaveScene(scene, ScenePath))
+                throw new Exception("Could not save clone-only Player scene");
+            report.Flush();
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(AppPath));
+        var build = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+            scenes = new[] { ScenePath }, locationPathName = AppPath,
+            target = BuildTarget.StandaloneOSX, options = BuildOptions.None
+        });
+        Debug.Log("NBFX_OVERLAY_BUILD result=" + build.summary.result +
+            " errors=" + build.summary.totalErrors + " warnings=" + build.summary.totalWarnings);
+        if (build.summary.result != BuildResult.Succeeded || build.summary.totalErrors != 0)
+            throw new Exception("Overlay1 VFX Player build failed");
+    }
+
+    static void ValidateTexture(string path, string guid, Color expected, TextWriter report)
+    {
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+        var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+        var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        if (!importer || !texture || AssetDatabase.AssetPathToGUID(path) != guid ||
+            importer.sRGBTexture || importer.mipmapEnabled || !importer.isReadable ||
+            importer.textureCompression != TextureImporterCompression.Uncompressed ||
+            texture.width != 1 || texture.height != 1 ||
+            importer.filterMode != FilterMode.Point || importer.wrapMode != TextureWrapMode.Clamp)
+            throw new Exception("Explicit RGBA texture import contract failed: " + path);
+        var pixel = texture.GetPixel(0, 0);
+        for (int i = 0; i < 4; i++)
+            if (Mathf.Abs(pixel[i] - expected[i]) > 0.003f)
+                throw new Exception("Explicit RGBA pixel mismatch: " + path + " " + pixel);
+        report.WriteLine(path + " linearRGBA=" + pixel + " mip=false uncompressed point/clamp");
+    }
+
+    static string Body(string text, long fileId)
+    {
+        var m = Regex.Match(text, @"(?ms)^--- !u!114 &" + fileId + @"\n.*?(?=^--- !u!|\z)");
+        if (!m.Success) throw new Exception("Missing VFX object " + fileId);
+        return m.Value;
+    }
+    static void ValidateSerialized(string path, int enabled, int flags0, int flags1, TextWriter report)
+    {
+        string text = File.ReadAllText(Path.Combine(Directory.GetParent(Application.dataPath).FullName, path));
+        string output = Body(text, OutputId);
+        if (!text.Contains("  capacity: 1\n") ||
+            !output.Contains("  cullMode: 0\n") || !output.Contains("  blendMode: 1\n") ||
+            !Body(text, BaseMapId).Contains(BaseTextureGuid) ||
+            !Body(text, EmissionMapId).Contains("name: _EmissionMap") ||
+            !Body(text, EmissionMapId).Contains(EmissionTextureGuid) ||
+            !Body(text, EmissionColorId).Contains("name: _EmissionMapColor") ||
+            !Body(text, EmissionColorId).Contains("{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0}") ||
+            !Scalar(text, EmissionEnabledId, "_EmissionEnabled", enabled) ||
+            !Scalar(text, Flags0LoId, "_NB_Flags0Lo16", flags0) ||
+            !Scalar(text, Flags1HiId, "_NB_Flags1Hi16", flags1) ||
+            !Scalar(text, ColorIntensityId, "_EmissionMapColorIntensity", 1) ||
+            !Scalar(text, AlphaIntensityId, "_EmissionAlphaIntensity", 1))
+            throw new Exception("Overlay Output serialized binding invalid: " + path);
+        foreach (long id in new[] { EmissionMapId, EmissionEnabledId,
+            EmissionColorId, ColorIntensityId, AlphaIntensityId })
+            if (!output.Contains("  - {fileID: " + id + "}\n"))
+                throw new Exception("Output missing emission slot " + id + ": " + path);
+        report.WriteLine(path + " enabled=" + enabled + " flags0Lo=" + flags0 +
+            " flags1Hi=" + flags1 + " emissionRGBA=(80,40,80,128)");
+    }
+    static bool Scalar(string text, long id, string name, int value)
+    {
+        string body = Body(text, id);
+        return body.Contains("name: " + name) &&
+            body.Contains("m_SerializableObject: " + value + "\n");
+    }
+    static Shader FindShader(string path)
+    {
+        foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(path))
+            if (obj is Shader shader && shader.name.Contains("Mesh")) return shader;
+        return null;
+    }
+    static void ValidateGenerated(string path, int enabled, int flags0, int flags1, TextWriter report)
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Static | BindingFlags.Instance;
+        Type type = null;
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        { type = assembly.GetType("UnityEditor.VFX.VisualEffectResource"); if (type != null) break; }
+        if (type == null) throw new Exception("VFX generated-resource reflection unavailable");
+        var resource = type.GetMethod("GetResourceAtPath", flags).Invoke(null, new object[] { path });
+        if (resource == null) throw new Exception("VFX generated-resource missing: " + path);
+        int count = (int)type.GetMethod("GetShaderSourceCount", flags).Invoke(resource, null);
+        var getter = type.GetMethod("GetShaderSource", flags);
+        bool found = false;
+        for (int i = 0; i < count; i++)
+        {
+            string source = (string)getter.Invoke(resource, new object[] { i });
+            if (!source.Contains("output._EmissionEnabled")) continue;
+            File.WriteAllText(Path.Combine(Root,
+                Path.GetFileNameWithoutExtension(path) + "-" + i + ".shader"), source);
+            bool vals = source.Contains("output._EmissionEnabled = (float)" + enabled + ";") &&
+                source.Contains("output._NB_Flags0Lo16 = (float)" + flags0 + ";") &&
+                source.Contains("output._NB_Flags1Hi16 = (float)" + flags1 + ";") &&
+                Regex.IsMatch(source, @"output\._EmissionMapColor\s*=\s*float4\(\s*1\s*,\s*1\s*,\s*1\s*,\s*1\s*\)") &&
+                source.Contains("output._EmissionMapColorIntensity = (float)1;") &&
+                source.Contains("output._EmissionAlphaIntensity = (float)1;");
+            bool passes = source.Contains("\"LightMode\" = \"NBCameraOpaqueDistortPass\"") &&
+                source.Contains("\"LightMode\" = \"NBDeferredDistortPass\"");
+            bool texture = source.Contains("_EmissionMap") &&
+                source.Contains("NBGraphBaseColor");
+            report.WriteLine(path + " generatedSource=" + i + " scalarAndColor=" + vals +
+                " exactPasses=" + passes + " emissionTextureReference=" + texture);
+            found |= vals && passes && texture;
+        }
+        if (!found) throw new Exception("Emission/flags Output bindings or custom Passes absent: " + path);
+    }
+}

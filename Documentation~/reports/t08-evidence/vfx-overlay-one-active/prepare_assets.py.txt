@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""Generate test-only Overlay1 VFX Output variants. No project/clone edits."""
+from __future__ import annotations
+import gzip, hashlib, pathlib, re, shutil, uuid, zlib, struct
+ROOT=pathlib.Path(__file__).resolve().parent
+OUT=ROOT/'Assets'
+ARCH=pathlib.Path('/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t08-evidence/vfx-basecolor-active')
+SRC=ARCH/'NBFXBCA1.vfx.gz'
+OUTPUT=8926484042661614853
+BASEMAP=8926484042661614854
+COLOR=8926484042661614855
+SCALAR=8926484042661614869
+FLAGS0_LO=8926484042661614869
+FLAGS1_HI=8926484042661614872
+MAP_ID=8926484042661616200
+ENABLED_ID=8926484042661616201
+TINT_ID=8926484042661616210
+TINT_CHILDREN=tuple(range(TINT_ID+1,TINT_ID+5))
+INTENSITY_ID=8926484042661616202
+ALPHA_INTENSITY_ID=8926484042661616203
+NEW_IDS=(MAP_ID,ENABLED_ID,TINT_ID,*TINT_CHILDREN,INTENSITY_ID,ALPHA_INTENSITY_ID)
+TEXTURE_NAME='NBFXOverlayRGBA_80_40_80_128.png'
+TEXTURE_RGBA=(80,40,80,128)
+VARIANTS=(('Off',0,0,0),('Add',1,0,0),('Multiply',1,32,0),
+          ('AddAlpha',1,0,32768),('MulAlpha',1,32,32768))
+
+def guid(name:str)->str: return uuid.uuid5(uuid.NAMESPACE_URL,'nbfx-vfx-overlay1-probe-20260930/'+name).hex
+
+def once(s:str,old:str,new:str,what:str)->str:
+    n=s.count(old)
+    if n!=1: raise ValueError(f'{what}: expected one {old!r}, got {n}')
+    return s.replace(old,new,1)
+
+def match(s:str,fid:int)->re.Match[str]:
+    m=re.search(rf'(?ms)^--- !u!114 &{fid}\n.*?(?=^--- !u!|\Z)',s)
+    if not m: raise ValueError(f'missing VFX object {fid}')
+    return m
+
+def change(s:str,fid:int,old:str,new:str)->str:
+    m=match(s,fid); b=once(m.group(),old,new,str(fid))
+    return s[:m.start()]+b+s[m.end():]
+
+def meta(src:pathlib.Path,filename:str)->str:
+    s=src.read_text(); m=re.search(r'(?m)^guid: ([a-f0-9]{32})$',s)
+    if not m: raise ValueError('missing GUID '+str(src))
+    return once(s,m.group(1),guid(filename),filename)
+
+def png_rgba(path:pathlib.Path, rgba:tuple[int,int,int,int])->None:
+    def chunk(kind:bytes,data:bytes)->bytes:
+        return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
+    raw=b'\x00'+bytes(rgba)
+    path.write_bytes(b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',1,1,8,6,0,0,0))+
+                     chunk(b'IDAT',zlib.compress(raw,9))+chunk(b'IEND',b''))
+
+def clone_scalar(s:str,new_id:int,name:str,value:int)->str:
+    b=match(s,SCALAR).group().replace(str(SCALAR),str(new_id))
+    b=once(b,'name: _NB_Flags0Lo16\n',f'name: {name}\n',name)
+    b=once(b,'m_SerializableObject: 0\n',f'm_SerializableObject: {value}\n',name)
+    return b
+
+def main()->None:
+    OUT.mkdir(exist_ok=True)
+    s=gzip.decompress(SRC.read_bytes()).decode()
+    for fid in NEW_IDS:
+        if str(fid) in s: raise ValueError(f'new slot ID collision: {fid}')
+    if '  capacity: 1\n' not in s or '  cullMode: 0\n' not in match(s,OUTPUT).group():
+        raise ValueError('not the known one-particle CullOff fixture')
+    # Remap all archived texture refs to local test-only copies.
+    copied={
+        'NBFXBCGray.png':'NBFXOverlayGray.png',
+        'NBFXBCWhite.png':'NBFXOverlayWhite.png',
+        'NBFXBC_RGBA_64_128_160_192.png':'NBFXOverlayBaseRGBA_64_128_160_192.png'
+    }
+    for name,new_name in copied.items():
+        shutil.copyfile(ARCH/name,OUT/new_name)
+        raw=(ARCH/(name+'.meta.txt')).read_text()
+        old=re.search(r'(?m)^guid: ([a-f0-9]{32})$',raw).group(1)
+        (OUT/(new_name+'.meta')).write_text(meta(ARCH/(name+'.meta.txt'),new_name))
+        s=s.replace(old,guid(new_name))
+    png_rgba(OUT/TEXTURE_NAME,TEXTURE_RGBA)
+    (OUT/(TEXTURE_NAME+'.meta')).write_text(meta(ARCH/'NBFXBC_RGBA_64_128_160_192.png.meta.txt',TEXTURE_NAME))
+    # New properties are serialized VFX slots, cloned from proven texture/color/
+    # float slot shapes. Their IDs are private to these generated test VFX files.
+    tex=match(s,BASEMAP).group().replace(str(BASEMAP),str(MAP_ID))
+    tex=once(tex,'name: _BaseMap\n','name: _EmissionMap\n','EmissionMap name')
+    tex=once(tex,guid('NBFXOverlayBaseRGBA_64_128_160_192.png'),guid(TEXTURE_NAME),'EmissionMap texture')
+    color_master=match(s,COLOR).group().replace(str(COLOR),str(TINT_ID))
+    for old,new in zip(range(COLOR+1,COLOR+5),TINT_CHILDREN): color_master=color_master.replace(str(old),str(new))
+    color_master=once(color_master,'name: _Color\n','name: _EmissionMapColor\n','EmissionMapColor name')
+    children=[]
+    for old,new in zip(range(COLOR+1,COLOR+5),TINT_CHILDREN):
+        children.append(match(s,old).group().replace(str(COLOR),str(TINT_ID)).replace(str(old),str(new)))
+    slots=[tex,clone_scalar(s,ENABLED_ID,'_EmissionEnabled',0),color_master,*children,
+           clone_scalar(s,INTENSITY_ID,'_EmissionMapColorIntensity',1),
+           clone_scalar(s,ALPHA_INTENSITY_ID,'_EmissionAlphaIntensity',1)]
+    attachment=''.join(f'  - {{fileID: {fid}}}\n' for fid in (MAP_ID,ENABLED_ID,TINT_ID,INTENSITY_ID,ALPHA_INTENSITY_ID))
+    s=change(s,OUTPUT,'  m_OutputSlots: []\n',attachment+'  m_OutputSlots: []\n')
+    s+='\n'+'\n'.join(slots)
+    normal=[]
+    for label,enabled,flags0,flags1 in VARIANTS:
+        value=change(s,ENABLED_ID,'m_SerializableObject: 0\n',f'm_SerializableObject: {enabled}\n')
+        value=change(value,FLAGS0_LO,'m_SerializableObject: 0\n',f'm_SerializableObject: {flags0}\n')
+        value=change(value,FLAGS1_HI,'m_SerializableObject: 0\n',f'm_SerializableObject: {flags1}\n')
+        name='NBFXOverlay'+label+'.vfx'
+        (OUT/name).write_text(value)
+        (OUT/(name+'.meta')).write_text(meta(ARCH/'NBFXBCA1.vfx.meta.txt',name))
+        for fid,current in ((ENABLED_ID,enabled),(FLAGS0_LO,flags0),(FLAGS1_HI,flags1)):
+            value=change(value,fid,f'm_SerializableObject: {current}\n','m_SerializableObject: VARIANT\n')
+        normal.append(value)
+    if len(set(normal))!=1: raise ValueError('variants differ outside 3 intended Output scalar slots')
+    for p in sorted(OUT.iterdir()):
+        if p.is_file(): print(hashlib.sha256(p.read_bytes()).hexdigest(),p)
+
+if __name__=='__main__': main()
