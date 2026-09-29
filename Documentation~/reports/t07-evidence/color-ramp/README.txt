@@ -35,7 +35,9 @@ Mesh PNGs reproduced byte-for-byte. Fresh product VFX sample import kept
 the two exact custom Pass tags, but active Ramp VFX output is separate.
 
 The test scripts and original logs/PNG/hash manifest are archived here;
-do not copy test-only files into product or main Assets. No Gate release,
+do not copy test-only files into product or main Assets. Test-only
+clone files were removed and cleanup compile exited 0; ProjectSettings and
+renderer/global SHA-256 remained fixed. No Gate release,
 no push. The user's waived first-frame anomaly was not converted into a
 general tolerance or an unrecorded warmup rule; warmup applies only to
 the explicitly identified clone-only pre-extraction shader comparison.
