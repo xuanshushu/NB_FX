@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph ColorA 检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-alpha-all-checkpoint.html">前一 AlphaAll 检查点</a></p>
+<h1>T07 · Graph 晚期 ColorA 检查点</h1>
+<p><strong>限定结论：</strong>产品 Graph 新增原 ShaderLab 同名 <code>_ColorA</code>（默认白色），在现有 Mask 后、Flags0 bit29 RGB×alpha 和 <code>_AlphaAll</code> 之前分别乘 RGB/alpha。沿用现有 Custom Function，不增加 keyword、Pass，也不修改官方包、UniversalTarget 或 NBPostprocess。当前 Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 隔离 Mesh 中，ColorA 红色 1→0.5 的最终画面差 1764 像素；ColorA alpha 1→0.5 且 bit29 关闭时 RGB 差 0，开启 bit29 后 RGB 差 1764。此处只验证该限定次序，不是完整 Vertex Color/Fog/灯光链或 G4/G5 放行。</p>
+<table border="1" cellpadding="6"><thead><tr><th>测试 ID</th><th>实际结果及边界</th><th>原始证据</th></tr></thead><tbody>
+<tr><td>T07-COLORA-MESH</td><td>产品代码提交 <code>a5d4249</code>；Graph 保留 10 Pass、自定义双 Pass。隔离 CLI 编译 0 C# / Shader error；RGB 差计数 1764/0/1764，与限定断言一致。画面计数不是最终 alpha 的 GPU 浮点读回。</td><td><a href="t07-evidence/color-a/NBFXT07ColorAProbe.cs.txt">探针源码</a> · <a href="t07-evidence/color-a/mesh-probe.log.gz">Unity 日志</a> · <a href="t07-evidence/color-a/t07_colora_base.png">基准</a>/<a href="t07-evidence/color-a/t07_colora_red_half.png">红色半值</a>/<a href="t07-evidence/color-a/t07_colora_alpha_half_no_bit29.png">Alpha 半值</a>/<a href="t07-evidence/color-a/t07_colora_alpha_half_bit29.png">Alpha 半值 + bit29</a></td></tr>
+<tr><td>T07-COLORA-VFX-DEFAULT</td><td>本轮后续单粒子 VFX 数值测试使用同一产品提交 <code>a5d4249</code>，构建与 Metal Player 通过；测试没有主动改变 ColorA 或连接 ColorA 端口，不作为主动 ColorA VFX 验收。</td><td><a href="t08-vfx-dissolve-numeric-one-particle.html">后续 VFX 数值报告</a></td></tr>
+</tbody></table>
+<p>剩余：主动 VFX ColorA、真实 Inspector 操作、多选/Undo、与原 ShaderLab B/C 精确对照，以及 Vertex Color/Fog/灯光/预乘/深度相关排序及组合。无可用 unityMCP；隔离无可见窗口 CLI 已清理测试资产，克隆 ProjectSettings 与 URP GlobalSettings hash 未变。主工程 Assets/ProjectSettings、官方包、UniversalTarget、NBPostprocess 未改，未 push。<a href="t07-evidence/color-a/README.txt">重放说明</a> · <a href="t07-evidence/color-a/sha256.txt">SHA-256</a>。</p>
+</body></html>

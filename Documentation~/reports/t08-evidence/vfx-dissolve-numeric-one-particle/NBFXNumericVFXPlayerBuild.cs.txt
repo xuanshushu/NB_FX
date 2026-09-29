@@ -1,0 +1,216 @@
+using System;
+using System.Collections;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+// Isolated-clone build entry point. Does not edit any package or product asset.
+public static class NBFXNumericVFXPlayerBuild
+{
+    const string Root = "/tmp/nbfx-vfx-numeric-probe-20260930/run";
+    const string ScenePath = "Assets/NBFXNumericVFXPlayer.unity";
+    const string PlayerPath = Root + "/player/NBFXNumericVFXPlayer.app";
+    const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string GrayPath = "Assets/NBFXNumericGray133Linear.png";
+    const string WhitePath = "Assets/NBFXNumericWhiteLinear.png";
+    const string GrayGuid = "5de609b38f1b56faa2d00fd7b0d7fc27";
+    const string WhiteGuid = "3b50690a72485441b3dafe07f3654057";
+    static readonly string[] Names = { "Off", "Single", "ProcessMask" };
+    static readonly string[] Paths = { "Assets/NBFXNumericOff.vfx",
+        "Assets/NBFXNumericSingle.vfx", "Assets/NBFXNumericProcessMask.vfx" };
+    static readonly string[] Guids = { "b11a6d77de595c9f811dc03da80dc1e8",
+        "6a7a4bfc9dac59e483f593a522a1c8ec",
+        "59dcfa8f0b285d0ca0eceb5ec2161848" };
+
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        using (var report = new StreamWriter(Path.Combine(Root, "editor-inspection.txt")))
+        {
+            ValidateTexture(GrayPath, GrayGuid, 133f / 255f, report);
+            ValidateTexture(WhitePath, WhiteGuid, 1f, report);
+            foreach (var path in Paths) AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+            var assets = new VisualEffectAsset[3];
+            var shaders = new Shader[3];
+            for (int i = 0; i < 3; i++)
+            {
+                if (AssetDatabase.AssetPathToGUID(Paths[i]) != Guids[i])
+                    throw new Exception("VFX GUID mismatch: " + Paths[i]);
+                ValidateSerializedAsset(Paths[i], i, report);
+                assets[i] = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(Paths[i]);
+                shaders[i] = FindShader(Paths[i]);
+                if (!assets[i] || !shaders[i] || !shaders[i].isSupported)
+                    throw new Exception("VFX import or shader failed: " + Paths[i]);
+                InspectGeneratedShader(Paths[i], Names[i], i, report);
+                InspectOutputMaterial(Paths[i], Names[i], report);
+                var material = new Material(shaders[i]);
+                try
+                {
+                    int opaque = material.FindPass("NBCameraOpaqueDistortPass");
+                    int deferred = material.FindPass("NBDeferredDistortPass");
+                    report.WriteLine(Names[i] + " shader=" + shaders[i].name +
+                        " passes=" + material.passCount + " opaque=" + opaque + " deferred=" + deferred);
+                    // Editor VFX hidden shader can report passCount=1 until its
+                    // variants are compiled. Source labels were checked above;
+                    // the actual runtime Pass indices are asserted in Player.
+                    if (opaque < 0 || deferred < 0)
+                        report.WriteLine(Names[i] + " runtime Pass verification deferred to Player after lazy shader compilation");
+                }
+                finally { UnityEngine.Object.DestroyImmediate(material); }
+            }
+            var graph = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            if (!graph || !graph.isSupported) throw new Exception("Product Graph shader unavailable");
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var host = new GameObject("NBFX Numeric VFX Probe");
+            var probe = host.AddComponent<NBFXNumericVFXPlayerProbe>();
+            probe.offAsset = assets[0];
+            probe.singleAsset = assets[1];
+            probe.processAsset = assets[2];
+            probe.graphShader = graph;
+            probe.offShader = shaders[0];
+            probe.singleShader = shaders[1];
+            probe.processShader = shaders[2];
+            if (!EditorSceneManager.SaveScene(scene, ScenePath))
+                throw new Exception("Could not save isolated test scene");
+            report.Flush();
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(PlayerPath));
+        var build = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+        {
+            scenes = new[] { ScenePath },
+            locationPathName = PlayerPath,
+            target = BuildTarget.StandaloneOSX,
+            options = BuildOptions.None
+        });
+        Debug.Log("NBFX_NUMERIC_VFX_BUILD result=" + build.summary.result +
+            " errors=" + build.summary.totalErrors + " warnings=" + build.summary.totalWarnings);
+        if (build.summary.result != BuildResult.Succeeded || build.summary.totalErrors != 0)
+            throw new Exception("Numeric VFX Player build failed");
+    }
+
+    static void ValidateTexture(string path, string expectedGuid, float expected, TextWriter report)
+    {
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+        var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+        var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        if (!importer || !texture || AssetDatabase.AssetPathToGUID(path) != expectedGuid ||
+            importer.sRGBTexture || importer.mipmapEnabled || !importer.isReadable ||
+            importer.textureCompression != TextureImporterCompression.Uncompressed ||
+            texture.width != 1 || texture.height != 1 ||
+            importer.filterMode != FilterMode.Point || importer.wrapMode != TextureWrapMode.Clamp)
+            throw new Exception("Texture import contract failed: " + path);
+        var color = texture.GetPixel(0, 0);
+        if (Mathf.Abs(color.r - expected) > 0.003f ||
+            Mathf.Abs(color.g - expected) > 0.003f ||
+            Mathf.Abs(color.b - expected) > 0.003f ||
+            Mathf.Abs(color.a - 1f) > 0.003f)
+            throw new Exception("Texture pixel mismatch: " + path + "=" + color);
+        report.WriteLine("texture=" + path + " guid=" + expectedGuid + " pixel=" + color +
+            " linear=true mip=false compression=none point=true clamp=true");
+    }
+
+    static string ObjectBody(string text, long fileId)
+    {
+        var match = Regex.Match(text, @"(?ms)^--- !u!114 &" + fileId + @"\n.*?(?=^--- !u!|\z)");
+        if (!match.Success) throw new Exception("Missing VFX object " + fileId);
+        return match.Value;
+    }
+
+    static void ValidateSerializedAsset(string path, int index, TextWriter report)
+    {
+        var projectRoot = Directory.GetParent(Application.dataPath).FullName;
+        var text = File.ReadAllText(Path.Combine(projectRoot, path));
+        if (!text.Contains("  capacity: 1\n") || !text.Contains("  m_Label: Initialize Particles") ||
+            !ObjectBody(text, 8926484042661614853).Contains("  blendMode: 1\n") ||
+            !ObjectBody(text, 8926484042661614853).Contains("  useAlphaClipping: 0\n") ||
+            !ObjectBody(text, 8926484042661614854).Contains(WhiteGuid) ||
+            !ObjectBody(text, 8926484042661614889).Contains(GrayGuid) ||
+            !ObjectBody(text, 8926484042661614920).Contains(WhiteGuid))
+            throw new Exception("Numeric VFX serialized fixture mismatch: " + path);
+        int dissolve = index == 0 ? 0 : 1;
+        int mask = index == 2 ? 1 : 0;
+        if (!ObjectBody(text, 8926484042661614890).Contains("m_SerializableObject: " + dissolve + "\n") ||
+            !ObjectBody(text, 8926484042661614921).Contains("m_SerializableObject: " + mask + "\n"))
+            throw new Exception("Output toggle mismatch: " + path);
+        report.WriteLine(Names[index] + " serialized capacity=1 BaseMap=white DissolveMap=gray MaskMap=white toggle=" +
+            dissolve + "/" + mask);
+    }
+
+    static Shader FindShader(string path)
+    {
+        foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(path))
+            if (asset is Shader shader) return shader;
+        return null;
+    }
+
+    static void InspectGeneratedShader(string path, string name, int index, TextWriter report)
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Static | BindingFlags.Instance;
+        Type resourceType = null;
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            resourceType = assembly.GetType("UnityEditor.VFX.VisualEffectResource");
+            if (resourceType != null) break;
+        }
+        if (resourceType == null) throw new Exception("VisualEffectResource type unavailable");
+        var resource = resourceType.GetMethod("GetResourceAtPath", flags)
+            .Invoke(null, new object[] { path });
+        int count = (int)resourceType.GetMethod("GetShaderSourceCount", flags).Invoke(resource, null);
+        var getter = resourceType.GetMethod("GetShaderSource", flags);
+        bool found = false;
+        for (int i = 0; i < count; i++)
+        {
+            string source = (string)getter.Invoke(resource, new object[] { i });
+            if (!source.Contains("output._Dissolve_Toggle")) continue;
+            File.WriteAllText(Path.Combine(Root, "generated-" + name + "-" + i + ".shader"), source);
+            bool dissolve = source.Contains("output._Dissolve_Toggle = (float)" + (index == 0 ? 0 : 1));
+            bool mask = source.Contains("output._DissolveMask_Toggle = (float)" + (index == 2 ? 1 : 0));
+            report.WriteLine(name + " generated source[" + i + "] toggles=" + dissolve + "/" + mask);
+            if (dissolve && mask && source.Contains("NBCameraOpaqueDistortPass") &&
+                source.Contains("NBDeferredDistortPass")) found = true;
+        }
+        if (!found) throw new Exception("Generated VFX shader lacks expected live output toggles/passes: " + name);
+    }
+
+    static void InspectOutputMaterial(string path, string name, TextWriter report)
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Static | BindingFlags.Instance;
+        Type resourceType = null;
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            resourceType = assembly.GetType("UnityEditor.VFX.VisualEffectResource");
+            if (resourceType != null) break;
+        }
+        if (resourceType == null) throw new Exception("VisualEffectResource type unavailable");
+        var resource = resourceType.GetMethod("GetResourceAtPath", flags)
+            .Invoke(null, new object[] { path });
+        var graph = resourceType.GetProperty("graph", flags).GetValue(resource, null);
+        var children = graph.GetType().GetProperty("children", flags).GetValue(graph, null) as IEnumerable;
+        if (children == null) throw new Exception("VFX graph children unavailable");
+        foreach (var child in children)
+        {
+            if (child == null || !child.GetType().Name.Contains("ComposedParticleOutput")) continue;
+            var material = child.GetType().GetMethod("FindMaterial", flags).Invoke(child, null) as Material;
+            if (!material) continue;
+            float surface = material.GetFloat("_Surface");
+            float alphaClip = material.GetFloat("_AlphaClip");
+            float src = material.GetFloat("_SrcBlend");
+            float dst = material.GetFloat("_DstBlend");
+            report.WriteLine(name + " hidden-output-material surface=" + surface +
+                " alphaClip=" + alphaClip + " srcBlend=" + src + " dstBlend=" + dst +
+                " cull=" + material.GetFloat("_Cull") +
+                " shader=" + material.shader.name);
+            if (surface != 1 || alphaClip != 0 || src != 5 || dst != 10)
+                throw new Exception("VFX hidden material is not transparent source-over: " + name);
+            return;
+        }
+        throw new Exception("No VFX Mesh Output material found: " + name);
+    }
+}

@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+"""Build isolated numeric VFX fixtures from the archived explicit-texture probe.
+
+Writes only beside this script. Deliberately never opens a Unity project.
+"""
+
+from __future__ import annotations
+
+import gzip
+import hashlib
+import pathlib
+import re
+import shutil
+import uuid
+
+HERE = pathlib.Path(__file__).resolve().parent
+ARCHIVE = pathlib.Path(
+    "/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/"
+    "Documentation~/reports/t08-evidence/vfx-dissolve-explicit-textures"
+)
+ASSETS = HERE / "Assets"
+OLD_GRAY = "955ea0926dde4e128aec69a8ce164b47"
+OLD_WHITE = "cef3ff1fb43149c781878d9235ea29fd"
+
+
+def guid(name: str) -> str:
+    return uuid.uuid5(uuid.NAMESPACE_URL, "nbfx-vfx-numeric-probe-20260930/" + name).hex
+
+
+GRAY_GUID = guid("NBFXNumericGray133Linear.png")
+WHITE_GUID = guid("NBFXNumericWhiteLinear.png")
+
+
+def replace_once(source: str, old: str, new: str, context: str) -> str:
+    count = source.count(old)
+    if count != 1:
+        raise ValueError(f"{context}: expected one {old!r}, found {count}")
+    return source.replace(old, new, 1)
+
+
+def change_object(source: str, file_id: int, old: str, new: str) -> str:
+    pattern = re.compile(r"(?ms)^--- !u!114 &" + str(file_id) + r"\n.*?(?=^--- !u!|\Z)")
+    match = pattern.search(source)
+    if match is None:
+        raise ValueError(f"Missing VFX object {file_id}")
+    body = replace_once(match.group(), old, new, f"VFX object {file_id}")
+    return source[:match.start()] + body + source[match.end():]
+
+
+def set_value(source: str, file_id: int, old: str, new: str) -> str:
+    return change_object(source, file_id, "m_SerializableObject: " + old,
+                         "m_SerializableObject: " + new)
+
+
+def texture_object(texture_guid: str) -> str:
+    return "'{\"obj\":{\"fileID\":2800000,\"guid\":\"" + texture_guid + "\",\"type\":3}}'"
+
+
+def make_base() -> str:
+    source = gzip.decompress((ARCHIVE / "NBGraphVFXCDExplicitProcessMask.vfx.gz").read_bytes()).decode()
+    source = replace_once(source, "  capacity: 68\n", "  capacity: 1\n", "Init capacity")
+    # Constant long life, anchored spawn and no movement. The visual result is
+    # still a real VFX Mesh Output, not a stand-alone Mesh Renderer.
+    source = set_value(source, 8926484042661614629, "0.8", "10")
+    source = set_value(source, 8926484042661614630, "1.2", "10")
+    source = set_value(source, 8926484042661614818, "4.8", "0")
+    source = set_value(source, 8926484042661614819, "7.5", "0")
+    source = set_value(source, 8926484042661614828, "0.5", "0")
+    source = change_object(source, 8926484042661614821,
+        '\"y\":-9.8100004196167', '\"y\":0.0')
+    source = change_object(source, 8926484042661614835,
+        '\"radius\":0.029999999329447748', '\"radius\":0.0')
+    source = set_value(source, 8926484042661614854,
+        "'{\"obj\":{\"fileID\":0}}'", texture_object(WHITE_GUID))
+    source = set_value(source, 8926484042661614889,
+        texture_object(OLD_GRAY), texture_object(GRAY_GUID))
+    source = set_value(source, 8926484042661614920,
+        texture_object(OLD_WHITE), texture_object(WHITE_GUID))
+    if OLD_GRAY in source or OLD_WHITE in source:
+        raise ValueError("An archived texture GUID remains")
+    return source
+
+
+def main() -> None:
+    ASSETS.mkdir(exist_ok=True)
+    for old_name, new_name, old_guid, new_guid in (
+        ("NBDissolveGray133Linear.png", "NBFXNumericGray133Linear.png", OLD_GRAY, GRAY_GUID),
+        ("NBDissolveMaskWhiteLinear.png", "NBFXNumericWhiteLinear.png", OLD_WHITE, WHITE_GUID),
+    ):
+        shutil.copyfile(ARCHIVE / old_name, ASSETS / new_name)
+        meta = (ARCHIVE / (old_name + ".meta")).read_text()
+        (ASSETS / (new_name + ".meta")).write_text(replace_once(meta, old_guid, new_guid, old_name))
+
+    base = make_base()
+    modes = (("Off", "0", "0"), ("Single", "1", "0"),
+             ("ProcessMask", "1", "1"))
+    generated = []
+    for name, dissolve, mask in modes:
+        text = set_value(base, 8926484042661614890, "1", dissolve)
+        text = set_value(text, 8926484042661614921, "1", mask)
+        filename = f"NBFXNumeric{name}.vfx"
+        path = ASSETS / filename
+        path.write_text(text)
+        meta = (ARCHIVE / "NBGraphVFXCDExplicitProcessMask.vfx.meta").read_text()
+        old_guid = re.search(r"(?m)^guid: ([a-f0-9]{32})$", meta).group(1)
+        (ASSETS / (filename + ".meta")).write_text(replace_once(meta, old_guid, guid(filename), filename))
+        generated.append((name, text, path))
+
+    # After removing only the two expected toggle lines, the three serialized
+    # assets must be identical. Any other difference invalidates the C/D fixture.
+    def normalized(text: str) -> str:
+        text = set_value(text, 8926484042661614890, "0" if "m_SerializableObject: 0" in
+                         re.search(r"(?ms)^--- !u!114 &8926484042661614890\n.*?(?=^--- !u!|\Z)", text).group()
+                         else "1", "X")
+        text = set_value(text, 8926484042661614921, "0" if "m_SerializableObject: 0" in
+                         re.search(r"(?ms)^--- !u!114 &8926484042661614921\n.*?(?=^--- !u!|\Z)", text).group()
+                         else "1", "X")
+        return text
+    assert len({hashlib.sha256(normalized(text).encode()).hexdigest()
+                for _, text, _ in generated}) == 1
+    for name, text, path in generated:
+        print(f"{path.name}: sha256={hashlib.sha256(text.encode()).hexdigest()} "
+              f"guid={guid(path.name)} bytes={len(text.encode())}")
+    print(f"gray={GRAY_GUID} white={WHITE_GUID}")
+
+
+if __name__ == "__main__":
+    main()

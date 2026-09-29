@@ -1,0 +1,358 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
+
+// Isolated Player diagnostic only. Never copy into the product package.
+public sealed class NBFXNumericVFXPlayerProbe : MonoBehaviour
+{
+    public VisualEffectAsset offAsset, singleAsset, processAsset;
+    public Shader graphShader, offShader, singleShader, processShader;
+    const int Size = 256;
+    const int BackgroundLayer = 4, OffLayer = 2, SingleLayer = 1, ProcessLayer = 5;
+    // The sample Output uses a closed cube with Cull Off. Two facing surfaces
+    // are source-over composited, so the measured color ratio is the double-
+    // fragment result, not the single-fragment dissolve coverage.
+    const float ExpectedSingleFragment = 0.7156862745f;
+    const float ExpectedSingle = 1f - (1f - ExpectedSingleFragment) * (1f - ExpectedSingleFragment);
+    const float CoverageTolerance = 0.03f;
+
+    [Serializable] sealed class CaseInfo
+    {
+        public string name;
+        public int alive, passCount, opaquePass, deferredPass, visiblePixels;
+        public bool culled;
+        public float repeatMaxAbsoluteDifference;
+    }
+    [Serializable] sealed class ProbeResult
+    {
+        public string unityVersion, graphicsDevice, status, error, note;
+        public bool linearTarget, fixtureValid, numericPass;
+        public int roiPixels;
+        public float expectedSingleFragment, expectedSingle, observedSingleMedian, observedSingleP10,
+            observedSingleP90, observedProcessMedian, observedProcessP10,
+            observedProcessP90, maxOffVsProcessAbsoluteDifference;
+        public CaseInfo off, single, process;
+    }
+    sealed class Context
+    {
+        public Camera camera;
+        public GameObject cameraObject, background;
+        public Material backgroundMaterial;
+        public Texture2D gradient, readback;
+        public RenderTexture target;
+        public VisualEffect off, single, process;
+    }
+
+    static string OutputPath()
+    {
+        foreach (var arg in Environment.GetCommandLineArgs())
+            if (arg.StartsWith("--nbfx-numeric-output=", StringComparison.Ordinal))
+                return arg.Substring("--nbfx-numeric-output=".Length);
+        return null;
+    }
+
+    IEnumerator Start()
+    {
+        var output = OutputPath();
+        if (string.IsNullOrEmpty(output)) yield break;
+        Directory.CreateDirectory(output);
+        var result = new ProbeResult
+        {
+            unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
+            expectedSingleFragment = ExpectedSingleFragment,
+            expectedSingle = ExpectedSingle,
+            note = "One real VFX Mesh cube, Cull Off: two source-over fragments per pixel; final-color linear Half ratio, not direct GPU alpha."
+        };
+        Context context = null;
+        int exitCode = 2;
+        try { context = Setup(); }
+        catch (Exception exception)
+        {
+            result.status = "FIXTURE_INVALID";
+            result.error = exception.ToString();
+        }
+        if (context != null && result.error == null)
+        {
+            // Give VFX/URP three ordinary Player frames to initialize, then
+            // reset all systems and run the exact same deterministic timeline.
+            for (int frame = 0; frame < 3; frame++) { context.camera.Render(); yield return null; }
+            foreach (var effect in new[] { context.off, context.single, context.process })
+                effect.Simulate(1f / 60f, 21u);
+            // VFX GPU dispatch and culling bounds update on rendered frames.
+            for (int frame = 0; frame < 2; frame++) { context.camera.Render(); yield return null; }
+            foreach (var effect in new[] { context.off, context.single, context.process })
+                effect.pause = true;
+            try
+            {
+                Run(context, output, result);
+                result.fixtureValid = true;
+                result.numericPass = Math.Abs(result.observedSingleMedian - ExpectedSingle) <= CoverageTolerance &&
+                    Math.Abs(result.observedProcessMedian - 1f) <= CoverageTolerance &&
+                    Math.Abs(result.observedSingleP10 - ExpectedSingle) <= 0.05f &&
+                    Math.Abs(result.observedSingleP90 - ExpectedSingle) <= 0.05f &&
+                    Math.Abs(result.observedProcessP10 - 1f) <= 0.05f &&
+                    Math.Abs(result.observedProcessP90 - 1f) <= 0.05f;
+                result.status = result.numericPass ? "PASS" : "NUMERIC_MISMATCH";
+                exitCode = result.numericPass ? 0 : 1;
+            }
+            catch (Exception exception)
+            {
+                result.status = "FIXTURE_INVALID";
+                result.error = exception.ToString();
+            }
+        }
+        try
+        {
+            File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(result, true));
+            Debug.Log("NBFX_NUMERIC_VFX_PLAYER " + JsonUtility.ToJson(result));
+        }
+        finally
+        {
+            Cleanup(context);
+            Application.Quit(exitCode);
+        }
+    }
+
+    Context Setup()
+    {
+        if (!offAsset || !singleAsset || !processAsset || !graphShader ||
+            !offShader || !singleShader || !processShader)
+            throw new Exception("Probe references missing");
+        if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.Metal ||
+            !SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf))
+            throw new Exception("Requires Metal with ARGBHalf render target");
+        var c = new Context();
+        try
+        {
+            c.gradient = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            var pixels = new Color32[Size * Size];
+            for (int y = 0; y < Size; y++)
+                for (int x = 0; x < Size; x++)
+                    pixels[y * Size + x] = new Color32(
+                        (byte)(40 + x * 110 / (Size - 1)),
+                        (byte)(50 + y * 100 / (Size - 1)), 60, 255);
+            c.gradient.SetPixels32(pixels);
+            c.gradient.filterMode = FilterMode.Point;
+            c.gradient.wrapMode = TextureWrapMode.Clamp;
+            c.gradient.Apply(false);
+            c.backgroundMaterial = new Material(graphShader);
+            c.backgroundMaterial.SetTexture("_BaseMap", c.gradient);
+            c.backgroundMaterial.SetColor("_Color", Color.white);
+            c.backgroundMaterial.SetFloat("_Surface", 0);
+            c.backgroundMaterial.SetFloat("_SrcBlend", (float)BlendMode.One);
+            c.backgroundMaterial.SetFloat("_DstBlend", (float)BlendMode.Zero);
+            c.backgroundMaterial.SetFloat("_ZWrite", 1);
+            c.backgroundMaterial.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            c.backgroundMaterial.renderQueue = 2000;
+            c.background = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            c.background.layer = BackgroundLayer;
+            c.background.transform.position = new Vector3(0, 1, 1);
+            c.background.transform.localScale = new Vector3(6, 6, 1);
+            c.background.GetComponent<MeshRenderer>().sharedMaterial = c.backgroundMaterial;
+
+            c.cameraObject = new GameObject("NBFX Numeric VFX Camera");
+            c.camera = c.cameraObject.AddComponent<Camera>();
+            c.camera.orthographic = true;
+            c.camera.orthographicSize = 0.5f;
+            c.camera.nearClipPlane = 0.1f;
+            c.camera.farClipPlane = 20;
+            c.camera.transform.position = new Vector3(0, 0, 8);
+            c.camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+            c.camera.clearFlags = CameraClearFlags.SolidColor;
+            c.camera.backgroundColor = Color.black;
+            c.camera.allowHDR = true;
+            c.camera.allowMSAA = false;
+            c.camera.cullingMask = (1 << BackgroundLayer) | (1 << OffLayer) |
+                (1 << SingleLayer) | (1 << ProcessLayer);
+            c.target = new RenderTexture(Size, Size, 24,
+                RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
+            c.target.antiAliasing = 1;
+            c.target.Create();
+            if (!c.target.IsCreated() || c.target.sRGB)
+                throw new Exception("Probe target must be created and linear");
+            c.camera.targetTexture = c.target;
+            c.readback = new Texture2D(Size, Size, TextureFormat.RGBAHalf, false, true);
+            c.off = Create("Off", OffLayer, offAsset);
+            c.single = Create("Single", SingleLayer, singleAsset);
+            c.process = Create("Process", ProcessLayer, processAsset);
+            return c;
+        }
+        catch { Cleanup(c); throw; }
+    }
+
+    static VisualEffect Create(string name, int layer, VisualEffectAsset asset)
+    {
+        var go = new GameObject("NBFX Numeric " + name);
+        go.layer = layer;
+        go.transform.position = new Vector3(0, 0, 2);
+        go.transform.localScale = Vector3.one * 4f;
+        var effect = go.AddComponent<VisualEffect>();
+        effect.resetSeedOnPlay = false;
+        effect.startSeed = 12345;
+        effect.visualEffectAsset = asset;
+        effect.Reinit();
+        return effect;
+    }
+
+    static Color[] Capture(Context c, string path)
+    {
+        c.camera.Render();
+        var previous = RenderTexture.active;
+        try
+        {
+            RenderTexture.active = c.target;
+            c.readback.ReadPixels(new Rect(0, 0, Size, Size), 0, 0);
+            c.readback.Apply(false);
+            var colors = c.readback.GetPixels();
+            var preview = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            try
+            {
+                preview.SetPixels(colors);
+                preview.Apply(false);
+                File.WriteAllBytes(path, preview.EncodeToPNG());
+            }
+            finally { Destroy(preview); }
+            return colors;
+        }
+        finally { RenderTexture.active = previous; }
+    }
+
+    static float MaxAbs(Color a, Color b)
+    {
+        return Mathf.Max(Mathf.Abs(a.r - b.r), Mathf.Abs(a.g - b.g), Mathf.Abs(a.b - b.b));
+    }
+    static float MaxAbs(Color[] a, Color[] b)
+    {
+        float max = 0;
+        for (int i = 0; i < a.Length; i++) max = Mathf.Max(max, MaxAbs(a[i], b[i]));
+        return max;
+    }
+
+    static CaseInfo Describe(string name, VisualEffect effect, Shader shader,
+        Color[] background, Color[] image)
+    {
+        var material = new Material(shader);
+        try
+        {
+            var info = new CaseInfo
+            {
+                name = name,
+                alive = (int)effect.GetParticleSystemInfo("Simple Loop").aliveCount,
+                culled = effect.culled,
+                passCount = material.passCount,
+                opaquePass = material.FindPass("NBCameraOpaqueDistortPass"),
+                deferredPass = material.FindPass("NBDeferredDistortPass")
+            };
+            for (int i = 0; i < image.Length; i++)
+                if (MaxAbs(image[i], background[i]) > 0.02f) info.visiblePixels++;
+            return info;
+        }
+        finally { Destroy(material); }
+    }
+
+    static void RequireCase(CaseInfo info)
+    {
+        if (info.alive != 1 || info.culled || info.visiblePixels < 100 ||
+            info.passCount < 3 || info.opaquePass < 0 || info.deferredPass < 0)
+            throw new Exception(info.name + " is not a visible one-particle VFX Mesh with both custom passes: " +
+                JsonUtility.ToJson(info));
+    }
+
+    static float Percentile(List<float> values, float p)
+    {
+        var array = values.ToArray();
+        Array.Sort(array);
+        float position = p * (array.Length - 1);
+        int low = Mathf.FloorToInt(position), high = Mathf.CeilToInt(position);
+        return Mathf.Lerp(array[low], array[high], position - low);
+    }
+
+    static void Analyze(Color[] background, Color[] off, Color[] single,
+        Color[] process, ProbeResult result)
+    {
+        var singleRatios = new List<float>();
+        var processRatios = new List<float>();
+        for (int y = 1; y < Size - 1; y++) for (int x = 1; x < Size - 1; x++)
+        {
+            int i = y * Size + x;
+            bool interior = true;
+            for (int dy = -1; dy <= 1 && interior; dy++)
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    int neighbor = (y + dy) * Size + x + dx;
+                    if (MaxAbs(off[neighbor], background[neighbor]) < 0.25f)
+                    { interior = false; break; }
+                }
+            if (!interior) continue;
+            Vector3 denominator = new Vector3(off[i].r - background[i].r,
+                off[i].g - background[i].g, off[i].b - background[i].b);
+            float norm = Vector3.Dot(denominator, denominator);
+            if (norm < 0.0625f) continue;
+            Vector3 singleDelta = new Vector3(single[i].r - background[i].r,
+                single[i].g - background[i].g, single[i].b - background[i].b);
+            Vector3 processDelta = new Vector3(process[i].r - background[i].r,
+                process[i].g - background[i].g, process[i].b - background[i].b);
+            singleRatios.Add(Vector3.Dot(singleDelta, denominator) / norm);
+            processRatios.Add(Vector3.Dot(processDelta, denominator) / norm);
+        }
+        result.roiPixels = singleRatios.Count;
+        if (result.roiPixels < 100)
+            throw new Exception("Insufficient safe interior ROI pixels: " + result.roiPixels);
+        result.observedSingleMedian = Percentile(singleRatios, 0.5f);
+        result.observedSingleP10 = Percentile(singleRatios, 0.1f);
+        result.observedSingleP90 = Percentile(singleRatios, 0.9f);
+        result.observedProcessMedian = Percentile(processRatios, 0.5f);
+        result.observedProcessP10 = Percentile(processRatios, 0.1f);
+        result.observedProcessP90 = Percentile(processRatios, 0.9f);
+        result.maxOffVsProcessAbsoluteDifference = MaxAbs(off, process);
+    }
+
+    void Run(Context c, string output, ProbeResult result)
+    {
+        c.camera.Render();
+        result.linearTarget = !c.target.sRGB;
+        c.camera.cullingMask = 1 << BackgroundLayer;
+        var background = Capture(c, Path.Combine(output, "background.png"));
+        c.camera.cullingMask = (1 << BackgroundLayer) | (1 << OffLayer);
+        var off = Capture(c, Path.Combine(output, "off.png"));
+        var offRepeat = Capture(c, Path.Combine(output, "off-repeat.png"));
+        c.camera.cullingMask = (1 << BackgroundLayer) | (1 << SingleLayer);
+        var single = Capture(c, Path.Combine(output, "single.png"));
+        var singleRepeat = Capture(c, Path.Combine(output, "single-repeat.png"));
+        c.camera.cullingMask = (1 << BackgroundLayer) | (1 << ProcessLayer);
+        var process = Capture(c, Path.Combine(output, "process.png"));
+        var processRepeat = Capture(c, Path.Combine(output, "process-repeat.png"));
+        result.off = Describe("off", c.off, offShader, background, off);
+        result.single = Describe("single", c.single, singleShader, background, single);
+        result.process = Describe("process", c.process, processShader, background, process);
+        result.off.repeatMaxAbsoluteDifference = MaxAbs(off, offRepeat);
+        result.single.repeatMaxAbsoluteDifference = MaxAbs(single, singleRepeat);
+        result.process.repeatMaxAbsoluteDifference = MaxAbs(process, processRepeat);
+        RequireCase(result.off); RequireCase(result.single); RequireCase(result.process);
+        if (result.off.repeatMaxAbsoluteDifference > 0.005f ||
+            result.single.repeatMaxAbsoluteDifference > 0.005f ||
+            result.process.repeatMaxAbsoluteDifference > 0.005f)
+            throw new Exception("Repeated frozen capture changed by >0.005");
+        Analyze(background, off, single, process, result);
+    }
+
+    static void Cleanup(Context c)
+    {
+        if (c == null) return;
+        if (c.camera) c.camera.targetTexture = null;
+        if (c.target) { c.target.Release(); Destroy(c.target); }
+        if (c.readback) Destroy(c.readback);
+        if (c.gradient) Destroy(c.gradient);
+        if (c.backgroundMaterial) Destroy(c.backgroundMaterial);
+        if (c.background) Destroy(c.background);
+        if (c.cameraObject) Destroy(c.cameraObject);
+        if (c.off) Destroy(c.off.gameObject);
+        if (c.single) Destroy(c.single.gameObject);
+        if (c.process) Destroy(c.process.gameObject);
+    }
+}
