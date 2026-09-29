@@ -1,0 +1,462 @@
+using System;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering.RenderGraphModule;
+
+public static class NBFXT07VertexColorProbe
+{
+    const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    static Color32[] Capture(Camera cam, RenderTexture rt, Texture2D readback, string name)
+    {
+        cam.Render();
+        var prev = RenderTexture.active;
+        RenderTexture.active = rt;
+        readback.ReadPixels(new Rect(0, 0, 128, 128), 0, 0);
+        readback.Apply(false);
+        RenderTexture.active = prev;
+        var bytes = readback.EncodeToPNG();
+        File.WriteAllBytes("/tmp/nbfx-t06-20260930/" + name + ".png", bytes);
+        return readback.GetPixels32();
+    }
+    static int Changed(Color32[] a, Color32[] b)
+    {
+        int n = 0;
+        for (int i = 0; i < a.Length; ++i)
+            if (Math.Abs(a[i].r-b[i].r)>2 || Math.Abs(a[i].g-b[i].g)>2 || Math.Abs(a[i].b-b[i].b)>2) ++n;
+        return n;
+    }
+    public static void Run()
+    {
+        AssetDatabase.ImportAsset(GraphPath, ImportAssetOptions.ForceUpdate);
+        var shader = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+        var pipeline = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+        Debug.Log("NBFX_T06_SHADER name=" + (shader ? shader.name : "null") + " supported=" + (shader && shader.isSupported) + " passCount=" + (shader ? new Material(shader).passCount : -1));
+        foreach(var asm in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            var t=asm.GetType("UnityEditor.ShaderGraph.ShaderGraphImporter");
+            if(t==null) continue;
+            foreach(var m in t.GetMethods(BindingFlags.NonPublic|BindingFlags.Static))
+            {
+                if(m.Name!="GetShaderText" || m.GetParameters().Length!=4 || !m.GetParameters()[3].ParameterType.IsByRef) continue;
+                object[] args={GraphPath,null,null,null};
+                var source=(string)m.Invoke(null,args);
+                File.WriteAllText("/tmp/nbfx-t06-20260930/generated-current.shader",source);
+                Debug.Log("NBFX_T06_GENERATED chars="+source.Length);
+                goto doneGenerate;
+            }
+        }
+        doneGenerate:;
+        Debug.Log("NBFX_T06_PIPELINE=" + (pipeline ? pipeline.name : "null"));
+        if (!shader || !pipeline) throw new Exception("Graph or URP missing");
+        var gradient = new Texture2D(128, 128, TextureFormat.RGBA32, false, true);
+        var pixels = new Color32[128*128];
+        for (int y=0;y<128;y++) for(int x=0;x<128;x++) pixels[y*128+x]=new Color32((byte)(x*255/127),(byte)(y*255/127),50,255);
+        gradient.SetPixels32(pixels); gradient.Apply(false); gradient.filterMode=FilterMode.Point;
+        var back = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        back.layer=2; back.transform.position = new Vector3(0,1,1); back.transform.localScale = new Vector3(6,6,1);
+        var backMat = new Material(shader);
+        backMat.SetTexture("_BaseMap", gradient); backMat.SetColor("_Color", Color.white);
+        backMat.SetFloat("_NB_DistortionMode",0); backMat.renderQueue=2000;
+        backMat.SetFloat("_Surface",0); backMat.SetFloat("_ZWrite",1);
+        back.GetComponent<MeshRenderer>().sharedMaterial=backMat;
+        var front = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        front.layer=2; front.transform.position = new Vector3(0,1,2); front.transform.localScale = new Vector3(2,2,1);
+        var frontMat = new Material(shader);
+        frontMat.SetColor("_Color", new Color(1,1,1,0.5f));
+        frontMat.SetFloat("_NB_DistortionIntensity",0.25f);
+        frontMat.SetVector("_NB_DistortionNoise",new Vector4(0.25f,0,0,0));
+        frontMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        frontMat.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+        frontMat.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+        frontMat.SetFloat("_SrcBlendAlpha", (float)BlendMode.One);
+        frontMat.SetFloat("_DstBlendAlpha", (float)BlendMode.OneMinusSrcAlpha);
+        frontMat.renderQueue=3000;
+        front.GetComponent<MeshRenderer>().sharedMaterial=frontMat;
+        var camGo = new GameObject("NBFX_T06_Camera");
+        var cam=camGo.AddComponent<Camera>(); cam.orthographic=true; cam.orthographicSize=3; cam.nearClipPlane=0.1f; cam.farClipPlane=20;
+        cam.cullingMask=1<<2; cam.transform.position=new Vector3(0,1,8); cam.transform.rotation=Quaternion.Euler(0,180,0);
+        cam.clearFlags=CameraClearFlags.SolidColor; cam.backgroundColor=Color.black; cam.allowHDR=false; cam.allowMSAA=false;
+        var rt=new RenderTexture(128,128,24,RenderTextureFormat.ARGB32); rt.Create(); cam.targetTexture=rt;
+        var tex=new Texture2D(128,128,TextureFormat.RGBA32,false,true);
+        var maskTexture = new Texture2D(2,2,TextureFormat.RGBA32,false,true);
+        maskTexture.SetPixels32(new[]{new Color32(64,64,64,224),new Color32(192,192,192,32),new Color32(64,64,64,224),new Color32(192,192,192,32)});
+        maskTexture.Apply(false);maskTexture.filterMode=FilterMode.Point;maskTexture.wrapMode=TextureWrapMode.Clamp;
+        var dissolveTexture = new Texture2D(16,16,TextureFormat.RGBA32,false,true);
+        var dissolvePixels=new Color32[16*16];
+        for(int y=0;y<16;y++)for(int x=0;x<16;x++) {byte r=(byte)(x*255/15);dissolvePixels[y*16+x]=new Color32(r,r,r,(byte)(255-r));}
+        dissolveTexture.SetPixels32(dissolvePixels);
+        dissolveTexture.Apply(false);dissolveTexture.filterMode=FilterMode.Point;dissolveTexture.wrapMode=TextureWrapMode.Clamp;
+        try {
+            front.SetActive(false);
+            var bg=Capture(cam,rt,tex,"t06_background");
+            front.SetActive(true);
+            frontMat.SetFloat("_NB_DistortionMode",0);
+            var mode0=Capture(cam,rt,tex,"t06_mode0");
+            frontMat.SetFloat("_NB_DistortionMode",1);
+            var deferred=Capture(cam,rt,tex,"t06_deferred");
+            frontMat.SetFloat("_NB_DistortionMode",2);
+            var camera=Capture(cam,rt,tex,"t06_camera");
+            foreach (var message in ShaderUtil.GetShaderMessages(shader)) Debug.Log("NBFX_T06_MESSAGE " + message.message);
+            Debug.Log("NBFX_T06_POST_RENDER passes=" + frontMat.passCount + " p1=" + frontMat.FindPass("NBCameraOpaqueDistortPass") + " p2=" + frontMat.FindPass("NBDeferredDistortPass") + " messages=" + ShaderUtil.GetShaderMessages(shader).Length);
+            frontMat.SetFloat("_NB_DistortionMode",0);
+            frontMat.SetFloat("_NB_Flags0Lo16",0);
+            frontMat.SetFloat("_NB_Flags0Hi16",0);
+            var flagOff=Capture(cam,rt,tex,"t06_flag_off");
+            frontMat.SetFloat("_NB_Flags0Hi16",8192);
+            var flagHigh=Capture(cam,rt,tex,"t06_flag_high_bit29");
+            frontMat.SetFloat("_NB_Flags0Lo16",1);
+            var flagComposite=Capture(cam,rt,tex,"t06_flag_high_plus_low");
+            Debug.Log("NBFX_T06_FLAGS highChanged="+Changed(flagOff,flagHigh)+" compositeVsHigh="+Changed(flagHigh,flagComposite)+" lowRead="+frontMat.GetFloat("_NB_Flags0Lo16")+" highRead="+frontMat.GetFloat("_NB_Flags0Hi16"));
+            frontMat.SetFloat("_NB_Flags0Lo16",0);
+            frontMat.SetFloat("_NB_Flags0Hi16",0);
+            var rendererData = pipeline.rendererDataList[0];
+            var maskShader = AssetDatabase.LoadAssetAtPath<Shader>("Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/FunctionalProbe/NBGFMaskView.shader");
+            var maskMaterial = new Material(maskShader);
+            var maskFeature = ScriptableObject.CreateInstance<NBFXT06MaskCaptureFeature>();
+            maskFeature.material=maskMaterial; maskFeature.Create(); maskFeature.SetActive(true);
+            rendererData.rendererFeatures.Add(maskFeature); rendererData.SetDirty();
+            try {
+                frontMat.SetFloat("_NB_DistortionMode",0);
+                var mask0=Capture(cam,rt,tex,"t06_mask0");
+                frontMat.SetFloat("_NB_DistortionMode",1);
+                var mask1=Capture(cam,rt,tex,"t06_mask_deferred");
+                frontMat.SetFloat("_NB_Flags1Lo16",256);
+                frontMat.SetFloat("_NB_DistortionAlphaPow",2);
+                frontMat.SetFloat("_NB_DistortionAlphaMultiplier",1);
+                frontMat.SetFloat("_NB_DistortionAlphaAdd",0);
+                var maskRefined=Capture(cam,rt,tex,"t07_mask_refined");
+                int refinedChanged=Changed(mask1,maskRefined);
+                Debug.Log("NBFX_T07_REFINE changed="+refinedChanged+" baseCenter="+mask1[64*128+64].r+" refinedCenter="+maskRefined[64*128+64].r+
+                    " lo="+frontMat.GetFloat("_NB_Flags1Lo16"));
+                if(refinedChanged==0) throw new Exception("Graph flag1 alpha refine did not affect mask");
+                frontMat.SetFloat("_NB_Flags1Lo16",0);
+                frontMat.SetTexture("_MaskMap",maskTexture);
+                frontMat.SetVector("_MaskMapVec",new Vector4(1,0,0,0));
+                frontMat.SetFloat("_NB_ColorChannelLo16",0);
+                frontMat.SetFloat("_Mask_Toggle",0);
+                var maskOff=Capture(cam,rt,tex,"t07_mask_off");
+                frontMat.SetFloat("_Mask_Toggle",1);
+                var maskRed=Capture(cam,rt,tex,"t07_mask_red");
+                frontMat.SetFloat("_NB_ColorChannelLo16",12);
+                var maskAlpha=Capture(cam,rt,tex,"t07_mask_alpha");
+                frontMat.SetFloat("_NB_Flags1Lo16",128);
+                frontMat.SetVector("_MaskRefineVec",new Vector4(2,1,0,0));
+                var maskRefined2=Capture(cam,rt,tex,"t07_mask_alpha_refined");
+                Debug.Log("NBFX_T07_MASK offRed="+Changed(maskOff,maskRed)+" redAlpha="+Changed(maskRed,maskAlpha)+" alphaRefined="+Changed(maskAlpha,maskRefined2)+" offCenter="+maskOff[64*128+64].r+" redCenter="+maskRed[64*128+64].r+" alphaCenter="+maskAlpha[64*128+64].r);
+                if(Changed(maskOff,maskRed)==0||Changed(maskRed,maskAlpha)==0||Changed(maskAlpha,maskRefined2)==0)throw new Exception("Graph single mask did not affect distortion coverage");
+                frontMat.SetFloat("_Mask_Toggle",0);
+                frontMat.SetFloat("_NB_Flags1Lo16",0);
+                frontMat.SetFloat("_NB_DistortionMode",1);
+                frontMat.SetTexture("_DissolveMap",dissolveTexture);
+                frontMat.SetVector("_Dissolve",new Vector4(0.5f,1,1,0.1f));
+                frontMat.SetFloat("_NB_ColorChannelLo16",0);
+                frontMat.SetFloat("_Dissolve_Toggle",0);
+                var dissolveOff=Capture(cam,rt,tex,"t07_diss_mask_off");
+                frontMat.SetFloat("_Dissolve_Toggle",1);
+                var dissolveRed=Capture(cam,rt,tex,"t07_diss_mask_red");
+                frontMat.SetFloat("_NB_ColorChannelLo16",3072);
+                var dissolveAlpha=Capture(cam,rt,tex,"t07_diss_mask_alpha");
+                frontMat.SetFloat("_NB_ColorChannelLo16",0);
+                frontMat.SetVector("_Dissolve",new Vector4(0.2f,1,1,0.1f));
+                var dissolveThreshold=Capture(cam,rt,tex,"t07_diss_mask_threshold");
+                frontMat.SetVector("_Dissolve",new Vector4(0.5f,2,1,0.1f));
+                var dissolvePow=Capture(cam,rt,tex,"t07_diss_mask_pow");
+                frontMat.SetVector("_Dissolve",new Vector4(0.5f,1,1,0.4f));
+                var dissolveSoft=Capture(cam,rt,tex,"t07_diss_mask_soft");
+                Debug.Log("NBFX_T07_DISSOLVE offRed="+Changed(dissolveOff,dissolveRed)+" redAlpha="+Changed(dissolveRed,dissolveAlpha)+" threshold="+Changed(dissolveRed,dissolveThreshold)+" exponent="+Changed(dissolveRed,dissolvePow)+" soft="+Changed(dissolveRed,dissolveSoft));
+                if(Changed(dissolveOff,dissolveRed)==0||Changed(dissolveRed,dissolveAlpha)==0||Changed(dissolveRed,dissolveThreshold)==0||Changed(dissolveRed,dissolvePow)==0||Changed(dissolveRed,dissolveSoft)==0)throw new Exception("Graph dissolve control did not affect distortion coverage");
+                frontMat.SetFloat("_Dissolve_Toggle",0);
+                frontMat.SetFloat("_NB_Flags1Lo16",0);
+                frontMat.SetFloat("_NB_DistortionMode",2);
+                var mask2=Capture(cam,rt,tex,"t06_mask_camera");
+                Debug.Log("NBFX_T06_MASK deferred="+Changed(mask0,mask1)+" camera="+Changed(mask0,mask2)+
+                    " clearCenter="+mask0[64*128+64].r+" deferredCenter="+mask1[64*128+64].r+" cameraCenter="+mask2[64*128+64].r);
+            } finally {
+                rendererData.rendererFeatures.Remove(maskFeature); rendererData.SetDirty();
+                UnityEngine.Object.DestroyImmediate(maskFeature); UnityEngine.Object.DestroyImmediate(maskMaterial);
+            }
+            frontMat.SetFloat("_NB_DistortionMode",0);
+            frontMat.SetFloat("_Mask_Toggle",0);
+            var colorNoMask=Capture(cam,rt,tex,"t07_color_no_mask");
+            frontMat.SetFloat("_Mask_Toggle",1);
+            var colorWithMask=Capture(cam,rt,tex,"t07_color_with_mask");
+            Debug.Log("NBFX_T07_MASK_COLOR changed="+Changed(colorNoMask,colorWithMask));
+            if(Changed(colorNoMask,colorWithMask)==0)throw new Exception("Graph mask did not affect final color");
+            frontMat.SetTexture("_MaskMap2",dissolveTexture);
+            frontMat.SetTexture("_MaskMap3",dissolveTexture);
+            frontMat.SetFloat("_NB_ColorChannelLo16",0);
+            frontMat.SetVector("_MaskMapVec",new Vector4(1,0,0,0));
+            frontMat.SetFloat("_Mask2_Toggle",0);
+            frontMat.SetFloat("_Mask3_Toggle",0);
+            var mask1Only=Capture(cam,rt,tex,"t07_mask23_mask1");
+            frontMat.SetFloat("_Mask2_Toggle",1);
+            var mask2On=Capture(cam,rt,tex,"t07_mask23_mask2");
+            frontMat.SetFloat("_Mask2_Toggle",0);
+            frontMat.SetFloat("_Mask3_Toggle",1);
+            var mask3On=Capture(cam,rt,tex,"t07_mask23_mask3");
+            frontMat.SetFloat("_Mask2_Toggle",1);
+            var maskBoth=Capture(cam,rt,tex,"t07_mask23_both");
+            frontMat.SetFloat("_Mask3_Toggle",0);
+            frontMat.SetFloat("_NB_ColorChannelLo16",48);
+            var mask2Alpha=Capture(cam,rt,tex,"t07_mask23_mask2_alpha");
+            frontMat.SetFloat("_NB_ColorChannelLo16",0);
+            frontMat.SetVector("_MaskMapVec",new Vector4(1,90,0,0));
+            var mask2Rotation=Capture(cam,rt,tex,"t07_mask23_mask2_rotation");
+            frontMat.SetVector("_MaskMapVec",new Vector4(1,0,0,0));
+            frontMat.SetTextureScale("_MaskMap2",new Vector2(0.5f,1));
+            frontMat.SetTextureOffset("_MaskMap2",new Vector2(0.2f,0));
+            var mask2ST=Capture(cam,rt,tex,"t07_mask23_mask2_st");
+            frontMat.SetTextureScale("_MaskMap2",Vector2.one);
+            frontMat.SetTextureOffset("_MaskMap2",Vector2.zero);
+            frontMat.SetVector("_MaskMapOffsetAnition",new Vector4(0,0,0.5f,0));
+            var mask2Scroll=Capture(cam,rt,tex,"t07_mask23_mask2_scroll");
+            frontMat.SetVector("_MaskMapOffsetAnition",Vector4.zero);
+            frontMat.SetFloat("_Mask2_Toggle",0);
+            frontMat.SetFloat("_Mask3_Toggle",1);
+            frontMat.SetFloat("_NB_ColorChannelLo16",192);
+            var mask3Alpha=Capture(cam,rt,tex,"t07_mask23_mask3_alpha");
+            frontMat.SetFloat("_NB_ColorChannelLo16",0);
+            frontMat.SetVector("_MaskMapVec",new Vector4(1,0,90,0));
+            var mask3Rotation=Capture(cam,rt,tex,"t07_mask23_mask3_rotation");
+            frontMat.SetVector("_MaskMapVec",new Vector4(1,0,0,0));
+            frontMat.SetTextureScale("_MaskMap3",new Vector2(0.5f,1));
+            frontMat.SetTextureOffset("_MaskMap3",new Vector2(0.2f,0));
+            var mask3ST=Capture(cam,rt,tex,"t07_mask23_mask3_st");
+            frontMat.SetTextureScale("_MaskMap3",Vector2.one);
+            frontMat.SetTextureOffset("_MaskMap3",Vector2.zero);
+            frontMat.SetVector("_MaskMap3OffsetAnition",new Vector4(0.5f,0,0,0));
+            var mask3Scroll=Capture(cam,rt,tex,"t07_mask23_mask3_scroll");
+            Debug.Log("NBFX_T07_MASK23 m2="+Changed(mask1Only,mask2On)+" m3="+Changed(mask1Only,mask3On)+" bothVsM2="+Changed(mask2On,maskBoth)+" m2Alpha="+Changed(mask2On,mask2Alpha)+" m3Alpha="+Changed(mask3On,mask3Alpha)+" m2Rot="+Changed(mask2On,mask2Rotation)+" m3Rot="+Changed(mask3On,mask3Rotation)+" m2ST="+Changed(mask2On,mask2ST)+" m3ST="+Changed(mask3On,mask3ST)+" m2Scroll="+Changed(mask2On,mask2Scroll)+" m3Scroll="+Changed(mask3On,mask3Scroll));
+            // Packed-alpha gradient parity smoke. Each layer is independently
+            // switched via Flags1, and wrap mode uses the two 16-bit slices.
+            frontMat.SetFloat("_NB_DistortionMode",0);
+            frontMat.SetFloat("_NB_Flags1Lo16",0);
+            frontMat.SetFloat("_NB_Flags1Hi16",0);
+            frontMat.SetFloat("_NB_WrapFlagsLo16",0);
+            frontMat.SetFloat("_NB_WrapFlagsHi16",0);
+            frontMat.SetFloat("_NB_ColorChannelLo16",0);
+            frontMat.SetFloat("_Mask_Toggle",1);
+            frontMat.SetFloat("_Mask2_Toggle",0);
+            frontMat.SetFloat("_Mask3_Toggle",0);
+            frontMat.SetTexture("_MaskMap",Texture2D.whiteTexture);
+            frontMat.SetVector("_MaskMapVec",new Vector4(1,0,0,0));
+            frontMat.SetVector("_MaskMapOffsetAnition",Vector4.zero);
+            frontMat.SetVector("_MaskMap3OffsetAnition",Vector4.zero);
+            frontMat.SetFloat("_MaskMapUVRotation",0);
+            frontMat.SetFloat("_MaskMapRotationSpeed",0);
+            frontMat.SetFloat("_MaskMapGradientCount",2);
+            frontMat.SetVector("_MaskMapGradientFloat0",new Vector4(0.2f,0,0.8f,1));
+            frontMat.SetVector("_MaskMapGradientFloat1",new Vector4(1,0,1,1));
+            frontMat.SetVector("_MaskMapGradientFloat2",new Vector4(1,0,1,1));
+            frontMat.SetVector("_MaskMap_ST",new Vector4(2,1,0,0));
+            var g1Off=Capture(cam,rt,tex,"t07_gradient_mask1_off");
+            frontMat.SetFloat("_NB_Flags1Lo16",4);
+            var g1Repeat=Capture(cam,rt,tex,"t07_gradient_mask1_repeat");
+            frontMat.SetFloat("_NB_WrapFlagsLo16",2);
+            var g1Clamp=Capture(cam,rt,tex,"t07_gradient_mask1_clamp");
+            Debug.Log("NBFX_T07_GRADIENT_M1 offRepeat="+Changed(g1Off,g1Repeat)+" repeatClamp="+Changed(g1Repeat,g1Clamp));
+            if (Changed(g1Off,g1Repeat)==0 || Changed(g1Repeat,g1Clamp)==0) throw new Exception("Mask1 gradient or wrap inactive");
+
+            frontMat.SetFloat("_NB_Flags1Lo16",0);
+            frontMat.SetFloat("_NB_WrapFlagsLo16",0);
+            frontMat.SetVector("_MaskMap_ST",new Vector4(1,1,0,0));
+            frontMat.SetFloat("_Mask2_Toggle",1);
+            frontMat.SetTexture("_MaskMap2",Texture2D.whiteTexture);
+            frontMat.SetFloat("_MaskMap2GradientCount",2);
+            frontMat.SetVector("_MaskMap2GradientFloat0",new Vector4(0.2f,0,0.8f,1));
+            frontMat.SetVector("_MaskMap2GradientFloat1",new Vector4(1,0,1,1));
+            frontMat.SetVector("_MaskMap2GradientFloat2",new Vector4(1,0,1,1));
+            frontMat.SetVector("_MaskMap2_ST",new Vector4(1,2,0,0));
+            var g2Off=Capture(cam,rt,tex,"t07_gradient_mask2_off");
+            frontMat.SetFloat("_NB_Flags1Lo16",8);
+            var g2Mode0=Capture(cam,rt,tex,"t07_gradient_mask2_mode0");
+            frontMat.SetFloat("_NB_WrapFlagsHi16",4);
+            var g2Mode2=Capture(cam,rt,tex,"t07_gradient_mask2_mode2");
+            frontMat.SetFloat("_NB_WrapFlagsLo16",4);
+            var g2Mode3=Capture(cam,rt,tex,"t07_gradient_mask2_mode3");
+            Debug.Log("NBFX_T07_GRADIENT_M2 offMode0="+Changed(g2Off,g2Mode0)+" mode0Mode2="+Changed(g2Mode0,g2Mode2)+" mode2Mode3="+Changed(g2Mode2,g2Mode3));
+            if (Changed(g2Off,g2Mode0)==0 || Changed(g2Mode0,g2Mode2)==0 || Changed(g2Mode2,g2Mode3)==0) throw new Exception("Mask2 gradient or wrap inactive");
+
+            frontMat.SetFloat("_NB_Flags1Lo16",0);
+            frontMat.SetFloat("_NB_WrapFlagsLo16",0);
+            frontMat.SetFloat("_NB_WrapFlagsHi16",0);
+            frontMat.SetFloat("_Mask2_Toggle",0);
+            frontMat.SetVector("_MaskMap2_ST",new Vector4(1,1,0,0));
+            frontMat.SetFloat("_Mask3_Toggle",1);
+            frontMat.SetTexture("_MaskMap3",Texture2D.whiteTexture);
+            frontMat.SetFloat("_MaskMap3GradientCount",2);
+            frontMat.SetVector("_MaskMap3GradientFloat0",new Vector4(0.2f,0,0.8f,1));
+            frontMat.SetVector("_MaskMap3GradientFloat1",new Vector4(1,0,1,1));
+            frontMat.SetVector("_MaskMap3GradientFloat2",new Vector4(1,0,1,1));
+            frontMat.SetVector("_MaskMap3_ST",new Vector4(2,1,0,0));
+            var g3Off=Capture(cam,rt,tex,"t07_gradient_mask3_off");
+            frontMat.SetFloat("_NB_Flags1Lo16",16);
+            var g3Mode0=Capture(cam,rt,tex,"t07_gradient_mask3_mode0");
+            frontMat.SetFloat("_NB_WrapFlagsHi16",2048);
+            var g3Mode2=Capture(cam,rt,tex,"t07_gradient_mask3_mode2");
+            frontMat.SetFloat("_NB_WrapFlagsLo16",2048);
+            var g3Mode3=Capture(cam,rt,tex,"t07_gradient_mask3_mode3");
+            Debug.Log("NBFX_T07_GRADIENT_M3 offMode0="+Changed(g3Off,g3Mode0)+" mode0Mode2="+Changed(g3Mode0,g3Mode2)+" mode2Mode3="+Changed(g3Mode2,g3Mode3));
+            if (Changed(g3Off,g3Mode0)==0 || Changed(g3Mode0,g3Mode2)!=0 || Changed(g3Mode2,g3Mode3)==0) throw new Exception("Mask3 gradient or wrap inactive");
+
+            frontMat.SetFloat("_NB_Flags1Lo16",0);
+            frontMat.SetFloat("_NB_WrapFlagsLo16",0);
+            frontMat.SetFloat("_NB_WrapFlagsHi16",0);
+            frontMat.SetVector("_MaskMap3_ST",new Vector4(1,1,0,0));
+            frontMat.SetFloat("_Mask3_Toggle",0);
+            frontMat.SetFloat("_Mask_Toggle",0);
+            frontMat.SetFloat("_Dissolve_Toggle",0);
+            var dissolveColorOff=Capture(cam,rt,tex,"t07_diss_color_off");
+            frontMat.SetVector("_Dissolve",new Vector4(0.5f,1,1,0.1f));
+            frontMat.SetFloat("_Dissolve_Toggle",1);
+            var dissolveColorOn=Capture(cam,rt,tex,"t07_diss_color_on");
+            Debug.Log("NBFX_T07_DISSOLVE_COLOR changed="+Changed(dissolveColorOff,dissolveColorOn));
+            if(Changed(dissolveColorOff,dissolveColorOn)==0)throw new Exception("Graph dissolve did not affect final color");
+            frontMat.SetFloat("_Mask_Toggle",0);
+            frontMat.SetFloat("_Dissolve_Toggle",0);
+            frontMat.SetFloat("_NB_DistortionMode",0);
+            frontMat.SetTexture("_BaseMap",gradient);
+            frontMat.SetVector("_BaseMap_ST",new Vector4(1,1,0,0));
+            frontMat.SetFloat("_BaseMapUVRotation",0);
+            frontMat.SetFloat("_BaseMapUVRotationSpeed",0);
+            frontMat.SetVector("_BaseMapMaskMapOffset",Vector4.zero);
+            var uvBase=Capture(cam,rt,tex,"t07_uv_base");
+            frontMat.SetFloat("_BaseMapUVRotation",90);
+            var uvRot=Capture(cam,rt,tex,"t07_uv_rotation");
+            frontMat.SetFloat("_BaseMapUVRotation",0);
+            frontMat.SetVector("_BaseMap_ST",new Vector4(0.5f,1,0.2f,0));
+            var uvST=Capture(cam,rt,tex,"t07_uv_st");
+            frontMat.SetVector("_BaseMap_ST",new Vector4(1,1,0,0));
+            frontMat.SetVector("_BaseMapMaskMapOffset",new Vector4(0.5f,0,0,0));
+            var uvScroll=Capture(cam,rt,tex,"t07_uv_scroll");
+            frontMat.SetVector("_BaseMapMaskMapOffset",Vector4.zero);
+            frontMat.SetFloat("_BaseMapUVRotationSpeed",90);
+            var uvRotSpeed=Capture(cam,rt,tex,"t07_uv_rotation_speed");
+            Debug.Log("NBFX_T07_UV rotation="+Changed(uvBase,uvRot)+" st="+Changed(uvBase,uvST)+" scroll="+Changed(uvBase,uvScroll)+" rotationSpeed="+Changed(uvBase,uvRotSpeed));
+            if(Changed(uvBase,uvRot)==0||Changed(uvBase,uvST)==0||Changed(uvBase,uvScroll)==0||Changed(uvBase,uvRotSpeed)==0)throw new Exception("Graph BaseMap UV transform did not affect image");
+            // AlphaAll is a late alpha multiplier. Transparent blending must
+            // respond; Flags0 bit29 RGB multiplication must occur before it.
+            frontMat.SetTexture("_BaseMap",Texture2D.whiteTexture);
+            frontMat.SetVector("_BaseMap_ST",new Vector4(1,1,0,0));
+            frontMat.SetFloat("_BaseMapUVRotation",0);
+            frontMat.SetFloat("_BaseMapUVRotationSpeed",0);
+            frontMat.SetVector("_BaseMapMaskMapOffset",Vector4.zero);
+            frontMat.SetFloat("_Mask_Toggle",0);
+            frontMat.SetFloat("_Mask2_Toggle",0);
+            frontMat.SetFloat("_Mask3_Toggle",0);
+            frontMat.SetFloat("_Dissolve_Toggle",0);
+            frontMat.SetFloat("_NB_Flags0Lo16",0);
+            frontMat.SetFloat("_NB_Flags0Hi16",0);
+            frontMat.SetFloat("_NB_Flags1Lo16",0);
+            frontMat.SetColor("_Color",new Color(1,1,1,0.8f));
+            frontMat.SetFloat("_AlphaAll",1);
+            var alphaAllOne=Capture(cam,rt,tex,"t07_alphaall_one");
+            frontMat.SetFloat("_AlphaAll",0.5f);
+            var alphaAllHalf=Capture(cam,rt,tex,"t07_alphaall_half");
+            frontMat.SetFloat("_AlphaAll",0);
+            var alphaAllZero=Capture(cam,rt,tex,"t07_alphaall_zero");
+            Debug.Log("NBFX_T07_ALPHAALL transparent oneHalf="+Changed(alphaAllOne,alphaAllHalf)+" halfZero="+Changed(alphaAllHalf,alphaAllZero));
+            if(Changed(alphaAllOne,alphaAllHalf)==0 || Changed(alphaAllHalf,alphaAllZero)==0)throw new Exception("AlphaAll transparent blend inactive");
+            frontMat.SetFloat("_Surface",0);
+            frontMat.SetFloat("_SrcBlend",(float)BlendMode.One);
+            frontMat.SetFloat("_DstBlend",(float)BlendMode.Zero);
+            frontMat.SetFloat("_SrcBlendAlpha",(float)BlendMode.One);
+            frontMat.SetFloat("_DstBlendAlpha",(float)BlendMode.Zero);
+            frontMat.SetFloat("_ZWrite",1);
+            frontMat.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            frontMat.renderQueue=2000;
+            frontMat.SetFloat("_NB_Flags0Hi16",8192);
+            frontMat.SetFloat("_AlphaAll",1);
+            var premulBeforeOne=Capture(cam,rt,tex,"t07_alphaall_bit29_one");
+            frontMat.SetFloat("_AlphaAll",0);
+            var premulBeforeZero=Capture(cam,rt,tex,"t07_alphaall_bit29_zero");
+            Debug.Log("NBFX_T07_ALPHAALL bit29RgbDiff="+Changed(premulBeforeOne,premulBeforeZero));
+            if(Changed(premulBeforeOne,premulBeforeZero)!=0)throw new Exception("AlphaAll ran before bit29 RGB multiplication");
+            // ShaderLab's late _ColorA multiplies RGB and alpha before bit29;
+            // with opaque One/Zero, alpha alone cannot change RGB unless bit29
+            // is on, making ordering directly observable in RGB readback.
+            frontMat.SetFloat("_AlphaAll",1);
+            frontMat.SetFloat("_NB_Flags0Hi16",0);
+            frontMat.SetColor("_ColorA",Color.white);
+            var colorABase=Capture(cam,rt,tex,"t07_colora_base");
+            frontMat.SetColor("_ColorA",new Color(0.5f,1,1,1));
+            var colorARed=Capture(cam,rt,tex,"t07_colora_red_half");
+            frontMat.SetColor("_ColorA",new Color(1,1,1,0.5f));
+            var colorAAlpha=Capture(cam,rt,tex,"t07_colora_alpha_half_no_bit29");
+            frontMat.SetFloat("_NB_Flags0Hi16",8192);
+            var colorAAlphaBit29=Capture(cam,rt,tex,"t07_colora_alpha_half_bit29");
+            Debug.Log("NBFX_T07_COLORA redDiff="+Changed(colorABase,colorARed)+" alphaWithoutBit29="+Changed(colorABase,colorAAlpha)+" alphaWithBit29="+Changed(colorAAlpha,colorAAlphaBit29));
+            if(Changed(colorABase,colorARed)==0 || Changed(colorABase,colorAAlpha)!=0 || Changed(colorAAlpha,colorAAlphaBit29)==0)throw new Exception("ColorA RGB/alpha or bit29 order mismatch");
+            // Vertex Color is multiplied just before ColorA unless Flags1 bit9 says ignore.
+            frontMat.SetFloat("_NB_Flags0Hi16",0);
+            frontMat.SetFloat("_NB_Flags1Lo16",0);
+            frontMat.SetColor("_ColorA",Color.white);
+            var primitiveDefault = Capture(cam,rt,tex,"t07_vcolor_mesh_default");
+            var meshFilter=front.GetComponent<MeshFilter>();
+            var coloredMesh=UnityEngine.Object.Instantiate(meshFilter.sharedMesh);
+            meshFilter.sharedMesh=coloredMesh;
+            var vertexColors=new Color32[coloredMesh.vertexCount];
+            for(int i=0;i<vertexColors.Length;++i)vertexColors[i]=new Color32(128,255,255,255);
+            coloredMesh.colors32=vertexColors;
+            var redHalf=Capture(cam,rt,tex,"t07_vcolor_red_half");
+            frontMat.SetFloat("_NB_Flags1Lo16",512);
+            var redIgnored=Capture(cam,rt,tex,"t07_vcolor_red_ignored");
+            frontMat.SetFloat("_NB_Flags1Lo16",0);
+            for(int i=0;i<vertexColors.Length;++i)vertexColors[i]=new Color32(255,255,255,128);
+            coloredMesh.colors32=vertexColors;
+            var alphaHalf=Capture(cam,rt,tex,"t07_vcolor_alpha_half_no_bit29");
+            frontMat.SetFloat("_NB_Flags0Hi16",8192);
+            var alphaWithBit29=Capture(cam,rt,tex,"t07_vcolor_alpha_half_bit29");
+            int redDiff=Changed(primitiveDefault,redHalf);
+            int ignoreDiff=Changed(primitiveDefault,redIgnored);
+            int alphaNoBitDiff=Changed(primitiveDefault,alphaHalf);
+            int alphaBitDiff=Changed(alphaHalf,alphaWithBit29);
+            Debug.Log("NBFX_T07_VERTEX_COLOR redDiff="+redDiff+" ignoredDiff="+ignoreDiff+" alphaWithoutBit29="+alphaNoBitDiff+" alphaWithBit29="+alphaBitDiff);
+            if(redDiff==0 || ignoreDiff!=0 || alphaNoBitDiff!=0 || alphaBitDiff==0)
+                throw new Exception("Vertex Color or Flags1 bit9/bit29 order mismatch");
+            UnityEngine.Object.DestroyImmediate(coloredMesh);
+            Debug.Log("NBFX_T06_RESULT visible="+Changed(bg,mode0)+" deferred="+Changed(mode0,deferred)+" camera="+Changed(mode0,camera)+
+              " bgCenter="+bg[64*128+64].r+","+bg[64*128+64].g+","+bg[64*128+64].b+
+              " mode0Center="+mode0[64*128+64].r+","+mode0[64*128+64].g+","+mode0[64*128+64].b);
+        } finally {
+            cam.targetTexture=null; rt.Release();
+            UnityEngine.Object.DestroyImmediate(rt); UnityEngine.Object.DestroyImmediate(tex);
+            UnityEngine.Object.DestroyImmediate(gradient); UnityEngine.Object.DestroyImmediate(maskTexture); UnityEngine.Object.DestroyImmediate(dissolveTexture); UnityEngine.Object.DestroyImmediate(backMat); UnityEngine.Object.DestroyImmediate(frontMat);
+            UnityEngine.Object.DestroyImmediate(back); UnityEngine.Object.DestroyImmediate(front); UnityEngine.Object.DestroyImmediate(camGo);
+        }
+    }
+}
+
+internal sealed class NBFXT06MaskCaptureFeature : ScriptableRendererFeature
+{
+    public Material material;
+    Pass pass;
+    public override void Create() { pass=new Pass(material) {renderPassEvent=RenderPassEvent.AfterRenderingTransparents+1}; }
+    public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
+    { if (renderingData.cameraData.cameraType==CameraType.Game) renderer.EnqueuePass(pass); }
+    sealed class Pass : ScriptableRenderPass
+    {
+        static readonly int MaskId=Shader.PropertyToID("_DisturbanceMaskTex");
+        readonly Material material;
+        sealed class PassData { public Material material; }
+        public Pass(Material material) { this.material=material; }
+        public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
+        {
+            var resources=frameData.Get<UniversalResourceData>();
+            if (!resources.activeColorTexture.IsValid()) return;
+            using(var builder=renderGraph.AddRasterRenderPass<PassData>("NBFX T06 Mask View",out var data))
+            {
+                data.material=material;
+                builder.UseGlobalTexture(MaskId,AccessFlags.Read);
+                builder.SetRenderAttachment(resources.activeColorTexture,0,AccessFlags.ReadWrite);
+                builder.AllowPassCulling(false);
+                builder.SetRenderFunc((PassData d,RasterGraphContext context)=>
+                { context.cmd.DrawProcedural(Matrix4x4.identity,d.material,0,MeshTopology.Triangles,3,1); });
+            }
+        }
+    }
+}
