@@ -1,0 +1,23 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+public static class NBFXT08AgePlayerBuild
+{
+    public static void Run()
+    {
+        const string constantPath="Assets/NBGraphVFXMeshConstant1.vfx",agePath="Assets/NBGraphVFXMeshAgeBound.vfx";
+        const string graphPath="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+        const string scenePath="Assets/NBFXT08AgePlayer.unity",outPath="/tmp/nbfx-t08-mesh-20260930/age-variants/player/AgePlayer.app";
+        var constant=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(constantPath);var age=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(agePath);var graph=AssetDatabase.LoadAssetAtPath<Shader>(graphPath);
+        Shader constantShader=null,ageShader=null;foreach(var a in AssetDatabase.LoadAllAssetsAtPath(constantPath))if(a is Shader s){constantShader=s;break;}foreach(var a in AssetDatabase.LoadAllAssetsAtPath(agePath))if(a is Shader s){ageShader=s;break;}
+        if(!constant||!age||!graph||!constantShader||!ageShader)throw new Exception("Assets absent");
+        var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);var go=new GameObject("Age Probe");var probe=go.AddComponent<NBFXT08AgePlayerProbe>();probe.constantAsset=constant;probe.ageAsset=age;probe.graphShader=graph;probe.constantShader=constantShader;probe.ageShader=ageShader;EditorSceneManager.SaveScene(scene,scenePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(outPath));var result=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{scenePath},locationPathName=outPath,target=BuildTarget.StandaloneOSX,options=BuildOptions.None});
+        Debug.Log("NBFX_T08_AGE_BUILD result="+result.summary.result+" errors="+result.summary.totalErrors+" warnings="+result.summary.totalWarnings);
+        if(result.summary.result!=BuildResult.Succeeded)throw new Exception("Age Player build failed");
+    }
+}

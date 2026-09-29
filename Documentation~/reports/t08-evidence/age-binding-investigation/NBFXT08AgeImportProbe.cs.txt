@@ -1,0 +1,34 @@
+using System;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.VFX;
+public static class NBFXT08AgeImportProbe
+{
+    public static void Run()
+    {
+        var paths=new[]{"Assets/NBGraphVFXMeshAgeBound.vfx","Assets/NBGraphVFXMeshConstant1.vfx"};
+        Type resourceType=null;foreach(var asm in AppDomain.CurrentDomain.GetAssemblies())if((resourceType=asm.GetType("UnityEditor.VFX.VisualEffectResource"))!=null)break;
+        if(resourceType==null)throw new Exception("VFX resource type missing");
+        var flags=BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Static|BindingFlags.Instance;
+        foreach(var path in paths)
+        {
+            AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+            var vfx=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);if(!vfx)throw new Exception("VFX missing "+path);
+            var resource=resourceType.GetMethod("GetResourceAtPath",flags).Invoke(null,new object[]{path});
+            var count=(int)resourceType.GetMethod("GetShaderSourceCount",flags).Invoke(resource,null);
+            var getter=resourceType.GetMethod("GetShaderSource",flags);
+            for(int i=0;i<count;i++)
+            {
+                string source=(string)getter.Invoke(resource,new object[]{i});
+                File.WriteAllText("/tmp/nbfx-t08-mesh-20260930/age-variants/"+Path.GetFileNameWithoutExtension(path)+"-generated-"+i+".shader",source);
+                Debug.Log("NBFX_T08_AGE_SOURCE path="+path+" index="+i+" chars="+source.Length);
+            }
+            foreach(var asset in AssetDatabase.LoadAllAssetsAtPath(path))if(asset is Shader s)
+            {
+                var m=new Material(s);Debug.Log("NBFX_T08_AGE_IMPORT path="+path+" name="+s.name+" pass="+m.passCount+" p1="+m.FindPass("NBCameraOpaqueDistortPass")+" p2="+m.FindPass("NBDeferredDistortPass"));UnityEngine.Object.DestroyImmediate(m);
+            }
+        }
+    }
+}
