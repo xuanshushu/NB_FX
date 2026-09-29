@@ -5,6 +5,7 @@
 #undef frag
 
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDistortionV1.hlsl"
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
 
 void frag(
@@ -34,7 +35,10 @@ void frag(
     input.signedNoise = _NB_DistortionNoise.xy;
     input.noiseMask = 1.0h;
     input.alphaBeforePremultiply = surface.Alpha;
-    input.refineAlpha = false;
+    input.refineAlpha = (NBGraphFlags1() & FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE) != 0u;
+    input.alphaPow = _NB_DistortionAlphaPow;
+    input.alphaMultiplier = _NB_DistortionAlphaMultiplier;
+    input.alphaAdd = _NB_DistortionAlphaAdd;
     input.intensity = _NB_DistortionIntensity;
     NBFX_DistortionPayloadV1 payload = NBFX_BuildDistortionPayloadV1(input);
 

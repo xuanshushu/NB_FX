@@ -2,17 +2,7 @@
 #define NB_GRAPH_BASE_COLOR_INCLUDED
 
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl"
-
-// The Graph host binds each 16-bit half as a full-precision float. These two
-// values reconstruct the original packed uint without relying on Shader Graph's
-// Integer UI (which currently generates float HLSL). The actual flag bits still
-// come from the single NBShaderFlags.hlsl protocol included by the shared core.
-uint NBGraphDecodeFlags0()
-{
-    uint lo = (uint)round(clamp(_NB_Flags0Lo16, 0.0, 65535.0));
-    uint hi = (uint)round(clamp(_NB_Flags0Hi16, 0.0, 65535.0));
-    return lo | (hi << 16);
-}
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 
 // SHADERGRAPH_PREVIEW and runtime execute the same numeric shared function;
 // no preview-only camera/scene substitute is needed.
@@ -29,7 +19,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     Out = (float4)NBFX_ComposeBaseColorV1(input);
     // Original ColorAdjustment applies this flag after the base sample. In this
     // minimum Unlit Graph, no intervening lighting/effects alter that ordering.
-    if ((NBGraphDecodeFlags0() & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u)
+    if ((NBGraphFlags0() & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u)
         Out.rgb *= Out.a;
 }
 
@@ -43,7 +33,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     input.timelineIntensity = 1.0h;
     input.applyTimelineIntensity = false;
     Out = NBFX_ComposeBaseColorV1(input);
-    if ((NBGraphDecodeFlags0() & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u)
+    if ((NBGraphFlags0() & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u)
         Out.rgb *= Out.a;
 }
 

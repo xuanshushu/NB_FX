@@ -1,0 +1,43 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public static class NBFXT06PlayerBuild
+{
+    public static void Run()
+    {
+        const string graph="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+        const string scene="Assets/NBFXT06Player.unity";
+        var shader=AssetDatabase.LoadAssetAtPath<Shader>(graph);
+        if(!shader)throw new Exception("Graph Shader missing");
+        var s=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+        var go=new GameObject("NBFX T06 Player Probe");
+        var component=go.AddComponent<NBFXT06PlayerProbe>();component.graphShader=shader;
+        const string materialPath="Assets/NBFXT06Front.mat";
+        var front=AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+        if(!front){front=new Material(shader);AssetDatabase.CreateAsset(front,materialPath);}
+        front.shader=shader;
+        front.SetColor("_Color",new Color(1,1,1,0.5f));
+        front.SetFloat("_Surface",1);
+        front.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        front.SetFloat("_SrcBlend",(float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        front.SetFloat("_DstBlend",(float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        front.SetFloat("_SrcBlendAlpha",(float)UnityEngine.Rendering.BlendMode.One);
+        front.SetFloat("_DstBlendAlpha",(float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        front.renderQueue=3000;
+        EditorUtility.SetDirty(front);
+        AssetDatabase.SaveAssets();
+        component.frontTemplate=front;
+        EditorSceneManager.SaveScene(s,scene);
+        var output="/tmp/nbfx-t06-20260930/player/T06Player.app";
+        Directory.CreateDirectory(Path.GetDirectoryName(output));
+        var options=new BuildPlayerOptions{scenes=new[]{scene},locationPathName=output,target=BuildTarget.StandaloneOSX,options=BuildOptions.None};
+        var report=BuildPipeline.BuildPlayer(options);
+        Debug.Log("NBFX_T06_BUILD result="+report.summary.result+" errors="+report.summary.totalErrors+" warnings="+report.summary.totalWarnings+" output="+report.summary.outputPath);
+        if(report.summary.result!=BuildResult.Succeeded)throw new Exception("T06 Player build failed");
+    }
+}

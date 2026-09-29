@@ -1,0 +1,96 @@
+using System;
+using System.Collections;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+public sealed class NBFXT06PlayerProbe : MonoBehaviour
+{
+    public Shader graphShader;
+    public Material frontTemplate;
+    const int Size=128;
+    [Serializable] sealed class Result
+    {
+        public string unityVersion,graphicsDevice,error;
+        public int passes,cameraPass,deferredPass,visible,deferredChanged,cameraChanged,flagHighChanged,flagCompositeVsHigh,refinedChanged;
+        public bool passed;
+    }
+    static Color32[] Capture(Camera cam,RenderTexture rt,Texture2D read,string path)
+    {
+        cam.Render(); var prev=RenderTexture.active; RenderTexture.active=rt;
+        read.ReadPixels(new Rect(0,0,Size,Size),0,0); read.Apply(false);
+        RenderTexture.active=prev; File.WriteAllBytes(path,read.EncodeToPNG());
+        return read.GetPixels32();
+    }
+    static int Changed(Color32[] a,Color32[] b)
+    {
+        int n=0;for(int i=0;i<a.Length;i++)if(Math.Abs(a[i].r-b[i].r)>2||Math.Abs(a[i].g-b[i].g)>2||Math.Abs(a[i].b-b[i].b)>2)n++;
+        return n;
+    }
+    void Start()
+    {
+        string output=null;
+        foreach(var arg in Environment.GetCommandLineArgs())
+            if(arg.StartsWith("--nbfx-t06-output=",StringComparison.Ordinal)) output=arg.Substring(18);
+        if(string.IsNullOrEmpty(output)) return;
+        Directory.CreateDirectory(output);
+        var r=new Result{unityVersion=Application.unityVersion,graphicsDevice=SystemInfo.graphicsDeviceType.ToString()};
+        RenderTexture rt=null; Texture2D read=null,gradient=null;
+        Material backMat=null,frontMat=null;GameObject back=null,front=null,camGo=null;
+        try
+        {
+            if(!graphShader || !frontTemplate)throw new Exception("Product Graph Shader or serialized transparent material missing");
+            gradient=new Texture2D(Size,Size,TextureFormat.RGBA32,false,true);
+            var pixels=new Color32[Size*Size];
+            for(int y=0;y<Size;y++)for(int x=0;x<Size;x++)pixels[y*Size+x]=new Color32((byte)(x*255/127),(byte)(y*255/127),50,255);
+            gradient.SetPixels32(pixels);gradient.Apply(false);gradient.filterMode=FilterMode.Point;
+            back=GameObject.CreatePrimitive(PrimitiveType.Quad);back.layer=2;back.transform.position=new Vector3(0,1,1);back.transform.localScale=new Vector3(6,6,1);
+            backMat=new Material(graphShader);backMat.SetTexture("_BaseMap",gradient);backMat.SetColor("_Color",Color.white);
+            backMat.SetFloat("_NB_DistortionMode",0);backMat.renderQueue=2000;backMat.SetFloat("_Surface",0);backMat.SetFloat("_ZWrite",1);
+            back.GetComponent<MeshRenderer>().sharedMaterial=backMat;
+            front=GameObject.CreatePrimitive(PrimitiveType.Quad);front.layer=2;front.transform.position=new Vector3(0,1,2);front.transform.localScale=new Vector3(2,2,1);
+            frontMat=new Material(frontTemplate);frontMat.SetColor("_Color",new Color(1,1,1,0.5f));frontMat.SetFloat("_NB_DistortionIntensity",0.25f);
+            frontMat.SetVector("_NB_DistortionNoise",new Vector4(0.25f,0,0,0));frontMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            frontMat.SetFloat("_SrcBlend",(float)BlendMode.SrcAlpha);frontMat.SetFloat("_DstBlend",(float)BlendMode.OneMinusSrcAlpha);
+            frontMat.SetFloat("_SrcBlendAlpha",(float)BlendMode.One);frontMat.SetFloat("_DstBlendAlpha",(float)BlendMode.OneMinusSrcAlpha);
+            frontMat.renderQueue=3000;front.GetComponent<MeshRenderer>().sharedMaterial=frontMat;
+            camGo=new GameObject("NBFX T06 Player Camera");var cam=camGo.AddComponent<Camera>();cam.orthographic=true;cam.orthographicSize=3;
+            cam.nearClipPlane=0.1f;cam.farClipPlane=20;cam.cullingMask=1<<2;cam.transform.position=new Vector3(0,1,8);cam.transform.rotation=Quaternion.Euler(0,180,0);
+            cam.clearFlags=CameraClearFlags.SolidColor;cam.backgroundColor=Color.black;cam.allowHDR=false;cam.allowMSAA=false;
+            rt=new RenderTexture(Size,Size,24,RenderTextureFormat.ARGB32);rt.Create();cam.targetTexture=rt;
+            read=new Texture2D(Size,Size,TextureFormat.RGBA32,false,true);
+            for(int i=0;i<2;i++)cam.Render();
+            front.SetActive(false);var bg=Capture(cam,rt,read,Path.Combine(output,"player_background.png"));
+            front.SetActive(true);frontMat.SetFloat("_NB_DistortionMode",0);var mode0=Capture(cam,rt,read,Path.Combine(output,"player_mode0.png"));
+            frontMat.SetFloat("_NB_DistortionMode",1);var deferred=Capture(cam,rt,read,Path.Combine(output,"player_deferred.png"));
+            frontMat.SetFloat("_NB_Flags1Lo16",256);
+            frontMat.SetFloat("_NB_DistortionAlphaPow",2);
+            frontMat.SetFloat("_NB_DistortionAlphaMultiplier",1);
+            frontMat.SetFloat("_NB_DistortionAlphaAdd",0);
+            var refined=Capture(cam,rt,read,Path.Combine(output,"player_deferred_refined.png"));
+            r.refinedChanged=Changed(deferred,refined);
+            frontMat.SetFloat("_NB_Flags1Lo16",0);
+            frontMat.SetFloat("_NB_DistortionMode",2);var camera=Capture(cam,rt,read,Path.Combine(output,"player_camera.png"));
+            frontMat.SetFloat("_NB_DistortionMode",0);
+            frontMat.SetFloat("_NB_Flags0Lo16",0);
+            frontMat.SetFloat("_NB_Flags0Hi16",8192);
+            var flagHigh=Capture(cam,rt,read,Path.Combine(output,"player_flag_high_bit29.png"));
+            frontMat.SetFloat("_NB_Flags0Lo16",1);
+            var flagComposite=Capture(cam,rt,read,Path.Combine(output,"player_flag_high_plus_low.png"));
+            r.flagHighChanged=Changed(mode0,flagHigh);r.flagCompositeVsHigh=Changed(flagHigh,flagComposite);
+            r.passes=frontMat.passCount;r.cameraPass=frontMat.FindPass("NBCameraOpaqueDistortPass");r.deferredPass=frontMat.FindPass("NBDeferredDistortPass");
+            r.visible=Changed(bg,mode0);r.deferredChanged=Changed(mode0,deferred);r.cameraChanged=Changed(mode0,camera);
+            r.passed=r.passes>=3&&r.cameraPass==1&&r.deferredPass==2&&r.visible>0&&r.deferredChanged>0&&r.cameraChanged>0&&r.flagHighChanged>0&&r.flagCompositeVsHigh==0&&r.refinedChanged>0;
+        }
+        catch(Exception e){r.error=e.ToString();}
+        finally
+        {
+            File.WriteAllText(Path.Combine(output,"result.json"),JsonUtility.ToJson(r,true));
+            Debug.Log("NBFX_T06_PLAYER "+JsonUtility.ToJson(r));
+            if(camGo)Destroy(camGo);if(back)Destroy(back);if(front)Destroy(front);
+            if(backMat)Destroy(backMat);if(frontMat)Destroy(frontMat);if(gradient)Destroy(gradient);
+            if(rt){rt.Release();Destroy(rt);}if(read)Destroy(read);
+            Application.Quit(r.passed?0:1);
+        }
+    }
+}
