@@ -145,7 +145,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 MaskMap2GradientFloat1, float4 MaskMap2GradientFloat2,
     float MaskMap3GradientCount, float4 MaskMap3GradientFloat0,
     float4 MaskMap3GradientFloat1, float4 MaskMap3GradientFloat2,
-    float AlphaAll,
+    float AlphaAll, float4 ColorA,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -236,6 +236,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         maskInput.overallStrength = (half)MaskMapVec.x;
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
     }
+    Out.rgb *= ColorA.rgb;
+    Out.a *= ColorA.a;
     // Original ColorAdjustment applies this flag after the base sample. In this
     // minimum Unlit Graph, no intervening lighting/effects alter that ordering.
     // It follows the Mask alpha multiplication in the ShaderLab path as well.
@@ -268,7 +270,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half4 MaskMap2GradientFloat1, half4 MaskMap2GradientFloat2,
     float MaskMap3GradientCount, half4 MaskMap3GradientFloat0,
     half4 MaskMap3GradientFloat1, half4 MaskMap3GradientFloat2,
-    float AlphaAll,
+    float AlphaAll, half4 ColorA,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -359,6 +361,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         maskInput.overallStrength = MaskMapVec.x;
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
     }
+    Out.rgb *= ColorA.rgb;
+    Out.a *= ColorA.a;
     if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u)
         Out.rgb *= Out.a;
     Out.a = saturate(Out.a * (half)AlphaAll);
