@@ -1,0 +1,42 @@
+using System;
+using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.VFX;
+public static class NBFXT07BackColorImport
+{
+ const string Graph="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+ const string Vfx="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx";
+ const string Root="/tmp/nbfx-backcolor-20260930";
+ public static void Run()
+ {
+  Directory.CreateDirectory(Root);
+  AssetDatabase.ImportAsset(Graph,ImportAssetOptions.ForceUpdate);
+  Shader sh=AssetDatabase.LoadAssetAtPath<Shader>(Graph);
+  if(!sh||!sh.isSupported)throw new Exception("Graph unsupported");
+  var mat=new Material(sh);if(!mat.HasProperty("_BaseBackColor"))throw new Exception("BackColor property missing");
+  Debug.Log("NBFX_BACK_GRAPH passes="+mat.passCount+" opaque="+mat.FindPass("NBCameraOpaqueDistortPass")+" deferred="+mat.FindPass("NBDeferredDistortPass")+" messages="+ShaderUtil.GetShaderMessages(sh).Length);
+  foreach(var msg in ShaderUtil.GetShaderMessages(sh)) Debug.Log("NBFX_BACK_MSG "+msg.severity+" "+msg.message);
+  foreach(var asm in AppDomain.CurrentDomain.GetAssemblies())
+  { var t=asm.GetType("UnityEditor.ShaderGraph.ShaderGraphImporter");if(t==null)continue;
+   foreach(var m in t.GetMethods(BindingFlags.NonPublic|BindingFlags.Static))
+   {if(m.Name!="GetShaderText"||m.GetParameters().Length!=4||!m.GetParameters()[3].ParameterType.IsByRef)continue;
+    object[] args={Graph,null,null,null};var source=(string)m.Invoke(null,args);
+    File.WriteAllText(Root+"/graph.shader",source);
+    if(!source.Contains("_BaseBackColor")||!source.Contains("FaceSign")||!source.Contains("NBCameraOpaqueDistortPass")||!source.Contains("NBDeferredDistortPass"))throw new Exception("Graph generated features missing");
+    goto done;}}
+  done:;
+  AssetDatabase.ImportAsset(Vfx,ImportAssetOptions.ForceUpdate);
+  var asset=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(Vfx);if(!asset)throw new Exception("VFX asset null");
+  foreach(var obj in AssetDatabase.LoadAllAssetsAtPath(Vfx))
+   if(obj is Shader shader) { Debug.Log("NBFX_BACK_VFX shader="+shader.name+" supported="+shader.isSupported);foreach(var msg in ShaderUtil.GetShaderMessages(shader))Debug.Log("NBFX_BACK_VFX_MSG "+msg.severity+" "+msg.message); }
+  Type rt=null;foreach(var asm in AppDomain.CurrentDomain.GetAssemblies()){rt=asm.GetType("UnityEditor.VFX.VisualEffectResource");if(rt!=null)break;}
+  var flags=BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Static|BindingFlags.Instance;
+  var res=rt.GetMethod("GetResourceAtPath",flags).Invoke(null,new object[]{Vfx});var count=(int)rt.GetMethod("GetShaderSourceCount",flags).Invoke(res,null);
+  bool found=false;for(int i=0;i<count;i++){var source=(string)rt.GetMethod("GetShaderSource",flags).Invoke(res,new object[]{i});
+   if(!source.Contains("_BaseBackColor"))continue;File.WriteAllText(Root+"/vfx-"+i+".shader",source);Debug.Log("NBFX_BACK_VFXSRC chars="+source.Length+" hasFace="+source.Contains("FaceSign"));found=true;}
+  if(!found)throw new Exception("VFX generated BaseBackColor missing");
+  UnityEngine.Object.DestroyImmediate(mat);
+ }
+}

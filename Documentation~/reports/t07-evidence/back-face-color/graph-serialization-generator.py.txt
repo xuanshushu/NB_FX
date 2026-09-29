@@ -1,0 +1,39 @@
+import copy,json,uuid
+from pathlib import Path
+p=Path('/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph')
+s=p.read_text(); dec=json.JSONDecoder(); items=[]; i=0
+while True:
+ while i<len(s) and s[i].isspace():i+=1
+ if i>=len(s):break
+ obj,j=dec.raw_decode(s,i);items.append((obj,i,j));i=j
+objs=[x[0] for x in items]; byid={x['m_ObjectId']:x for x in objs}
+uid=lambda name:uuid.uuid5(uuid.NAMESPACE_URL,'NB_FX/Graph/BackColor/'+name).hex
+ids={name:uid(name) for name in ['prop','propNode','propNodeSlot','frontNode','frontSlot','cfBackSlot','cfFrontSlot']}
+assert all(x not in byid for x in ids.values())
+root=objs[0]; cf=byid['f712bc264a1c40848edc2dd476a4cada'];assert len(cf['m_Slots'])==57
+prop=copy.deepcopy(byid['e45731e3fcc249f8b23037c163d74165']);prop['m_ObjectId']=ids['prop'];prop['m_Guid']['m_GuidSerialized']=str(uuid.uuid5(uuid.NAMESPACE_URL,'NB_FX/Graph/BackColor/property-guid'));prop['m_Name']='BaseBackColor';prop['m_RefNameGeneratedByDisplayName']='BaseBackColor';prop['m_DefaultReferenceName']='_BaseBackColor';prop['m_OverrideReferenceName']='_BaseBackColor';prop['m_ColorMode']=1
+pn=copy.deepcopy(byid['442020c8e09d56679b49c301f56b94a4']);pn['m_ObjectId']=ids['propNode'];pn['m_Slots']=[{'m_Id':ids['propNodeSlot']}];pn['m_Property']={'m_Id':ids['prop']};pn['m_DrawState']['m_Position']['y']=3100.0
+pns=copy.deepcopy(byid['f13142abc8d04c7e818af3d6c31d48e5']);pns['m_ObjectId']=ids['propNodeSlot'];pns['m_DisplayName']='BaseBackColor'
+front=copy.deepcopy(byid['0df412efa75f5baaa61b000d63fde72b']);front['m_ObjectId']=ids['frontNode'];front['m_Type']='UnityEditor.ShaderGraph.IsFrontFaceNode';front['m_Name']='Is Front Face';front['m_Slots']=[{'m_Id':ids['frontSlot']}];front['synonyms']=['face','side'];front['m_PreviewMode']=0;front['m_DrawState']['m_Position']['y']=3190.0
+fs={'m_SGVersion':0,'m_Type':'UnityEditor.ShaderGraph.BooleanMaterialSlot','m_ObjectId':ids['frontSlot'],'m_Id':0,'m_DisplayName':'Out','m_SlotType':1,'m_Hidden':False,'m_ShaderOutputName':'Out','m_StageCapability':2,'m_Value':True,'m_DefaultValue':True}
+backslot=copy.deepcopy(byid['293620d9a2c64a12a643b6a9de57f48a']);backslot['m_ObjectId']=ids['cfBackSlot'];backslot['m_Id']=57;backslot['m_DisplayName']='BaseBackColor';backslot['m_ShaderOutputName']='BaseBackColor'
+frontslot=copy.deepcopy(byid['17d7f45441715aae83ecb89d39a14914']);frontslot['m_ObjectId']=ids['cfFrontSlot'];frontslot['m_Id']=58;frontslot['m_DisplayName']='IsFrontFace';frontslot['m_ShaderOutputName']='IsFrontFace'
+root['m_Properties'].append({'m_Id':ids['prop']});root['m_Nodes'] += [{'m_Id':ids['propNode']},{'m_Id':ids['frontNode']}]
+for n in ['cfBackSlot','cfFrontSlot']:cf['m_Slots'].append({'m_Id':ids[n]})
+for output,id in [('propNode',57),('frontNode',58)]:
+ root['m_Edges'].append({'m_OutputSlot':{'m_Node':{'m_Id':ids[output]},'m_SlotId':0},'m_InputSlot':{'m_Node':{'m_Id':cf['m_ObjectId']},'m_SlotId':id}})
+# Replace only changed serialized objects, leave all other bytes untouched.
+parts=[];cursor=0
+for obj,start,end in items:
+ parts.append(s[cursor:start]);parts.append(json.dumps(obj,indent=4,ensure_ascii=False) if (obj is root or obj is cf) else s[start:end]);cursor=end
+parts.append(s[cursor:]);t=''.join(parts)
+for obj in [prop,pn,pns,front,fs,backslot,frontslot]:t+='\n'+json.dumps(obj,indent=4,ensure_ascii=False)+'\n'
+# Full-stream validation before writing product file.
+seen=[];j=0
+while True:
+ while j<len(t) and t[j].isspace():j+=1
+ if j>=len(t):break
+ o,j=dec.raw_decode(t,j);seen.append(o['m_ObjectId'])
+assert len(seen)==len(set(seen))==len(objs)+7
+p.write_text(t)
+print('added',ids,'objects',len(seen))

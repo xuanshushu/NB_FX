@@ -2,7 +2,7 @@
 <html lang="zh-CN"><head><meta charset="utf-8"><title>NB_FX URP Graph/VFX 实现缺口审计 · 2026-09-30</title></head><body>
 <p><a href="index.html">返回报告索引</a> · <a href="../tasks/t07-graph-parity-gui.html">T07</a> · <a href="../tasks/t08-vfx-minimum.html">T08</a> · <a href="../tasks/t09-vfx-regression.html">T09</a> · <a href="../tasks/t10-compatibility-delivery.html">T10</a></p>
 <h1>URP Shader Graph + VFX Graph 实现缺口审计</h1>
-<p><strong>只读快照，非 Gate 审核：</strong>以 2026-09-30 包仓库 <code>609fd2a</code> 的产品代码、当时的<a href="index.html">报告索引</a>和 <a href="g1-evidence/feature-property-pass-case-candidates.md">T01 24 组候选清单</a>核对；审计期间另有尚未提交的 T07 测试报告，后续证据、代码和正式 Gate 审核可覆盖本快照。没有运行 Unity、修改产品或官方包。本报告的“未接入”仅指<strong>新 URP Graph 产品路径</strong>，不表示原 NBShader ShaderLab 功能被删除；原 URP 常规 Mesh 仍使用 NBShader。旧 ShaderLab 的 450 个 Properties 含大量 Inspector 状态，当前 Graph 的 53 个 ShaderProperty 不能直接换算成功能完成百分比。</p>
+<p><strong>只读快照，非 Gate 审核：</strong>以 2026-09-30 包仓库 <code>609fd2a</code> 的产品代码、当时的<a href="index.html">报告索引</a>和 <a href="g1-evidence/feature-property-pass-case-candidates.md">T01 24 组候选清单</a>核对；后续 <a href="t07-graph-back-face-color-checkpoint.html">背面基础色切片</a>及其它证据、代码和正式 Gate 审核可覆盖本快照。审计本身没有运行 Unity、修改产品或官方包。本报告的“未接入”仅指<strong>新 URP Graph 产品路径</strong>，不表示原 NBShader ShaderLab 功能被删除；原 URP 常规 Mesh 仍使用 NBShader。旧 ShaderLab 的 450 个 Properties 含大量 Inspector 状态，快照时 Graph 的 53 个 ShaderProperty 不能直接换算成功能完成百分比。</p>
 
 <h2>任务与 Gate 状态</h2>
 <table border="1" cellpadding="6"><thead><tr><th>范围</th><th>已证实</th><th>尚缺/状态</th></tr></thead><tbody>
