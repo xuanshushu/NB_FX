@@ -1537,65 +1537,6 @@
         }
     }
 
-    half3 GetPackedGradientColorKey(half4 key0, half4 key1, half4 key2, half4 key3, half4 key4, half4 key5, int index)
-    {
-        if (index <= 0) return key0.rgb;
-        if (index == 1) return key1.rgb;
-        if (index == 2) return key2.rgb;
-        if (index == 3) return key3.rgb;
-        if (index == 4) return key4.rgb;
-        return key5.rgb;
-    }
-
-    half GetPackedGradientColorTime(half4 key0, half4 key1, half4 key2, half4 key3, half4 key4, half4 key5, int index)
-    {
-        if (index <= 0) return key0.a;
-        if (index == 1) return key1.a;
-        if (index == 2) return key2.a;
-        if (index == 3) return key3.a;
-        if (index == 4) return key4.a;
-        return key5.a;
-    }
-
-    int2 GetPackedGradientColorIndex(half4 key0, half4 key1, half4 key2, half4 key3, half4 key4, half4 key5, int arrCount, half gradientTime)
-    {
-        int2 indexes = int2(-1, 0);
-        bool found = false;
-        [unroll]
-        for (int i = 0; i < 6; i++)
-        {
-            if (!found && i < arrCount && GetPackedGradientColorTime(key0, key1, key2, key3, key4, key5, i) > gradientTime)
-            {
-                indexes = int2(i - 1, i);
-                found = true;
-            }
-        }
-        return indexes;
-    }
-
-    half3 SamplePackedGradientColor(half4 key0, half4 key1, half4 key2, half4 key3, half4 key4, half4 key5, int arrCount, half gradientTime)
-    {
-        if (gradientTime <= GetPackedGradientColorTime(key0, key1, key2, key3, key4, key5, 0))
-        {
-            return GetPackedGradientColorKey(key0, key1, key2, key3, key4, key5, 0);
-        }
-        else if (gradientTime >= GetPackedGradientColorTime(key0, key1, key2, key3, key4, key5, arrCount - 1))
-        {
-            return GetPackedGradientColorKey(key0, key1, key2, key3, key4, key5, arrCount - 1);
-        }
-        else
-        {
-            int2 indexes = GetPackedGradientColorIndex(key0, key1, key2, key3, key4, key5, arrCount, gradientTime);
-            half smallVal = GetPackedGradientColorTime(key0, key1, key2, key3, key4, key5, indexes.x);
-            half bigVal = GetPackedGradientColorTime(key0, key1, key2, key3, key4, key5, indexes.y);
-            half interval = SmoothStep01((gradientTime - smallVal) / (bigVal - smallVal));
-            return lerp(
-                GetPackedGradientColorKey(key0, key1, key2, key3, key4, key5, indexes.x),
-                GetPackedGradientColorKey(key0, key1, key2, key3, key4, key5, indexes.y),
-                interval);
-        }
-    }
-
     void ColorAdjustment(inout half3 result,inout half alpha,half4 customData1,half4 customData2)
     {
         UNITY_BRANCH

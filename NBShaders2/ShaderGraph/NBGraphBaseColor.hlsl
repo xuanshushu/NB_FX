@@ -125,6 +125,51 @@ half NBGraphResolveDissolveCoverage(half4 sampledDissolve,
     return resolved.coverage;
 }
 
+// ShaderLab Ramp sampling/source selection, followed by the same packed-key
+// evaluator and composition used by the original ForwardPass. This slice
+// covers UV0; special UV/custom data and noise are separate host inputs.
+half4 NBGraphApplyColorRamp(half4 color, UnityTexture2D map, float2 originUV,
+    float4 offsetAndRotation, float sourceMode, float packedCount,
+    half4 color0, half4 color1, half4 color2, half4 color3,
+    half4 color4, half4 color5, half4 alpha0, half4 alpha1, half4 alpha2,
+    half4 tint, float packedChannelsLo16, float wrapLo16, float wrapHi16,
+    float flags0Lo16, float flags0Hi16)
+{
+    float2 rampUV = NBGraphFeatureUV(map, originUV,
+        offsetAndRotation.w, offsetAndRotation.xy);
+    half rampValue;
+    if (sourceMode > 0.5)
+    {
+        half4 sampled = (half4)NBGraphSampleMap(map, rampUV);
+        uint channels = NBGraphDecodeUInt32(packedChannelsLo16, 0.0);
+        uint channel = (channels >> FLAG_BIT_COLOR_CHANNEL_POS_0_RAMP_COLOR_MAP) & 3u;
+        rampValue = channel == 0u ? sampled.r :
+            channel == 1u ? sampled.g :
+            channel == 2u ? sampled.b : sampled.a;
+    }
+    else
+    {
+        uint wrapFlags = NBGraphDecodeUInt32(wrapLo16, wrapHi16);
+        uint wrapMode = NBGraphMaskWrapMode(wrapFlags,
+            FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP);
+        rampValue = (half)((wrapMode == 0u || wrapMode == 2u) ?
+            frac(rampUV.x) : saturate(rampUV.x));
+    }
+
+    uint countWord = (uint)packedCount;
+    int colorCount = (int)(countWord & 0xffffu);
+    int alphaCount = (int)(countWord >> 16);
+    half4 rampColor;
+    rampColor.rgb = SamplePackedGradientColor(color0, color1, color2,
+        color3, color4, color5, colorCount, rampValue);
+    rampColor.a = SamplePackedGradientAlpha(alpha0, alpha1, alpha2,
+        alphaCount, rampValue);
+    uint flags0 = NBGraphDecodeUInt32(flags0Lo16, flags0Hi16);
+    NBFX_ApplyColorRampV1(color.rgb, color.a, rampColor, tint,
+        (flags0 & FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD) != 0u);
+    return color;
+}
+
 // SHADERGRAPH_PREVIEW and runtime execute the same numeric shared function;
 // no preview-only camera/scene substitute is needed.
 // Stage: fragment BaseColor/Alpha. Preserve the GF BaseMap and Color controls.
@@ -166,6 +211,13 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float2 ColorBlendUV, float4 ColorBlendMapOffset,
     float4 ColorBlendVec, float4 ColorBlendColor,
     float ColorBlendColorIntensity,
+    UnityTexture2D RampColorMap, float RampColorToggle,
+    float RampColorSourceMode, float2 RampColorUV,
+    float4 RampColorMapOffset, float4 RampColor0, float4 RampColor1,
+    float4 RampColor2, float4 RampColor3, float4 RampColor4,
+    float4 RampColor5, float4 RampColorAlpha0, float4 RampColorAlpha1,
+    float4 RampColorAlpha2, float RampColorCount,
+    float4 RampColorBlendColor,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -197,6 +249,16 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             (flags1 & FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY) != 0u);
         Out = float4(result, alpha);
     }
+    if (RampColorToggle > 0.5)
+        Out = (float4)NBGraphApplyColorRamp((half4)Out, RampColorMap,
+            RampColorUV, RampColorMapOffset, RampColorSourceMode,
+            RampColorCount, (half4)RampColor0, (half4)RampColor1,
+            (half4)RampColor2, (half4)RampColor3, (half4)RampColor4,
+            (half4)RampColor5, (half4)RampColorAlpha0,
+            (half4)RampColorAlpha1, (half4)RampColorAlpha2,
+            (half4)RampColorBlendColor, NB_ColorChannelLo16,
+            NB_WrapFlagsLo16, NB_WrapFlagsHi16,
+            NB_Flags0Lo16, NB_Flags0Hi16);
     if (DissolveToggle > 0.5)
     {
         float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
@@ -343,6 +405,13 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float2 ColorBlendUV, half4 ColorBlendMapOffset,
     half4 ColorBlendVec, half4 ColorBlendColor,
     float ColorBlendColorIntensity,
+    UnityTexture2D RampColorMap, float RampColorToggle,
+    float RampColorSourceMode, float2 RampColorUV,
+    half4 RampColorMapOffset, half4 RampColor0, half4 RampColor1,
+    half4 RampColor2, half4 RampColor3, half4 RampColor4,
+    half4 RampColor5, half4 RampColorAlpha0, half4 RampColorAlpha1,
+    half4 RampColorAlpha2, float RampColorCount,
+    half4 RampColorBlendColor,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -369,6 +438,15 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             (flags0 & FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY) != 0u,
             (flags1 & FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY) != 0u);
     }
+    if (RampColorToggle > 0.5)
+        Out = NBGraphApplyColorRamp(Out, RampColorMap,
+            RampColorUV, RampColorMapOffset, RampColorSourceMode,
+            RampColorCount, RampColor0, RampColor1,
+            RampColor2, RampColor3, RampColor4, RampColor5,
+            RampColorAlpha0, RampColorAlpha1, RampColorAlpha2,
+            RampColorBlendColor, NB_ColorChannelLo16,
+            NB_WrapFlagsLo16, NB_WrapFlagsHi16,
+            NB_Flags0Lo16, NB_Flags0Hi16);
     if (DissolveToggle > 0.5)
     {
         float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,

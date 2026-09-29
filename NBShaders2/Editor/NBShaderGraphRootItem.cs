@@ -41,6 +41,15 @@ namespace NBShaderEditor
             "_ColorBlendMapOffset"
         };
 
+        static readonly string[] RampProperties =
+        {
+            "_RampColorToggle", "_RampColorSourceMode", "_RampColorMap",
+            "_RampColorMapOffset", "_RampColor0", "_RampColor1",
+            "_RampColor2", "_RampColor3", "_RampColor4", "_RampColor5",
+            "_RampColorAlpha0", "_RampColorAlpha1", "_RampColorAlpha2",
+            "_RampColorCount", "_RampColorBlendColor"
+        };
+
         static readonly string[] DissolveProperties =
         {
             "_Dissolve_Toggle", "_DissolveMap", "_Dissolve",
@@ -70,6 +79,7 @@ namespace NBShaderEditor
             DrawGroup(BaseProperties, "block.maintex", "Main Texture");
             DrawGroup(Overlay1Properties, "feature.叠加贴图1", "Overlay 1");
             DrawGroup(Overlay2Properties, "feature.叠加贴图2", "Overlay 2");
+            DrawGroup(RampProperties, "feature.颜色映射", "Color Ramp");
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
             DrawGroup(DistortionProperties, "feature.扭曲", "Distort");

@@ -74,4 +74,22 @@ void NBFX_ApplyColorOverlayV1(
     }
 }
 
+// Original Ramp composition, shared by ShaderLab and Graph. Sampling and
+// packed-gradient key selection stay with each host's resource binding.
+void NBFX_ApplyColorRampV1(inout half3 baseColor, inout half baseAlpha,
+    half4 rampSample, half4 rampTint, bool addMode)
+{
+    half4 rampColor = rampSample * rampTint;
+    if (addMode)
+    {
+        baseColor += rampColor.rgb;
+        baseAlpha += rampColor.a;
+    }
+    else
+    {
+        baseColor *= rampColor.rgb;
+        baseAlpha *= rampColor.a;
+    }
+}
+
 #endif

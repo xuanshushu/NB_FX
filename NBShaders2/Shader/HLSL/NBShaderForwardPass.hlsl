@@ -808,18 +808,9 @@
             rampColor.rgb = SamplePackedGradientColor(_RampColor0, _RampColor1, _RampColor2, _RampColor3, _RampColor4, _RampColor5, colorRampColorCount, rampValue);
             rampColor.a = SamplePackedGradientAlpha(_RampColorAlpha0, _RampColorAlpha1, _RampColorAlpha2, colorRampAlphaCount, rampValue);
 
-            rampColor *= _RampColorBlendColor;
-
-            if (CheckLocalFlags(FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD))
-            {
-                result += rampColor;
-                alpha += rampColor.a;
-            }
-            else
-            {
-                result *= rampColor;
-                alpha *= rampColor.a;
-            }
+            NBFX_ApplyColorRampV1(result, alpha, rampColor,
+                _RampColorBlendColor,
+                CheckLocalFlags(FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD));
         #endif
 
 
