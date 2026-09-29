@@ -34,6 +34,13 @@ namespace NBShaderEditor
             "_EmissionMapColorIntensity", "_EmissionAlphaIntensity"
         };
 
+        static readonly string[] Overlay2Properties =
+        {
+            "_ColorBlendMap_Toggle", "_ColorBlendMap", "_ColorBlendColor",
+            "_ColorBlendColorIntensity", "_ColorBlendVec",
+            "_ColorBlendMapOffset"
+        };
+
         static readonly string[] DissolveProperties =
         {
             "_Dissolve_Toggle", "_DissolveMap", "_Dissolve",
@@ -62,6 +69,7 @@ namespace NBShaderEditor
             _drawnProperties.Clear();
             DrawGroup(BaseProperties, "block.maintex", "Main Texture");
             DrawGroup(Overlay1Properties, "feature.叠加贴图1", "Overlay 1");
+            DrawGroup(Overlay2Properties, "feature.叠加贴图2", "Overlay 2");
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
             DrawGroup(DistortionProperties, "feature.扭曲", "Distort");

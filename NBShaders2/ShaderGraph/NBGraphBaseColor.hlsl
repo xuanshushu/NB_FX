@@ -162,6 +162,10 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 EmissionMapUVOffset, float EmissionMapUVRotation,
     float4 EmissionMapColor, float EmissionMapColorIntensity,
     float EmissionAlphaIntensity,
+    UnityTexture2D ColorBlendMap, float ColorBlendMapToggle,
+    float2 ColorBlendUV, float4 ColorBlendMapOffset,
+    float4 ColorBlendVec, float4 ColorBlendColor,
+    float ColorBlendColorIntensity,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -209,6 +213,24 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve,
             sampledDissolveMask, hasDissolveMask, (half4)Dissolve,
             (half)DissolveMaskMode, NB_ColorChannelLo16);
+    }
+    // Overlay 2 keeps its ShaderLab position after Dissolve and before Mask.
+    // Noise/custom-data/advanced UV are deliberately separate slices.
+    if (ColorBlendMapToggle > 0.5)
+    {
+        float2 overlayUV = NBGraphFeatureUV(ColorBlendMap, ColorBlendUV,
+            ColorBlendVec.w, ColorBlendMapOffset.xy);
+        half4 overlay = (half4)NBGraphSampleMap(ColorBlendMap, overlayUV);
+        half3 result = (half3)Out.rgb;
+        half alpha = (half)Out.a;
+        uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
+        uint flags1 = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
+        NBFX_ApplyColorOverlayV1(result, alpha, overlay,
+            (half4)ColorBlendColor, (half)ColorBlendColorIntensity,
+            (half)ColorBlendVec.z,
+            (flags1 & FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_2_ADD) == 0u,
+            (flags0 & FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE) != 0u);
+        Out = float4(result, alpha);
     }
     if (MaskToggle > 0.5)
     {
@@ -317,6 +339,10 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half4 EmissionMapUVOffset, float EmissionMapUVRotation,
     half4 EmissionMapColor, float EmissionMapColorIntensity,
     float EmissionAlphaIntensity,
+    UnityTexture2D ColorBlendMap, float ColorBlendMapToggle,
+    float2 ColorBlendUV, half4 ColorBlendMapOffset,
+    half4 ColorBlendVec, half4 ColorBlendColor,
+    float ColorBlendColorIntensity,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -359,6 +385,19 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve,
             sampledDissolveMask, hasDissolveMask, Dissolve,
             (half)DissolveMaskMode, NB_ColorChannelLo16);
+    }
+    if (ColorBlendMapToggle > 0.5)
+    {
+        float2 overlayUV = NBGraphFeatureUV(ColorBlendMap, ColorBlendUV,
+            ColorBlendVec.w, ColorBlendMapOffset.xy);
+        half4 overlay = (half4)NBGraphSampleMap(ColorBlendMap, overlayUV);
+        uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
+        uint flags1 = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
+        NBFX_ApplyColorOverlayV1(Out.rgb, Out.a, overlay,
+            ColorBlendColor, (half)ColorBlendColorIntensity,
+            (half)ColorBlendVec.z,
+            (flags1 & FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_2_ADD) == 0u,
+            (flags0 & FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE) != 0u);
     }
     if (MaskToggle > 0.5)
     {
