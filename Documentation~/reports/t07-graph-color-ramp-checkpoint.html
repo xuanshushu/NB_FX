@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph Color Ramp 切片</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-overlay-one-checkpoint.html">前序叠加 1</a></p>
+<h1>T07 · Graph Color Ramp / 颜色映射切片</h1>
+<p><strong>限定结论：</strong>产品提交 <code>44d0307</code> 将原 ShaderLab 的 packed 颜色关键帧算法原样移动到共享头，把原 Ramp 加/乘算术提为共享函数；Graph 使用原属性、在 Overlay 1 后/Dissolve 前执行，支持 UV0 或贴图源、渐变 RGB/Alpha 关键帧、Flags0 bit24 加法与默认乘法。无新 keyword/Pass，不修改官方包、Target、NBPostprocess。Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 隔离 Mesh 的受控最终色通过；<strong>不是完整 Ramp 或 G4/G5 放行</strong>。</p>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>原始结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>Graph Mesh</td><td>线性 ARGBHalf 中心：关闭 (.033,.073,.133,.600)，渐变乘 (.016,.037,0,.120)，渐变加 (.521,.584,.133,.800)，贴图源加 (.875,.231,.133,.800)。渐变左右采样分别偏红 (.868,.238) 与偏绿 (.181,.925)；10 Pass、自定义索引 1/2、ShaderUtil 消息 4。</td><td><a href="t07-evidence/color-ramp/NBFXT07RampMesh.cs.txt">探针</a> · <a href="t07-evidence/color-ramp/mesh.log.gz">日志</a> · <a href="t07-evidence/color-ramp/add.png">渐变加</a>/<a href="t07-evidence/color-ramp/texture-source.png">贴图源</a></td></tr>
+<tr><td>原 ShaderLab 抽取回归</td><td>当前 vs 仅保留抽取前 ForwardPass/Input/Gradient 的 clone-only 变体，同材质预热后在关闭/乘/加/贴图源四例逐像素 RGBA32 差 0；两边均 7 Pass，ShaderUtil 消息 18/20（原隐式向量截断警告减少）。这不是 T00 Frozen B/C。</td><td><a href="t07-evidence/color-ramp/NBFXT07RampLegacyAB.cs.txt">探针</a> · <a href="t07-evidence/color-ramp/legacy-ab.log.gz">日志</a> · <a href="t07-evidence/color-ramp/legacy-current-add.png">当前</a>/<a href="t07-evidence/color-ramp/legacy-preramp-add.png">抽取前</a></td></tr>
+<tr><td>默认回归/导入</td><td>第一、第二叠加层前序五例各自的十张 PNG 均逐字节相同；原 ShaderLab 7 Pass/18 条消息，新 Graph Mesh 自定义 Pass 1/2，产品 VFX 样例新鲜导入后保留双精确 LightMode。仅代表限定路径。</td><td><a href="t07-evidence/color-ramp/overlay-regression-comparison.json">逐字节结果</a> · <a href="t07-evidence/color-ramp/import.log.gz">导入日志</a></td></tr>
+</tbody></table>
+<p><strong>未验证/未实现：</strong>Noise、特殊 UV/CustomData、贴图 wrap override/ForceNoMip、梯度 Inspector 完整控件、两层 Overlay/Ramp/Mask/Dissolve 组合、原 ShaderLab T00 Frozen 严格 B/C、主动 VFX Output、持久化及其它平台。<a href="t07-evidence/color-ramp/README.txt">重放与限制</a> · <a href="t07-evidence/color-ramp/sha256.txt">附件哈希</a>。unityMCP 未暴露，隔离无可见 Editor 窗口 CLI；不 push。</p>
+</body></html>
