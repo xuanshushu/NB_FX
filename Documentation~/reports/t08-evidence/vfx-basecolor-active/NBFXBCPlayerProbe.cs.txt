@@ -1,0 +1,360 @@
+// Test-only real VFX Mesh Player probe. No product or renderer mutation.
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
+
+public sealed class NBFXBCPlayerProbe : MonoBehaviour
+{
+    public VisualEffectAsset a0Asset, a1Asset, a2Asset, r0Asset;
+    public Shader graphShader, a0Shader, a1Shader, a2Shader, r0Shader;
+    const int Size = 256;
+    // HighFidelity Renderer layer mask 55 includes 0/1/2/4/5.
+    const int BackLayer = 4, A0Layer = 0, A1Layer = 1, A2Layer = 2, R0Layer = 5;
+    const float RepeatTolerance = 0.005f;
+    const float ExpectedAlphaA = 1f - (1f - 192f / 255f) * (1f - 192f / 255f);
+    const float ExpectedAlphaR = 1f - (1f - 64f / 255f) * (1f - 64f / 255f);
+
+    [Serializable] sealed class CaseInfo
+    {
+        public string name;
+        public int alive, passCount, opaquePass, deferredPass, visiblePixels;
+        public bool culled;
+        public float repeatMaxRGB;
+    }
+    [Serializable] sealed class Result
+    {
+        public string unityVersion, graphicsDevice, status, error, note;
+        public bool linearTarget, fixtureValid, timelinePass, selectorPass;
+        public int roiPixels, a0VsA1ChangedPixels, a1VsA2ChangedPixels, a0VsR0ChangedPixels;
+        public float timelineDelta1Median, timelineDelta2Median, linearityErrorMedian,
+            linearityErrorP90, expectedCoverageA, expectedCoverageR,
+            coverageAMedian, coverageAP10, coverageAP90,
+            coverageRMedian, coverageRP10, coverageRP90;
+        public CaseInfo a0, a1, a2, r0;
+    }
+    sealed class Context
+    {
+        public Camera camera;
+        public GameObject cameraObject, backgroundObject;
+        public Material backgroundMaterial;
+        public RenderTexture target;
+        public Texture2D gradient, readback;
+        public VisualEffect a0, a1, a2, r0;
+    }
+
+    static string OutputPath()
+    {
+        foreach (string arg in Environment.GetCommandLineArgs())
+            if (arg.StartsWith("--nbfx-bc-output=", StringComparison.Ordinal))
+                return arg.Substring("--nbfx-bc-output=".Length);
+        return null;
+    }
+
+    IEnumerator Start()
+    {
+        string output = OutputPath();
+        if (string.IsNullOrEmpty(output)) { Application.Quit(2); yield break; }
+        Directory.CreateDirectory(output);
+        var result = new Result
+        {
+            unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
+            expectedCoverageA = ExpectedAlphaA,
+            expectedCoverageR = ExpectedAlphaR,
+            note = "A0/A1/A2 isolate timeline RGB intensity with BaseMap alpha selector A; R0 vs A0 isolates packed BaseMap alpha R vs A at intensity zero. Coverage prediction assumes closed Cube, Cull Off, two source-over faces; this is final-color inference, not GPU alpha readback."
+        };
+        Context context = null;
+        int exitCode = 2;
+        try { context = Setup(); }
+        catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        if (context != null && result.error == null)
+        {
+            // Replicate the proven numeric Player fixture's VFX warmup/freeze.
+            for (int frame = 0; frame < 3; frame++) { context.camera.Render(); yield return null; }
+            foreach (var vfx in Effects(context)) vfx.Simulate(1f / 60f, 21u);
+            for (int frame = 0; frame < 2; frame++) { context.camera.Render(); yield return null; }
+            foreach (var vfx in Effects(context)) vfx.pause = true;
+            try
+            {
+                Run(context, output, result);
+                result.fixtureValid = FixtureValid(result);
+                result.timelinePass = result.fixtureValid &&
+                    result.roiPixels >= 100 &&
+                    result.a0VsA1ChangedPixels >= 100 && result.a1VsA2ChangedPixels >= 100 &&
+                    result.timelineDelta1Median > 0.05f && result.timelineDelta2Median > 0.05f &&
+                    result.linearityErrorMedian < 0.06f && result.linearityErrorP90 < 0.1f;
+                result.selectorPass = result.fixtureValid &&
+                    result.roiPixels >= 100 && result.a0VsR0ChangedPixels >= 100 &&
+                    Mathf.Abs(result.coverageAMedian - ExpectedAlphaA) < 0.08f &&
+                    Mathf.Abs(result.coverageRMedian - ExpectedAlphaR) < 0.08f &&
+                    result.coverageAP10 > result.coverageRP90 + 0.2f;
+                result.status = result.timelinePass && result.selectorPass ? "PASS" :
+                    result.fixtureValid ? "NUMERIC_MISMATCH" : "FIXTURE_INVALID";
+                exitCode = result.timelinePass && result.selectorPass ? 0 : 1;
+            }
+            catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        }
+        try { Cleanup(context); }
+        catch (Exception ex) { result.status = "CLEANUP_FAILED"; result.error = (result.error ?? "") + "\n" + ex; exitCode = 2; }
+        File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(result, true));
+        Debug.Log("NBFX_BC_PLAYER " + JsonUtility.ToJson(result));
+        Application.Quit(exitCode);
+    }
+
+    static VisualEffect[] Effects(Context c) => new[] { c.a0, c.a1, c.a2, c.r0 };
+    Context Setup()
+    {
+        if (!a0Asset || !a1Asset || !a2Asset || !r0Asset ||
+            !a0Shader || !a1Shader || !a2Shader || !r0Shader || !graphShader)
+            throw new Exception("Serialized VFX Output/Shader reference missing");
+        if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.Metal ||
+            !SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf))
+            throw new Exception("Requires Metal and ARGBHalf RenderTexture");
+        var c = new Context();
+        try
+        {
+            c.gradient = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            var pixels = new Color32[Size * Size];
+            for (int y = 0; y < Size; y++)
+                for (int x = 0; x < Size; x++)
+                    pixels[y * Size + x] = new Color32(
+                        (byte)(40 + x * 110 / (Size - 1)),
+                        (byte)(50 + y * 100 / (Size - 1)), 60, 255);
+            c.gradient.SetPixels32(pixels);
+            c.gradient.filterMode = FilterMode.Point;
+            c.gradient.wrapMode = TextureWrapMode.Clamp;
+            c.gradient.Apply(false);
+            c.backgroundMaterial = new Material(graphShader);
+            c.backgroundMaterial.SetTexture("_BaseMap", c.gradient);
+            c.backgroundMaterial.SetColor("_Color", Color.white);
+            c.backgroundMaterial.SetFloat("_Surface", 0);
+            c.backgroundMaterial.SetFloat("_SrcBlend", (float)BlendMode.One);
+            c.backgroundMaterial.SetFloat("_DstBlend", (float)BlendMode.Zero);
+            c.backgroundMaterial.SetFloat("_ZWrite", 1);
+            c.backgroundMaterial.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            c.backgroundMaterial.renderQueue = 2000;
+            c.backgroundObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            c.backgroundObject.layer = BackLayer;
+            c.backgroundObject.transform.position = new Vector3(0, 1, 1);
+            c.backgroundObject.transform.localScale = new Vector3(6, 6, 1);
+            c.backgroundObject.GetComponent<MeshRenderer>().sharedMaterial = c.backgroundMaterial;
+
+            c.cameraObject = new GameObject("NBFX BaseColor VFX Camera");
+            c.camera = c.cameraObject.AddComponent<Camera>();
+            c.camera.orthographic = true;
+            c.camera.orthographicSize = 0.5f;
+            c.camera.nearClipPlane = 0.1f;
+            c.camera.farClipPlane = 20;
+            c.camera.transform.position = new Vector3(0, 0, 8);
+            c.camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+            c.camera.clearFlags = CameraClearFlags.SolidColor;
+            c.camera.backgroundColor = Color.black;
+            c.camera.allowHDR = true;
+            c.camera.allowMSAA = false;
+            c.camera.cullingMask = 55;
+            c.target = new RenderTexture(Size, Size, 24,
+                RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
+            c.target.antiAliasing = 1;
+            c.target.Create();
+            if (!c.target.IsCreated() || c.target.sRGB)
+                throw new Exception("Linear ARGBHalf target failed");
+            c.camera.targetTexture = c.target;
+            c.readback = new Texture2D(Size, Size, TextureFormat.RGBAHalf, false, true);
+            c.a0 = CreateEffect("A0", A0Layer, a0Asset);
+            c.a1 = CreateEffect("A1", A1Layer, a1Asset);
+            c.a2 = CreateEffect("A2", A2Layer, a2Asset);
+            c.r0 = CreateEffect("R0", R0Layer, r0Asset);
+            return c;
+        }
+        catch { Cleanup(c); throw; }
+    }
+
+    static VisualEffect CreateEffect(string name, int layer, VisualEffectAsset asset)
+    {
+        var go = new GameObject("NBFX BC " + name);
+        go.layer = layer;
+        go.transform.position = new Vector3(0, 0, 2);
+        go.transform.localScale = Vector3.one * 4f;
+        var effect = go.AddComponent<VisualEffect>();
+        effect.resetSeedOnPlay = false;
+        effect.startSeed = 12345;
+        effect.visualEffectAsset = asset;
+        effect.Reinit();
+        return effect;
+    }
+
+    static Color[] Capture(Context c, string path)
+    {
+        c.camera.Render();
+        var previous = RenderTexture.active;
+        try
+        {
+            RenderTexture.active = c.target;
+            c.readback.ReadPixels(new Rect(0, 0, Size, Size), 0, 0);
+            c.readback.Apply(false);
+            var colors = c.readback.GetPixels();
+            var preview = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            try
+            {
+                preview.SetPixels(colors);
+                preview.Apply(false);
+                File.WriteAllBytes(path, preview.EncodeToPNG());
+            }
+            finally { Destroy(preview); }
+            return colors;
+        }
+        finally { RenderTexture.active = previous; }
+    }
+
+    static float MaxRGB(Color a, Color b) => Mathf.Max(
+        Mathf.Abs(a.r - b.r), Mathf.Abs(a.g - b.g), Mathf.Abs(a.b - b.b));
+    static float MaxRGB(Color[] a, Color[] b)
+    {
+        float max = 0;
+        for (int i = 0; i < a.Length; i++) max = Mathf.Max(max, MaxRGB(a[i], b[i]));
+        return max;
+    }
+    static int Changed(Color[] a, Color[] b, float tolerance)
+    {
+        int count = 0;
+        for (int i = 0; i < a.Length; i++) if (MaxRGB(a[i], b[i]) > tolerance) count++;
+        return count;
+    }
+    static float Percentile(List<float> input, float p)
+    {
+        var sorted = input.ToArray();
+        Array.Sort(sorted);
+        float index = p * (sorted.Length - 1);
+        int lower = Mathf.FloorToInt(index), upper = Mathf.CeilToInt(index);
+        return Mathf.Lerp(sorted[lower], sorted[upper], index - lower);
+    }
+    static CaseInfo Describe(string name, VisualEffect effect, Shader shader,
+        Color[] background, Color[] frame, Color[] repeat)
+    {
+        var material = new Material(shader);
+        try
+        {
+            return new CaseInfo
+            {
+                name = name,
+                alive = (int)effect.GetParticleSystemInfo("Simple Loop").aliveCount,
+                culled = effect.culled,
+                passCount = material.passCount,
+                opaquePass = material.FindPass("NBCameraOpaqueDistortPass"),
+                deferredPass = material.FindPass("NBDeferredDistortPass"),
+                visiblePixels = Changed(background, frame, 0.02f),
+                repeatMaxRGB = MaxRGB(frame, repeat)
+            };
+        }
+        finally { Destroy(material); }
+    }
+
+    void Run(Context c, string output, Result r)
+    {
+        r.linearTarget = !c.target.sRGB;
+        c.camera.cullingMask = 1 << BackLayer;
+        var back = Capture(c, Path.Combine(output, "background.png"));
+        c.camera.cullingMask = (1 << BackLayer) | (1 << A0Layer);
+        var a0 = Capture(c, Path.Combine(output, "a0.png"));
+        var a0Repeat = Capture(c, Path.Combine(output, "a0-repeat.png"));
+        c.camera.cullingMask = (1 << BackLayer) | (1 << A1Layer);
+        var a1 = Capture(c, Path.Combine(output, "a1.png"));
+        var a1Repeat = Capture(c, Path.Combine(output, "a1-repeat.png"));
+        c.camera.cullingMask = (1 << BackLayer) | (1 << A2Layer);
+        var a2 = Capture(c, Path.Combine(output, "a2.png"));
+        var a2Repeat = Capture(c, Path.Combine(output, "a2-repeat.png"));
+        c.camera.cullingMask = (1 << BackLayer) | (1 << R0Layer);
+        var r0 = Capture(c, Path.Combine(output, "r0.png"));
+        var r0Repeat = Capture(c, Path.Combine(output, "r0-repeat.png"));
+        r.a0 = Describe("A0", c.a0, a0Shader, back, a0, a0Repeat);
+        r.a1 = Describe("A1", c.a1, a1Shader, back, a1, a1Repeat);
+        r.a2 = Describe("A2", c.a2, a2Shader, back, a2, a2Repeat);
+        r.r0 = Describe("R0", c.r0, r0Shader, back, r0, r0Repeat);
+        r.a0VsA1ChangedPixels = Changed(a0, a1, 0.02f);
+        r.a1VsA2ChangedPixels = Changed(a1, a2, 0.02f);
+        r.a0VsR0ChangedPixels = Changed(a0, r0, 0.02f);
+        Analyze(back, a0, a1, a2, r0, r);
+    }
+
+    static bool FixtureValid(Result r)
+    {
+        if (!r.linearTarget || r.roiPixels < 100) return false;
+        foreach (var info in new[] { r.a0, r.a1, r.a2, r.r0 })
+            if (info == null || info.alive != 1 || info.culled ||
+                info.visiblePixels <= 100 || info.repeatMaxRGB > RepeatTolerance ||
+                info.passCount < 3 || info.opaquePass != 1 || info.deferredPass != 2)
+                return false;
+        return true;
+    }
+
+    static void Analyze(Color[] back, Color[] a0, Color[] a1, Color[] a2,
+        Color[] r0, Result r)
+    {
+        var coverageA = new List<float>();
+        var coverageR = new List<float>();
+        var error = new List<float>();
+        var delta1 = new List<float>();
+        var delta2 = new List<float>();
+        for (int y = 1; y < Size - 1; y++) for (int x = 1; x < Size - 1; x++)
+        {
+            int i = y * Size + x;
+            bool interior = true;
+            for (int dy = -1; dy <= 1 && interior; dy++)
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    int n = (y + dy) * Size + x + dx;
+                    if (MaxRGB(back[n], a0[n]) < 0.08f ||
+                        MaxRGB(back[n], r0[n]) < 0.08f)
+                    { interior = false; break; }
+                }
+            if (!interior) continue;
+            var b = new Vector3(back[i].r, back[i].g, back[i].b);
+            var vA0 = new Vector3(a0[i].r, a0[i].g, a0[i].b);
+            var vA1 = new Vector3(a1[i].r, a1[i].g, a1[i].b);
+            var vA2 = new Vector3(a2[i].r, a2[i].g, a2[i].b);
+            var vR0 = new Vector3(r0[i].r, r0[i].g, r0[i].b);
+            float denom = Vector3.Dot(b, b);
+            if (denom < 0.05f) continue;
+            Vector3 d1 = vA1 - vA0, d2 = vA2 - vA1;
+            float norm1 = d1.magnitude;
+            if (norm1 < 0.05f) continue;
+            coverageA.Add(Vector3.Dot(b - vA0, b) / denom);
+            coverageR.Add(Vector3.Dot(b - vR0, b) / denom);
+            delta1.Add(norm1);
+            delta2.Add(d2.magnitude);
+            error.Add((d2 - d1).magnitude / norm1);
+        }
+        r.roiPixels = coverageA.Count;
+        if (r.roiPixels < 100) throw new Exception("Not enough safe particle-interior pixels: " + r.roiPixels);
+        r.coverageAMedian = Percentile(coverageA, 0.5f);
+        r.coverageAP10 = Percentile(coverageA, 0.1f);
+        r.coverageAP90 = Percentile(coverageA, 0.9f);
+        r.coverageRMedian = Percentile(coverageR, 0.5f);
+        r.coverageRP10 = Percentile(coverageR, 0.1f);
+        r.coverageRP90 = Percentile(coverageR, 0.9f);
+        r.timelineDelta1Median = Percentile(delta1, 0.5f);
+        r.timelineDelta2Median = Percentile(delta2, 0.5f);
+        r.linearityErrorMedian = Percentile(error, 0.5f);
+        r.linearityErrorP90 = Percentile(error, 0.9f);
+    }
+
+    static void Cleanup(Context c)
+    {
+        if (c == null) return;
+        if (c.camera) c.camera.targetTexture = null;
+        if (c.target) { c.target.Release(); Destroy(c.target); }
+        if (c.readback) Destroy(c.readback);
+        if (c.gradient) Destroy(c.gradient);
+        if (c.backgroundMaterial) Destroy(c.backgroundMaterial);
+        if (c.backgroundObject) Destroy(c.backgroundObject);
+        if (c.cameraObject) Destroy(c.cameraObject);
+        if (c.a0) Destroy(c.a0.gameObject);
+        if (c.a1) Destroy(c.a1.gameObject);
+        if (c.a2) Destroy(c.a2.gameObject);
+        if (c.r0) Destroy(c.r0.gameObject);
+    }
+}

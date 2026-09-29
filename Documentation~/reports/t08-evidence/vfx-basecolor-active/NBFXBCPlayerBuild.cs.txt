@@ -1,0 +1,156 @@
+// Isolated clone only. Verifies imported VFX Output bindings, then builds Player.
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXBCPlayerBuild
+{
+    const string Root = "/tmp/nbfx-vfx-basecolor-probe-20260930/run";
+    const string ScenePath = "Assets/NBFXBCPlayer.unity";
+    const string AppPath = Root + "/player/NBFXBCPlayer.app";
+    const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string TexturePath = "Assets/NBFXBC_RGBA_64_128_160_192.png";
+    const string TextureGuid = "d73266eec1ad5bf1b1d348e4dffb8ec8";
+    static readonly string[] Paths = {
+        "Assets/NBFXBCA0.vfx", "Assets/NBFXBCA1.vfx",
+        "Assets/NBFXBCA2.vfx", "Assets/NBFXBCR0.vfx"
+    };
+    static readonly string[] Guids = {
+        "1d9496a4e3f458bdba57968fb55af2d8", "33307c0ea85359a4b97710dddf0e7210",
+        "d7e2a0a7c047593da2700d41e59df5bc", "df19c1d8146351fc8ddd5e8194e2552a"
+    };
+    static readonly int[] Channels = { 3, 3, 3, 0 };
+    static readonly int[] Intensities = { 0, 1, 2, 0 };
+    const long OutputFileId = 8926484042661614853;
+    const long BaseMapFileId = 8926484042661614854;
+    const long ChannelFileId = 8926484042661614888;
+    const long TimelineFileId = 8926484042661616001;
+
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        using (var report = new StreamWriter(Path.Combine(Root, "editor-inspection.txt")))
+        {
+            ValidateTexture(report);
+            var graph = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            if (!graph || !graph.isSupported) throw new Exception("Product Shader Graph unavailable");
+            var assets = new VisualEffectAsset[Paths.Length];
+            var shaders = new Shader[Paths.Length];
+            for (int i = 0; i < Paths.Length; i++)
+            {
+                AssetDatabase.ImportAsset(Paths[i], ImportAssetOptions.ForceUpdate);
+                if (AssetDatabase.AssetPathToGUID(Paths[i]) != Guids[i])
+                    throw new Exception("VFX GUID mismatch at " + Paths[i]);
+                ValidateSerialized(Paths[i], Channels[i], Intensities[i], report);
+                assets[i] = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(Paths[i]);
+                shaders[i] = FindShader(Paths[i]);
+                if (!assets[i] || !shaders[i] || !shaders[i].isSupported || !shaders[i].name.Contains("Mesh"))
+                    throw new Exception("Imported real VFX Mesh Output missing: " + Paths[i]);
+                ValidateGenerated(Paths[i], Channels[i], Intensities[i], report);
+                var m = new Material(shaders[i]);
+                try { report.WriteLine(Paths[i] + " lazyEditorPassCount=" + m.passCount); }
+                finally { UnityEngine.Object.DestroyImmediate(m); }
+            }
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var host = new GameObject("NBFX BaseColor VFX Player Probe");
+            var probe = host.AddComponent<NBFXBCPlayerProbe>();
+            probe.graphShader = graph;
+            probe.a0Asset = assets[0]; probe.a1Asset = assets[1];
+            probe.a2Asset = assets[2]; probe.r0Asset = assets[3];
+            probe.a0Shader = shaders[0]; probe.a1Shader = shaders[1];
+            probe.a2Shader = shaders[2]; probe.r0Shader = shaders[3];
+            if (!EditorSceneManager.SaveScene(scene, ScenePath))
+                throw new Exception("Could not save clone-only Player scene");
+            report.Flush();
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(AppPath));
+        var build = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+        {
+            scenes = new[] { ScenePath }, locationPathName = AppPath,
+            target = BuildTarget.StandaloneOSX, options = BuildOptions.None
+        });
+        Debug.Log("NBFX_BC_BUILD " + build.summary.result + " errors=" +
+            build.summary.totalErrors + " warnings=" + build.summary.totalWarnings);
+        if (build.summary.result != BuildResult.Succeeded || build.summary.totalErrors != 0)
+            throw new Exception("BaseColor VFX Player build failed");
+    }
+
+    static void ValidateTexture(TextWriter report)
+    {
+        AssetDatabase.ImportAsset(TexturePath, ImportAssetOptions.ForceUpdate);
+        var importer = AssetImporter.GetAtPath(TexturePath) as TextureImporter;
+        var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(TexturePath);
+        if (!importer || !texture || AssetDatabase.AssetPathToGUID(TexturePath) != TextureGuid ||
+            importer.sRGBTexture || importer.mipmapEnabled || !importer.isReadable ||
+            importer.textureCompression != TextureImporterCompression.Uncompressed ||
+            texture.width != 1 || texture.height != 1 ||
+            importer.filterMode != FilterMode.Point || importer.wrapMode != TextureWrapMode.Clamp)
+            throw new Exception("Explicit RGBA import contract failed");
+        var p = texture.GetPixel(0, 0);
+        var expected = new Color(64f / 255f, 128f / 255f, 160f / 255f, 192f / 255f);
+        for (int i = 0; i < 4; i++)
+            if (Mathf.Abs(p[i] - expected[i]) > 0.003f)
+                throw new Exception("Explicit RGBA pixel mismatch: " + p);
+        report.WriteLine("RGBA texture=" + p + " linear=true mip=false compression=none point/clamp");
+    }
+
+    static string Body(string text, long fileId)
+    {
+        var m = Regex.Match(text, @"(?ms)^--- !u!114 &" + fileId + @"\n.*?(?=^--- !u!|\z)");
+        if (!m.Success) throw new Exception("Missing VFX object " + fileId);
+        return m.Value;
+    }
+    static void ValidateSerialized(string path, int channel, int intensity, TextWriter report)
+    {
+        string text = File.ReadAllText(Path.Combine(Directory.GetParent(Application.dataPath).FullName, path));
+        if (!text.Contains("  capacity: 1\n") || !text.Contains("  cullMode: 0\n") ||
+            !Body(text, OutputFileId).Contains("  blendMode: 1\n") ||
+            !Body(text, OutputFileId).Contains("  - {fileID: " + TimelineFileId + "}\n") ||
+            !Body(text, BaseMapFileId).Contains(TextureGuid) ||
+            !Body(text, ChannelFileId).Contains("name: _NB_ColorChannelLo16") ||
+            !Body(text, ChannelFileId).Contains("m_SerializableObject: " + channel + "\n") ||
+            !Body(text, TimelineFileId).Contains("name: _BaseColorIntensityForTimeline") ||
+            !Body(text, TimelineFileId).Contains("m_SerializableObject: " + intensity + "\n"))
+            throw new Exception("VFX serialized Output binding contract failed: " + path);
+        report.WriteLine(path + " packedChannelLo16=" + channel + " timeline=" + intensity);
+    }
+    static Shader FindShader(string path)
+    {
+        foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(path))
+            if (obj is Shader shader && shader.name.Contains("Mesh")) return shader;
+        return null;
+    }
+    static void ValidateGenerated(string path, int channel, int intensity, TextWriter report)
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Static | BindingFlags.Instance;
+        Type resourceType = null;
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        { resourceType = assembly.GetType("UnityEditor.VFX.VisualEffectResource"); if (resourceType != null) break; }
+        if (resourceType == null) throw new Exception("VFX resource reflection unavailable");
+        var resource = resourceType.GetMethod("GetResourceAtPath", flags).Invoke(null, new object[] { path });
+        if (resource == null) throw new Exception("VFX resource is null");
+        int count = (int)resourceType.GetMethod("GetShaderSourceCount", flags).Invoke(resource, null);
+        var getter = resourceType.GetMethod("GetShaderSource", flags);
+        bool found = false;
+        for (int i = 0; i < count; i++)
+        {
+            string source = (string)getter.Invoke(resource, new object[] { i });
+            if (!source.Contains("output._BaseColorIntensityForTimeline")) continue;
+            File.WriteAllText(Path.Combine(Root, Path.GetFileNameWithoutExtension(path) + "-" + i + ".shader"), source);
+            bool vals = source.Contains("output._BaseColorIntensityForTimeline = (float)" + intensity + ";") &&
+                source.Contains("output._NB_ColorChannelLo16 = (float)" + channel + ";");
+            bool passes = source.Contains("\"LightMode\" = \"NBCameraOpaqueDistortPass\"") &&
+                source.Contains("\"LightMode\" = \"NBDeferredDistortPass\"");
+            report.WriteLine(path + " generated=" + i + " exactValues=" + vals + " exactPasses=" + passes);
+            found |= vals && passes;
+        }
+        if (!found) throw new Exception("New Output values did not survive VFX generated shader: " + path);
+    }
+}

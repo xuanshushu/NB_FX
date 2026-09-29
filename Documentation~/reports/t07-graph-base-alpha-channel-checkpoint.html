@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph 主纹理 Alpha 通道检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-vertex-color-checkpoint.html">前序顶点色</a></p>
+<h1>T07 · Graph 主纹理 Alpha 通道选择检查点</h1>
+<p><strong>限定结论：</strong>产品 Graph 使用原共享 packed color-channel 字的最低两位选择 BaseMap 的 R/G/B/A 作为 Alpha 源，默认值改为原 ShaderLab 的 3（A），而不新增 keyword 或独立 flag；现有 Graph Sample A 端口仍保留序列化连线，但 HLSL 以 packed 选择为准。当前 Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 隔离 Mesh 用受控 RGBA=(64,128,192,224) 输入、Flags0 bit29 将 Alpha 反映到 RGB 时，四通道中心红值依次 71/99/120/129；关闭 bit29 后 R/A 两种选择的最终 RGB 差 0。限定功能成立，不等于原 ShaderLab 完整 B/C 或 G4/G5 放行。</p>
+<table border="1" cellpadding="6"><thead><tr><th>测试 ID</th><th>结果/边界</th><th>证据</th></tr></thead><tbody>
+<tr><td>T07-BASE-ALPHA-MESH</td><td>代码提交 <code>dd4e80d</code>；全新 Graph Material 默认 packed 低半字 3。四通道随输入值单调变化；不启用 bit29 时 RGB 不随 Alpha 通道选择变化。Mesh 仍 10 Pass、自定义索引 1/2；后续 Timeline 添加后同一断言复测通过。画面 RGB 不是 GPU Alpha 浮点读回。</td><td><a href="t07-evidence/base-alpha/NBFXT07BaseAlphaProbe.cs.txt">探针</a> · <a href="t07-evidence/base-alpha/mesh-probe.log.gz">Unity 日志</a> · <a href="t07-evidence/base-alpha/t07_basealpha_channel0.png">R</a>/<a href="t07-evidence/base-alpha/t07_basealpha_channel1.png">G</a>/<a href="t07-evidence/base-alpha/t07_basealpha_channel2.png">B</a>/<a href="t07-evidence/base-alpha/t07_basealpha_channel3.png">A</a></td></tr>
+<tr><td>T07-BASE-ALPHA-VFX-IMPORT</td><td>将未改动的产品最小 VFX 样例从包重新复制到隔离克隆再强制导入，生成 Output 的 <code>_NB_ColorChannelLo16=(float)3</code>；若测试克隆留着先前导入后显式保存的 slot0，则仍生成 0，说明<strong>已有 VFX 资产的显式值不会因 Graph 默认改变而静默迁移</strong>。这是保存语义，非当前产品样例失败；后续现有资产升级应单列测试。</td><td><a href="t07-evidence/base-alpha/product-vfx-fresh-import.log.gz">新鲜样例导入日志</a> · <a href="t07-evidence/timeline-intensity/generated-2.shader.gz">后续同一 Graph 的生成源码（包含默认 3）</a></td></tr>
+</tbody></table>
+<p>后续已用真正单粒子 VFX Mesh Player 的主动 Output 值 0/3 与显式 RGBA 纹理验证最终颜色覆盖差，详见<a href="t08-vfx-basecolor-active-checkpoint.html">T08 主动值报告</a>；不扩大本 Mesh 切片的验收范围。未测：真实 Inspector packed 通道控件/保存重开、原 ShaderLab 精确 B/C、复杂透明混合；不得将 Graph 默认值变更当作对已有 VFX 资产的自动数据迁移。无可用 unityMCP，采用隔离无可见窗口 CLI；主工程 Assets/ProjectSettings、官方包、UniversalTarget、NBPostprocess 未改，未 push。<a href="t07-evidence/base-alpha/README.txt">重放说明</a> · <a href="t07-evidence/base-alpha/sha256.txt">证据 SHA-256</a>。</p>
+</body></html>
