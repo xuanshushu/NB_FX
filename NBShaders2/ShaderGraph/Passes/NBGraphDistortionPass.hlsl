@@ -19,27 +19,55 @@ void frag(
     Varyings unpacked = UnpackVaryings(packedInput);
     UNITY_SETUP_INSTANCE_ID(unpacked);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(unpacked);
-    SurfaceDescription surface = BuildSurfaceDescription(unpacked);
+    // Evaluate the Graph once. VFX stores exposed properties in its generated
+    // GraphProperties struct rather than the Mesh material CBUFFER.
+    SurfaceDescriptionInputs graphInputs = BuildSurfaceDescriptionInputs(unpacked);
+    float distortionMode, distortionIntensity, flags1Lo16, flags1Hi16;
+    float alphaPow, alphaMultiplier, alphaAdd;
+    float2 distortionNoise;
+#if defined(HAVE_VFX_MODIFICATION)
+    GraphProperties graphProperties = (GraphProperties)0;
+    GetElementPixelProperties(graphInputs, graphProperties);
+    SurfaceDescription surface = SurfaceDescriptionFunction(graphInputs, graphProperties);
+    distortionMode = graphProperties._NB_DistortionMode;
+    distortionIntensity = graphProperties._NB_DistortionIntensity;
+    distortionNoise = graphProperties._NB_DistortionNoise;
+    flags1Lo16 = graphProperties._NB_Flags1Lo16;
+    flags1Hi16 = graphProperties._NB_Flags1Hi16;
+    alphaPow = graphProperties._NB_DistortionAlphaPow;
+    alphaMultiplier = graphProperties._NB_DistortionAlphaMultiplier;
+    alphaAdd = graphProperties._NB_DistortionAlphaAdd;
+#else
+    SurfaceDescription surface = SurfaceDescriptionFunction(graphInputs);
+    distortionMode = _NB_DistortionMode;
+    distortionIntensity = _NB_DistortionIntensity;
+    distortionNoise = _NB_DistortionNoise.xy;
+    flags1Lo16 = _NB_Flags1Lo16;
+    flags1Hi16 = _NB_Flags1Hi16;
+    alphaPow = _NB_DistortionAlphaPow;
+    alphaMultiplier = _NB_DistortionAlphaMultiplier;
+    alphaAdd = _NB_DistortionAlphaAdd;
+#endif
 
     // The two original NBPostprocess RendererLists select these exact tags.
     // Mode 0 intentionally writes neither pass; mode 1/2 isolates each path.
 #if defined(NB_GRAPH_DEFERRED_DISTORT_PASS)
-    clip(_NB_DistortionMode > 0.5 && _NB_DistortionMode < 1.5 ? 1.0h : -1.0h);
+    clip(distortionMode > 0.5 && distortionMode < 1.5 ? 1.0h : -1.0h);
 #elif defined(NB_GRAPH_CAMERA_OPAQUE_PASS)
-    clip(_NB_DistortionMode > 1.5 ? 1.0h : -1.0h);
+    clip(distortionMode > 1.5 ? 1.0h : -1.0h);
 #else
     #error NB Graph distortion pass kind is missing.
 #endif
 
     NBFX_DistortionInputV1 input = (NBFX_DistortionInputV1)0;
-    input.signedNoise = _NB_DistortionNoise.xy;
+    input.signedNoise = distortionNoise;
     input.noiseMask = 1.0h;
     input.alphaBeforePremultiply = surface.Alpha;
-    input.refineAlpha = (NBGraphFlags1() & FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE) != 0u;
-    input.alphaPow = _NB_DistortionAlphaPow;
-    input.alphaMultiplier = _NB_DistortionAlphaMultiplier;
-    input.alphaAdd = _NB_DistortionAlphaAdd;
-    input.intensity = _NB_DistortionIntensity;
+    input.refineAlpha = (NBGraphDecodeUInt32(flags1Lo16, flags1Hi16) & FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE) != 0u;
+    input.alphaPow = alphaPow;
+    input.alphaMultiplier = alphaMultiplier;
+    input.alphaAdd = alphaAdd;
+    input.intensity = distortionIntensity;
     NBFX_DistortionPayloadV1 payload = NBFX_BuildDistortionPayloadV1(input);
 
 #if defined(NB_GRAPH_DEFERRED_DISTORT_PASS)

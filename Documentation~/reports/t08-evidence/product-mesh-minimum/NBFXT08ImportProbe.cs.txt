@@ -1,0 +1,58 @@
+using System;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXT08ImportProbe
+{
+    public static void Run()
+    {
+        const string path="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx";
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+        var vfx=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+        Debug.Log("NBFX_T08_VFX name="+(vfx ? vfx.name : "null"));
+        foreach(var dep in AssetDatabase.GetDependencies(path, true))
+            if(dep.Contains("NBShaderGraph") || dep.Contains("GF_URP")) Debug.Log("NBFX_T08_DEP "+dep);
+        foreach(var asset in AssetDatabase.LoadAllAssetsAtPath(path))
+        {
+            if(!asset) continue;
+            Debug.Log("NBFX_T08_ASSET type="+asset.GetType().FullName+" name="+asset.name);
+            var method=asset.GetType().GetMethod("GetShaderSourceCount", System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance);
+            if(method!=null) { var count=(int)method.Invoke(asset,null); Debug.Log("NBFX_T08_SOURCES count="+count); var getter=asset.GetType().GetMethod("GetShaderSource", System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); for(int si=0;si<count;si++) System.IO.File.WriteAllText("/tmp/nbfx-t08-mesh-20260930/generated-"+si+".shader",(string)getter.Invoke(asset,new object[]{si})); }
+            if(asset is Shader shader)
+            {
+                var mat=new Material(shader);
+                Debug.Log("NBFX_T08_SHADER name="+shader.name+" supported="+shader.isSupported+" passes="+mat.passCount+
+                    " camera="+mat.FindPass("NBCameraOpaqueDistortPass")+" deferred="+mat.FindPass("NBDeferredDistortPass"));
+                foreach(var msg in ShaderUtil.GetShaderMessages(shader)) Debug.Log("NBFX_T08_SHADER_MESSAGE "+msg.message);
+                UnityEngine.Object.DestroyImmediate(mat);
+            }
+            else if (asset is VisualEffectAsset) Debug.Log("NBFX_T08_SUBASSET VFX "+asset.name);
+        }
+        System.Type resourceType=null;
+        foreach(var asm in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            var candidate=asm.GetType("UnityEditor.VFX.VisualEffectResource");
+            if(candidate!=null) { resourceType=candidate; Debug.Log("NBFX_T08_RESOURCE_ASM="+asm.FullName); break; }
+        }
+        Debug.Log("NBFX_T08_RESOURCE_TYPE="+resourceType);
+        if(resourceType!=null)
+        {
+            var flags=System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.Instance;
+            var getResource=resourceType.GetMethod("GetResourceAtPath",flags);
+            var resource=getResource.Invoke(null,new object[]{path});
+            Debug.Log("NBFX_T08_RESOURCE="+resource);
+            if(resource!=null)
+            {
+                var count=(int)resourceType.GetMethod("GetShaderSourceCount",flags).Invoke(resource,null);
+                Debug.Log("NBFX_T08_RESOURCE_SOURCES="+count);
+                for(int si=0;si<count;si++)
+                {
+                    var generated=(string)resourceType.GetMethod("GetShaderSource",flags).Invoke(resource,new object[]{si});
+                    System.IO.File.WriteAllText("/tmp/nbfx-t08-mesh-20260930/generated-"+si+".shader",generated);
+                }
+            }
+        }
+        if(!vfx) throw new Exception("Product Mesh VFX import failed");
+    }
+}
