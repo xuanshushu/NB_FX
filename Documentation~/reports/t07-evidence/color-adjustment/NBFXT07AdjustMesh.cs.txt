@@ -1,0 +1,28 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+public static class NBFXT07AdjustMesh
+{
+ const string Graph="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";const string Root="/tmp/nbfx-adjust-20260930";
+ static Color Capture(Camera c,RenderTexture rt,Texture2D rb,string n){c.Render();var old=RenderTexture.active;RenderTexture.active=rt;rb.ReadPixels(new Rect(0,0,96,96),0,0);rb.Apply(false);RenderTexture.active=old;var p=new Texture2D(96,96,TextureFormat.RGBA32,false,true);p.SetPixels(rb.GetPixels());p.Apply(false);File.WriteAllBytes(Root+"/"+n+".png",p.EncodeToPNG());UnityEngine.Object.DestroyImmediate(p);return rb.GetPixel(48,48);}
+ static void Near(float a,float b,string n){if(Mathf.Abs(a-b)>.025f)throw new Exception(n+" actual="+a+" expected="+b);}
+ public static void Run()
+ {
+  Directory.CreateDirectory(Root);AssetDatabase.ImportAsset(Graph,ImportAssetOptions.ForceUpdate);var shader=AssetDatabase.LoadAssetAtPath<Shader>(Graph);if(!shader||!shader.isSupported)throw new Exception("Graph missing");
+  var quad=GameObject.CreatePrimitive(PrimitiveType.Quad);quad.layer=2;quad.transform.rotation=Quaternion.Euler(0,180,0);quad.transform.localScale=new Vector3(2,2,1);var m=new Material(shader);m.SetColor("_Color",new Color(.2f,.3f,.4f,.6f));m.SetFloat("_NB_Flags0Lo16",0);m.SetFloat("_NB_Flags0Hi16",0);m.SetFloat("_NB_Flags1Lo16",0);m.SetFloat("_NB_Flags1Hi16",0);m.SetFloat("_Contrast",2);m.SetColor("_ContrastMidColor",Color.black);m.SetFloat("_Saturability",0);m.SetFloat("_HueShift",.5f);m.SetVector("_BaseMapColorRefine",new Vector4(1,1,2,1));m.SetFloat("_EmissionEnabled",0);m.SetColor("_EmissionMapColor",Color.white);m.SetFloat("_EmissionMapColorIntensity",1);m.SetFloat("_EmissionAlphaIntensity",1);m.SetFloat("_NB_DistortionMode",0);m.SetFloat("_Cull",2);m.SetFloat("_Surface",1);m.SetFloat("_ZWrite",0);m.SetFloat("_SrcBlend",(float)BlendMode.One);m.SetFloat("_DstBlend",(float)BlendMode.Zero);m.SetFloat("_SrcBlendAlpha",(float)BlendMode.One);m.SetFloat("_DstBlendAlpha",(float)BlendMode.Zero);m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");m.renderQueue=3000;var map=new Texture2D(1,1,TextureFormat.RGBA32,false,true);map.SetPixel(0,0,new Color(1,0,0,.5f));map.Apply(false);m.SetTexture("_EmissionMap",map);quad.GetComponent<MeshRenderer>().sharedMaterial=m;
+  var go=new GameObject("adjust camera");var cam=go.AddComponent<Camera>();cam.orthographic=true;cam.orthographicSize=1.5f;cam.nearClipPlane=.1f;cam.farClipPlane=20;cam.cullingMask=1<<2;cam.transform.position=new Vector3(0,0,5);cam.transform.rotation=Quaternion.Euler(0,180,0);cam.clearFlags=CameraClearFlags.SolidColor;cam.backgroundColor=Color.black;cam.allowHDR=true;cam.allowMSAA=false;var rt=new RenderTexture(96,96,24,RenderTextureFormat.ARGBHalf,RenderTextureReadWrite.Linear);rt.Create();cam.targetTexture=rt;var rb=new Texture2D(96,96,TextureFormat.RGBAHalf,false,true);
+  try
+  {
+   var off=Capture(cam,rt,rb,"off");m.SetFloat("_NB_Flags1Hi16",256);var contrast=Capture(cam,rt,rb,"contrast");m.SetFloat("_NB_Flags1Hi16",0);m.SetFloat("_NB_Flags0Lo16",1);var saturate=Capture(cam,rt,rb,"saturation-zero");m.SetFloat("_NB_Flags0Lo16",0);m.SetFloat("_NB_Flags0Hi16",8);var hue=Capture(cam,rt,rb,"hue-half");m.SetFloat("_NB_Flags0Hi16",0);m.SetFloat("_NB_Flags1Hi16",2048);var refine=Capture(cam,rt,rb,"refine");
+   m.SetFloat("_NB_Flags1Hi16",256);m.SetFloat("_EmissionEnabled",1);var late=Capture(cam,rt,rb,"late-contrast-overlay");m.SetFloat("_NB_Flags0Hi16",64);var early=Capture(cam,rt,rb,"early-contrast-overlay");m.SetFloat("_NB_Flags0Hi16",8192);var latePremul=Capture(cam,rt,rb,"late-premultiply-overlay");m.SetFloat("_NB_Flags0Hi16",8256);var earlyPremul=Capture(cam,rt,rb,"early-premultiply-overlay");
+   Debug.Log("NBFX_ADJUST_MESH off="+off+" contrast="+contrast+" saturation="+saturate+" hue="+hue+" refine="+refine+" late="+late+" early="+early+" latePremul="+latePremul+" earlyPremul="+earlyPremul+" passes="+m.passCount+" p1="+m.FindPass("NBCameraOpaqueDistortPass")+" p2="+m.FindPass("NBDeferredDistortPass")+" messages="+ShaderUtil.GetShaderMessages(shader).Length);
+   Near(contrast.r,off.r*2,"contrast.r");Near(contrast.g,off.g*2,"contrast.g");Near(contrast.b,off.b*2,"contrast.b");Near(refine.r,off.r*2,"refine.r");Near(refine.g,off.g*2,"refine.g");Near(refine.b,off.b*2,"refine.b");Near(saturate.r,saturate.g,"saturation rg");Near(saturate.g,saturate.b,"saturation gb");
+   if(Mathf.Abs(hue.r-off.r)+Mathf.Abs(hue.g-off.g)+Mathf.Abs(hue.b-off.b)<.08f)throw new Exception("hue inactive");
+   if(!(late.r>early.r+.3f && latePremul.r>earlyPremul.r+.08f))throw new Exception("early/late adjustment ordering inactive");
+   foreach(var msg in ShaderUtil.GetShaderMessages(shader))Debug.Log("NBFX_ADJUST_SHADER_MESSAGE "+msg.severity+" "+msg.message);
+   Near(late.a,.6f,"late.a");Near(earlyPremul.a,.6f,"earlyPremul.a");if(m.FindPass("NBCameraOpaqueDistortPass")!=1||m.FindPass("NBDeferredDistortPass")!=2)throw new Exception("Pass regression");
+  }finally{UnityEngine.Object.DestroyImmediate(quad);UnityEngine.Object.DestroyImmediate(go);UnityEngine.Object.DestroyImmediate(m);UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(rb);UnityEngine.Object.DestroyImmediate(map);}
+ }
+}

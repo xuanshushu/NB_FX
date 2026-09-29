@@ -1,0 +1,34 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+public static class NBFXT07AdjustLegacyAB
+{
+ const string Root="/tmp/nbfx-adjust-20260930";const string Cur="Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader";const string Pre="Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShaderPreAdjust.shader";
+ static Color32[] Capture(Camera cam,RenderTexture rt,Texture2D rb,string name){cam.Render();var prev=RenderTexture.active;RenderTexture.active=rt;rb.ReadPixels(new Rect(0,0,96,96),0,0);rb.Apply(false);RenderTexture.active=prev;File.WriteAllBytes(Root+"/"+name+".png",rb.EncodeToPNG());return rb.GetPixels32();}
+ static int Diff(Color32[] a,Color32[] b){int n=0;for(int i=0;i<a.Length;i++)if(a[i].r!=b[i].r||a[i].g!=b[i].g||a[i].b!=b[i].b||a[i].a!=b[i].a)n++;return n;}
+ static Material Make(Material source,Shader shader,Texture map)
+ {
+  var m=new Material(source);m.shader=shader;m.SetColor("_BaseColor",new Color(.2f,.3f,.4f,.6f));m.SetTexture("_BaseMap",Texture2D.whiteTexture);m.SetTexture("_MainTex",Texture2D.whiteTexture);m.SetColor("_ColorA",Color.white);m.SetFloat("_HueShift",.5f);m.SetFloat("_Contrast",2);m.SetColor("_ContrastMidColor",Color.black);m.SetFloat("_Saturability",0);m.SetVector("_BaseMapColorRefine",new Vector4(1,1,2,1));m.SetTexture("_EmissionMap",map);m.SetColor("_EmissionMapColor",Color.white);m.SetFloat("_EmissionMapColorIntensity",1);m.SetFloat("_EmissionAlphaIntensity",1);m.EnableKeyword("_FX_LIGHT_MODE_UNLIT");m.DisableKeyword("_EMISSION");m.SetFloat("_SrcBlend",(float)BlendMode.One);m.SetFloat("_DstBlend",(float)BlendMode.Zero);m.SetFloat("_ZWrite",0);m.SetFloat("_ZTest",4);m.SetFloat("_Cull",2);m.SetFloat("_ColorMask",15);m.renderQueue=3000;return m;
+ }
+ public static void Run()
+ {
+  Directory.CreateDirectory(Root);AssetDatabase.ImportAsset(Cur,ImportAssetOptions.ForceUpdate);AssetDatabase.ImportAsset(Pre,ImportAssetOptions.ForceUpdate);var sc=AssetDatabase.LoadAssetAtPath<Shader>(Cur);var sp=AssetDatabase.LoadAssetAtPath<Shader>(Pre);if(!sc||!sp||!sc.isSupported||!sp.isSupported)throw new Exception("Shader unavailable "+sc+" "+sp);
+  var map=new Texture2D(1,1,TextureFormat.RGBA32,false,true);map.SetPixel(0,0,new Color(1,0,0,.5f));map.Apply(false);var sm=AssetDatabase.LoadAssetAtPath<Material>("Assets/NBShaderSamples/NBShaderSamples/UnLit.mat");if(!sm)throw new Exception("sample material missing");var cur=Make(sm,sc,map);var pre=Make(sm,sp,map);var quad=GameObject.CreatePrimitive(PrimitiveType.Quad);quad.layer=2;quad.transform.rotation=Quaternion.Euler(0,180,0);quad.transform.localScale=new Vector3(2,2,1);var go=new GameObject("adjust old A/B camera");var cam=go.AddComponent<Camera>();cam.orthographic=true;cam.orthographicSize=1.5f;cam.nearClipPlane=.1f;cam.farClipPlane=20;cam.cullingMask=1<<2;cam.transform.position=new Vector3(0,0,5);cam.transform.rotation=Quaternion.Euler(0,180,0);cam.clearFlags=CameraClearFlags.SolidColor;cam.backgroundColor=Color.black;cam.allowHDR=false;cam.allowMSAA=false;var rt=new RenderTexture(96,96,24,RenderTextureFormat.ARGB32);rt.Create();cam.targetTexture=rt;var rb=new Texture2D(96,96,TextureFormat.RGBA32,false,true);
+  try
+  {
+   string[] names={"off","saturation","contrast","hue","refine","late","early","late-premul","early-premul"};
+   int[] f0={0,1,0,1<<19,0,0,1<<22,1<<29, (1<<29)|(1<<22)};
+   int[] f1={1,1,(1<<24)|1,1,(1<<27)|1,(1<<24)|1,(1<<24)|1,(1<<24)|1,(1<<24)|1};
+   for(int i=0;i<names.Length;i++)
+   {
+    cur.SetInteger("_W9ParticleShaderFlags",f0[i]);pre.SetInteger("_W9ParticleShaderFlags",f0[i]);cur.SetInteger("_W9ParticleShaderFlags1",f1[i]);pre.SetInteger("_W9ParticleShaderFlags1",f1[i]);
+    if(i>=5){cur.EnableKeyword("_EMISSION");pre.EnableKeyword("_EMISSION");}else{cur.DisableKeyword("_EMISSION");pre.DisableKeyword("_EMISSION");}
+    quad.GetComponent<MeshRenderer>().sharedMaterial=cur;for(int w=0;w<4;w++)cam.Render();var a=Capture(cam,rt,rb,"legacy-current-"+names[i]);quad.GetComponent<MeshRenderer>().sharedMaterial=pre;for(int w=0;w<4;w++)cam.Render();var b=Capture(cam,rt,rb,"legacy-preadjust-"+names[i]);int diff=Diff(a,b);Debug.Log("NBFX_ADJUST_LEGACY_AB case="+names[i]+" diff="+diff+" curCenter="+a[48*96+48]+" preCenter="+b[48*96+48]);if(diff!=0)throw new Exception("pre-adjust strict mismatch "+names[i]);
+   }
+   Debug.Log("NBFX_ADJUST_LEGACY_AB passesCurrent="+cur.passCount+" passesPre="+pre.passCount+" messagesCurrent="+ShaderUtil.GetShaderMessages(sc).Length+" messagesPre="+ShaderUtil.GetShaderMessages(sp).Length);
+  }
+  finally{UnityEngine.Object.DestroyImmediate(quad);UnityEngine.Object.DestroyImmediate(go);UnityEngine.Object.DestroyImmediate(cur);UnityEngine.Object.DestroyImmediate(pre);UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(rb);UnityEngine.Object.DestroyImmediate(map);}
+ }
+}

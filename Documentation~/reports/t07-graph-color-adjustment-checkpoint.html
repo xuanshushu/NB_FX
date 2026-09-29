@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph 颜色调整切片</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-color-ramp-checkpoint.html">前序 Ramp</a></p>
+<h1>T07 · Graph 颜色调整/执行位置切片</h1>
+<p><strong>限定结论：</strong>产品代码 <code>06d0ef6</code> 将原 ShaderLab 色相、对比度、饱和度、主色 Refine、RGB×Alpha 的算术抽为共享函数；Graph 根据 Flags0 bit22 在 BaseMap 后或 VertexColor/ColorA 后执行，并保留晚期 AlphaAll 顺序。无新 keyword/Pass，不修改官方包、Target、NBPostprocess。Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 的隔离 Mesh 受控测试通过；<strong>不等于完整 CustomData/所有组合或 G4/G5 放行</strong>。</p>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>原始结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>Graph Mesh 色调整</td><td>线性 ARGBHalf 中心：关闭 (.033,.073,.133,.600)、对比度 (.066,.146,.266,.600)、饱和度 0 灰度 (.069,.069,.069,.600)、Hue 0.5 (.133,.093,.033,.600)、Refine (.066,.146,.266,.600)。红色 Overlay1 与 Contrast 联合时，后期 R1.069/前期 R.568；加 bit29 后后期 R.642/前期 R.542，符合执行位置差异。10 Pass、自定义索引 1/2；ShaderUtil 警告 5 条，比前序多一条 pow 负输入编译警告。</td><td><a href="t07-evidence/color-adjustment/NBFXT07AdjustMesh.cs.txt">探针</a> · <a href="t07-evidence/color-adjustment/mesh-fixed-threshold.log.gz">最终日志</a> · <a href="t07-evidence/color-adjustment/late-contrast-overlay.png">后期图</a>/<a href="t07-evidence/color-adjustment/early-contrast-overlay.png">前期图</a></td></tr>
+<tr><td>原 ShaderLab 抽取回归</td><td>当前 vs clone-only 抽取前变体，同材质预热后 9 例严格 RGBA32 逐像素差 0；均 7 Pass、18 条 ShaderUtil 消息。此处比较的是共享函数抽取，不是 T00 Frozen B/C。</td><td><a href="t07-evidence/color-adjustment/NBFXT07AdjustLegacyAB.cs.txt">探针</a> · <a href="t07-evidence/color-adjustment/legacy-ab.log.gz">日志</a> · <a href="t07-evidence/color-adjustment/legacy-current-early.png">当前</a>/<a href="t07-evidence/color-adjustment/legacy-preadjust-early.png">抽取前</a></td></tr>
+<tr><td>默认回归与测试纠正</td><td>前序 Overlay1/2 与 Ramp 的 14 张受控 PNG 逐字节相同。首次新探针把实际 .100 的 bit29 前后差要求为 &gt;.15 而失败；只修正测试阈值为 &gt;.08，原失败保留，不把它认作产品修复。</td><td><a href="t07-evidence/color-adjustment/regression-comparison.json">逐字节 JSON</a> · <a href="t07-evidence/color-adjustment/mesh.log.gz">首次阈值日志</a></td></tr>
+</tbody></table>
+<p><strong>未验证/未实现：</strong>原 CustomData 对这些调整量的逐粒子路由、Fog/Lighting/MatCap 与前后期排序、负色 pow 语义、原 ShaderLab T00 Frozen 严格 B/C、主动 VFX Output、GUI 完整交互、其它平台。<a href="t07-evidence/color-adjustment/README.txt">重放与限制</a> · <a href="t07-evidence/color-adjustment/sha256.txt">附件哈希</a>。unityMCP 未暴露，隔离无可见 Editor 窗口 CLI；不 push。</p>
+</body></html>
