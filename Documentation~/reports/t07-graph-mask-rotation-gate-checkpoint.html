@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph Mask1 旋转门控检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-mask-gradient-checkpoint.html">三层渐变前序切片</a></p>
+<h1>T07 · Graph Mask1 旋转速度门控检查点</h1>
+<p><strong>限定结论：</strong>原 ShaderLab 只有 Flags0 bit7 开启时才把 <code>_MaskMapRotationSpeed × _Time.y</code> 加到 Mask1 基础角度；Graph 原来无条件相加。本次仅在 <a href="../../NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl">NBGraphBaseColor.hlsl</a> 的 float/half 路径复用同一 bit 门控，不改 Pass、keyword、材质序列化或 NBPostprocess。当前 Unity 6000.3.18f1 / Metal 隔离 Mesh 测试中，关闭门控时 speed 0→37 改变 0 像素且 PNG 逐字节相同；开启 bit7 后改变 750 像素。原三层 Gradient 非零断言再次通过；这是特定 Mask1 UV 动画门控，不代表全部 UV/CustomData 等价。</p>
+<p><a href="t07-evidence/mask-rotation-gate/NBFXT07MaskRotationGateProbe.cs.txt">探针源码</a> · <a href="t07-evidence/mask-rotation-gate/mesh-probe.log.gz">Unity 日志</a> · <a href="t07-evidence/mask-rotation-gate/t07_mask_rotation_gate_base.png">speed 0</a>/<a href="t07-evidence/mask-rotation-gate/t07_mask_rotation_gate_off.png">speed 37、bit7 关</a>/<a href="t07-evidence/mask-rotation-gate/t07_mask_rotation_gate_on.png">speed 37、bit7 开</a> · <a href="t07-evidence/mask-rotation-gate/sha256.txt">SHA-256</a>。测试资产已从克隆删除并再次 CLI 导入退出 0，ProjectSettings/GlobalSettings 哈希不变。无可用 unityMCP；未进行此独立切片后的 Player 复测、可见 Inspector 操作或完整 B/C，G4/G5 未放行。未改官方包、UniversalTarget、NBPostprocess、主工程 Assets/ProjectSettings，未 push。</p>
+</body></html>
