@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph GUI 薄适配检查点</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="../tasks/t07-graph-parity-gui.html">T07 任务书</a></p>
+<h1>T07 · Graph GUI 薄适配检查点</h1>
+<p><strong>结论：当前 Unity 6000.3.18f1 / URP、SG、VFX 17.3 的隔离工程中，Mesh Graph 已注册包内 <code>NBShaderGraphGUI</code>，原 ShaderLab 保持 <code>NBShaderGUI</code>，真正 VFX Mesh 仍注册官方 <code>VFXShaderGraphUnlitGUI</code>。Graph 材质的 URP 透明状态校验实测有效；G4/G5 未放行。</strong>当前无可用 unityMCP，使用无可见窗口的 Unity CLI；未改官方包、UniversalTarget、NBPostprocess 或主工程 Assets/ProjectSettings，未 push。</p>
+<p>实现只在包内：<a href="../../NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs">SubTarget</a> 区分 Mesh/VFX 的 Custom Editor；<a href="../../NBShaders2/ShaderGraph/Editor/NBGraphUnlitGUIBridge.cs">asmref 桥</a>编入当前 URP Editor 程序集以继承其 internal <code>ShaderGraphUnlitGUI</code>，保留官方 Surface Options/Advanced/ValidateMaterial，不复制 URP 代码或反射运行时实现；<a href="../../NBShaders2/Editor/NBShaderGraphGUI.cs">NBShaderGraphGUI</a>继承原 NBShaderGUI，Graph 专用 Root 只绘制存在的 Graph 属性，不让 Graph 材质进入依赖完整 ShaderLab 属性和 Flags 的 <code>NBShaderSyncService</code>。这不是已完成原 NBShader 功能面板的等价复用。</p>
+<table border="1" cellpadding="6"><thead><tr><th>Case</th><th>实际结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>T07-GUI-COMPILE</td><td>同步改动到隔离工程后，Unity batchmode 编译退出码 0；探针再次强制重导入 Graph/VFX 资产并正常执行。首轮探针因测试脚本错误引用不存在的 <code>Shader.customEditor</code> 而失败，已改用 Editor <code>ShaderUtil.GetCurrentCustomEditor</code> 反射读取；这不是产品编译失败。</td><td><a href="t07-evidence/gui-adapter/gui-compile.log.gz">编译日志</a> · <a href="t07-evidence/gui-adapter/gui-probe-custom.log.gz">最终探针日志</a></td></tr>
+<tr><td>T07-GUI-ROUTING</td><td>Editor 查询实际 Custom Editor：Mesh Graph = <code>NBShaderEditor.NBShaderGraphGUI</code>，原 NBShader = <code>NBShaderEditor.NBShaderGUI</code>，真正 VFX Mesh = <code>UnityEditor.Rendering.Universal.VFXShaderGraphUnlitGUI</code>；三者均与预期一致。</td><td><a href="t07-evidence/gui-adapter/NBFXT07GUIProbe.cs.txt">探针源码</a> · <a href="t07-evidence/gui-adapter/gui-probe-custom.log.gz">结果日志</a></td></tr>
+<tr><td>T07-GUI-URP-VALIDATE</td><td>Graph 材质设置 <code>_Surface=1</code> 后调用实际 <code>NBShaderGraphGUI.ValidateMaterial</code>，得到 <code>_SrcBlend=5</code>、<code>_DstBlend=10</code>、<code>_ZWrite=0</code>、Queue=3000、透明关键词开启。验证桥没有丢掉当前 URP 的表面状态更新。</td><td><a href="t07-evidence/gui-adapter/gui-probe-custom.log.gz">结果日志</a></td></tr>
+</tbody></table>
+<p><a href="t07-evidence/gui-adapter/sha256.txt">源码/证据 SHA-256</a> 已归档。隔离工程的 ProjectSettings/GlobalSettings 哈希仍为原值。此切片没有可见 Inspector 的真实点击、多选、Undo/Redo、重载与完整功能面板证据；Graph Root 目前仅绘制原生属性列表，不具备旧 NBShader 的分组控件、Flags 位开关和规则同步，不能宣称 GUI 等价。VFX Output 原生 Inspector 未添加 NB 面板。上述全部进入最终人工清单与 G4/G5 未满足项。</p>
+</body></html>

@@ -21,12 +21,20 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
 
         public override void Setup(ref TargetSetupContext context)
         {
+            var urpType = typeof(UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset);
+            // UniversalTarget's explicit Custom Editor takes precedence. Otherwise
+            // register one GUI before delegating to built-in Unlit, which then
+            // observes the registration and does not add a second one.
+            if (!context.HasCustomEditorForRenderPipeline(urpType))
+            {
 #if HAS_VFX_GRAPH
-            if (TargetsVFX())
-                context.AddCustomEditorForRenderPipeline(
-                    typeof(UnityEditor.Rendering.Universal.VFXShaderGraphUnlitGUI).FullName,
-                    typeof(UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset));
+                if (TargetsVFX())
+                    context.AddCustomEditorForRenderPipeline(
+                        typeof(UnityEditor.Rendering.Universal.VFXShaderGraphUnlitGUI).FullName, urpType);
+                else
 #endif
+                    context.AddCustomEditorForRenderPipeline("NBShaderEditor.NBShaderGraphGUI", urpType);
+            }
             int index = context.subShaders.Count;
             Builtin().Setup(ref context);
             var subShader = context.subShaders[index];

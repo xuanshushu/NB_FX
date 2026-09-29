@@ -7,6 +7,7 @@ namespace NBShaderEditor
     public class NBShaderGUI : ShaderGUI
     {
         private NBShaderRootItem _rootItem;
+        private NBShaderGraphRootItem _graphRootItem;
         private string _currentLanguage;
 
         public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
@@ -19,6 +20,15 @@ namespace NBShaderEditor
             }
 
             _rootItem.OnGUI(materialEditor, properties);
+        }
+
+        // The Graph inspector calls this only for its Surface Inputs foldout.
+        // Do not send a Graph material through NBShaderRootItem: it assumes the
+        // ShaderLab property/flag protocol and runs NBShaderSyncService.
+        protected void OnGraphGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
+        {
+            _graphRootItem ??= new NBShaderGraphRootItem();
+            _graphRootItem.OnGUI(materialEditor, properties);
         }
     }
 

@@ -1,0 +1,37 @@
+using System;
+using UnityEditor;
+using UnityEngine;
+using System.Reflection;
+
+public static class NBFXT07GUIProbe
+{
+    public static void Run()
+    {
+        const string graphPath="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+        const string oldPath="Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader";
+        const string vfxPath="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx";
+        AssetDatabase.ImportAsset(graphPath,ImportAssetOptions.ForceUpdate);
+        AssetDatabase.ImportAsset(vfxPath,ImportAssetOptions.ForceUpdate);
+        var graph=AssetDatabase.LoadAssetAtPath<Shader>(graphPath);
+        var old=AssetDatabase.LoadAssetAtPath<Shader>(oldPath);
+        Shader vfx=null;foreach(var asset in AssetDatabase.LoadAllAssetsAtPath(vfxPath))if(asset is Shader s){vfx=s;break;}
+        if(!graph||!old||!vfx)throw new Exception("missing shader");
+        foreach(var m in typeof(ShaderUtil).GetMethods(BindingFlags.Static|BindingFlags.Public|BindingFlags.NonPublic))
+            if(m.Name.Contains("CustomEditor")||m.Name.Contains("ShaderText"))Debug.Log("NBFX_T07_SHADERUTIL "+m);
+        Type guiType=null;foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
+        {var found=a.GetType("NBShaderEditor.NBShaderGraphGUI",false);if(found!=null){guiType=found;break;}}
+        if(guiType==null)throw new Exception("Graph GUI type absent");
+        Debug.Log("NBFX_T07_GUI graph="+graph.name+" graphPasses="+new Material(graph).passCount+" old="+old.name+" vfx="+vfx.name+" guiAssembly="+guiType.Assembly.GetName().Name);
+        var customMethod=typeof(ShaderUtil).GetMethod("GetCurrentCustomEditor",BindingFlags.Static|BindingFlags.Public|BindingFlags.NonPublic,null,new[]{typeof(Shader)},null);
+        if(customMethod==null)throw new Exception("Custom editor query unavailable");
+        var graphCustom=(string)customMethod.Invoke(null,new object[]{graph});
+        var oldCustom=(string)customMethod.Invoke(null,new object[]{old});
+        var vfxCustom=(string)customMethod.Invoke(null,new object[]{vfx});
+        Debug.Log("NBFX_T07_CUSTOM graph="+graphCustom+" old="+oldCustom+" vfx="+vfxCustom);
+        if(graphCustom!="NBShaderEditor.NBShaderGraphGUI"||oldCustom!="NBShaderEditor.NBShaderGUI"||vfxCustom!="UnityEditor.Rendering.Universal.VFXShaderGraphUnlitGUI")throw new Exception("Custom editor mismatch");
+        var mat=new Material(graph);mat.SetFloat("_Surface",1);var gui=(ShaderGUI)Activator.CreateInstance(guiType);gui.ValidateMaterial(mat);
+        Debug.Log("NBFX_T07_GUI_VALIDATE surface="+mat.GetFloat("_Surface")+" src="+mat.GetFloat("_SrcBlend")+" dst="+mat.GetFloat("_DstBlend")+" zwrite="+mat.GetFloat("_ZWrite")+" queue="+mat.renderQueue+" transparentKeyword="+mat.IsKeywordEnabled("_SURFACE_TYPE_TRANSPARENT"));
+        if(mat.renderQueue<3000||!mat.IsKeywordEnabled("_SURFACE_TYPE_TRANSPARENT"))throw new Exception("URP validation not retained");
+        UnityEngine.Object.DestroyImmediate(mat);
+    }
+}
