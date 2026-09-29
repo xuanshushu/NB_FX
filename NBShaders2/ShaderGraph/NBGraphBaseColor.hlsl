@@ -145,7 +145,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 MaskMap2GradientFloat1, float4 MaskMap2GradientFloat2,
     float MaskMap3GradientCount, float4 MaskMap3GradientFloat0,
     float4 MaskMap3GradientFloat1, float4 MaskMap3GradientFloat2,
-    float AlphaAll, float4 ColorA,
+    float AlphaAll, float4 ColorA, float4 VertexColor,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -236,6 +236,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         maskInput.overallStrength = (half)MaskMapVec.x;
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
     }
+    if ((NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) &
+        FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR) == 0u)
+        Out *= VertexColor;
     Out.rgb *= ColorA.rgb;
     Out.a *= ColorA.a;
     // Original ColorAdjustment applies this flag after the base sample. In this
@@ -270,7 +273,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half4 MaskMap2GradientFloat1, half4 MaskMap2GradientFloat2,
     float MaskMap3GradientCount, half4 MaskMap3GradientFloat0,
     half4 MaskMap3GradientFloat1, half4 MaskMap3GradientFloat2,
-    float AlphaAll, half4 ColorA,
+    float AlphaAll, half4 ColorA, half4 VertexColor,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -361,6 +364,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         maskInput.overallStrength = MaskMapVec.x;
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
     }
+    if ((NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) &
+        FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR) == 0u)
+        Out *= VertexColor;
     Out.rgb *= ColorA.rgb;
     Out.a *= ColorA.a;
     if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) & FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) != 0u)
