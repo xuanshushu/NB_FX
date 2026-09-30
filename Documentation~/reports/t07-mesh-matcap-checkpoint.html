@@ -1,0 +1,19 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh MatCap 对照</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：完整 Mesh 优先</a></p>
+<h1>普通 Mesh MatCap 对照：限定切片通过</h1>
+<p><strong>人话结论：</strong>这次把 NBShader 的 MatCap 接到 ShaderGraph 普通 Mesh 表面：在已测的平面、旋转平面和相机角度下，打开 MatCap、关闭 MatCap，以及重复拍摄，Graph 与当前 NBShader 的画面逐像素一致。46 项测试全部通过。<strong>这只是 MatCap 的一小片，不表示整个 Mesh 迁移、G3/G4 或 VFX 已完成。</strong></p>
+<p>2026-10-01；包输入 <code>64308ec</code>，产品 <code>a26a729</code>。Unity 6000.3.18f1 / URP、Shader Graph、VFX 17.3 / Metal / RenderGraph。unityMCP 不可用，因此在隔离工程独占运行 Unity CLI；没有打开主工程或修改官方包、UniversalTarget、NBPostprocess、三个保护设置。产品源快照固定取自 <code>a26a729</code>，不混入之后的法线贴图工作。</p>
+<h2>做了什么</h2>
+<p>Graph 复用 NBShader 已有的 MatCap 坐标和颜色混合函数，采样固定为线性 Clamp；原有 NoMip 标志的第 5 位仍生效。MatCap 不使用普通纹理的 ST、Wrap 或替换采样器。处理顺序保留为<strong>提前颜色调整 → MatCap → Emission</strong>，没有新增 keyword。</p>
+<h2>实测范围与结果</h2>
+<ul>
+<li><strong>46/46 通过，无跳过：</strong>23 种参数/姿态 × 正交、透视相机。覆盖混合强度、Alpha、HDR 着色、启停、NoMip、正反面、Mesh 与相机旋转、提前/后期颜色调整和 Emission 顺序。</li>
+<li><strong>严格画面对照：</strong>当前 NBShader ShaderLab（B）对实际生成的 Graph（C），每项主画面和控制画面在 48×48 内部区域的 RGB 与 Alpha 都为 <code>0</code> 差，重复拍摄也为 <code>0</code>；全部原始帧，包括区域外像素，均为有限数值。渲染目标为 128×128 linear RGBAHalf；保存无损 float32 RGBA 原始帧和 PNG。</li>
+<li><strong>不是“两个空白图碰巧相等”：</strong>40 项启用功能的对照，关闭/改变 MatCap 至少产生 <code>0.09375</code> 的有效画面变化。另 6 项分别故意更改 ST、Wrap、采样器：这些本来不应影响 MatCap，实测为零影响；同时单独切换 MatCap 仍至少产生 <code>0.257080078125</code> 的画面变化。</li>
+</ul>
+<p><a href="t07-evidence/matcap-20261001/results.xml">测试 XML</a> · <a href="t07-evidence/matcap-20261001/summary.json">逐项数值</a> · <a href="t07-evidence/matcap-20261001/cases/">原始帧与 PNG</a> · <a href="t07-evidence/matcap-20261001/unity.log.gz">Unity 测试日志</a>。初次导入退出码为 0，导入和测试日志均未见 C# 或 Shader 编译错误。</p>
+<h2>明确未证明</h2>
+<p>测试只覆盖普通 Mesh 的几何法线，主要为平面和旋转平面；没有覆盖法线贴图、Lighting、曲面原始法线、Depth/Shadow、屏幕扭曲 RT、Inspector 状态持久化、真正 VFX、Player、变体、剔除、批处理或性能。四次预热后的稳定帧不能外推为冷首帧或全帧逐像素一致。本轮只运行了上述 46 项 MatCap 测试；此前 Vertex 阶段的全套回归不是本轮重跑结果。</p>
+<p><a href="t07-evidence/matcap-20261001/README.txt">重放与边界说明</a> · <a href="t07-evidence/matcap-20261001/product-source-sha256.txt">固定产品源 hash</a> · <a href="t07-evidence/matcap-20261001/input-sha256.txt">输入源 hash</a> · <a href="t07-evidence/matcap-20261001/protected-settings-sha256.txt">保护设置 hash</a> · <a href="t07-evidence/matcap-20261001/sha256.txt">全部附件 hash</a>。</p>
+<p><strong>审核：</strong>MatCap 的普通 Mesh 限定切片通过；继续完成完整 Mesh 对照。G3/G4 尚未放行，不据此推进正式 VFX。产品为本地可回退提交；未 push。</p>
+</body></html>

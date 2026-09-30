@@ -1,0 +1,19 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 法线贴图对照</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：完整 Mesh 优先</a></p>
+<h1>普通 Mesh 法线贴图：功能已接入，严格对照未通过</h1>
+<p><strong>人话结论：</strong>法线贴图已经能影响 Graph 普通 Mesh 的 Fresnel 和 MatCap。开关、UV、采样等反向对照证明它不是“没起作用”。但按预先规定的<strong>逐像素零差</strong>标准，44 项里只有 10 项通过、34 项失败；因此不能说本切片严格等价，更不能据此放行 G3/G4。用户已要求暂不追查低幅颜色差，原始失败全部保留，最终集中人工测试。</p>
+<p>2026-10-01；逻辑产品输入 <code>a26a729</code>，产品 <code>f11f752</code>（中间仅有文档提交）。Unity 6000.3.18f1 / URP、Shader Graph、VFX 17.3 / Metal / RenderGraph。unityMCP 不可用，隔离工程独占运行 Unity CLI；没有打开主工程或修改官方包、UniversalTarget、NBPostprocess、三个保护设置。产品快照固定取自 <code>f11f752</code>，不混入后续 Depth/Shadow 工作。</p>
+<h2>具体测了什么</h2>
+<p>22 种设置分别用正交和透视相机拍摄，共 44 项。对象是曲面普通 Mesh，包含背面、非均匀缩放和负缩放；法线贴图的 UV0、UV0.zw、UV1、UV2、Shared UV、Twirl/Polar、四种 Wrap、自动/强制 LOD、强度与 mask 模式；只观察 Fresnel、MatCap 或两者。A 为 G0 Frozen ShaderLab，B 为当前 ShaderLab，C 为实际生成的 Graph。测试对主设置和一个有意改变的对照设置分别拍摄，并重复拍摄。</p>
+<ul>
+<li><strong>A/B 原实现保护：</strong>44 项主画面与对照画面在 64×64 内部区域严格 RGBA <code>0</code> 差，说明本次纯共享法线解码抽取没有改变已测 ShaderLab 数值。</li>
+<li><strong>B/C Graph 对照：</strong>10 项主画面及对照均严格 <code>0</code> 差；34 项至少一个画面非零，XML 如实判失败，Unity 测试退出码为 <code>2</code>。主画面及对照的最大单通道差值均不超过 <code>0.0029296875</code>，但有的对照画面多达 <code>2999/4096</code> 个像素非零，不能描述为“只差几个点”。没有调高容差或改写失败为通过。</li>
+<li><strong>有效性控制：</strong>所有原始帧全帧数值有限，重复画面 <code>0</code> 差；每项改变设置后至少有 <code>1831</code> 个内部像素发生大于 <code>0.01</code> 的变化，最大通道变化至少 <code>0.063720703125</code>，因此不是空白图的假对照。</li>
+</ul>
+<p>目标为 128×128 linear RGBAHalf，严格区域 x/y=32..95；无损 float32 RGBA 原始帧和 PNG 全部保存。初次导入退出码为 0，导入/测试日志未见 C# 或 Shader 编译错误。四次预热只证明稳定帧，不证明冷首帧或全帧逐像素等价。</p>
+<p><a href="t07-evidence/normal-map-20261001/results.xml">原始测试 XML（34 失败）</a> · <a href="t07-evidence/normal-map-20261001/summary.json">44 项数值及失败名单</a> · <a href="t07-evidence/normal-map-20261001/cases/">原始帧与 PNG</a> · <a href="t07-evidence/normal-map-20261001/unity.log.gz">Unity 测试日志</a>。</p>
+<h2>边界与后续</h2>
+<p>这次法线贴图只连到 Fresnel/MatCap；Lighting、Refraction、CustomLocal、Depth/Shadow、屏幕扭曲、真正 VFX、Player、Inspector 持久化、完整组合和性能都未由此证明。34 项失败的具体根因<strong>尚未确认</strong>；不把推测写成修复结论。按用户要求先继续其余普通 Mesh 切片，并把这些非零差异留在最终人工核验清单中；这不构成 Gate 自动放行。</p>
+<p><a href="t07-evidence/normal-map-20261001/README.txt">重放与边界说明</a> · <a href="t07-evidence/normal-map-20261001/product-source-sha256.txt">固定产品源 hash</a> · <a href="t07-evidence/normal-map-20261001/input-sha256.txt">输入源 hash</a> · <a href="t07-evidence/normal-map-20261001/protected-settings-sha256.txt">保护设置 hash</a> · <a href="t07-evidence/normal-map-20261001/sha256.txt">附件 hash</a>。</p>
+<p><strong>审核：</strong>功能性接入有证据，但严格对照 <strong>10 通过 / 34 失败</strong>；G3/G4 未放行，不据此推进正式 VFX。未 push。</p>
+</body></html>
