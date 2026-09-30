@@ -17,6 +17,20 @@ float NBFX_SoftParticlesV1(float near, float far, float sceneZ, float thisZ)
     return fade;
 }
 
+// Depth-outline composition is shared by the original ForwardPass and the
+// Graph host. Both pass in the same scene/fragment eye depths.
+void NBFX_ApplyDepthOutlineV1(inout half3 color, inout half alpha,
+    half4 outlineColor, half2 nearFar, float sceneZ, float thisZ)
+{
+    half outline = 1.0h - NBFX_SoftParticlesV1(nearFar.x, nearFar.y,
+        sceneZ, thisZ);
+    outline *= outlineColor.a;
+    half3 original = color;
+    color = lerp(color, outlineColor.rgb, clamp(outline * 3.0h, 0.0h, 1.0h));
+    color = lerp(color, original, clamp(alpha - outline, 0.0h, 1.0h));
+    alpha = max(alpha, outline);
+}
+
 // Matches the base-color operations after the caller selects the sampled alpha
 // and facing-dependent color. Texture selection and later color adjustment stay
 // with the host shader.

@@ -74,6 +74,11 @@ namespace NBShaderEditor
             "_SoftParticlesEnabled", "_SoftParticleFadeParams"
         };
 
+        static readonly string[] DepthOutlineProperties =
+        {
+            "_DepthOutline_Toggle", "_DepthOutline_Color", "_DepthOutline_Vec"
+        };
+
         static readonly string[] DissolveProperties =
         {
             "_Dissolve_Toggle", "_DissolveMap", "_Dissolve",
@@ -130,6 +135,7 @@ namespace NBShaderEditor
             }
             DrawGroup(DistanceFadeProperties, "base.distanceFade", "Distance Fade");
             DrawGroup(SoftParticlesProperties, "base.softParticles", "Soft Particles");
+            DrawGroup(DepthOutlineProperties, "feature.深度描边", "Depth Outline");
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
             if (TryGetVisibleProperty("_DissolveLineColor", out _))
@@ -334,6 +340,9 @@ namespace NBShaderEditor
                 case "_Fade": key = "base.distanceFade.range"; break;
                 case "_SoftParticlesEnabled": key = "base.softParticles"; break;
                 case "_SoftParticleFadeParams": key = "base.softParticles.range"; break;
+                case "_DepthOutline_Toggle": key = "feature.深度描边"; break;
+                case "_DepthOutline_Color": key = "feature.深度描边颜色"; break;
+                case "_DepthOutline_Vec": key = "feature.深度描边距离"; break;
                 case "_NB_DistortionMode": key = "feature.屏幕扰动模式"; break;
                 case "_NB_DistortionIntensity": key = "feature.屏幕扭曲强度"; break;
                 default: return property.displayName;

@@ -393,6 +393,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NB_DissolveRampSTOverrideEnabled, float4 NB_DissolveRampSTOverride,
     float DistanceFadeToggle, float4 Fade, float3 PositionVS,
     float SoftParticlesEnabled, float4 SoftParticleFadeParams, float4 ScreenPosition,
+    float DepthOutlineToggle, float4 DepthOutlineColor, float4 DepthOutlineVec,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -563,11 +564,23 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             (half4)FresnelColor, (half3)FresnelRotation.xyz,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
     // ShaderLab applies camera-distance alpha after Fresnel, before vertex color.
+    float sceneEyeDepth = 0.0;
+    if (DepthOutlineToggle > 0.5 || SoftParticlesEnabled > 0.5)
+        sceneEyeDepth = NBGraphSceneEyeDepth(ScreenPosition.xy);
+    if (DepthOutlineToggle > 0.5)
+    {
+        half3 outlineRGB = (half3)Out.rgb;
+        half outlineAlpha = (half)Out.a;
+        NBFX_ApplyDepthOutlineV1(outlineRGB, outlineAlpha,
+            (half4)DepthOutlineColor, (half2)DepthOutlineVec.xy,
+            sceneEyeDepth, -PositionVS.z);
+        Out = float4(outlineRGB, outlineAlpha);
+    }
     if (DistanceFadeToggle > 0.5)
         Out.a *= DepthFactor(-PositionVS.z, Fade.x, Fade.y);
     if (SoftParticlesEnabled > 0.5)
         Out.a *= NBFX_SoftParticlesV1(SoftParticleFadeParams.x,
-            SoftParticleFadeParams.y, NBGraphSceneEyeDepth(ScreenPosition.xy),
+            SoftParticleFadeParams.y, sceneEyeDepth,
             -PositionVS.z);
     if ((NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) &
         FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR) == 0u)
@@ -639,6 +652,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NB_DissolveRampSTOverrideEnabled, float4 NB_DissolveRampSTOverride,
     float DistanceFadeToggle, half4 Fade, float3 PositionVS,
     float SoftParticlesEnabled, float4 SoftParticleFadeParams, float4 ScreenPosition,
+    float DepthOutlineToggle, half4 DepthOutlineColor, half4 DepthOutlineVec,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -796,11 +810,17 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             (half)IsFrontFace, FresnelUnit, FresnelColor,
             FresnelRotation.xyz,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
+    float sceneEyeDepth = 0.0;
+    if (DepthOutlineToggle > 0.5 || SoftParticlesEnabled > 0.5)
+        sceneEyeDepth = NBGraphSceneEyeDepth(ScreenPosition.xy);
+    if (DepthOutlineToggle > 0.5)
+        NBFX_ApplyDepthOutlineV1(Out.rgb, Out.a, DepthOutlineColor,
+            DepthOutlineVec.xy, sceneEyeDepth, -PositionVS.z);
     if (DistanceFadeToggle > 0.5)
         Out.a *= DepthFactor(-PositionVS.z, Fade.x, Fade.y);
     if (SoftParticlesEnabled > 0.5)
         Out.a *= NBFX_SoftParticlesV1(SoftParticleFadeParams.x,
-            SoftParticleFadeParams.y, NBGraphSceneEyeDepth(ScreenPosition.xy),
+            SoftParticleFadeParams.y, sceneEyeDepth,
             -PositionVS.z);
     if ((NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) &
         FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR) == 0u)
