@@ -48,13 +48,62 @@ float2 NBGraphFeatureUV(UnityTexture2D map, float2 uv, float rotationDegrees,
     return NBFX_TransformFeatureUVV2(input);
 }
 
-// Match Shader Graph's Sample Texture 2D node, including optional HDR decode.
-// The caller invokes this only inside an enabled feature, with transformed UV.
-float4 NBGraphSampleMap(UnityTexture2D map, float2 transformedUV)
+// The two bits for each legacy wrap slot live 16 positions apart.
+uint NBGraphMaskWrapMode(uint packedWrapFlags, uint bit)
 {
-    float4 sampled = SAMPLE_TEXTURE2D(map.tex, map.samplerstate, transformedUV);
+    return ((packedWrapFlags & bit) != 0u ? 1u : 0u) |
+        ((packedWrapFlags & (bit << 16)) != 0u ? 2u : 0u);
+}
+
+// Match ShaderLab's explicit per-feature wrap, linear filtering and LOD0
+// selection. The texture asset's sampler is not the NB material protocol.
+// Callers supply already transformed UV; do not apply scaleTranslate twice.
+SamplerState sampler_linear_repeat;
+SamplerState sampler_linear_clamp;
+SamplerState sampler_linear_RepeatU_ClampV;
+SamplerState sampler_linear_ClampU_RepeatV;
+
+half4 NBGraphSampleMap(UnityTexture2D map, float2 uv,
+    uint wrapMode, bool forceLod0)
+{
+    half4 sampled;
+#if defined(SHADER_TARGET_GLSL) || defined(SHADER_API_GLES) || defined(SHADER_API_GLES3)
+    if (wrapMode == 0u) uv = frac(uv);
+    else if (wrapMode == 1u) uv = saturate(uv);
+    else if (wrapMode == 2u) uv = float2(frac(uv.x), saturate(uv.y));
+    else uv = float2(saturate(uv.x), frac(uv.y));
+    UNITY_BRANCH
+    if (forceLod0) sampled = SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_clamp, uv, 0);
+    else sampled = SAMPLE_TEXTURE2D(map.tex, sampler_linear_clamp, uv);
+#else
+    if (wrapMode == 0u)
+    {
+        UNITY_BRANCH
+        if (forceLod0) sampled = SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_repeat, uv, 0);
+        else sampled = SAMPLE_TEXTURE2D(map.tex, sampler_linear_repeat, uv);
+    }
+    else if (wrapMode == 1u)
+    {
+        UNITY_BRANCH
+        if (forceLod0) sampled = SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_clamp, uv, 0);
+        else sampled = SAMPLE_TEXTURE2D(map.tex, sampler_linear_clamp, uv);
+    }
+    else if (wrapMode == 2u)
+    {
+        UNITY_BRANCH
+        if (forceLod0) sampled = SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_RepeatU_ClampV, uv, 0);
+        else sampled = SAMPLE_TEXTURE2D(map.tex, sampler_linear_RepeatU_ClampV, uv);
+    }
+    else
+    {
+        UNITY_BRANCH
+        if (forceLod0) sampled = SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_ClampU_RepeatV, uv, 0);
+        else sampled = SAMPLE_TEXTURE2D(map.tex, sampler_linear_ClampU_RepeatV, uv);
+    }
+#endif
+    // Preserve SG's texture-property HDR decode, if explicitly present.
     if (map.hdrDecode.x > 0.0)
-        sampled = DecodeHDRSample(sampled, map.hdrDecode);
+        sampled = (half4)DecodeHDRSample(sampled, map.hdrDecode);
     return sampled;
 }
 
@@ -62,22 +111,16 @@ float4 NBGraphSampleMap(UnityTexture2D map, float2 transformedUV)
 // NBFX_ResolveMaskCoverageV3 call, matching the ShaderLab sampling branch.
 half NBGraphSampleMaskLayer(UnityTexture2D map, float2 originUV,
     float rotationDegrees, float2 offsetSpeed, uint packedChannels,
-    uint channelPosition)
+    uint channelPosition, uint wrapFlags, uint wrapBit,
+    uint noMipFlags, uint noMipBit)
 {
     float2 uv = NBGraphFeatureUV(map, originUV, rotationDegrees, offsetSpeed);
-    half4 sampled = (half4)NBGraphSampleMap(map, uv);
+    half4 sampled = NBGraphSampleMap(map, uv,
+        NBGraphMaskWrapMode(wrapFlags, wrapBit), (noMipFlags & noMipBit) != 0u);
     uint channel = (packedChannels >> channelPosition) & 3u;
     return channel == 0u ? sampled.r :
         channel == 1u ? sampled.g :
         channel == 2u ? sampled.b : sampled.a;
-}
-
-// The two bits for each legacy wrap slot live 16 positions apart. Gradient
-// mode uses the already transformed UV but does not sample the texture.
-uint NBGraphMaskWrapMode(uint packedWrapFlags, uint bit)
-{
-    return ((packedWrapFlags & bit) != 0u ? 1u : 0u) |
-        ((packedWrapFlags & (bit << 16)) != 0u ? 2u : 0u);
 }
 
 half NBGraphSampleMaskGradient(half4 pack0, half4 pack1, half4 pack2,
@@ -105,7 +148,7 @@ half NBGraphSelectBaseAlpha(half4 albedo, float packedChannelsLo16)
 
 // The optional process/late mask uses the same two-stage numeric contract as
 // ShaderLab. The host owns texture/channel selection; custom data, noise,
-// wrap overrides and non-UV0 modes remain separate slices.
+// and non-UV0 modes remain separate slices.
 NBFX_DissolveResolvedV3 NBGraphResolveDissolve(half4 sampledDissolve,
     half4 sampledDissolveMask, bool hasDissolveMask, half4 dissolve,
     half dissolveMaskMode, float colorChannelLo16)
@@ -158,48 +201,6 @@ half4 NBGraphApplyDissolveLine(half4 color, half valueBeforeSoftStep,
     return color;
 }
 
-// Match ShaderLab's explicit per-feature wrap and ForceNoMip selection rather
-// than silently inheriting the texture asset's sampler state.
-SamplerState sampler_linear_repeat;
-SamplerState sampler_linear_clamp;
-SamplerState sampler_linear_RepeatU_ClampV;
-SamplerState sampler_linear_ClampU_RepeatV;
-
-half4 NBGraphSampleDissolveRampMap(UnityTexture2D map, float2 uv,
-    uint wrapMode, bool forceLod0)
-{
-    half4 sample;
-#if defined(SHADER_TARGET_GLSL) || defined(SHADER_API_GLES) || defined(SHADER_API_GLES3)
-    if (wrapMode == 0u) uv = frac(uv);
-    else if (wrapMode == 1u) uv = saturate(uv);
-    else if (wrapMode == 2u) uv = float2(frac(uv.x), saturate(uv.y));
-    else uv = float2(saturate(uv.x), frac(uv.y));
-    sample = forceLod0 ?
-        SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_clamp, uv, 0) :
-        SAMPLE_TEXTURE2D(map.tex, sampler_linear_clamp, uv);
-#else
-    if (wrapMode == 0u)
-        sample = forceLod0 ?
-            SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_repeat, uv, 0) :
-            SAMPLE_TEXTURE2D(map.tex, sampler_linear_repeat, uv);
-    else if (wrapMode == 1u)
-        sample = forceLod0 ?
-            SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_clamp, uv, 0) :
-            SAMPLE_TEXTURE2D(map.tex, sampler_linear_clamp, uv);
-    else if (wrapMode == 2u)
-        sample = forceLod0 ?
-            SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_RepeatU_ClampV, uv, 0) :
-            SAMPLE_TEXTURE2D(map.tex, sampler_linear_RepeatU_ClampV, uv);
-    else
-        sample = forceLod0 ?
-            SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_ClampU_RepeatV, uv, 0) :
-            SAMPLE_TEXTURE2D(map.tex, sampler_linear_ClampU_RepeatV, uv);
-#endif
-    if (map.hdrDecode.x > 0.0)
-        sample = (half4)DecodeHDRSample(sample, map.hdrDecode);
-    return sample;
-}
-
 // The original Dissolve Ramp consumes pre-soft-step value, including the
 // source texture's U scale/offset, and changes RGB before the edge line.
 half4 NBGraphApplyDissolveRamp(half4 color, half valueBeforeSoftStep,
@@ -226,7 +227,7 @@ half4 NBGraphApplyDissolveRamp(half4 color, half valueBeforeSoftStep,
     {
         uint noMipFlags = NBGraphDecodeUInt32(forceNoMipLo16,
             forceNoMipHi16);
-        rampSample = NBGraphSampleDissolveRampMap(map,
+        rampSample = NBGraphSampleMap(map,
             float2(rampRange, 0.5), wrapMode,
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP) != 0u);
     }
@@ -254,14 +255,19 @@ half4 NBGraphApplyColorRamp(half4 color, UnityTexture2D map, float2 originUV,
     half4 color0, half4 color1, half4 color2, half4 color3,
     half4 color4, half4 color5, half4 alpha0, half4 alpha1, half4 alpha2,
     half4 tint, float packedChannelsLo16, float wrapLo16, float wrapHi16,
-    float flags0Lo16, float flags0Hi16)
+    float flags0Lo16, float flags0Hi16,
+    float forceNoMipLo16, float forceNoMipHi16)
 {
     float2 rampUV = NBGraphFeatureUV(map, originUV,
         offsetAndRotation.w, offsetAndRotation.xy);
     half rampValue;
     if (sourceMode > 0.5)
     {
-        half4 sampled = (half4)NBGraphSampleMap(map, rampUV);
+        uint wrapFlags = NBGraphDecodeUInt32(wrapLo16, wrapHi16);
+        uint noMipFlags = NBGraphDecodeUInt32(forceNoMipLo16, forceNoMipHi16);
+        half4 sampled = NBGraphSampleMap(map, rampUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_RAMP_COLOR_MAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_RAMP_COLOR_MAP) != 0u);
         uint channels = NBGraphDecodeUInt32(packedChannelsLo16, 0.0);
         uint channel = (channels >> FLAG_BIT_COLOR_CHANNEL_POS_0_RAMP_COLOR_MAP) & 3u;
         rampValue = channel == 0u ? sampled.r :
@@ -329,9 +335,10 @@ half4 NBGraphApplyFresnel(half4 color, float3 viewDirWS, half3 normalWS,
     return color;
 }
 
-// SHADERGRAPH_PREVIEW and runtime execute the same numeric shared function;
-// no preview-only camera/scene substitute is needed.
-// Stage: fragment BaseColor/Alpha. Preserve the GF BaseMap and Color controls.
+// SHADERGRAPH_PREVIEW and runtime share the color arithmetic; optional scene
+// depth uses the explicit preview substitute in NBGraphSceneEyeDepth.
+// Stage: fragment BaseColor/Alpha. BaseMap is sampled here once, after BaseUV,
+// using the same packed sampler protocol as every enabled feature texture.
 // Pass-only inputs must be connected to this live fragment node: VFX Graph
 // otherwise gives them stage None and omits them from GraphProperties. The NB
 // distortion passes consume those inputs from GraphProperties, not from this
@@ -394,13 +401,19 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float DistanceFadeToggle, float4 Fade, float3 PositionVS,
     float SoftParticlesEnabled, float4 SoftParticleFadeParams, float4 ScreenPosition,
     float DepthOutlineToggle, float4 DepthOutlineColor, float4 DepthOutlineVec,
+    UnityTexture2D BaseMap, float2 BaseMapUV,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
-    input.sampledAlbedo = (half4)SampledAlbedo;
-    // The historical SG A input remains serialized for existing Graph edges;
-    // the packed channel word is the authoritative ShaderLab selector.
-    input.selectedAlpha = NBGraphSelectBaseAlpha((half4)SampledAlbedo,
+    uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
+    uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
+    half4 baseSample = NBGraphSampleMap(BaseMap, BaseMapUV,
+        NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_BASEMAP),
+        (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
+    input.sampledAlbedo = baseSample;
+    // Historical sampled-color/A ports remain serialized but are disconnected.
+    // The packed channel word selects alpha from this one protocol-owned sample.
+    input.selectedAlpha = NBGraphSelectBaseAlpha(baseSample,
         NB_ColorChannelLo16);
     input.effectiveBaseColor = (half4)EffectiveBaseColor;
     if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
@@ -419,7 +432,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     {
         float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
             EmissionMapUVRotation, EmissionMapUVOffset.xy);
-        half4 emission = (half4)NBGraphSampleMap(EmissionMap, emissionUV);
+        half4 emission = NBGraphSampleMap(EmissionMap, emissionUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_EMISSIONMAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP) != 0u);
         half3 result = (half3)Out.rgb;
         half alpha = (half)Out.a;
         uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
@@ -440,19 +455,24 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             (half4)RampColorAlpha1, (half4)RampColorAlpha2,
             (half4)RampColorBlendColor, NB_ColorChannelLo16,
             NB_WrapFlagsLo16, NB_WrapFlagsHi16,
-            NB_Flags0Lo16, NB_Flags0Hi16);
+            NB_Flags0Lo16, NB_Flags0Hi16,
+            NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
     if (DissolveToggle > 0.5)
     {
         float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
             DissolveOffsetRotateDistort.z, DissolveOffsetRotateDistort.xy);
-        half4 sampledDissolve = (half4)NBGraphSampleMap(DissolveMap, dissolveUV);
+        half4 sampledDissolve = NBGraphSampleMap(DissolveMap, dissolveUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_DISSOLVE_MAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP) != 0u);
         bool hasDissolveMask = DissolveMaskToggle > 0.5;
         half4 sampledDissolveMask = (half4)0;
         if (hasDissolveMask)
         {
             float2 dissolveMaskUV = NBGraphFeatureUV(DissolveMaskMap, DissolveMaskUV,
                 DissolveOffsetRotateDistort.z, float2(0.0, 0.0));
-            sampledDissolveMask = (half4)NBGraphSampleMap(DissolveMaskMap, dissolveMaskUV);
+            sampledDissolveMask = NBGraphSampleMap(DissolveMaskMap, dissolveMaskUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP) != 0u);
         }
         NBFX_DissolveResolvedV3 resolved = NBGraphResolveDissolve(sampledDissolve,
             sampledDissolveMask, hasDissolveMask, (half4)Dissolve,
@@ -482,7 +502,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     {
         float2 overlayUV = NBGraphFeatureUV(ColorBlendMap, ColorBlendUV,
             ColorBlendVec.w, ColorBlendMapOffset.xy);
-        half4 overlay = (half4)NBGraphSampleMap(ColorBlendMap, overlayUV);
+        half4 overlay = NBGraphSampleMap(ColorBlendMap, overlayUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_COLORBLENDMAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP) != 0u);
         half3 result = (half3)Out.rgb;
         half alpha = (half)Out.a;
         uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
@@ -497,7 +519,6 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     if (MaskToggle > 0.5)
     {
         uint maskFlags = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
-        uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
         float maskRotation = MaskMapUVRotation;
         if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
             FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON) != 0u)
@@ -513,7 +534,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
                 NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP), false);
         else
         {
-            half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, maskUV);
+            half4 sampledMask = NBGraphSampleMap(MaskMap, maskUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_MASKMAP) != 0u);
             uint maskChannel = (packedChannels >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
             channelValue = maskChannel == 0u ? sampledMask.r :
                 maskChannel == 1u ? sampledMask.g :
@@ -533,7 +556,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             else
                 channelValue *= NBGraphSampleMaskLayer(MaskMap2, Mask2UV,
                     MaskMapVec.y, MaskMapOffsetAnition.zw, packedChannels,
-                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2);
+                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2,
+                    wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP2,
+                    noMipFlags, FLAG_BIT_FORCE_NO_MIP_MASKMAP2);
         }
         if (Mask3Toggle > 0.5)
         {
@@ -549,7 +574,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             else
                 channelValue *= NBGraphSampleMaskLayer(MaskMap3, Mask3UV,
                     MaskMapVec.z, MaskMap3OffsetAnition.xy, packedChannels,
-                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3);
+                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3,
+                    wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP3,
+                    noMipFlags, FLAG_BIT_FORCE_NO_MIP_MASKMAP3);
         }
         NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
         maskInput.combinedMaskAfterNoise = channelValue;
@@ -653,11 +680,17 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float DistanceFadeToggle, half4 Fade, float3 PositionVS,
     float SoftParticlesEnabled, float4 SoftParticleFadeParams, float4 ScreenPosition,
     float DepthOutlineToggle, half4 DepthOutlineColor, half4 DepthOutlineVec,
+    UnityTexture2D BaseMap, float2 BaseMapUV,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
-    input.sampledAlbedo = SampledAlbedo;
-    input.selectedAlpha = NBGraphSelectBaseAlpha(SampledAlbedo,
+    uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
+    uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
+    half4 baseSample = NBGraphSampleMap(BaseMap, BaseMapUV,
+        NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_BASEMAP),
+        (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
+    input.sampledAlbedo = baseSample;
+    input.selectedAlpha = NBGraphSelectBaseAlpha(baseSample,
         NB_ColorChannelLo16);
     input.effectiveBaseColor = EffectiveBaseColor;
     if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
@@ -676,7 +709,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     {
         float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
             EmissionMapUVRotation, EmissionMapUVOffset.xy);
-        half4 emission = (half4)NBGraphSampleMap(EmissionMap, emissionUV);
+        half4 emission = NBGraphSampleMap(EmissionMap, emissionUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_EMISSIONMAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP) != 0u);
         uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
         uint flags1 = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
         NBFX_ApplyColorOverlayV1(Out.rgb, Out.a, emission,
@@ -693,19 +728,24 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             RampColorAlpha0, RampColorAlpha1, RampColorAlpha2,
             RampColorBlendColor, NB_ColorChannelLo16,
             NB_WrapFlagsLo16, NB_WrapFlagsHi16,
-            NB_Flags0Lo16, NB_Flags0Hi16);
+            NB_Flags0Lo16, NB_Flags0Hi16,
+            NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
     if (DissolveToggle > 0.5)
     {
         float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
             DissolveOffsetRotateDistort.z, DissolveOffsetRotateDistort.xy);
-        half4 sampledDissolve = (half4)NBGraphSampleMap(DissolveMap, dissolveUV);
+        half4 sampledDissolve = NBGraphSampleMap(DissolveMap, dissolveUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_DISSOLVE_MAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP) != 0u);
         bool hasDissolveMask = DissolveMaskToggle > 0.5;
         half4 sampledDissolveMask = (half4)0;
         if (hasDissolveMask)
         {
             float2 dissolveMaskUV = NBGraphFeatureUV(DissolveMaskMap, DissolveMaskUV,
                 DissolveOffsetRotateDistort.z, float2(0.0, 0.0));
-            sampledDissolveMask = (half4)NBGraphSampleMap(DissolveMaskMap, dissolveMaskUV);
+            sampledDissolveMask = NBGraphSampleMap(DissolveMaskMap, dissolveMaskUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP) != 0u);
         }
         NBFX_DissolveResolvedV3 resolved = NBGraphResolveDissolve(sampledDissolve,
             sampledDissolveMask, hasDissolveMask, Dissolve,
@@ -732,7 +772,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     {
         float2 overlayUV = NBGraphFeatureUV(ColorBlendMap, ColorBlendUV,
             ColorBlendVec.w, ColorBlendMapOffset.xy);
-        half4 overlay = (half4)NBGraphSampleMap(ColorBlendMap, overlayUV);
+        half4 overlay = NBGraphSampleMap(ColorBlendMap, overlayUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_COLORBLENDMAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP) != 0u);
         uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
         uint flags1 = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
         NBFX_ApplyColorOverlayV1(Out.rgb, Out.a, overlay,
@@ -744,7 +786,6 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     if (MaskToggle > 0.5)
     {
         uint maskFlags = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
-        uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
         float maskRotation = MaskMapUVRotation;
         if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
             FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON) != 0u)
@@ -760,7 +801,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
                 NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP), false);
         else
         {
-            half4 sampledMask = (half4)NBGraphSampleMap(MaskMap, maskUV);
+            half4 sampledMask = NBGraphSampleMap(MaskMap, maskUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_MASKMAP) != 0u);
             uint maskChannel = (packedChannels >> FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP1) & 3u;
             channelValue = maskChannel == 0u ? sampledMask.r :
                 maskChannel == 1u ? sampledMask.g :
@@ -780,7 +823,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             else
                 channelValue *= NBGraphSampleMaskLayer(MaskMap2, Mask2UV,
                     MaskMapVec.y, MaskMapOffsetAnition.zw, packedChannels,
-                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2);
+                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP2,
+                    wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP2,
+                    noMipFlags, FLAG_BIT_FORCE_NO_MIP_MASKMAP2);
         }
         if (Mask3Toggle > 0.5)
         {
@@ -796,7 +841,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             else
                 channelValue *= NBGraphSampleMaskLayer(MaskMap3, Mask3UV,
                     MaskMapVec.z, MaskMap3OffsetAnition.xy, packedChannels,
-                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3);
+                    FLAG_BIT_COLOR_CHANNEL_POS_0_MASKMAP3,
+                    wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP3,
+                    noMipFlags, FLAG_BIT_FORCE_NO_MIP_MASKMAP3);
         }
         NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
         maskInput.combinedMaskAfterNoise = channelValue;
