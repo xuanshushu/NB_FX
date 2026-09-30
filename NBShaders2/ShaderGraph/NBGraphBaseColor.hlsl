@@ -151,11 +151,12 @@ half NBGraphSelectBaseAlpha(half4 albedo, float packedChannelsLo16)
 }
 
 // The optional process/late mask uses the same two-stage numeric contract as
-// ShaderLab. The host owns texture/channel selection; custom data, noise,
-// and non-UV0 modes remain separate slices.
+// ShaderLab. The host owns texture/channel selection; CustomData and
+// unsupported special-position UV modes remain separate slices.
 NBFX_DissolveResolvedV3 NBGraphResolveDissolve(half4 sampledDissolve,
     half4 sampledDissolveMask, bool hasDissolveMask, half4 dissolve,
-    half dissolveMaskMode, float colorChannelLo16)
+    half dissolveMaskMode, float colorChannelLo16, bool hasPNoise,
+    half programNoise, uint pNoiseBlendFlags, half pNoiseOpacity)
 {
     uint channels = NBGraphDecodeUInt32(colorChannelLo16, 0.0);
     uint channel = (channels >>
@@ -172,6 +173,9 @@ NBFX_DissolveResolvedV3 NBGraphResolveDissolve(half4 sampledDissolve,
             maskChannel == 1u ? sampledDissolveMask.g :
             maskChannel == 2u ? sampledDissolveMask.b : sampledDissolveMask.a;
     }
+    if (hasPNoise)
+        value = BlendPNoise(pNoiseBlendFlags, FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE,
+            value, programNoise, pNoiseOpacity);
     NBFX_DissolvePrepareInputV3 prepareInput = (NBFX_DissolvePrepareInputV3)0;
     prepareInput.decodedAndNoiseBlendedValue = value;
     prepareInput.exponent = dissolve.y;
@@ -429,6 +433,35 @@ half3 NBGraphNormalForFeatures(UnityTexture2D map, float2 sourceUV,
     return facedNormalWS * side;
 }
 
+// PN1: the same existing procedural kernels and packed BlendPNoise as ShaderLab.
+// UV0/1/2/Shared modes are supplied by NBGraphBaseUV; procedural CustomData
+// offsets, procedural wrap variants and PN distortion are separate later
+// slices, not silent fallbacks.
+half NBGraphProgramNoise(float2 sourceUV, half rotation, float4 vec,
+    half4 vec2, float4 vec3, float4 vec4, bool simpleOn, bool voronoiOn,
+    uint blendFlags, half baseOpacity)
+{
+    float2 uv = Rotate_Radians_float(sourceUV, half2(0.5h, 0.5h), rotation);
+    half simpleValue = 0.0h;
+    half voronoiValue = 0.0h;
+    if (simpleOn)
+    {
+        float2 simpleUV = uv * vec.xy + vec4.xy + _Time.y * vec3.xy;
+        simpleValue = SimplexNoise(simpleUV, _Time.y * vec2.z);
+    }
+    if (voronoiOn)
+    {
+        float2 voronoiUV = uv * vec.zw + vec4.zw + _Time.y * vec3.zw;
+        float voronoiFloat, cell;
+        Unity_Voronoi_float(voronoiUV, _Time.y * vec2.w, 1.0, voronoiFloat, cell);
+        voronoiValue = (half)voronoiFloat;
+    }
+    if (simpleOn && voronoiOn)
+        return BlendPNoise(blendFlags, FLAG_BIT_PNOISE_BLEND_POS_0_BASE_BLEND,
+            simpleValue, voronoiValue, baseOpacity);
+    return simpleOn ? simpleValue : voronoiValue;
+}
+
 void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 EffectiveBaseColor,
     float NB_Flags0Lo16, float NB_Flags0Hi16,
@@ -500,12 +533,27 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float2 BumpUV, float3 TangentWS, float3 BitangentWS,
     float FxLightMode, float4 MaterialInfo, float4 SpecularColor,
     float3 PositionWS,
+    float2 ProgramNoiseUV, float ProgramNoiseToggle, float ProgramSimpleToggle,
+    float ProgramVoronoiToggle, float ProgramNoiseRotate,
+    float4 PNoiseVec, float4 PNoiseVec2, float4 PNoiseVec3, float4 PNoiseVec4,
+    float PNoiseBaseBlendOpacity, float PNoiseMaskBlendOpacity,
+    float PNoiseDissolveBlendOpacity, float PNoiseBlendLo16, float PNoiseBlendHi16,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
+    uint pNoiseBlendFlags = NBGraphDecodeUInt32(PNoiseBlendLo16, PNoiseBlendHi16);
+    bool hasPNoise = ProgramNoiseToggle > 0.5 &&
+        (ProgramSimpleToggle > 0.5 || ProgramVoronoiToggle > 0.5);
+    half programNoise = 0.0h;
+    if (hasPNoise)
+        programNoise = NBGraphProgramNoise(ProgramNoiseUV,
+            (half)ProgramNoiseRotate, PNoiseVec, (half4)PNoiseVec2,
+            PNoiseVec3, PNoiseVec4, ProgramSimpleToggle > 0.5,
+            ProgramVoronoiToggle > 0.5, pNoiseBlendFlags,
+            (half)PNoiseBaseBlendOpacity);
     // The original ShaderLab _NORMALMAP keyword is represented by the
     // existing material toggle; no new SG keyword/variant is introduced.
     float3 normalForFeatures = (float3)NormalWS;
@@ -623,7 +671,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         }
         NBFX_DissolveResolvedV3 resolved = NBGraphResolveDissolve(sampledDissolve,
             sampledDissolveMask, hasDissolveMask, (half4)Dissolve,
-            (half)DissolveMaskMode, NB_ColorChannelLo16);
+            (half)DissolveMaskMode, NB_ColorChannelLo16, hasPNoise,
+            programNoise, pNoiseBlendFlags, (half)PNoiseDissolveBlendOpacity);
         Out.a *= resolved.coverage;
         if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DissolveRampToggle > 0.5))
             Out = (float4)NBGraphApplyDissolveRamp((half4)Out,
@@ -730,6 +779,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
                     wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP3,
                     noMipFlags, FLAG_BIT_FORCE_NO_MIP_MASKMAP3);
         }
+        if (hasPNoise)
+            channelValue = BlendPNoise(pNoiseBlendFlags, FLAG_BIT_PNOISE_BLEND_POS_0_MASK,
+                channelValue, programNoise, (half)PNoiseMaskBlendOpacity);
         NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
         maskInput.combinedMaskAfterNoise = channelValue;
         maskInput.refine = (maskFlags & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
@@ -846,12 +898,27 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float2 BumpUV, float3 TangentWS, float3 BitangentWS,
     float FxLightMode, float4 MaterialInfo, float4 SpecularColor,
     float3 PositionWS,
+    float2 ProgramNoiseUV, float ProgramNoiseToggle, float ProgramSimpleToggle,
+    float ProgramVoronoiToggle, float ProgramNoiseRotate,
+    float4 PNoiseVec, float4 PNoiseVec2, float4 PNoiseVec3, float4 PNoiseVec4,
+    float PNoiseBaseBlendOpacity, float PNoiseMaskBlendOpacity,
+    float PNoiseDissolveBlendOpacity, float PNoiseBlendLo16, float PNoiseBlendHi16,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
+    uint pNoiseBlendFlags = NBGraphDecodeUInt32(PNoiseBlendLo16, PNoiseBlendHi16);
+    bool hasPNoise = ProgramNoiseToggle > 0.5 &&
+        (ProgramSimpleToggle > 0.5 || ProgramVoronoiToggle > 0.5);
+    half programNoise = 0.0h;
+    if (hasPNoise)
+        programNoise = NBGraphProgramNoise(ProgramNoiseUV,
+            (half)ProgramNoiseRotate, PNoiseVec, (half4)PNoiseVec2,
+            PNoiseVec3, PNoiseVec4, ProgramSimpleToggle > 0.5,
+            ProgramVoronoiToggle > 0.5, pNoiseBlendFlags,
+            (half)PNoiseBaseBlendOpacity);
     // The original ShaderLab _NORMALMAP keyword is represented by the
     // existing material toggle; no new SG keyword/variant is introduced.
     float3 normalForFeatures = (float3)NormalWS;
@@ -961,7 +1028,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         }
         NBFX_DissolveResolvedV3 resolved = NBGraphResolveDissolve(sampledDissolve,
             sampledDissolveMask, hasDissolveMask, Dissolve,
-            (half)DissolveMaskMode, NB_ColorChannelLo16);
+            (half)DissolveMaskMode, NB_ColorChannelLo16, hasPNoise,
+            programNoise, pNoiseBlendFlags, (half)PNoiseDissolveBlendOpacity);
         Out.a *= resolved.coverage;
         if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DissolveRampToggle > 0.5))
             Out = NBGraphApplyDissolveRamp(Out,
@@ -1062,6 +1130,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
                     wrapFlags, FLAG_BIT_WRAPMODE_MASKMAP3,
                     noMipFlags, FLAG_BIT_FORCE_NO_MIP_MASKMAP3);
         }
+        if (hasPNoise)
+            channelValue = BlendPNoise(pNoiseBlendFlags, FLAG_BIT_PNOISE_BLEND_POS_0_MASK,
+                channelValue, programNoise, (half)PNoiseMaskBlendOpacity);
         NBFX_MaskCoverageInputV3 maskInput = (NBFX_MaskCoverageInputV3)0;
         maskInput.combinedMaskAfterNoise = channelValue;
         maskInput.refine = (maskFlags & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
