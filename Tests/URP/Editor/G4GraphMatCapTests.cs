@@ -76,7 +76,7 @@ namespace NBFX.Baseline.Tests
             string root = Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR");
             if (string.IsNullOrEmpty(root)) root = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG4MatCap");
             string id = name + "-" + (ortho ? "ortho" : "perspective");
-            string output = Path.Combine(root, id);
+            string output = Path.Combine(root, "g4-matcap", id);
             Directory.CreateDirectory(output);
             var scene = EditorSceneManager.NewPreviewScene();
             var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);

@@ -78,7 +78,7 @@ namespace NBFX.Baseline.Tests
             string root = Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR");
             if (string.IsNullOrEmpty(root)) root = Path.Combine(
                 Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG4NormalMap");
-            string output = Path.Combine(root, name + (ortho ? "-ortho" : "-perspective"));
+            string output = Path.Combine(root, "g4-normalmap", name + (ortho ? "-ortho" : "-perspective"));
             Directory.CreateDirectory(output);
 
             Scene scene = EditorSceneManager.NewPreviewScene();
