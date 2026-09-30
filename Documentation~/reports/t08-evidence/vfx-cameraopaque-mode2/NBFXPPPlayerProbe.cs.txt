@@ -1,0 +1,433 @@
+// Isolated-clone Player diagnostic only. This never ships in NB_FX.
+using System;
+using System.Collections;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.RenderGraphModule;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.VFX;
+
+public sealed class NBFXPPPlayerProbe : MonoBehaviour
+{
+    public VisualEffectAsset mode0Asset, mode1Asset;
+    public Shader graphShader, maskViewShader, mode0Shader, mode1Shader;
+    const int Size = 256;
+    // HighFidelity Renderer transparent mask is 55: layers 4/2/1 are included; 3 is not.
+    const int BackgroundLayer = 4, Mode0Layer = 2, Mode1Layer = 1;
+    const float PixelTolerance = 0.005f;
+
+    [Serializable] sealed class CaseInfo
+    {
+        public string name;
+        public int alive, passCount, opaquePass, deferredPass, visiblePixels;
+        public float maxVsBackgroundRGB;
+        public bool culled;
+        public float repeatMaxRGB;
+    }
+    [Serializable] sealed class Result
+    {
+        public string unityVersion, graphicsDevice, status, error, note;
+        public bool fixtureValid, chainPass, linearTarget, originalPostActive, rendererRestored;
+        public int originalFeatureCount, finalFeatureCount, maskMode1Pixels, finalChangedPixels;
+        public float emptyMaskMaxRG, mode0MaskMaxRG, mode1MaskMaxRG;
+        public float finalMode0RepeatMaxRGB, finalMode1RepeatMaxRGB, maskMode1RepeatMaxRG;
+        public float noPostMode0VsMode1MaxRGB;
+        public CaseInfo mode0, mode1;
+    }
+    sealed class Context
+    {
+        public Camera camera;
+        public GameObject cameraObject, backgroundObject;
+        public Material backgroundMaterial, maskViewMaterial;
+        public Texture2D gradient, readback;
+        public RenderTexture target;
+        public VisualEffect mode0, mode1;
+        public ScriptableRendererData rendererData;
+        public ScriptableRendererFeature postFeature;
+        public NBFXPPMaskViewFeature viewFeature;
+        public int featureCount;
+        public bool postWasActive;
+    }
+
+    static string OutputPath()
+    {
+        foreach (var arg in Environment.GetCommandLineArgs())
+            if (arg.StartsWith("--nbfx-pp-output=", StringComparison.Ordinal))
+                return arg.Substring("--nbfx-pp-output=".Length);
+        return null;
+    }
+
+    IEnumerator Start()
+    {
+        var output = OutputPath();
+        if (string.IsNullOrEmpty(output)) { Application.Quit(2); yield break; }
+        Directory.CreateDirectory(output);
+        var result = new Result
+        {
+            unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
+            note = "True one-particle Output Particle Shader Graph Mesh; serialized mode1-named asset actually has distortion Mode2. Compare original NBPostProcess CameraOpaque pass versus Mode0 and feature-off control; mask viewer confirms no deferred-mask write."
+        };
+        Context context = null;
+        int exitCode = 2;
+        try { context = Setup(result); }
+        catch (Exception exception)
+        {
+            result.status = "FIXTURE_INVALID";
+            result.error = exception.ToString();
+        }
+        if (context != null && result.error == null)
+        {
+            // Ordinary Player frames initialize VFX bounds/culling and URP renderer.
+            for (int i = 0; i < 3; i++) { context.camera.Render(); yield return null; }
+            context.mode0.Simulate(1f / 60f, 21u);
+            context.mode1.Simulate(1f / 60f, 21u);
+            for (int i = 0; i < 2; i++) { context.camera.Render(); yield return null; }
+            context.mode0.pause = true;
+            context.mode1.pause = true;
+            try
+            {
+                Run(context, output, result);
+                result.fixtureValid = true;
+                result.chainPass = Evaluate(result);
+                result.status = result.chainPass ? "PASS" : "CHAIN_MISMATCH";
+                exitCode = result.chainPass ? 0 : 1;
+            }
+            catch (Exception exception)
+            {
+                result.status = "FIXTURE_INVALID";
+                result.error = exception.ToString();
+            }
+        }
+        try { Cleanup(context, result); }
+        catch (Exception exception)
+        {
+            result.status = "CLEANUP_FAILED";
+            result.error = (result.error ?? "") + "\n" + exception;
+            exitCode = 2;
+        }
+        if (!result.rendererRestored)
+        {
+            result.status = "CLEANUP_FAILED";
+            result.error = (result.error ?? "") + "\nRendererData feature list/active state did not restore";
+            exitCode = 2;
+        }
+        File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(result, true));
+        Debug.Log("NBFX_PP_PLAYER " + JsonUtility.ToJson(result));
+        Application.Quit(exitCode);
+    }
+
+    Context Setup(Result result)
+    {
+        if (!mode0Asset || !mode1Asset || !mode0Shader || !mode1Shader ||
+            !graphShader || !maskViewShader)
+            throw new Exception("Serialized Graph/VFX/MaskView references missing");
+        if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.Metal ||
+            !SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf))
+            throw new Exception("This probe requires Metal and ARGBHalf");
+        var c = new Context();
+        try
+        {
+            var asset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+            if (!asset || asset.rendererDataList.Length == 0 || !asset.rendererDataList[0])
+                throw new Exception("No active URP RendererData");
+            c.rendererData = asset.rendererDataList[0];
+            foreach (var feature in c.rendererData.rendererFeatures)
+                if (feature && feature.GetType().FullName == "NBShader.NBPostProcess")
+                { c.postFeature = feature; break; }
+            if (!c.postFeature || !c.postFeature.isActive)
+                throw new Exception("The original NBPostProcess RendererFeature is missing/inactive");
+            c.featureCount = c.rendererData.rendererFeatures.Count;
+            c.postWasActive = c.postFeature.isActive;
+            result.originalFeatureCount = c.featureCount;
+            result.originalPostActive = c.postWasActive;
+
+            c.maskViewMaterial = new Material(maskViewShader);
+            c.viewFeature = ScriptableObject.CreateInstance<NBFXPPMaskViewFeature>();
+            c.viewFeature.viewMaterial = c.maskViewMaterial;
+            c.viewFeature.Create();
+            c.viewFeature.SetActive(false);
+            c.rendererData.rendererFeatures.Add(c.viewFeature);
+            c.rendererData.SetDirty();
+
+            c.gradient = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            var pixels = new Color32[Size * Size];
+            for (int y = 0; y < Size; y++)
+                for (int x = 0; x < Size; x++)
+                    pixels[y * Size + x] = new Color32(
+                        (byte)(40 + x * 110 / (Size - 1)),
+                        (byte)(50 + y * 100 / (Size - 1)), 60, 255);
+            c.gradient.SetPixels32(pixels);
+            c.gradient.filterMode = FilterMode.Point;
+            c.gradient.wrapMode = TextureWrapMode.Clamp;
+            c.gradient.Apply(false);
+            c.backgroundMaterial = new Material(graphShader);
+            c.backgroundMaterial.SetTexture("_BaseMap", c.gradient);
+            c.backgroundMaterial.SetColor("_Color", Color.white);
+            c.backgroundMaterial.SetFloat("_Surface", 0);
+            c.backgroundMaterial.SetFloat("_SrcBlend", (float)BlendMode.One);
+            c.backgroundMaterial.SetFloat("_DstBlend", (float)BlendMode.Zero);
+            c.backgroundMaterial.SetFloat("_ZWrite", 1);
+            c.backgroundMaterial.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            c.backgroundMaterial.renderQueue = 2000;
+            c.backgroundObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            c.backgroundObject.layer = BackgroundLayer;
+            c.backgroundObject.transform.position = new Vector3(0, 1, 1);
+            c.backgroundObject.transform.localScale = new Vector3(6, 6, 1);
+            c.backgroundObject.GetComponent<MeshRenderer>().sharedMaterial = c.backgroundMaterial;
+
+            c.cameraObject = new GameObject("NBFX Postprocess Player Camera");
+            c.camera = c.cameraObject.AddComponent<Camera>();
+            c.camera.orthographic = true;
+            c.camera.orthographicSize = 0.5f;
+            c.camera.nearClipPlane = 0.1f;
+            c.camera.farClipPlane = 20;
+            c.camera.transform.position = new Vector3(0, 0, 8);
+            c.camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+            c.camera.clearFlags = CameraClearFlags.SolidColor;
+            c.camera.backgroundColor = Color.black;
+            c.camera.allowHDR = true;
+            c.camera.allowMSAA = false;
+            c.camera.cullingMask = (1 << BackgroundLayer) | (1 << Mode0Layer) | (1 << Mode1Layer);
+            c.target = new RenderTexture(Size, Size, 24,
+                RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
+            c.target.antiAliasing = 1;
+            c.target.Create();
+            if (!c.target.IsCreated() || c.target.sRGB)
+                throw new Exception("Linear ARGBHalf target creation failed");
+            c.camera.targetTexture = c.target;
+            c.readback = new Texture2D(Size, Size, TextureFormat.RGBAHalf, false, true);
+            c.mode0 = CreateEffect("Mode0", Mode0Layer, mode0Asset);
+            c.mode1 = CreateEffect("Mode1", Mode1Layer, mode1Asset);
+            return c;
+        }
+        catch { Cleanup(c, result); throw; }
+    }
+
+    static VisualEffect CreateEffect(string name, int layer, VisualEffectAsset asset)
+    {
+        var go = new GameObject("NBFX PP " + name);
+        go.layer = layer;
+        go.transform.position = new Vector3(0, 0, 2);
+        go.transform.localScale = Vector3.one * 4f;
+        var effect = go.AddComponent<VisualEffect>();
+        effect.resetSeedOnPlay = false;
+        effect.startSeed = 12345;
+        effect.visualEffectAsset = asset;
+        effect.Reinit();
+        return effect;
+    }
+
+    static Color[] Capture(Context c, string path)
+    {
+        c.camera.Render();
+        var old = RenderTexture.active;
+        try
+        {
+            RenderTexture.active = c.target;
+            c.readback.ReadPixels(new Rect(0, 0, Size, Size), 0, 0);
+            c.readback.Apply(false);
+            var colors = c.readback.GetPixels();
+            var preview = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            try
+            {
+                preview.SetPixels(colors);
+                preview.Apply(false);
+                File.WriteAllBytes(path, preview.EncodeToPNG());
+            }
+            finally { Destroy(preview); }
+            return colors;
+        }
+        finally { RenderTexture.active = old; }
+    }
+
+    static float MaxRGB(Color a, Color b) => Mathf.Max(
+        Mathf.Abs(a.r - b.r), Mathf.Abs(a.g - b.g), Mathf.Abs(a.b - b.b));
+    static float MaxRGB(Color[] a, Color[] b)
+    {
+        float max = 0;
+        for (int i = 0; i < a.Length; i++) max = Mathf.Max(max, MaxRGB(a[i], b[i]));
+        return max;
+    }
+    static int Changed(Color[] a, Color[] b, float tolerance)
+    {
+        int count = 0;
+        for (int i = 0; i < a.Length; i++)
+            if (MaxRGB(a[i], b[i]) > tolerance) count++;
+        return count;
+    }
+    static float MaxMaskRG(Color[] a)
+    {
+        float max = 0;
+        foreach (var color in a)
+            max = Mathf.Max(max, Mathf.Abs(color.r), Mathf.Abs(color.g));
+        return max;
+    }
+    static int NonZeroMaskPixels(Color[] a, float tolerance)
+    {
+        int count = 0;
+        foreach (var color in a)
+            if (Mathf.Max(Mathf.Abs(color.r), Mathf.Abs(color.g)) > tolerance) count++;
+        return count;
+    }
+    static CaseInfo Describe(string name, VisualEffect effect, Shader shader,
+        Color[] background, Color[] image, Color[] repeat)
+    {
+        var mat = new Material(shader);
+        try
+        {
+            return new CaseInfo
+            {
+                name = name,
+                alive = (int)effect.GetParticleSystemInfo("Simple Loop").aliveCount,
+                culled = effect.culled,
+                passCount = mat.passCount,
+                opaquePass = mat.FindPass("NBCameraOpaqueDistortPass"),
+                deferredPass = mat.FindPass("NBDeferredDistortPass"),
+                visiblePixels = Changed(background, image, PixelTolerance),
+                maxVsBackgroundRGB = MaxRGB(background, image),
+                repeatMaxRGB = MaxRGB(image, repeat)
+            };
+        }
+        finally { Destroy(mat); }
+    }
+
+    void Run(Context c, string output, Result r)
+    {
+        r.linearTarget = !c.target.sRGB;
+        c.viewFeature.SetActive(false);
+        c.postFeature.SetActive(true);
+        c.camera.cullingMask = 1 << BackgroundLayer;
+        var background = Capture(c, Path.Combine(output, "background.png"));
+        c.camera.cullingMask = (1 << BackgroundLayer) | (1 << Mode0Layer);
+        var mode0 = Capture(c, Path.Combine(output, "final-mode0.png"));
+        var mode0Repeat = Capture(c, Path.Combine(output, "final-mode0-repeat.png"));
+        c.camera.cullingMask = (1 << BackgroundLayer) | (1 << Mode1Layer);
+        var mode1 = Capture(c, Path.Combine(output, "final-mode1.png"));
+        var mode1Repeat = Capture(c, Path.Combine(output, "final-mode1-repeat.png"));
+        r.mode0 = Describe("Mode0", c.mode0, mode0Shader, background, mode0, mode0Repeat);
+        r.mode1 = Describe("Mode1", c.mode1, mode1Shader, background, mode1, mode1Repeat);
+        r.finalMode0RepeatMaxRGB = r.mode0.repeatMaxRGB;
+        r.finalMode1RepeatMaxRGB = r.mode1.repeatMaxRGB;
+        r.finalChangedPixels = Changed(mode0, mode1, PixelTolerance);
+
+        // Causal control: no NB RendererFeature => changing only the Output
+        // custom-pass mode must not change the ordinary VFX Forward output.
+        c.postFeature.SetActive(false);
+        c.camera.cullingMask = (1 << BackgroundLayer) | (1 << Mode0Layer);
+        var noPostMode0 = Capture(c, Path.Combine(output, "no-post-mode0.png"));
+        c.camera.cullingMask = (1 << BackgroundLayer) | (1 << Mode1Layer);
+        var noPostMode1 = Capture(c, Path.Combine(output, "no-post-mode1.png"));
+        r.noPostMode0VsMode1MaxRGB = MaxRGB(noPostMode0, noPostMode1);
+
+        // The test-only overlay samples the transient global Mask *inside* the
+        // RenderGraph after the original NBPostProcess passes have recorded.
+        // It intentionally replaces final color, so these images do not prove
+        // Uber output. Final images above were taken with this feature OFF.
+        c.postFeature.SetActive(true);
+        c.viewFeature.SetActive(true);
+        c.camera.cullingMask = 1 << BackgroundLayer;
+        var maskEmpty = Capture(c, Path.Combine(output, "mask-empty.png"));
+        c.camera.cullingMask = (1 << BackgroundLayer) | (1 << Mode0Layer);
+        var maskMode0 = Capture(c, Path.Combine(output, "mask-mode0.png"));
+        c.camera.cullingMask = (1 << BackgroundLayer) | (1 << Mode1Layer);
+        var maskMode1 = Capture(c, Path.Combine(output, "mask-mode1.png"));
+        var maskMode1Repeat = Capture(c, Path.Combine(output, "mask-mode1-repeat.png"));
+        r.emptyMaskMaxRG = MaxMaskRG(maskEmpty);
+        r.mode0MaskMaxRG = MaxMaskRG(maskMode0);
+        r.mode1MaskMaxRG = MaxMaskRG(maskMode1);
+        r.maskMode1Pixels = NonZeroMaskPixels(maskMode1, PixelTolerance);
+        r.maskMode1RepeatMaxRG = MaxRGB(maskMode1, maskMode1Repeat);
+        c.viewFeature.SetActive(false);
+    }
+
+    static bool Evaluate(Result r)
+    {
+        bool visible = r.mode0 != null && r.mode1 != null &&
+            r.mode0.alive == 1 && r.mode1.alive == 1 &&
+            !r.mode0.culled && !r.mode1.culled &&
+            r.mode0.visiblePixels > 100 && r.mode1.visiblePixels > 100;
+        bool passes = r.mode0.passCount >= 3 && r.mode1.passCount >= 3 &&
+            r.mode0.opaquePass == 1 && r.mode1.opaquePass == 1 &&
+            r.mode0.deferredPass == 2 && r.mode1.deferredPass == 2;
+        bool stable = r.finalMode0RepeatMaxRGB <= PixelTolerance &&
+            r.finalMode1RepeatMaxRGB <= PixelTolerance &&
+            r.maskMode1RepeatMaxRG <= PixelTolerance;
+        bool mask = r.emptyMaskMaxRG <= PixelTolerance &&
+            r.mode0MaskMaxRG <= PixelTolerance &&
+            r.mode1MaskMaxRG <= PixelTolerance && r.maskMode1Pixels == 0;
+        bool composite = r.finalChangedPixels > 5 &&
+            r.noPostMode0VsMode1MaxRGB <= PixelTolerance;
+        return r.linearTarget && visible && passes && stable && mask && composite;
+    }
+
+    static void Cleanup(Context c, Result r)
+    {
+        if (c == null) return;
+        if (c.viewFeature) c.viewFeature.SetActive(false);
+        if (c.postFeature) c.postFeature.SetActive(c.postWasActive);
+        if (c.rendererData)
+        {
+            if (c.viewFeature) c.rendererData.rendererFeatures.Remove(c.viewFeature);
+            c.rendererData.SetDirty();
+            r.finalFeatureCount = c.rendererData.rendererFeatures.Count;
+            r.rendererRestored = r.finalFeatureCount == c.featureCount &&
+                c.postFeature && c.postFeature.isActive == c.postWasActive;
+        }
+        if (c.camera) c.camera.targetTexture = null;
+        if (c.target) { c.target.Release(); Destroy(c.target); }
+        if (c.readback) Destroy(c.readback);
+        if (c.gradient) Destroy(c.gradient);
+        if (c.backgroundMaterial) Destroy(c.backgroundMaterial);
+        if (c.backgroundObject) Destroy(c.backgroundObject);
+        if (c.cameraObject) Destroy(c.cameraObject);
+        if (c.mode0) Destroy(c.mode0.gameObject);
+        if (c.mode1) Destroy(c.mode1.gameObject);
+        if (c.maskViewMaterial) Destroy(c.maskViewMaterial);
+        if (c.viewFeature) Destroy(c.viewFeature);
+    }
+}
+
+// Test-only Reader, not a replacement for NBPostProcess. Runs one event after
+// the original NBPostProcess copy/mask/Uber passes at AfterRenderingTransparents.
+public sealed class NBFXPPMaskViewFeature : ScriptableRendererFeature
+{
+    public Material viewMaterial;
+    MaskPass pass;
+    public override void Create()
+    {
+        pass = new MaskPass(viewMaterial)
+        { renderPassEvent = RenderPassEvent.AfterRenderingTransparents + 1 };
+    }
+    public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
+    {
+        if (renderingData.cameraData.cameraType == CameraType.Game && pass != null)
+            renderer.EnqueuePass(pass);
+    }
+    sealed class MaskPass : ScriptableRenderPass
+    {
+        static readonly int MaskId = Shader.PropertyToID("_DisturbanceMaskTex");
+        readonly Material material;
+        sealed class PassData { public Material material; }
+        public MaskPass(Material value) { material = value; }
+        public override void RecordRenderGraph(RenderGraph graph, ContextContainer frameData)
+        {
+            if (!material) return;
+            var resources = frameData.Get<UniversalResourceData>();
+            if (!resources.activeColorTexture.IsValid()) return;
+            using (var builder = graph.AddRasterRenderPass<PassData>("NBFX Test Mask View", out var data))
+            {
+                data.material = material;
+                builder.UseGlobalTexture(MaskId, AccessFlags.Read);
+                builder.SetRenderAttachment(resources.activeColorTexture, 0, AccessFlags.ReadWrite);
+                builder.AllowPassCulling(false);
+                builder.SetRenderFunc((PassData d, RasterGraphContext context) =>
+                {
+                    context.cmd.DrawProcedural(Matrix4x4.identity, d.material, 0,
+                        MeshTopology.Triangles, 3, 1);
+                });
+            }
+        }
+    }
+}

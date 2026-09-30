@@ -1,0 +1,3 @@
+Clone-only diagnostic, never product:
+- outColor = half4(SampleSceneColor(uv + payload.signedRG * payload.coverage * payload.intensity), 1.0h);
++ outColor = half4(1.0h, 0.0h, 1.0h, 1.0h); // TEST ONLY: pass invocation sentinel

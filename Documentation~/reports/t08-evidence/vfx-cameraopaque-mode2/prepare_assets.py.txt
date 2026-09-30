@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Create two deterministic, one-particle VFX Mesh fixtures in this /tmp folder only.
+
+Do not point ASSETS at the live Unity project. The main Agent copies generated
+Assets/NBFXPP* into an isolated clone, then removes them after verification.
+"""
+from __future__ import annotations
+import gzip
+import hashlib
+import pathlib
+import re
+import shutil
+import uuid
+
+ROOT = pathlib.Path(__file__).resolve().parent
+ASSETS = ROOT / "Assets"
+SOURCE = pathlib.Path(
+    "/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/"
+    "Documentation~/reports/t08-evidence/vfx-dissolve-numeric-one-particle"
+)
+SOURCE_VFX = SOURCE / "NBFXNumericOff.vfx.gz"
+SOURCE_META = SOURCE / "NBFXNumericOff.vfx.meta"
+TEXTURES = (
+    ("NBFXNumericGray133Linear.png", "NBFXPPGray133Linear.png"),
+    ("NBFXNumericWhiteLinear.png", "NBFXPPWhiteLinear.png"),
+)
+MODE_SLOT = 8926484042661614868
+
+def guid(name: str) -> str:
+    return uuid.uuid5(uuid.NAMESPACE_URL, "nbfx-vfx-postprocess-probe-20260930/" + name).hex
+
+def replace_once(s: str, old: str, new: str, label: str) -> str:
+    if s.count(old) != 1:
+        raise ValueError(f"{label}: expected exactly one {old!r}, found {s.count(old)}")
+    return s.replace(old, new, 1)
+
+def change_slot(text: str, value: int) -> str:
+    pattern = re.compile(rf"(?ms)^--- !u!114 &{MODE_SLOT}\n.*?(?=^--- !u!|\Z)")
+    match = pattern.search(text)
+    if not match:
+        raise ValueError("Missing distortion mode Output slot")
+    body = match.group()
+    if "name: _NB_DistortionMode" not in body:
+        raise ValueError("Distortion mode slot fileID no longer matches")
+    body = replace_once(body, "m_SerializableObject: 0\n", f"m_SerializableObject: {value}\n", "mode")
+    return text[:match.start()] + body + text[match.end():]
+
+def meta_with_guid(src: pathlib.Path, name: str) -> str:
+    text = src.read_text()
+    old = re.search(r"(?m)^guid: ([a-f0-9]{32})$", text)
+    if not old:
+        raise ValueError(f"No GUID in {src}")
+    return replace_once(text, old.group(1), guid(name), str(src))
+
+def main() -> None:
+    ASSETS.mkdir(exist_ok=True)
+    src = gzip.decompress(SOURCE_VFX.read_bytes()).decode("utf-8")
+    if "  capacity: 1\n" not in src or "  cullMode: 0\n" not in src:
+        raise ValueError("Archived one-particle Cull Off source changed")
+    if '"x":0.25,"y":0.0' not in src or "name: _NB_DistortionIntensity" not in src:
+        raise ValueError("Expected distortion payload unavailable")
+    old_to_new = {}
+    for old_name, new_name in TEXTURES:
+        old_meta = (SOURCE / (old_name + ".meta")).read_text()
+        old_guid = re.search(r"(?m)^guid: ([a-f0-9]{32})$", old_meta).group(1)
+        old_to_new[old_guid] = guid(new_name)
+        shutil.copyfile(SOURCE / old_name, ASSETS / new_name)
+        (ASSETS / (new_name + ".meta")).write_text(meta_with_guid(SOURCE / (old_name + ".meta"), new_name))
+    for old_guid, new_guid in old_to_new.items():
+        if old_guid not in src:
+            raise ValueError(f"Archived VFX does not reference texture {old_guid}")
+        src = src.replace(old_guid, new_guid)
+    variants = []
+    for name, mode in (("Mode0", 0), ("Mode1", 2)):
+        filename = f"NBFXPP{name}.vfx"
+        text = change_slot(src, mode)
+        (ASSETS / filename).write_text(text)
+        (ASSETS / (filename + ".meta")).write_text(meta_with_guid(SOURCE_META, filename))
+        variants.append(text)
+    if change_slot(variants[0], 2) != variants[1]:
+        raise ValueError("Variants differ outside distortion mode slot")
+    for path in sorted(p for p in ASSETS.iterdir() if p.is_file()):
+        print(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path}")
+
+if __name__ == "__main__":
+    main()

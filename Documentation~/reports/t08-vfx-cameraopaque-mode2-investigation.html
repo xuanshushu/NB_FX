@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T08 · VFX Mode2 CameraOpaque 未闭合</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t08-vfx-postprocess-player-checkpoint.html">Mode1 后处理链路</a></p>
+<h1>T08 · 真正 VFX Mesh 的 Mode2 CameraOpaque 负结果</h1>
+<p><strong>结论：</strong>在隔离 Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal Player 中，两份仅 <code>_NB_DistortionMode</code> 为 0/2 的真正 VFX Mesh 单粒子资产均可见、保有两个精确自定义 Pass；然而 Mode0 与 Mode2 的最终线性画面逐像素相同，未证明 Mode2 屏幕颜色扭曲。原 NBPostprocess 关闭后仍相同；Mode2 的 Deferred Mask 为零，符合两条路径分离。<strong>这是失败/未闭合证据，不是 G5/G6 放行。</strong></p>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>原始结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>构建和输入</td><td>StandaloneOSX 构建 0 error/30 warning；生成 VFX 源码确认 Mode2 标量和两个精确 LightMode。两个 Output 均 alive=1、Pass=5、自定义索引 1/2、可见 676 像素、冻结重复帧差 0。</td><td><a href="t08-evidence/vfx-cameraopaque-mode2/editor-inspection.txt">Editor 检查</a> · <a href="t08-evidence/vfx-cameraopaque-mode2/editor-build.log.gz">构建日志</a> · <a href="t08-evidence/vfx-cameraopaque-mode2/generated-mode2-2.shader.gz">生成源码</a></td></tr>
+<tr><td>Player 负结果</td><td>Player exit 1、<code>CHAIN_MISMATCH</code>；Mode0/Mode2 最终图差异像素 0；原 Feature 关闭负对照差异也为 0。Mode2 Mask 最大 RG=0、非零像素 0，不能拿 Mode1 Deferred Mask 的通过结果替代 Mode2。</td><td><a href="t08-evidence/vfx-cameraopaque-mode2/result.json">JSON</a> · <a href="t08-evidence/vfx-cameraopaque-mode2/player.log.gz">Player 日志</a> · <a href="t08-evidence/vfx-cameraopaque-mode2/final-mode0.png">Mode0</a>/<a href="t08-evidence/vfx-cameraopaque-mode2/final-mode1.png">Mode2</a></td></tr>
+<tr><td>仅克隆诊断</td><td>将 CameraOpaque 自定义 Pass 的输出暂时换成洋红后重新构建，最终图仍无差异。该测试不能分辨“Pass 没画”与“在后来 VFX Forward 中被覆盖”，因此不把它写成已定位的产品根因。</td><td><a href="t08-evidence/vfx-cameraopaque-mode2/result-sentinel.json">诊断 JSON</a> · <a href="t08-evidence/vfx-cameraopaque-mode2/editor-build-sentinel.log.gz">诊断构建</a> · <a href="t08-evidence/vfx-cameraopaque-mode2/player-sentinel.log.gz">诊断 Player</a></td></tr>
+</tbody></table>
+<p>测试中的 <code>Mode1</code> 文件名沿用旧夹具命名，序列化 Output 值实际是 <code>2</code>。仅使用克隆夹具和临时诊断；已恢复产品 Pass，删除克隆测试资产并完成 CLI 清理编译（exit 0），主工程设置/Renderer 哈希不变。下一步需独立观测 BeforeRenderingTransparents 时的相机颜色/RendererList，或设计不会被 Forward 覆盖的夹具；在根因明确前不能认定必须修改 NBPostprocess，更不能擅改它。<a href="t08-evidence/vfx-cameraopaque-mode2/README.txt">重放与限制</a> · <a href="t08-evidence/vfx-cameraopaque-mode2/sha256.txt">附件哈希</a>。unityMCP 未暴露；不 push。</p>
+</body></html>
