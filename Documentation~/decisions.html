@@ -9,7 +9,7 @@
 <p><a href="index.html">返回文档目录</a></p>
 <h1>决策记录与待讨论事项</h1>
 <p>用户确认约束作为当前依据；技术可行性、实现选择与运行证据另行记录。</p>
-<p><small>更新：2026-09-30 · D23 将两项已知异常留待最终人工验收并允许后续实现并行推进；G2/G3 不因此自动放行 · 不修改官方包</small></p>
+<p><small>更新：2026-09-30 · D24 恢复普通 Mesh / Graph 完整对照在前、真正 VFX 在后的顺序；D23 两项异常仍留待最终人工验收 · 不修改官方包</small></p>
 <hr>
 <h2 id="confirmed">已确认决策</h2>
 <table border="1" cellpadding="6">
@@ -39,7 +39,8 @@
       <tr><td>D20</td><td>多管线安装由用户按所用管线选择对应依赖内容：URP 用户安装 URP 专属内容，HDRP 用户安装 HDRP 专属内容。安装流程与依赖隔离设计安排在启动 HDRP 实现之前。</td><td>当前 URP 阶段不提前拆包、不改 <code>package.json</code>、不加入 HDRP 依赖；此方向不等于已验证 HDRP-only 导入，也未确定最终 Package 数量、双管线同时安装或升级/卸载细节。</td></tr>
       <tr><td>D21</td><td>用户于 2026-09-27 澄清：当前阶段先在现有 Unity 6000.3.18f1 / URP、Shader Graph、VFX Graph 17.3 环境跑通 URP ShaderGraph + URP VFX；低版本兼容非当前必要条件，兼容性留在最后轮次评估。</td><td>本决定更新 D08、Q07、仓库旧兼容规则及旧任务书中“G1/G2 必须验证原 ShaderLab 2021.3”的时序要求。2021.3、旧 URP、无 URP 或 HDRP-only 不阻挡当前 G1/G2/G3；未验证也不得标称支持。仍保留当前环境的原 ShaderLab 行为、材质序列化、Flags、GUI、Pass、NBPostprocess 回归要求；不授权修改官方包、Target/NBPostprocess 或删减功能。</td></tr>
       <tr><td>D22</td><td>用户于 2026-09-28 确认：“NBShader需要手动开这个Pass才能用，当前配置是个主观配置，也不需要修改。”据此，URP 2D 使用 NBShader 时手动开启 Universal2D Pass 是当前约定；本轮不修改 FeatureTier 允许列表、默认配置或原材质状态。</td><td>不把 P6 手动 Pass-on 的能力试验称为默认开箱即用流程；现有 GUI 同步可能按 Tier 再次关闭该 Pass，记录为当前配置行为，不擅自绕过。D22 不放行 G2，也不改变 Graph/VFX 产品范围。</td></tr>
-      <tr><td>D23</td><td>用户于 2026-09-30 指示：“首帧的问题也放过。先完全做完，我人工来测试吧。无法解决问题都记录下来，最后一次性给我测试。”结合此前停止追查 MatCap 微弱色差的指示，G2 中这两项已知异常暂不再消耗实现时间；主 Agent 可以继续 T06–T10 的独立实现与自动化验证，最终集中提供已知问题、复现步骤和人工验收清单。</td><td>这是实施顺序及人工验收时点的批准，不是宣称 MatCap 严格 0 差或 Dissolve Editor 首帧测试通过，也不是取消记录、降低正式夹具断言或允许预热掩盖失败。G2 仍保留未通过/未测项，后续 Gate 逐项如实标记；不得擅自修改官方包、Target/NBPostprocess、删减功能或 push。</td></tr>
+      <tr id="d23"><td>D23</td><td>用户于 2026-09-30 指示：“首帧的问题也放过。先完全做完，我人工来测试吧。无法解决问题都记录下来，最后一次性给我测试。”结合此前停止追查 MatCap 微弱色差的指示，G2 中这两项已知异常暂不再消耗实现时间；可以在 G2 保留这些记录时继续普通 Mesh / Graph 实现与自动化对照，最终集中提供已知问题、复现步骤和人工验收清单。</td><td>不宣称 MatCap 严格 0 差或 Dissolve Editor 首帧测试通过，不取消记录、降低正式夹具断言或用预热掩盖失败。D23 不授权交错推进 Mesh 与真正 VFX；该顺序按 D02、D24 执行。G2 仍保留未通过/未测项，后续 Gate 如实标记；不得擅改官方包、Target/NBPostprocess、删减功能或 push。</td></tr>
+      <tr id="d24"><td>D24</td><td>用户于 2026-09-30 再次确认先做非 VFX 的 URP ShaderGraph 验证，并要求校准文档、先完成普通 Mesh 的完整对照。当前工作集中于 T06/G3 的正式 Mesh 链路与 T07/G4 的全部确认效果、组合、GUI、渲染状态和 NBPostprocess 对照；完成审核后再进入 T08/G5、T09/G6 的真正 VFX 验证。</td><td>此前逐功能交错运行的 VFX 结果保留为<strong>提前探索证据</strong>，不视为 T08 已正式启动或 G5/G6 放行；当前不新增 VFX Output、VFX 专属功能、连线/逐粒子或 Player 验证。Graph 的 <code>Support VFX Graph</code> 设置可保留，仍只用普通 Mesh 验证同一产品候选 Graph。D23 的最终一次性人工验收安排不变；兼容性/HDRP 留在后续轮次。</td></tr>
     </tbody>
   </table>
 
@@ -57,7 +58,7 @@
       <tr><td>Q06</td><td>图像容差与新增路径性能预算。</td><td>基线校准后、全量验收前确认，不在失败后放宽。</td></tr>
       <tr><td>Q07</td><td>按 D21，旧版本兼容留待 T10/G7 评估；根据实际测试结果确定可声明的最低版本与支持矩阵。</td><td>当前不因缺少 2021.3 环境停止 URP 6000.3 功能工作；当前环境的原 ShaderLab 功能与旧材质协议仍须回归。若以后要宣称旧版本支持，必须另有独立证据。</td></tr>
       <tr><td>Q08</td><td>D20 已确定由用户按管线选择安装内容；在 HDRP 实现前，仍需确定共享内容与 URP/HDRP 专属安装单元的边界、Package 依赖声明、<code>.asmref</code> 归属，以及双管线同时安装、升级和卸载流程。</td><td><a href="reports/t01-inventory-progress.html">T01 依赖清单</a>显示不止 GF <code>.asmref</code>：XuanXuanRenderUtility Runtime 与 NBPostProcessing Runtime 还无条件引用 URP，后者并引用 Cinemachine；普通 asmdef 的 Version Defines 不会条件化这些 GUID 引用。设计后须在仅 URP、仅 HDRP 和所支持的组合中分别导入/编译验证。当前未安装 HDRP、未改 package.json，不提前宣称 HDRP-only 导入通过。</td></tr>
-      <tr><td>Q09–Q10</td><td>按 D23，<a href="reports/g2-pending-decisions-20260928.html">原 G2 两项异常</a>留待最终人工验收；正式自动化严格失败记录不改写为通过。若最终需要改变产品行为、容差或验收定义，再据人工结果单独决策。</td><td>不再因重复诊断这两项而暂停 T06–T10；其他未测功能仍须各自验证，不能并入 D23 例外。</td></tr>
+      <tr><td>Q09–Q10</td><td>按 D23，<a href="reports/g2-pending-decisions-20260928.html">原 G2 两项异常</a>留待最终人工验收；正式自动化严格失败记录不改写为通过。若最终需要改变产品行为、容差或验收定义，再据人工结果单独决策。</td><td>不再重复诊断这两项；当前按 D24 先完成 T06/T07 普通 Mesh 对照。其他未测功能仍须各自验证，不能并入 D23 例外。</td></tr>
     </tbody>
   </table>
 

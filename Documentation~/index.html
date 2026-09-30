@@ -8,7 +8,7 @@
 <body>
 <h1>NB_FX 重构计划</h1>
 <p>共享功能 HLSL，保留 NBShader，新增只面向 VFX Graph 的 NBShader_VFXGraph。实施已获授权；G0 基线与当前 URP/Metal 的 GF Pass 可行性均已通过，G1 设计接口已限定范围放行，G2–G7 尚未放行。</p>
-<p><small>更新：2026-09-27 · G0/GF/G1 已按各自范围放行；首个 HLSL 切片待实现；HDRP 待最后轮次选择 · 不修改官方包</small></p>
+<p><small>更新：2026-09-30 · D24：当前集中完成普通 Mesh / Graph 完整对照；G3/G4 未放行；真正 VFX 留到之后，HDRP 待最后轮次选择 · 不修改官方包</small></p>
 <hr>
 <h2 id="scope">已确认的产品范围</h2>
 <blockquote><p><strong>普通 Mesh 与现有宿主继续使用 NBShader（ShaderLab）；NBShader_VFXGraph 最终只服务 VFX Graph。</strong>让 Mesh 使用 Shader Graph 材质，仅用于隔离验证，不是新的用户工作流。</p></blockquote>
@@ -27,7 +27,7 @@
       <tr><td>平台</td><td>新 VFX 路径以较新 DirectX、Metal、Vulkan 为候选，具体最低版本待验证；不支持 OpenGL ES，XR 不在正式范围。原 ShaderLab 旧版/旧 API 范围后续按实测评估，当前环境行为须保留。</td></tr>
       <tr><td>禁止事项</td><td>不修改官方包；不擅自改用标准 Lit / Six-Way Target；不能自行接受能力降级。</td></tr>
       <tr><td>当前授权</td><td>用户于 2026-09-25 授权从 T00/G0 实施，G0 后进行 T00A/GF；不授权修改官方包、擅改 Target/NBPostprocess 或删减功能，未经再次要求不 push。</td></tr>
-      <tr><td>阶段顺序</td><td>URP 常规 Mesh 继续由现有 NBShader 支持；先做 URP Shader Graph + URP VFX。HDRP 作为最后轮次的待选目标；进入 HDRP 实现前先设计用户按管线选择依赖内容的安装流程。普通 asmdef 使用 Version Defines 隔离可选包，.asmref 的 URP Editor 绑定需在后续安装单元设计中单独处理。见<a href="decisions.html">D20 / Q08</a>。</td></tr>
+      <tr><td>阶段顺序</td><td>URP 常规 Mesh 产品继续由现有 NBShader 支持；验证时先完成普通 Mesh 上的 URP ShaderGraph 全功能对照与 G3/G4 审核，再开展真正 VFX 的 G5/G6。已有 VFX 结果仅为提前探索。HDRP 作为最后轮次待选目标；进入 HDRP 前先设计按管线选择依赖内容的安装流程。见<a href="decisions.html#d24">D24</a>及 D20 / Q08。</td></tr>
     </tbody>
   </table>
 
@@ -35,7 +35,7 @@
 <p><strong>01 · ShaderLab 回归</strong><br>冻结原始 ShaderLab ↔ 重构 ShaderLab。验证共享 HLSL 拆分不改变原行为。</p>
 <p><strong>02 · Mesh / Graph 验证</strong><br>重构 ShaderLab ↔ Mesh 上的 Shader Graph。验证功能组合、Pass、GUI 与 NBPostprocess。</p>
 <p><strong>03 · VFX 验证</strong><br>已验证的 Graph ↔ 真正 VFX 输出。验证 Output、参数、逐粒子数据与渲染兼容。</p>
-<p>用户所说的“两步走”是主线 02 与 03：必须分别实施、分别验收。03 不能代替 02；02 通过也不能宣称 VFX 已通过。</p>
+<p>用户所说的“两步走”是主线 02 与 03：<strong>先完成并审核 02，再开展 03</strong>，不逐功能交错验证。03 不能代替 02；02 通过也不能宣称 VFX 已通过。Graph 保留 <code>Support VFX Graph</code> 设置不改变这一顺序。</p>
 
 <h2 id="read">文档目录</h2>
 <ul>

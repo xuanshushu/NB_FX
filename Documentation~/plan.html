@@ -9,7 +9,8 @@
 <p><a href="index.html">返回文档目录</a></p>
 <h1>总体计划与工作顺序</h1>
 <p>先保留原路径，再验证 Mesh / Shader Graph，最后验证真正 VFX；每一阶段均需证据与独立 Gate。</p>
-<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<p><small>更新：2026-09-30 · 实施中，D24 校准 Mesh → VFX 顺序；各阶段仍需独立审核 · 不修改官方包</small></p>
+<p><strong>当前实施：</strong>集中完成 P3/T06/G3 与 P4/T07/G4 的普通 Mesh / Graph 完整对照。已有真正 VFX 结果保留为提前探索证据，不再新增 VFX 验证，待 Mesh 阶段审核完成后进入 P5/P6。D23 两项已知 G2 异常仍保留并留待最终一次性人工验收。<a href="decisions.html#d24">D24</a>。</p>
 <hr>
 <h2 id="outcome">完成定义</h2>
 <ul>
@@ -37,7 +38,7 @@
       <tr><td>P7 · 版本与交付</td><td>T10：候选最低 Unity 6000.x 至 6.5、DirectX/Metal/Vulkan、Player、变体、发布回退。</td><td>实际支持矩阵、构建与性能证据、限制与使用说明。</td><td>G7</td></tr>
     </tbody>
   </table>
-<p>用户已同意将 Pass 可行性试验安排在 G0 后、G1 与大规模 HLSL 重构前。此为后续执行计划的授权，不是本轮启动命令。GF 只判断架构关键风险是否足以继续投入；不替代 G2 的 ShaderLab 回归、G3 的正式 Mesh / Graph 验收或 G5 的真正 VFX Output 验证。</p>
+<p>G0/GF/G1 已按报告中的限定范围放行。GF 只判断架构关键风险是否足以继续投入；不替代 G2 的 ShaderLab 回归、G3 的正式 Mesh / Graph 验收或 G5 的真正 VFX Output 验证。按 D24，提前试验不能成为交错推进 Mesh/VFX 的依据。</p>
 
 <h2 id="slices">ShaderLab 迁移批次</h2>
 <table border="1" cellpadding="6">

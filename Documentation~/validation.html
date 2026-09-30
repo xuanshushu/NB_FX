@@ -9,7 +9,8 @@
 <p><a href="index.html">返回文档目录</a></p>
 <h1>基线、场景与回归方案</h1>
 <p>三条验证主线使用可重放输入、冻结代码与独立证据。截图相似不能代替 Pass、协议和构建验证。</p>
-<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<p><small>更新：2026-09-30 · D24：先完成普通 Mesh / Graph 完整对照，真正 VFX 在后 · 不修改官方包</small></p>
+<p><strong>当前验证边界：</strong>使用普通 Mesh，以 B（重构 ShaderLab）/C（同一产品候选 Graph）为主对照；需要时用 A（Frozen）确认原路径无回归。先完成单功能、组合、Pass/状态、GUI、NBPostprocess、Player/生成代码和性能结论，再审核 G3/G4。已有 D 组结果仅作提前探索保存，当前不新跑 VFX 夹具。<a href="decisions.html#d24">D24</a>。</p>
 <hr>
 <h2 id="freeze">冻结原始实现</h2>
 <blockquote><p><strong>只复制材质不构成基线。</strong>材质仍会引用被重构的 shader/HLSL。必须冻结 Shader、递归 include、功能 Flags、VAT/光照工具和采样配置，才能持续对照。</p></blockquote>
@@ -43,7 +44,7 @@
 <ul>
   <li>固定 camera、projection、resolution、Render Scale、MSAA、color space、exposure、light、fog、Quality 和 Renderer 设置。</li>
   <li>固定 scaled/unscaled/script time、VAT frame、随机 seed、模拟步数、warmup 和播放状态。不能只固定随机 seed 却任由 deltaTime 改变。</li>
-  <li>先用静态或受控单粒子建立 Mesh / VFX 对照，再测试真实模拟。不同粒子运动结果不拿来伪造逐像素等价。</li>
+  <li>当前先用确定的普通 Mesh 建立 B/C 完整对照；G4 审核完成后，才使用静态或受控单粒子建立 C/D，再测试真实模拟。不同粒子运动结果不拿来伪造逐像素等价。</li>
   <li>记录纹理/importer、材质、Mesh、Graph、VFX、脚本和配置 hash；保留原始场景色与中间 RT。</li>
   <li>为每个测试记录输入、期望、操作、捕获帧与清理恢复步骤；多相机和全局状态需检查是否跨测试泄漏。</li>
 </ul>

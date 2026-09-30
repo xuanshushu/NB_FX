@@ -8,10 +8,11 @@
 <body>
 <p><a href="../index.html">返回文档目录</a></p>
 <h1>T08 · 真正 VFX 最小方案与 Output / GUI</h1>
+<p><strong>2026-09-30 调度状态：</strong>按 <a href="../decisions.html#d24">D24</a> 暂不推进，待普通 Mesh 的 T06/G3、T07/G4 完整对照与审核后正式启动。历史 VFX Output/Player 结果只保留为提前探索证据；当前不新增 VFX 专属实现、连线/逐粒子/持久化或 Player 验证，不以这些结果宣称 G5 通过。</p>
 <p>将已验证 Graph 接入真正 VFX，独立核验参数/连线/逐粒子数据、Output 渲染与 GUI 中间层。新产品使用者直接创作 VFX，不导入或同步材质。</p>
-<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<p><small>更新：2026-09-30 · 任务约束按 D24 顺序执行；当前状态见页首 · 不修改官方包</small></p>
 <hr>
-<blockquote><p><strong>独立任务书，不是执行授权。</strong>当前未派发 SubAgent。主 Agent 完成前置 Gate、分配文件与 Editor 时段后，才能启动此任务。</p></blockquote>
+<blockquote><p><strong>持续有效的独立任务书。</strong>实施授权与当前调度以 D16、D23、D24 为准；本页不额外授予官方包、Target、NBPostprocess 变更或 Gate 放行。主 Agent 管理文件所有权与串行 Unity 时段。</p></blockquote>
 
 <h2 id="goal">目标与边界</h2>
 <p>将已验证 Graph 接入真正 VFX，独立核验参数/连线/逐粒子数据、Output 渲染与 GUI 中间层。新产品使用者直接创作 VFX，不导入或同步材质。</p><p>出口：<strong>G5</strong>。返回<a href="main-agent.html">主 Agent 与任务索引</a>。</p>
@@ -58,6 +59,6 @@
 <h2 id="blockers">阻塞、变更与回退</h2>
 <p>VFX 生成层丢 Pass、不能提供必要数据、GUI 扩展不可用或用户连线被破坏时，停在受影响能力，提交实际限制与候选选择。不能复制独立 GUI 或自行削减功能。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>当前任务状态与正式 Gate 结论分别记录；单功能检查点不等于阶段通过。</small></p>
 </body>
 </html>
