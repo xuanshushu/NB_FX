@@ -2,6 +2,7 @@
 #define NB_GRAPH_BASE_COLOR_INCLUDED
 
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl"
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderEnvironmentV2.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDistortionV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderMaskV3.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDissolveV3.hlsl"
@@ -334,6 +335,29 @@ half4 NBGraphApplyFresnel(half4 color, float3 viewDirWS, half3 normalWS,
 // otherwise gives them stage None and omits them from GraphProperties. The NB
 // distortion passes consume those inputs from GraphProperties, not from this
 // color function. Flags0 is also used here for the original bit29 behavior.
+// M0: original ShaderLab MatCap host, before Emission and after early
+// color adjustment. Geometry normal only; NormalMap/lighting are later slices.
+// Hosts retain float world normal until the original matrix-to-half boundary.
+// This fixed sampler deliberately ignores texture ST and packed wrap flags.
+half4 NBGraphApplyMatCap(half4 color, UnityTexture2D map, float3 normalWS,
+    half3 positionVS, half isFrontFace, half4 matCapColor,
+    half4 matCapInfo, uint noMipFlags)
+{
+    if (isFrontFace < 0.5h)
+        normalWS = -normalWS;
+    half3 normalVS = mul(normalWS, (float3x3)UNITY_MATRIX_I_V);
+    float2 matCapUV = NBFX_MatCapUVV2(positionVS, normalVS);
+    half3 matCapSample;
+    UNITY_BRANCH
+    if ((noMipFlags & FLAG_BIT_FORCE_NO_MIP_MATCAP) != 0u)
+        matCapSample = SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_clamp, matCapUV, 0).rgb;
+    else
+        matCapSample = SAMPLE_TEXTURE2D(map.tex, sampler_linear_clamp, matCapUV).rgb;
+    color.rgb = NBFX_CompositeMatCapV2(color.rgb, matCapSample,
+        matCapColor, matCapInfo.x);
+    return color;
+}
+
 void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 EffectiveBaseColor,
     float NB_Flags0Lo16, float NB_Flags0Hi16,
@@ -399,6 +423,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NoiseMaskToggle, float2 NoiseMaskUV,
     float TexDistortionIntensity, float EmiDistortionIntensity,
     float MaskDistortionIntensity,
+    float MatCapToggle, UnityTexture2D MatCapTex,
+    float4 MatCapColor, float4 MatCapInfo,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
@@ -446,6 +472,10 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             (half)HueShift, (half)Contrast, (half3)ContrastMidColor.rgb,
             (half)Saturability, (half4)BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
+    if (MatCapToggle > 0.5)
+        Out = (float4)NBGraphApplyMatCap((half4)Out, MatCapTex, NormalWS,
+            (half3)PositionVS, (half)IsFrontFace, (half4)MatCapColor,
+            (half4)MatCapInfo, noMipFlags);
     if (EmissionEnabled > 0.5)
     {
         float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
@@ -715,6 +745,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NoiseMaskToggle, float2 NoiseMaskUV,
     float TexDistortionIntensity, float EmiDistortionIntensity,
     float MaskDistortionIntensity,
+    float MatCapToggle, UnityTexture2D MatCapTex,
+    half4 MatCapColor, half4 MatCapInfo,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
@@ -758,6 +790,10 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             (half)HueShift, (half)Contrast, ContrastMidColor.rgb,
             (half)Saturability, BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
+    if (MatCapToggle > 0.5)
+        Out = NBGraphApplyMatCap(Out, MatCapTex, (float3)NormalWS,
+            (half3)PositionVS, (half)IsFrontFace, MatCapColor,
+            MatCapInfo, noMipFlags);
     if (EmissionEnabled > 0.5)
     {
         float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
