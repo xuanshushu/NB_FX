@@ -139,6 +139,89 @@ half4 NBGraphApplyDissolveLine(half4 color, half valueBeforeSoftStep,
     return color;
 }
 
+// Match ShaderLab's explicit per-feature wrap and ForceNoMip selection rather
+// than silently inheriting the texture asset's sampler state.
+SamplerState sampler_linear_repeat;
+SamplerState sampler_linear_clamp;
+SamplerState sampler_linear_RepeatU_ClampV;
+SamplerState sampler_linear_ClampU_RepeatV;
+
+half4 NBGraphSampleDissolveRampMap(UnityTexture2D map, float2 uv,
+    uint wrapMode, bool forceLod0)
+{
+    half4 sample;
+#if defined(SHADER_TARGET_GLSL) || defined(SHADER_API_GLES) || defined(SHADER_API_GLES3)
+    if (wrapMode == 0u) uv = frac(uv);
+    else if (wrapMode == 1u) uv = saturate(uv);
+    else if (wrapMode == 2u) uv = float2(frac(uv.x), saturate(uv.y));
+    else uv = float2(saturate(uv.x), frac(uv.y));
+    sample = forceLod0 ?
+        SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_clamp, uv, 0) :
+        SAMPLE_TEXTURE2D(map.tex, sampler_linear_clamp, uv);
+#else
+    if (wrapMode == 0u)
+        sample = forceLod0 ?
+            SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_repeat, uv, 0) :
+            SAMPLE_TEXTURE2D(map.tex, sampler_linear_repeat, uv);
+    else if (wrapMode == 1u)
+        sample = forceLod0 ?
+            SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_clamp, uv, 0) :
+            SAMPLE_TEXTURE2D(map.tex, sampler_linear_clamp, uv);
+    else if (wrapMode == 2u)
+        sample = forceLod0 ?
+            SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_RepeatU_ClampV, uv, 0) :
+            SAMPLE_TEXTURE2D(map.tex, sampler_linear_RepeatU_ClampV, uv);
+    else
+        sample = forceLod0 ?
+            SAMPLE_TEXTURE2D_LOD(map.tex, sampler_linear_ClampU_RepeatV, uv, 0) :
+            SAMPLE_TEXTURE2D(map.tex, sampler_linear_ClampU_RepeatV, uv);
+#endif
+    if (map.hdrDecode.x > 0.0)
+        sample = (half4)DecodeHDRSample(sample, map.hdrDecode);
+    return sample;
+}
+
+// The original Dissolve Ramp consumes pre-soft-step value, including the
+// source texture's U scale/offset, and changes RGB before the edge line.
+half4 NBGraphApplyDissolveRamp(half4 color, half valueBeforeSoftStep,
+    UnityTexture2D map, float sourceMode, half4 tint, float packedCount,
+    half4 color0, half4 color1, half4 color2, half4 color3,
+    half4 color4, half4 color5, half4 alpha0, half4 alpha1, half4 alpha2,
+    float wrapLo16, float wrapHi16, float forceNoMipLo16,
+    float forceNoMipHi16, float flags1Lo16, float flags1Hi16)
+{
+    uint wrapFlags = NBGraphDecodeUInt32(wrapLo16, wrapHi16);
+    uint wrapMode = NBGraphMaskWrapMode(wrapFlags,
+        FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP);
+    // Keep ShaderLab's two half-precision assignments. In LOD0 on a rapidly
+    // varying ramp, fusing the ST expression shifts which texel is sampled.
+    half rampRange = valueBeforeSoftStep;
+    rampRange = rampRange * map.scaleTranslate.x + map.scaleTranslate.z;
+    half4 rampSample;
+    if (sourceMode > 0.5)
+    {
+        uint noMipFlags = NBGraphDecodeUInt32(forceNoMipLo16,
+            forceNoMipHi16);
+        rampSample = NBGraphSampleDissolveRampMap(map,
+            float2(rampRange, 0.5), wrapMode,
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP) != 0u);
+    }
+    else
+    {
+        half key = (wrapMode == 0u || wrapMode == 2u) ?
+            frac(rampRange) : saturate(rampRange);
+        uint countWord = (uint)packedCount;
+        rampSample.rgb = SamplePackedGradientColor(color0, color1, color2,
+            color3, color4, color5, (int)(countWord & 0xffffu), key);
+        rampSample.a = SamplePackedGradientAlpha(alpha0, alpha1, alpha2,
+            (int)(countWord >> 16), key);
+    }
+    uint flags1 = NBGraphDecodeUInt32(flags1Lo16, flags1Hi16);
+    NBFX_ApplyDissolveRampV1(color.rgb, rampSample, tint,
+        (flags1 & FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY) != 0u);
+    return color;
+}
+
 // ShaderLab Ramp sampling/source selection, followed by the same packed-key
 // evaluator and composition used by the original ForwardPass. This slice
 // covers UV0; special UV/custom data and noise are separate host inputs.
@@ -275,6 +358,14 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float FresnelEnabled, float4 FresnelUnit, float4 FresnelColor,
     float4 FresnelRotation, float3 NormalWS, float3 ViewDirWS,
     float4 DissolveLineRange, float4 DissolveLineColor,
+    float DissolveRampToggle, UnityTexture2D DissolveRampMap,
+    float DissolveRampSourceMode, float4 DissolveRampColor,
+    float DissolveRampCount, float4 DissolveRampColor0,
+    float4 DissolveRampColor1, float4 DissolveRampColor2,
+    float4 DissolveRampColor3, float4 DissolveRampColor4,
+    float4 DissolveRampColor5, float4 DissolveRampAlpha0,
+    float4 DissolveRampAlpha1, float4 DissolveRampAlpha2,
+    float NB_ForceNoMipFlagsLo16, float NB_ForceNoMipFlagsHi16,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -339,6 +430,18 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             sampledDissolveMask, hasDissolveMask, (half4)Dissolve,
             (half)DissolveMaskMode, NB_ColorChannelLo16);
         Out.a *= resolved.coverage;
+        if (DissolveRampToggle > 0.5)
+            Out = (float4)NBGraphApplyDissolveRamp((half4)Out,
+                resolved.valueBeforeSoftStep, DissolveRampMap,
+                DissolveRampSourceMode, (half4)DissolveRampColor,
+                DissolveRampCount, (half4)DissolveRampColor0,
+                (half4)DissolveRampColor1, (half4)DissolveRampColor2,
+                (half4)DissolveRampColor3, (half4)DissolveRampColor4,
+                (half4)DissolveRampColor5, (half4)DissolveRampAlpha0,
+                (half4)DissolveRampAlpha1, (half4)DissolveRampAlpha2,
+                NB_WrapFlagsLo16, NB_WrapFlagsHi16,
+                NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16,
+                NB_Flags1Lo16, NB_Flags1Hi16);
         Out = (float4)NBGraphApplyDissolveLine((half4)Out,
             resolved.valueBeforeSoftStep, (half4)DissolveLineRange,
             (half4)DissolveLineColor,
@@ -490,6 +593,14 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float FresnelEnabled, half4 FresnelUnit, half4 FresnelColor,
     half4 FresnelRotation, half3 NormalWS, half3 ViewDirWS,
     half4 DissolveLineRange, half4 DissolveLineColor,
+    float DissolveRampToggle, UnityTexture2D DissolveRampMap,
+    float DissolveRampSourceMode, half4 DissolveRampColor,
+    float DissolveRampCount, half4 DissolveRampColor0,
+    half4 DissolveRampColor1, half4 DissolveRampColor2,
+    half4 DissolveRampColor3, half4 DissolveRampColor4,
+    half4 DissolveRampColor5, half4 DissolveRampAlpha0,
+    half4 DissolveRampAlpha1, half4 DissolveRampAlpha2,
+    float NB_ForceNoMipFlagsLo16, float NB_ForceNoMipFlagsHi16,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -548,6 +659,18 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             sampledDissolveMask, hasDissolveMask, Dissolve,
             (half)DissolveMaskMode, NB_ColorChannelLo16);
         Out.a *= resolved.coverage;
+        if (DissolveRampToggle > 0.5)
+            Out = NBGraphApplyDissolveRamp(Out,
+                resolved.valueBeforeSoftStep, DissolveRampMap,
+                DissolveRampSourceMode, DissolveRampColor,
+                DissolveRampCount, DissolveRampColor0,
+                DissolveRampColor1, DissolveRampColor2,
+                DissolveRampColor3, DissolveRampColor4,
+                DissolveRampColor5, DissolveRampAlpha0,
+                DissolveRampAlpha1, DissolveRampAlpha2,
+                NB_WrapFlagsLo16, NB_WrapFlagsHi16,
+                NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16,
+                NB_Flags1Lo16, NB_Flags1Hi16);
         Out = NBGraphApplyDissolveLine(Out, resolved.valueBeforeSoftStep,
             DissolveLineRange, DissolveLineColor,
             NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16));

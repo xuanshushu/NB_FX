@@ -93,6 +93,19 @@ void NBFX_ApplyColorRampV1(inout half3 baseColor, inout half baseAlpha,
     }
 }
 
+// Dissolve Ramp is RGB-only and is evaluated before the dissolve edge line.
+// Unlike the general Color Ramp above, its blend amount does not alter alpha.
+void NBFX_ApplyDissolveRampV1(inout half3 color, half4 rampSample,
+    half4 tint, bool multiplyMode)
+{
+    half3 rampRGB = rampSample.rgb * tint.rgb;
+    half amount = rampSample.a * tint.a;
+    if (multiplyMode)
+        color *= lerp(1.0h, rampRGB, amount);
+    else
+        color = lerp(color, rampRGB, amount);
+}
+
 // Pure original color-adjustment arithmetic. ShaderLab resolves its optional
 // CustomData before calling this; Graph/VFX supplies the current uniform or
 // connected value, so neither host silently changes the other's protocol.

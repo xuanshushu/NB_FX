@@ -907,14 +907,9 @@
                     rampSample.a = SamplePackedGradientAlpha(_DissolveRampAlpha0, _DissolveRampAlpha1, _DissolveRampAlpha2, dissolveRampAlphaCount, rampRange);
                 #endif
 
-                if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY))
-                {
-                    result = result * lerp(1,rampSample.rgb*_DissolveRampColor.rgb,rampSample.a*_DissolveRampColor.a);
-                }
-                else
-                {
-                    result = lerp(result,rampSample.rgb*_DissolveRampColor.rgb,rampSample.a*_DissolveRampColor.a);
-                }
+                NBFX_ApplyDissolveRampV1(result, rampSample,
+                    _DissolveRampColor,
+                    CheckLocalFlags1(FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY));
             }
             #endif
 

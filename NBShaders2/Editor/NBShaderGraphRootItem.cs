@@ -72,6 +72,17 @@ namespace NBShaderEditor
             "_DissolveLineColor"
         };
 
+        static readonly string[] DissolveRampProperties =
+        {
+            "_Dissolve_useRampMap_Toggle", "_DissolveRampSourceMode",
+            "_DissolveRampMap", "_DissolveRampColor",
+            "_DissolveRampColor0", "_DissolveRampColor1",
+            "_DissolveRampColor2", "_DissolveRampColor3",
+            "_DissolveRampColor4", "_DissolveRampColor5",
+            "_DissolveRampAlpha0", "_DissolveRampAlpha1",
+            "_DissolveRampAlpha2", "_DissolveRampCount"
+        };
+
         static readonly string[] DistortionProperties =
         {
             "_NB_DistortionMode", "_NB_DistortionNoise", "_NB_DistortionIntensity",
@@ -111,6 +122,15 @@ namespace NBShaderEditor
             if (TryGetVisibleProperty("_DissolveLineColor", out _))
                 DrawPackedFlag("feature.溶解描边", "Dissolve Line",
                     NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK, 1);
+            DrawGroup(DissolveRampProperties, "feature.溶解Ramp", "Dissolve Ramp");
+            if (TryGetVisibleProperty("_DissolveRampColor", out _))
+            {
+                DrawPackedFlag("feature.溶解Ramp混合模式", "Dissolve Ramp Multiply",
+                    NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY, 1);
+                DrawDissolveRampWrapMode();
+                DrawPackedFlag("feature.溶解Ramp无Mip", "Dissolve Ramp Force LOD 0",
+                    NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP, 2);
+            }
             DrawGroup(DistortionProperties, "feature.扭曲", "Distort");
 
             // Graph properties can be added without changing this adapter.
@@ -157,7 +177,8 @@ namespace NBShaderEditor
             int bitIndex = 0;
             for (int bits = flag; bits > 1; bits >>= 1)
                 bitIndex++;
-            string prefix = word == 0 ? "_NB_Flags0" : "_NB_Flags1";
+            string prefix = word == 0 ? "_NB_Flags0" :
+                word == 1 ? "_NB_Flags1" : "_NB_ForceNoMipFlags";
             string propertyName = prefix + (bitIndex < 16 ? "Lo16" : "Hi16");
             int sliceBit = 1 << (bitIndex & 15);
             bool first = false, value = false, mixed = false;
@@ -187,6 +208,61 @@ namespace NBShaderEditor
                 if (target is Material material && SetPackedFlag(material, propertyName, sliceBit, next))
                     EditorUtility.SetDirty(material);
             }
+        }
+
+        void DrawDissolveRampWrapMode()
+        {
+            const string lowName = "_NB_WrapFlagsLo16";
+            const string highName = "_NB_WrapFlagsHi16";
+            const int bit = NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP;
+            bool first = false, mixed = false;
+            int value = 0;
+            foreach (UnityEngine.Object target in MatEditor.targets)
+            {
+                if (target is not Material material ||
+                    !material.HasProperty(lowName) || !material.HasProperty(highName))
+                    return;
+                int low = Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(lowName), 0f, 65535f));
+                int high = Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(highName), 0f, 65535f));
+                int mode = ((low & bit) != 0 ? 1 : 0) | ((high & bit) != 0 ? 2 : 0);
+                if (!first) { value = mode; first = true; }
+                else if (value != mode) mixed = true;
+            }
+            if (!first) return;
+
+            GUIContent label = NBShaderInspectorLocalization.MakeInspectorContent(
+                "feature.溶解RampUV Wrap", "Dissolve Ramp Wrap");
+            string[] options = { "Repeat", "Clamp", "Repeat U / Clamp V", "Clamp U / Repeat V" };
+            bool oldMixed = EditorGUI.showMixedValue;
+            EditorGUI.showMixedValue = mixed;
+            EditorGUI.BeginChangeCheck();
+            int next = EditorGUI.Popup(GetControlRect(), label.text, value, options);
+            bool changed = EditorGUI.EndChangeCheck();
+            EditorGUI.showMixedValue = oldMixed;
+            if (!changed) return;
+
+            Undo.RecordObjects(MatEditor.targets, label.text);
+            foreach (UnityEngine.Object target in MatEditor.targets)
+            {
+                if (target is Material material &&
+                    SetPackedWrapMode(material, lowName, highName, bit, next))
+                    EditorUtility.SetDirty(material);
+            }
+        }
+
+        static bool SetPackedWrapMode(Material material, string lowName,
+            string highName, int bit, int mode)
+        {
+            if (!material.HasProperty(lowName) || !material.HasProperty(highName))
+                return false;
+            int low = Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(lowName), 0f, 65535f));
+            int high = Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(highName), 0f, 65535f));
+            int nextLow = (low & ~bit) | ((mode & 1) != 0 ? bit : 0);
+            int nextHigh = (high & ~bit) | ((mode & 2) != 0 ? bit : 0);
+            if (nextLow == low && nextHigh == high) return false;
+            material.SetFloat(lowName, nextLow);
+            material.SetFloat(highName, nextHigh);
+            return true;
         }
 
         // Preserve every unrelated bit, including flags written by other
