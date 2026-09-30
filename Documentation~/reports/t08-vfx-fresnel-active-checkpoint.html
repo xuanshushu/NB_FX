@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T08 · VFX Fresnel 主动值</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="t07-graph-fresnel-checkpoint.html">Graph Mesh/共享代码</a></p>
+<h1>T08 · 真正 VFX Mesh Output 的 Fresnel</h1>
+<p><strong>限定结论：</strong>产品代码 <code>0ecb5b5</code> 的共享 Fresnel 算术与 Graph World Normal/View Direction 接线，在 Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 的真正单粒子 VFX Mesh Output 中，关闭、颜色、bit2 透明模式、bit18 反转、bit13 颜色受 Alpha 影响、方向偏移六例按预期响应。隔离 StandaloneOSX 构建 0 errors/38 warnings，Player exit 0、<code>PASS</code>；<strong>不是完整 G5/G6 放行</strong>。</p>
+<table border="1" cellpadding="6"><thead><tr><th>项</th><th>结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>Output/Pass</td><td>Editor 检查六个 Output 均生成新 Fresnel 属性值、Graph Host 调用和两个精确 LightMode。Player 每例 alive=1、Pass=5、自定义索引 1/2、可见 676 像素、共同 ROI 576、重复帧差 0。五个启用例相对 Off 均改变 ROI 全部 576 像素。</td><td><a href="t08-evidence/vfx-fresnel-active/editor-inspection.txt">Editor 检查</a> · <a href="t08-evidence/vfx-fresnel-active/editor-build.log.gz">构建日志</a> · <a href="t08-evidence/vfx-fresnel-active/NBFXFresnelColor-2.shader.gz">生成源码</a></td></tr>
+<tr><td>数值方向</td><td>线性 ARGBHalf 黑/白底配对反推有效覆盖率：Off .75203、颜色 .96155、透明模式 .64445、反转 .75212、颜色受 Alpha .75210、方向偏移 1.0。颜色模式反推源红 .8526；透明模式保留基色 RGB 约 (.2508,.5016,.6270)；反转红 .3976；方向偏移成纯红。有效覆盖率不是直接读取单片 GPU Alpha。</td><td><a href="t08-evidence/vfx-fresnel-active/result.json">原始 JSON</a> · <a href="t08-evidence/vfx-fresnel-active/color-black.png">颜色黑底</a>/<a href="t08-evidence/vfx-fresnel-active/alphamode-white.png">透明白底</a>/<a href="t08-evidence/vfx-fresnel-active/rotation-black.png">方向偏移</a> · <a href="t08-evidence/vfx-fresnel-active/player.log.gz">Player 日志</a></td></tr>
+<tr><td>旧 Output 默认回归</td><td>未重新序列化 Fresnel 新端口的原 ColorAdjustment 五个 VFX Output，在新 Graph 下重建 0 errors/36 warnings、Player PASS；五例 JSON 数值字段与原结果完全相同，六张关键 PNG 字节一致。仅证实这批既有 Output 的默认关闭兼容性。</td><td><a href="t07-evidence/fresnel/vfx-default-regression-comparison.json">逐项对照</a> · <a href="t07-evidence/fresnel/vfx-default-result.json">新 JSON</a> · <a href="t07-evidence/fresnel/vfx-default-player.log.gz">Player 日志</a></td></tr>
+</tbody></table>
+<p><strong>未验证：</strong>NormalMap 扰动后的法线、逐粒子 CustomData Fresnel offset、旧独立背面 Pass 的忽略规则、所有几何/相机角度、Graph/VFX GUI 端口保存与连线优先级、原 ShaderLab T00 Frozen B/C、后处理与其它平台。<a href="t08-evidence/vfx-fresnel-active/README.txt">重放与限制</a> · <a href="t08-evidence/vfx-fresnel-active/sha256.txt">附件哈希</a>。unityMCP 未暴露；隔离克隆清理编译 exit 0，主工程设置/Renderer 未变；不 push。</p>
+</body></html>

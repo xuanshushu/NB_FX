@@ -31,3 +31,11 @@ not tested, and split-flag controls are not synchronized.
 
 No official package/Target/NBPostprocess/main Assets/ProjectSettings changes.
 unityMCP unavailable. No push.
+
+Default-off VFX compatibility follow-up: original five ColorAdjustment VFX
+assets from the preceding report were NOT reserialized with Fresnel slots.
+Rebuilt on product Graph 0ecb5b5: errors0/warnings36, Player exit0 PASS,
+all five per-case numeric JSON fields equal previous baseline and six key
+PNGs byte-identical. This proves the new default-off Graph inputs do not
+change those existing VFX Outputs in the controlled case, not active Fresnel.
+Clone test assets removed; cleanup CLI exit0, protected hashes unchanged.

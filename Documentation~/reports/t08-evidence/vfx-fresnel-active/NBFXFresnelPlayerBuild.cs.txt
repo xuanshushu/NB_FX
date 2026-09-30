@@ -1,0 +1,252 @@
+// Isolated /tmp clone fixture: inspect real VFX Mesh Output bindings, then build Player.
+using System;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXFresnelPlayerBuild
+{
+    const string Root = "/tmp/nbfx-vfx-fresnel-probe-20260930/run";
+    const string ScenePath = "Assets/NBFXFresnelPlayer.unity";
+    const string AppPath = Root + "/player/NBFXFresnelPlayer.app";
+    const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string BaseTexturePath = "Assets/NBFXFresnelBaseRGBA_64_128_160_192.png";
+    const string BaseTextureGuid = "f7f152b5554c554fb680624329b34d00";
+    const long OutputId = 8926484042661614853;
+    const long BaseMapId = 8926484042661614854;
+    const long BaseColorId = 8926484042661614855;
+    const long Flags0LoId = 8926484042661614869;
+    const long Flags0HiId = 8926484042661614870;
+    const long EnabledId = 8926484042661617000;
+    const long UnitId = 8926484042661617010;
+    const long FresnelColorId = 8926484042661617020;
+    const long RotationId = 8926484042661617030;
+    static readonly string[] Names = {
+        "Off", "Color", "AlphaMode", "Invert", "AffectAlpha", "Rotation"
+    };
+    static readonly string[] Guids = {
+        "235fb2e9921955d79fdd3ebbf9a2f72d",
+        "e1e6af2651b7538986c05b847fc84577",
+        "12a1f1f5fc4d5d639359288b55424fba",
+        "00de8bc4e7225bd4b3db7c01edbec350",
+        "256b124bd8315cbc861117a4cf42513b",
+        "5e3c40e07d475553804f71b904657e35"
+    };
+    static readonly int[] Enabled = { 0, 1, 1, 1, 1, 1 };
+    static readonly int[] Flags0Lo = { 0, 0, 4, 0, 8192, 0 };
+    static readonly int[] Flags0Hi = { 0, 0, 0, 4, 0, 0 };
+    static readonly float[] Unit = { .9f, 1f, 1f, .5f };
+    static readonly float[] FresnelColor = { 1f, 0f, 0f, 1f };
+
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        using (var report = new StreamWriter(Path.Combine(Root, "editor-inspection.txt")))
+        {
+            ValidateTexture(report);
+            var graph = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            if (!graph || !graph.isSupported)
+                throw new Exception("Product Graph unavailable or unsupported");
+            var assets = new VisualEffectAsset[Names.Length];
+            var shaders = new Shader[Names.Length];
+            for (int i = 0; i < Names.Length; i++)
+            {
+                string path = "Assets/NBFXFresnel" + Names[i] + ".vfx";
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+                if (AssetDatabase.AssetPathToGUID(path) != Guids[i])
+                    throw new Exception("VFX GUID mismatch: " + path);
+                ValidateSerialized(path, i, report);
+                assets[i] = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+                shaders[i] = FindShader(path);
+                if (!assets[i] || !shaders[i] || !shaders[i].isSupported ||
+                    !shaders[i].name.Contains("Mesh"))
+                    throw new Exception("Real VFX Mesh Output import failed: " + path);
+                ValidateGenerated(path, i, report);
+                var material = new Material(shaders[i]);
+                try { report.WriteLine(path + " lazyEditorPassCount=" + material.passCount); }
+                finally { UnityEngine.Object.DestroyImmediate(material); }
+            }
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var host = new GameObject("NBFX Fresnel VFX Player Probe");
+            var probe = host.AddComponent<NBFXFresnelPlayerProbe>();
+            probe.graphShader = graph;
+            probe.offAsset = assets[0]; probe.colorAsset = assets[1];
+            probe.alphaModeAsset = assets[2]; probe.invertAsset = assets[3];
+            probe.affectAlphaAsset = assets[4]; probe.rotationAsset = assets[5];
+            probe.offShader = shaders[0]; probe.colorShader = shaders[1];
+            probe.alphaModeShader = shaders[2]; probe.invertShader = shaders[3];
+            probe.affectAlphaShader = shaders[4]; probe.rotationShader = shaders[5];
+            if (!EditorSceneManager.SaveScene(scene, ScenePath))
+                throw new Exception("Could not save clone-only Player scene");
+            report.Flush();
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(AppPath));
+        var build = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+            scenes = new[] { ScenePath }, locationPathName = AppPath,
+            target = BuildTarget.StandaloneOSX, options = BuildOptions.None
+        });
+        Debug.Log("NBFX_FRESNEL_BUILD result=" + build.summary.result +
+            " errors=" + build.summary.totalErrors +
+            " warnings=" + build.summary.totalWarnings);
+        if (build.summary.result != BuildResult.Succeeded ||
+            build.summary.totalErrors != 0)
+            throw new Exception("Fresnel VFX Player build failed");
+    }
+
+    static void ValidateTexture(TextWriter report)
+    {
+        AssetDatabase.ImportAsset(BaseTexturePath, ImportAssetOptions.ForceUpdate);
+        var importer = AssetImporter.GetAtPath(BaseTexturePath) as TextureImporter;
+        var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(BaseTexturePath);
+        if (!importer || !texture ||
+            AssetDatabase.AssetPathToGUID(BaseTexturePath) != BaseTextureGuid ||
+            importer.sRGBTexture || importer.mipmapEnabled || !importer.isReadable ||
+            importer.textureCompression != TextureImporterCompression.Uncompressed ||
+            texture.width != 1 || texture.height != 1 ||
+            importer.filterMode != FilterMode.Point ||
+            importer.wrapMode != TextureWrapMode.Clamp)
+            throw new Exception("Explicit RGBA BaseMap import contract failed");
+        var actual = texture.GetPixel(0, 0);
+        var expected = new Color(64f / 255f, 128f / 255f,
+                                 160f / 255f, 192f / 255f);
+        for (int i = 0; i < 4; i++)
+            if (Mathf.Abs(actual[i] - expected[i]) > .003f)
+                throw new Exception("BaseMap RGBA pixel mismatch: " + actual);
+        report.WriteLine("BaseMap linearRGBA=" + actual +
+            " uncompressed/point/clamp; effective base alpha includes _Color.a=2/3");
+    }
+    static string Body(string text, long id)
+    {
+        var found = Regex.Match(text, @"(?ms)^--- !u!114 &" + id +
+            @"\n.*?(?=^--- !u!|\z)");
+        if (!found.Success) throw new Exception("Missing VFX object " + id);
+        return found.Value;
+    }
+    static bool Scalar(string text, long id, string name, string value)
+    {
+        string body = Body(text, id);
+        return body.Contains("name: " + name + "\n") &&
+            body.Contains("m_SerializableObject: " + value + "\n");
+    }
+    static bool SerializedVector(string text, long id, string name, string json)
+    {
+        string body = Body(text, id);
+        return body.Contains("name: " + name + "\n") && body.Contains(json);
+    }
+    static void ValidateSerialized(string path, int index, TextWriter report)
+    {
+        string text = File.ReadAllText(Path.Combine(
+            Directory.GetParent(Application.dataPath).FullName, path));
+        string output = Body(text, OutputId);
+        string rotation = index == 5 ?
+            "{\"x\":0.0,\"y\":0.0,\"z\":-2.0,\"w\":0.5}" :
+            "{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.5}";
+        if (!text.Contains("  capacity: 1\n") ||
+            !output.Contains("  cullMode: 0\n") ||
+            !output.Contains("  blendMode: 1\n") ||
+            !Body(text, BaseMapId).Contains(BaseTextureGuid) ||
+            !SerializedVector(text, BaseColorId, "_Color",
+                "{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6666667}") ||
+            !Scalar(text, EnabledId, "_fresnelEnabled", Enabled[index].ToString()) ||
+            !Scalar(text, Flags0LoId, "_NB_Flags0Lo16", Flags0Lo[index].ToString()) ||
+            !Scalar(text, Flags0HiId, "_NB_Flags0Hi16", Flags0Hi[index].ToString()) ||
+            !SerializedVector(text, UnitId, "_FresnelUnit",
+                "{\"x\":0.9,\"y\":1.0,\"z\":1.0,\"w\":0.5}") ||
+            !SerializedVector(text, FresnelColorId, "_FresnelColor",
+                "{\"r\":1.0,\"g\":0.0,\"b\":0.0,\"a\":1.0}") ||
+            !SerializedVector(text, RotationId, "_FresnelRotation", rotation))
+            throw new Exception("Fresnel serialized Output contract invalid: " + path);
+        foreach (long id in new[] { EnabledId, UnitId, FresnelColorId, RotationId })
+            if (!output.Contains("  - {fileID: " + id + "}\n"))
+                throw new Exception("Output missing Fresnel slot " + id + ": " + path);
+        report.WriteLine(path + " enable=" + Enabled[index] +
+            " flags0Lo=" + Flags0Lo[index] +
+            " flags0Hi=" + Flags0Hi[index] + " rotation=" + rotation);
+    }
+    static Shader FindShader(string path)
+    {
+        foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(path))
+            if (obj is Shader shader && shader.name.Contains("Mesh")) return shader;
+        return null;
+    }
+    static bool SourceScalar(string source, string name, float expected)
+    {
+        var found = Regex.Match(source, @"output\." + Regex.Escape(name) +
+            @"\s*=\s*\(float\)\s*([-+0-9.eE]+)\s*;");
+        if (!found.Success) return false;
+        float actual;
+        return float.TryParse(found.Groups[1].Value, NumberStyles.Float,
+            CultureInfo.InvariantCulture, out actual) &&
+            Mathf.Abs(actual - expected) < .005f;
+    }
+    static bool SourceVector(string source, string name, float[] expected)
+    {
+        var found = Regex.Match(source, @"output\." + Regex.Escape(name) +
+            @"\s*=\s*float4\(([^)]*)\)");
+        if (!found.Success) return false;
+        var parts = found.Groups[1].Value.Split(',');
+        if (parts.Length != 4) return false;
+        for (int i = 0; i < 4; i++)
+        {
+            float actual;
+            if (!float.TryParse(parts[i].Trim(), NumberStyles.Float,
+                    CultureInfo.InvariantCulture, out actual) ||
+                Mathf.Abs(actual - expected[i]) > .005f)
+                return false;
+        }
+        return true;
+    }
+    static void ValidateGenerated(string path, int index, TextWriter report)
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Static | BindingFlags.Instance;
+        Type type = null;
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+            type = assembly.GetType("UnityEditor.VFX.VisualEffectResource");
+            if (type != null) break;
+        }
+        if (type == null) throw new Exception("VFX generated-resource reflection unavailable");
+        var resource = type.GetMethod("GetResourceAtPath", flags)
+            .Invoke(null, new object[] { path });
+        if (resource == null) throw new Exception("VFX generated resource missing: " + path);
+        int count = (int)type.GetMethod("GetShaderSourceCount", flags)
+            .Invoke(resource, null);
+        var getter = type.GetMethod("GetShaderSource", flags);
+        bool found = false;
+        for (int i = 0; i < count; i++)
+        {
+            string source = (string)getter.Invoke(resource, new object[] { i });
+            if (!source.Contains("output._fresnelEnabled")) continue;
+            File.WriteAllText(Path.Combine(Root,
+                Path.GetFileNameWithoutExtension(path) + "-" + i + ".shader"), source);
+            bool bindings =
+                SourceScalar(source, "_fresnelEnabled", Enabled[index]) &&
+                SourceScalar(source, "_NB_Flags0Lo16", Flags0Lo[index]) &&
+                SourceScalar(source, "_NB_Flags0Hi16", Flags0Hi[index]) &&
+                SourceVector(source, "_Color", new[] { 1f, 1f, 1f, .6666667f }) &&
+                SourceVector(source, "_FresnelUnit", Unit) &&
+                SourceVector(source, "_FresnelColor", FresnelColor) &&
+                SourceVector(source, "_FresnelRotation",
+                    index == 5 ? new[] { 0f, 0f, -2f, .5f } :
+                                 new[] { 0f, 0f, 0f, .5f });
+            bool passes = source.Contains("\"LightMode\" = \"NBCameraOpaqueDistortPass\"") &&
+                source.Contains("\"LightMode\" = \"NBDeferredDistortPass\"");
+            // VFX generated source includes the host HLSL by path; it does not
+            // inline the NBGraphApplyFresnel helper into this text dump.
+            bool function = source.Contains("NBGraphBaseColor_float(") &&
+                source.Contains("NBGraphBaseColor.hlsl");
+            report.WriteLine(path + " generatedSource=" + i +
+                " exactBindings=" + bindings + " exactPasses=" + passes +
+                " graphHostIncludeAndCall=" + function);
+            found |= bindings && passes && function;
+        }
+        if (!found)
+            throw new Exception("Fresnel Output bindings or custom Passes absent: " + path);
+    }
+}

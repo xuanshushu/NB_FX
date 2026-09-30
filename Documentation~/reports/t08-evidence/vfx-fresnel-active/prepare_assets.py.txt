@@ -1,0 +1,169 @@
+#!/usr/bin/env python3
+"""Build six test-only real one-particle VFX Mesh Fresnel Outputs."""
+from __future__ import annotations
+
+import gzip
+import hashlib
+import pathlib
+import re
+import shutil
+import uuid
+
+ROOT = pathlib.Path(__file__).resolve().parent
+OUT = ROOT / "Assets"
+ARCH = pathlib.Path("/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t08-evidence/vfx-basecolor-active")
+SRC = ARCH / "NBFXBCA1.vfx.gz"
+OUTPUT = 8926484042661614853
+BASEMAP = 8926484042661614854
+COLOR = 8926484042661614855
+SCALAR = FLAGS0LO = 8926484042661614869
+FLAGS0HI = 8926484042661614870
+VECTOR = 8926484042661614903
+ENABLED = 8926484042661617000
+UNIT = 8926484042661617010
+FRESNEL_COLOR = 8926484042661617020
+ROTATION = 8926484042661617030
+MASTERS = (ENABLED, UNIT, FRESNEL_COLOR, ROTATION)
+IDS = (ENABLED, *(UNIT + i for i in range(5)),
+       *(FRESNEL_COLOR + i for i in range(5)),
+       *(ROTATION + i for i in range(5)))
+BASE_NAME = "NBFXFresnelBaseRGBA_64_128_160_192.png"
+UNIT_JSON = "'{\"x\":0.9,\"y\":1.0,\"z\":1.0,\"w\":0.5}'"
+FRESNEL_COLOR_JSON = "'{\"r\":1.0,\"g\":0.0,\"b\":0.0,\"a\":1.0}'"
+ROTATION_ZERO = "'{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.5}'"
+ROTATION_ACTIVE = "'{\"x\":0.0,\"y\":0.0,\"z\":-2.0,\"w\":0.5}'"
+BASE_TINT = "'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6666667}'"
+VARIANTS = (
+    ("Off", 0, 0, 0, ROTATION_ZERO),
+    ("Color", 1, 0, 0, ROTATION_ZERO),
+    ("AlphaMode", 1, 4, 0, ROTATION_ZERO),       # Flags0 bit 2.
+    ("Invert", 1, 0, 4, ROTATION_ZERO),          # Flags0 bit 18.
+    ("AffectAlpha", 1, 8192, 0, ROTATION_ZERO), # Flags0 bit 13.
+    ("Rotation", 1, 0, 0, ROTATION_ACTIVE),
+)
+
+
+def guid(name: str) -> str:
+    return uuid.uuid5(uuid.NAMESPACE_URL,
+                      "nbfx-vfx-fresnel-probe-20260930/" + name).hex
+
+
+def once(text: str, old: str, new: str, label: str) -> str:
+    count = text.count(old)
+    if count != 1:
+        raise ValueError(f"{label}: expected exactly one {old!r}, got {count}")
+    return text.replace(old, new, 1)
+
+
+def match(text: str, object_id: int) -> re.Match[str]:
+    found = re.search(rf"(?ms)^--- !u!114 &{object_id}\n.*?(?=^--- !u!|\Z)", text)
+    if not found:
+        raise ValueError(f"VFX object {object_id} missing")
+    return found
+
+
+def change(text: str, object_id: int, old: str, new: str) -> str:
+    found = match(text, object_id)
+    body = once(found.group(), old, new, str(object_id))
+    return text[:found.start()] + body + text[found.end():]
+
+
+def meta(source: pathlib.Path, name: str) -> str:
+    raw = source.read_text()
+    found = re.search(r"(?m)^guid: ([a-f0-9]{32})$", raw)
+    if not found:
+        raise ValueError("meta GUID absent: " + str(source))
+    return once(raw, found.group(1), guid(name), name)
+
+
+def clone_scalar(text: str, new_id: int, name: str, value: str) -> str:
+    body = match(text, SCALAR).group().replace(str(SCALAR), str(new_id))
+    body = once(body, "name: _NB_Flags0Lo16\n", f"name: {name}\n", name)
+    return once(body, "m_SerializableObject: 0\n",
+                f"m_SerializableObject: {value}\n", name)
+
+
+def clone_struct(text: str, original_id: int, new_id: int,
+                 old_name: str, name: str, old_value: str,
+                 new_value: str) -> list[str]:
+    master = match(text, original_id).group().replace(str(original_id), str(new_id))
+    for i in range(1, 5):
+        master = master.replace(str(original_id + i), str(new_id + i))
+    master = once(master, f"name: {old_name}\n", f"name: {name}\n", name)
+    master = once(master, old_value, new_value, name + " value")
+    children = [match(text, original_id + i).group()
+                .replace(str(original_id), str(new_id))
+                .replace(str(original_id + i), str(new_id + i))
+                for i in range(1, 5)]
+    return [master, *children]
+
+
+def main() -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
+    text = gzip.decompress(SRC.read_bytes()).decode("utf-8")
+    for object_id in IDS:
+        if str(object_id) in text:
+            raise ValueError(f"private anchor collision {object_id}")
+    output = match(text, OUTPUT).group()
+    if "  capacity: 1\n" not in text or "  cullMode: 0\n" not in output or \
+            "  blendMode: 1\n" not in output:
+        raise ValueError("not the archived one-particle Cube/CullOff transparent fixture")
+    if any("name: " + name + "\n" in text for name in
+           ("_fresnelEnabled", "_FresnelUnit", "_FresnelColor", "_FresnelRotation")):
+        raise ValueError("Fresnel Output inputs already exist in source")
+
+    original_texture = "NBFXBC_RGBA_64_128_160_192.png"
+    texture_meta = ARCH / (original_texture + ".meta.txt")
+    original_guid = re.search(r"(?m)^guid: ([a-f0-9]{32})$",
+                              texture_meta.read_text()).group(1)
+    shutil.copyfile(ARCH / original_texture, OUT / BASE_NAME)
+    (OUT / (BASE_NAME + ".meta")).write_text(meta(texture_meta, BASE_NAME))
+    text = text.replace(original_guid, guid(BASE_NAME))
+    text = change(text, COLOR,
+        "'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0}'",
+        BASE_TINT)
+
+    white = "'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0}'"
+    zero = "'{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}'"
+    slots = [clone_scalar(text, ENABLED, "_fresnelEnabled", "0")]
+    slots += clone_struct(text, VECTOR, UNIT, "_BaseMapMaskMapOffset",
+                          "_FresnelUnit", zero, UNIT_JSON)
+    slots += clone_struct(text, COLOR, FRESNEL_COLOR, "_Color",
+                          "_FresnelColor", BASE_TINT, FRESNEL_COLOR_JSON)
+    slots += clone_struct(text, VECTOR, ROTATION, "_BaseMapMaskMapOffset",
+                          "_FresnelRotation", zero, ROTATION_ZERO)
+    attach = "".join(f"  - {{fileID: {object_id}}}\n" for object_id in MASTERS)
+    text = change(text, OUTPUT, "  m_OutputSlots: []\n",
+                  attach + "  m_OutputSlots: []\n")
+    text += "\n" + "\n".join(slots)
+
+    normalized = []
+    for name, enabled, lo, hi, rotation in VARIANTS:
+        variant = change(text, ENABLED, "m_SerializableObject: 0\n",
+                         f"m_SerializableObject: {enabled}\n")
+        variant = change(variant, FLAGS0LO, "m_SerializableObject: 0\n",
+                         f"m_SerializableObject: {lo}\n")
+        variant = change(variant, FLAGS0HI, "m_SerializableObject: 0\n",
+                         f"m_SerializableObject: {hi}\n")
+        if rotation != ROTATION_ZERO:
+            variant = change(variant, ROTATION, ROTATION_ZERO, rotation)
+        filename = f"NBFXFresnel{name}.vfx"
+        (OUT / filename).write_text(variant)
+        (OUT / (filename + ".meta")).write_text(
+            meta(ARCH / "NBFXBCA1.vfx.meta.txt", filename))
+        for object_id, current in ((ENABLED, enabled), (FLAGS0LO, lo),
+                                   (FLAGS0HI, hi)):
+            variant = change(variant, object_id,
+                             f"m_SerializableObject: {current}\n",
+                             "m_SerializableObject: VARIANT\n")
+        variant = change(variant, ROTATION, rotation, "ROTATION_VARIANT")
+        normalized.append(variant)
+    if len(set(normalized)) != 1:
+        raise ValueError("variants differ outside enable, Flags0, or rotation")
+    for path in sorted(OUT.iterdir()):
+        if path.is_file():
+            print(hashlib.sha256(path.read_bytes()).hexdigest(), path)
+
+
+if __name__ == "__main__":
+    main()

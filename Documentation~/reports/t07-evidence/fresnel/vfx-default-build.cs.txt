@@ -1,0 +1,200 @@
+// Test-only isolated clone: inspect active VFX Mesh ColorAdjustment Outputs and build Player.
+using System;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXAdjustPlayerBuild
+{
+    const string Root="/tmp/nbfx-vfx-fresnel-default-regression-20260930/run";
+    const string ScenePath="Assets/NBFXAdjustPlayer.unity";
+    const string AppPath=Root+"/player/NBFXAdjustPlayer.app";
+    const string GraphPath="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string BaseTexturePath="Assets/NBFXAdjustBaseRGBA_64_128_160_192.png";
+    const string BaseTextureGuid="43dda7a07c935cd7a725915c612f6e5d";
+    const long OutputId=8926484042661614853,BaseMapId=8926484042661614854;
+    const long Flags0LoId=8926484042661614869;
+    const long Flags0HiId=8926484042661614870;
+    const long Flags1HiId=8926484042661614872;
+    const long HueId=8926484042661616600;
+    const long ContrastId=8926484042661616601;
+    const long SaturationId=8926484042661616602;
+    const long MidId=8926484042661616610;
+    const long RefineId=8926484042661616620;
+    static readonly string[] Names={"Off","Contrast","Saturation0","Hue","Refine"};
+    static readonly string[] Guids={
+        "e874b4fa936758a1aa10bedd25eaec36","1b959e6640d451a9b6e0a34e226f6b0a",
+        "78036da702225ba69e3ebf95cd299528","3c09b5c87562553d8ebe5d3b1cb8dfbc",
+        "10b0785c86c0578ea70d19a32142a503"};
+    static readonly int[] Flags0Lo={0,0,1,0,0};
+    static readonly int[] Flags0Hi={0,0,0,8,0};
+    static readonly int[] Flags1Hi={0,256,0,0,2048};
+
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        using(var report=new StreamWriter(Path.Combine(Root,"editor-inspection.txt")))
+        {
+            ValidateTexture(report);
+            var graph=AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            if(!graph || !graph.isSupported)throw new Exception("Product Graph unavailable");
+            var assets=new VisualEffectAsset[Names.Length];
+            var shaders=new Shader[Names.Length];
+            for(int i=0;i<Names.Length;i++)
+            {
+                string path="Assets/NBFXAdjust"+Names[i]+".vfx";
+                AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+                if(AssetDatabase.AssetPathToGUID(path)!=Guids[i])
+                    throw new Exception("VFX GUID mismatch: "+path);
+                ValidateSerialized(path,Flags0Lo[i],Flags0Hi[i],Flags1Hi[i],report);
+                assets[i]=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+                shaders[i]=FindShader(path);
+                if(!assets[i] || !shaders[i] || !shaders[i].isSupported ||
+                    !shaders[i].name.Contains("Mesh"))
+                    throw new Exception("Real VFX Mesh Output import failed: "+path);
+                ValidateGenerated(path,Flags0Lo[i],Flags0Hi[i],Flags1Hi[i],report);
+                var material=new Material(shaders[i]);
+                try{report.WriteLine(path+" lazyEditorPassCount="+material.passCount);}
+                finally{UnityEngine.Object.DestroyImmediate(material);}
+            }
+            var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            var host=new GameObject("NBFX ColorAdjustment VFX Player Probe");
+            var probe=host.AddComponent<NBFXAdjustPlayerProbe>();
+            probe.graphShader=graph;
+            probe.offAsset=assets[0];probe.contrastAsset=assets[1];
+            probe.saturationAsset=assets[2];probe.hueAsset=assets[3];
+            probe.refineAsset=assets[4];
+            probe.offShader=shaders[0];probe.contrastShader=shaders[1];
+            probe.saturationShader=shaders[2];probe.hueShader=shaders[3];
+            probe.refineShader=shaders[4];
+            if(!EditorSceneManager.SaveScene(scene,ScenePath))
+                throw new Exception("Could not save clone-only Player scene");
+            report.Flush();
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(AppPath));
+        var build=BuildPipeline.BuildPlayer(new BuildPlayerOptions{
+            scenes=new[]{ScenePath},locationPathName=AppPath,
+            target=BuildTarget.StandaloneOSX,options=BuildOptions.None});
+        Debug.Log("NBFX_ADJUST_BUILD result="+build.summary.result+
+            " errors="+build.summary.totalErrors+" warnings="+build.summary.totalWarnings);
+        if(build.summary.result!=BuildResult.Succeeded || build.summary.totalErrors!=0)
+            throw new Exception("ColorAdjustment VFX Player build failed");
+    }
+    static void ValidateTexture(TextWriter report)
+    {
+        AssetDatabase.ImportAsset(BaseTexturePath,ImportAssetOptions.ForceUpdate);
+        var importer=AssetImporter.GetAtPath(BaseTexturePath) as TextureImporter;
+        var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(BaseTexturePath);
+        if(!importer || !texture || AssetDatabase.AssetPathToGUID(BaseTexturePath)!=BaseTextureGuid ||
+           importer.sRGBTexture || importer.mipmapEnabled || !importer.isReadable ||
+           importer.textureCompression!=TextureImporterCompression.Uncompressed ||
+           texture.width!=1 || texture.height!=1 || importer.filterMode!=FilterMode.Point ||
+           importer.wrapMode!=TextureWrapMode.Clamp)
+            throw new Exception("Explicit RGBA BaseMap import contract failed");
+        var pixel=texture.GetPixel(0,0);
+        var expected=new Color(64f/255f,128f/255f,160f/255f,192f/255f);
+        for(int i=0;i<4;i++)if(Mathf.Abs(pixel[i]-expected[i])>.003f)
+            throw new Exception("BaseMap RGBA pixel mismatch: "+pixel);
+        report.WriteLine("BaseMap linearRGBA="+pixel+" mip=false uncompressed point/clamp");
+    }
+    static string Body(string text,long id)
+    {
+        var m=Regex.Match(text,@"(?ms)^--- !u!114 &"+id+@"\n.*?(?=^--- !u!|\z)");
+        if(!m.Success)throw new Exception("Missing VFX object "+id);
+        return m.Value;
+    }
+    static bool Scalar(string text,long id,string name,string value)
+    {
+        string b=Body(text,id);
+        return b.Contains("name: "+name)&&b.Contains("m_SerializableObject: "+value+"\n");
+    }
+    static bool SerializedVector(string text,long id,string name,string json)
+    {
+        string b=Body(text,id);
+        return b.Contains("name: "+name)&&b.Contains(json);
+    }
+    static void ValidateSerialized(string path,int f0lo,int f0hi,int f1hi,TextWriter report)
+    {
+        string text=File.ReadAllText(Path.Combine(Directory.GetParent(Application.dataPath).FullName,path));
+        string output=Body(text,OutputId);
+        if(!text.Contains("  capacity: 1\n") || !output.Contains("  cullMode: 0\n") ||
+           !output.Contains("  blendMode: 1\n") ||
+           !Body(text,BaseMapId).Contains(BaseTextureGuid) ||
+           !Scalar(text,Flags0LoId,"_NB_Flags0Lo16",f0lo.ToString()) ||
+           !Scalar(text,Flags0HiId,"_NB_Flags0Hi16",f0hi.ToString()) ||
+           !Scalar(text,Flags1HiId,"_NB_Flags1Hi16",f1hi.ToString()) ||
+           !Scalar(text,HueId,"_HueShift","0.5") ||
+           !Scalar(text,ContrastId,"_Contrast","0.5") ||
+           !Scalar(text,SaturationId,"_Saturability","0") ||
+           !SerializedVector(text,MidId,"_ContrastMidColor",
+               "{\"r\":0.5,\"g\":0.2,\"b\":0.4,\"a\":1.0}") ||
+           !SerializedVector(text,RefineId,"_BaseMapColorRefine",
+               "{\"x\":2.0,\"y\":1.0,\"z\":1.0,\"w\":0.0}"))
+            throw new Exception("ColorAdjustment serialized Output contract invalid: "+path);
+        foreach(long id in new[]{HueId,ContrastId,MidId,SaturationId,RefineId})
+            if(!output.Contains("  - {fileID: "+id+"}\n"))
+                throw new Exception("Output missing ColorAdjustment slot "+id+": "+path);
+        report.WriteLine(path+" flags0Lo="+f0lo+" flags0Hi="+f0hi+
+            " flags1Hi="+f1hi+" hue=.5 contrast=.5 saturation=0 refine=(2,1,1,0)");
+    }
+    static Shader FindShader(string path)
+    {
+        foreach(var obj in AssetDatabase.LoadAllAssetsAtPath(path))
+            if(obj is Shader shader && shader.name.Contains("Mesh"))return shader;
+        return null;
+    }
+    static bool SourceVector(string source,string name,float[] expected)
+    {
+        var m=Regex.Match(source,@"output\."+Regex.Escape(name)+@"\s*=\s*float4\(([^)]*)\)");
+        if(!m.Success)return false;
+        var parts=m.Groups[1].Value.Split(',');if(parts.Length!=4)return false;
+        for(int i=0;i<4;i++)
+        {
+            float actual;
+            if(!float.TryParse(parts[i].Trim(),NumberStyles.Float,CultureInfo.InvariantCulture,out actual) ||
+               Mathf.Abs(actual-expected[i])>.005f)return false;
+        }
+        return true;
+    }
+    static void ValidateGenerated(string path,int f0lo,int f0hi,int f1hi,TextWriter report)
+    {
+        const BindingFlags flags=BindingFlags.Public|BindingFlags.NonPublic|
+            BindingFlags.Static|BindingFlags.Instance;
+        Type type=null;
+        foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {type=assembly.GetType("UnityEditor.VFX.VisualEffectResource");if(type!=null)break;}
+        if(type==null)throw new Exception("VFX generated-resource reflection unavailable");
+        var resource=type.GetMethod("GetResourceAtPath",flags).Invoke(null,new object[]{path});
+        if(resource==null)throw new Exception("VFX generated-resource missing: "+path);
+        int count=(int)type.GetMethod("GetShaderSourceCount",flags).Invoke(resource,null);
+        var getter=type.GetMethod("GetShaderSource",flags);
+        bool found=false;
+        for(int i=0;i<count;i++)
+        {
+            string source=(string)getter.Invoke(resource,new object[]{i});
+            if(!source.Contains("output._HueShift"))continue;
+            File.WriteAllText(Path.Combine(Root,Path.GetFileNameWithoutExtension(path)+"-"+i+".shader"),source);
+            bool values=source.Contains("output._HueShift = (float)0.5;") &&
+                source.Contains("output._Contrast = (float)0.5;") &&
+                source.Contains("output._Saturability = (float)0;") &&
+                source.Contains("output._NB_Flags0Lo16 = (float)"+f0lo+";") &&
+                source.Contains("output._NB_Flags0Hi16 = (float)"+f0hi+";") &&
+                source.Contains("output._NB_Flags1Hi16 = (float)"+f1hi+";") &&
+                SourceVector(source,"_ContrastMidColor",new[]{.5f,.2f,.4f,1f}) &&
+                SourceVector(source,"_BaseMapColorRefine",new[]{2f,1f,1f,0f});
+            bool passes=source.Contains("\"LightMode\" = \"NBCameraOpaqueDistortPass\"") &&
+                source.Contains("\"LightMode\" = \"NBDeferredDistortPass\"");
+            bool adjustment=source.Contains("NBGraphBaseColor");
+            report.WriteLine(path+" generatedSource="+i+" allValues="+values+
+                " exactPasses="+passes+" graphFunction="+adjustment);
+            found|=values&&passes&&adjustment;
+        }
+        if(!found)throw new Exception("ColorAdjustment Output bindings or Passes absent: "+path);
+    }
+}
