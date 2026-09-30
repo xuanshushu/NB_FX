@@ -39,3 +39,12 @@ all five per-case numeric JSON fields equal previous baseline and six key
 PNGs byte-identical. This proves the new default-off Graph inputs do not
 change those existing VFX Outputs in the controlled case, not active Fresnel.
 Clone test assets removed; cleanup CLI exit0, protected hashes unchanged.
+
+Follow-up Mesh Graph Inspector packed flag controls (code bc33ebf): bit2
+alpha mode, bit18 invert, bit13 color/alpha relation write existing Flags0
+low/high 16-bit floats per selected Material, preserving every other bit;
+Undo.RecordObjects and mixed state are implemented. Clone Editor test invoked
+the private bit writer on two differently flagged materials, verified on/off,
+independent writes and no-op; exit0. No visible GUI/Undo mouse test, VFX
+Output inspector remains official and is not controlled by this Mesh adapter.
+Cleanup compile exit0, protected hashes unchanged.
