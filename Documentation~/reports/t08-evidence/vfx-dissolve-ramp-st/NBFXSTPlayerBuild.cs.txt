@@ -1,0 +1,313 @@
+// /tmp-only clone fixture: inspect real VFX Mesh Output bindings, then build Player.
+using System;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXSTPlayerBuild
+{
+    const string Root="/tmp/nbfx-vfx-dissolve-ramp-st-probe-20260930/run";
+    const string ScenePath="Assets/NBFXSTPlayer.unity";
+    const string AppPath=Root+"/player/NBFXSTPlayer.app";
+    const string GraphPath="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string BasePath="Assets/NBFXSTBaseRGBA_64_128_160_192.png";
+    const string GrayPath="Assets/NBFXSTDissolveGray133.png";
+    const string RampPath="Assets/NBFXSTNonuniformRamp8x1.png";
+    const string BaseGuid="8b23ba0a174b5c5c92723ea3f311ecc6";
+    const string GrayGuid="981b00942ec058a2a54a4eb8ad497193";
+    const string RampGuid="e5656070e6c757d298dbcbf73108cde5";
+    const long OutputId=8926484042661614853;
+    const long BaseMapId=8926484042661614854;
+    const long ColorId=8926484042661614855;
+    const long Flags1Id=8926484042661614871;
+    const long DissolveMapId=8926484042661614889;
+    const long DissolveToggleId=8926484042661614890;
+    const long DissolveId=8926484042661614891;
+    const long RampToggleId=8926484042661617200;
+    const long RampSourceId=8926484042661617210;
+    const long RampMapId=8926484042661617220;
+    const long RampTintId=8926484042661617230;
+    const long RampCountId=8926484042661617240;
+    const long OverrideEnabledId=8926484042661617400;
+    const long OverrideSTId=8926484042661617410;
+    const long WrapLoId=8926484042661617420;
+    const long WrapHiId=8926484042661617430;
+    static readonly long[] RampColorIds={8926484042661617250,
+        8926484042661617260,8926484042661617270,8926484042661617280,
+        8926484042661617290,8926484042661617300};
+    static readonly long[] RampAlphaIds={8926484042661617310,
+        8926484042661617320,8926484042661617330};
+    static readonly string[] Names={"NativeRepeat","OverrideRepeat","OverrideClamp"};
+    static readonly string[] Guids={"71a20a68f998598dbb04ea858e659db5",
+        "e7bbfd92b4835ad6b6d277427b58ee40",
+        "c319a9645df9592599d7c219c4a1ab22"};
+    static readonly int[] OverrideEnabled={0,1,1};
+    static readonly int[] WrapLo={0,0,128};
+
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        using(var report=new StreamWriter(Path.Combine(Root,"editor-inspection.txt")))
+        {
+            ValidateTexture(BasePath,BaseGuid,new Color(64f/255f,128f/255f,
+                160f/255f,192f/255f),report);
+            ValidateTexture(GrayPath,GrayGuid,new Color(133f/255f,133f/255f,
+                133f/255f,1f),report);
+            ValidateRampTexture(report);
+            var graph=AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            if(!graph||!graph.isSupported)
+                throw new Exception("Product Graph unavailable or unsupported");
+            var assets=new VisualEffectAsset[Names.Length];var shaders=new Shader[Names.Length];
+            for(int i=0;i<Names.Length;i++)
+            {
+                string path="Assets/NBFXST"+Names[i]+".vfx";
+                AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+                if(AssetDatabase.AssetPathToGUID(path)!=Guids[i])
+                    throw new Exception("VFX GUID mismatch "+path);
+                ValidateSerialized(path,i,report);
+                assets[i]=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+                shaders[i]=FindShader(path);
+                if(!assets[i]||!shaders[i]||!shaders[i].isSupported||
+                   !shaders[i].name.Contains("Mesh"))
+                    throw new Exception("Real VFX Mesh Output import failed "+path);
+                ValidateGenerated(path,i,report);
+                var material=new Material(shaders[i]);
+                try{report.WriteLine(path+" lazyEditorPassCount="+material.passCount);}
+                finally{UnityEngine.Object.DestroyImmediate(material);}
+            }
+            var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            var host=new GameObject("NBFX ST VFX Player probe");
+            var probe=host.AddComponent<NBFXSTPlayerProbe>();
+            probe.graphShader=graph;
+            probe.nativeAsset=assets[0];probe.repeatAsset=assets[1];
+            probe.clampAsset=assets[2];
+            probe.nativeShader=shaders[0];probe.repeatShader=shaders[1];
+            probe.clampShader=shaders[2];
+            if(!EditorSceneManager.SaveScene(scene,ScenePath))
+                throw new Exception("Could not save clone-only Player scene");
+            report.Flush();
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(AppPath));
+        var build=BuildPipeline.BuildPlayer(new BuildPlayerOptions{
+            scenes=new[]{ScenePath},locationPathName=AppPath,
+            target=BuildTarget.StandaloneOSX,options=BuildOptions.None
+        });
+        Debug.Log("NBFX_ST_BUILD result="+build.summary.result+
+            " errors="+build.summary.totalErrors+
+            " warnings="+build.summary.totalWarnings);
+        if(build.summary.result!=BuildResult.Succeeded||
+           build.summary.totalErrors!=0)
+            throw new Exception("Ramp ST VFX Player build failed");
+    }
+    static void ValidateTexture(string path,string guid,Color expected,TextWriter report)
+    {
+        AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+        var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+        var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        if(!importer||!texture||AssetDatabase.AssetPathToGUID(path)!=guid||
+           importer.sRGBTexture||importer.mipmapEnabled||!importer.isReadable||
+           importer.textureCompression!=TextureImporterCompression.Uncompressed||
+           texture.width!=1||texture.height!=1||
+           importer.filterMode!=FilterMode.Point||importer.wrapMode!=TextureWrapMode.Clamp)
+            throw new Exception("Explicit texture import contract failed "+path);
+        Color actual=texture.GetPixel(0,0);
+        for(int i=0;i<4;i++)
+            if(Mathf.Abs(actual[i]-expected[i])>.003f)
+                throw new Exception("Texture pixel mismatch "+path+": "+actual);
+        report.WriteLine(path+" linearRGBA="+actual+" uncompressed/point/clamp");
+    }
+    static void ValidateRampTexture(TextWriter report)
+    {
+        AssetDatabase.ImportAsset(RampPath,ImportAssetOptions.ForceUpdate);
+        var importer=AssetImporter.GetAtPath(RampPath) as TextureImporter;
+        var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(RampPath);
+        if(!importer||!texture||AssetDatabase.AssetPathToGUID(RampPath)!=RampGuid||
+           importer.sRGBTexture||importer.mipmapEnabled||!importer.isReadable||
+           importer.textureCompression!=TextureImporterCompression.Uncompressed||
+           texture.width!=8||texture.height!=1||
+           importer.filterMode!=FilterMode.Point||
+           importer.wrapMode!=TextureWrapMode.Clamp)
+            throw new Exception("Explicit 8x1 Ramp texture import contract failed");
+        var expected=new[]{
+            new Color(1,0,0,1),new Color(1,128f/255f,0,1),
+            new Color(0,1,0,1),new Color(0,0,1,1),
+            new Color(1,1,0,1),new Color(0,1,1,1),
+            new Color(128f/255f,0,1,1),new Color(1,0,1,1)};
+        for(int x=0;x<8;x++){
+            var actual=texture.GetPixel(x,0);
+            for(int c=0;c<4;c++)
+                if(Mathf.Abs(actual[c]-expected[x][c])>.003f)
+                    throw new Exception("Ramp texel mismatch x="+x+" "+actual);
+        }
+        report.WriteLine(RampPath+" explicit linear nonuniform 8x1; point/clamp importer");
+    }
+    static string Body(string text,long id)
+    {
+        var match=Regex.Match(text,@"(?ms)^--- !u!114 &"+id+
+            @"\n.*?(?=^--- !u!|\z)");
+        if(!match.Success)throw new Exception("Missing VFX object "+id);
+        return match.Value;
+    }
+    static bool Scalar(string text,long id,string name,string value)
+    {
+        string body=Body(text,id);
+        return body.Contains("name: "+name+"\n")&&
+            body.Contains("m_SerializableObject: "+value+"\n");
+    }
+    static bool Vector(string text,long id,string name,string json)
+    {
+        string body=Body(text,id);
+        return body.Contains("name: "+name+"\n")&&body.Contains(json);
+    }
+    static void ValidateSerialized(string path,int index,TextWriter report)
+    {
+        string text=File.ReadAllText(Path.Combine(
+            Directory.GetParent(Application.dataPath).FullName,path));
+        string output=Body(text,OutputId);
+        if(!text.Contains("  capacity: 1\n")||
+           !output.Contains("  cullMode: 0\n")||
+           !output.Contains("  blendMode: 1\n")||
+           !Body(text,BaseMapId).Contains(BaseGuid)||
+           !Body(text,DissolveMapId).Contains(GrayGuid)||
+           !Body(text,RampMapId).Contains(RampGuid)||
+           !Vector(text,ColorId,"_Color",
+                "{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6666667}")||
+           !Scalar(text,Flags1Id,"_NB_Flags1Lo16","0")||
+           !Scalar(text,DissolveToggleId,"_Dissolve_Toggle","1")||
+           !Vector(text,DissolveId,"_Dissolve",
+                "{\"x\":0.5,\"y\":1.0,\"z\":1.0,\"w\":0.10000000149011612}")||
+           !Scalar(text,RampToggleId,"_Dissolve_useRampMap_Toggle","1")||
+           !Scalar(text,RampSourceId,"_DissolveRampSourceMode","1")||
+           !Scalar(text,RampCountId,"_DissolveRampCount","131074")||
+           !Scalar(text,OverrideEnabledId,"_NB_DissolveRampSTOverrideEnabled",
+                OverrideEnabled[index].ToString())||
+           !Vector(text,OverrideSTId,"_NB_DissolveRampSTOverride",
+                "{\"x\":1.0,\"y\":1.0,\"z\":1.25,\"w\":0.0}")||
+           !Scalar(text,WrapLoId,"_NB_WrapFlagsLo16",WrapLo[index].ToString())||
+           !Scalar(text,WrapHiId,"_NB_WrapFlagsHi16","0")||
+           !Vector(text,RampTintId,"_DissolveRampColor",
+                "{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0}"))
+            throw new Exception("Ramp serialized Output contract invalid "+path);
+        for(int k=0;k<RampColorIds.Length;k++)
+        {
+            string expected=k==0 ?
+                "{\"r\":0.0,\"g\":0.0,\"b\":1.0,\"a\":0.0}" :
+                k==1 ? "{\"r\":0.0,\"g\":0.0,\"b\":1.0,\"a\":1.0}" :
+                "{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0}";
+            if(!Vector(text,RampColorIds[k],"_DissolveRampColor"+k,expected))
+                throw new Exception("Ramp color slot invalid "+k+" "+path);
+        }
+        for(int k=0;k<RampAlphaIds.Length;k++)
+            if(!Vector(text,RampAlphaIds[k],"_DissolveRampAlpha"+k,
+                "{\"x\":1.0,\"y\":0.0,\"z\":1.0,\"w\":1.0}"))
+                throw new Exception("Ramp alpha slot invalid "+k+" "+path);
+        foreach(long id in new[]{RampToggleId,RampSourceId,RampMapId,
+                RampTintId,RampCountId,OverrideEnabledId,OverrideSTId,
+                WrapLoId,WrapHiId})
+            if(!output.Contains("  - {fileID: "+id+"}\n"))
+                throw new Exception("Output missing Ramp slot "+id+" "+path);
+        foreach(long id in RampColorIds)
+            if(!output.Contains("  - {fileID: "+id+"}\n"))
+                throw new Exception("Output missing Ramp color slot "+id+" "+path);
+        foreach(long id in RampAlphaIds)
+            if(!output.Contains("  - {fileID: "+id+"}\n"))
+                throw new Exception("Output missing Ramp alpha slot "+id+" "+path);
+        report.WriteLine(path+" overrideEnabled="+OverrideEnabled[index]+
+            " overrideST=(1,1,1.25,0) wrapLo="+WrapLo[index]+
+            " wrapHi=0 explicit gray/nonuniform ramp maps");
+    }
+    static Shader FindShader(string path)
+    {
+        foreach(var obj in AssetDatabase.LoadAllAssetsAtPath(path))
+            if(obj is Shader shader&&shader.name.Contains("Mesh"))return shader;
+        return null;
+    }
+    static bool SourceScalar(string source,string name,float expected)
+    {
+        var found=Regex.Match(source,@"output\."+Regex.Escape(name)+
+            @"\s*=\s*\(float\)\s*([-+0-9.eE]+)\s*;");
+        if(!found.Success)return false;
+        float actual;
+        return float.TryParse(found.Groups[1].Value,NumberStyles.Float,
+            CultureInfo.InvariantCulture,out actual)&&
+            Mathf.Abs(actual-expected)<.005f;
+    }
+    static bool SourceVector(string source,string name,float[] expected)
+    {
+        var found=Regex.Match(source,@"output\."+Regex.Escape(name)+
+            @"\s*=\s*float4\(([^)]*)\)");
+        if(!found.Success)return false;
+        var parts=found.Groups[1].Value.Split(',');
+        if(parts.Length!=4)return false;
+        for(int i=0;i<4;i++){
+            float actual;
+            if(!float.TryParse(parts[i].Trim(),NumberStyles.Float,
+                CultureInfo.InvariantCulture,out actual)||
+               Mathf.Abs(actual-expected[i])>.005f)return false;
+        }
+        return true;
+    }
+    static void ValidateGenerated(string path,int index,TextWriter report)
+    {
+        const BindingFlags flags=BindingFlags.Public|BindingFlags.NonPublic|
+            BindingFlags.Static|BindingFlags.Instance;
+        Type type=null;
+        foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies()){
+            type=assembly.GetType("UnityEditor.VFX.VisualEffectResource");
+            if(type!=null)break;
+        }
+        if(type==null)throw new Exception("VFX generated-resource reflection unavailable");
+        var resource=type.GetMethod("GetResourceAtPath",flags)
+            .Invoke(null,new object[]{path});
+        if(resource==null)throw new Exception("VFX generated resource missing "+path);
+        int count=(int)type.GetMethod("GetShaderSourceCount",flags)
+            .Invoke(resource,null);
+        var getter=type.GetMethod("GetShaderSource",flags);
+        bool found=false;
+        for(int i=0;i<count;i++)
+        {
+            string source=(string)getter.Invoke(resource,new object[]{i});
+            if(!source.Contains("output._NB_DissolveRampSTOverrideEnabled"))continue;
+            File.WriteAllText(Path.Combine(Root,
+                Path.GetFileNameWithoutExtension(path)+"-"+i+".shader"),source);
+            bool bindings=
+                SourceScalar(source,"_Dissolve_Toggle",1f)&&
+                SourceScalar(source,"_Dissolve_useRampMap_Toggle",1f)&&
+                SourceScalar(source,"_DissolveRampSourceMode",1f)&&
+                SourceScalar(source,"_NB_Flags1Lo16",0f)&&
+                SourceScalar(source,"_NB_DissolveRampSTOverrideEnabled",
+                    OverrideEnabled[index])&&
+                SourceVector(source,"_NB_DissolveRampSTOverride",
+                    new[]{1f,1f,1.25f,0f})&&
+                SourceScalar(source,"_NB_WrapFlagsLo16",WrapLo[index])&&
+                SourceScalar(source,"_NB_WrapFlagsHi16",0f)&&
+                SourceVector(source,"_Color",new[]{1f,1f,1f,.6666667f})&&
+                SourceVector(source,"_Dissolve",new[]{.5f,1f,1f,.1f})&&
+                SourceScalar(source,"_DissolveRampCount",131074f)&&
+                SourceVector(source,"_DissolveRampColor",new[]{1f,1f,1f,1f})&&
+                SourceVector(source,"_DissolveRampColor0",new[]{0f,0f,1f,0f})&&
+                SourceVector(source,"_DissolveRampColor1",new[]{0f,0f,1f,1f})&&
+                SourceVector(source,"_DissolveRampAlpha0",new[]{1f,0f,1f,1f});
+            bool explicitTexture=source.Contains("TEXTURE2D(_DissolveRampMap)")&&
+                source.Contains("_DissolveRampMap_ST")&&
+                source.Contains("UnityBuildTexture2DStructInternal(_DissolveRampMap,");
+            bool passes=source.Contains("\"LightMode\" = \"NBCameraOpaqueDistortPass\"")&&
+                source.Contains("\"LightMode\" = \"NBDeferredDistortPass\"");
+            bool function=source.Contains("NBGraphBaseColor_float(")&&
+                source.Contains("NBGraphBaseColor.hlsl");
+            report.WriteLine(path+" generatedSource="+i+
+                " exactBindings="+bindings+" explicitTexture="+explicitTexture+
+                " exactPasses="+passes+
+                " graphHostIncludeAndCall="+function);
+            found|=bindings&&explicitTexture&&passes&&function;
+        }
+        if(!found)
+            throw new Exception("Ramp ST Output bindings or custom Passes absent "+path);
+    }
+}
