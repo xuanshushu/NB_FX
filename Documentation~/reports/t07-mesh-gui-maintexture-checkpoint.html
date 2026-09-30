@@ -1,0 +1,20 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 主纹理 Inspector GUI1A</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：完整 Mesh 优先</a> · <a href="t07-mesh-pnoise-screen-checkpoint.html">前一片 PN2</a></p>
+<h1>普通 Mesh Graph 已接入现有“主纹理”编辑控件；本片 38 项通过</h1>
+<p><strong>人话结论：</strong>Graph 材质不再只能在一长串原生属性里找主纹理；包内 Inspector 现在复用原 NBShader 的“主纹理”控件处理贴图、颜色、旋转、偏移、纹理通道及相关设置。原 ShaderLab 材质仍走原控件；Graph 的其他功能暂由原生属性入口保留，不能把本片说成“整个 Inspector 都迁好了”。本轮自动测试证明的是<strong>真实材质上的编辑后端和状态保存</strong>，不是人眼看过的完整 Inspector 布局。</p>
+<p>固定提交 <code>597cf3f0b76f1589dc1064bafec03aee41dd216f</code>，8 条改动路径均有<a href="t07-evidence/gui-maintexture-20261001/product-source/commit.json">来自该提交的无损源码快照</a>。没有改官方 URP、UniversalTarget、NBPostprocess 或原 ShaderLab Pass；测试里使用的反射只为调用现有非公开入口，<strong>不是产品实现</strong>。主 Agent 独占隔离工程的 Unity CLI 运行验证；本证据归档者没有启动 Unity、编辑产品/测试/中央文档或 push。</p>
+<h2>具体测过什么</h2>
+<ul>
+<li>新增 GUI1A <strong>38/38</strong>，加上此前 GUI 存取测试 <strong>46/46</strong>，独立运行合计 <strong>84/84</strong>。它们使用真实导入的 Graph/ShaderLab 材质、真实 <code>MaterialEditor</code>、Root、Context 和 Sync。Graph 是否有 Forward Pass 在真实 URP Camera/Renderer 环境中预热确认；不是用伪造的占位 Shader 判定。</li>
+<li>Graph 与 ShaderLab 混选时，遵守 Unity 官方 <code>MaterialEditor.HasMultipleMixedShaderValues</code> 的保护，不把第一只材质的值抄给第二只；同为 Graph 的两只材质也分别保留原值。版本标记、8 个 packed 原始字、材质关键词/Pass 状态、撤销重做、100 次重复构造与同步、真实 <code>.mat</code> 保存/重导入都在测试范围。</li>
+<li>旧主纹理控件要读取 <code>EditorStyles</code>，测试只在真正的原生 <code>EditorWindow.OnGUI</code> 事件里构造它，不伪造 GUI skin。两只材质的 ST 向量编辑与 Undo 使用 Unity 实际别名关系逐值核对；最终断言没有通过放宽阈值或忽略异常来换“通过”。16 种普通 Mesh Surface/Blend/Clip 组合也检查了两条同步入口。</li>
+</ul>
+<p><a href="t07-evidence/gui-maintexture-20261001/history/v4-standalone/results.xml">84 项原始 XML</a> · <a href="t07-evidence/gui-maintexture-20261001/history/v4-standalone/unity.log.gz">日志</a> · <a href="t07-evidence/gui-maintexture-20261001/summary.json">统计</a>。</p>
+<h2>为什么前几轮会失败</h2>
+<p>初版完整运行 <strong>1041 项中 878 过、163 失败</strong>：旧 158 项严格失败之外多 5 项 GUI1A 夹具失败。旧控件的两个构造例子缺真正 OnGUI 环境；两个混选例子绕过 Unity 官方前置保护而触发属性报错；一个 ST 例子的初始状态假设不对。第二版独立运行 <strong>46/84</strong>，新增 38 项都在准备阶段遇到未预热的 Graph 占位 Pass，不是正式产品“缺 Forward Pass”的结论。第三版在真实 URP 相机环境预热后 <strong>83/84</strong>，余下一项是测试把 Unity 的 <code>_BaseMap</code> ST 原生别名当成独立字段。第四版只修夹具对该别名的逐值判定后 <strong>84/84</strong>。所有失败原始 XML、日志、夹具版本和只读官方程序集 IL 依据均<a href="t07-evidence/gui-maintexture-20261001/history/">保留</a>；没有把中间尝试冒充成功的产品验证。</p>
+<h2>1041 项合并回归</h2>
+<p>同一固定产品提交的最终全量运行是 <strong>1041 项：883 通过、158 失败、0 跳过</strong>；前轮 1003 项中的 158 个失败身份全部还在，<strong>没有新增或消失</strong>，本片新 38 项全过。旧失败仍应在最终人工清单里，不因 GUI1A 通过而自动放行 G3/G4。<a href="t07-evidence/gui-maintexture-20261001/full/results.xml">完整 XML</a> · <a href="t07-evidence/gui-maintexture-20261001/full/failure-id-audit.json">失败身份核对</a>。</p>
+<p>GUI 的 84 项是材质/编辑器状态测试，<strong>没有 84 张对应截图</strong>。全量运行产生的 <strong>13,082</strong> 份 PNG 或 float32 原始帧逐份读取并与最近 PN2 持久档所指的真实文件比较；压缩帧先解压再算 SHA-256，<strong>13,082 份均逐字节相同</strong>，因此不重复拷贝旧图。另有 <strong>1,279</strong> 份非截图状态/指标/Preview 等文件全部原样保存。<a href="t07-evidence/gui-maintexture-20261001/full/capture-equivalence.json">逐份载荷与原档映射</a> · <a href="t07-evidence/gui-maintexture-20261001/full/metadata-audit.json">非截图清单</a> · <a href="t07-evidence/gui-maintexture-20261001/full/unity.log.gz">完整日志</a>。最终日志没有 C# 或 Shader 编译错误；NUnit 严格失败使 Unity 以代码 2 退出，退出后的 dotnet build-server/SDK 消息仍留在原日志，不能写成“全程无错误”。保护工程设置/Renderer 三文件与前档 hash 相同，见<a href="t07-evidence/gui-maintexture-20261001/protected-settings-audit.json">只读核对</a>。</p>
+<h2>没证明什么</h2>
+<p>尚未人工确认可见 Inspector 的布局/点击体验，也没有证明整个 Graph Inspector、所有旧 Shader 功能、GraphMPB、真正 VFX、Player、所有变体与性能。这里的真实 <code>OnGUI</code> 只证明旧构造函数所需的原生事件上下文，<strong>不是可视 UI 验收</strong>。继续按 D24 完成普通 Mesh 余项和一次性人工综合测试；<strong>G3/G4 未放行。</strong> <a href="t07-evidence/gui-maintexture-20261001/README.txt">证据说明</a> · <a href="t07-evidence/gui-maintexture-20261001/sha256.txt">全部附件 hash</a>。</p>
+</body></html>

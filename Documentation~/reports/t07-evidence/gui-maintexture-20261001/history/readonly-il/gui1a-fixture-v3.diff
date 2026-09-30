@@ -1,0 +1,120 @@
+--- /tmp/nbfx-gui1a-fixture-v2-20261001.cs	2026-10-01 05:38:45
++++ /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Tests/URP/Editor/G4GraphGuiMainTextureTests.cs	2026-10-01 05:41:16
+@@ -7,8 +7,11 @@
+ using System.Runtime.ExceptionServices;
+ using NUnit.Framework;
+ using UnityEditor;
++using UnityEditor.SceneManagement;
+ using UnityEngine;
+ using UnityEngine.Rendering;
++using UnityEngine.Rendering.Universal;
++using UnityEngine.SceneManagement;
+ using Object = UnityEngine.Object;
+ 
+ namespace NBFX.Baseline.Tests
+@@ -69,37 +72,63 @@
+         [OneTimeSetUp]
+         public void ReimportAndWarmActualGraph()
+         {
+-            // Root runs this exclusively in its isolated clone. This is a real
+-            // import/compiled Material pass, not a hand-built Graph schema oracle.
++            // Root runs this exclusively in its isolated clone. Initialize the
++            // real URP Camera path before asking an imported Graph for passes or
++            // properties. Direct CommandBuffer draws alone did not resolve the
++            // placeholder in the v2 standalone run (although v1 full suite did).
+             AssetDatabase.ImportAsset(GraphPath, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+             graphShader = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+             legacyShader = AssetDatabase.LoadAssetAtPath<Shader>(LegacyPath);
+-            Assert.That(graphShader && legacyShader && graphShader.isSupported && legacyShader.isSupported, Is.True);
++            Assert.That(graphShader && legacyShader, Is.True);
+             Assert.That(SystemInfo.graphicsDeviceType, Is.Not.EqualTo(GraphicsDeviceType.Null), "Warmup must use the actual device.");
++            Assert.That(GraphicsSettings.currentRenderPipeline, Is.InstanceOf<UniversalRenderPipelineAsset>());
++            var rendererData = ((UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline).rendererDataList[0] as UniversalRendererData;
++            Assert.That(rendererData, Is.Not.Null, "Current ordinary-Mesh renderer is required.");
++            const int layer = 4;
++            Assert.That(rendererData.opaqueLayerMask.value & (1 << layer), Is.Not.Zero, "Warmup reads allowed opaque layer, never changes it.");
++            Assert.That(rendererData.transparentLayerMask.value & (1 << layer), Is.Not.Zero, "Warmup reads allowed transparent layer, never changes it.");
++            var nbFeature = rendererData.rendererFeatures.FirstOrDefault(feature => feature && feature.GetType().FullName == "NBShader.NBPostProcess");
++            Assert.That(nbFeature, Is.Not.Null, "Current NB renderer feature must be isolated during the warm camera.");
++            bool nbWasActive = nbFeature.isActive;
++            string project = Path.GetFullPath(Path.GetDirectoryName(Application.dataPath));
++            var protectedPaths = new[] { "ProjectSettings/ProjectSettings.asset", "Assets/UniversalRenderPipelineGlobalSettings.asset", AssetDatabase.GetAssetPath(rendererData) }
++                .Select(path => Path.Combine(project, path)).Distinct().ToArray();
++            var protectedBytes = protectedPaths.ToDictionary(path => path, File.ReadAllBytes);
+             var warm = new Material(graphShader) { hideFlags = HideFlags.HideAndDontSave };
+-            var mesh = new Mesh { hideFlags = HideFlags.HideAndDontSave };
+-            var target = new RenderTexture(8, 8, 0, RenderTextureFormat.ARGBFloat, RenderTextureReadWrite.Linear);
++            Scene scene = EditorSceneManager.NewPreviewScene();
++            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
++            var cameraObject = new GameObject("GUI1A real URP Mesh schema warm camera");
++            Camera camera = cameraObject.AddComponent<Camera>();
++            var cameraData = cameraObject.AddComponent<UniversalAdditionalCameraData>();
++            var target = new RenderTexture(8, 8, 24, RenderTextureFormat.ARGBFloat, RenderTextureReadWrite.Linear);
+             var read = new Texture2D(8, 8, TextureFormat.RGBAFloat, false, true);
+-            var commands = new CommandBuffer { name = "GUI1A actual Mesh Graph metadata warmup" };
+             var active = RenderTexture.active; bool async = ShaderUtil.allowAsyncCompilation;
+             try
+             {
+                 ShaderUtil.allowAsyncCompilation = false;
+-                Assert.That(warm.SetPass(0), Is.True, "Compile and bind the actual Mesh Graph material.");
+-                mesh.vertices = new[] { new Vector3(-1, -1, 0), new Vector3(1, -1, 0), new Vector3(1, 1, 0), new Vector3(-1, 1, 0) };
+-                mesh.triangles = new[] { 0, 1, 2, 0, 2, 3 };
+-                mesh.uv = new[] { Vector2.zero, Vector2.right, Vector2.one, Vector2.up };
+-                mesh.colors = Enumerable.Repeat(Color.white, 4).ToArray();
+-                mesh.normals = Enumerable.Repeat(Vector3.forward, 4).ToArray();
+-                mesh.tangents = Enumerable.Repeat(new Vector4(1, 0, 0, 1), 4).ToArray();
+-                Assert.That(target.Create(), Is.True);
+-                commands.SetRenderTarget(target); commands.ClearRenderTarget(false, true, Color.clear);
+-                commands.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+-                commands.DrawMesh(mesh, Matrix4x4.identity, warm, 0, 0);
+-                for (int i = 0; i < 4; ++i) Graphics.ExecuteCommandBuffer(commands);
+-                RenderTexture.active = target; read.ReadPixels(new Rect(0, 0, 8, 8), 0, 0, false); read.Apply(false, false);
+-                // Actual GPU draw/readback forces compilation; pixels are NOT
++                SceneManager.MoveGameObjectToScene(quad, scene);
++                SceneManager.MoveGameObjectToScene(cameraObject, scene);
++                quad.hideFlags = cameraObject.hideFlags = HideFlags.HideAndDontSave;
++                quad.layer = layer;
++                quad.transform.localScale = new Vector3(2, 2, 1);
++                var renderer = quad.GetComponent<MeshRenderer>();
++                renderer.shadowCastingMode = ShadowCastingMode.Off; renderer.receiveShadows = false;
++                renderer.sharedMaterial = warm; // Do not pre-query a pass/property to decide the first draw.
++                camera.scene = scene; camera.enabled = false;
++                camera.orthographic = true; camera.orthographicSize = 1.5f;
++                camera.nearClipPlane = .1f; camera.farClipPlane = 20f;
++                camera.transform.position = new Vector3(0, 0, -5); camera.transform.rotation = Quaternion.identity;
++                camera.cullingMask = 1 << layer; camera.clearFlags = CameraClearFlags.SolidColor;
++                camera.backgroundColor = Color.clear; camera.allowHDR = true; camera.allowMSAA = false;
++                camera.targetTexture = target;
++                cameraData.SetRenderer(0); cameraData.renderPostProcessing = false;
++                Assert.That(target.Create() && !target.sRGB, Is.True);
++                nbFeature.SetActive(false); rendererData.SetDirty();
++                for (int i = 0; i < 4; ++i) camera.Render();
++                RenderTexture.active = target; read.ReadPixels(new Rect(0, 0, 8, 8), 0, 0, false); read.Apply(false, false);
++                // Actual URP Camera draw/readback initializes the test host; pixels are NOT
+                 // compared, archived, or offered as feature/image-parity evidence.
++                Assert.That(graphShader.isSupported && legacyShader.isSupported, Is.True);
+                 Assert.That(AssetDatabase.LoadAllAssetsAtPath(GraphPath).Any(asset => asset != null &&
+                     asset.GetType().FullName == "UnityEditor.Rendering.Universal.ShaderGraph.UniversalMetadata"), Is.True,
+                     "Imported Graph must have real URP metadata, not placeholder import state.");
+@@ -111,13 +140,18 @@
+                 }
+                 Assert.That(MaterialEditor.GetMaterialProperties(new Object[] { warm }).Length, Is.GreaterThan(0));
+                 Assert.That(ShaderUtil.GetShaderMessages(graphShader).Any(m => m.severity == UnityEditor.Rendering.ShaderCompilerMessageSeverity.Error), Is.False);
+-                Debug.Log("NBFX_GUI1A_WARM actual DrawMesh x4 + float RT readback; URP metadata/Forward/3Float schema ready; NOT image parity.");
++                Debug.Log("NBFX_GUI1A_WARM actual preview-scene URP Camera.Render x4 + Mesh + float RT readback; layer4 allowed; URP metadata/Forward/3Float schema ready; NOT image parity.");
+             }
+             finally
+             {
++                nbFeature.SetActive(nbWasActive); rendererData.SetDirty();
++                camera.targetTexture = null;
+                 ShaderUtil.allowAsyncCompilation = async; RenderTexture.active = active;
+-                commands.Release(); target.Release();
+-                foreach (Object item in new Object[] { read, target, mesh, warm }) Object.DestroyImmediate(item);
++                target.Release();
++                foreach (Object item in new Object[] { read, target, warm }) Object.DestroyImmediate(item);
++                EditorSceneManager.ClosePreviewScene(scene);
++                foreach (var entry in protectedBytes)
++                    Assert.That(File.ReadAllBytes(entry.Key), Is.EqualTo(entry.Value), "Warmup must not change protected asset bytes: " + entry.Key);
+             }
+         }
+ 

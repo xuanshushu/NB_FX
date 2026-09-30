@@ -1,0 +1,248 @@
+TYPE UnityEditor.EditorWindow
+FIELD System.Boolean UnityEditor.EditorWindow::m_AutoRepaintOnSceneChange
+FIELD UnityEngine.Vector2 UnityEditor.EditorWindow::m_MinSize
+FIELD UnityEngine.Vector2 UnityEditor.EditorWindow::m_MaxSize
+FIELD UnityEngine.GUIContent UnityEditor.EditorWindow::m_TitleContent
+FIELD System.Int32 UnityEditor.EditorWindow::m_DepthBufferBits
+FIELD System.Int32 UnityEditor.EditorWindow::m_AntiAliasing
+FIELD System.Boolean UnityEditor.EditorWindow::m_ResetPanelRenderingOnAssetChange
+FIELD UnityEngine.Rect UnityEditor.EditorWindow::m_Pos
+FIELD UnityEditor.DataModeController UnityEditor.EditorWindow::m_SerializedDataModeController
+FIELD UnityEngine.UIElements.VisualElement UnityEditor.EditorWindow::m_UIRootElement
+FIELD UnityEditor.UIElements.SerializableJsonDictionary UnityEditor.EditorWindow::m_ViewDataDictionary
+FIELD UnityEditor.Overlays.OverlayCanvas UnityEditor.EditorWindow::m_OverlayCanvas
+FIELD System.Boolean UnityEditor.EditorWindow::m_OverlaysInitialized
+FIELD System.Boolean UnityEditor.EditorWindow::m_EnableViewDataPersistence
+FIELD System.Boolean UnityEditor.EditorWindow::m_RequestedViewDataSave
+FIELD System.Action UnityEditor.EditorWindow::s_UpdateWindowMenuListingOff
+FIELD System.Collections.Generic.List`1<UnityEditor.EditorWindow> UnityEditor.EditorWindow::<activeEditorWindows>k__BackingField
+FIELD System.Boolean UnityEditor.EditorWindow::m_IsPresented
+FIELD UnityEngine.Rect UnityEditor.EditorWindow::m_GameViewRect
+FIELD UnityEngine.Rect UnityEditor.EditorWindow::m_GameViewClippedRect
+FIELD UnityEngine.Vector2 UnityEditor.EditorWindow::m_GameViewTargetSize
+FIELD UnityEngine.EventInterests UnityEditor.EditorWindow::m_EventInterests
+FIELD System.Boolean UnityEditor.EditorWindow::m_DisableInputEvents
+FIELD UnityEditor.HostView UnityEditor.EditorWindow::m_Parent
+FIELD System.Double UnityEditor.EditorWindow::kWarningFadeoutWait
+FIELD System.Double UnityEditor.EditorWindow::kWarningFadeoutTime
+FIELD UnityEngine.GUIContent UnityEditor.EditorWindow::m_Notification
+FIELD UnityEngine.Vector2 UnityEditor.EditorWindow::m_NotificationSize
+FIELD System.Single UnityEditor.EditorWindow::m_FadeoutTime
+FIELD System.Action UnityEditor.EditorWindow::focusedWindowChanged
+FIELD System.Action UnityEditor.EditorWindow::windowFocusChanged
+FIELD System.Boolean UnityEditor.EditorWindow::m_HasUnsavedChanges
+FIELD System.String UnityEditor.EditorWindow::<saveChangesMessage>k__BackingField
+FIELD UnityEditor.EditorWindow/OverlayShortcutContext UnityEditor.EditorWindow::s_ShortcutContext
+METHOD System.Void UnityEditor.EditorWindow::ShowUtility()
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldc.i4.2
+IL_0003: call System.Void UnityEditor.EditorWindow::ShowWithMode(UnityEditor.ShowMode)
+IL_0008: nop
+IL_0009: ret
+METHOD System.Void UnityEditor.EditorWindow::ShowPopup()
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldc.i4.1
+IL_0003: ldc.i4.1
+IL_0004: call System.Void UnityEditor.EditorWindow::ShowPopupWithMode(UnityEditor.ShowMode,System.Boolean)
+IL_0009: nop
+IL_000a: ret
+METHOD System.Void UnityEditor.EditorWindow::ShowModalUtility()
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldc.i4.7
+IL_0003: call System.Void UnityEditor.EditorWindow::ShowWithMode(UnityEditor.ShowMode)
+IL_0008: nop
+IL_0009: ldarg.0
+IL_000a: call System.Void UnityEditor.EditorWindow::RepaintImmediately()
+IL_000f: nop
+IL_0010: ldarg.0
+IL_0011: call System.Void UnityEditor.EditorWindow::MakeModal()
+IL_0016: nop
+IL_0017: ret
+METHOD System.Void UnityEditor.EditorWindow::ShowWithMode(UnityEditor.ShowMode)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldfld UnityEditor.HostView UnityEditor.EditorWindow::m_Parent
+IL_0007: ldnull
+IL_0008: call System.Boolean UnityEngine.Object::op_Equality(UnityEngine.Object,UnityEngine.Object)
+IL_000d: stloc.0
+IL_000e: ldloc.0
+IL_000f: brfalse IL_00e1
+IL_0014: nop
+IL_0015: call UnityEditor.SavedGUIState UnityEditor.SavedGUIState::Create()
+IL_001a: stloc.1
+IL_001b: call !!0 UnityEngine.ScriptableObject::CreateInstance<UnityEditor.ContainerWindow>()
+IL_0020: stloc.2
+IL_0021: ldloc.2
+IL_0022: ldarg.0
+IL_0023: call UnityEngine.GUIContent UnityEditor.EditorWindow::get_titleContent()
+IL_0028: callvirt System.String UnityEngine.GUIContent::get_text()
+IL_002d: callvirt System.Void UnityEditor.ContainerWindow::set_title(System.String)
+IL_0032: nop
+IL_0033: call !!0 UnityEngine.ScriptableObject::CreateInstance<UnityEditor.HostView>()
+IL_0038: stloc.3
+IL_0039: ldloc.3
+IL_003a: ldarg.0
+IL_003b: callvirt System.Void UnityEditor.HostView::set_actualView(UnityEditor.EditorWindow)
+IL_0040: nop
+IL_0041: ldarg.0
+IL_0042: ldloc.3
+IL_0043: stfld UnityEditor.HostView UnityEditor.EditorWindow::m_Parent
+IL_0048: ldarg.0
+IL_0049: ldfld UnityEditor.HostView UnityEditor.EditorWindow::m_Parent
+IL_004e: callvirt UnityEngine.RectOffset UnityEditor.HostView::get_borderSize()
+IL_0053: ldarg.0
+IL_0054: call UnityEngine.Rect UnityEditor.EditorWindow::get_position()
+IL_0059: stloc.s V_5
+IL_005b: ldloca.s V_5
+IL_005d: call System.Single UnityEngine.Rect::get_x()
+IL_0062: ldarg.0
+IL_0063: call UnityEngine.Rect UnityEditor.EditorWindow::get_position()
+IL_0068: stloc.s V_5
+IL_006a: ldloca.s V_5
+IL_006c: call System.Single UnityEngine.Rect::get_y()
+IL_0071: ldarg.0
+IL_0072: call UnityEngine.Rect UnityEditor.EditorWindow::get_position()
+IL_0077: stloc.s V_5
+IL_0079: ldloca.s V_5
+IL_007b: call System.Single UnityEngine.Rect::get_width()
+IL_0080: ldarg.0
+IL_0081: call UnityEngine.Rect UnityEditor.EditorWindow::get_position()
+IL_0086: stloc.s V_5
+IL_0088: ldloca.s V_5
+IL_008a: call System.Single UnityEngine.Rect::get_height()
+IL_008f: newobj System.Void UnityEngine.Rect::.ctor(System.Single,System.Single,System.Single,System.Single)
+IL_0094: callvirt UnityEngine.Rect UnityEngine.RectOffset::Add(UnityEngine.Rect)
+IL_0099: stloc.s V_4
+IL_009b: ldloc.2
+IL_009c: ldloc.s V_4
+IL_009e: callvirt System.Void UnityEditor.ContainerWindow::set_position(UnityEngine.Rect)
+IL_00a3: nop
+IL_00a4: ldloc.2
+IL_00a5: ldloc.3
+IL_00a6: callvirt System.Void UnityEditor.ContainerWindow::set_rootView(UnityEditor.View)
+IL_00ab: nop
+IL_00ac: ldarg.0
+IL_00ad: call System.Void UnityEditor.EditorWindow::MakeParentsSettingsMatchMe()
+IL_00b2: nop
+IL_00b3: ldloc.2
+IL_00b4: ldarg.1
+IL_00b5: ldc.i4.1
+IL_00b6: ldc.i4.0
+IL_00b7: ldc.i4.1
+IL_00b8: callvirt System.Void UnityEditor.ContainerWindow::Show(UnityEditor.ShowMode,System.Boolean,System.Boolean,System.Boolean)
+IL_00bd: nop
+IL_00be: ldloc.2
+IL_00bf: ldarg.0
+IL_00c0: call UnityEngine.Vector2 UnityEditor.EditorWindow::get_minSize()
+IL_00c5: ldarg.0
+IL_00c6: call UnityEngine.Vector2 UnityEditor.EditorWindow::get_maxSize()
+IL_00cb: callvirt System.Void UnityEditor.ContainerWindow::SetMinMaxSizes(UnityEngine.Vector2,UnityEngine.Vector2)
+IL_00d0: nop
+IL_00d1: ldloc.2
+IL_00d2: callvirt System.Void UnityEditor.ContainerWindow::OnResize()
+IL_00d7: nop
+IL_00d8: ldloca.s V_1
+IL_00da: call System.Void UnityEditor.SavedGUIState::ApplyAndForget()
+IL_00df: nop
+IL_00e0: nop
+IL_00e1: ret
+METHOD System.Void UnityEditor.EditorWindow::Show()
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldc.i4.0
+IL_0003: call System.Void UnityEditor.EditorWindow::Show(System.Boolean)
+IL_0008: nop
+IL_0009: ret
+METHOD System.Void UnityEditor.EditorWindow::Show(System.Boolean)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldfld UnityEditor.HostView UnityEditor.EditorWindow::m_Parent
+IL_0007: ldnull
+IL_0008: call System.Boolean UnityEngine.Object::op_Equality(UnityEngine.Object,UnityEngine.Object)
+IL_000d: stloc.0
+IL_000e: ldloc.0
+IL_000f: brfalse.s IL_001b
+IL_0011: ldarg.0
+IL_0012: ldc.i4.1
+IL_0013: ldarg.1
+IL_0014: ldc.i4.1
+IL_0015: call System.Void UnityEditor.EditorWindow::CreateNewWindowForEditorWindow(UnityEditor.EditorWindow,System.Boolean,System.Boolean,System.Boolean)
+IL_001a: nop
+IL_001b: ret
+METHOD System.Boolean UnityEditor.EditorWindow::SendEvent(UnityEngine.Event)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldfld UnityEditor.HostView UnityEditor.EditorWindow::m_Parent
+IL_0007: ldarg.1
+IL_0008: callvirt System.Boolean UnityEditor.GUIView::SendEvent(UnityEngine.Event)
+IL_000d: stloc.0
+IL_000e: br.s IL_0010
+IL_0010: ldloc.0
+IL_0011: ret
+METHOD System.Void UnityEditor.EditorWindow::.cctor()
+IL_0000: newobj System.Void System.Collections.Generic.List`1<UnityEditor.EditorWindow>::.ctor()
+IL_0005: stsfld System.Collections.Generic.List`1<UnityEditor.EditorWindow> UnityEditor.EditorWindow::<activeEditorWindows>k__BackingField
+IL_000a: newobj System.Void UnityEditor.EditorWindow/OverlayShortcutContext::.ctor()
+IL_000f: stsfld UnityEditor.EditorWindow/OverlayShortcutContext UnityEditor.EditorWindow::s_ShortcutContext
+IL_0014: ret
+TYPE UnityEditor.GUIView
+FIELD System.Action`1<UnityEditor.GUIView> UnityEditor.GUIView::positionChanged
+FIELD System.Int32 UnityEditor.GUIView::m_DepthBufferBits
+FIELD System.Int32 UnityEditor.GUIView::m_AntiAliasing
+FIELD System.Boolean UnityEditor.GUIView::m_ResetPanelRenderingOnAssetChange
+FIELD System.Boolean UnityEditor.GUIView::m_AutoRepaintOnSceneChange
+FIELD UnityEditor.IWindowBackend UnityEditor.GUIView::m_WindowBackend
+FIELD UnityEngine.EventInterests UnityEditor.GUIView::m_EventInterests
+FIELD System.Action`2<UnityEngine.UIElements.TextElement,UnityEngine.UIElements.VersionChangeType> UnityEditor.GUIView::k_QueryIncrementVersion
+METHOD System.Boolean UnityEditor.GUIView::SendEvent(UnityEngine.Event)
+IL_0000: nop
+IL_0001: call System.Int32 UnityEditor.SavedGUIState::Internal_GetGUIDepth()
+IL_0006: stloc.0
+IL_0007: ldloc.0
+IL_0008: ldc.i4.0
+IL_0009: cgt
+IL_000b: stloc.1
+IL_000c: ldloc.1
+IL_000d: brfalse.s IL_002b
+IL_000f: nop
+IL_0010: call UnityEditor.SavedGUIState UnityEditor.SavedGUIState::Create()
+IL_0015: stloc.2
+IL_0016: ldarg.0
+IL_0017: ldarg.1
+IL_0018: call System.Boolean UnityEditor.GUIView::Internal_SendEvent(UnityEngine.Event)
+IL_001d: stloc.3
+IL_001e: ldloca.s V_2
+IL_0020: call System.Void UnityEditor.SavedGUIState::ApplyAndForget()
+IL_0025: nop
+IL_0026: ldloc.3
+IL_0027: stloc.s V_4
+IL_0029: br.s IL_003b
+IL_002b: nop
+IL_002c: ldarg.0
+IL_002d: ldarg.1
+IL_002e: call System.Boolean UnityEditor.GUIView::Internal_SendEvent(UnityEngine.Event)
+IL_0033: stloc.s V_5
+IL_0035: ldloc.s V_5
+IL_0037: stloc.s V_4
+IL_0039: br.s IL_003b
+IL_003b: ldloc.s V_4
+IL_003d: ret
+METHOD System.Void UnityEditor.GUIView::OnEnable()
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldarg.0
+IL_0003: call UnityEditor.IWindowBackend UnityEditor.EditorWindowBackendManager::GetBackend(UnityEditor.IWindowModel)
+IL_0008: call System.Void UnityEditor.GUIView::set_windowBackend(UnityEditor.IWindowBackend)
+IL_000d: nop
+IL_000e: ret
+METHOD System.Void UnityEditor.GUIView::.cctor()
+IL_0000: ldnull
+IL_0001: stsfld System.Action`1<UnityEditor.GUIView> UnityEditor.GUIView::positionChanged
+IL_0006: ldnull
+IL_0007: ldftn System.Void UnityEditor.GUIView::IncrementVersion(UnityEngine.UIElements.TextElement,UnityEngine.UIElements.VersionChangeType)
+IL_000d: newobj System.Void System.Action`2<UnityEngine.UIElements.TextElement,UnityEngine.UIElements.VersionChangeType>::.ctor(System.Object,System.IntPtr)
+IL_0012: stsfld System.Action`2<UnityEngine.UIElements.TextElement,UnityEngine.UIElements.VersionChangeType> UnityEditor.GUIView::k_QueryIncrementVersion
+IL_0017: ret

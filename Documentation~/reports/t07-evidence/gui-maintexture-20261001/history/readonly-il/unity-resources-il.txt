@@ -1,0 +1,157 @@
+TYPE UnityEditor.Experimental.EditorResources
+FIELD System.String UnityEditor.Experimental.EditorResources::k_PrefsUserFontKey
+FIELD System.String UnityEditor.Experimental.EditorResources::k_GlobalStyleCatalogCacheFilePath
+FIELD UnityEditor.StyleSheets.StyleCatalog UnityEditor.Experimental.EditorResources::s_StyleCatalog
+FIELD System.Boolean UnityEditor.Experimental.EditorResources::s_RefreshGlobalStyleCatalog
+FIELD System.String UnityEditor.Experimental.EditorResources::s_CurrentFontName
+FIELD System.Collections.Generic.Dictionary`2<System.String,UnityEditor.Experimental.FontDef> UnityEditor.Experimental.EditorResources::s_SupportedFonts
+METHOD System.Int32 UnityEditor.Experimental.EditorResources::get_normalSkinIndex()
+METHOD System.Int32 UnityEditor.Experimental.EditorResources::get_darkSkinIndex()
+METHOD System.String UnityEditor.Experimental.EditorResources::get_lightSkinSourcePath()
+IL_0000: ldloca.s V_0
+IL_0002: call System.Void UnityEditor.Experimental.EditorResources::get_lightSkinSourcePath_Injected(UnityEngine.Bindings.ManagedSpanWrapper&)
+IL_0007: leave.s IL_0011
+IL_0009: ldloc.0
+IL_000a: call System.String UnityEngine.Bindings.OutStringMarshaller::GetStringAndDispose(UnityEngine.Bindings.ManagedSpanWrapper)
+IL_000f: stloc.1
+IL_0010: endfinally
+IL_0011: ldloc.1
+IL_0012: ret
+METHOD System.String UnityEditor.Experimental.EditorResources::get_darkSkinSourcePath()
+IL_0000: ldloca.s V_0
+IL_0002: call System.Void UnityEditor.Experimental.EditorResources::get_darkSkinSourcePath_Injected(UnityEngine.Bindings.ManagedSpanWrapper&)
+IL_0007: leave.s IL_0011
+IL_0009: ldloc.0
+IL_000a: call System.String UnityEngine.Bindings.OutStringMarshaller::GetStringAndDispose(UnityEngine.Bindings.ManagedSpanWrapper)
+IL_000f: stloc.1
+IL_0010: endfinally
+IL_0011: ldloc.1
+IL_0012: ret
+METHOD System.Void UnityEditor.Experimental.EditorResources::RefreshSkin()
+IL_0000: nop
+IL_0001: ldloca.s V_0
+IL_0003: ldstr "RefreshSkin"
+IL_0008: call System.Void UnityEditor.Profiling.EditorPerformanceTracker::.ctor(System.String)
+IL_000d: nop
+IL_000e: call System.Boolean UnityEditor.Experimental.EditorResources::CanEnableExtendedStyles()
+IL_0013: ldc.i4.0
+IL_0014: ceq
+IL_0016: stloc.2
+IL_0017: ldloc.2
+IL_0018: brfalse.s IL_001c
+IL_001a: leave.s IL_0097
+IL_001c: ldnull
+IL_001d: ldftn System.Boolean UnityEditor.StyleSheets.StylePainter::DrawStyle(UnityEngine.GUIStyle,UnityEngine.Rect,UnityEngine.GUIContent,UnityEngine.DrawStates)
+IL_0023: newobj System.Void UnityEngine.DrawHandler::.ctor(System.Object,System.IntPtr)
+IL_0028: stsfld UnityEngine.DrawHandler UnityEngine.GUIStyle::onDraw
+IL_002d: call UnityEngine.GUISkin UnityEngine.GUIUtility::GetDefaultSkin()
+IL_0032: stloc.1
+IL_0033: ldloc.1
+IL_0034: ldnull
+IL_0035: call System.Boolean UnityEngine.Object::op_Inequality(UnityEngine.Object,UnityEngine.Object)
+IL_003a: stloc.3
+IL_003b: ldloc.3
+IL_003c: brfalse.s IL_0085
+IL_003e: nop
+IL_003f: call System.String UnityEngine.Application::get_dataPath()
+IL_0044: call System.String System.IO.Path::GetDirectoryName(System.String)
+IL_0049: call System.String System.IO.Path::GetFileName(System.String)
+IL_004e: ldstr "editor_resources"
+IL_0053: call System.Boolean System.String::op_Equality(System.String,System.String)
+IL_0058: stloc.s V_4
+IL_005a: ldloc.s V_4
+IL_005c: brfalse.s IL_0070
+IL_005e: ldloc.1
+IL_005f: call System.Boolean UnityEditor.Experimental.EditorResources/Constants::get_isDarkTheme()
+IL_0064: brtrue.s IL_0069
+IL_0066: ldc.i4.1
+IL_0067: br.s IL_006a
+IL_0069: ldc.i4.2
+IL_006a: call System.Void UnityEditor.StyleSheets.ConverterUtils::ResetSkinToPristine(UnityEngine.GUISkin,UnityEditor.StyleSheets.SkinTarget)
+IL_006f: nop
+IL_0070: ldloc.1
+IL_0071: ldc.i4.0
+IL_0072: call UnityEngine.Font UnityEditor.Experimental.EditorResources::GetFont(UnityEditor.Experimental.FontDef/Style)
+IL_0077: callvirt System.Void UnityEngine.GUISkin::set_font(UnityEngine.Font)
+IL_007c: nop
+IL_007d: ldloc.1
+IL_007e: call System.Void UnityEditor.Experimental.EditorResources::UpdateGUIStyleProperties(UnityEngine.GUISkin)
+IL_0083: nop
+IL_0084: nop
+IL_0085: nop
+IL_0086: leave.s IL_0097
+IL_0088: ldloca.s V_0
+IL_008a: constrained. UnityEditor.Profiling.EditorPerformanceTracker
+IL_0090: callvirt System.Void System.IDisposable::Dispose()
+IL_0095: nop
+IL_0096: endfinally
+IL_0097: ret
+METHOD System.Collections.Generic.List`1<UnityEngine.GUIStyle> UnityEditor.Experimental.EditorResources::GetExtendedStylesFromSkin(UnityEngine.GUISkin)
+IL_0000: newobj System.Void UnityEditor.Experimental.EditorResources/<>c__DisplayClass53_0::.ctor()
+IL_0005: stloc.0
+IL_0006: nop
+IL_0007: ldloc.0
+IL_0008: newobj System.Void System.Collections.Generic.List`1<UnityEngine.GUIStyle>::.ctor()
+IL_000d: stfld System.Collections.Generic.List`1<UnityEngine.GUIStyle> UnityEditor.Experimental.EditorResources/<>c__DisplayClass53_0::extendedStyles
+IL_0012: ldloc.0
+IL_0013: ldftn System.Void UnityEditor.Experimental.EditorResources/<>c__DisplayClass53_0::<GetExtendedStylesFromSkin>b__0(System.String,UnityEngine.GUIStyle)
+IL_0019: newobj System.Void System.Action`2<System.String,UnityEngine.GUIStyle>::.ctor(System.Object,System.IntPtr)
+IL_001e: stloc.1
+IL_001f: ldarg.0
+IL_0020: ldloc.1
+IL_0021: call System.Void UnityEditor.StyleSheets.ConverterUtils::ForEachGUIStyleProperty(UnityEngine.GUISkin,System.Action`2<System.String,UnityEngine.GUIStyle>)
+IL_0026: nop
+IL_0027: nop
+IL_0028: ldarg.0
+IL_0029: callvirt UnityEngine.GUIStyle[] UnityEngine.GUISkin::get_customStyles()
+IL_002e: stloc.2
+IL_002f: ldc.i4.0
+IL_0030: stloc.3
+IL_0031: br.s IL_004c
+IL_0033: ldloc.2
+IL_0034: ldloc.3
+IL_0035: ldelem.ref
+IL_0036: stloc.s V_4
+IL_0038: ldloc.1
+IL_0039: ldloc.s V_4
+IL_003b: callvirt System.String UnityEngine.GUIStyle::get_name()
+IL_0040: ldloc.s V_4
+IL_0042: callvirt System.Void System.Action`2<System.String,UnityEngine.GUIStyle>::Invoke(!0,!1)
+IL_0047: nop
+IL_0048: ldloc.3
+IL_0049: ldc.i4.1
+IL_004a: add
+IL_004b: stloc.3
+IL_004c: ldloc.3
+IL_004d: ldloc.2
+IL_004e: ldlen
+IL_004f: conv.i4
+IL_0050: blt.s IL_0033
+IL_0052: ldloc.0
+IL_0053: ldfld System.Collections.Generic.List`1<UnityEngine.GUIStyle> UnityEditor.Experimental.EditorResources/<>c__DisplayClass53_0::extendedStyles
+IL_0058: stloc.s V_5
+IL_005a: br.s IL_005c
+IL_005c: ldloc.s V_5
+IL_005e: ret
+METHOD UnityEditor.StyleSheets.StyleBlock UnityEditor.Experimental.EditorResources::GetStyle(System.String,UnityEditor.StyleSheets.StyleState[])
+IL_0000: nop
+IL_0001: call UnityEditor.StyleSheets.StyleCatalog UnityEditor.Experimental.EditorResources::get_styleCatalog()
+IL_0006: ldarg.0
+IL_0007: ldarg.1
+IL_0008: callvirt UnityEditor.StyleSheets.StyleBlock UnityEditor.StyleSheets.StyleCatalog::GetStyle(System.String,UnityEditor.StyleSheets.StyleState[])
+IL_000d: stloc.0
+IL_000e: br.s IL_0010
+IL_0010: ldloc.0
+IL_0011: ret
+METHOD UnityEditor.StyleSheets.StyleBlock UnityEditor.Experimental.EditorResources::GetStyle(System.Int32,UnityEditor.StyleSheets.StyleState[])
+IL_0000: nop
+IL_0001: call UnityEditor.StyleSheets.StyleCatalog UnityEditor.Experimental.EditorResources::get_styleCatalog()
+IL_0006: ldarg.0
+IL_0007: ldarg.1
+IL_0008: callvirt UnityEditor.StyleSheets.StyleBlock UnityEditor.StyleSheets.StyleCatalog::GetStyle(System.Int32,UnityEditor.StyleSheets.StyleState[])
+IL_000d: stloc.0
+IL_000e: br.s IL_0010
+IL_0010: ldloc.0
+IL_0011: ret
+METHOD System.Void UnityEditor.Experimental.EditorResources::get_lightSkinSourcePath_Injected(UnityEngine.Bindings.ManagedSpanWrapper&)
+METHOD System.Void UnityEditor.Experimental.EditorResources::get_darkSkinSourcePath_Injected(UnityEngine.Bindings.ManagedSpanWrapper&)

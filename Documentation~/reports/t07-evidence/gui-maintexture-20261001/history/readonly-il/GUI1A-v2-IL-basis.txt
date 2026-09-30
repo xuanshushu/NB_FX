@@ -1,0 +1,48 @@
+GUI1A v2 fixture-only readiness (2026-10-01)
+NO product/meta/Unity/Git modifications. Root alone must run actual clone tests.
+
+Current official Unity 6000.3.18f1 assembly inspection via Mono.Cecil (offline only):
+/Applications/Unity/Hub/Editor/6000.3.18f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEngine/UnityEditor.CoreModule.dll
+sha256 2bca2ea4ae62bf801429a9da75702d91dc0c12cce45dc034d57c2ed0ff09dd9a
+/Applications/Unity/Hub/Editor/6000.3.18f1/Unity.app/Contents/Resources/Scripting/Managed/UnityEngine/UnityEngine.IMGUIModule.dll
+sha256 c22b1bd2e8e58df25cd644932b2a186e017b23839baf94aa9ca9f1adf086ec96
+Full relevant IL dumps: unity-editor-il.txt / unity-imgui-il.txt / unity-window-il.txt.
+
+1. Native mixed-shader selection:
+MaterialEditor.HasMultipleMixedShaderValues IL compares actual targets' shaders.
+MaterialEditor.OnInspectorGUI IL_0041 calls that predicate and only branches into
+PropertiesGUI if !mixed. PropertiesGUI IL_0097 gets MaterialProperties, IL_00fe
+calls the custom ShaderGUI later. v1 artificially called native GetProperties
+for mixed shader targets, bypassing the official front guard, causing logErrors.
+v2 NewRoot(false, realMaterials) creates the actual MaterialEditor, Root, Mats,
+flags, Context, Sync, leaves PropertyInfoDic empty. Both orders explicitly assert
+native HasMultipleMixedShaderValues=true and the empty dictionary, then test all
+NB guard entrypoints with whole material snapshots taken BEFORE NewRoot.
+This proves backend non-mutation guards, not visible Inspector layout/selection.
+Same-host helpers still get full actual native metadata.
+
+2. Legacy MainTex ctor skin:
+EditorStyles.get_label IL_0001 accesses static s_Current directly; batch mode
+had never initialized it. EditorStyles.UpdateSkinCache(int) returns while
+GUIUtility.s_SkinMode==0; InitSharedStyles invokes GetStyle->GUI.skin->CheckOnGUI.
+GUI.skin requires native guiDepth>0; a manual BeginGUI/s_SkinMode/style substitute
+would not be valid proof. v2 creates a test-only EditorWindow, ShowUtility,
+SendEvent(custom ExecuteCommand), invokes the actual old MainTex constructor
+inside its real OnGUI. Within that event only, it calls the official
+EditorStyles.UpdateSkinCache() and asserts actual EditorStyles.label. Assertions
+require the native event received and nonnull ctor. Callback exceptions are
+captured, then rethrown via ExceptionDispatchInfo outside native event; finally
+Close/destroy. No GUILayout, no fake style/cache, no fallback, no skip, no
+LogAssert filtering. This is constructor-context proof, not visible Inspector.
+EditorWindow.SendEvent IL calls native parent's GUIView.SendEvent, whose IL calls
+Internal_SendEvent; native GUI context is not manually spoofed.
+
+3. ST test preparation:
+Before Root/property lookup/Undo/snapshot, both actual Graph materials use the
+existing NBShaderGraphGUI.ValidateMaterial official+existing SixWay baseline,
+as the persistence fixture already does. Real ST.Apply/UndoRedo and full other
+state comparison remain exact, so a later unintended keyword/pass change fails.
+
+No changes to case attributes/count (38 GUI1A cases = 10 Test + 12 TestCase +
+16 Surface source); GUI0 46 separate. No asserted test pass before Root run.
+v1 raw source/XML/log are preserved by Root; v2 offline Roslyn exit0 only.

@@ -1,0 +1,1549 @@
+TYPE UnityEditor.EditorGUIUtility
+FIELD UnityEngine.Material UnityEditor.EditorGUIUtility::s_GUITextureBlit2SRGBMaterial
+FIELD UnityEngine.Material UnityEditor.EditorGUIUtility::s_GUITextureBlitSceneGUI
+FIELD System.Int32 UnityEditor.EditorGUIUtility::s_FontIsBold
+FIELD System.Int32 UnityEditor.EditorGUIUtility::s_LastControlID
+FIELD System.Single UnityEditor.EditorGUIUtility::s_LabelWidth
+FIELD UnityEditor.ScalableGUIContent UnityEditor.EditorGUIUtility::s_InfoIcon
+FIELD UnityEditor.ScalableGUIContent UnityEditor.EditorGUIUtility::s_WarningIcon
+FIELD UnityEditor.ScalableGUIContent UnityEditor.EditorGUIUtility::s_ErrorIcon
+FIELD UnityEngine.GUIStyle UnityEditor.EditorGUIUtility::s_WhiteTextureStyle
+FIELD UnityEngine.GUIStyle UnityEditor.EditorGUIUtility::s_BasicTextureStyle
+FIELD System.Collections.Hashtable UnityEditor.EditorGUIUtility::s_TextGUIContents
+FIELD System.Collections.Hashtable UnityEditor.EditorGUIUtility::s_GUIContents
+FIELD System.Collections.Hashtable UnityEditor.EditorGUIUtility::s_IconGUIContents
+FIELD System.Collections.Hashtable UnityEditor.EditorGUIUtility::s_SkinnedIcons
+FIELD UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_ObjectContent
+FIELD UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_Text
+FIELD UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_Image
+FIELD UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_TextImage
+FIELD UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_SceneMismatch
+FIELD UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_TypeMismatch
+FIELD UnityEditor.StyleSheets.SVC`1<UnityEngine.Color> UnityEditor.EditorGUIUtility::kViewBackgroundColor
+FIELD System.Action`2<UnityEditor.GenericMenu,UnityEditor.SerializedProperty> UnityEditor.EditorGUIUtility::contextualPropertyMenu
+FIELD System.Action`2<UnityEngine.Rect,UnityEditor.SerializedProperty> UnityEditor.EditorGUIUtility::beginProperty
+FIELD System.Collections.Generic.List`1<UnityEditor.EditorGUIUtility/HeaderItemDelegate> UnityEditor.EditorGUIUtility::s_EditorHeaderItemsMethods
+FIELD UnityEditor.SliderLabels UnityEditor.EditorGUIUtility::sliderLabels
+FIELD System.Collections.Generic.List`1<System.String> UnityEditor.EditorGUIUtility::k_UserSideSupportedImageExtensions
+FIELD UnityEngine.GUIContent UnityEditor.EditorGUIUtility::<blankContent>k__BackingField
+FIELD System.Boolean UnityEditor.EditorGUIUtility::<hierarchyMode>k__BackingField
+FIELD System.Boolean UnityEditor.EditorGUIUtility::<wideMode>k__BackingField
+FIELD UnityEditor.EditorGUIUtility/ComparisonViewMode UnityEditor.EditorGUIUtility::s_ComparisonViewMode
+FIELD System.Single UnityEditor.EditorGUIUtility::s_LeftMarginCoord
+FIELD System.Collections.Generic.Stack`1<System.Single> UnityEditor.EditorGUIUtility::s_ContextWidthStack
+FIELD System.Single UnityEditor.EditorGUIUtility::s_OverriddenViewWidth
+FIELD System.Single UnityEditor.EditorGUIUtility::s_FieldWidth
+FIELD System.String UnityEditor.EditorGUIUtility::k_LookLikeControlsObsoleteMessage
+FIELD UnityEngine.FocusType UnityEditor.EditorGUIUtility::native
+METHOD System.Void UnityEditor.EditorGUIUtility::.cctor()
+IL_0000: ldc.i4.m1
+IL_0001: stsfld System.Int32 UnityEditor.EditorGUIUtility::s_FontIsBold
+IL_0006: ldc.i4.0
+IL_0007: stsfld System.Int32 UnityEditor.EditorGUIUtility::s_LastControlID
+IL_000c: ldc.r4 0
+IL_0011: stsfld System.Single UnityEditor.EditorGUIUtility::s_LabelWidth
+IL_0016: newobj System.Void System.Collections.Hashtable::.ctor()
+IL_001b: stsfld System.Collections.Hashtable UnityEditor.EditorGUIUtility::s_TextGUIContents
+IL_0020: newobj System.Void System.Collections.Hashtable::.ctor()
+IL_0025: stsfld System.Collections.Hashtable UnityEditor.EditorGUIUtility::s_GUIContents
+IL_002a: newobj System.Void System.Collections.Hashtable::.ctor()
+IL_002f: stsfld System.Collections.Hashtable UnityEditor.EditorGUIUtility::s_IconGUIContents
+IL_0034: newobj System.Void System.Collections.Hashtable::.ctor()
+IL_0039: stsfld System.Collections.Hashtable UnityEditor.EditorGUIUtility::s_SkinnedIcons
+IL_003e: newobj System.Void UnityEngine.GUIContent::.ctor()
+IL_0043: stsfld UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_ObjectContent
+IL_0048: newobj System.Void UnityEngine.GUIContent::.ctor()
+IL_004d: stsfld UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_Text
+IL_0052: newobj System.Void UnityEngine.GUIContent::.ctor()
+IL_0057: stsfld UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_Image
+IL_005c: newobj System.Void UnityEngine.GUIContent::.ctor()
+IL_0061: stsfld UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_TextImage
+IL_0066: ldstr "Scene mismatch (cross scene references not supported)"
+IL_006b: ldnull
+IL_006c: ldnull
+IL_006d: call UnityEngine.GUIContent UnityEditor.EditorGUIUtility::TrTextContent(System.String,System.String,UnityEngine.Texture)
+IL_0072: stsfld UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_SceneMismatch
+IL_0077: ldstr "Type mismatch"
+IL_007c: ldnull
+IL_007d: ldnull
+IL_007e: call UnityEngine.GUIContent UnityEditor.EditorGUIUtility::TrTextContent(System.String,System.String,UnityEngine.Texture)
+IL_0083: stsfld UnityEngine.GUIContent UnityEditor.EditorGUIUtility::s_TypeMismatch
+IL_0088: ldstr "view"
+IL_008d: ldsfld System.Int32 UnityEditor.StyleSheets.StyleCatalogKeyword::backgroundColor
+IL_0092: ldnull
+IL_0093: ldftn UnityEngine.Color UnityEditor.EditorGUIUtility::GetDefaultBackgroundColor()
+IL_0099: newobj System.Void System.Func`1<UnityEngine.Color>::.ctor(System.Object,System.IntPtr)
+IL_009e: call !!0[] System.Array::Empty<UnityEditor.StyleSheets.StyleState>()
+IL_00a3: newobj System.Void UnityEditor.StyleSheets.SVC`1<UnityEngine.Color>::.ctor(System.String,System.Int32,System.Func`1<T>,UnityEditor.StyleSheets.StyleState[])
+IL_00a8: stsfld UnityEditor.StyleSheets.SVC`1<UnityEngine.Color> UnityEditor.EditorGUIUtility::kViewBackgroundColor
+IL_00ad: ldnull
+IL_00ae: stsfld System.Collections.Generic.List`1<UnityEditor.EditorGUIUtility/HeaderItemDelegate> UnityEditor.EditorGUIUtility::s_EditorHeaderItemsMethods
+IL_00b3: ldsflda UnityEditor.SliderLabels UnityEditor.EditorGUIUtility::sliderLabels
+IL_00b8: initobj UnityEditor.SliderLabels
+IL_00be: newobj System.Void System.Collections.Generic.List`1<System.String>::.ctor()
+IL_00c3: dup
+IL_00c4: ldstr ".png"
+IL_00c9: callvirt System.Void System.Collections.Generic.List`1<System.String>::Add(!0)
+IL_00ce: nop
+IL_00cf: stsfld System.Collections.Generic.List`1<System.String> UnityEditor.EditorGUIUtility::k_UserSideSupportedImageExtensions
+IL_00d4: ldstr " "
+IL_00d9: newobj System.Void UnityEngine.GUIContent::.ctor(System.String)
+IL_00de: stsfld UnityEngine.GUIContent UnityEditor.EditorGUIUtility::<blankContent>k__BackingField
+IL_00e3: ldc.i4.0
+IL_00e4: stsfld System.Boolean UnityEditor.EditorGUIUtility::<hierarchyMode>k__BackingField
+IL_00e9: ldc.i4.0
+IL_00ea: stsfld System.Boolean UnityEditor.EditorGUIUtility::<wideMode>k__BackingField
+IL_00ef: ldc.i4.0
+IL_00f0: stsfld UnityEditor.EditorGUIUtility/ComparisonViewMode UnityEditor.EditorGUIUtility::s_ComparisonViewMode
+IL_00f5: ldc.i4.s 10
+IL_00f7: newobj System.Void System.Collections.Generic.Stack`1<System.Single>::.ctor(System.Int32)
+IL_00fc: stsfld System.Collections.Generic.Stack`1<System.Single> UnityEditor.EditorGUIUtility::s_ContextWidthStack
+IL_0101: ldc.r4 -1
+IL_0106: stsfld System.Single UnityEditor.EditorGUIUtility::s_OverriddenViewWidth
+IL_010b: ldc.r4 0
+IL_0110: stsfld System.Single UnityEditor.EditorGUIUtility::s_FieldWidth
+IL_0115: ldc.i4.1
+IL_0116: stsfld UnityEngine.FocusType UnityEditor.EditorGUIUtility::native
+IL_011b: nop
+IL_011c: ldsfld UnityEngine.GUISkin/SkinChangedDelegate UnityEngine.GUISkin::m_SkinChanged
+IL_0121: ldnull
+IL_0122: ldftn System.Void UnityEditor.EditorGUIUtility::SkinChanged()
+IL_0128: newobj System.Void UnityEngine.GUISkin/SkinChangedDelegate::.ctor(System.Object,System.IntPtr)
+IL_012d: call System.Delegate System.Delegate::Combine(System.Delegate,System.Delegate)
+IL_0132: castclass UnityEngine.GUISkin/SkinChangedDelegate
+IL_0137: stsfld UnityEngine.GUISkin/SkinChangedDelegate UnityEngine.GUISkin::m_SkinChanged
+IL_013c: ldnull
+IL_013d: ldftn System.Boolean UnityEditor.EditorGUIUtility::HasCurrentWindowKeyFocus()
+IL_0143: newobj System.Void System.Func`1<System.Boolean>::.ctor(System.Object,System.IntPtr)
+IL_0148: stsfld System.Func`1<System.Boolean> UnityEngine.GUIUtility::s_HasCurrentWindowKeyFocusFunc
+IL_014d: ret
+METHOD UnityEngine.Texture2D UnityEditor.EditorGUIUtility::LoadIconForSkin(System.String,System.Int32)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: call System.Boolean System.String::IsNullOrEmpty(System.String)
+IL_0007: stloc.3
+IL_0008: ldloc.3
+IL_0009: brfalse.s IL_0010
+IL_000b: ldnull
+IL_000c: stloc.s V_4
+IL_000e: br.s IL_007a
+IL_0010: ldarg.1
+IL_0011: ldc.i4.0
+IL_0012: ceq
+IL_0014: stloc.s V_5
+IL_0016: ldloc.s V_5
+IL_0018: brfalse.s IL_0024
+IL_001a: ldarg.0
+IL_001b: call UnityEngine.Texture2D UnityEditor.EditorGUIUtility::LoadGeneratedIconOrNormalIcon(System.String)
+IL_0020: stloc.s V_4
+IL_0022: br.s IL_007a
+IL_0024: ldstr "d_"
+IL_0029: ldarg.0
+IL_002a: call System.String System.IO.Path::GetFileName(System.String)
+IL_002f: call System.String System.String::Concat(System.String,System.String)
+IL_0034: stloc.0
+IL_0035: ldarg.0
+IL_0036: call System.String System.IO.Path::GetDirectoryName(System.String)
+IL_003b: stloc.1
+IL_003c: ldloc.1
+IL_003d: call System.Boolean System.String::IsNullOrEmpty(System.String)
+IL_0042: ldc.i4.0
+IL_0043: ceq
+IL_0045: stloc.s V_6
+IL_0047: ldloc.s V_6
+IL_0049: brfalse.s IL_0058
+IL_004b: ldloc.1
+IL_004c: ldstr "/"
+IL_0051: ldloc.0
+IL_0052: call System.String System.String::Concat(System.String,System.String,System.String)
+IL_0057: stloc.0
+IL_0058: ldloc.0
+IL_0059: call UnityEngine.Texture2D UnityEditor.EditorGUIUtility::LoadGeneratedIconOrNormalIcon(System.String)
+IL_005e: stloc.2
+IL_005f: ldloc.2
+IL_0060: call System.Boolean UnityEngine.Object::op_Implicit(UnityEngine.Object)
+IL_0065: ldc.i4.0
+IL_0066: ceq
+IL_0068: stloc.s V_7
+IL_006a: ldloc.s V_7
+IL_006c: brfalse.s IL_0075
+IL_006e: ldarg.0
+IL_006f: call UnityEngine.Texture2D UnityEditor.EditorGUIUtility::LoadGeneratedIconOrNormalIcon(System.String)
+IL_0074: stloc.2
+IL_0075: ldloc.2
+IL_0076: stloc.s V_4
+IL_0078: br.s IL_007a
+IL_007a: ldloc.s V_4
+IL_007c: ret
+METHOD System.Boolean UnityEditor.EditorGUIUtility::get_isProSkin()
+IL_0000: call System.Int32 UnityEditor.EditorGUIUtility::get_skinIndex()
+IL_0005: ldc.i4.1
+IL_0006: ceq
+IL_0008: ret
+METHOD System.Void UnityEditor.EditorGUIUtility::Internal_SwitchSkin()
+IL_0000: nop
+IL_0001: ldc.i4.1
+IL_0002: call System.Int32 UnityEditor.EditorGUIUtility::get_skinIndex()
+IL_0007: sub
+IL_0008: call System.Void UnityEditor.EditorGUIUtility::set_skinIndex(System.Int32)
+IL_000d: nop
+IL_000e: ret
+METHOD UnityEngine.GUISkin UnityEditor.EditorGUIUtility::GetBuiltinSkin(UnityEditor.EditorSkin)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: call UnityEngine.GUISkin UnityEngine.GUIUtility::GetBuiltinSkin(System.Int32)
+IL_0007: stloc.0
+IL_0008: br.s IL_000a
+IL_000a: ldloc.0
+IL_000b: ret
+METHOD System.Void UnityEditor.EditorGUIUtility::ResetGUIState()
+IL_0000: nop
+IL_0001: ldnull
+IL_0002: call System.Void UnityEngine.GUI::set_skin(UnityEngine.GUISkin)
+IL_0007: nop
+IL_0008: call UnityEngine.Color UnityEngine.Color::get_white()
+IL_000d: dup
+IL_000e: call System.Void UnityEngine.GUI::set_contentColor(UnityEngine.Color)
+IL_0013: nop
+IL_0014: call System.Void UnityEngine.GUI::set_backgroundColor(UnityEngine.Color)
+IL_0019: nop
+IL_001a: call UnityEngine.Color UnityEditor.EditorUtility::get_activePlayModeTint()
+IL_001f: call System.Void UnityEngine.GUI::set_color(UnityEngine.Color)
+IL_0024: nop
+IL_0025: ldc.i4.1
+IL_0026: call System.Void UnityEngine.GUI::set_enabled(System.Boolean)
+IL_002b: nop
+IL_002c: ldc.i4.0
+IL_002d: call System.Void UnityEngine.GUI::set_changed(System.Boolean)
+IL_0032: nop
+IL_0033: ldc.i4.0
+IL_0034: call System.Void UnityEditor.EditorGUI::set_indentLevel(System.Int32)
+IL_0039: nop
+IL_003a: call System.Void UnityEditor.EditorGUI::ClearStacks()
+IL_003f: nop
+IL_0040: ldc.r4 0
+IL_0045: call System.Void UnityEditor.EditorGUIUtility::set_fieldWidth(System.Single)
+IL_004a: nop
+IL_004b: ldc.r4 0
+IL_0050: call System.Void UnityEditor.EditorGUIUtility::set_labelWidth(System.Single)
+IL_0055: nop
+IL_0056: ldc.r4 -1
+IL_005b: call System.Void UnityEditor.EditorGUIUtility::set_currentViewWidth(System.Single)
+IL_0060: nop
+IL_0061: ldc.i4.0
+IL_0062: call System.Void UnityEditor.EditorGUIUtility::SetBoldDefaultFont(System.Boolean)
+IL_0067: nop
+IL_0068: call System.Void UnityEditor.EditorGUIUtility::UnlockContextWidth()
+IL_006d: nop
+IL_006e: ldc.i4.0
+IL_006f: call System.Void UnityEditor.EditorGUIUtility::set_hierarchyMode(System.Boolean)
+IL_0074: nop
+IL_0075: ldc.i4.0
+IL_0076: call System.Void UnityEditor.EditorGUIUtility::set_wideMode(System.Boolean)
+IL_007b: nop
+IL_007c: ldc.i4.0
+IL_007d: call System.Void UnityEditor.EditorGUIUtility::set_comparisonViewMode(UnityEditor.EditorGUIUtility/ComparisonViewMode)
+IL_0082: nop
+IL_0083: ldc.r4 0
+IL_0088: call System.Void UnityEditor.EditorGUIUtility::set_leftMarginCoord(System.Single)
+IL_008d: nop
+IL_008e: ldnull
+IL_008f: call System.Void UnityEditor.ScriptAttributeUtility::set_propertyHandlerCache(UnityEditor.PropertyHandlerCache)
+IL_0094: nop
+IL_0095: ret
+METHOD System.Void UnityEditor.EditorGUIUtility::SkinChanged()
+IL_0000: nop
+IL_0001: call System.Void UnityEditor.EditorStyles::UpdateSkinCache()
+IL_0006: nop
+IL_0007: ret
+METHOD System.String UnityEditor.EditorGUIUtility::GetHyperlinkColorForSkin()
+IL_0000: nop
+IL_0001: call System.Int32 UnityEditor.EditorGUIUtility::get_skinIndex()
+IL_0006: call System.Int32 UnityEditor.Experimental.EditorResources::get_darkSkinIndex()
+IL_000b: beq.s IL_0014
+IL_000d: ldstr "#0000FF"
+IL_0012: br.s IL_0019
+IL_0014: ldstr "#40a0ff"
+IL_0019: stloc.0
+IL_001a: br.s IL_001c
+IL_001c: ldloc.0
+IL_001d: ret
+TYPE UnityEditor.EditorStyles
+FIELD System.Int32 UnityEditor.EditorStyles::kInspectorPaddingLeft
+FIELD System.Int32 UnityEditor.EditorStyles::kInspectorPaddingRight
+FIELD System.Int32 UnityEditor.EditorStyles::kInspectorPaddingTop
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Label
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_LargeLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_BoldLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniBoldLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_CenteredGreyMiniLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WordWrappedMiniLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WordWrappedLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_LinkLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WhiteLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WhiteMiniLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WhiteLargeLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WhiteBoldLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_RadioButton
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniButton
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniButtonLeft
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniButtonMid
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniButtonRight
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniPullDown
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TextField
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_BoldTextField
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TextArea
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniTextField
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_NumberField
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Popup
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ObjectField
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ObjectFieldButton
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ObjectFieldThumb
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ObjectFieldMiniThumb
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ColorField
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_LayerMaskField
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Toggle
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToggleMixed
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Foldout
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TitlebarFoldout
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_FoldoutPreDrop
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_FoldoutHeader
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_FoldoutHeaderIcon
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_OptionsButtonStyle
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToggleGroup
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TextFieldDropDown
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TextFieldDropDownText
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_OverrideMargin
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Toolbar
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ContentToolbar
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarButton
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarButtonLeft
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarButtonRight
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarPopup
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarPopupLeft
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarPopupRight
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDownLeft
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDown
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDownRight
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDownToggle
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDownToggleButton
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDownToggleRight
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarCreateAddNewDropDown
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarTextField
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorDefaultMargins
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorHorizontalDefaultMargins
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorFullWidthMargins
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_DefaultContentMargins
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_FrameBox
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_HelpBox
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_HelpBoxLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchField
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldPopup
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldWithJumpSynced
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldWithJumpPopupSynced
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldWithJump
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldWithJumpPopup
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldJumpButton
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldCancelButton
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldCancelButtonEmpty
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldCancelButtonWithJump
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldCancelButtonWithJumpEmpty
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ColorPickerBox
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ViewBg
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorBig
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorTitlebar
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorTitlebarFlat
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorTitlebarText
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_FoldoutSelected
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_IconButton
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Tooltip
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_NotificationText
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_NotificationBackground
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_AssetLabel
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_AssetLabelPartial
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_AssetLabelIcon
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_SearchField
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_SearchFieldCancelButton
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_SearchFieldCancelButtonEmpty
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_SelectionRect
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSlider
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MinMaxHorizontalSliderThumb
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_DropDownList
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_DropDownToggleButton
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MinMaxStateDropdown
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ProgressBarBar
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ProgressBarText
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ProgressBarBack
+FIELD UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ScrollViewAlt
+FIELD UnityEngine.Vector2 UnityEditor.EditorStyles::m_KnobSize
+FIELD UnityEngine.Vector2 UnityEditor.EditorStyles::m_MiniKnobSize
+FIELD UnityEditor.EditorStyles UnityEditor.EditorStyles::s_Current
+FIELD UnityEditor.EditorStyles[] UnityEditor.EditorStyles::s_CachedStyles
+METHOD UnityEngine.GUIStyle UnityEditor.EditorStyles::get_label()
+IL_0000: nop
+IL_0001: ldsfld UnityEditor.EditorStyles UnityEditor.EditorStyles::s_Current
+IL_0006: ldfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Label
+IL_000b: stloc.0
+IL_000c: br.s IL_000e
+IL_000e: ldloc.0
+IL_000f: ret
+METHOD System.Void UnityEditor.EditorStyles::UpdateSkinCache()
+IL_0000: nop
+IL_0001: call System.Int32 UnityEditor.EditorGUIUtility::get_skinIndex()
+IL_0006: call System.Void UnityEditor.EditorStyles::UpdateSkinCache(System.Int32)
+IL_000b: nop
+IL_000c: ret
+METHOD System.Void UnityEditor.EditorStyles::UpdateSkinCache(System.Int32)
+IL_0000: nop
+IL_0001: ldsfld System.Int32 UnityEngine.GUIUtility::s_SkinMode
+IL_0006: ldc.i4.0
+IL_0007: ceq
+IL_0009: stloc.0
+IL_000a: ldloc.0
+IL_000b: brfalse.s IL_000f
+IL_000d: br.s IL_0057
+IL_000f: ldsfld UnityEditor.EditorStyles[] UnityEditor.EditorStyles::s_CachedStyles
+IL_0014: ldarg.0
+IL_0015: ldelem.ref
+IL_0016: ldnull
+IL_0017: ceq
+IL_0019: stloc.1
+IL_001a: ldloc.1
+IL_001b: brfalse.s IL_003e
+IL_001d: nop
+IL_001e: call System.Void UnityEditor.Experimental.EditorResources::RefreshSkin()
+IL_0023: nop
+IL_0024: ldsfld UnityEditor.EditorStyles[] UnityEditor.EditorStyles::s_CachedStyles
+IL_0029: ldarg.0
+IL_002a: newobj System.Void UnityEditor.EditorStyles::.ctor()
+IL_002f: stelem.ref
+IL_0030: ldsfld UnityEditor.EditorStyles[] UnityEditor.EditorStyles::s_CachedStyles
+IL_0035: ldarg.0
+IL_0036: ldelem.ref
+IL_0037: callvirt System.Void UnityEditor.EditorStyles::InitSharedStyles()
+IL_003c: nop
+IL_003d: nop
+IL_003e: ldsfld UnityEditor.EditorStyles[] UnityEditor.EditorStyles::s_CachedStyles
+IL_0043: ldarg.0
+IL_0044: ldelem.ref
+IL_0045: stsfld UnityEditor.EditorStyles UnityEditor.EditorStyles::s_Current
+IL_004a: ldc.i4.m1
+IL_004b: stsfld System.Int32 UnityEditor.EditorGUIUtility::s_FontIsBold
+IL_0050: ldc.i4.0
+IL_0051: call System.Void UnityEditor.EditorGUIUtility::SetBoldDefaultFont(System.Boolean)
+IL_0056: nop
+IL_0057: ret
+METHOD System.Void UnityEditor.EditorStyles::InitSharedStyles()
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldarg.0
+IL_0003: ldstr "ColorPickerBox"
+IL_0008: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_000d: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ColorPickerBox
+IL_0012: ldarg.0
+IL_0013: ldarg.0
+IL_0014: ldstr "TabWindowBackground"
+IL_0019: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_001e: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ViewBg
+IL_0023: ldarg.0
+IL_0024: ldarg.0
+IL_0025: ldstr "In BigTitle"
+IL_002a: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_002f: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorBig
+IL_0034: ldarg.0
+IL_0035: ldarg.0
+IL_0036: ldstr "MiniLabel"
+IL_003b: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0040: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniLabel
+IL_0045: ldarg.0
+IL_0046: ldarg.0
+IL_0047: ldstr "LargeLabel"
+IL_004c: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0051: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_LargeLabel
+IL_0056: ldarg.0
+IL_0057: ldarg.0
+IL_0058: ldstr "BoldLabel"
+IL_005d: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0062: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_BoldLabel
+IL_0067: ldarg.0
+IL_0068: ldarg.0
+IL_0069: ldstr "MiniBoldLabel"
+IL_006e: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0073: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniBoldLabel
+IL_0078: ldarg.0
+IL_0079: ldarg.0
+IL_007a: ldstr "WordWrappedLabel"
+IL_007f: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0084: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WordWrappedLabel
+IL_0089: ldarg.0
+IL_008a: ldarg.0
+IL_008b: ldstr "WordWrappedMiniLabel"
+IL_0090: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0095: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WordWrappedMiniLabel
+IL_009a: ldarg.0
+IL_009b: ldarg.0
+IL_009c: ldstr "WhiteLabel"
+IL_00a1: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_00a6: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WhiteLabel
+IL_00ab: ldarg.0
+IL_00ac: ldarg.0
+IL_00ad: ldstr "WhiteMiniLabel"
+IL_00b2: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_00b7: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WhiteMiniLabel
+IL_00bc: ldarg.0
+IL_00bd: ldarg.0
+IL_00be: ldstr "WhiteLargeLabel"
+IL_00c3: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_00c8: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WhiteLargeLabel
+IL_00cd: ldarg.0
+IL_00ce: ldarg.0
+IL_00cf: ldstr "WhiteBoldLabel"
+IL_00d4: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_00d9: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_WhiteBoldLabel
+IL_00de: ldarg.0
+IL_00df: ldarg.0
+IL_00e0: ldstr "MiniTextField"
+IL_00e5: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_00ea: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniTextField
+IL_00ef: ldarg.0
+IL_00f0: ldarg.0
+IL_00f1: ldstr "Radio"
+IL_00f6: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_00fb: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_RadioButton
+IL_0100: ldarg.0
+IL_0101: ldarg.0
+IL_0102: ldstr "miniButton"
+IL_0107: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_010c: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniButton
+IL_0111: ldarg.0
+IL_0112: ldarg.0
+IL_0113: ldstr "miniButtonLeft"
+IL_0118: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_011d: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniButtonLeft
+IL_0122: ldarg.0
+IL_0123: ldarg.0
+IL_0124: ldstr "miniButtonMid"
+IL_0129: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_012e: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniButtonMid
+IL_0133: ldarg.0
+IL_0134: ldarg.0
+IL_0135: ldstr "miniButtonRight"
+IL_013a: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_013f: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniButtonRight
+IL_0144: ldarg.0
+IL_0145: ldarg.0
+IL_0146: ldstr "MiniPullDown"
+IL_014b: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0150: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniPullDown
+IL_0155: ldarg.0
+IL_0156: ldarg.0
+IL_0157: ldstr "toolbar"
+IL_015c: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0161: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Toolbar
+IL_0166: ldarg.0
+IL_0167: ldarg.0
+IL_0168: ldstr "contentToolbar"
+IL_016d: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0172: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ContentToolbar
+IL_0177: ldarg.0
+IL_0178: ldarg.0
+IL_0179: ldstr "toolbarbutton"
+IL_017e: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0183: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarButton
+IL_0188: ldarg.0
+IL_0189: ldarg.0
+IL_018a: ldstr "toolbarbuttonLeft"
+IL_018f: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0194: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarButtonLeft
+IL_0199: ldarg.0
+IL_019a: ldarg.0
+IL_019b: ldstr "toolbarbuttonRight"
+IL_01a0: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_01a5: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarButtonRight
+IL_01aa: ldarg.0
+IL_01ab: ldarg.0
+IL_01ac: ldstr "toolbarPopup"
+IL_01b1: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_01b6: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarPopup
+IL_01bb: ldarg.0
+IL_01bc: ldarg.0
+IL_01bd: ldstr "toolbarPopupLeft"
+IL_01c2: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_01c7: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarPopupLeft
+IL_01cc: ldarg.0
+IL_01cd: ldarg.0
+IL_01ce: ldstr "toolbarPopupRight"
+IL_01d3: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_01d8: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarPopupRight
+IL_01dd: ldarg.0
+IL_01de: ldarg.0
+IL_01df: ldstr "toolbarDropDown"
+IL_01e4: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_01e9: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDown
+IL_01ee: ldarg.0
+IL_01ef: ldarg.0
+IL_01f0: ldstr "toolbarDropDownLeft"
+IL_01f5: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_01fa: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDownLeft
+IL_01ff: ldarg.0
+IL_0200: ldarg.0
+IL_0201: ldstr "toolbarDropDownRight"
+IL_0206: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_020b: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDownRight
+IL_0210: ldarg.0
+IL_0211: ldarg.0
+IL_0212: ldstr "toolbarDropDownToggle"
+IL_0217: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_021c: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDownToggle
+IL_0221: ldarg.0
+IL_0222: ldarg.0
+IL_0223: ldstr "ToolbarDropDownToggleButton"
+IL_0228: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_022d: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDownToggleButton
+IL_0232: ldarg.0
+IL_0233: ldarg.0
+IL_0234: ldstr "toolbarDropDownToggleRight"
+IL_0239: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_023e: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarDropDownToggleRight
+IL_0243: ldarg.0
+IL_0244: ldarg.0
+IL_0245: ldstr "ToolbarCreateAddNewDropDown"
+IL_024a: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_024f: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarCreateAddNewDropDown
+IL_0254: ldarg.0
+IL_0255: ldarg.0
+IL_0256: ldstr "toolbarTextField"
+IL_025b: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0260: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarTextField
+IL_0265: ldarg.0
+IL_0266: ldarg.0
+IL_0267: ldstr "ToolbarLabel"
+IL_026c: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0271: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarLabel
+IL_0276: ldarg.0
+IL_0277: ldarg.0
+IL_0278: ldstr "ToolbarSearchTextField"
+IL_027d: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0282: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchField
+IL_0287: ldarg.0
+IL_0288: ldarg.0
+IL_0289: ldstr "ToolbarSearchTextFieldPopup"
+IL_028e: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0293: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldPopup
+IL_0298: ldarg.0
+IL_0299: ldarg.0
+IL_029a: ldstr "ToolbarSearchTextFieldWithJump"
+IL_029f: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_02a4: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldWithJump
+IL_02a9: ldarg.0
+IL_02aa: ldarg.0
+IL_02ab: ldstr "ToolbarSearchTextFieldWithJumpPopup"
+IL_02b0: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_02b5: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldWithJumpPopup
+IL_02ba: ldarg.0
+IL_02bb: ldarg.0
+IL_02bc: ldstr "ToolbarSearchTextFieldJumpButton"
+IL_02c1: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_02c6: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldJumpButton
+IL_02cb: ldarg.0
+IL_02cc: ldarg.0
+IL_02cd: ldstr "ToolbarSearchCancelButton"
+IL_02d2: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_02d7: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldCancelButton
+IL_02dc: ldarg.0
+IL_02dd: ldarg.0
+IL_02de: ldstr "ToolbarSearchCancelButtonEmpty"
+IL_02e3: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_02e8: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldCancelButtonEmpty
+IL_02ed: ldarg.0
+IL_02ee: ldarg.0
+IL_02ef: ldstr "ToolbarSearchCancelButtonWithJump"
+IL_02f4: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_02f9: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldCancelButtonWithJump
+IL_02fe: ldarg.0
+IL_02ff: ldarg.0
+IL_0300: ldstr "ToolbarSearchCancelButtonWithJumpEmpty"
+IL_0305: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_030a: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldCancelButtonWithJumpEmpty
+IL_030f: ldarg.0
+IL_0310: ldarg.0
+IL_0311: ldstr "ToolbarSearchTextFieldWithJumpSynced"
+IL_0316: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_031b: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldWithJumpSynced
+IL_0320: ldarg.0
+IL_0321: ldarg.0
+IL_0322: ldstr "ToolbarSearchTextFieldWithJumpPopupSynced"
+IL_0327: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_032c: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSearchFieldWithJumpPopupSynced
+IL_0331: ldarg.0
+IL_0332: ldarg.0
+IL_0333: ldstr "SearchTextField"
+IL_0338: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_033d: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_SearchField
+IL_0342: ldarg.0
+IL_0343: ldarg.0
+IL_0344: ldstr "SearchCancelButton"
+IL_0349: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_034e: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_SearchFieldCancelButton
+IL_0353: ldarg.0
+IL_0354: ldarg.0
+IL_0355: ldstr "SearchCancelButtonEmpty"
+IL_035a: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_035f: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_SearchFieldCancelButtonEmpty
+IL_0364: ldarg.0
+IL_0365: ldarg.0
+IL_0366: ldstr "HelpBox"
+IL_036b: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0370: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_HelpBox
+IL_0375: ldarg.0
+IL_0376: ldarg.0
+IL_0377: ldstr "FrameBox"
+IL_037c: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0381: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_FrameBox
+IL_0386: ldarg.0
+IL_0387: ldarg.0
+IL_0388: ldstr "AssetLabel"
+IL_038d: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0392: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_AssetLabel
+IL_0397: ldarg.0
+IL_0398: ldarg.0
+IL_0399: ldstr "AssetLabel Partial"
+IL_039e: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_03a3: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_AssetLabelPartial
+IL_03a8: ldarg.0
+IL_03a9: ldarg.0
+IL_03aa: ldstr "AssetLabel Icon"
+IL_03af: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_03b4: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_AssetLabelIcon
+IL_03b9: ldarg.0
+IL_03ba: ldarg.0
+IL_03bb: ldstr "selectionRect"
+IL_03c0: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_03c5: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_SelectionRect
+IL_03ca: ldarg.0
+IL_03cb: ldarg.0
+IL_03cc: ldstr "ToolbarSlider"
+IL_03d1: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_03d6: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToolbarSlider
+IL_03db: ldarg.0
+IL_03dc: ldarg.0
+IL_03dd: ldstr "MinMaxHorizontalSliderThumb"
+IL_03e2: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_03e7: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MinMaxHorizontalSliderThumb
+IL_03ec: ldarg.0
+IL_03ed: ldarg.0
+IL_03ee: ldstr "DropDownButton"
+IL_03f3: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_03f8: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_DropDownList
+IL_03fd: ldarg.0
+IL_03fe: ldarg.0
+IL_03ff: ldstr "DropDownToggleButton"
+IL_0404: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0409: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_DropDownToggleButton
+IL_040e: ldarg.0
+IL_040f: ldarg.0
+IL_0410: ldstr "IN MinMaxStateDropdown"
+IL_0415: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_041a: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MinMaxStateDropdown
+IL_041f: ldarg.0
+IL_0420: ldarg.0
+IL_0421: ldstr "ProgressBarBack"
+IL_0426: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_042b: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ProgressBarBack
+IL_0430: ldarg.0
+IL_0431: ldarg.0
+IL_0432: ldstr "ProgressBarBar"
+IL_0437: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_043c: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ProgressBarBar
+IL_0441: ldarg.0
+IL_0442: ldarg.0
+IL_0443: ldstr "ProgressBarText"
+IL_0448: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_044d: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ProgressBarText
+IL_0452: ldarg.0
+IL_0453: ldarg.0
+IL_0454: ldstr "FoldoutPreDrop"
+IL_0459: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_045e: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_FoldoutPreDrop
+IL_0463: ldarg.0
+IL_0464: ldarg.0
+IL_0465: ldstr "FoldoutHeader"
+IL_046a: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_046f: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_FoldoutHeader
+IL_0474: ldarg.0
+IL_0475: ldarg.0
+IL_0476: ldstr "FoldoutHeaderIcon"
+IL_047b: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0480: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_FoldoutHeaderIcon
+IL_0485: ldarg.0
+IL_0486: ldarg.0
+IL_0487: ldstr "PaneOptions"
+IL_048c: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0491: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_OptionsButtonStyle
+IL_0496: ldarg.0
+IL_0497: ldarg.0
+IL_0498: ldstr "IN Title"
+IL_049d: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_04a2: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorTitlebar
+IL_04a7: ldarg.0
+IL_04a8: ldarg.0
+IL_04a9: ldstr "IN Title Flat"
+IL_04ae: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_04b3: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorTitlebarFlat
+IL_04b8: ldarg.0
+IL_04b9: ldarg.0
+IL_04ba: ldstr "IN TitleText"
+IL_04bf: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_04c4: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorTitlebarText
+IL_04c9: ldarg.0
+IL_04ca: ldarg.0
+IL_04cb: ldstr "BoldToggle"
+IL_04d0: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_04d5: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToggleGroup
+IL_04da: ldarg.0
+IL_04db: ldarg.0
+IL_04dc: ldstr "Tooltip"
+IL_04e1: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_04e6: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Tooltip
+IL_04eb: ldarg.0
+IL_04ec: ldarg.0
+IL_04ed: ldstr "NotificationText"
+IL_04f2: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_04f7: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_NotificationText
+IL_04fc: ldarg.0
+IL_04fd: ldarg.0
+IL_04fe: ldstr "NotificationBackground"
+IL_0503: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0508: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_NotificationBackground
+IL_050d: ldarg.0
+IL_050e: ldarg.0
+IL_050f: ldstr "ScrollViewAlt"
+IL_0514: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0519: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ScrollViewAlt
+IL_051e: ldarg.0
+IL_051f: ldarg.0
+IL_0520: ldarg.0
+IL_0521: ldstr "MiniPopup"
+IL_0526: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_052b: dup
+IL_052c: stloc.0
+IL_052d: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_LayerMaskField
+IL_0532: ldloc.0
+IL_0533: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Popup
+IL_0538: ldarg.0
+IL_0539: ldarg.0
+IL_053a: ldarg.0
+IL_053b: ldstr "TextField"
+IL_0540: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0545: dup
+IL_0546: stloc.0
+IL_0547: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_NumberField
+IL_054c: ldloc.0
+IL_054d: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TextField
+IL_0552: ldarg.0
+IL_0553: ldarg.0
+IL_0554: ldstr "BoldTextFIeld"
+IL_0559: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_055e: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_BoldTextField
+IL_0563: ldarg.0
+IL_0564: ldarg.0
+IL_0565: ldstr "ControlLabel"
+IL_056a: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_056f: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Label
+IL_0574: ldarg.0
+IL_0575: ldarg.0
+IL_0576: ldstr "ObjectField"
+IL_057b: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0580: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ObjectField
+IL_0585: ldarg.0
+IL_0586: ldarg.0
+IL_0587: ldstr "ObjectFieldThumb"
+IL_058c: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0591: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ObjectFieldThumb
+IL_0596: ldarg.0
+IL_0597: ldarg.0
+IL_0598: ldstr "ObjectFieldButton"
+IL_059d: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_05a2: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ObjectFieldButton
+IL_05a7: ldarg.0
+IL_05a8: ldarg.0
+IL_05a9: ldstr "ObjectFieldMiniThumb"
+IL_05ae: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_05b3: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ObjectFieldMiniThumb
+IL_05b8: ldarg.0
+IL_05b9: ldarg.0
+IL_05ba: ldstr "Toggle"
+IL_05bf: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_05c4: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Toggle
+IL_05c9: ldarg.0
+IL_05ca: ldarg.0
+IL_05cb: ldstr "ToggleMixed"
+IL_05d0: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_05d5: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ToggleMixed
+IL_05da: ldarg.0
+IL_05db: ldarg.0
+IL_05dc: ldstr "ColorField"
+IL_05e1: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_05e6: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_ColorField
+IL_05eb: ldarg.0
+IL_05ec: ldarg.0
+IL_05ed: ldstr "Foldout"
+IL_05f2: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_05f7: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_Foldout
+IL_05fc: ldarg.0
+IL_05fd: ldarg.0
+IL_05fe: ldstr "Titlebar Foldout"
+IL_0603: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0608: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TitlebarFoldout
+IL_060d: ldarg.0
+IL_060e: call UnityEngine.GUIStyle UnityEngine.GUIStyle::get_none()
+IL_0613: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_FoldoutSelected
+IL_0618: ldarg.0
+IL_0619: ldarg.0
+IL_061a: ldstr "IconButton"
+IL_061f: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0624: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_IconButton
+IL_0629: ldarg.0
+IL_062a: ldarg.0
+IL_062b: ldstr "TextFieldDropDown"
+IL_0630: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0635: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TextFieldDropDown
+IL_063a: ldarg.0
+IL_063b: ldarg.0
+IL_063c: ldstr "TextFieldDropDownText"
+IL_0641: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0646: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TextFieldDropDownText
+IL_064b: ldarg.0
+IL_064c: ldarg.0
+IL_064d: ldstr "OverrideMargin"
+IL_0652: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0657: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_OverrideMargin
+IL_065c: ldarg.0
+IL_065d: ldarg.0
+IL_065e: ldstr "LinkLabel"
+IL_0663: call UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0668: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_LinkLabel
+IL_066d: ldarg.0
+IL_066e: ldarg.0
+IL_066f: ldfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TextField
+IL_0674: newobj System.Void UnityEngine.GUIStyle::.ctor(UnityEngine.GUIStyle)
+IL_0679: dup
+IL_067a: ldc.i4.1
+IL_067b: callvirt System.Void UnityEngine.GUIStyle::set_wordWrap(System.Boolean)
+IL_0680: nop
+IL_0681: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_TextArea
+IL_0686: ldarg.0
+IL_0687: newobj System.Void UnityEngine.GUIStyle::.ctor()
+IL_068c: dup
+IL_068d: ldc.i4.s 18
+IL_068f: ldc.i4.4
+IL_0690: ldc.i4.4
+IL_0691: ldc.i4.0
+IL_0692: newobj System.Void UnityEngine.RectOffset::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)
+IL_0697: callvirt System.Void UnityEngine.GUIStyle::set_padding(UnityEngine.RectOffset)
+IL_069c: nop
+IL_069d: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorDefaultMargins
+IL_06a2: ldarg.0
+IL_06a3: newobj System.Void UnityEngine.GUIStyle::.ctor()
+IL_06a8: dup
+IL_06a9: ldc.i4.s 18
+IL_06ab: ldc.i4.4
+IL_06ac: ldc.i4.0
+IL_06ad: ldc.i4.0
+IL_06ae: newobj System.Void UnityEngine.RectOffset::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)
+IL_06b3: callvirt System.Void UnityEngine.GUIStyle::set_padding(UnityEngine.RectOffset)
+IL_06b8: nop
+IL_06b9: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorHorizontalDefaultMargins
+IL_06be: ldarg.0
+IL_06bf: newobj System.Void UnityEngine.GUIStyle::.ctor()
+IL_06c4: dup
+IL_06c5: ldc.i4.5
+IL_06c6: ldc.i4.4
+IL_06c7: ldc.i4.0
+IL_06c8: ldc.i4.0
+IL_06c9: newobj System.Void UnityEngine.RectOffset::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)
+IL_06ce: callvirt System.Void UnityEngine.GUIStyle::set_padding(UnityEngine.RectOffset)
+IL_06d3: nop
+IL_06d4: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_InspectorFullWidthMargins
+IL_06d9: ldarg.0
+IL_06da: newobj System.Void UnityEngine.GUIStyle::.ctor()
+IL_06df: dup
+IL_06e0: ldc.i4.4
+IL_06e1: ldc.i4.4
+IL_06e2: ldc.i4.4
+IL_06e3: ldc.i4.4
+IL_06e4: newobj System.Void UnityEngine.RectOffset::.ctor(System.Int32,System.Int32,System.Int32,System.Int32)
+IL_06e9: callvirt System.Void UnityEngine.GUIStyle::set_padding(UnityEngine.RectOffset)
+IL_06ee: nop
+IL_06ef: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_DefaultContentMargins
+IL_06f4: ldarg.0
+IL_06f5: ldarg.0
+IL_06f6: ldfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_MiniLabel
+IL_06fb: newobj System.Void UnityEngine.GUIStyle::.ctor(UnityEngine.GUIStyle)
+IL_0700: dup
+IL_0701: ldc.i4.4
+IL_0702: callvirt System.Void UnityEngine.GUIStyle::set_alignment(UnityEngine.TextAnchor)
+IL_0707: nop
+IL_0708: dup
+IL_0709: callvirt UnityEngine.GUIStyleState UnityEngine.GUIStyle::get_normal()
+IL_070e: call UnityEngine.Color UnityEngine.Color::get_grey()
+IL_0713: callvirt System.Void UnityEngine.GUIStyleState::set_textColor(UnityEngine.Color)
+IL_0718: nop
+IL_0719: dup
+IL_071a: callvirt UnityEngine.GUIStyleState UnityEngine.GUIStyle::get_hover()
+IL_071f: call UnityEngine.Color UnityEngine.Color::get_grey()
+IL_0724: callvirt System.Void UnityEngine.GUIStyleState::set_textColor(UnityEngine.Color)
+IL_0729: nop
+IL_072a: dup
+IL_072b: callvirt UnityEngine.GUIStyleState UnityEngine.GUIStyle::get_active()
+IL_0730: call UnityEngine.Color UnityEngine.Color::get_grey()
+IL_0735: callvirt System.Void UnityEngine.GUIStyleState::set_textColor(UnityEngine.Color)
+IL_073a: nop
+IL_073b: dup
+IL_073c: callvirt UnityEngine.GUIStyleState UnityEngine.GUIStyle::get_focused()
+IL_0741: call UnityEngine.Color UnityEngine.Color::get_grey()
+IL_0746: callvirt System.Void UnityEngine.GUIStyleState::set_textColor(UnityEngine.Color)
+IL_074b: nop
+IL_074c: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_CenteredGreyMiniLabel
+IL_0751: ldarg.0
+IL_0752: ldarg.0
+IL_0753: ldfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_HelpBox
+IL_0758: newobj System.Void UnityEngine.GUIStyle::.ctor(UnityEngine.GUIStyle)
+IL_075d: dup
+IL_075e: ldstr "HelpBoxLabel"
+IL_0763: callvirt System.Void UnityEngine.GUIStyle::set_name(System.String)
+IL_0768: nop
+IL_0769: stfld UnityEngine.GUIStyle UnityEditor.EditorStyles::m_HelpBoxLabel
+IL_076e: ret
+METHOD UnityEngine.GUIStyle UnityEditor.EditorStyles::GetStyle(System.String)
+IL_0000: nop
+IL_0001: call UnityEngine.GUISkin UnityEngine.GUI::get_skin()
+IL_0006: ldarg.1
+IL_0007: callvirt UnityEngine.GUIStyle UnityEngine.GUISkin::FindStyle(System.String)
+IL_000c: dup
+IL_000d: brtrue.s IL_001c
+IL_000f: pop
+IL_0010: ldc.i4.1
+IL_0011: call UnityEngine.GUISkin UnityEditor.EditorGUIUtility::GetBuiltinSkin(UnityEditor.EditorSkin)
+IL_0016: ldarg.1
+IL_0017: callvirt UnityEngine.GUIStyle UnityEngine.GUISkin::FindStyle(System.String)
+IL_001c: stloc.0
+IL_001d: ldloc.0
+IL_001e: ldnull
+IL_001f: ceq
+IL_0021: stloc.1
+IL_0022: ldloc.1
+IL_0023: brfalse.s IL_003e
+IL_0025: nop
+IL_0026: ldstr "Missing built-in guistyle "
+IL_002b: ldarg.1
+IL_002c: call System.String System.String::Concat(System.String,System.String)
+IL_0031: call System.Void UnityEngine.Debug::LogError(System.Object)
+IL_0036: nop
+IL_0037: call UnityEngine.GUIStyle UnityEngine.GUISkin::get_error()
+IL_003c: stloc.0
+IL_003d: nop
+IL_003e: ldloc.0
+IL_003f: stloc.2
+IL_0040: br.s IL_0042
+IL_0042: ldloc.2
+IL_0043: ret
+METHOD System.Void UnityEditor.EditorStyles::.cctor()
+IL_0000: ldc.i4.2
+IL_0001: newarr UnityEditor.EditorStyles
+IL_0006: stsfld UnityEditor.EditorStyles[] UnityEditor.EditorStyles::s_CachedStyles
+IL_000b: ret
+TYPE UnityEditor.MaterialEditor
+FIELD System.Collections.Generic.List`1<UnityEditor.MaterialEditor> UnityEditor.MaterialEditor::s_MaterialEditors
+FIELD System.Int32 UnityEditor.MaterialEditor::m_VariantCountCache
+FIELD System.Int32 UnityEditor.MaterialEditor::m_HasMixedParentCache
+FIELD System.Boolean UnityEditor.MaterialEditor::m_CheckSetup
+FIELD System.Int32 UnityEditor.MaterialEditor::s_ControlHash
+FIELD System.Single UnityEditor.MaterialEditor::kSpacingUnderTexture
+FIELD System.Single UnityEditor.MaterialEditor::kMiniWarningMessageHeight
+FIELD UnityEngine.MaterialPropertyBlock UnityEditor.MaterialEditor::m_PropertyBlock
+FIELD UnityEngine.Shader UnityEditor.MaterialEditor::m_Shader
+FIELD System.String UnityEditor.MaterialEditor::m_InfoMessage
+FIELD UnityEngine.Vector2 UnityEditor.MaterialEditor::m_PreviewDir
+FIELD System.Int32 UnityEditor.MaterialEditor::m_SelectedMesh
+FIELD System.Int32 UnityEditor.MaterialEditor::m_TimeUpdate
+FIELD System.Int32 UnityEditor.MaterialEditor::m_LightMode
+FIELD UnityEngine.GUIContent UnityEditor.MaterialEditor::s_TilingText
+FIELD UnityEngine.GUIContent UnityEditor.MaterialEditor::s_OffsetText
+FIELD System.String UnityEditor.MaterialEditor::kDefaultMaterialPreviewMesh
+FIELD UnityEditor.ShaderGUI UnityEditor.MaterialEditor::m_CustomShaderGUI
+FIELD System.String UnityEditor.MaterialEditor::m_CustomEditorClassName
+FIELD System.Boolean UnityEditor.MaterialEditor::m_InsidePropertiesGUI
+FIELD UnityEngine.Renderer[] UnityEditor.MaterialEditor::m_RenderersForAnimationMode
+FIELD UnityEngine.Component UnityEditor.MaterialEditor::m_MeshRendererComp
+FIELD UnityEditor.MaterialEditor/ConvertAction UnityEditor.MaterialEditor::convertState
+FIELD System.Collections.Generic.Stack`1<UnityEditor.MaterialEditor/AnimatedCheckData> UnityEditor.MaterialEditor::s_AnimatedCheckStack
+FIELD UnityEditor.MaterialEditor/MaterialPropertyCallbackFunction UnityEditor.MaterialEditor::contextualPropertyMenu
+FIELD UnityEditor.MaterialEditor/ReflectionProbePicker UnityEditor.MaterialEditor::m_ReflectionProbePicker
+FIELD UnityEngine.Rendering.TextureDimension UnityEditor.MaterialEditor::m_DesiredTexdim
+FIELD UnityEngine.Mesh[] UnityEditor.MaterialEditor::s_Meshes
+FIELD UnityEngine.Mesh UnityEditor.MaterialEditor::s_PlaneMesh
+FIELD UnityEngine.GUIContent[] UnityEditor.MaterialEditor::s_MeshIcons
+FIELD UnityEngine.GUIContent[] UnityEditor.MaterialEditor::s_LightIcons
+FIELD UnityEngine.GUIContent[] UnityEditor.MaterialEditor::s_TimeIcons
+FIELD UnityEditor.PreviewRenderUtility UnityEditor.MaterialEditor::s_PreviewRenderUtility
+FIELD System.Int32 UnityEditor.MaterialEditor::s_NumberOfEditors
+FIELD UnityEngine.Material UnityEditor.MaterialEditor::s_OriginalMaterial
+FIELD UnityEngine.Renderer UnityEditor.MaterialEditor::s_previousDraggedUponRenderer
+FIELD UnityEngine.Material[] UnityEditor.MaterialEditor::s_previousMaterialValue
+FIELD System.Boolean UnityEditor.MaterialEditor::s_previousAlreadyHadPrefabModification
+FIELD UnityEngine.Renderer[] UnityEditor.MaterialEditor::renderersForContextMenu
+FIELD UnityEngine.Material UnityEditor.MaterialEditor::materialForContextMenu
+FIELD System.Int32 UnityEditor.MaterialEditor::kMiniTextureFieldLabelIndentLevel
+FIELD System.Single UnityEditor.MaterialEditor::kSpaceBetweenFlexibleAreaAndField
+FIELD System.Single UnityEditor.MaterialEditor::kQueuePopupWidth
+FIELD System.Single UnityEditor.MaterialEditor::kCustomQueuePopupWidth
+METHOD System.Boolean UnityEditor.MaterialEditor::HasMultipleMixedShaderValues()
+IL_0000: nop
+IL_0001: ldc.i4.0
+IL_0002: stloc.0
+IL_0003: ldarg.0
+IL_0004: call UnityEngine.Object[] UnityEditor.Editor::get_targets()
+IL_0009: ldc.i4.0
+IL_000a: ldelem.ref
+IL_000b: isinst UnityEngine.Material
+IL_0010: callvirt UnityEngine.Shader UnityEngine.Material::get_shader()
+IL_0015: stloc.1
+IL_0016: ldc.i4.1
+IL_0017: stloc.2
+IL_0018: br.s IL_0041
+IL_001a: nop
+IL_001b: ldloc.1
+IL_001c: ldarg.0
+IL_001d: call UnityEngine.Object[] UnityEditor.Editor::get_targets()
+IL_0022: ldloc.2
+IL_0023: ldelem.ref
+IL_0024: isinst UnityEngine.Material
+IL_0029: callvirt UnityEngine.Shader UnityEngine.Material::get_shader()
+IL_002e: call System.Boolean UnityEngine.Object::op_Inequality(UnityEngine.Object,UnityEngine.Object)
+IL_0033: stloc.3
+IL_0034: ldloc.3
+IL_0035: brfalse.s IL_003c
+IL_0037: nop
+IL_0038: ldc.i4.1
+IL_0039: stloc.0
+IL_003a: br.s IL_0052
+IL_003c: nop
+IL_003d: ldloc.2
+IL_003e: ldc.i4.1
+IL_003f: add
+IL_0040: stloc.2
+IL_0041: ldloc.2
+IL_0042: ldarg.0
+IL_0043: call UnityEngine.Object[] UnityEditor.Editor::get_targets()
+IL_0048: ldlen
+IL_0049: conv.i4
+IL_004a: clt
+IL_004c: stloc.s V_4
+IL_004e: ldloc.s V_4
+IL_0050: brtrue.s IL_001a
+IL_0052: ldloc.0
+IL_0053: stloc.s V_5
+IL_0055: br.s IL_0057
+IL_0057: ldloc.s V_5
+IL_0059: ret
+METHOD System.Void UnityEditor.MaterialEditor::OnInspectorGUI()
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: call System.Boolean UnityEditor.MaterialEditor::ShouldEditorBeHidden()
+IL_0007: stloc.0
+IL_0008: ldloc.0
+IL_0009: brfalse.s IL_0010
+IL_000b: br IL_00b0
+IL_0010: ldarg.0
+IL_0011: call UnityEditor.SerializedObject UnityEditor.Editor::get_serializedObject()
+IL_0016: callvirt System.Void UnityEditor.SerializedObject::Update()
+IL_001b: nop
+IL_001c: ldarg.0
+IL_001d: call System.Void UnityEditor.MaterialEditor::CheckSetup()
+IL_0022: nop
+IL_0023: ldarg.0
+IL_0024: call System.Void UnityEditor.MaterialEditor::DetectShaderEditorNeedsUpdate()
+IL_0029: nop
+IL_002a: ldarg.0
+IL_002b: call System.Boolean UnityEditor.MaterialEditor::get_isVisible()
+IL_0030: brfalse.s IL_004b
+IL_0032: ldarg.0
+IL_0033: ldfld UnityEngine.Shader UnityEditor.MaterialEditor::m_Shader
+IL_0038: ldnull
+IL_0039: call System.Boolean UnityEngine.Object::op_Inequality(UnityEngine.Object,UnityEngine.Object)
+IL_003e: brfalse.s IL_004b
+IL_0040: ldarg.0
+IL_0041: call System.Boolean UnityEditor.MaterialEditor::HasMultipleMixedShaderValues()
+IL_0046: ldc.i4.0
+IL_0047: ceq
+IL_0049: br.s IL_004c
+IL_004b: ldc.i4.0
+IL_004c: stloc.1
+IL_004d: ldloc.1
+IL_004e: brfalse.s IL_00a9
+IL_0050: nop
+IL_0051: ldarg.0
+IL_0052: call System.Boolean UnityEditor.MaterialEditor::PropertiesGUI()
+IL_0057: stloc.2
+IL_0058: ldloc.2
+IL_0059: brfalse.s IL_00a8
+IL_005b: nop
+IL_005c: nop
+IL_005d: ldarg.0
+IL_005e: call UnityEngine.Object[] UnityEditor.Editor::get_targets()
+IL_0063: stloc.3
+IL_0064: ldc.i4.0
+IL_0065: stloc.s V_4
+IL_0067: br.s IL_0099
+IL_0069: ldloc.3
+IL_006a: ldloc.s V_4
+IL_006c: ldelem.ref
+IL_006d: castclass UnityEngine.Material
+IL_0072: stloc.s V_5
+IL_0074: nop
+IL_0075: ldarg.0
+IL_0076: ldfld UnityEditor.ShaderGUI UnityEditor.MaterialEditor::m_CustomShaderGUI
+IL_007b: ldnull
+IL_007c: cgt.un
+IL_007e: stloc.s V_6
+IL_0080: ldloc.s V_6
+IL_0082: brfalse.s IL_0092
+IL_0084: ldarg.0
+IL_0085: ldfld UnityEditor.ShaderGUI UnityEditor.MaterialEditor::m_CustomShaderGUI
+IL_008a: ldloc.s V_5
+IL_008c: callvirt System.Void UnityEditor.ShaderGUI::ValidateMaterial(UnityEngine.Material)
+IL_0091: nop
+IL_0092: nop
+IL_0093: ldloc.s V_4
+IL_0095: ldc.i4.1
+IL_0096: add
+IL_0097: stloc.s V_4
+IL_0099: ldloc.s V_4
+IL_009b: ldloc.3
+IL_009c: ldlen
+IL_009d: conv.i4
+IL_009e: blt.s IL_0069
+IL_00a0: ldarg.0
+IL_00a1: call System.Void UnityEditor.MaterialEditor::PropertiesChanged()
+IL_00a6: nop
+IL_00a7: nop
+IL_00a8: nop
+IL_00a9: ldarg.0
+IL_00aa: call System.Void UnityEditor.MaterialEditor::DetectTextureStackValidationIssues()
+IL_00af: nop
+IL_00b0: ret
+METHOD UnityEditor.MaterialProperty[] UnityEditor.MaterialEditor::GetMaterialProperties(UnityEngine.Object[])
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldnull
+IL_0003: ceq
+IL_0005: stloc.0
+IL_0006: ldloc.0
+IL_0007: brfalse.s IL_0014
+IL_0009: ldstr "mats"
+IL_000e: newobj System.Void System.ArgumentNullException::.ctor(System.String)
+IL_0013: throw
+IL_0014: ldarg.0
+IL_0015: ldnull
+IL_0016: call System.Int32 System.Array::IndexOf<UnityEngine.Object>(!!0[],!!0)
+IL_001b: ldc.i4.0
+IL_001c: clt
+IL_001e: ldc.i4.0
+IL_001f: ceq
+IL_0021: stloc.1
+IL_0022: ldloc.1
+IL_0023: brfalse.s IL_0030
+IL_0025: ldstr "List of materials contains null"
+IL_002a: newobj System.Void System.ArgumentException::.ctor(System.String)
+IL_002f: throw
+IL_0030: ldarg.0
+IL_0031: call UnityEditor.MaterialProperty[] UnityEditor.ShaderUtil::GetMaterialProperties(UnityEngine.Object[])
+IL_0036: stloc.2
+IL_0037: br.s IL_0039
+IL_0039: ldloc.2
+IL_003a: ret
+METHOD System.Boolean UnityEditor.MaterialEditor::PropertiesGUI()
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: call System.Boolean UnityEditor.Editor::get_firstInspectedEditor()
+IL_0007: ldc.i4.0
+IL_0008: ceq
+IL_000a: stloc.s V_4
+IL_000c: ldloc.s V_4
+IL_000e: brfalse.s IL_004e
+IL_0010: nop
+IL_0011: call UnityEngine.GUILayoutGroup UnityEngine.GUILayoutUtility::get_topLevel()
+IL_0016: callvirt UnityEngine.GUIStyle UnityEngine.GUILayoutEntry::get_style()
+IL_001b: stloc.s V_5
+IL_001d: call System.Void UnityEditor.EditorGUILayout::EndVertical()
+IL_0022: nop
+IL_0023: call System.Boolean UnityEngine.GUI::get_enabled()
+IL_0028: stloc.s V_6
+IL_002a: ldc.i4.1
+IL_002b: call System.Void UnityEngine.GUI::set_enabled(System.Boolean)
+IL_0030: nop
+IL_0031: ldarg.0
+IL_0032: call System.Void UnityEditor.PropertyEditor::VersionControlBar(UnityEditor.Editor)
+IL_0037: nop
+IL_0038: ldloc.s V_6
+IL_003a: call System.Void UnityEngine.GUI::set_enabled(System.Boolean)
+IL_003f: nop
+IL_0040: ldloc.s V_5
+IL_0042: call !!0[] System.Array::Empty<UnityEngine.GUILayoutOption>()
+IL_0047: call UnityEngine.Rect UnityEditor.EditorGUILayout::BeginVertical(UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])
+IL_004c: pop
+IL_004d: nop
+IL_004e: call UnityEngine.Event UnityEngine.Event::get_current()
+IL_0053: callvirt UnityEngine.EventType UnityEngine.Event::get_type()
+IL_0058: stloc.0
+IL_0059: ldloc.0
+IL_005a: ldc.i4.s 14
+IL_005c: beq.s IL_0065
+IL_005e: ldloc.0
+IL_005f: ldc.i4.s 13
+IL_0061: ceq
+IL_0063: br.s IL_0066
+IL_0065: ldc.i4.1
+IL_0066: stloc.1
+IL_0067: ldarg.0
+IL_0068: ldfld System.Boolean UnityEditor.MaterialEditor::m_InsidePropertiesGUI
+IL_006d: brfalse.s IL_0075
+IL_006f: ldloc.1
+IL_0070: ldc.i4.0
+IL_0071: ceq
+IL_0073: br.s IL_0076
+IL_0075: ldc.i4.0
+IL_0076: stloc.s V_7
+IL_0078: ldloc.s V_7
+IL_007a: brfalse.s IL_0090
+IL_007c: nop
+IL_007d: ldstr "PropertiesGUI() is being called recursively. If you want to render the default gui for shader properties then call PropertiesDefaultGUI() instead"
+IL_0082: call System.Void UnityEngine.Debug::LogWarning(System.Object)
+IL_0087: nop
+IL_0088: ldc.i4.0
+IL_0089: stloc.s V_8
+IL_008b: br IL_01a5
+IL_0090: call System.Void UnityEditor.EditorGUI::BeginChangeCheck()
+IL_0095: nop
+IL_0096: ldarg.0
+IL_0097: call UnityEngine.Object[] UnityEditor.Editor::get_targets()
+IL_009c: call UnityEditor.MaterialProperty[] UnityEditor.MaterialEditor::GetMaterialProperties(UnityEngine.Object[])
+IL_00a1: stloc.2
+IL_00a2: ldarg.0
+IL_00a3: ldloc.2
+IL_00a4: call UnityEngine.Renderer[] UnityEditor.MaterialEditor::GetAssociatedRenderersFromInspector()
+IL_00a9: call System.Boolean UnityEngine.GUI::get_enabled()
+IL_00ae: call UnityEngine.Renderer[] UnityEditor.MaterialEditor::PrepareMaterialPropertiesForAnimationMode(UnityEditor.MaterialProperty[],UnityEngine.Renderer[],System.Boolean)
+IL_00b3: stfld UnityEngine.Renderer[] UnityEditor.MaterialEditor::m_RenderersForAnimationMode
+IL_00b8: call System.Boolean UnityEngine.GUI::get_enabled()
+IL_00bd: stloc.3
+IL_00be: ldarg.0
+IL_00bf: ldfld UnityEngine.Renderer[] UnityEditor.MaterialEditor::m_RenderersForAnimationMode
+IL_00c4: ldnull
+IL_00c5: cgt.un
+IL_00c7: stloc.s V_9
+IL_00c9: ldloc.s V_9
+IL_00cb: brfalse.s IL_00d4
+IL_00cd: ldc.i4.1
+IL_00ce: call System.Void UnityEngine.GUI::set_enabled(System.Boolean)
+IL_00d3: nop
+IL_00d4: ldloc.1
+IL_00d5: ldc.i4.0
+IL_00d6: ceq
+IL_00d8: stloc.s V_10
+IL_00da: ldloc.s V_10
+IL_00dc: brfalse.s IL_00e5
+IL_00de: ldarg.0
+IL_00df: ldc.i4.1
+IL_00e0: stfld System.Boolean UnityEditor.MaterialEditor::m_InsidePropertiesGUI
+IL_00e5: nop
+IL_00e6: nop
+IL_00e7: ldarg.0
+IL_00e8: ldfld UnityEditor.ShaderGUI UnityEditor.MaterialEditor::m_CustomShaderGUI
+IL_00ed: ldnull
+IL_00ee: cgt.un
+IL_00f0: stloc.s V_12
+IL_00f2: ldloc.s V_12
+IL_00f4: brfalse.s IL_0106
+IL_00f6: ldarg.0
+IL_00f7: ldfld UnityEditor.ShaderGUI UnityEditor.MaterialEditor::m_CustomShaderGUI
+IL_00fc: ldarg.0
+IL_00fd: ldloc.2
+IL_00fe: callvirt System.Void UnityEditor.ShaderGUI::OnGUI(UnityEditor.MaterialEditor,UnityEditor.MaterialProperty[])
+IL_0103: nop
+IL_0104: br.s IL_010e
+IL_0106: ldarg.0
+IL_0107: ldloc.2
+IL_0108: call System.Void UnityEditor.MaterialEditor::PropertiesDefaultGUI(UnityEditor.MaterialProperty[])
+IL_010d: nop
+IL_010e: call UnityEngine.Renderer[] UnityEditor.MaterialEditor::GetAssociatedRenderersFromInspector()
+IL_0113: stloc.s V_11
+IL_0115: ldloc.s V_11
+IL_0117: brfalse.s IL_0121
+IL_0119: ldloc.s V_11
+IL_011b: ldlen
+IL_011c: ldc.i4.0
+IL_011d: cgt.un
+IL_011f: br.s IL_0122
+IL_0121: ldc.i4.0
+IL_0122: stloc.s V_13
+IL_0124: ldloc.s V_13
+IL_0126: brfalse.s IL_0171
+IL_0128: nop
+IL_0129: ldloc.0
+IL_012a: ldc.i4.8
+IL_012b: ceq
+IL_012d: stloc.s V_14
+IL_012f: ldloc.s V_14
+IL_0131: brfalse.s IL_0145
+IL_0133: nop
+IL_0134: ldloc.s V_11
+IL_0136: ldc.i4.0
+IL_0137: ldelem.ref
+IL_0138: ldarg.0
+IL_0139: ldfld UnityEngine.MaterialPropertyBlock UnityEditor.MaterialEditor::m_PropertyBlock
+IL_013e: callvirt System.Void UnityEngine.Renderer::GetPropertyBlock(UnityEngine.MaterialPropertyBlock)
+IL_0143: nop
+IL_0144: nop
+IL_0145: ldarg.0
+IL_0146: ldfld UnityEngine.MaterialPropertyBlock UnityEditor.MaterialEditor::m_PropertyBlock
+IL_014b: brfalse.s IL_015d
+IL_014d: ldarg.0
+IL_014e: ldfld UnityEngine.MaterialPropertyBlock UnityEditor.MaterialEditor::m_PropertyBlock
+IL_0153: callvirt System.Boolean UnityEngine.MaterialPropertyBlock::get_isEmpty()
+IL_0158: ldc.i4.0
+IL_0159: ceq
+IL_015b: br.s IL_015e
+IL_015d: ldc.i4.0
+IL_015e: stloc.s V_15
+IL_0160: ldloc.s V_15
+IL_0162: brfalse.s IL_0170
+IL_0164: ldsfld System.String UnityEditor.MaterialEditor/Styles::propBlockInfo
+IL_0169: ldc.i4.1
+IL_016a: call System.Void UnityEditor.EditorGUILayout::HelpBox(System.String,UnityEditor.MessageType)
+IL_016f: nop
+IL_0170: nop
+IL_0171: nop
+IL_0172: leave.s IL_0178
+IL_0174: pop
+IL_0175: nop
+IL_0176: rethrow
+IL_0178: leave.s IL_019c
+IL_017a: nop
+IL_017b: ldloc.3
+IL_017c: call System.Void UnityEngine.GUI::set_enabled(System.Boolean)
+IL_0181: nop
+IL_0182: ldloc.1
+IL_0183: ldc.i4.0
+IL_0184: ceq
+IL_0186: stloc.s V_16
+IL_0188: ldloc.s V_16
+IL_018a: brfalse.s IL_0193
+IL_018c: ldarg.0
+IL_018d: ldc.i4.0
+IL_018e: stfld System.Boolean UnityEditor.MaterialEditor::m_InsidePropertiesGUI
+IL_0193: ldarg.0
+IL_0194: ldnull
+IL_0195: stfld UnityEngine.Renderer[] UnityEditor.MaterialEditor::m_RenderersForAnimationMode
+IL_019a: nop
+IL_019b: endfinally
+IL_019c: call System.Boolean UnityEditor.EditorGUI::EndChangeCheck()
+IL_01a1: stloc.s V_8
+IL_01a3: br.s IL_01a5
+IL_01a5: ldloc.s V_8
+IL_01a7: ret
+METHOD System.Void UnityEditor.MaterialEditor::OnEnable()
+IL_0000: nop
+IL_0001: ldsfld System.Int32 UnityEditor.MaterialEditor::s_NumberOfEditors
+IL_0006: ldc.i4.1
+IL_0007: add
+IL_0008: stsfld System.Int32 UnityEditor.MaterialEditor::s_NumberOfEditors
+IL_000d: ldarg.0
+IL_000e: call UnityEngine.Object UnityEditor.Editor::get_target()
+IL_0013: call System.Boolean UnityEngine.Object::op_Implicit(UnityEngine.Object)
+IL_0018: ldc.i4.0
+IL_0019: ceq
+IL_001b: stloc.0
+IL_001c: ldloc.0
+IL_001d: brfalse.s IL_0024
+IL_001f: br IL_00a7
+IL_0024: ldarg.0
+IL_0025: ldarg.0
+IL_0026: call UnityEditor.SerializedObject UnityEditor.Editor::get_serializedObject()
+IL_002b: ldstr "m_Shader"
+IL_0030: callvirt UnityEditor.SerializedProperty UnityEditor.SerializedObject::FindProperty(System.String)
+IL_0035: callvirt UnityEngine.Object UnityEditor.SerializedProperty::get_objectReferenceValue()
+IL_003a: isinst UnityEngine.Shader
+IL_003f: stfld UnityEngine.Shader UnityEditor.MaterialEditor::m_Shader
+IL_0044: ldarg.0
+IL_0045: ldstr ""
+IL_004a: stfld System.String UnityEditor.MaterialEditor::m_CustomEditorClassName
+IL_004f: ldarg.0
+IL_0050: ldarg.0
+IL_0051: ldfld UnityEngine.Shader UnityEditor.MaterialEditor::m_Shader
+IL_0056: call System.Void UnityEditor.MaterialEditor::CreateCustomShaderEditorIfNeeded(UnityEngine.Shader)
+IL_005b: nop
+IL_005c: ldsfld System.Collections.Generic.List`1<UnityEditor.MaterialEditor> UnityEditor.MaterialEditor::s_MaterialEditors
+IL_0061: ldarg.0
+IL_0062: callvirt System.Void System.Collections.Generic.List`1<UnityEditor.MaterialEditor>::Add(!0)
+IL_0067: nop
+IL_0068: ldsfld UnityEditor.Undo/UndoRedoEventCallback UnityEditor.Undo::undoRedoEvent
+IL_006d: ldarg.0
+IL_006e: dup
+IL_006f: ldvirtftn System.Void UnityEditor.MaterialEditor::UndoRedoPerformed(UnityEditor.UndoRedoInfo& modreq(System.Runtime.InteropServices.InAttribute))
+IL_0075: newobj System.Void UnityEditor.Undo/UndoRedoEventCallback::.ctor(System.Object,System.IntPtr)
+IL_007a: call System.Delegate System.Delegate::Combine(System.Delegate,System.Delegate)
+IL_007f: castclass UnityEditor.Undo/UndoRedoEventCallback
+IL_0084: stsfld UnityEditor.Undo/UndoRedoEventCallback UnityEditor.Undo::undoRedoEvent
+IL_0089: ldarg.0
+IL_008a: call System.Void UnityEditor.MaterialEditor::PropertiesChanged()
+IL_008f: nop
+IL_0090: ldarg.0
+IL_0091: newobj System.Void UnityEngine.MaterialPropertyBlock::.ctor()
+IL_0096: stfld UnityEngine.MaterialPropertyBlock UnityEditor.MaterialEditor::m_PropertyBlock
+IL_009b: ldarg.0
+IL_009c: ldfld UnityEditor.MaterialEditor/ReflectionProbePicker UnityEditor.MaterialEditor::m_ReflectionProbePicker
+IL_00a1: callvirt System.Void UnityEditor.MaterialEditor/ReflectionProbePicker::OnEnable()
+IL_00a6: nop
+IL_00a7: ret
+METHOD System.Void UnityEditor.MaterialEditor::.cctor()
+IL_0000: ldc.i4.4
+IL_0001: newobj System.Void System.Collections.Generic.List`1<UnityEditor.MaterialEditor>::.ctor(System.Int32)
+IL_0006: stsfld System.Collections.Generic.List`1<UnityEditor.MaterialEditor> UnityEditor.MaterialEditor::s_MaterialEditors
+IL_000b: ldstr "EditorTextField"
+IL_0010: callvirt System.Int32 System.Object::GetHashCode()
+IL_0015: stsfld System.Int32 UnityEditor.MaterialEditor::s_ControlHash
+IL_001a: ldstr "Tiling"
+IL_001f: ldnull
+IL_0020: ldnull
+IL_0021: call UnityEngine.GUIContent UnityEditor.EditorGUIUtility::TrTextContent(System.String,System.String,UnityEngine.Texture)
+IL_0026: stsfld UnityEngine.GUIContent UnityEditor.MaterialEditor::s_TilingText
+IL_002b: ldstr "Offset"
+IL_0030: ldnull
+IL_0031: ldnull
+IL_0032: call UnityEngine.GUIContent UnityEditor.EditorGUIUtility::TrTextContent(System.String,System.String,UnityEngine.Texture)
+IL_0037: stsfld UnityEngine.GUIContent UnityEditor.MaterialEditor::s_OffsetText
+IL_003c: newobj System.Void System.Collections.Generic.Stack`1<UnityEditor.MaterialEditor/AnimatedCheckData>::.ctor()
+IL_0041: stsfld System.Collections.Generic.Stack`1<UnityEditor.MaterialEditor/AnimatedCheckData> UnityEditor.MaterialEditor::s_AnimatedCheckStack
+IL_0046: ldc.i4.5
+IL_0047: newarr UnityEngine.Mesh
+IL_004c: stsfld UnityEngine.Mesh[] UnityEditor.MaterialEditor::s_Meshes
+IL_0051: ldc.i4.5
+IL_0052: newarr UnityEngine.GUIContent
+IL_0057: stsfld UnityEngine.GUIContent[] UnityEditor.MaterialEditor::s_MeshIcons
+IL_005c: ldc.i4.2
+IL_005d: newarr UnityEngine.GUIContent
+IL_0062: stsfld UnityEngine.GUIContent[] UnityEditor.MaterialEditor::s_LightIcons
+IL_0067: ldc.i4.2
+IL_0068: newarr UnityEngine.GUIContent
+IL_006d: stsfld UnityEngine.GUIContent[] UnityEditor.MaterialEditor::s_TimeIcons
+IL_0072: ldc.i4.0
+IL_0073: stsfld System.Int32 UnityEditor.MaterialEditor::s_NumberOfEditors
+IL_0078: ldnull
+IL_0079: stsfld UnityEngine.Renderer[] UnityEditor.MaterialEditor::renderersForContextMenu
+IL_007e: ldnull
+IL_007f: stsfld UnityEngine.Material UnityEditor.MaterialEditor::materialForContextMenu
+IL_0084: ret

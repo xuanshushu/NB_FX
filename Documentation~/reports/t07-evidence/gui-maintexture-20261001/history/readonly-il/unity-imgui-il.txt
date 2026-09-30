@@ -1,0 +1,249 @@
+TYPE UnityEngine.GUI
+FIELD System.Single UnityEngine.GUI::s_ScrollStepSize
+FIELD System.Int32 UnityEngine.GUI::s_ScrollControlId
+FIELD System.Int32 UnityEngine.GUI::s_HotTextField
+FIELD System.Int32 UnityEngine.GUI::s_BoxHash
+FIELD System.Int32 UnityEngine.GUI::s_ButonHash
+FIELD System.Int32 UnityEngine.GUI::s_RepeatButtonHash
+FIELD System.Int32 UnityEngine.GUI::s_ToggleHash
+FIELD System.Int32 UnityEngine.GUI::s_ButtonGridHash
+FIELD System.Int32 UnityEngine.GUI::s_SliderHash
+FIELD System.Int32 UnityEngine.GUI::s_BeginGroupHash
+FIELD System.Int32 UnityEngine.GUI::s_ScrollviewHash
+FIELD System.Int32 UnityEngine.GUI::<scrollTroughSide>k__BackingField
+FIELD System.DateTime UnityEngine.GUI::<nextScrollStepTime>k__BackingField
+FIELD UnityEngine.GUISkin UnityEngine.GUI::s_Skin
+FIELD UnityEngine.Rect UnityEngine.GUI::s_ToolTipRect
+FIELD UnityEngineInternal.GenericStack UnityEngine.GUI::<scrollViewStates>k__BackingField
+METHOD System.Void UnityEngine.GUI::.cctor()
+IL_0000: ldc.i4.m1
+IL_0001: stsfld System.Int32 UnityEngine.GUI::s_HotTextField
+IL_0006: ldstr "Box"
+IL_000b: callvirt System.Int32 System.Object::GetHashCode()
+IL_0010: stsfld System.Int32 UnityEngine.GUI::s_BoxHash
+IL_0015: ldstr "Button"
+IL_001a: callvirt System.Int32 System.Object::GetHashCode()
+IL_001f: stsfld System.Int32 UnityEngine.GUI::s_ButonHash
+IL_0024: ldstr "repeatButton"
+IL_0029: callvirt System.Int32 System.Object::GetHashCode()
+IL_002e: stsfld System.Int32 UnityEngine.GUI::s_RepeatButtonHash
+IL_0033: ldstr "Toggle"
+IL_0038: callvirt System.Int32 System.Object::GetHashCode()
+IL_003d: stsfld System.Int32 UnityEngine.GUI::s_ToggleHash
+IL_0042: ldstr "ButtonGrid"
+IL_0047: callvirt System.Int32 System.Object::GetHashCode()
+IL_004c: stsfld System.Int32 UnityEngine.GUI::s_ButtonGridHash
+IL_0051: ldstr "Slider"
+IL_0056: callvirt System.Int32 System.Object::GetHashCode()
+IL_005b: stsfld System.Int32 UnityEngine.GUI::s_SliderHash
+IL_0060: ldstr "BeginGroup"
+IL_0065: callvirt System.Int32 System.Object::GetHashCode()
+IL_006a: stsfld System.Int32 UnityEngine.GUI::s_BeginGroupHash
+IL_006f: ldstr "scrollView"
+IL_0074: callvirt System.Int32 System.Object::GetHashCode()
+IL_0079: stsfld System.Int32 UnityEngine.GUI::s_ScrollviewHash
+IL_007e: newobj System.Void UnityEngineInternal.GenericStack::.ctor()
+IL_0083: stsfld UnityEngineInternal.GenericStack UnityEngine.GUI::<scrollViewStates>k__BackingField
+IL_0088: nop
+IL_0089: call System.DateTime System.DateTime::get_Now()
+IL_008e: call System.Void UnityEngine.GUI::set_nextScrollStepTime(System.DateTime)
+IL_0093: nop
+IL_0094: ret
+METHOD System.Void UnityEngine.GUI::set_skin(UnityEngine.GUISkin)
+IL_0000: nop
+IL_0001: call System.Void UnityEngine.GUIUtility::CheckOnGUI()
+IL_0006: nop
+IL_0007: ldarg.0
+IL_0008: call System.Void UnityEngine.GUI::DoSetSkin(UnityEngine.GUISkin)
+IL_000d: nop
+IL_000e: ret
+METHOD UnityEngine.GUISkin UnityEngine.GUI::get_skin()
+IL_0000: nop
+IL_0001: call System.Void UnityEngine.GUIUtility::CheckOnGUI()
+IL_0006: nop
+IL_0007: ldsfld UnityEngine.GUISkin UnityEngine.GUI::s_Skin
+IL_000c: stloc.0
+IL_000d: br.s IL_000f
+IL_000f: ldloc.0
+IL_0010: ret
+METHOD System.Void UnityEngine.GUI::DoSetSkin(UnityEngine.GUISkin)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: call System.Boolean UnityEngine.Object::op_Implicit(UnityEngine.Object)
+IL_0007: ldc.i4.0
+IL_0008: ceq
+IL_000a: stloc.0
+IL_000b: ldloc.0
+IL_000c: brfalse.s IL_0015
+IL_000e: call UnityEngine.GUISkin UnityEngine.GUIUtility::GetDefaultSkin()
+IL_0013: starg.s newSkin
+IL_0015: ldarg.0
+IL_0016: stsfld UnityEngine.GUISkin UnityEngine.GUI::s_Skin
+IL_001b: ldarg.0
+IL_001c: callvirt System.Void UnityEngine.GUISkin::MakeCurrent()
+IL_0021: nop
+IL_0022: ret
+TYPE UnityEngine.GUIUtility
+FIELD System.Int32 UnityEngine.GUIUtility::s_ControlCount
+FIELD System.Int32 UnityEngine.GUIUtility::s_SkinMode
+FIELD System.Int32 UnityEngine.GUIUtility::s_OriginalID
+FIELD System.Action UnityEngine.GUIUtility::takeCapture
+FIELD System.Action UnityEngine.GUIUtility::releaseCapture
+FIELD System.Func`3<System.Int32,System.IntPtr,System.Boolean> UnityEngine.GUIUtility::processEvent
+FIELD System.Action UnityEngine.GUIUtility::cleanupRoots
+FIELD System.Func`2<System.Exception,System.Boolean> UnityEngine.GUIUtility::endContainerGUIFromException
+FIELD System.Action UnityEngine.GUIUtility::guiChanged
+FIELD System.Action`3<UnityEngine.EventType,UnityEngine.KeyCode,UnityEngine.EventModifiers> UnityEngine.GUIUtility::beforeEventProcessed
+FIELD UnityEngine.Event UnityEngine.GUIUtility::m_Event
+FIELD System.Boolean UnityEngine.GUIUtility::<guiIsExiting>k__BackingField
+FIELD System.Func`1<System.Boolean> UnityEngine.GUIUtility::s_HasCurrentWindowKeyFocusFunc
+FIELD System.Lazy`1<System.Boolean> UnityEngine.GUIUtility::s_DetectIMGUICallsInUITK
+FIELD System.Lazy`1<System.Boolean> UnityEngine.GUIUtility::s_DetectInvalidImguiAPIUsages
+FIELD System.Boolean UnityEngine.GUIUtility::<isUITK>k__BackingField
+METHOD System.Object UnityEngine.GUIUtility::Internal_GetDefaultSkin(System.Int32)
+METHOD UnityEngine.Object UnityEngine.GUIUtility::Internal_GetBuiltinSkin(System.Int32)
+IL_0000: ldarg.0
+IL_0001: call System.IntPtr UnityEngine.GUIUtility::Internal_GetBuiltinSkin_Injected(System.Int32)
+IL_0006: call !!0 UnityEngine.Bindings.Unmarshal::UnmarshalUnityObject<UnityEngine.Object>(System.IntPtr)
+IL_000b: ret
+METHOD UnityEngine.GUISkin UnityEngine.GUIUtility::GetDefaultSkin(System.Int32)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: call System.Object UnityEngine.GUIUtility::Internal_GetDefaultSkin(System.Int32)
+IL_0007: isinst UnityEngine.GUISkin
+IL_000c: stloc.0
+IL_000d: br.s IL_000f
+IL_000f: ldloc.0
+IL_0010: ret
+METHOD UnityEngine.GUISkin UnityEngine.GUIUtility::GetDefaultSkin()
+IL_0000: nop
+IL_0001: ldsfld System.Int32 UnityEngine.GUIUtility::s_SkinMode
+IL_0006: call System.Object UnityEngine.GUIUtility::Internal_GetDefaultSkin(System.Int32)
+IL_000b: isinst UnityEngine.GUISkin
+IL_0010: stloc.0
+IL_0011: br.s IL_0013
+IL_0013: ldloc.0
+IL_0014: ret
+METHOD UnityEngine.GUISkin UnityEngine.GUIUtility::GetBuiltinSkin(System.Int32)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: call UnityEngine.Object UnityEngine.GUIUtility::Internal_GetBuiltinSkin(System.Int32)
+IL_0007: isinst UnityEngine.GUISkin
+IL_000c: stloc.0
+IL_000d: br.s IL_000f
+IL_000f: ldloc.0
+IL_0010: ret
+METHOD System.Void UnityEngine.GUIUtility::BeginGUI(System.Int32,System.Int32,System.Int32)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: stsfld System.Int32 UnityEngine.GUIUtility::s_SkinMode
+IL_0007: ldarg.1
+IL_0008: stsfld System.Int32 UnityEngine.GUIUtility::s_OriginalID
+IL_000d: call System.Void UnityEngine.GUIUtility::ResetGlobalState()
+IL_0012: nop
+IL_0013: ldarg.2
+IL_0014: ldc.i4.0
+IL_0015: cgt.un
+IL_0017: stloc.0
+IL_0018: ldloc.0
+IL_0019: brfalse.s IL_0024
+IL_001b: nop
+IL_001c: ldarg.1
+IL_001d: call System.Void UnityEngine.GUILayoutUtility::Begin(System.Int32)
+IL_0022: nop
+IL_0023: nop
+IL_0024: ret
+METHOD System.Void UnityEngine.GUIUtility::SetSkin(System.Int32)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: stsfld System.Int32 UnityEngine.GUIUtility::s_SkinMode
+IL_0007: ldnull
+IL_0008: call System.Void UnityEngine.GUI::DoSetSkin(UnityEngine.GUISkin)
+IL_000d: nop
+IL_000e: ret
+METHOD System.Void UnityEngine.GUIUtility::EndGUI(System.Int32)
+IL_0000: nop
+IL_0001: nop
+IL_0002: call UnityEngine.Event UnityEngine.Event::get_current()
+IL_0007: callvirt UnityEngine.EventType UnityEngine.Event::get_type()
+IL_000c: ldc.i4.8
+IL_000d: ceq
+IL_000f: stloc.0
+IL_0010: ldloc.0
+IL_0011: brfalse.s IL_003f
+IL_0013: nop
+IL_0014: ldarg.0
+IL_0015: stloc.2
+IL_0016: ldloc.2
+IL_0017: stloc.1
+IL_0018: ldloc.1
+IL_0019: switch IL_002c,IL_002e,IL_0036
+IL_002a: br.s IL_003e
+IL_002c: br.s IL_003e
+IL_002e: call System.Void UnityEngine.GUILayoutUtility::Layout()
+IL_0033: nop
+IL_0034: br.s IL_003e
+IL_0036: call System.Void UnityEngine.GUILayoutUtility::LayoutFromEditorWindow()
+IL_003b: nop
+IL_003c: br.s IL_003e
+IL_003e: nop
+IL_003f: ldsfld System.Int32 UnityEngine.GUIUtility::s_OriginalID
+IL_0044: ldc.i4.0
+IL_0045: call UnityEngine.GUILayoutUtility/LayoutCache UnityEngine.GUILayoutUtility::SelectIDList(System.Int32,System.Boolean)
+IL_004a: pop
+IL_004b: call System.Void UnityEngine.GUIContent::ClearStaticCache()
+IL_0050: nop
+IL_0051: nop
+IL_0052: leave.s IL_005d
+IL_0054: nop
+IL_0055: call System.Void UnityEngine.GUIUtility::Internal_ExitGUI()
+IL_005a: nop
+IL_005b: nop
+IL_005c: endfinally
+IL_005d: ret
+METHOD System.Void UnityEngine.GUIUtility::CheckOnGUI()
+IL_0000: nop
+IL_0001: call System.Int32 UnityEngine.GUIUtility::get_guiDepth()
+IL_0006: ldc.i4.0
+IL_0007: cgt
+IL_0009: ldc.i4.0
+IL_000a: ceq
+IL_000c: stloc.0
+IL_000d: ldloc.0
+IL_000e: brfalse.s IL_001b
+IL_0010: ldstr "You can only call GUI functions from inside OnGUI."
+IL_0015: newobj System.Void System.ArgumentException::.ctor(System.String)
+IL_001a: throw
+IL_001b: call System.Boolean UnityEngine.GUIUtility::get_DetectIMGUICallsInUITK()
+IL_0020: brfalse.s IL_0029
+IL_0022: call System.Boolean UnityEngine.GUIUtility::get_isUITK()
+IL_0027: br.s IL_002a
+IL_0029: ldc.i4.0
+IL_002a: stloc.1
+IL_002b: ldloc.1
+IL_002c: brfalse.s IL_0039
+IL_002e: ldstr "IMGUI method called from insde UI Toolkit.
+ You can only call IMGUI method inside an OnGUI method or inside an IMGUIContainer.
+While IMGUI and UI Toolkit are tightly coupled in the editor right now, it may change in future versions of Unity."
+IL_0033: call System.Void UnityEngine.Debug::LogWarning(System.Object)
+IL_0038: nop
+IL_0039: ret
+METHOD System.Void UnityEngine.GUIUtility::.cctor()
+IL_0000: ldc.i4.0
+IL_0001: stsfld System.Int32 UnityEngine.GUIUtility::s_ControlCount
+IL_0006: newobj System.Void UnityEngine.Event::.ctor()
+IL_000b: stsfld UnityEngine.Event UnityEngine.GUIUtility::m_Event
+IL_0010: ldsfld UnityEngine.GUIUtility/<>c UnityEngine.GUIUtility/<>c::<>9
+IL_0015: ldftn System.Boolean UnityEngine.GUIUtility/<>c::<.cctor>b__130_0()
+IL_001b: newobj System.Void System.Func`1<System.Boolean>::.ctor(System.Object,System.IntPtr)
+IL_0020: newobj System.Void System.Lazy`1<System.Boolean>::.ctor(System.Func`1<!0>)
+IL_0025: stsfld System.Lazy`1<System.Boolean> UnityEngine.GUIUtility::s_DetectIMGUICallsInUITK
+IL_002a: ldsfld UnityEngine.GUIUtility/<>c UnityEngine.GUIUtility/<>c::<>9
+IL_002f: ldftn System.Boolean UnityEngine.GUIUtility/<>c::<.cctor>b__130_1()
+IL_0035: newobj System.Void System.Func`1<System.Boolean>::.ctor(System.Object,System.IntPtr)
+IL_003a: newobj System.Void System.Lazy`1<System.Boolean>::.ctor(System.Func`1<!0>)
+IL_003f: stsfld System.Lazy`1<System.Boolean> UnityEngine.GUIUtility::s_DetectInvalidImguiAPIUsages
+IL_0044: ldc.i4.0
+IL_0045: stsfld System.Boolean UnityEngine.GUIUtility::<isUITK>k__BackingField
+IL_004a: ret
+METHOD System.IntPtr UnityEngine.GUIUtility::Internal_GetBuiltinSkin_Injected(System.Int32)

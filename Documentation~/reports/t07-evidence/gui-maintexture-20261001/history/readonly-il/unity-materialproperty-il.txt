@@ -1,0 +1,211 @@
+TYPE UnityEditor.MaterialProperty
+FIELD UnityEngine.Object[] UnityEditor.MaterialProperty::m_Targets
+FIELD UnityEditor.MaterialProperty/ApplyPropertyCallback UnityEditor.MaterialProperty::m_ApplyPropertyCallback
+FIELD System.String UnityEditor.MaterialProperty::m_Name
+FIELD System.String UnityEditor.MaterialProperty::m_DisplayName
+FIELD System.Object UnityEditor.MaterialProperty::m_Value
+FIELD UnityEngine.Vector4 UnityEditor.MaterialProperty::m_TextureScaleAndOffset
+FIELD UnityEngine.Vector2 UnityEditor.MaterialProperty::m_RangeLimits
+FIELD UnityEngine.Rendering.ShaderPropertyType UnityEditor.MaterialProperty::m_Type
+FIELD UnityEngine.Rendering.ShaderPropertyFlags UnityEditor.MaterialProperty::m_Flags
+FIELD UnityEngine.Rendering.TextureDimension UnityEditor.MaterialProperty::m_TextureDimension
+FIELD System.Int32 UnityEditor.MaterialProperty::m_MixedValueMask
+FIELD System.Collections.Generic.List`1<UnityEditor.MaterialProperty/PropertyData> UnityEditor.MaterialProperty::s_PropertyStack
+FIELD UnityEditor.MaterialProperty UnityEditor.MaterialProperty::s_CopyPasteCache
+METHOD System.Void UnityEditor.MaterialProperty::set_vectorValue(UnityEngine.Vector4)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldfld UnityEngine.Rendering.ShaderPropertyType UnityEditor.MaterialProperty::m_Type
+IL_0007: ldc.i4.1
+IL_0008: ceq
+IL_000a: ldc.i4.0
+IL_000b: ceq
+IL_000d: stloc.0
+IL_000e: ldloc.0
+IL_000f: brfalse.s IL_0013
+IL_0011: br.s IL_0042
+IL_0013: ldarg.0
+IL_0014: call System.Boolean UnityEditor.MaterialProperty::get_hasMixedValue()
+IL_0019: brtrue.s IL_002e
+IL_001b: ldarg.1
+IL_001c: ldarg.0
+IL_001d: ldfld System.Object UnityEditor.MaterialProperty::m_Value
+IL_0022: unbox.any UnityEngine.Vector4
+IL_0027: call System.Boolean UnityEngine.Vector4::op_Equality(UnityEngine.Vector4,UnityEngine.Vector4)
+IL_002c: br.s IL_002f
+IL_002e: ldc.i4.0
+IL_002f: stloc.1
+IL_0030: ldloc.1
+IL_0031: brfalse.s IL_0035
+IL_0033: br.s IL_0042
+IL_0035: ldarg.0
+IL_0036: ldarg.1
+IL_0037: box UnityEngine.Vector4
+IL_003c: call System.Void UnityEditor.MaterialProperty::ApplyProperty(System.Object)
+IL_0041: nop
+IL_0042: ret
+METHOD System.Void UnityEditor.MaterialProperty::ApplyProperty(System.Object)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldc.i4.0
+IL_0003: stfld System.Int32 UnityEditor.MaterialProperty::m_MixedValueMask
+IL_0008: ldarg.0
+IL_0009: ldfld System.Object UnityEditor.MaterialProperty::m_Value
+IL_000e: stloc.0
+IL_000f: ldarg.0
+IL_0010: ldarg.1
+IL_0011: stfld System.Object UnityEditor.MaterialProperty::m_Value
+IL_0016: ldarg.0
+IL_0017: ldloc.0
+IL_0018: ldc.i4.1
+IL_0019: call System.Void UnityEditor.MaterialProperty::ApplyProperty(System.Object,System.Int32)
+IL_001e: nop
+IL_001f: ret
+METHOD System.Void UnityEditor.MaterialProperty::ApplyProperty(System.Object,System.Int32)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: call UnityEngine.Object[] UnityEditor.MaterialProperty::get_targets()
+IL_0007: brfalse.s IL_0015
+IL_0009: ldarg.0
+IL_000a: call UnityEngine.Object[] UnityEditor.MaterialProperty::get_targets()
+IL_000f: ldlen
+IL_0010: ldc.i4.0
+IL_0011: ceq
+IL_0013: br.s IL_0016
+IL_0015: ldc.i4.1
+IL_0016: stloc.3
+IL_0017: ldloc.3
+IL_0018: brfalse.s IL_0025
+IL_001a: ldstr "No material targets provided"
+IL_001f: newobj System.Void System.ArgumentException::.ctor(System.String)
+IL_0024: throw
+IL_0025: ldarg.0
+IL_0026: call UnityEngine.Object[] UnityEditor.MaterialProperty::get_targets()
+IL_002b: stloc.0
+IL_002c: ldloc.0
+IL_002d: ldlen
+IL_002e: conv.i4
+IL_002f: ldc.i4.1
+IL_0030: ceq
+IL_0032: stloc.s V_4
+IL_0034: ldloc.s V_4
+IL_0036: brfalse.s IL_0043
+IL_0038: ldloc.0
+IL_0039: ldc.i4.0
+IL_003a: ldelem.ref
+IL_003b: callvirt System.String UnityEngine.Object::get_name()
+IL_0040: stloc.1
+IL_0041: br.s IL_006c
+IL_0043: ldloc.0
+IL_0044: ldlen
+IL_0045: conv.i4
+IL_0046: stloc.s V_5
+IL_0048: ldloca.s V_5
+IL_004a: call System.String System.Int32::ToString()
+IL_004f: ldstr " "
+IL_0054: ldloc.0
+IL_0055: ldc.i4.0
+IL_0056: ldelem.ref
+IL_0057: call System.String UnityEditor.ObjectNames::GetClassName(UnityEngine.Object)
+IL_005c: call System.String UnityEditor.ObjectNames::NicifyVariableName(System.String)
+IL_0061: ldstr "s"
+IL_0066: call System.String System.String::Concat(System.String,System.String,System.String,System.String)
+IL_006b: stloc.1
+IL_006c: ldc.i4.0
+IL_006d: stloc.2
+IL_006e: ldarg.0
+IL_006f: ldfld UnityEditor.MaterialProperty/ApplyPropertyCallback UnityEditor.MaterialProperty::m_ApplyPropertyCallback
+IL_0074: ldnull
+IL_0075: cgt.un
+IL_0077: stloc.s V_6
+IL_0079: ldloc.s V_6
+IL_007b: brfalse.s IL_008c
+IL_007d: ldarg.0
+IL_007e: ldfld UnityEditor.MaterialProperty/ApplyPropertyCallback UnityEditor.MaterialProperty::m_ApplyPropertyCallback
+IL_0083: ldarg.0
+IL_0084: ldarg.2
+IL_0085: ldarg.1
+IL_0086: callvirt System.Boolean UnityEditor.MaterialProperty/ApplyPropertyCallback::Invoke(UnityEditor.MaterialProperty,System.Int32,System.Object)
+IL_008b: stloc.2
+IL_008c: ldloc.2
+IL_008d: ldc.i4.0
+IL_008e: ceq
+IL_0090: stloc.s V_7
+IL_0092: ldloc.s V_7
+IL_0094: brfalse.s IL_00b4
+IL_0096: ldarg.0
+IL_0097: ldarg.2
+IL_0098: ldstr "Modify "
+IL_009d: ldarg.0
+IL_009e: call System.String UnityEditor.MaterialProperty::get_displayName()
+IL_00a3: ldstr " of "
+IL_00a8: ldloc.1
+IL_00a9: call System.String System.String::Concat(System.String,System.String,System.String,System.String)
+IL_00ae: call System.Void UnityEditor.ShaderUtil::ApplyProperty(UnityEditor.MaterialProperty,System.Int32,System.String)
+IL_00b3: nop
+IL_00b4: nop
+IL_00b5: ldarg.0
+IL_00b6: call UnityEngine.Object[] UnityEditor.MaterialProperty::get_targets()
+IL_00bb: stloc.s V_8
+IL_00bd: ldc.i4.0
+IL_00be: stloc.s V_9
+IL_00c0: br.s IL_00fc
+IL_00c2: ldloc.s V_8
+IL_00c4: ldloc.s V_9
+IL_00c6: ldelem.ref
+IL_00c7: castclass UnityEngine.Material
+IL_00cc: stloc.s V_10
+IL_00ce: nop
+IL_00cf: ldloc.s V_10
+IL_00d1: ldnull
+IL_00d2: call System.Boolean UnityEngine.Object::op_Inequality(UnityEngine.Object,UnityEngine.Object)
+IL_00d7: stloc.s V_11
+IL_00d9: ldloc.s V_11
+IL_00db: brfalse.s IL_00f5
+IL_00dd: nop
+IL_00de: ldloc.s V_10
+IL_00e0: call System.Void UnityEditor.ShaderGUIUtility::ValidateMaterial(UnityEngine.Material)
+IL_00e5: nop
+IL_00e6: ldloc.s V_10
+IL_00e8: ldarg.0
+IL_00e9: call System.String UnityEditor.MaterialProperty::get_name()
+IL_00ee: callvirt System.Void UnityEngine.Material::MarkChildrenNeedValidation(System.String)
+IL_00f3: nop
+IL_00f4: nop
+IL_00f5: nop
+IL_00f6: ldloc.s V_9
+IL_00f8: ldc.i4.1
+IL_00f9: add
+IL_00fa: stloc.s V_9
+IL_00fc: ldloc.s V_9
+IL_00fe: ldloc.s V_8
+IL_0100: ldlen
+IL_0101: conv.i4
+IL_0102: blt.s IL_00c2
+IL_0104: ret
+METHOD System.Void UnityEditor.MaterialProperty::.cctor()
+IL_0000: newobj System.Void System.Collections.Generic.List`1<UnityEditor.MaterialProperty/PropertyData>::.ctor()
+IL_0005: stsfld System.Collections.Generic.List`1<UnityEditor.MaterialProperty/PropertyData> UnityEditor.MaterialProperty::s_PropertyStack
+IL_000a: ldnull
+IL_000b: stsfld UnityEditor.MaterialProperty UnityEditor.MaterialProperty::s_CopyPasteCache
+IL_0010: ret
+TYPE UnityEditor.ShaderUtil
+METHOD System.Void UnityEditor.ShaderUtil::RecreateSkinnedMeshResources()
+METHOD UnityEditor.MaterialProperty[] UnityEditor.ShaderUtil::GetMaterialProperties(UnityEngine.Object[])
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: call System.Object UnityEditor.ShaderUtil::GetMaterialPropertiesImpl(System.Object)
+IL_0007: castclass UnityEditor.MaterialProperty[]
+IL_000c: stloc.0
+IL_000d: br.s IL_000f
+IL_000f: ldloc.0
+IL_0010: ret
+METHOD System.Object UnityEditor.ShaderUtil::GetMaterialPropertiesImpl(System.Object)
+METHOD System.Void UnityEditor.ShaderUtil::ApplyProperty(UnityEditor.MaterialProperty,System.Int32,System.String)
+IL_0000: nop
+IL_0001: ldarg.0
+IL_0002: ldarg.1
+IL_0003: ldarg.2
+IL_0004: call System.Void UnityEditor.ShaderUtil::ApplyPropertyImpl(System.Object,System.Int32,System.String)
+IL_0009: nop
+IL_000a: ret

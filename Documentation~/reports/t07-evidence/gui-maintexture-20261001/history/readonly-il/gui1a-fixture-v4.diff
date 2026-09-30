@@ -1,0 +1,51 @@
+--- /tmp/nbfx-gui1a-fixture-v3-20261001.cs	2026-10-01 05:42:17
++++ /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Tests/URP/Editor/G4GraphGuiMainTextureTests.cs	2026-10-01 05:49:47
+@@ -285,6 +285,11 @@
+         {
+             for (int i = 0; i < 4; ++i) Assert.That(a[i], Is.EqualTo(b[i]), message + " channel " + i);
+         }
++        static Vector4 NativeST(Material material)
++        {
++            Vector2 scale = material.GetTextureScale("_BaseMap"), offset = material.GetTextureOffset("_BaseMap");
++            return new Vector4(scale.x, scale.y, offset.x, offset.y);
++        }
+         static void WriteWord(Material material, string prefix, uint word)
+         {
+             material.SetFloat(prefix + "Lo16", word & 65535u); material.SetFloat(prefix + "Hi16", word >> 16);
+@@ -564,6 +569,8 @@
+             var a = NewMaterial(true); var b = NewMaterial(true);
+             var first = new Vector4(1, 1, 0, 0); var second = new Vector4(2, 3, .1f, .2f);
+             a.SetVector("_BaseMap_ST", first); b.SetVector("_BaseMap_ST", second);
++            a.SetTextureScale("_BaseMap", new Vector2(first.x, first.y)); a.SetTextureOffset("_BaseMap", new Vector2(first.z, first.w));
++            b.SetTextureScale("_BaseMap", new Vector2(second.x, second.y)); b.SetTextureOffset("_BaseMap", new Vector2(second.z, second.w));
+             // MaterialProperty writes invoke the existing Graph/official URP
+             // validation callback. Start with its legitimate keyword/pass state,
+             // rather than mistaking first-time normalization for an ST mutation.
+@@ -572,6 +579,8 @@
+             var root = NewRoot(a, b); Assert.That((bool)Call(root, "InitializeGraphMainTextureInputs"), Is.True);
+             var st = Field(Field(Field(root, "_mainTexBlock"), "_baseMapGroupItem"), "_scaleOffsetItem");
+             var aa = Snapshot.Read(a); var bb = Snapshot.Read(b); var edited = new Vector4(-3, 4, .15f, -.25f);
++            AssertVector(a.GetVector("_BaseMap_ST"), first, "Initial vector A"); AssertVector(b.GetVector("_BaseMap_ST"), second, "Initial vector B");
++            AssertVector(NativeST(a), first, "Initial native ST A"); AssertVector(NativeST(b), second, "Initial native ST B");
+             Undo.FlushUndoRecordObjects();
+             Undo.IncrementCurrentGroup(); int group = Undo.GetCurrentGroup();
+             try
+@@ -582,9 +591,17 @@
+                 Undo.RecordObjects(new Object[] { a, b }, "NBFX GUI1A ST backend transaction");
+                 Call(st, "Apply", edited); Undo.FlushUndoRecordObjects(); Undo.CollapseUndoOperations(group);
+                 AssertVector(a.GetVector("_BaseMap_ST"), edited, "ST multi A"); AssertVector(b.GetVector("_BaseMap_ST"), edited, "ST multi B");
+-                aa.AssertSame(a, "ST other state A", "_BaseMap_ST"); bb.AssertSame(b, "ST other state B", "_BaseMap_ST");
++                AssertVector(NativeST(a), edited, "ST native alias multi A"); AssertVector(NativeST(b), edited, "ST native alias multi B");
++                // Current Unity's MaterialProperty `_BaseMap_ST` writer also
++                // updates this texture's native scale/offset. Permit only these
++                // two exact aliases, both explicitly asserted above.
++                aa.AssertSame(a, "ST other state A", "_BaseMap_ST", "_BaseMap.nativeST"); bb.AssertSame(b, "ST other state B", "_BaseMap_ST", "_BaseMap.nativeST");
+                 Undo.PerformUndo(); aa.AssertSame(a, "ST undo A"); bb.AssertSame(b, "ST undo B");
++                AssertVector(a.GetVector("_BaseMap_ST"), first, "ST vector undo A"); AssertVector(b.GetVector("_BaseMap_ST"), second, "ST vector undo B");
++                AssertVector(NativeST(a), first, "ST native undo A"); AssertVector(NativeST(b), second, "ST native undo B");
+                 Undo.PerformRedo(); AssertVector(a.GetVector("_BaseMap_ST"), edited, "ST redo A"); AssertVector(b.GetVector("_BaseMap_ST"), edited, "ST redo B");
++                AssertVector(NativeST(a), edited, "ST native redo A"); AssertVector(NativeST(b), edited, "ST native redo B");
++                aa.AssertSame(a, "ST redo other state A", "_BaseMap_ST", "_BaseMap.nativeST"); bb.AssertSame(b, "ST redo other state B", "_BaseMap_ST", "_BaseMap.nativeST");
+             }
+             finally { Undo.RevertAllDownToGroup(group); }
+         }

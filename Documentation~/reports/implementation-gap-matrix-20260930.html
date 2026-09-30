@@ -73,4 +73,5 @@
 <p>2026-10-01 GUI 后台增量：<a href="t07-mesh-gui-storage-checkpoint.html">复用现有 Flags/渐变 Count/纹理 ST 存储后端，46 项真实测试全部通过，含 Mesh GPU 解码</a>。这不代表完整 Inspector、GUI 回调事务、保存重导入、Tier/Pass 有效投影已经完成；当前继续接同一共享 Root/Context/Sync，而不复制第二套业务界面。Graph MPB、Player、VFX 均未据此验证。</p>
 <p>2026-10-01 SH 增量：<a href="t07-mesh-sh-evaluation-checkpoint.html">沿用原顶点/混合环境光算法，新12项为8通过/4 PBR严格差异；现有983项合并矩阵为825通过/158失败</a>。其中46项是无截图的GUI存取测试，不应把总项数当作全部功能覆盖。12,450份捕获实读比对，12份PBR跨轮次阴影图差异已另存；同轮repeat稳定不等于跨轮稳定。原158项差异留给集中人工，完整GUI/状态/后处理/Player/性能继续补齐；正式VFX仍不进入。</p>
 <p>2026-10-01 PN2 增量：<a href="t07-mesh-pnoise-screen-checkpoint.html">程序噪波接入两种NB扭曲和Forward遮罩，20/20严格通过；1003项矩阵845通过/158既有失败</a>。13,082份捕获均实读核对相同。A是当前ShaderLab关程序噪波，不是Frozen；历史表中程序噪波缺口已被所列切片部分覆盖，但不是完整Mesh、GUI、后处理、Player或VFX结论。</p>
+<p>2026-10-01 GUI1A增量：<a href="t07-mesh-gui-maintexture-checkpoint.html">现有主纹理控件接入普通 Mesh Graph，新增38项后台测试通过；1041项合并回归为883通过/158既有失败</a>。GUI总84项不含图像对照；13,082份原截图/解压raw实读SHA与最近证据相同。真实OnGUI只为旧控件构造准备上下文，不代表可视Inspector验收。继续完整普通Mesh，其余共享GUI/Tier/后处理/Player/性能未闭合，真正VFX不启动。</p>
 </body></html>

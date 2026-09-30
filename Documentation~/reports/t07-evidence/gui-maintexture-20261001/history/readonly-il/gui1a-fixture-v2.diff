@@ -1,0 +1,151 @@
+--- /tmp/nbfx-gui1a-fixture-v1-20261001.cs	2026-10-01 05:27:25
++++ /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Tests/URP/Editor/G4GraphGuiMainTextureTests.cs	2026-10-01 05:32:46
+@@ -4,6 +4,7 @@
+ using System.IO;
+ using System.Linq;
+ using System.Reflection;
++using System.Runtime.ExceptionServices;
+ using NUnit.Framework;
+ using UnityEditor;
+ using UnityEngine;
+@@ -12,6 +13,37 @@
+ 
+ namespace NBFX.Baseline.Tests
+ {
++    // Test-only native event host. Never a replacement material Inspector.
++    // Legacy constructors read EditorStyles, which batch tests have not
++    // necessarily initialized. Run those constructors inside real OnGUI;
++    // do not synthesize GUIStyle/skin/cache state or ignore Unity errors.
++    public sealed class GUI1AConstructorEventHost : EditorWindow
++    {
++        internal Action Construct;
++        internal Exception Failure;
++        internal bool ReceivedNativeEvent;
++        internal string CommandName;
++
++        void OnGUI()
++        {
++            Event current = Event.current;
++            if (current == null || current.type != EventType.ExecuteCommand ||
++                current.commandName != CommandName || ReceivedNativeEvent) return;
++            ReceivedNativeEvent = true;
++            try
++            {
++                var initialize = typeof(EditorStyles).GetMethod("UpdateSkinCache",
++                    BindingFlags.Static | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
++                Assert.That(initialize, Is.Not.Null, "Current official Editor skin initializer is required.");
++                initialize.Invoke(null, null); // Actual official skin/cache, inside native GUI context.
++                Assert.That(EditorStyles.label, Is.Not.Null);
++                Construct();
++            }
++            catch (Exception exception) { Failure = exception; }
++            finally { current.Use(); }
++        }
++    }
++
+     /// <summary>
+     /// GUI1A ordinary-Mesh backend only: real imported Graph/ShaderLab Materials,
+     /// original Root/Context/Sync/MainTex/control constructors and actual setters.
+@@ -141,7 +173,8 @@
+             var material = new Material(graph ? graphShader : legacyShader) { hideFlags = HideFlags.HideAndDontSave };
+             owned.Add(material); return material;
+         }
+-        object NewRoot(params Material[] materials)
++        object NewRoot(params Material[] materials) => NewRoot(true, materials);
++        object NewRoot(bool collectNativeProperties, params Material[] materials)
+         {
+             var root = Activator.CreateInstance(rootType);
+             var editor = Editor.CreateEditor(materials.Cast<Object>().ToArray(), typeof(MaterialEditor)) as MaterialEditor;
+@@ -152,7 +185,13 @@
+             Call(root, "InitFlags", new List<Material>(materials));
+             var dictionary = (IDictionary)Field(root, "PropertyInfoDic");
+             Type infoType = FindType("NBShaderEditor.ShaderPropertyInfo");
+-            foreach (MaterialProperty property in MaterialEditor.GetMaterialProperties(materials.Cast<Object>().ToArray()))
++            // Native MaterialEditor.OnInspectorGUI rejects heterogeneous shader
++            // selections before GetMaterialProperties. Its forced mixed lookup
++            // logs missing-property errors. Mixed-guard tests deliberately leave
++            // this dictionary empty: the NB guard must need no property metadata.
++            foreach (MaterialProperty property in collectNativeProperties
++                ? MaterialEditor.GetMaterialProperties(materials.Cast<Object>().ToArray())
++                : Array.Empty<MaterialProperty>())
+             {
+                 int index = PropertyIndex(materials[0].shader, property.name);
+                 var info = Activator.CreateInstance(infoType);
+@@ -168,6 +207,34 @@
+             Call(context, "Refresh");
+             return root;
+         }
++        object NewLegacyMainTextureInsideNativeEvent(object root)
++        {
++            var host = ScriptableObject.CreateInstance<GUI1AConstructorEventHost>();
++            host.hideFlags = HideFlags.HideAndDontSave;
++            host.titleContent = new GUIContent("NBFX constructor test");
++            host.position = new Rect(20, 20, 160, 60);
++            host.CommandName = "NBFX_GUI1A_Construct_" + Guid.NewGuid().ToString("N");
++            object main = null;
++            host.Construct = () => main = Activator.CreateInstance(FindType("NBShaderEditor.MainTexBigBlockItem"), new object[] { root, null });
++            try
++            {
++                // Show/SendEvent establishes Unity's native GUIView context in
++                // the isolated batch Editor only. No GUILayout or Inspector draw.
++                host.ShowUtility();
++                host.SendEvent(new Event { type = EventType.ExecuteCommand, commandName = host.CommandName });
++                Assert.That(host.ReceivedNativeEvent, Is.True, "Native OnGUI must actually receive the constructor event; no fake fallback/skip.");
++                if (host.Failure != null) ExceptionDispatchInfo.Capture(host.Failure).Throw();
++                Assert.That(main, Is.Not.Null);
++                Debug.Log("NBFX_GUI1A_LEGACY_CONSTRUCTOR actual native OnGUI/SendEvent + official EditorStyles initialization; NOT Inspector layout evidence.");
++                return main;
++            }
++            finally
++            {
++                host.Construct = null;
++                host.Close();
++                if (host) Object.DestroyImmediate(host);
++            }
++        }
+         static int PropertyIndex(Shader shader, string name)
+         {
+             for (int i = 0; i < shader.GetPropertyCount(); ++i) if (shader.GetPropertyName(i) == name) return i;
+@@ -307,7 +374,7 @@
+         public void GUI1A_LegacyOriginalMainTexConstructor_AllOriginalChildrenAndNativeSTStillExist()
+         {
+             var material = NewMaterial(false); var root = NewRoot(material); var before = Snapshot.Read(material);
+-            var main = Activator.CreateInstance(FindType("NBShaderEditor.MainTexBigBlockItem"), new object[] { root, null });
++            var main = NewLegacyMainTextureInsideNativeEvent(root);
+             before.AssertSame(material, "Legacy MainTex construction");
+             var group = Field(main, "_baseMapGroupItem");
+             Assert.That(ActualProperty(Field(group, "_colorItem")).name, Is.EqualTo("_BaseColor"));
+@@ -345,7 +412,11 @@
+         {
+             var graph = NewMaterial(true); var legacy = NewMaterial(false); SeedNonDefaultRaw(graph, 2, false);
+             var targets = graphFirst ? new[] { graph, legacy } : new[] { legacy, graph };
+-            var root = NewRoot(targets); var a = Snapshot.Read(graph); var b = Snapshot.Read(legacy);
++            var a = Snapshot.Read(graph); var b = Snapshot.Read(legacy);
++            var root = NewRoot(false, targets);
++            Assert.That(((IDictionary)Field(root, "PropertyInfoDic")).Count, Is.EqualTo(0), "Mixed guard is independent of native property lookup.");
++            Assert.That((bool)Call(Field(root, "MatEditor"), "HasMultipleMixedShaderValues"), Is.True,
++                "Actual official Inspector rejects this selection before heterogeneous GetMaterialProperties.");
+             Assert.That((bool)Prop(Prop(root, "Context"), "HasMixedMaterialHosts"), Is.True);
+             Assert.That((bool)Call(root, "InitializeGraphMainTextureInputs"), Is.False); Assert.That(Ownership(root), Is.Empty);
+             Call(Prop(root, "SyncService"), "SyncMaterialState"); StaticSync(targets);
+@@ -434,7 +505,7 @@
+             var material = NewMaterial(graph); var root = NewRoot(material);
+             object main;
+             if (graph) { Assert.That((bool)Call(root, "InitializeGraphMainTextureInputs"), Is.True); main = Field(root, "_mainTexBlock"); }
+-            else main = Activator.CreateInstance(FindType("NBShaderEditor.MainTexBigBlockItem"), new object[] { root, null });
++            else main = NewLegacyMainTextureInsideNativeEvent(root);
+             var wrap = Field(main, "_baseMapWrapModeItem"); var mip = Field(main, "_baseMapForceNoMipItem"); var channel = Field(main, "_alphaChannelItem");
+             var st = Field(Field(main, "_baseMapGroupItem"), "_scaleOffsetItem");
+             for (int mode = 0; mode < 4; ++mode)
+@@ -459,6 +530,11 @@
+             var a = NewMaterial(true); var b = NewMaterial(true);
+             var first = new Vector4(1, 1, 0, 0); var second = new Vector4(2, 3, .1f, .2f);
+             a.SetVector("_BaseMap_ST", first); b.SetVector("_BaseMap_ST", second);
++            // MaterialProperty writes invoke the existing Graph/official URP
++            // validation callback. Start with its legitimate keyword/pass state,
++            // rather than mistaking first-time normalization for an ST mutation.
++            var gui = Activator.CreateInstance(FindType("NBShaderEditor.NBShaderGraphGUI"));
++            Call(gui, "ValidateMaterial", a); Call(gui, "ValidateMaterial", b);
+             var root = NewRoot(a, b); Assert.That((bool)Call(root, "InitializeGraphMainTextureInputs"), Is.True);
+             var st = Field(Field(Field(root, "_mainTexBlock"), "_baseMapGroupItem"), "_scaleOffsetItem");
+             var aa = Snapshot.Read(a); var bb = Snapshot.Read(b); var edited = new Vector4(-3, 4, .15f, -.25f);
