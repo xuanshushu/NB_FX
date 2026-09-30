@@ -75,6 +75,18 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             if (pass.keywords != null)
                 keywords.Add(pass.keywords);
             keywords.Add(CoreKeywordDescriptors.AdditionalLights);
+            keywords.Add(CoreKeywordDescriptors.EvaluateSh);
+            // Existing NBShader feature, only normal Forward; distortion
+            // clones retain their original keyword collection.
+            keywords.Add(new KeywordDescriptor
+            {
+                displayName = "VFX Six Way Absorption",
+                referenceName = "VFX_SIX_WAY_ABSORPTION",
+                type = KeywordType.Boolean,
+                definition = KeywordDefinition.ShaderFeature,
+                scope = KeywordScope.Local,
+                stages = KeywordShaderStage.Fragment,
+            });
             pass.keywords = keywords;
             return pass;
         }

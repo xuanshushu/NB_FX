@@ -10,9 +10,9 @@
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderUVV2.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphSampling.hlsl"
-#define NB_HALF_LAMBERT_ONLY 1
+#define NB_GRAPH_SIX_WAY 1
 #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
-#undef NB_HALF_LAMBERT_ONLY
+#undef NB_GRAPH_SIX_WAY
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
@@ -343,6 +343,91 @@ half4 NBGraphApplyFresnel(half4 color, float3 viewDirWS, half3 normalWS,
     return color;
 }
 
+// Genuine vertex-stage six-direction SH, not pixel SH or a zero-GI stand-in.
+// The same EVALUATE_SH_VERTEX keyword used by the old material is selected
+// by NBShaderGraphGUI when mode 4 is active. Geometry N/T/B is post-VertexOffset.
+void NBGraphSixWayBake_float(float3 NormalWS, float3 TangentWS,
+    float3 BitangentWS, out float3 Bake0, out float3 Bake1,
+    out float3 Bake2, out float3 Back0, out float3 Back1,
+    out float3 Back2, out float4 TangentSigned)
+{
+    // SG 17.3 constructs object-space bitangent with GetOddNegativeScale,
+    // then transforms it as a direction. For a reflected object, the world
+    // cross-product adds another determinant sign. Recover tangentOS.w,
+    // then explicitly match NBShader's tangentOS.w*odd-negative-scale and
+    // its half-precision world tangent before SH evaluation.
+    half sign = (dot(cross(NormalWS,TangentWS),BitangentWS)<0 ? -1.0h : 1.0h)
+        * GetOddNegativeScale();
+    half3 tangentWS = (half3)TangentWS;
+    float3 bitangentWS = sign * cross(NormalWS,tangentWS);
+    half3 b0,b1,b2,r0,r1,r2;
+    GetSixWayBakeDiffuseLight(NormalWS,tangentWS,bitangentWS,
+        b0,b1,b2,r0,r1,r2);
+    Bake0=b0; Bake1=b1; Bake2=b2;
+    Back0=r0; Back1=r1; Back2=r2;
+    TangentSigned=float4(tangentWS,sign);
+}
+void NBGraphSixWayBake_half(half3 NormalWS, half3 TangentWS,
+    half3 BitangentWS, out half3 Bake0, out half3 Bake1,
+    out half3 Bake2, out half3 Back0, out half3 Back1,
+    out half3 Back2, out half4 TangentSigned)
+{
+    float3 b0,b1,b2,r0,r1,r2;float4 ts;
+    NBGraphSixWayBake_float(NormalWS,TangentWS,BitangentWS,
+        b0,b1,b2,r0,r1,r2,ts);
+    Bake0=(half3)b0; Bake1=(half3)b1; Bake2=(half3)b2;
+    Back0=(half3)r0; Back1=(half3)r1; Back2=(half3)r2;
+    TangentSigned=(half4)ts;
+}
+
+// Original NBShader SixWay stage: rig sampling -> original six-direction
+// baked-GI/direct-light/emission helper -> original alpha override. The
+// caller retains pre-early-adjust albedo, then continues MatCap/overlays.
+half4 NBGraphApplySixWay(half4 preAdjustAlbedo, UnityTexture2D rigPositive,
+    UnityTexture2D rigNegative, UnityTexture2D emissionRamp,
+    float2 mainUV, uint wrapFlags, uint noMipFlags, uint flags1,
+    float4 sixWayInfo, half4 sixWayEmissionColor, half baseColorAlpha,
+    float3 positionWS, float3 unfacedNormalWS, float3 viewDirWS,
+    float2 normalizedScreenUV, half isFrontFace, half3 bake0,
+    half3 bake1, half3 bake2, half3 back0, half3 back1,
+    half3 back2, half4 tangentSigned)
+{
+    // The maps have no independent ST in the old inspector; MainTex UV owns
+    // the coordinate. Flipbook blend awaits the common UV-host slice.
+    half4 positive = NBGraphSampleMap(rigPositive,mainUV,
+        NBGraphMaskWrapMode(wrapFlags,FLAG_BIT_WRAPMODE_BASEMAP),
+        (noMipFlags&FLAG_BIT_FORCE_NO_MIP_RIG_RTBK)!=0u);
+    half4 negative = NBGraphSampleMap(rigNegative,mainUV,
+        NBGraphMaskWrapMode(wrapFlags,FLAG_BIT_WRAPMODE_BASEMAP),
+        (noMipFlags&FLAG_BIT_FORCE_NO_MIP_RIG_LBTF)!=0u);
+    InputData inputData=(InputData)0;
+    inputData.positionWS=positionWS;
+    inputData.normalWS=isFrontFace>0.5h?unfacedNormalWS:-unfacedNormalWS;
+    inputData.viewDirectionWS=(half3)viewDirWS;
+    inputData.normalizedScreenSpaceUV=normalizedScreenUV;
+    inputData.shadowMask=SAMPLE_SHADOWMASK(float2(0,0));
+    BSDFData bsdfData=(BSDFData)0;
+    bsdfData.absorptionRange=GetAbsorptionRange(sixWayInfo.x);
+    bsdfData.diffuseColor=preAdjustAlbedo;
+    bsdfData.normalWS=inputData.normalWS;
+    bsdfData.tangentWS=tangentSigned;
+    bsdfData.rigRTBk=positive.xyz*INV_PI;
+    bsdfData.rigLBtF=negative.xyz*INV_PI;
+    bsdfData.bakeDiffuseLighting0=bake0;
+    bsdfData.bakeDiffuseLighting1=bake1;
+    bsdfData.bakeDiffuseLighting2=bake2;
+    bsdfData.backBakeDiffuseLighting0=back0;
+    bsdfData.backBakeDiffuseLighting1=back1;
+    bsdfData.backBakeDiffuseLighting2=back2;
+    bsdfData.emissionInput=negative.a;
+    GetSixWayEmissionExplicitPower(bsdfData,sixWayInfo.y,emissionRamp.tex,sixWayEmissionColor,
+        (flags1&FLAG_BIT_PARTICLE_1_SIXWAY_RAMPMAP)!=0u,
+        (noMipFlags&FLAG_BIT_FORCE_NO_MIP_SIX_WAY_EMISSION_RAMP)!=0u);
+    bsdfData.alpha=positive.a*baseColorAlpha;
+    ModifyBakedDiffuseLighting(bsdfData,inputData.bakedGI);
+    return UniversalFragmentSixWay(inputData,bsdfData);
+}
+
 // L0: ordinary Mesh only, SH per pixel and pixel additional lights.
 // This is not the later interpolator/lightmap/APV/SixWay parity slice.
 half4 NBGraphApplyLighting(half4 color, float mode, float3 positionWS,
@@ -538,6 +623,12 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 PNoiseVec, float4 PNoiseVec2, float4 PNoiseVec3, float4 PNoiseVec4,
     float PNoiseBaseBlendOpacity, float PNoiseMaskBlendOpacity,
     float PNoiseDissolveBlendOpacity, float PNoiseBlendLo16, float PNoiseBlendHi16,
+    UnityTexture2D RigRTBk, UnityTexture2D RigLBtF,
+    UnityTexture2D SixWayEmissionRamp, float4 SixWayInfo,
+    float4 SixWayEmissionColor, float SixWayColorAbsorptionToggle,
+    float3 SixBake0, float3 SixBake1, float3 SixBake2,
+    float3 SixBack0, float3 SixBack1, float3 SixBack2,
+    float4 SixTangentSigned,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
@@ -601,6 +692,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     input.timelineIntensity = (half)BaseColorIntensityForTimeline;
     input.applyTimelineIntensity = !NB_GRAPH_DEPTH_SHADOW_PASS;
     Out = (float4)NBFX_ComposeBaseColorV1(input);
+    half4 sixWayPreAdjustAlbedo=(half4)Out;
     uint adjustmentFlags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
         (adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) != 0u)
@@ -608,7 +700,17 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             (half)HueShift, (half)Contrast, (half3)ContrastMidColor.rgb,
             (half)Saturability, (half4)BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
-    if (!NB_GRAPH_DEPTH_SHADOW_PASS && FxLightMode > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && FxLightMode > 3.5 && FxLightMode < 4.5)
+        Out = NBGraphApplySixWay(sixWayPreAdjustAlbedo,RigRTBk,RigLBtF,
+            SixWayEmissionRamp,baseUV,wrapFlags,noMipFlags,
+            NBGraphDecodeUInt32(NB_Flags1Lo16,NB_Flags1Hi16),
+            SixWayInfo,(half4)SixWayEmissionColor,
+            (half)EffectiveBaseColor.a,PositionWS,normalForFeatures,
+            (float3)ViewDirWS,ScreenPosition.xy,(half)IsFrontFace,
+            (half3)SixBake0,(half3)SixBake1,(half3)SixBake2,
+            (half3)SixBack0,(half3)SixBack1,(half3)SixBack2,
+            (half4)SixTangentSigned);
+    else if (!NB_GRAPH_DEPTH_SHADOW_PASS && FxLightMode > 0.5 && FxLightMode < 3.5)
         Out = NBGraphApplyLighting((half4)Out, FxLightMode, PositionWS,
             normalForFeatures, (float3)ViewDirWS, ScreenPosition.xy,
             (half)IsFrontFace, lightingNormalTS, lightingMetallicWeight,
@@ -903,6 +1005,12 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float4 PNoiseVec, float4 PNoiseVec2, float4 PNoiseVec3, float4 PNoiseVec4,
     float PNoiseBaseBlendOpacity, float PNoiseMaskBlendOpacity,
     float PNoiseDissolveBlendOpacity, float PNoiseBlendLo16, float PNoiseBlendHi16,
+    UnityTexture2D RigRTBk, UnityTexture2D RigLBtF,
+    UnityTexture2D SixWayEmissionRamp, float4 SixWayInfo,
+    float4 SixWayEmissionColor, float SixWayColorAbsorptionToggle,
+    float3 SixBake0, float3 SixBake1, float3 SixBake2,
+    float3 SixBack0, float3 SixBack1, float3 SixBack2,
+    float4 SixTangentSigned,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
@@ -962,6 +1070,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     input.timelineIntensity = (half)BaseColorIntensityForTimeline;
     input.applyTimelineIntensity = !NB_GRAPH_DEPTH_SHADOW_PASS;
     Out = NBFX_ComposeBaseColorV1(input);
+    half4 sixWayPreAdjustAlbedo=(half4)Out;
     uint adjustmentFlags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
         (adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) != 0u)
@@ -969,7 +1078,17 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             (half)HueShift, (half)Contrast, ContrastMidColor.rgb,
             (half)Saturability, BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
-    if (!NB_GRAPH_DEPTH_SHADOW_PASS && FxLightMode > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && FxLightMode > 3.5 && FxLightMode < 4.5)
+        Out = NBGraphApplySixWay(sixWayPreAdjustAlbedo,RigRTBk,RigLBtF,
+            SixWayEmissionRamp,baseUV,wrapFlags,noMipFlags,
+            NBGraphDecodeUInt32(NB_Flags1Lo16,NB_Flags1Hi16),
+            SixWayInfo,(half4)SixWayEmissionColor,
+            (half)EffectiveBaseColor.a,PositionWS,normalForFeatures,
+            (float3)ViewDirWS,ScreenPosition.xy,(half)IsFrontFace,
+            (half3)SixBake0,(half3)SixBake1,(half3)SixBake2,
+            (half3)SixBack0,(half3)SixBack1,(half3)SixBack2,
+            (half4)SixTangentSigned);
+    else if (!NB_GRAPH_DEPTH_SHADOW_PASS && FxLightMode > 0.5 && FxLightMode < 3.5)
         Out = NBGraphApplyLighting((half4)Out, FxLightMode, PositionWS,
             normalForFeatures, (float3)ViewDirWS, ScreenPosition.xy,
             (half)IsFrontFace, lightingNormalTS, lightingMetallicWeight,

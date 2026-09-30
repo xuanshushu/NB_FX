@@ -157,9 +157,9 @@ LightingData CreateSixWayLightingData(InputData inputData, half3 emission)
     return lightingData;
 }
 
-void  GetSixWayEmission(inout  BSDFData bsdfData,Texture2D rampMap,half4 emissionColor,bool isRampMap,bool forceLod0 = false)
+void GetSixWayEmissionExplicitPower(inout BSDFData bsdfData,float emissionPower,Texture2D rampMap,half4 emissionColor,bool isRampMap,bool forceLod0 = false)
 {
-    float input = pow(bsdfData.emissionInput,_SixWayInfo.y);
+    float input = pow(bsdfData.emissionInput,emissionPower);
     half3 emission =  emissionColor * emissionColor.a;
     if (isRampMap)
     {
@@ -182,6 +182,15 @@ void  GetSixWayEmission(inout  BSDFData bsdfData,Texture2D rampMap,half4 emissio
     }
     bsdfData.emission = emission;
 }
+
+// Preserve the original ShaderLab API and global material property path.
+// Graph calls the explicit-power helper and never needs that global symbol.
+#if !defined(NB_GRAPH_SIX_WAY)
+void GetSixWayEmission(inout BSDFData bsdfData,Texture2D rampMap,half4 emissionColor,bool isRampMap,bool forceLod0 = false)
+{
+    GetSixWayEmissionExplicitPower(bsdfData,_SixWayInfo.y,rampMap,emissionColor,isRampMap,forceLod0);
+}
+#endif
 
 half3 LightingSixWay(Light light,InputData inputData, BSDFData bsdfData)
 {
@@ -256,7 +265,7 @@ half4 UniversalFragmentSixWay(InputData inputData,BSDFData bsdfData)
     LIGHT_LOOP_END
     #endif
 
-    #if defined(_ADDITIONAL_LIGHTS_VERTEX)
+    #if defined(_ADDITIONAL_LIGHTS_VERTEX) && !defined(NB_GRAPH_SIX_WAY)
     lightingData.vertexLightingColor += inputData.vertexLighting * surfaceData.albedo;
     #endif
 
