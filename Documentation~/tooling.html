@@ -9,7 +9,7 @@
 <p><a href="index.html">返回文档目录</a></p>
 <h1>工具、文档与证据规范</h1>
 <p>CLI / Pipeline 是主要可复现工具链；本页不授予安装、升级或 Unity 变更权限。</p>
-<p><small>更新：2026-09-25 · 计划草案 · 未执行 · 不修改官方包</small></p>
+<p><small>更新：2026-09-30 · 已进入实施；普通 Mesh 优先，Unity 串行隔离验证 · 不修改官方包</small></p>
 <hr>
 <h2 id="tools">工具状态与约束</h2>
 <table border="1" cellpadding="6">
@@ -22,13 +22,13 @@
       <tr><td>Unity / URP / SG / VFX</td><td>6000.3.18f1 / 17.3.0 / 17.3.0 / 17.3.0。</td><td>工程与包文件读取，不等于运行验证。</td></tr>
       <tr><td>安装时 Editor</td><td>ready，编译结束，未 Play；Console 0 错误、1 条 VFX 数据反序列化警告，未清除。</td><td>用户交接记录，非本次新采样。</td></tr>
       <tr><td>MCP</td><td>保留原配置；当前会话工具发现未暴露 unityMCP。</td><td>不声称 Coplay MCP 已安装或可用；当前采用 CLI / Pipeline fallback。</td></tr>
-      <tr><td>截图 / tests / Reload / build</td><td>全部待 G0 能力核验。</td><td>工具存在不代表这些能力已验证。</td></tr>
+      <tr><td>截图 / tests / Reload / build</td><td>G0 已有能力核验与放行证据；后续切片记录各自实际运行项，不能由工具能力推断产品通过。</td><td>见 reports/g0-t00-baseline.html；不代表完整 Graph 功能、Player 或后续 Gate 已通过。</td></tr>
     </tbody>
   </table>
 <p>CLI 与 Pipeline 仍是 Beta / experimental，记录精确版本并固定，不擅自升级。若后续会话实际提供可用 unityMCP，Editor 状态读取和操作遵循项目的 Unity MCP 优先核验规则；CLI/Pipeline 保留为主要可复现命令链和不可用时的 fallback。不为此擅自重配或安装 MCP。</p>
 
 <h2 id="discovery">执行前发现能力</h2>
-<p>以下是后续只读检查入口，除版本/help 读取外，本次未用它们启动 Editor 工作：</p>
+<p>以下保留工具发现入口；实际命令、隔离工程、日志与运行结果以各切片报告为准，不把旧计划期“未启动”状态当成当前状态：</p>
 <pre><code>unity --version
 unity status --json
 unity list --project-path "/Users/bytedance/UnityProject/NBUnityProject" --json
@@ -88,6 +88,6 @@ unity build --help</code></pre>
 
 <p>文档目录 Git 例外：本机 global ignore 的 <code>*~</code> 会忽略 Documentation~，因此包内 .gitignore 为该目录增加反向规则；这不影响 Unity 对 ~ 目录的忽略。没有修改全局 Git 配置。</p>
 <hr>
-<p><small>NB_FX 计划文档 v0.4。用户确认的约束与待验证方案分开记录；工程 Gate 尚未执行。</small></p>
+<p><small>历史工具记录与当前实测分开记录；G0/GF/G1 按限定范围放行，完整 G2–G7 尚未放行。</small></p>
 </body>
 </html>

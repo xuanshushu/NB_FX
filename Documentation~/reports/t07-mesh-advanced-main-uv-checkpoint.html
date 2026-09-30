@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 主纹理高级 UV 对照</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="t07-mesh-sampling-protocol-checkpoint.html">前序采样修复</a> · <a href="../decisions.html#d24">Mesh 优先顺序 D24</a></p>
+<h1>普通 Mesh 主纹理高级 UV 对照</h1>
+<p><strong>人话结论：</strong>Graph 的主纹理现在可以像原 NBShader 一样，选择 Mesh 的不同 UV 通道、使用旋转扭曲/极坐标，或者使用共享 UV。22 项对照中，19 项逐像素完全相同；另外 3 项各只有一个像素出现 0.00024414 的通道差（约为 0–1 范围的 0.0244%）。按用户要求不再追查这种微差，原始失败保留到最后一次人工测试，<strong>不把它们改写为通过</strong>。已有表面/Preview/采样 155 项回归全部通过。</p>
+<p>主工程输入 <code>4602308</code>，包输入 <code>15b5678</code>，产品切片 <code>40cd0d4</code>。Unity 6000.3.18f1 / URP、Shader Graph、VFX 包 17.3 / Metal / RenderGraph。unityMCP 未暴露可调用工具，使用独占隔离克隆的 CLI；本轮没有真正 VFX 测试，也没有打开主工程。<strong>完整 G3/G4 仍未放行。</strong></p>
+<h2>实现边界</h2>
+<ul>
+<li>现有 BaseUV wrapper 复用同一个 <code>NBFX_BuildBaseUVsV1</code>，接入独立 float4 TEXCOORD0/1/2、原 packed UVModeFlag0/Type0 与共享 UV、Twirl/Polar 参数。低/高 16 位端口包括 half wrapper 仍是 full-float，不经 half 压缩协议。</li>
+<li>本片只连接主纹理的模式 0（UV0.xy）、1（特殊 UV）、2（Twirl/Polar）、8（共享 UV）。特殊 UV 默认是 UV0.zw；Mesh 位开启时可选 TEXCOORD1.xy 或 TEXCOORD2.xy。共享源测试覆盖 0/1/2；其它模式原编码保留，但缺少宿主输入，不能宣称已支持。</li>
+<li>其它功能贴图目前仍用原有 UVMaterialSlot 的默认 UV0.xy；没有边不等于 UV 为零。Mask/Overlay/Ramp/Dissolve 等各自高级 UV 路由在下一片补齐，不能把所有纹理强行接到主纹理 UV。</li>
+<li>未接入 CustomData 参数、UI/Flipbook、位置/屏幕/圆柱宿主模式；未验证动画速度、half 精度或 VFX。没有修改原 ShaderLab、packed 位含义、官方包、UniversalTarget 或 NBPostprocess，没有新增 keyword；Graph 的 Support VFX 设置保留，但不据此宣称 VFX 已验证。</li>
+</ul>
+<h2>真实结果</h2>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>22 项 Mesh 主纹理 UV B/C</td><td>11 个预设 × 正交/透视；19 严格通过、3 严格失败。全部有限/可见，重复捕获和关闭态 B/C 差均为 0；功能切换有明显响应。严格比较使用内部 48×48 ROI 的完整 RGBA 通道，不是完整画面。</td><td><a href="t07-evidence/advanced-main-uv-20260930/results.xml">XML</a> · <a href="t07-evidence/advanced-main-uv-20260930/summary.json">逐项与失败像素</a> · <a href="t07-evidence/advanced-main-uv-20260930/unity.log.gz">日志</a></td></tr>
+<tr><td>严格失败：shared-default-ortho</td><td>2304 个 ROI 像素中，只有 (66,49) 的 Alpha：B=0.42456055、C=0.42480469。</td><td><a href="t07-evidence/advanced-main-uv-20260930/cases/shared-default-ortho/metrics.json">指标</a> · <a href="t07-evidence/advanced-main-uv-20260930/cases/shared-default-ortho/B-on.rgba-f32.gz">B raw</a> · <a href="t07-evidence/advanced-main-uv-20260930/cases/shared-default-ortho/C-on.rgba-f32.gz">C raw</a></td></tr>
+<tr><td>严格失败：shared-special-uv2 正交/透视</td><td>各 1 像素，最大差同为 0.000244140625：正交 (56,80) 的 G/B/A，透视 (81,59) 的 B。未断言根因，未改容差。</td><td><a href="t07-evidence/advanced-main-uv-20260930/cases/shared-special-uv2-ortho/metrics.json">正交</a> · <a href="t07-evidence/advanced-main-uv-20260930/cases/shared-special-uv2-perspective/metrics.json">透视</a></td></tr>
+<tr><td>已有功能回归</td><td>88 项表面 Mesh + 4 项生成 Master Preview + 63 项采样，155/155 通过；1148 份 raw/PNG 与前序证据相同（gzip 比较解压后的原始内容）。新生成 Preview 源码和所有指标仍保存。</td><td><a href="t07-evidence/advanced-main-uv-20260930/regression/results.xml">回归 XML</a> · <a href="t07-evidence/advanced-main-uv-20260930/regression/unity.log.gz">日志</a> · <a href="t07-evidence/advanced-main-uv-20260930/regression/capture-equivalence.json">1148 份一致性检查</a></td></tr>
+</tbody></table>
+<h2>重放与最终待测事项</h2>
+<p><a href="t07-evidence/advanced-main-uv-20260930/README.txt">命令、原始格式与范围</a> · <a href="../../Tests/URP/Editor/G4GraphAdvancedUVTests.cs">正式夹具</a> · <a href="t07-evidence/advanced-main-uv-20260930/input-sha256.txt">输入 hash</a> · <a href="t07-evidence/advanced-main-uv-20260930/sha256.txt">附件 hash</a>。每次捕获前渲染 4 帧，是稳态而非冷首帧；用非均匀线性 RGBA 纹理和互不相同的 UV0.xy/zw、UV1、UV2，不靠白图或“开关没作用”制造一致。</p>
+<p><a href="t07-evidence/advanced-main-uv-20260930/import.log.gz">导入/编译</a>退出 0；日志无 error CS/Shader error；UV 测试退出 2 对应真实断言失败，回归退出 0。<a href="t07-evidence/advanced-main-uv-20260930/protected-settings-sha256.txt">三项保护设置 hash</a>未变。仅本地可回退提交，没有 push。</p>
+<p><strong>后续：</strong>继续补其它纹理的独立 UV、CustomData、Noise/光照/几何、Pass/状态/GUI/NBPostprocess/完整 Player 等普通 Mesh 缺口。新增三项微差与原 MatCap 微差、Dissolve 冷首帧一起保留到最后一次人工测试；不要求用户现在值守，不因微差停止其它实现，也不以记录代替通过。Mesh 阶段审核完成前不正式进入 VFX。</p>
+</body></html>
