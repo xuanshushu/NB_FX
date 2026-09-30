@@ -1,0 +1,71 @@
+{
+  "v1": {
+    "run": "v1",
+    "nunitTotal": 2,
+    "nunitPassed": 0,
+    "nunitFailed": 2,
+    "renderedRowsWithMetrics": 26,
+    "strictRowPass": 24,
+    "strictRowFail": 2,
+    "allRenderedRowsFinite": true,
+    "allRenderedABStrictZero": true,
+    "allRenderedPrimaryRepeatsZero": true,
+    "failingRows": [
+      {
+        "caseId": "MainTex-ST",
+        "differentPixels": 1,
+        "maxDelta": 0.00048828125
+      },
+      {
+        "caseId": "rig-LOD0",
+        "differentPixels": 1,
+        "maxDelta": 0.00048828125
+      }
+    ]
+  },
+  "v2": {
+    "importOnly": true,
+    "compileError": "CS0117 NUnit Assert.Multiple does not exist in this project's API; no valid test XML or rendering. Fixture API error, not product blocker.",
+    "sourceSnapshot": "fixtures/nbfx-sixway-fixture-v2-20261001.cs.gz"
+  },
+  "v3": {
+    "run": "v3",
+    "nunitTotal": 2,
+    "nunitPassed": 0,
+    "nunitFailed": 2,
+    "renderedRowsWithMetrics": 30,
+    "strictRowPass": 25,
+    "strictRowFail": 5,
+    "allRenderedRowsFinite": true,
+    "allRenderedABStrictZero": true,
+    "allRenderedPrimaryRepeatsZero": true,
+    "failingRows": [
+      {
+        "caseId": "MainTex-ST",
+        "differentPixels": 1,
+        "maxDelta": 0.00048828125
+      },
+      {
+        "caseId": "rig-LOD0",
+        "differentPixels": 1,
+        "maxDelta": 0.00048828125
+      },
+      {
+        "caseId": "negative-scale",
+        "differentPixels": 1780,
+        "maxDelta": 0.02734375
+      },
+      {
+        "caseId": "rig-LOD0",
+        "differentPixels": 1,
+        "maxDelta": 0.00048828125
+      },
+      {
+        "caseId": "negative-scale",
+        "differentPixels": 1340,
+        "maxDelta": 0.033203125
+      }
+    ]
+  },
+  "interpretation": "v3 found 3 one-pixel low deltas at 0.00048828125 and 2 negative-scale handedness errors: 1780 pixels/max0.02734375 orthographic, 1340/max0.033203125 perspective. Root is testing package-only tangent/sign/shared SH correction. These are historical pre-fix results, not final SixWay status."
+}

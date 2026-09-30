@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Failed(Child)" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-30 20:08:05Z" end-time="2026-09-30 20:08:24Z" duration="18.9152884">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="949" result="Failed" site="Child" start-time="2026-09-30 20:08:05Z" end-time="2026-09-30 20:08:24Z" duration="18.915288" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2013" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="931" result="Failed" site="Child" start-time="2026-09-30 20:08:05Z" end-time="2026-09-30 20:08:24Z" duration="18.901952" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="15680" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2014" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="931" result="Failed" site="Child" start-time="2026-09-30 20:08:05Z" end-time="2026-09-30 20:08:24Z" duration="18.890692" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2015" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="931" result="Failed" site="Child" start-time="2026-09-30 20:08:05Z" end-time="2026-09-30 20:08:24Z" duration="18.884481" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2016" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="931" result="Failed" site="Child" start-time="2026-09-30 20:08:05Z" end-time="2026-09-30 20:08:24Z" duration="18.855254" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1812" name="G4GraphSixWayTests" fullname="NBFX.Baseline.Tests.G4GraphSixWayTests" classname="NBFX.Baseline.Tests.G4GraphSixWayTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-09-30 20:08:05Z" end-time="2026-09-30 20:08:24Z" duration="18.846554" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1815" name="SixWayOrdinaryMeshABC" fullname="NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC" classname="NBFX.Baseline.Tests.G4GraphSixWayTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-09-30 20:08:06Z" end-time="2026-09-30 20:08:24Z" duration="17.568905" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1813" name="SixWayOrdinaryMeshABC(True)" fullname="NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC(True)" methodname="SixWayOrdinaryMeshABC" classname="NBFX.Baseline.Tests.G4GraphSixWayTests" runstate="Runnable" seed="1828089377" result="Failed" start-time="2026-09-30 20:08:06Z" end-time="2026-09-30 20:08:23Z" duration="16.532369" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  SixWay ShaderLab/Graph differs; see raw+metrics
+  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphSixWayTests.Triplet (UnityEngine.Camera camera, UnityEngine.MeshRenderer mesh, UnityEngine.RenderTexture rt, UnityEngine.Texture2D read, UnityEngine.Material a, UnityEngine.Material b, UnityEngine.Material c, System.String dir, System.String name) [0x00216] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphSixWayTests.cs:216
+at NBFX.Baseline.Tests.G4GraphSixWayTests.Control (UnityEngine.Camera camera, UnityEngine.MeshRenderer mesh, UnityEngine.RenderTexture rt, UnityEngine.Texture2D read, UnityEngine.Material a, UnityEngine.Material b, UnityEngine.Material c, System.String dir, System.String name, UnityEngine.Color[][] baseline, System.Int32 minPixels, System.Single threshold) [0x00001] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphSixWayTests.cs:223
+at NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC (System.Boolean ortho) [0x009ea] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphSixWayTests.cs:125
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1814" name="SixWayOrdinaryMeshABC(False)" fullname="NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC(False)" methodname="SixWayOrdinaryMeshABC" classname="NBFX.Baseline.Tests.G4GraphSixWayTests" runstate="Runnable" seed="160247934" result="Failed" start-time="2026-09-30 20:08:23Z" end-time="2026-09-30 20:08:24Z" duration="1.020969" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  SixWay ShaderLab/Graph differs; see raw+metrics
+  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphSixWayTests.Triplet (UnityEngine.Camera camera, UnityEngine.MeshRenderer mesh, UnityEngine.RenderTexture rt, UnityEngine.Texture2D read, UnityEngine.Material a, UnityEngine.Material b, UnityEngine.Material c, System.String dir, System.String name) [0x00216] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphSixWayTests.cs:216
+at NBFX.Baseline.Tests.G4GraphSixWayTests.Control (UnityEngine.Camera camera, UnityEngine.MeshRenderer mesh, UnityEngine.RenderTexture rt, UnityEngine.Texture2D read, UnityEngine.Material a, UnityEngine.Material b, UnityEngine.Material c, System.String dir, System.String name, UnityEngine.Color[][] baseline, System.Int32 minPixels, System.Single threshold) [0x00001] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphSixWayTests.cs:223
+at NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC (System.Boolean ortho) [0x00abb] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphSixWayTests.cs:129
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

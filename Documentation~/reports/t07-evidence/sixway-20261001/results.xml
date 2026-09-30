@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Failed(Child)" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-30 20:16:45Z" end-time="2026-09-30 20:16:59Z" duration="14.3429863">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="949" result="Failed" site="Child" start-time="2026-09-30 20:16:45Z" end-time="2026-09-30 20:16:59Z" duration="14.342986" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2013" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="931" result="Failed" site="Child" start-time="2026-09-30 20:16:45Z" end-time="2026-09-30 20:16:59Z" duration="14.332795" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="16776" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2014" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="931" result="Failed" site="Child" start-time="2026-09-30 20:16:45Z" end-time="2026-09-30 20:16:59Z" duration="14.326563" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2015" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="931" result="Failed" site="Child" start-time="2026-09-30 20:16:45Z" end-time="2026-09-30 20:16:59Z" duration="14.299304" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2016" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="931" result="Failed" site="Child" start-time="2026-09-30 20:16:45Z" end-time="2026-09-30 20:16:59Z" duration="14.293158" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1812" name="G4GraphSixWayTests" fullname="NBFX.Baseline.Tests.G4GraphSixWayTests" classname="NBFX.Baseline.Tests.G4GraphSixWayTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-09-30 20:16:45Z" end-time="2026-09-30 20:16:59Z" duration="14.277083" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1815" name="SixWayOrdinaryMeshABC" fullname="NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC" classname="NBFX.Baseline.Tests.G4GraphSixWayTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-09-30 20:16:46Z" end-time="2026-09-30 20:16:59Z" duration="13.009840" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1813" name="SixWayOrdinaryMeshABC(True)" fullname="NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC(True)" methodname="SixWayOrdinaryMeshABC" classname="NBFX.Baseline.Tests.G4GraphSixWayTests" runstate="Runnable" seed="2073487370" result="Failed" start-time="2026-09-30 20:16:46Z" end-time="2026-09-30 20:16:58Z" duration="11.936705" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  MainTex-ST: ShaderLab/Graph 1 pixels, max 0.0004882813
+rig-LOD0: ShaderLab/Graph 1 pixels, max 0.0004882813
+  Expected: <empty>
+  But was:  < "MainTex-ST: ShaderLab/Graph 1 pixels, max 0.0004882813", "rig-LOD0: ShaderLab/Graph 1 pixels, max 0.0004882813" >
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC (System.Boolean ortho) [0x00b34] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphSixWayTests.cs:136
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1814" name="SixWayOrdinaryMeshABC(False)" fullname="NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC(False)" methodname="SixWayOrdinaryMeshABC" classname="NBFX.Baseline.Tests.G4GraphSixWayTests" runstate="Runnable" seed="1288675991" result="Failed" start-time="2026-09-30 20:16:58Z" end-time="2026-09-30 20:16:59Z" duration="1.062468" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  rig-LOD0: ShaderLab/Graph 1 pixels, max 0.0004882813
+  Expected: <empty>
+  But was:  < "rig-LOD0: ShaderLab/Graph 1 pixels, max 0.0004882813" >
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC (System.Boolean ortho) [0x00b34] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphSixWayTests.cs:136
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

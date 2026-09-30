@@ -1,0 +1,68 @@
+{
+  "changedCaptureFiles": 4,
+  "distinctCases": 2,
+  "roi": "128x128 frame, x/y32..95 strict ROI; both changed pixels outside ROI",
+  "interpretation": "Four changed files are two current C frames and their corresponding C-repeat frames. They are real byte-level changes across runs, preserved as full captures. The matching repeat within this run is exact and the case-level ROI metrics are unchanged. No statement that all prior captures are byte-identical.",
+  "checks": [
+    {
+      "capture": "g4-pnoise/surface-dissolve-voronoi-1-uv0-ortho/C-repeat.rgba-f32.gz",
+      "previousPayloadSha256": "0b973c8952e53f302eea3707e75425c55af4c0657111e9c8e878645f4db81e22",
+      "fullPayloadSha256": "30ca575b5647124efc2dba7446df77ff06bac7d5c3f3bca744d77cf5e04dd855",
+      "savedEvidence": "t07-evidence/sixway-20261001/full/changed-captures/g4-pnoise/surface-dissolve-voronoi-1-uv0-ortho/C-repeat.rgba-f32.gz",
+      "betweenRunDifferentPixelsFullFrame": 1,
+      "betweenRunDifferentPixelsROI": 0,
+      "withinCurrentRunRepeatStrictZero": true,
+      "caseMetricsUnchanged": true,
+      "differenceMaxRGBA": 7.62939453125e-06,
+      "pixelXY": [
+        61,
+        22
+      ]
+    },
+    {
+      "capture": "g4-pnoise/surface-dissolve-voronoi-1-uv0-ortho/C.rgba-f32.gz",
+      "previousPayloadSha256": "0b973c8952e53f302eea3707e75425c55af4c0657111e9c8e878645f4db81e22",
+      "fullPayloadSha256": "30ca575b5647124efc2dba7446df77ff06bac7d5c3f3bca744d77cf5e04dd855",
+      "savedEvidence": "t07-evidence/sixway-20261001/full/changed-captures/g4-pnoise/surface-dissolve-voronoi-1-uv0-ortho/C.rgba-f32.gz",
+      "betweenRunDifferentPixelsFullFrame": 1,
+      "betweenRunDifferentPixelsROI": 0,
+      "withinCurrentRunRepeatStrictZero": true,
+      "caseMetricsUnchanged": true,
+      "differenceMaxRGBA": 7.62939453125e-06,
+      "pixelXY": [
+        61,
+        22
+      ]
+    },
+    {
+      "capture": "g4-pnoise/surface-mask-voronoi-3-uv0-ortho/C-repeat.rgba-f32.gz",
+      "previousPayloadSha256": "b69fbc7ceaddf69bfe0838881c5bbe559a0f389fff2cf01bbbf7006de39022c0",
+      "fullPayloadSha256": "03b60da3f6b60ab16449a719b0713226678ed7082f13f05097f399ecac43c46a",
+      "savedEvidence": "t07-evidence/sixway-20261001/full/changed-captures/g4-pnoise/surface-mask-voronoi-3-uv0-ortho/C-repeat.rgba-f32.gz",
+      "betweenRunDifferentPixelsFullFrame": 1,
+      "betweenRunDifferentPixelsROI": 0,
+      "withinCurrentRunRepeatStrictZero": true,
+      "caseMetricsUnchanged": true,
+      "differenceMaxRGBA": 0.0001220703125,
+      "pixelXY": [
+        95,
+        30
+      ]
+    },
+    {
+      "capture": "g4-pnoise/surface-mask-voronoi-3-uv0-ortho/C.rgba-f32.gz",
+      "previousPayloadSha256": "b69fbc7ceaddf69bfe0838881c5bbe559a0f389fff2cf01bbbf7006de39022c0",
+      "fullPayloadSha256": "03b60da3f6b60ab16449a719b0713226678ed7082f13f05097f399ecac43c46a",
+      "savedEvidence": "t07-evidence/sixway-20261001/full/changed-captures/g4-pnoise/surface-mask-voronoi-3-uv0-ortho/C.rgba-f32.gz",
+      "betweenRunDifferentPixelsFullFrame": 1,
+      "betweenRunDifferentPixelsROI": 0,
+      "withinCurrentRunRepeatStrictZero": true,
+      "caseMetricsUnchanged": true,
+      "differenceMaxRGBA": 0.0001220703125,
+      "pixelXY": [
+        95,
+        30
+      ]
+    }
+  ]
+}

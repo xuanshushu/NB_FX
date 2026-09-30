@@ -1,0 +1,25 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh SixWay 对照</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：完整 Mesh 优先</a></p>
+<h1>普通 Mesh 六向光照：负缩放错误已修，仍有 3 个严格微差行</h1>
+<p><strong>人话结论：</strong>SixWay 是从物体的六个方向分别取光的效果。Shader Graph 的普通 Mesh 现已能使用原 NBShader 的六向贴图、顶点球谐光、吸收和发光；改变光方向、环境光、贴图 Alpha 或发光设置，画面确实会变。曾经把物体镜像（负缩放）后大面积不对，是 Graph 与原 Shader 对“切线朝哪边”的处理不一致；现已在<strong>自己包内</strong>修复，正交与透视都严格零差。最后 30 个画面行有 27 行零差、3 行各只差 1 个像素（最大 <code>0.00048828125</code>），仍按零差规则判失败，不提高容差。</p>
+<p><strong>不要误读 27/30：</strong>Unity 实际运行的是<strong>两个 NUnit 测试</strong>，每个相机各包含 15 行；两项都因行内微差判失败，NUnit 结果是 <strong>0 通过 / 2 失败</strong>。27 只是画面行的严格零差数量，不是 27 项测试通过，更不放行 G3/G4。</p>
+<p>2026-10-01；固定产品与测试提交 <code>becceb907aab53e77081151de785755310ac398f</code>。Unity 6000.3.18f1 / URP、Shader Graph、VFX 包 17.3 / Metal / RenderGraph。主 Agent 报告 unityMCP 不可用，故用独占隔离工程的 Unity CLI；本归档没有启动 Unity、修改产品/Test/官方包/UniversalTarget/NBPostprocess/三个保护设置，也未 push。</p>
+<h2>具体拍了什么</h2>
+<p>正交和透视各拍 15 行：六个正反方向的光、基准、彩色环境球谐光、六向贴图 Alpha、颜色吸收、发光渐变、主贴图缩放偏移、Clamp、贴图强制 LOD0，以及镜像负缩放。A 为 G0 Frozen ShaderLab，B 为当前 ShaderLab，C 为实际生成的 Graph。96×96 linear RGBAHalf 的中心 44×44 区域逐像素比较原始 RGBA，无损 float32 原始帧全部保留。</p>
+<ul>
+<li><strong>原实现保护：</strong>30 行 Frozen/当前 ShaderLab 全部 <code>0</code> 差；全部捕获的整帧数值有限，A/B/C 各行的重复帧均 <code>0</code> 差。</li>
+<li><strong>Graph 对照：</strong>27 行当前 ShaderLab/Graph 严格 <code>0</code> 差。正交的 MainTex-ST、正交的 Rig LOD0、透视的 Rig LOD0 各有 1 像素不等，最大单通道差 <code>0.00048828125</code>；原始失败照录。</li>
+<li><strong>不是空图：</strong>14 个直接因果对照中，B 与 C 的画面都至少有 939 个内部像素变化；六个不同光方向也分别被拍摄。</li>
+</ul>
+<p><a href="t07-evidence/sixway-20261001/results.xml">原始 NUnit XML（0/2）</a> · <a href="t07-evidence/sixway-20261001/summary.json">30 行数值与 14 个控制</a> · <a href="t07-evidence/sixway-20261001/cases/">无损原始帧</a> · <a href="t07-evidence/sixway-20261001/unity.log.gz">Unity 日志</a>。最终导入/测试日志未见 C# 或 Shader 编译错误。</p>
+<h2>为什么之前负缩放大面积不对</h2>
+<p>修复前的完整试验，镜像网格在正交有 <code>1,780</code> 个不同像素、透视有 <code>1,340</code> 个，最大差达 <code>0.033203125</code>；这<strong>不是</strong>用户要求略过的微弱差。Graph 顶点生成的副切线已带镜像缩放符号，而原 NBShader 的切线手性计算路径不同。此次只改 NB_FX 包内适配：恢复原切线符号与 half 精度，再按原算法计算六向环境光。最终两项负缩放都变为零差，没有去改官方 URP 或删功能。<a href="t07-evidence/sixway-20261001/history/summary.json">修前数值与历史</a>。</p>
+<p>更早的 v1 只收集 26 行就早停；v2 夹具误用了本项目 NUnit 没有的 <code>Assert.Multiple</code>，导入报 CS0117，因此没有有效渲染结果；v3 完整 30 行为 25 零差、5 失败，包含上述两项负缩放错误。旧 XML、raw、夹具源码、修前 HLSL 和四次导入日志都在档。这些测试夹具问题已处理，不是要求用户修改官方包的卡点。</p>
+<h2>合并回归：旧结果没有新增失败</h2>
+<p>在同一个固定产品提交上还跑了<strong>现有已编写的 925 项普通 Mesh NUnit</strong>：771 通过、154 失败、0 跳过。失败恰是上轮已有的 152 项加上本次 SixWay 的 2 项，没有旧项新增或消失；这不是“全套通过”，严格失败继续保留。<a href="t07-evidence/sixway-20261001/full/results.xml">925 项原始 XML</a> · <a href="t07-evidence/sixway-20261001/full/failure-id-audit.json">失败身份核对</a>。完整日志未见 C# 或 Shader 编译错误。</p>
+<p>不能只看测试名称，我们还逐个读了全部 <strong>12,150</strong> 份截图或解压后的原始像素，与前次持久档逐一比对。<strong>12,146</strong> 份完全相同；另外 4 份是旧程序噪波两行的 Graph 图及各自重复图，各只在严格比较区域<strong>外</strong>变了 1 像素。本轮图与本轮重复图仍完全相同，两行严格区域数值指标与上轮一致。这 4 份不同的原图没有丢弃，已经单独留档，不能说所有图逐字节相同。<a href="t07-evidence/sixway-20261001/full/capture-equivalence.json">逐图比对</a> · <a href="t07-evidence/sixway-20261001/full/changed-capture-audit.json">4 份变化明细</a>。</p>
+<p>四份生成的 Shader Graph Preview 源码均能找到顶点 SixWay 计算、VertexDescription 赋值与插值传递；<a href="t07-evidence/sixway-20261001/full/generated-preview-locations.json">位置和 hash</a>已存。它只证明生成连线，不等于 VFX 或 Player 的行为验证。</p>
+<h2>仍未证明</h2>
+<p>这轮只证明给定普通 Mesh 六向光照矩阵：完整 Flipbook 混合 UV、顶点附加光、Forward+、单独的发光 Ramp LOD0、真正 VFX、Player、全部材质组合、变体剔除、SRP Batcher、性能和冷首帧尚未据此验证。当前普通 Mesh 仍未全部完成，G3/G4 未放行；继续按顺序做 Mesh，再到正式 VFX。<a href="t07-evidence/sixway-20261001/README.txt">重放说明</a> · <a href="t07-evidence/sixway-20261001/product-source/commit.json">固定七路径源码</a> · <a href="t07-evidence/sixway-20261001/protected-settings-audit.json">保护设置核对</a> · <a href="t07-evidence/sixway-20261001/sha256.txt">附件 hash</a>。</p>
+<p><strong>审核：</strong>负缩放真实错误已修；3 行单像素严格差保留，两个 NUnit 项仍失败。完整 G3/G4 未放行，未 push。</p>
+</body></html>
