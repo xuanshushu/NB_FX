@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using NBShader;
 
 namespace NBShaderEditor
 {
     // A capability-specific Root: Graph properties do not contain ShaderLab's
     // foldout, keyword, or single-float packed-flag protocol. Keep Unity's
-    // MaterialEditor in charge of property drawers, multi-edit, and Undo.
+    // MaterialEditor in charge of property drawers; write only the existing
+    // split Flags0 bits for controls with live Graph behavior.
     public sealed class NBShaderGraphRootItem : ShaderGUIRootItem
     {
         // Group only properties with a live Graph implementation. Unknown and
@@ -94,6 +96,15 @@ namespace NBShaderEditor
             DrawGroup(RampProperties, "feature.颜色映射", "Color Ramp");
             DrawGroup(AdjustmentProperties, "feature.颜色调整", "Color Adjustment");
             DrawGroup(FresnelProperties, "feature.菲涅尔", "Fresnel");
+            if (TryGetVisibleProperty("_fresnelEnabled", out _))
+            {
+                DrawFresnelFlag("feature.菲涅尔模式", "Fresnel Alpha Mode",
+                    NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON);
+                DrawFresnelFlag("feature.翻转菲涅尔", "Invert Fresnel",
+                    NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON);
+                DrawFresnelFlag("feature.菲涅尔颜色受Alpha影响", "Color Affected By Alpha",
+                    NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA);
+            }
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
             DrawGroup(DistortionProperties, "feature.扭曲", "Distort");
@@ -135,6 +146,54 @@ namespace NBShaderEditor
                     _drawnProperties.Add(property.name))
                     DrawProperty(property);
             }
+        }
+
+        void DrawFresnelFlag(string localizationKey, string fallback, int flag)
+        {
+            int bitIndex = 0;
+            for (int bits = flag; bits > 1; bits >>= 1)
+                bitIndex++;
+            string propertyName = bitIndex < 16 ? "_NB_Flags0Lo16" : "_NB_Flags0Hi16";
+            int sliceBit = 1 << (bitIndex & 15);
+            bool first = false, value = false, mixed = false;
+            foreach (UnityEngine.Object target in MatEditor.targets)
+            {
+                if (target is not Material material || !material.HasProperty(propertyName))
+                    return;
+                int slice = Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(propertyName), 0f, 65535f));
+                bool enabled = (slice & sliceBit) != 0;
+                if (!first) { value = enabled; first = true; }
+                else if (value != enabled) mixed = true;
+            }
+            if (!first) return;
+
+            GUIContent label = NBShaderInspectorLocalization.MakeInspectorContent(localizationKey, fallback);
+            bool oldMixed = EditorGUI.showMixedValue;
+            EditorGUI.showMixedValue = mixed;
+            EditorGUI.BeginChangeCheck();
+            bool next = EditorGUI.Toggle(GetControlRect(), label, value);
+            bool changed = EditorGUI.EndChangeCheck();
+            EditorGUI.showMixedValue = oldMixed;
+            if (!changed) return;
+
+            Undo.RecordObjects(MatEditor.targets, label.text);
+            foreach (UnityEngine.Object target in MatEditor.targets)
+            {
+                if (target is Material material && SetPackedFlag(material, propertyName, sliceBit, next))
+                    EditorUtility.SetDirty(material);
+            }
+        }
+
+        // Preserve every unrelated bit, including flags written by other
+        // Graph features or VFX Output. No legacy single-float flag alias.
+        static bool SetPackedFlag(Material material, string propertyName, int sliceBit, bool enabled)
+        {
+            if (!material.HasProperty(propertyName)) return false;
+            int current = Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(propertyName), 0f, 65535f));
+            int next = enabled ? current | sliceBit : current & ~sliceBit;
+            if (next == current) return false;
+            material.SetFloat(propertyName, next);
+            return true;
         }
 
         bool TryGetVisibleProperty(string name, out MaterialProperty property)
