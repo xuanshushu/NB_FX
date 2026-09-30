@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 屏幕 Noise 数据接入</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="t07-mesh-texture-noise-checkpoint.html">前序纹理 Noise</a> · <a href="../decisions.html#d24">D24：普通 Mesh 在前</a></p>
+<h1>普通 Mesh 屏幕 Noise 数据接入</h1>
+<p><strong>人话结论：</strong>Graph 现在能把 Noise 贴图算出的“往哪个方向扭、影响多少”送进两条 NB 屏幕扭曲 Pass。用普通 Mesh 实际绘制时，<strong>8 项与旧 NBShader 的结果完全一致</strong>。另有 2 项只验证 Graph 的备用输入与等价贴图输入一致，不属于旧 Shader 对照。<strong>这一步完成的是两条 Pass 读对数据，不是整个 NBPostprocess 后处理系统完成。</strong></p>
+<p>2026-10-01；固定产品提交 <code>e2bdae5</code>（父提交 <code>db1e304</code>）。Unity 6000.3.18f1 / URP、SG、VFX 包 17.3 / Metal / RenderGraph。此轮由主 Agent 使用独占隔离 clone CLI，unityMCP 当时无可调用工具。未运行真正 VFX；Graph 的 Support VFX 设置保留，但不能据此宣称 VFX 已验证。按 D24，继续普通 Mesh 完整对照，之前的 VFX 结果仅保留为历史探索。</p>
+<h2>本片到底做了什么</h2>
+<ul>
+<li>同一次 Graph 表面计算额外输出两份数据：方向偏移 <code>signedRG</code>，以及影响范围 <code>noiseMask</code>。两条 Pass 读取这份结果，不另算一套 Noise。</li>
+<li>遮罩只作用一次。例如 Noise 的透明度是 0.5、遮罩也是 0.5，最终覆盖是 0.25；不会又把方向偏移乘 0.25，造成效果被额外压弱。</li>
+<li><code>NBDeferredDistortPass</code> 验证输出的方向和覆盖数据；<code>NBCameraOpaqueDistortPass</code> 验证用这些数据偏移采样真正的 URP 不透明背景纹理。</li>
+<li>新增包内 Graph Block 和 SubTarget 接口，保留两个精确 LightMode 标签及原共享 payload 算术；没有修改官方包、官方 UniversalTarget 或原 NBPostprocess。</li>
+</ul>
+<h2>真实运行结果</h2>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>结果与含义</th><th>证据</th></tr></thead><tbody>
+<tr><td>两条 Pass × 四种贴图 Noise 状态</td><td><strong>8/8 真 B/C 对照通过</strong>：Noise Alpha、NoiseMask、RG 归一化、Alpha 调整。开启态和关闭强度态在严格内部 ROI 的 RGBA 差均为 0，重复为 0、全帧有限。最弱的 Graph 开/关响应是 0.00927734375，大于原固定 0.005 门槛。两条 Pass 的 mode 0 和错误 mode 均全帧不写入。</td><td rowspan="2"><a href="t07-evidence/screen-noise-20261001/results.xml">584 项 XML</a> · <a href="t07-evidence/screen-noise-20261001/summary.json">10 项屏幕指标与汇总</a> · <a href="t07-evidence/screen-noise-20261001/unity.log.gz">完整运行日志</a></td></tr>
+<tr><td>两条 Pass 的 Noise-off uniform 备用输入</td><td><strong>2/2 Graph 内部等价检查通过，不是 B/C 0 差。</strong>旧 NBShader 没有这条同样的输入方式。Graph 的备用向量与表达相同方向的贴图输入结果差为 0；与旧 Shader 开启态的数字实际不同，原指标和 raw 均保留，未隐藏或算入上面的 8 项。</td></tr>
+<tr><td>合并运行共 584 项</td><td>562 通过 / 22 严格失败、无 skip。屏幕 10 项全部通过；其余包括表面/Preview 92、采样 63、主 UV 22、功能 UV 96、Frozen Noise 92、渲染状态 30、Graph Noise 179。22 项失败仍为原先主 UV 3 项与功能 UV 19 项，失败 case 名单未改变；没有放宽断言或将退出 2 写成通过。</td><td><a href="t07-evidence/screen-noise-20261001/regression/capture-equivalence.json">非 Noise 回归逐捕获核对</a></td></tr>
+<tr><td>Noise 归档输出目录纠正后重跑</td><td><strong>271/271 通过</strong>：Frozen/current 92 + ShaderLab/Graph 179，分别写入独立命名空间。3264 个 PNG/raw payload 与对应前序完整归档全部一致；另有 303 个非 Noise 回归 case 的 2272 个 PNG/raw payload 全部一致。等价附件通过逐文件清单引用前序，不重复堆放，也不拿错误混目录冒充两份完整数据。</td><td><a href="t07-evidence/screen-noise-20261001/namespace-correction/results.xml">纠正后 XML</a> · <a href="t07-evidence/screen-noise-20261001/namespace-correction/capture-equivalence.json">3264 项命名空间映射与等价性</a> · <a href="t07-evidence/screen-noise-20261001/namespace-correction/unity.log.gz">日志</a></td></tr>
+</tbody></table>
+<h2>归档问题与夹具失败，没有抹掉</h2>
+<p><strong>原 584 项运行中的两组 Noise 测试曾写入同一个输出目录：</strong>92 个 case 目录重名，部分图片、raw 和指标被另一组覆盖。测试当时在内存里作出的断言与 XML 可用，但这份混合目录不能单独证明两套完整原始数据。因此本归档明确排除它作为完整 Noise 数据，改用随后独立目录的 271 项重跑；<a href="t07-evidence/screen-noise-20261001/namespace-correction/original-collision-audit.json">重名列表、原混合文件 hash 与纠正说明</a>保留。</p>
+<table border="1" cellpadding="6"><thead><tr><th>初次问题</th><th>修正与复测</th><th>原始记录</th></tr></thead><tbody>
+<tr><td>测试代码使用了不存在的 Shader.FindPass</td><td>改为 Material.FindPass；原 CS1061 编译错误日志保留，不宣称从未失败。</td><td><a href="t07-evidence/screen-noise-20261001/fixture-correction/imports/initial.log.gz">初始编译日志</a></td></tr>
+<tr><td>最初 10 项都在 Pass 索引检查处失败</td><td>Graph Block 程序集重载后强制重导入，并在稳态绘制后核实实际 Pass 名称和标签；检查没有取消。下一次实际绘制运行是 5 通过 / 5 失败。</td><td><a href="t07-evidence/screen-noise-20261001/fixture-correction/initial-pass-placeholder/results.xml">初跑 XML</a> · <a href="t07-evidence/screen-noise-20261001/fixture-correction/initial-pass-placeholder/unity.log.gz">日志</a></td></tr>
+<tr><td>不透明背景是单色，无法证明纹理发生偏移</td><td>原因是相机看到了背景 Quad 背面，测试背景被剔除。只把测试背景 Cull 设为 Off；随后 9 通过 / 1 失败。</td><td><a href="t07-evidence/screen-noise-20261001/fixture-correction/backdrop-cull/results.xml">5 项背景失败 XML</a> · <a href="t07-evidence/screen-noise-20261001/fixture-correction/backdrop-cull/unity.log.gz">日志</a></td></tr>
+<tr><td>最后一项开/关响应 0.00463867188，未达到 0.005</td><td>只把测试背景 R/G 渐变跨度从 0.6 加强为 1.2，使信号明显；同一门槛和严格 RGBA 0 断言均未放宽。最终屏幕 10 项通过。</td><td><a href="t07-evidence/screen-noise-20261001/fixture-correction/weak-positive-control/results.xml">弱控制失败 XML</a> · <a href="t07-evidence/screen-noise-20261001/fixture-correction/weak-positive-control/unity.log.gz">日志</a></td></tr>
+</tbody></table>
+<p>修改过程的 <a href="t07-evidence/screen-noise-20261001/fixture-correction/snapshots/v2-G4GraphScreenNoiseTests.cs.gz">v2</a> / <a href="t07-evidence/screen-noise-20261001/fixture-correction/snapshots/v3-G4GraphScreenNoiseTests.cs.gz">v3</a> / <a href="t07-evidence/screen-noise-20261001/fixture-correction/snapshots/v4-G4GraphScreenNoiseTests.cs.gz">v4</a> 命名快照与全部导入日志保存；最终 10 个源码路径均从产品提交提取，不混入随后 Blend、VertexOffset、MatCap 的工作区内容。</p>
+<h2>仍未证明什么</h2>
+<ul>
+<li>绘制使用测试用精确标签 RendererList，临时关闭原 NBPostprocess Feature，结束后恢复。<strong>未跑完整 NBPostprocess Controller / Manager → 正式 RT 收集 → 最终合成链</strong>；不把“相机测试 RT 可见”写成整个后处理完成。</li>
+<li>屏幕专项仅正交相机、1×1 Noise/Mask、零速度、单位 ST；<strong>没有屏幕边界 Wrap/LOD 的证明</strong>，也未证明透视、更多组合、半精度 Graph、GUI、Player、SRP Batcher、变体或性能。</li>
+<li>测试是四帧预热后的稳态；不证明冷首帧。128×128 linear RGBAHalf 的严格数值对照区域是内部 48×48，不是全图 B/C，也不是用 PNG 量化来比较。全帧 finite 与错误 mode 不写入另有检查。</li>
+<li>22 项既有 UV 微差继续作为严格失败保留；不扩大 D23 例外。<strong>完整 G3/G4 尚未完成、未放行，本片无真正 VFX / Player 验证证据。</strong></li>
+</ul>
+<h2>可重放与审核材料</h2>
+<p><a href="t07-evidence/screen-noise-20261001/README.txt">输入、CLI、范围及纠正过程</a> · <a href="../../Tests/URP/Editor/G4GraphScreenNoiseTests.cs">测试入口（可能随后续切片更新）</a> · <a href="t07-evidence/screen-noise-20261001/product-source/Tests/URP/Editor/G4GraphScreenNoiseTests.cs.gz">本次固定测试源码</a> · <a href="t07-evidence/screen-noise-20261001/input-sha256.txt">10 个固定源码 hash</a> · <a href="t07-evidence/screen-noise-20261001/sha256.txt">全部附件 hash</a> · <a href="t07-evidence/screen-noise-20261001/protected-settings-audit.json">保护设置 3/3 核验</a>。</p>
+<p>保护设置在隔离 clone 磁盘上的三项 hash 与前序 N1 完全一致。最终 584 项退出 2，对应保留的 22 个断言；纠正命名空间的 271 项退出 0。最终运行、纠正重跑和最后导入日志无 error CS / Shader error；日志中的关闭阶段警告照原样保留。归档 Agent 未启动 Unity，未改产品、测试或中央索引，未提交或 push。</p>
+<p><strong>本片审核建议：</strong>允许把“贴图 Noise 正确送入两条 NB Pass”的限定 Mesh 切片记为完成；不放行完整 G3/G4。继续由主 Agent 串行集成与验证后续普通 Mesh 功能，剩余问题集中留给最终人工验收。</p>
+</body></html>

@@ -8,7 +8,7 @@
 <body>
 <p><a href="../index.html">返回文档目录</a></p>
 <h1>T07 · Mesh / Graph 等价与共享 GUI</h1>
-<p><strong>2026-09-30 当前状态：</strong>已有单功能 Mesh 切片，完整 G4 未放行。按 <a href="../decisions.html#d24">D24</a>，当前集中补齐全部确认效果及组合、GUI、渲染状态、NBPostprocess、生成代码/Player/性能的普通 Mesh B/C 对照，同时闭合 G3 审核；不再把新增功能与真正 VFX 探针交错推进。完成并审核 Mesh 阶段后才移交 T08。</p>
+<p><strong>2026-10-01 当前状态：</strong>已有单功能 Mesh 切片，完整 G4 未放行。按 <a href="../decisions.html#d24">D24</a>，当前集中补齐全部确认效果及组合、GUI、渲染状态、NBPostprocess、生成代码/Player/性能的普通 Mesh B/C 对照，同时闭合 G3 审核；不再把新增功能与真正 VFX 探针交错推进。完成并审核 Mesh 阶段后才移交 T08。</p>
 <p>在普通 Mesh 验证 scaffold 中接入全部确认效果，复用 NB GUI 的规则和实现，验证 Pass、高级渲染状态与 NBPostprocess 的等价边界。</p>
 <p><small>更新：2026-09-30 · 任务约束按 D24 顺序执行；当前状态见页首 · 不修改官方包</small></p>
 <hr>
@@ -61,5 +61,6 @@
 <p>标准 Lit/Six-Way Target、ShaderLab 公共行为变更或无法实现的高级状态必须先与用户讨论。ShaderGraph 材质序列化不同本身不是阻塞，也不是建设同步工具的理由。</p><p>所有 Unity 变更/验证交主 Agent 串行安排。文件冲突、接口变更先暂停相关部分并发协调消息；保留已完成的独立工作。回退只针对本任务变更，不覆盖用户或其他任务工作。</p>
 <hr>
 <p><small>当前任务状态与正式 Gate 结论分别记录；单功能检查点不等于阶段通过。</small></p>
+<p>2026-10-01 后续：<a href="../reports/t07-mesh-screen-noise-checkpoint.html">纹理 Noise 已送入两条精确 NB Pass</a>；<a href="../reports/t07-mesh-blend-clip-checkpoint.html">混合与最终 Alpha 裁剪</a>补证。普通 Mesh 顶点位移、MatCap/法线、光照/阴影和完整 GUI/状态/后处理/Player/性能继续按可回退切片实现；不以局部通过代替本页全部验收。</p>
 </body>
 </html>

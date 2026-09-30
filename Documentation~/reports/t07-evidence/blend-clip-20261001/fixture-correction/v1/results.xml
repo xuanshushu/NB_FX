@@ -1,0 +1,931 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="61" result="Failed(Child)" total="61" passed="13" failed="48" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-30 18:04:38Z" end-time="2026-09-30 18:05:29Z" duration="50.7943381">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="659" result="Failed" site="Child" start-time="2026-09-30 18:04:38Z" end-time="2026-09-30 18:05:29Z" duration="50.794338" total="61" passed="13" failed="48" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1706" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="641" result="Failed" site="Child" start-time="2026-09-30 18:04:38Z" end-time="2026-09-30 18:05:29Z" duration="50.788605" total="61" passed="13" failed="48" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="89856" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1707" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="641" result="Failed" site="Child" start-time="2026-09-30 18:04:38Z" end-time="2026-09-30 18:05:29Z" duration="50.787185" total="61" passed="13" failed="48" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1708" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="641" result="Failed" site="Child" start-time="2026-09-30 18:04:38Z" end-time="2026-09-30 18:05:29Z" duration="50.785870" total="61" passed="13" failed="48" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1709" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="641" result="Failed" site="Child" start-time="2026-09-30 18:04:38Z" end-time="2026-09-30 18:05:29Z" duration="50.784594" total="61" passed="13" failed="48" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1169" name="G4GraphBlendClipTests" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" testcasecount="48" result="Failed" site="Child" start-time="2026-09-30 18:04:38Z" end-time="2026-09-30 18:05:22Z" duration="43.963659" total="48" passed="0" failed="48" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1218" name="FinalForwardBlendAndCutoffMatch" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" testcasecount="48" result="Failed" site="Child" start-time="2026-09-30 18:04:39Z" end-time="2026-09-30 18:05:22Z" duration="42.915348" total="48" passed="0" failed="48" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1170" name="G4BlendClipBC_opaque_-1_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_opaque_-1_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1764684262" result="Failed" start-time="2026-09-30 18:04:39Z" end-time="2026-09-30 18:04:51Z" duration="12.010059" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"opaque--1-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"opaque","orthographic":true,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":1.0,"maxRGBA":0.0,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.75,"graphResponse":0.5,"differingRGBA":0,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1171" name="G4BlendClipBC_opaque_-1_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_opaque_-1_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="221982242" result="Failed" start-time="2026-09-30 18:04:51Z" end-time="2026-09-30 18:04:51Z" duration="0.138992" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"opaque--1-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"opaque","orthographic":false,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":1.0,"maxRGBA":0.0,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.75,"graphResponse":0.5,"differingRGBA":0,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1172" name="G4BlendClipBC_opaque_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_opaque_0.25_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1929970025" result="Failed" start-time="2026-09-30 18:04:51Z" end-time="2026-09-30 18:04:52Z" duration="0.136888" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"opaque-0.25-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"opaque","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":1.0,"maxRGBA":0.0,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.75,"graphResponse":0.5,"differingRGBA":0,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1173" name="G4BlendClipBC_opaque_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_opaque_0.25_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="529179017" result="Failed" start-time="2026-09-30 18:04:52Z" end-time="2026-09-30 18:04:52Z" duration="0.144111" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"opaque-0.25-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"opaque","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":1.0,"maxRGBA":0.0,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.75,"graphResponse":0.5,"differingRGBA":0,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1174" name="G4BlendClipBC_opaque_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_opaque_0.5_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="921091459" result="Failed" start-time="2026-09-30 18:04:52Z" end-time="2026-09-30 18:04:52Z" duration="0.158908" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Final Forward output strict B/C mismatch.
+  Expected: 0
+  But was:  2048
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x0082d] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"opaque-0.5-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"opaque","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.75,"graphResponse":0.375,"differingRGBA":2048,"controlDifferingRGBA":0}
+]]></output>
+                </test-case>
+                <test-case id="1175" name="G4BlendClipBC_opaque_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_opaque_0.5_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1186216625" result="Failed" start-time="2026-09-30 18:04:52Z" end-time="2026-09-30 18:04:52Z" duration="0.145839" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Final Forward output strict B/C mismatch.
+  Expected: 0
+  But was:  2048
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x0082d] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"opaque-0.5-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"opaque","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.75,"graphResponse":0.375,"differingRGBA":2048,"controlDifferingRGBA":0}
+]]></output>
+                </test-case>
+                <test-case id="1176" name="G4BlendClipBC_opaque_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_opaque_0.8_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="2051543884" result="Failed" start-time="2026-09-30 18:04:52Z" end-time="2026-09-30 18:04:52Z" duration="0.142909" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Final Forward output strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x0082d] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"opaque-0.8-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"opaque","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.75,"graphResponse":0.5,"differingRGBA":4096,"controlDifferingRGBA":0}
+]]></output>
+                </test-case>
+                <test-case id="1177" name="G4BlendClipBC_opaque_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_opaque_0.8_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1168806770" result="Failed" start-time="2026-09-30 18:04:52Z" end-time="2026-09-30 18:04:52Z" duration="0.146744" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Final Forward output strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x0082d] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"opaque-0.8-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"opaque","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.75,"graphResponse":0.5,"differingRGBA":4096,"controlDifferingRGBA":0}
+]]></output>
+                </test-case>
+                <test-case id="1178" name="G4BlendClipBC_alpha_-1_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_alpha_-1_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="2129773409" result="Failed" start-time="2026-09-30 18:04:52Z" end-time="2026-09-30 18:04:58Z" duration="5.910640" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"alpha--1-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"alpha","orthographic":true,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":1.0,"maxRGBA":0.5625,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1179" name="G4BlendClipBC_alpha_-1_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_alpha_-1_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1054365860" result="Failed" start-time="2026-09-30 18:04:58Z" end-time="2026-09-30 18:04:58Z" duration="0.138467" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"alpha--1-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"alpha","orthographic":false,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":1.0,"maxRGBA":0.5625,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1180" name="G4BlendClipBC_alpha_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_alpha_0.25_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1758201144" result="Failed" start-time="2026-09-30 18:04:58Z" end-time="2026-09-30 18:04:59Z" duration="0.146270" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"alpha-0.25-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"alpha","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":1.0,"maxRGBA":0.5625,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1181" name="G4BlendClipBC_alpha_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_alpha_0.25_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1744036183" result="Failed" start-time="2026-09-30 18:04:59Z" end-time="2026-09-30 18:04:59Z" duration="0.136921" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"alpha-0.25-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"alpha","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":1.0,"maxRGBA":0.5625,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1182" name="G4BlendClipBC_alpha_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_alpha_0.5_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="569757692" result="Failed" start-time="2026-09-30 18:04:59Z" end-time="2026-09-30 18:04:59Z" duration="0.153316" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"alpha-0.5-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"alpha","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.5625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.24951171875,"graphResponse":0.1787109375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1183" name="G4BlendClipBC_alpha_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_alpha_0.5_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="948553158" result="Failed" start-time="2026-09-30 18:04:59Z" end-time="2026-09-30 18:04:59Z" duration="0.137034" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"alpha-0.5-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"alpha","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.5625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.24951171875,"graphResponse":0.177978515625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1184" name="G4BlendClipBC_alpha_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_alpha_0.8_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="906213783" result="Failed" start-time="2026-09-30 18:04:59Z" end-time="2026-09-30 18:04:59Z" duration="0.149535" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"alpha-0.8-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"alpha","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.5625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1185" name="G4BlendClipBC_alpha_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_alpha_0.8_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="62902291" result="Failed" start-time="2026-09-30 18:04:59Z" end-time="2026-09-30 18:04:59Z" duration="0.146078" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"alpha-0.8-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"alpha","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.5625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1186" name="G4BlendClipBC_premultiply_-1_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_premultiply_-1_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="750755432" result="Failed" start-time="2026-09-30 18:04:59Z" end-time="2026-09-30 18:05:09Z" duration="9.293363" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"premultiply--1-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"premultiply","orthographic":true,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":1.0,"maxRGBA":0.5625,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1187" name="G4BlendClipBC_premultiply_-1_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_premultiply_-1_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1026179097" result="Failed" start-time="2026-09-30 18:05:09Z" end-time="2026-09-30 18:05:09Z" duration="0.149854" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"premultiply--1-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"premultiply","orthographic":false,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":1.0,"maxRGBA":0.5625,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1188" name="G4BlendClipBC_premultiply_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_premultiply_0.25_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1390586939" result="Failed" start-time="2026-09-30 18:05:09Z" end-time="2026-09-30 18:05:09Z" duration="0.141122" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"premultiply-0.25-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"premultiply","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":1.0,"maxRGBA":0.5625,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1189" name="G4BlendClipBC_premultiply_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_premultiply_0.25_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="241657966" result="Failed" start-time="2026-09-30 18:05:09Z" end-time="2026-09-30 18:05:09Z" duration="0.156366" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"premultiply-0.25-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"premultiply","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":1.0,"maxRGBA":0.5625,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1190" name="G4BlendClipBC_premultiply_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_premultiply_0.5_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1315611867" result="Failed" start-time="2026-09-30 18:05:09Z" end-time="2026-09-30 18:05:09Z" duration="0.136810" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"premultiply-0.5-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"premultiply","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.5625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.1787109375,"graphResponse":0.357421875,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1191" name="G4BlendClipBC_premultiply_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_premultiply_0.5_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1177598785" result="Failed" start-time="2026-09-30 18:05:09Z" end-time="2026-09-30 18:05:09Z" duration="0.144357" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"premultiply-0.5-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"premultiply","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.5625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.177978515625,"graphResponse":0.35595703125,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1192" name="G4BlendClipBC_premultiply_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_premultiply_0.8_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="403680947" result="Failed" start-time="2026-09-30 18:05:09Z" end-time="2026-09-30 18:05:09Z" duration="0.139075" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"premultiply-0.8-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"premultiply","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.5625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1193" name="G4BlendClipBC_premultiply_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_premultiply_0.8_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="63731548" result="Failed" start-time="2026-09-30 18:05:09Z" end-time="2026-09-30 18:05:10Z" duration="0.147743" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"premultiply-0.8-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"premultiply","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.5625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.28125,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1194" name="G4BlendClipBC_additive_-1_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive_-1_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1316605649" result="Failed" start-time="2026-09-30 18:05:10Z" end-time="2026-09-30 18:05:10Z" duration="0.150112" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive--1-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive","orthographic":true,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":0.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.5625,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1195" name="G4BlendClipBC_additive_-1_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive_-1_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1121065994" result="Failed" start-time="2026-09-30 18:05:10Z" end-time="2026-09-30 18:05:10Z" duration="0.139900" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive--1-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive","orthographic":false,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":0.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.5625,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1196" name="G4BlendClipBC_additive_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive_0.25_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1402627566" result="Failed" start-time="2026-09-30 18:05:10Z" end-time="2026-09-30 18:05:10Z" duration="0.156337" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-0.25-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":0.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.5625,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1197" name="G4BlendClipBC_additive_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive_0.25_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1591576780" result="Failed" start-time="2026-09-30 18:05:10Z" end-time="2026-09-30 18:05:10Z" duration="0.144032" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-0.25-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":0.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.5625,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1198" name="G4BlendClipBC_additive_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive_0.5_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1120338547" result="Failed" start-time="2026-09-30 18:05:10Z" end-time="2026-09-30 18:05:10Z" duration="0.138095" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-0.5-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":0.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.5625,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1199" name="G4BlendClipBC_additive_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive_0.5_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1494909177" result="Failed" start-time="2026-09-30 18:05:10Z" end-time="2026-09-30 18:05:10Z" duration="0.141352" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-0.5-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":0.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.5625,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1200" name="G4BlendClipBC_additive_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive_0.8_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1336492865" result="Failed" start-time="2026-09-30 18:05:10Z" end-time="2026-09-30 18:05:11Z" duration="0.142577" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-0.8-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":0.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.5625,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1201" name="G4BlendClipBC_additive_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive_0.8_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1633363313" result="Failed" start-time="2026-09-30 18:05:11Z" end-time="2026-09-30 18:05:11Z" duration="0.149208" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-0.8-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":0.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.5625,"graphResponse":0.5625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1202" name="G4BlendClipBC_additive-mix_-1_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive-mix_-1_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1406584276" result="Failed" start-time="2026-09-30 18:05:11Z" end-time="2026-09-30 18:05:11Z" duration="0.144243" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-mix--1-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive-mix","orthographic":true,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":0.5,"maxRGBA":0.65625,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.375,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1203" name="G4BlendClipBC_additive-mix_-1_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive-mix_-1_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="619133660" result="Failed" start-time="2026-09-30 18:05:11Z" end-time="2026-09-30 18:05:11Z" duration="0.158139" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-mix--1-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive-mix","orthographic":false,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":0.5,"maxRGBA":0.65625,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.375,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1204" name="G4BlendClipBC_additive-mix_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive-mix_0.25_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="352210676" result="Failed" start-time="2026-09-30 18:05:11Z" end-time="2026-09-30 18:05:11Z" duration="0.139872" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-mix-0.25-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive-mix","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":0.5,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.375,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1205" name="G4BlendClipBC_additive-mix_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive-mix_0.25_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="777143325" result="Failed" start-time="2026-09-30 18:05:11Z" end-time="2026-09-30 18:05:11Z" duration="0.138235" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-mix-0.25-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive-mix","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":0.5,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.375,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1206" name="G4BlendClipBC_additive-mix_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive-mix_0.5_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1302977411" result="Failed" start-time="2026-09-30 18:05:11Z" end-time="2026-09-30 18:05:11Z" duration="0.136886" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-mix-0.5-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive-mix","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":0.5,"maxRGBA":0.75,"controlMaxRGBA":0.65625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.375,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1207" name="G4BlendClipBC_additive-mix_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive-mix_0.5_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1120333617" result="Failed" start-time="2026-09-30 18:05:11Z" end-time="2026-09-30 18:05:12Z" duration="0.143395" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-mix-0.5-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive-mix","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":0.5,"maxRGBA":0.75,"controlMaxRGBA":0.65625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.375,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1208" name="G4BlendClipBC_additive-mix_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive-mix_0.8_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1704101856" result="Failed" start-time="2026-09-30 18:05:12Z" end-time="2026-09-30 18:05:12Z" duration="0.149879" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-mix-0.8-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive-mix","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":0.5,"maxRGBA":0.75,"controlMaxRGBA":0.65625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.375,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1209" name="G4BlendClipBC_additive-mix_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_additive-mix_0.8_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1013582026" result="Failed" start-time="2026-09-30 18:05:12Z" end-time="2026-09-30 18:05:12Z" duration="0.142128" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"additive-mix-0.8-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"additive-mix","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":0.5,"maxRGBA":0.75,"controlMaxRGBA":0.65625,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.375,"graphResponse":0.375,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1210" name="G4BlendClipBC_multiply_-1_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_multiply_-1_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="104396714" result="Failed" start-time="2026-09-30 18:05:12Z" end-time="2026-09-30 18:05:21Z" duration="9.304611" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"multiply--1-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"multiply","orthographic":true,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.140625,"graphResponse":0.140625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1211" name="G4BlendClipBC_multiply_-1_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_multiply_-1_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1652204640" result="Failed" start-time="2026-09-30 18:05:21Z" end-time="2026-09-30 18:05:21Z" duration="0.142559" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"multiply--1-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"multiply","orthographic":false,"finite":true,"alphaTest":false,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":-1.0,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.140625,"graphResponse":0.140625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1212" name="G4BlendClipBC_multiply_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_multiply_0.25_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1970781399" result="Failed" start-time="2026-09-30 18:05:21Z" end-time="2026-09-30 18:05:21Z" duration="0.138504" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"multiply-0.25-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"multiply","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.140625,"graphResponse":0.140625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1213" name="G4BlendClipBC_multiply_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_multiply_0.25_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1951620635" result="Failed" start-time="2026-09-30 18:05:21Z" end-time="2026-09-30 18:05:22Z" duration="0.141558" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"multiply-0.25-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"multiply","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.25,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.140625,"graphResponse":0.140625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1214" name="G4BlendClipBC_multiply_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_multiply_0.5_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="392801327" result="Failed" start-time="2026-09-30 18:05:22Z" end-time="2026-09-30 18:05:22Z" duration="0.149471" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"multiply-0.5-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"multiply","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.08935546875,"graphResponse":0.08935546875,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1215" name="G4BlendClipBC_multiply_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_multiply_0.5_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1453036350" result="Failed" start-time="2026-09-30 18:05:22Z" end-time="2026-09-30 18:05:22Z" duration="0.148438" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"multiply-0.5-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"multiply","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.5,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.0889892578125,"graphResponse":0.0889892578125,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1216" name="G4BlendClipBC_multiply_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_multiply_0.8_ortho" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="1981725177" result="Failed" start-time="2026-09-30 18:05:22Z" end-time="2026-09-30 18:05:22Z" duration="0.141353" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"multiply-0.8-ortho","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"multiply","orthographic":true,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.140625,"graphResponse":0.140625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+                <test-case id="1217" name="G4BlendClipBC_multiply_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphBlendClipTests.G4BlendClipBC_multiply_0.8_perspective" methodname="FinalForwardBlendAndCutoffMatch" classname="NBFX.Baseline.Tests.G4GraphBlendClipTests" runstate="Runnable" seed="100976601" result="Failed" start-time="2026-09-30 18:05:22Z" end-time="2026-09-30 18:05:22Z" duration="0.157076" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Counterfactual strict B/C mismatch.
+  Expected: 0
+  But was:  4096
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphBlendClipTests.FinalForwardBlendAndCutoffMatch (System.String mode, System.Single cutoff, System.Boolean ortho) [0x00811] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphBlendClipTests.cs:107
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_BLEND_CLIP {"caseId":"multiply-0.8-perspective","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Forward B/C only; explicit equal material blend factors; strict linearRGBAHalf ROI x/y32..95; 4 warm-up renders; not shadow/depth/dither/GUI/Player/VFX.","blend":"multiply","orthographic":false,"finite":true,"alphaTest":true,"frozenCurrentMax":0.0,"frozenCurrentControlMax":0.0,"cutoff":0.800000011920929,"additiveAlpha":1.0,"maxRGBA":0.75,"controlMaxRGBA":0.75,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.140625,"graphResponse":0.140625,"differingRGBA":4096,"controlDifferingRGBA":4096}
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+            <test-suite type="TestFixture" id="1510" name="G4GraphScreenNoiseTests" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-09-30 18:05:22Z" end-time="2026-09-30 18:05:29Z" duration="6.801353" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="ParameterizedMethod" id="1524" name="ScreenNoiseUsesOneUnmaskedPayload" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-09-30 18:05:23Z" end-time="2026-09-30 18:05:29Z" duration="5.894259" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1511" name="G4ScreenNoise_NBDeferredDistortPass_noise-a-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_noise-a-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="536224671" result="Passed" start-time="2026-09-30 18:05:23Z" end-time="2026-09-30 18:05:24Z" duration="0.794023" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-noise-a-half","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.25,"legacyControl":0.25,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.046875,"centerG":0.0234375,"centerB":0.25,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.5,"expectedBlue":0.25,"recoveredSignedR":0.1875,"recoveredSignedG":0.09375,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1512" name="G4ScreenNoise_NBDeferredDistortPass_mask-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_mask-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1549172813" result="Passed" start-time="2026-09-30 18:05:24Z" end-time="2026-09-30 18:05:25Z" duration="0.723582" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-mask-half","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.125,"legacyControl":0.125,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.0234375,"centerG":0.01171875,"centerB":0.125,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.25,"expectedBlue":0.125,"recoveredSignedR":0.1875,"recoveredSignedG":0.09375,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1513" name="G4ScreenNoise_NBDeferredDistortPass_normalize-signed" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_normalize-signed" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="64029133" result="Passed" start-time="2026-09-30 18:05:25Z" end-time="2026-09-30 18:05:25Z" duration="0.158282" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-normalize-signed","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.25,"legacyControl":0.25,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.03125,"centerG":-0.046875,"centerB":0.25,"expectedSignedR":0.125,"expectedSignedG":-0.1875,"expectedNoiseMask":0.5,"expectedBlue":0.25,"recoveredSignedR":0.125,"recoveredSignedG":-0.1875,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1514" name="G4ScreenNoise_NBDeferredDistortPass_alpha-refine" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_alpha-refine" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1156532470" result="Passed" start-time="2026-09-30 18:05:25Z" end-time="2026-09-30 18:05:25Z" duration="0.172022" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-alpha-refine","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.078125,"legacyControl":0.078125,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.0146484375,"centerG":0.00732421875,"centerB":0.078125,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.25,"expectedBlue":0.078125,"recoveredSignedR":0.1875,"recoveredSignedG":0.09375,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1515" name="G4ScreenNoise_NBDeferredDistortPass_uniform-fallback" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_uniform-fallback" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="631601191" result="Passed" start-time="2026-09-30 18:05:25Z" end-time="2026-09-30 18:05:25Z" duration="0.181145" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-uniform-fallback","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":2304,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":false,"maxOnRGBA":0.125,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.5,"legacyControl":0.5,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.125,"centerG":-0.0625,"centerB":0.5,"expectedSignedR":0.25,"expectedSignedG":-0.125,"expectedNoiseMask":1.0,"expectedBlue":0.5,"recoveredSignedR":0.25,"recoveredSignedG":-0.125,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1516" name="G4ScreenNoise_NBCameraOpaqueDistortPass_noise-a-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_noise-a-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1581683516" result="Passed" start-time="2026-09-30 18:05:25Z" end-time="2026-09-30 18:05:26Z" duration="0.503612" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBCameraOpaqueDistortPass-noise-a-half","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.02880859375,"legacyControl":0.02880859375,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.6689453125,"centerG":0.716796875,"centerB":0.37353515625,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.5,"expectedBlue":0.25,"recoveredSignedR":0.0,"recoveredSignedG":0.0,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1517" name="G4ScreenNoise_NBCameraOpaqueDistortPass_mask-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_mask-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="567569560" result="Passed" start-time="2026-09-30 18:05:26Z" end-time="2026-09-30 18:05:26Z" duration="0.527887" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBCameraOpaqueDistortPass-mask-half","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.0146484375,"legacyControl":0.0146484375,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.68310546875,"centerG":0.70947265625,"centerB":0.374267578125,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.25,"expectedBlue":0.125,"recoveredSignedR":0.0,"recoveredSignedG":0.0,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1518" name="G4ScreenNoise_NBCameraOpaqueDistortPass_normalize-signed" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_normalize-signed" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="24649454" result="Passed" start-time="2026-09-30 18:05:26Z" end-time="2026-09-30 18:05:26Z" duration="0.254275" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBCameraOpaqueDistortPass-normalize-signed","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.02880859375,"legacyControl":0.02880859375,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.6787109375,"centerG":0.673828125,"centerB":0.3701171875,"expectedSignedR":0.125,"expectedSignedG":-0.1875,"expectedNoiseMask":0.5,"expectedBlue":0.25,"recoveredSignedR":0.0,"recoveredSignedG":0.0,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1519" name="G4ScreenNoise_NBCameraOpaqueDistortPass_alpha-refine" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_alpha-refine" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="2056228121" result="Passed" start-time="2026-09-30 18:05:26Z" end-time="2026-09-30 18:05:27Z" duration="0.265177" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBCameraOpaqueDistortPass-alpha-refine","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.00927734375,"legacyControl":0.00927734375,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.6884765625,"centerG":0.70654296875,"centerB":0.37451171875,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.25,"expectedBlue":0.078125,"recoveredSignedR":0.0,"recoveredSignedG":0.0,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1520" name="G4ScreenNoise_NBCameraOpaqueDistortPass_uniform-fallback" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_uniform-fallback" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1117650799" result="Passed" start-time="2026-09-30 18:05:27Z" end-time="2026-09-30 18:05:27Z" duration="0.300100" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBCameraOpaqueDistortPass-uniform-fallback","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":2304,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":false,"maxOnRGBA":0.076171875,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.076171875,"legacyControl":0.0,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.62158203125,"centerG":0.6640625,"centerB":0.363037109375,"expectedSignedR":0.25,"expectedSignedG":-0.125,"expectedNoiseMask":1.0,"expectedBlue":0.5,"recoveredSignedR":0.0,"recoveredSignedG":0.0,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1521" name="G4ScreenClip_DeferredFinalAlpha" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenClip_DeferredFinalAlpha" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1099765730" result="Passed" start-time="2026-09-30 18:05:27Z" end-time="2026-09-30 18:05:28Z" duration="0.936323" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-clip-deferred-final-alpha","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":0,"legacyVisible":0,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.125,"legacyControl":0.125,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.0,"centerG":0.0,"centerB":0.0,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.25,"expectedBlue":0.0,"recoveredSignedR":0.0,"recoveredSignedG":0.0,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1522" name="G4ScreenClip_DeferredThreshold" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenClip_DeferredThreshold" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1961617950" result="Passed" start-time="2026-09-30 18:05:28Z" end-time="2026-09-30 18:05:28Z" duration="0.182343" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-clip-deferred-threshold","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.125,"legacyControl":0.125,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.0234375,"centerG":0.01171875,"centerB":0.125,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.25,"expectedBlue":0.125,"recoveredSignedR":0.1875,"recoveredSignedG":0.09375,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1523" name="G4ScreenClip_OpaqueFinalAlpha" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenClip_OpaqueFinalAlpha" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="342036093" result="Passed" start-time="2026-09-30 18:05:28Z" end-time="2026-09-30 18:05:29Z" duration="0.889939" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBCameraOpaqueDistortPass-clip-opaque-final-alpha","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.00732421875,"legacyControl":0.00732421875,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.6904296875,"centerG":0.7060546875,"centerB":0.374755859375,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.5,"expectedBlue":0.0625,"recoveredSignedR":0.0,"recoveredSignedG":0.0,"fallbackTextureControl":0.0}
+Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

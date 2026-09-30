@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Failed(Child)" total="10" passed="5" failed="5" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-30 17:31:16Z" end-time="2026-09-30 17:31:21Z" duration="4.460918">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="608" result="Failed" site="Child" start-time="2026-09-30 17:31:16Z" end-time="2026-09-30 17:31:21Z" duration="4.460918" total="10" passed="5" failed="5" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1653" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="590" result="Failed" site="Child" start-time="2026-09-30 17:31:16Z" end-time="2026-09-30 17:31:21Z" duration="4.444379" total="10" passed="5" failed="5" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="84883" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1654" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="590" result="Failed" site="Child" start-time="2026-09-30 17:31:16Z" end-time="2026-09-30 17:31:21Z" duration="4.440597" total="10" passed="5" failed="5" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1655" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="590" result="Failed" site="Child" start-time="2026-09-30 17:31:16Z" end-time="2026-09-30 17:31:21Z" duration="4.436987" total="10" passed="5" failed="5" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1656" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="590" result="Failed" site="Child" start-time="2026-09-30 17:31:16Z" end-time="2026-09-30 17:31:21Z" duration="4.433447" total="10" passed="5" failed="5" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1460" name="G4GraphScreenNoiseTests" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" testcasecount="10" result="Failed" site="Child" start-time="2026-09-30 17:31:16Z" end-time="2026-09-30 17:31:21Z" duration="4.419572" total="10" passed="5" failed="5" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1471" name="ScreenNoiseUsesOneUnmaskedPayload" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" testcasecount="10" result="Failed" site="Child" start-time="2026-09-30 17:31:17Z" end-time="2026-09-30 17:31:21Z" duration="3.309755" total="10" passed="5" failed="5" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1461" name="G4ScreenNoise_NBDeferredDistortPass_noise-a-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_noise-a-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="843671833" result="Passed" start-time="2026-09-30 17:31:17Z" end-time="2026-09-30 17:31:20Z" duration="2.130196" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-noise-a-half","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.25,"legacyControl":0.25,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.046875,"centerG":0.0234375,"centerB":0.25,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.5,"expectedBlue":0.25,"recoveredSignedR":0.1875,"recoveredSignedG":0.09375,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1462" name="G4ScreenNoise_NBDeferredDistortPass_mask-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_mask-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="943302963" result="Passed" start-time="2026-09-30 17:31:20Z" end-time="2026-09-30 17:31:20Z" duration="0.515904" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-mask-half","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.125,"legacyControl":0.125,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.0234375,"centerG":0.01171875,"centerB":0.125,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.25,"expectedBlue":0.125,"recoveredSignedR":0.1875,"recoveredSignedG":0.09375,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1463" name="G4ScreenNoise_NBDeferredDistortPass_normalize-signed" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_normalize-signed" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="617644601" result="Passed" start-time="2026-09-30 17:31:20Z" end-time="2026-09-30 17:31:20Z" duration="0.163489" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-normalize-signed","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.25,"legacyControl":0.25,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.03125,"centerG":-0.046875,"centerB":0.25,"expectedSignedR":0.125,"expectedSignedG":-0.1875,"expectedNoiseMask":0.5,"expectedBlue":0.25,"recoveredSignedR":0.125,"recoveredSignedG":-0.1875,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1464" name="G4ScreenNoise_NBDeferredDistortPass_alpha-refine" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_alpha-refine" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1972538440" result="Passed" start-time="2026-09-30 17:31:20Z" end-time="2026-09-30 17:31:20Z" duration="0.164309" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-alpha-refine","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":0,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":true,"maxOnRGBA":0.0,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.078125,"legacyControl":0.078125,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.0146484375,"centerG":0.00732421875,"centerB":0.078125,"expectedSignedR":0.1875,"expectedSignedG":0.09375,"expectedNoiseMask":0.25,"expectedBlue":0.078125,"recoveredSignedR":0.1875,"recoveredSignedG":0.09375,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1465" name="G4ScreenNoise_NBDeferredDistortPass_uniform-fallback" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_uniform-fallback" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1183334414" result="Passed" start-time="2026-09-30 17:31:20Z" end-time="2026-09-30 17:31:21Z" duration="0.213840" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_SCREEN_NOISE {"caseId":"NBDeferredDistortPass-uniform-fallback","unityVersion":"6000.3.18f1","api":"Metal","note":"Ordinary Mesh; exact-tag directed RendererList into linear RGBAHalf camera RT. Raw B/C and controls saved. Deferred RT over black recovers source signedRG as R/B,G/B and source alpha from B; alpha channel itself is blended. Uniform fallback is Graph-only and B/C parity is not asserted for that case. VFX/Player not tested.","roiPixels":2304,"onDifferentRGBA":2304,"offDifferentRGBA":0,"graphVisible":2304,"legacyVisible":2304,"finite":true,"parityApplicable":false,"maxOnRGBA":0.125,"maxOffRGBA":0.0,"graphRepeat":0.0,"legacyRepeat":0.0,"graphControl":0.5,"legacyControl":0.5,"modeZeroDelta":0.0,"wrongModeDelta":0.0,"centerR":0.125,"centerG":-0.0625,"centerB":0.5,"expectedSignedR":0.25,"expectedSignedG":-0.125,"expectedNoiseMask":1.0,"expectedBlue":0.5,"recoveredSignedR":0.25,"recoveredSignedG":-0.125,"fallbackTextureControl":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1466" name="G4ScreenNoise_NBCameraOpaqueDistortPass_noise-a-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_noise-a-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="885897304" result="Failed" start-time="2026-09-30 17:31:21Z" end-time="2026-09-30 17:31:21Z" duration="0.021248" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Camera-opaque source must be nonuniform.
+  Expected: greater than 32
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x0051f] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:161
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1467" name="G4ScreenNoise_NBCameraOpaqueDistortPass_mask-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_mask-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="466983437" result="Failed" start-time="2026-09-30 17:31:21Z" end-time="2026-09-30 17:31:21Z" duration="0.026191" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Camera-opaque source must be nonuniform.
+  Expected: greater than 32
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x0051f] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:161
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1468" name="G4ScreenNoise_NBCameraOpaqueDistortPass_normalize-signed" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_normalize-signed" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="34403648" result="Failed" start-time="2026-09-30 17:31:21Z" end-time="2026-09-30 17:31:21Z" duration="0.018604" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Camera-opaque source must be nonuniform.
+  Expected: greater than 32
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x0051f] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:161
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1469" name="G4ScreenNoise_NBCameraOpaqueDistortPass_alpha-refine" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_alpha-refine" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1052480509" result="Failed" start-time="2026-09-30 17:31:21Z" end-time="2026-09-30 17:31:21Z" duration="0.018049" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Camera-opaque source must be nonuniform.
+  Expected: greater than 32
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x0051f] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:161
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1470" name="G4ScreenNoise_NBCameraOpaqueDistortPass_uniform-fallback" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_uniform-fallback" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="2023933875" result="Failed" start-time="2026-09-30 17:31:21Z" end-time="2026-09-30 17:31:21Z" duration="0.025799" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Camera-opaque source must be nonuniform.
+  Expected: greater than 32
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x0051f] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:161
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

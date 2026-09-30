@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Failed(Child)" total="10" passed="0" failed="10" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.0559419">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="608" result="Failed" site="Child" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.055942" total="10" passed="0" failed="10" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1653" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="590" result="Failed" site="Child" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.047928" total="10" passed="0" failed="10" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="84222" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1654" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="590" result="Failed" site="Child" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.044050" total="10" passed="0" failed="10" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1655" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="590" result="Failed" site="Child" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.040432" total="10" passed="0" failed="10" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1656" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="590" result="Failed" site="Child" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.027169" total="10" passed="0" failed="10" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1460" name="G4GraphScreenNoiseTests" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" testcasecount="10" result="Failed" site="Child" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.021199" total="10" passed="0" failed="10" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1471" name="ScreenNoiseUsesOneUnmaskedPayload" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" testcasecount="10" result="Failed" site="Child" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.019147" total="10" passed="0" failed="10" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1461" name="G4ScreenNoise_NBDeferredDistortPass_noise-a-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_noise-a-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1903158496" result="Failed" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.011175" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.AssertPass (UnityEngine.Shader shader, System.String pass) [0x00011] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:290
+at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x00079] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:64
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1462" name="G4ScreenNoise_NBDeferredDistortPass_mask-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_mask-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1969891033" result="Failed" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.000324" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.AssertPass (UnityEngine.Shader shader, System.String pass) [0x00011] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:290
+at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x00079] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:64
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1463" name="G4ScreenNoise_NBDeferredDistortPass_normalize-signed" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_normalize-signed" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="344137352" result="Failed" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.000263" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.AssertPass (UnityEngine.Shader shader, System.String pass) [0x00011] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:290
+at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x00079] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:64
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1464" name="G4ScreenNoise_NBDeferredDistortPass_alpha-refine" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_alpha-refine" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="173382210" result="Failed" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.000250" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.AssertPass (UnityEngine.Shader shader, System.String pass) [0x00011] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:290
+at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x00079] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:64
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1465" name="G4ScreenNoise_NBDeferredDistortPass_uniform-fallback" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBDeferredDistortPass_uniform-fallback" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="2014857070" result="Failed" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.000244" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.AssertPass (UnityEngine.Shader shader, System.String pass) [0x00011] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:290
+at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x00079] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:64
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1466" name="G4ScreenNoise_NBCameraOpaqueDistortPass_noise-a-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_noise-a-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="413132198" result="Failed" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.000240" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.AssertPass (UnityEngine.Shader shader, System.String pass) [0x00011] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:290
+at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x00079] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:64
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1467" name="G4ScreenNoise_NBCameraOpaqueDistortPass_mask-half" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_mask-half" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="814422019" result="Failed" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.000241" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.AssertPass (UnityEngine.Shader shader, System.String pass) [0x00011] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:290
+at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x00079] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:64
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1468" name="G4ScreenNoise_NBCameraOpaqueDistortPass_normalize-signed" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_normalize-signed" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1888241323" result="Failed" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.000236" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.AssertPass (UnityEngine.Shader shader, System.String pass) [0x00011] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:290
+at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x00079] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:64
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1469" name="G4ScreenNoise_NBCameraOpaqueDistortPass_alpha-refine" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_alpha-refine" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="1981565132" result="Failed" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.000239" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.AssertPass (UnityEngine.Shader shader, System.String pass) [0x00011] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:290
+at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x00079] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:64
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1470" name="G4ScreenNoise_NBCameraOpaqueDistortPass_uniform-fallback" fullname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests.G4ScreenNoise_NBCameraOpaqueDistortPass_uniform-fallback" methodname="ScreenNoiseUsesOneUnmaskedPayload" classname="NBFX.Baseline.Tests.G4GraphScreenNoiseTests" runstate="Runnable" seed="312159539" result="Failed" start-time="2026-09-30 17:24:47Z" end-time="2026-09-30 17:24:47Z" duration="0.000240" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.AssertPass (UnityEngine.Shader shader, System.String pass) [0x00011] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:290
+at NBFX.Baseline.Tests.G4GraphScreenNoiseTests.ScreenNoiseUsesOneUnmaskedPayload (System.String pass, System.String state) [0x00079] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs:64
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
