@@ -1,0 +1,216 @@
+// /tmp-only Editor harness: validate real VFX GraphProperties, then build Player.
+using System;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXOutlinePlayerBuild
+{
+    const string Root = "/tmp/nbfx-vfx-depth-outline-probe-20260930/run";
+    const string ScenePath = "Assets/NBFXOutlinePlayer.unity";
+    const string AppPath = Root + "/player/NBFXOutlinePlayer.app";
+    const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string TexturePath = "Assets/NBFXOutlineBaseRGBA_64_128_160_192.png";
+    const string TextureGuid = "8c0ecd66acce5775bdac52f159aec761";
+    const long OutputId = 8926484042661614853;
+    const long BaseMapId = 8926484042661614854;
+    const long BaseColorId = 8926484042661614855;
+    const long ToggleId = 8926484042661617600;
+    const long ParamsId = 8926484042661617610;
+    static readonly string[] Names = { "Off", "On" };
+    static readonly string[] Guids = {
+        "56841db96e4d5dadb6bcc56afaea5b66",
+        "fb204da2368958ecafbcff377ae20327"
+    };
+    static readonly float[] Params = { 0f, 2f, 0f, 0f };
+
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        using (var report = new StreamWriter(Path.Combine(Root, "editor-inspection.txt")))
+        {
+            ValidateTexture(report);
+            var graph = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            if (!graph || !graph.isSupported)
+                throw new Exception("Product Graph missing or unsupported");
+            var assets = new VisualEffectAsset[2];
+            var shaders = new Shader[2];
+            for (int i = 0; i < 2; i++)
+            {
+                string path = "Assets/NBFXOutline" + Names[i] + ".vfx";
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+                if (AssetDatabase.AssetPathToGUID(path) != Guids[i])
+                    throw new Exception("VFX GUID mismatch: " + path);
+                ValidateSerialized(path, i, report);
+                assets[i] = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+                shaders[i] = FindShader(path);
+                if (!assets[i] || !shaders[i] || !shaders[i].isSupported ||
+                    !shaders[i].name.Contains("Mesh"))
+                    throw new Exception("Real VFX Mesh Output import failed: " + path);
+                ValidateGenerated(path, i, report);
+                var material = new Material(shaders[i]);
+                try { report.WriteLine(path + " lazyEditorPassCount=" + material.passCount); }
+                finally { UnityEngine.Object.DestroyImmediate(material); }
+            }
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var host = new GameObject("NBFX Depth Outline VFX Player Probe");
+            var probe = host.AddComponent<NBFXOutlinePlayerProbe>();
+            probe.graphShader = graph;
+            probe.offAsset = assets[0]; probe.onAsset = assets[1];
+            probe.offShader = shaders[0]; probe.onShader = shaders[1];
+            var boardShader = Shader.Find("Universal Render Pipeline/Unlit");
+            if (!boardShader || !boardShader.isSupported)
+                throw new Exception("Editor URP Unlit board shader unavailable");
+            const string boardPath = "Assets/NBFXOutlineBoard.mat";
+            AssetDatabase.DeleteAsset(boardPath);
+            var boardMaterial = new Material(boardShader);
+            boardMaterial.SetColor("_BaseColor", new Color(.08f,.08f,.08f,1f));
+            boardMaterial.SetFloat("_Surface", 0f);
+            boardMaterial.SetFloat("_ZWrite", 1f);
+            boardMaterial.renderQueue = 2000;
+            AssetDatabase.CreateAsset(boardMaterial, boardPath);
+            probe.boardMaterialTemplate = boardMaterial;
+            if (!EditorSceneManager.SaveScene(scene, ScenePath))
+                throw new Exception("Could not save clone-only Player scene");
+            report.Flush();
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(AppPath));
+        var build = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+            scenes = new[] { ScenePath }, locationPathName = AppPath,
+            target = BuildTarget.StandaloneOSX, options = BuildOptions.None
+        });
+        Debug.Log("NBFX_OUTLINE_BUILD result=" + build.summary.result +
+            " errors=" + build.summary.totalErrors +
+            " warnings=" + build.summary.totalWarnings);
+        if (build.summary.result != BuildResult.Succeeded || build.summary.totalErrors != 0)
+            throw new Exception("Depth Outline VFX Player build failed");
+    }
+
+    static void ValidateTexture(TextWriter report)
+    {
+        AssetDatabase.ImportAsset(TexturePath, ImportAssetOptions.ForceUpdate);
+        var importer = AssetImporter.GetAtPath(TexturePath) as TextureImporter;
+        var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(TexturePath);
+        if (!importer || !texture ||
+            AssetDatabase.AssetPathToGUID(TexturePath) != TextureGuid ||
+            importer.sRGBTexture || importer.mipmapEnabled || !importer.isReadable ||
+            importer.textureCompression != TextureImporterCompression.Uncompressed ||
+            texture.width != 1 || texture.height != 1 ||
+            importer.filterMode != FilterMode.Point ||
+            importer.wrapMode != TextureWrapMode.Clamp)
+            throw new Exception("Linear RGBA BaseMap import contract failed");
+        var pixel = texture.GetPixel(0, 0);
+        var expected = new Color(64f / 255f, 128f / 255f, 160f / 255f, 192f / 255f);
+        for (int i = 0; i < 4; i++)
+            if (Mathf.Abs(pixel[i] - expected[i]) > .003f)
+                throw new Exception("BaseMap pixel mismatch: " + pixel);
+        report.WriteLine("BaseMap linearRGBA=" + pixel + " uncompressed/point/clamp");
+    }
+    static string Body(string text, long id)
+    {
+        var found = Regex.Match(text, @"(?ms)^--- !u!114 &" + id + @"\n.*?(?=^--- !u!|\z)");
+        if (!found.Success) throw new Exception("Missing VFX object " + id);
+        return found.Value;
+    }
+    static void ValidateSerialized(string path, int index, TextWriter report)
+    {
+        string text = File.ReadAllText(Path.Combine(
+            Directory.GetParent(Application.dataPath).FullName, path));
+        string output = Body(text, OutputId);
+        string toggle = Body(text, ToggleId), fade = Body(text, ParamsId);
+        if (!text.Contains("  capacity: 1\n") ||
+            !output.Contains("  cullMode: 0\n") || !output.Contains("  blendMode: 1\n") ||
+            !Body(text, BaseMapId).Contains(TextureGuid) ||
+            !Body(text, BaseColorId).Contains("{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6666667}") ||
+            !output.Contains("  - {fileID: " + ToggleId + "}\n") ||
+            !output.Contains("  - {fileID: " + ParamsId + "}\n") ||
+            !toggle.Contains("name: _DepthOutline_Toggle\n") ||
+            !toggle.Contains("m_SerializableObject: " + index + "\n") ||
+            !fade.Contains("name: _DepthOutline_Vec\n") ||
+            !fade.Contains("{\"x\":0.0,\"y\":2.0,\"z\":0.0,\"w\":0.0}"))
+            throw new Exception("Depth Outline Output serialized contract invalid: " + path);
+        report.WriteLine(path + " toggle=" + index + " Params=(0,2,0,0) capacity=1 CullOff source-over");
+    }
+    static Shader FindShader(string path)
+    {
+        foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(path))
+            if (obj is Shader shader && shader.name.Contains("Mesh")) return shader;
+        return null;
+    }
+    static bool SourceScalar(string source, string name, float expected)
+    {
+        var found = Regex.Match(source, @"output\." + Regex.Escape(name) +
+            @"\s*=\s*\(float\)\s*([-+0-9.eE]+)\s*;");
+        if (!found.Success) return false;
+        float actual;
+        return float.TryParse(found.Groups[1].Value, NumberStyles.Float,
+            CultureInfo.InvariantCulture, out actual) &&
+            Mathf.Abs(actual - expected) < .005f;
+    }
+    static bool SourceVector(string source, string name, float[] expected)
+    {
+        var found = Regex.Match(source, @"output\." + Regex.Escape(name) +
+            @"\s*=\s*float4\(([^)]*)\)");
+        if (!found.Success) return false;
+        var parts = found.Groups[1].Value.Split(',');
+        if (parts.Length != 4) return false;
+        for (int i = 0; i < 4; i++)
+        {
+            float actual;
+            if (!float.TryParse(parts[i].Trim(), NumberStyles.Float,
+                CultureInfo.InvariantCulture, out actual) ||
+                Mathf.Abs(actual - expected[i]) > .005f) return false;
+        }
+        return true;
+    }
+    static void ValidateGenerated(string path, int index, TextWriter report)
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Static | BindingFlags.Instance;
+        Type type = null;
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+            type = assembly.GetType("UnityEditor.VFX.VisualEffectResource");
+            if (type != null) break;
+        }
+        if (type == null) throw new Exception("VFX generated-resource reflection unavailable");
+        var resource = type.GetMethod("GetResourceAtPath", flags)
+            .Invoke(null, new object[] { path });
+        if (resource == null) throw new Exception("VFX generated resource missing: " + path);
+        int count = (int)type.GetMethod("GetShaderSourceCount", flags)
+            .Invoke(resource, null);
+        var getter = type.GetMethod("GetShaderSource", flags);
+        bool found = false;
+        for (int i = 0; i < count; i++)
+        {
+            string source = (string)getter.Invoke(resource, new object[] { i });
+            if (!source.Contains("output._DepthOutline_Toggle")) continue;
+            File.WriteAllText(Path.Combine(Root,
+                Path.GetFileNameWithoutExtension(path) + "-" + i + ".shader"), source);
+            var graphProperties = Regex.Match(source,
+                @"(?s)struct GraphProperties\s*\{(?<body>[^}]*)\}");
+            bool bindings = graphProperties.Success &&
+                graphProperties.Groups["body"].Value.Contains("_DepthOutline_Toggle;") &&
+                graphProperties.Groups["body"].Value.Contains("_DepthOutline_Vec;") &&
+                source.Contains("properties._DepthOutline_Toggle = fragInputs._DepthOutline_Toggle;") &&
+                source.Contains("properties._DepthOutline_Vec = fragInputs._DepthOutline_Vec;") &&
+                SourceScalar(source, "_DepthOutline_Toggle", index) &&
+                SourceVector(source, "_DepthOutline_Vec", Params);
+            bool passes = source.Contains("\"LightMode\" = \"NBCameraOpaqueDistortPass\"") &&
+                source.Contains("\"LightMode\" = \"NBDeferredDistortPass\"");
+            bool host = source.Contains("NBGraphBaseColor_float(") &&
+                source.Contains("NBGraphBaseColor.hlsl");
+            report.WriteLine(path + " generatedSource=" + i +
+                " exactBindings=" + bindings + " exactPasses=" + passes +
+                " graphHostIncludeAndCall=" + host);
+            found |= bindings && passes && host;
+        }
+        if (!found)
+            throw new Exception("Depth Outline GraphProperties bindings or custom Passes absent: " + path);
+    }
+}

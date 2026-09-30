@@ -1,0 +1,76 @@
+{
+    "unityVersion": "6000.3.18f1",
+    "graphicsDevice": "Metal",
+    "status": "PASS",
+    "error": "",
+    "note": "Real one-particle Cube/CullOff VFX Mesh Output. Off/On differ only in _DepthOutline_Toggle; both use (near,far)=(0,2). URP camera requiresDepthTexture=true. Fixed opaque URP Unlit board at z=1.5 is behind effect center z=2; empty is negative control. On-board metric is source-color displacement from the SAME board baseline, normalized by Off, not a direct fragment/GPU alpha.",
+    "linearTarget": true,
+    "requiresDepthTexture": true,
+    "fixtureValid": true,
+    "pass": true,
+    "cameraZ": 7.0,
+    "effectZ": 2.0,
+    "boardZ": 1.5,
+    "empty": {
+        "name": "empty",
+        "boardVisible": false,
+        "roiPixels": 576,
+        "baselineBlackWhiteMaxRGB": 1.0,
+        "offOnMaxRGB": 0.0,
+        "off": {
+            "name": "emptyOff",
+            "alive": 1,
+            "passCount": 5,
+            "opaquePass": 1,
+            "deferredPass": 2,
+            "visiblePixels": 676,
+            "culled": false,
+            "repeatMaxRGB": 0.0,
+            "medianSignal": 0.6328974962234497,
+            "relativeToOff": 0.0
+        },
+        "on": {
+            "name": "emptyOn",
+            "alive": 1,
+            "passCount": 5,
+            "opaquePass": 1,
+            "deferredPass": 2,
+            "visiblePixels": 676,
+            "culled": false,
+            "repeatMaxRGB": 0.0,
+            "medianSignal": 0.6328974962234497,
+            "relativeToOff": 0.0
+        }
+    },
+    "occluded": {
+        "name": "occluded",
+        "boardVisible": true,
+        "roiPixels": 576,
+        "baselineBlackWhiteMaxRGB": 0.0,
+        "offOnMaxRGB": 0.74755859375,
+        "off": {
+            "name": "occludedOff",
+            "alive": 1,
+            "passCount": 5,
+            "opaquePass": 1,
+            "deferredPass": 2,
+            "visiblePixels": 676,
+            "culled": false,
+            "repeatMaxRGB": 0.0,
+            "medianSignal": 0.6237704157829285,
+            "relativeToOff": 1.0
+        },
+        "on": {
+            "name": "occludedOn",
+            "alive": 1,
+            "passCount": 5,
+            "opaquePass": 1,
+            "deferredPass": 2,
+            "visiblePixels": 676,
+            "culled": false,
+            "repeatMaxRGB": 0.0,
+            "medianSignal": 1.612188696861267,
+            "relativeToOff": 2.44284725189209
+        }
+    }
+}
