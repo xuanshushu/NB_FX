@@ -1,0 +1,71 @@
+{
+    "caseId": "emission-mask-a",
+    "unityVersion": "6000.3.18f1",
+    "api": "Metal",
+    "target": "128x128 linear RGBAHalf; lossless float32 RGBA; strict safe ROI x/y=32..95",
+    "note": "N1 Frozen/current ShaderLab only. Four warm-up renders per capture; no first-frame or Graph/VFX claims. One isolated consumer; constant half noise/mask and nonuniform consumer texture. Fixed zero parity, repeat zero and >.01 positive-control criteria; no tolerance relaxation.",
+    "input": {
+        "noiseEnabled": true,
+        "normalizeRG": false,
+        "maskEnabled": true,
+        "noise": {
+            "r": 0.75,
+            "g": 0.25,
+            "b": 0.0,
+            "a": 1.0
+        },
+        "mask": {
+            "r": 0.125,
+            "g": 0.375,
+            "b": 0.625,
+            "a": 0.875
+        },
+        "direction": {
+            "x": 1.0,
+            "y": 0.5
+        },
+        "intensity": 0.30000001192092898,
+        "maskChannel": 3
+    },
+    "control": {
+        "noiseEnabled": true,
+        "normalizeRG": false,
+        "maskEnabled": true,
+        "noise": {
+            "r": 0.75,
+            "g": 0.25,
+            "b": 0.0,
+            "a": 1.0
+        },
+        "mask": {
+            "r": 0.125,
+            "g": 0.375,
+            "b": 0.625,
+            "a": 0.875
+        },
+        "direction": {
+            "x": 1.0,
+            "y": 0.5
+        },
+        "intensity": 0.30000001192092898,
+        "maskChannel": 1
+    },
+    "roiPixels": 4096,
+    "differingRGB": 0,
+    "differingAlpha": 0,
+    "controlDifferingRGB": 0,
+    "controlDifferingAlpha": 0,
+    "frozenVisible": 4096,
+    "currentVisible": 4096,
+    "frozenControlPixels": 4096,
+    "currentControlPixels": 4096,
+    "finite": true,
+    "maxRGB": 0.0,
+    "maxAlpha": 0.0,
+    "controlMaxRGB": 0.0,
+    "controlMaxAlpha": 0.0,
+    "frozenRepeat": 0.0,
+    "currentRepeat": 0.0,
+    "frozenControlDelta": 0.0986328125,
+    "currentControlDelta": 0.0986328125
+}

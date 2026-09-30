@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 颜色写入与 Stencil</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24</a></p>
+<h1>普通 Mesh 颜色写入与 Stencil</h1>
+<p><strong>人话结论：</strong>Graph 现在可以像原 NBShader 一样，指定只写入某些颜色通道，并按 Stencil 遮罩决定哪些区域显示。正交和透视相机共 30 项对照全部完全一致。这里验证的是普通前向渲染，不代表阴影、深度、扭曲 Pass 和所有高级状态均已完成。</p>
+<p>2026-10-01；主工程输入 <code>b2c3972</code>，包输入 <code>3298834</code>，产品 <code>90d7bc6</code>。Unity 6000.3.18f1 / URP、SG、VFX 包 17.3 / Metal / RenderGraph。unityMCP 无可调用工具，使用独占隔离 clone CLI；主工程 Assets/ProjectSettings、官方包、UniversalTarget、NBPostprocess 未改。此轮未运行真正 VFX。</p>
+<h2>实现与边界</h2>
+<ul>
+<li>包内 SubTarget 复用原名称和默认值，增加隐藏的 ColorMask 和七项 Stencil 状态属性；它们仅供 ShaderLab 渲染状态引用，不额外重复声明 HLSL uniform。</li>
+<li>先复制 URP 的 RenderStateCollection，再追加状态，未修改官方共享集合。Forward 与两个 NB Pass 使用材质 ColorMask/Stencil；相关 Depth/Shadow 等 Pass 加 Stencil，同时保留它们原有 ColorMask（DepthOnly R、ShadowCaster 0）。本片只实际绘制 Forward。</li>
+<li>数字 ColorMask 的对应关系是 R=8、G=4、B=2、A=1。测试背景不是全黑，RGBA 各不相同，能辨别“没有写入”而非误判看不见为一致。</li>
+</ul>
+<h2>真实运行</h2>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>ColorMask 0/1/2/4/8/3/5/10/15 × 两相机</td><td>18/18 严格 RGBA 0 差，重复 0 差、有限。验证各通道写入与关闭。</td><td rowspan="2"><a href="t07-evidence/render-state-20261001/results.xml">XML</a> · <a href="t07-evidence/render-state-20261001/summary.json">逐例指标</a> · <a href="t07-evidence/render-state-20261001/unity.log.gz">日志</a></td></tr>
+<tr><td>Always/Never/Equal/NotEqual/ReadHigh/WriteLow × 两相机</td><td>12/12 严格 RGBA 0 差，重复 0 差、有限。实际目标使用 D32_SFloat_S8_UInt，确有 8 位 Stencil，没有 skip。包含 Stencil 写入和随后探针读取。</td></tr>
+<tr><td>夹具初跑</td><td>24 通过/6 失败，但 B/C 全部 0 差。原因是测试场景的左右放反：相机转 180° 后，世界左侧实际出现在图片右侧。只修正测试写入物的位置，未修改产品或放宽断言；复测 30/30 通过。</td><td><a href="t07-evidence/render-state-20261001/fixture-correction/v1/results.xml">初跑 XML</a> · <a href="t07-evidence/render-state-20261001/fixture-correction/v1/G4GraphRenderStateTests.cs.txt">初跑源码</a> · <a href="t07-evidence/render-state-20261001/fixture-correction/v1/unity.log.gz">日志</a></td></tr>
+<tr><td>随后 Noise 接入后的回归</td><td>本类 30 项仍全部通过，raw/PNG 捕获与本片逐字节等价；完整 395 项回归仍有此前保留的 22 项 UV 微差。</td><td><a href="t07-evidence/texture-noise-20261001/regression/results.xml">回归 XML</a> · <a href="t07-evidence/texture-noise-20261001/regression/capture-equivalence.json">捕获一致性</a></td></tr>
+</tbody></table>
+<p>捕获为 128×128 linear RGBAHalf，严格比较内部 64×64 ROI 的完整 RGBA；并非全图或 PNG 量化比较。四帧预热只证明稳态，不证明冷首帧。测试自建 PreviewScene、内存材质与辅助 Shader，未保存主工程资产。</p>
+<h2>可重放、风险与审核</h2>
+<p><a href="t07-evidence/render-state-20261001/README.txt">输入、CLI 和范围</a> · <a href="../../Tests/URP/Editor/G4GraphRenderStateTests.cs">正式测试</a> · <a href="t07-evidence/render-state-20261001/input-sha256.txt">输入 hash</a> · <a href="t07-evidence/render-state-20261001/sha256.txt">附件 hash</a> · <a href="t07-evidence/render-state-20261001/protected-settings-sha256.txt">保护设置 hash</a>。</p>
+<p>两次导入退出 0；最终测试退出 0，无 error CS/Shader error，保护设置未变。初跑退出 2 与六项夹具断言对应，原始证据保留。只本地提交，不 push。</p>
+<p>本片未测高级 Blend、OverrideZ、Offset、Stencil Fail/ZFail/Portal、Depth/Shadow 或双扭曲 RT 的实际状态、GUI、Player、SRP Batcher/变体/性能。不以代码添加状态冒充这些行为已经验证。继续普通 Mesh；完整 G3/G4 未放行。</p>
+</body></html>

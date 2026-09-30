@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="30" result="Passed" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-30 16:33:08Z" end-time="2026-09-30 16:33:12Z" duration="3.5006513">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="419" result="Passed" start-time="2026-09-30 16:33:08Z" end-time="2026-09-30 16:33:12Z" duration="3.500651" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1460" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="401" result="Passed" start-time="2026-09-30 16:33:08Z" end-time="2026-09-30 16:33:12Z" duration="3.493109" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="74623" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1461" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="401" result="Passed" start-time="2026-09-30 16:33:08Z" end-time="2026-09-30 16:33:12Z" duration="3.481597" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1462" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="401" result="Passed" start-time="2026-09-30 16:33:08Z" end-time="2026-09-30 16:33:12Z" duration="3.478676" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1463" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="401" result="Passed" start-time="2026-09-30 16:33:08Z" end-time="2026-09-30 16:33:12Z" duration="3.475610" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1362" name="G4GraphRenderStateTests" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" testcasecount="30" result="Passed" start-time="2026-09-30 16:33:08Z" end-time="2026-09-30 16:33:12Z" duration="3.471427" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="ParameterizedMethod" id="1381" name="ColorMaskMatchesOriginalShaderLab" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-09-30 16:33:09Z" end-time="2026-09-30 16:33:11Z" duration="1.447149" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1363" name="G4GraphColorMaskBC_0_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_0_ortho" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1846306262" result="Passed" start-time="2026-09-30 16:33:09Z" end-time="2026-09-30 16:33:10Z" duration="0.318863" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-0-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":false,"colorMask":0,"differentRGBA":0,"leftVisible":0,"rightVisible":0,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1364" name="G4GraphColorMaskBC_0_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_0_perspective" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1620287641" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.067123" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-0-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":false,"colorMask":0,"differentRGBA":0,"leftVisible":0,"rightVisible":0,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1365" name="G4GraphColorMaskBC_1_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_1_ortho" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1579482684" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.067994" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-1-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":false,"colorMask":1,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1366" name="G4GraphColorMaskBC_1_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_1_perspective" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="662218374" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.065398" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-1-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":false,"colorMask":1,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1367" name="G4GraphColorMaskBC_2_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_2_ortho" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1707481915" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.065590" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-2-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":false,"colorMask":2,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1368" name="G4GraphColorMaskBC_2_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_2_perspective" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1265959420" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.062641" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-2-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":false,"colorMask":2,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1369" name="G4GraphColorMaskBC_4_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_4_ortho" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1875169511" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.065978" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-4-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":false,"colorMask":4,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1370" name="G4GraphColorMaskBC_4_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_4_perspective" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1953876521" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.063347" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-4-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":false,"colorMask":4,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1371" name="G4GraphColorMaskBC_8_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_8_ortho" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1540704807" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.062171" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-8-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":false,"colorMask":8,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1372" name="G4GraphColorMaskBC_8_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_8_perspective" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="422899562" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.064024" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-8-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":false,"colorMask":8,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1373" name="G4GraphColorMaskBC_3_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_3_ortho" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1685894583" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.064995" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-3-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":false,"colorMask":3,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1374" name="G4GraphColorMaskBC_3_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_3_perspective" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1780827014" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.064284" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-3-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":false,"colorMask":3,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1375" name="G4GraphColorMaskBC_5_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_5_ortho" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1992098926" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:10Z" duration="0.063452" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-5-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":false,"colorMask":5,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1376" name="G4GraphColorMaskBC_5_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_5_perspective" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="537207487" result="Passed" start-time="2026-09-30 16:33:10Z" end-time="2026-09-30 16:33:11Z" duration="0.062964" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-5-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":false,"colorMask":5,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1377" name="G4GraphColorMaskBC_10_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_10_ortho" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1611997055" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.063671" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-10-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":false,"colorMask":10,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1378" name="G4GraphColorMaskBC_10_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_10_perspective" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="982175302" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.064779" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-10-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":false,"colorMask":10,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1379" name="G4GraphColorMaskBC_15_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_15_ortho" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="660863637" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.067640" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-15-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":false,"colorMask":15,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1380" name="G4GraphColorMaskBC_15_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphColorMaskBC_15_perspective" methodname="ColorMaskMatchesOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="960363077" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.066461" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"color-mask-15-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":false,"colorMask":15,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1394" name="StencilReadAndWriteMasksMatchOriginalShaderLab" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:12Z" duration="0.813545" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1382" name="G4GraphStencilBC_always_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_always_ortho" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1721848746" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.070124" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-always-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1383" name="G4GraphStencilBC_always_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_always_perspective" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="130191426" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.069702" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-always-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1384" name="G4GraphStencilBC_never_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_never_ortho" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1058615227" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.065814" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-never-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":0,"rightVisible":0,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1385" name="G4GraphStencilBC_never_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_never_perspective" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1662925805" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.082182" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-never-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":0,"rightVisible":0,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1386" name="G4GraphStencilBC_equal_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_equal_ortho" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="717397607" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.065715" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-equal-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":2048,"rightVisible":0,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1387" name="G4GraphStencilBC_equal_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_equal_perspective" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="2093575931" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.062323" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-equal-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":2048,"rightVisible":0,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1388" name="G4GraphStencilBC_not-equal_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_not-equal_ortho" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1962170227" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.062806" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-not-equal-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":0,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1389" name="G4GraphStencilBC_not-equal_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_not-equal_perspective" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="549718509" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.062327" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-not-equal-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":0,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1390" name="G4GraphStencilBC_read-high_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_read-high_ortho" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="2005189839" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.062374" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-read-high-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":2048,"rightVisible":0,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1391" name="G4GraphStencilBC_read-high_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_read-high_perspective" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="612411134" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:11Z" duration="0.062573" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-read-high-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":2048,"rightVisible":0,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1392" name="G4GraphStencilBC_write-low_ortho" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_write-low_ortho" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="132562167" result="Passed" start-time="2026-09-30 16:33:11Z" end-time="2026-09-30 16:33:12Z" duration="0.067261" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-write-low-ortho","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":true,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.9000244140625}
+]]></output>
+                </test-case>
+                <test-case id="1393" name="G4GraphStencilBC_write-low_perspective" fullname="NBFX.Baseline.Tests.G4GraphRenderStateTests.G4GraphStencilBC_write-low_perspective" methodname="StencilReadAndWriteMasksMatchOriginalShaderLab" classname="NBFX.Baseline.Tests.G4GraphRenderStateTests" runstate="Runnable" seed="1848056014" result="Passed" start-time="2026-09-30 16:33:12Z" end-time="2026-09-30 16:33:12Z" duration="0.066370" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_GRAPH_RENDER_STATE {"caseId":"stencil-write-low-perspective","unityVersion":"6000.3.18f1","graphicsApi":"Metal","targetFormat":"R16G16B16A16_SFloat/D32_SFloat_S8_UInt","note":"Ordinary Mesh B/C, nonblack RGBA board, steady state; not VFX, first frame, depth/ShadowCaster, or full G4.","orthographic":false,"finite":true,"stencilAttachment":true,"colorMask":15,"differentRGBA":0,"leftVisible":2048,"rightVisible":2048,"maxRGBA":0.0,"graphRepeatMax":0.0,"legacyRepeatMax":0.0,"controlMax":0.9000244140625}
+Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
