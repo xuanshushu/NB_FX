@@ -7,6 +7,25 @@
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderPackedGradientV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderUVV2.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+
+// Match the ShaderLab host's depth conversion without making every Graph
+// material request a camera depth prepass. When enabled, the URP camera must
+// provide _CameraDepthTexture, just as the original ShaderLab feature does.
+float NBGraphSceneEyeDepth(float2 screenUV)
+{
+#if SHADERGRAPH_PREVIEW
+    return _ProjectionParams.z;
+#else
+    float rawDepth = SampleSceneDepth(screenUV);
+    #if !UNITY_REVERSED_Z
+        rawDepth = lerp(UNITY_NEAR_CLIP_VALUE, 1, rawDepth);
+    #endif
+    return unity_OrthoParams.w == 0 ?
+        LinearEyeDepth(rawDepth, _ZBufferParams) :
+        LinearDepthToEyeDepth(rawDepth);
+#endif
+}
 
 // UnityTexture2D already carries the Graph texture's _ST in scaleTranslate.
 // Transform it exactly once, before sampling, rather than asking the sampler
@@ -373,6 +392,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NB_ForceNoMipFlagsLo16, float NB_ForceNoMipFlagsHi16,
     float NB_DissolveRampSTOverrideEnabled, float4 NB_DissolveRampSTOverride,
     float DistanceFadeToggle, float4 Fade, float3 PositionVS,
+    float SoftParticlesEnabled, float4 SoftParticleFadeParams, float4 ScreenPosition,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -545,6 +565,10 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     // ShaderLab applies camera-distance alpha after Fresnel, before vertex color.
     if (DistanceFadeToggle > 0.5)
         Out.a *= DepthFactor(-PositionVS.z, Fade.x, Fade.y);
+    if (SoftParticlesEnabled > 0.5)
+        Out.a *= NBFX_SoftParticlesV1(SoftParticleFadeParams.x,
+            SoftParticleFadeParams.y, NBGraphSceneEyeDepth(ScreenPosition.xy),
+            -PositionVS.z);
     if ((NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) &
         FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR) == 0u)
         Out *= VertexColor;
@@ -614,6 +638,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NB_ForceNoMipFlagsLo16, float NB_ForceNoMipFlagsHi16,
     float NB_DissolveRampSTOverrideEnabled, float4 NB_DissolveRampSTOverride,
     float DistanceFadeToggle, half4 Fade, float3 PositionVS,
+    float SoftParticlesEnabled, float4 SoftParticleFadeParams, float4 ScreenPosition,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -773,6 +798,10 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
     if (DistanceFadeToggle > 0.5)
         Out.a *= DepthFactor(-PositionVS.z, Fade.x, Fade.y);
+    if (SoftParticlesEnabled > 0.5)
+        Out.a *= NBFX_SoftParticlesV1(SoftParticleFadeParams.x,
+            SoftParticleFadeParams.y, NBGraphSceneEyeDepth(ScreenPosition.xy),
+            -PositionVS.z);
     if ((NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) &
         FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR) == 0u)
         Out *= VertexColor;

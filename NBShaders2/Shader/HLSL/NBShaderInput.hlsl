@@ -620,19 +620,6 @@
         #endif
     }
 
-    // Soft particles - returns alpha value for fading particles based on the depth to the background pixel
-    float SoftParticles(float near, float far, float sceneZ,float thisZ)
-    {
-        float fade = 1;
-        if (near > 0.0 || far > 0.0)
-        {
-            // fade = saturate(far * ((sceneZ - near) - thisZ));
-            float dist = sceneZ - thisZ;
-            fade = NB_Remap(dist, near,far,0,1);
-        }
-        return fade;
-    }
-
     
     // Camera fade - returns alpha value for fading particles based on camera distance
     half CameraFade(float near, float far, float thisZ)

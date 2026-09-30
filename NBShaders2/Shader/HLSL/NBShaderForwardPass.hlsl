@@ -1087,7 +1087,7 @@
 
         #if defined(_DEPTH_OUTLINE)
         {
-            half depthOutlineValue = 1- SoftParticles(_DepthOutline_Vec.x, _DepthOutline_Vec.y, sceneZ,thisZ);
+            half depthOutlineValue = 1- NBFX_SoftParticlesV1(_DepthOutline_Vec.x, _DepthOutline_Vec.y, sceneZ,thisZ);
             depthOutlineValue *= _DepthOutline_Color.a;
             half3 originResult = result;
             //如何在一个pass里，完美的给出两个颜色的Fade。这个问题，没有想清楚。
@@ -1119,7 +1119,7 @@
 
         #if defined(_SOFTPARTICLES_ON)
 
-        half softAlpha = SoftParticles(SOFT_PARTICLE_NEAR_FADE, SOFT_PARTICLE_INV_FADE_DISTANCE, sceneZ,thisZ);
+        half softAlpha = NBFX_SoftParticlesV1(SOFT_PARTICLE_NEAR_FADE, SOFT_PARTICLE_INV_FADE_DISTANCE, sceneZ,thisZ);
         alpha *= softAlpha;
 
         #endif

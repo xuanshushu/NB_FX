@@ -4,6 +4,19 @@
 #include "NBShaderSharedContractV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
 
+// Shared ShaderLab/Graph soft-particle alpha. The caller supplies linear eye
+// depths from its host; resource acquisition remains host-specific.
+float NBFX_SoftParticlesV1(float near, float far, float sceneZ, float thisZ)
+{
+    float fade = 1;
+    if (near > 0.0 || far > 0.0)
+    {
+        float dist = sceneZ - thisZ;
+        fade = NB_Remap(dist, near, far, 0, 1);
+    }
+    return fade;
+}
+
 // Matches the base-color operations after the caller selects the sampled alpha
 // and facing-dependent color. Texture selection and later color adjustment stay
 // with the host shader.

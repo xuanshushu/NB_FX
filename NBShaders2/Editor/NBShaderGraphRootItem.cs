@@ -69,6 +69,11 @@ namespace NBShaderEditor
             "_DistanceFade_Toggle", "_Fade"
         };
 
+        static readonly string[] SoftParticlesProperties =
+        {
+            "_SoftParticlesEnabled", "_SoftParticleFadeParams"
+        };
+
         static readonly string[] DissolveProperties =
         {
             "_Dissolve_Toggle", "_DissolveMap", "_Dissolve",
@@ -124,6 +129,7 @@ namespace NBShaderEditor
                     NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA, 0);
             }
             DrawGroup(DistanceFadeProperties, "base.distanceFade", "Distance Fade");
+            DrawGroup(SoftParticlesProperties, "base.softParticles", "Soft Particles");
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
             if (TryGetVisibleProperty("_DissolveLineColor", out _))
@@ -326,6 +332,8 @@ namespace NBShaderEditor
                 case "_FresnelColor": key = "feature.菲涅尔颜色"; break;
                 case "_DistanceFade_Toggle": key = "base.distanceFade"; break;
                 case "_Fade": key = "base.distanceFade.range"; break;
+                case "_SoftParticlesEnabled": key = "base.softParticles"; break;
+                case "_SoftParticleFadeParams": key = "base.softParticles.range"; break;
                 case "_NB_DistortionMode": key = "feature.屏幕扰动模式"; break;
                 case "_NB_DistortionIntensity": key = "feature.屏幕扭曲强度"; break;
                 default: return property.displayName;
