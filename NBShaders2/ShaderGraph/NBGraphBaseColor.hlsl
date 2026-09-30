@@ -67,8 +67,9 @@ float2 NBGraphFeatureUV(UnityTexture2D map, float2 uv, float rotationDegrees,
 // -> ST and SampleNoise's later scrolling, with ShaderLab's half material
 // boundaries. NoiseMask has its own source/ST and no rotation or scrolling.
 // The caller weights only texture-consumer offsets by noiseMask; the screen
-// passes receive signedRG and noiseMask separately. CustomData, PNoise,
-// Refraction and chromatic aberration remain pending.
+// passes receive signedRG and noiseMask separately. PN2 blends PNoise
+// in the caller after texture scaling. CustomData, Refraction and
+// chromatic aberration remain pending.
 void NBGraphTextureNoise(UnityTexture2D noiseMap, float2 noiseSourceUV,
     float noiseRotation, half4 noiseOffset, half intensity, half4 direction,
     UnityTexture2D maskMap, float2 maskSourceUV, bool hasMask,
@@ -629,7 +630,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 SixWayEmissionColor, float SixWayColorAbsorptionToggle,
     float3 SixBake0, float3 SixBake1, float3 SixBake2,
     float3 SixBack0, float3 SixBack1, float3 SixBack2,
-    float4 SixTangentSigned,
+    float4 SixTangentSigned, float PNoiseDistortBlendOpacity,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
@@ -671,6 +672,13 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
             NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0), wrapFlags, noMipFlags,
             signedRG, noiseMask);
+        // ShaderLab: _PROGRAM_NOISE_ACTIVE is nested under _NOISEMAP.
+        // Blend the unmasked, already scaled signed RG; only texture
+        // consumers multiply by noiseMask after this point.
+        if (hasPNoise)
+            signedRG = BlendPNoise(pNoiseBlendFlags,
+                FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT, signedRG,
+                (half2)programNoise, (half)PNoiseDistortBlendOpacity);
         textureNoise = signedRG * noiseMask;
     }
     NBDistortionSignedRG = (float2)signedRG;
@@ -1012,7 +1020,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float4 SixWayEmissionColor, float SixWayColorAbsorptionToggle,
     float3 SixBake0, float3 SixBake1, float3 SixBake2,
     float3 SixBack0, float3 SixBack1, float3 SixBack2,
-    float4 SixTangentSigned,
+    float4 SixTangentSigned, float PNoiseDistortBlendOpacity,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
@@ -1052,6 +1060,13 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
             NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0), wrapFlags, noMipFlags,
             signedRG, noiseMask);
+        // ShaderLab: _PROGRAM_NOISE_ACTIVE is nested under _NOISEMAP.
+        // Blend the unmasked, already scaled signed RG; only texture
+        // consumers multiply by noiseMask after this point.
+        if (hasPNoise)
+            signedRG = BlendPNoise(pNoiseBlendFlags,
+                FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT, signedRG,
+                (half2)programNoise, (half)PNoiseDistortBlendOpacity);
         textureNoise = signedRG * noiseMask;
     }
     NBDistortionSignedRG = signedRG;
