@@ -10,6 +10,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
     sealed class NBGraphUnlitSubTarget : UniversalSubTarget
     {
         const string kURPUnlitPass = "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/UnlitPass.hlsl";
+        const string kURPShadowPass = "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShadowCasterPass.hlsl";
         const string kPassRoot = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Passes/";
 
         public NBGraphUnlitSubTarget() => displayName = "NB FX Unlit (URP)";
@@ -48,7 +49,9 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     pass = WithNBDistortionBlocks(pass);
                 if (forward || UsesNBStencil(pass.lightMode))
                     pass.renderStates = WithNBRenderStates(pass.renderStates, forward);
-                passes.Add(forward ? WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl") : pass, item.fieldConditions);
+                passes.Add(forward ? WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl") :
+                    pass.lightMode == "ShadowCaster" ? WithNBFragmentInclude(pass, "NBGraphShadowCasterPass.hlsl", kURPShadowPass) :
+                    pass, item.fieldConditions);
                 if (!forward) continue;
                 AddDistortionPass(passes, pass, "NBCameraOpaqueDistortPass", "NBGraphCameraOpaquePass.hlsl");
                 AddDistortionPass(passes, pass, "NBDeferredDistortPass", "NBGraphDeferredDistortPass.hlsl");
@@ -98,13 +101,14 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             passes.Add(WithNBFragmentInclude(pass, fragmentInclude));
         }
 
-        static PassDescriptor WithNBFragmentInclude(PassDescriptor pass, string fragmentInclude)
+        static PassDescriptor WithNBFragmentInclude(PassDescriptor pass, string fragmentInclude,
+            string replacedInclude = kURPUnlitPass)
         {
             var includes = new IncludeCollection();
             bool replaced = false;
             foreach (var include in pass.includes)
             {
-                if (include.path == kURPUnlitPass)
+                if (include.path == replacedInclude)
                 {
                     includes.Add(kPassRoot + fragmentInclude, include.location);
                     replaced = true;

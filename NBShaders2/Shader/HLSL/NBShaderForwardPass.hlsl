@@ -294,21 +294,6 @@
     }
 
 
-    #if defined(NB_SHADOW_CASTER_PASS)
-    uint NBShadowBayer2(uint x, uint y)
-    {
-        return (((x ^ y) & 1u) << 1) | (y & 1u);
-    }
-
-    half NBShadowDitherMaskClip(float4 positionCS, half alpha)
-    {
-        uint x = (uint)positionCS.x & 3u;
-        uint y = (uint)positionCS.y & 3u;
-        uint bayer = NBShadowBayer2(x & 1u, y & 1u) * 4u + NBShadowBayer2((x >> 1) & 1u, (y >> 1) & 1u);
-        half coverage = floor(saturate(alpha) * 16.0);
-        return coverage - (half)bayer - 0.01;
-    }
-    #endif
 
 
     ///////////////////////Fragment functions  ////////////////////////
@@ -1173,7 +1158,7 @@
             {
                 if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_TRANSPARENT_SHADOW_DITHER))
                 {
-                    clip(NBShadowDitherMaskClip(input.clipPos, alpha));
+                    clip(NBFX_ShadowDitherMaskClipV1(input.clipPos, alpha));
                 }
                 else
                 {

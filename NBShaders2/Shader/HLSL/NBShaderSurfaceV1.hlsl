@@ -4,6 +4,23 @@
 #include "NBShaderSharedContractV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl"
 
+// Exact 4x4 ShadowCaster coverage test shared by the old ShaderLab host
+// and the Graph ShadowCaster include. positionCS is SV_POSITION in pixels.
+uint NBFX_ShadowBayer2V1(uint x, uint y)
+{
+    return (((x ^ y) & 1u) << 1) | (y & 1u);
+}
+
+half NBFX_ShadowDitherMaskClipV1(float4 positionCS, half alpha)
+{
+    uint x = (uint)positionCS.x & 3u;
+    uint y = (uint)positionCS.y & 3u;
+    uint bayer = NBFX_ShadowBayer2V1(x & 1u, y & 1u) * 4u +
+        NBFX_ShadowBayer2V1((x >> 1) & 1u, (y >> 1) & 1u);
+    half coverage = floor(saturate(alpha) * 16.0);
+    return coverage - (half)bayer - 0.01;
+}
+
 // Shared ShaderLab/Graph soft-particle alpha. The caller supplies linear eye
 // depths from its host; resource acquisition remains host-specific.
 float NBFX_SoftParticlesV1(float near, float far, float sceneZ, float thisZ)

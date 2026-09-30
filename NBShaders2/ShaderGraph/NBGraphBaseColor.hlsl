@@ -11,6 +11,15 @@
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphSampling.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
+
+// DepthOnly and ShadowCaster use the same NB surface up to the old
+// NB_DEPTH_SHADOW_PASS boundary. Do not evaluate Forward-only alpha stages.
+#if defined(SHADERPASS) && ((SHADERPASS == SHADERPASS_DEPTHONLY) || (SHADERPASS == SHADERPASS_SHADOWCASTER))
+    #define NB_GRAPH_DEPTH_SHADOW_PASS 1
+#else
+    #define NB_GRAPH_DEPTH_SHADOW_PASS 0
+#endif
 
 // Match the ShaderLab host's depth conversion without making every Graph
 // material request a camera depth prepass. When enabled, the URP camera must
@@ -460,7 +469,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     // The original ShaderLab _NORMALMAP keyword is represented by the
     // existing material toggle; no new SG keyword/variant is introduced.
     float3 normalForFeatures = (float3)NormalWS;
-    if (BumpMapToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (BumpMapToggle > 0.5))
         normalForFeatures = NBGraphNormalForFeatures(BumpTex, BumpUV,
             (half)BumpScale, (float3)NormalWS, TangentWS, BitangentWS,
             IsFrontFace, NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
@@ -494,23 +503,25 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     input.selectedAlpha = NBGraphSelectBaseAlpha(baseSample,
         NB_ColorChannelLo16);
     input.effectiveBaseColor = (half4)EffectiveBaseColor;
-    if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
+        (NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
         FLAG_BIT_PARTICLE_BACKCOLOR) != 0u && IsFrontFace < 0.5)
         input.effectiveBaseColor = (half4)BaseBackColor;
     input.timelineIntensity = (half)BaseColorIntensityForTimeline;
-    input.applyTimelineIntensity = true;
+    input.applyTimelineIntensity = !NB_GRAPH_DEPTH_SHADOW_PASS;
     Out = (float4)NBFX_ComposeBaseColorV1(input);
     uint adjustmentFlags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
-    if ((adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) != 0u)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
+        (adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) != 0u)
         Out = (float4)NBGraphApplyColorAdjustment((half4)Out,
             (half)HueShift, (half)Contrast, (half3)ContrastMidColor.rgb,
             (half)Saturability, (half4)BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
-    if (MatCapToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (MatCapToggle > 0.5))
         Out = (float4)NBGraphApplyMatCap((half4)Out, MatCapTex, (float3)normalForFeatures,
             (half3)PositionVS, (half)IsFrontFace, (half4)MatCapColor,
             (half4)MatCapInfo, noMipFlags);
-    if (EmissionEnabled > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (EmissionEnabled > 0.5))
     {
         float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
             EmissionMapUVRotation, EmissionMapUVOffset.xy);
@@ -530,7 +541,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             (flags1 & FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY) != 0u);
         Out = float4(result, alpha);
     }
-    if (RampColorToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (RampColorToggle > 0.5))
         Out = (float4)NBGraphApplyColorRamp((half4)Out, RampColorMap,
             RampColorUV, RampColorMapOffset, RampColorSourceMode,
             RampColorCount, (half4)RampColor0, (half4)RampColor1,
@@ -566,7 +577,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             sampledDissolveMask, hasDissolveMask, (half4)Dissolve,
             (half)DissolveMaskMode, NB_ColorChannelLo16);
         Out.a *= resolved.coverage;
-        if (DissolveRampToggle > 0.5)
+        if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DissolveRampToggle > 0.5))
             Out = (float4)NBGraphApplyDissolveRamp((half4)Out,
                 resolved.valueBeforeSoftStep, DissolveRampMap,
                 DissolveRampSourceMode, (half4)DissolveRampColor,
@@ -579,14 +590,15 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
                 NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16,
                 NB_Flags1Lo16, NB_Flags1Hi16,
                 NB_DissolveRampSTOverrideEnabled, NB_DissolveRampSTOverride);
-        Out = (float4)NBGraphApplyDissolveLine((half4)Out,
+        if (!NB_GRAPH_DEPTH_SHADOW_PASS)
+            Out = (float4)NBGraphApplyDissolveLine((half4)Out,
             resolved.valueBeforeSoftStep, (half4)DissolveLineRange,
             (half4)DissolveLineColor,
             NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16));
     }
     // Overlay 2 keeps its ShaderLab position after Dissolve and before Mask.
     // N1 texture Noise offsets this layer; CustomData remains a later slice.
-    if (ColorBlendMapToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (ColorBlendMapToggle > 0.5))
     {
         float2 overlayUV = NBGraphFeatureUV(ColorBlendMap, ColorBlendUV,
             ColorBlendVec.w, ColorBlendMapOffset.xy);
@@ -677,16 +689,16 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         maskInput.overallStrength = (half)MaskMapVec.x;
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
     }
-    if (FresnelEnabled > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (FresnelEnabled > 0.5))
         Out = (float4)NBGraphApplyFresnel((half4)Out, ViewDirWS,
             normalForFeatures, (half)IsFrontFace, (half4)FresnelUnit,
             (half4)FresnelColor, (half3)FresnelRotation.xyz,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
     // ShaderLab applies camera-distance alpha after Fresnel, before vertex color.
     float sceneEyeDepth = 0.0;
-    if (DepthOutlineToggle > 0.5 || SoftParticlesEnabled > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DepthOutlineToggle > 0.5 || SoftParticlesEnabled > 0.5))
         sceneEyeDepth = NBGraphSceneEyeDepth(ScreenPosition.xy);
-    if (DepthOutlineToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DepthOutlineToggle > 0.5))
     {
         half3 outlineRGB = (half3)Out.rgb;
         half outlineAlpha = (half)Out.a;
@@ -695,9 +707,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             sceneEyeDepth, -PositionVS.z);
         Out = float4(outlineRGB, outlineAlpha);
     }
-    if (DistanceFadeToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DistanceFadeToggle > 0.5))
         Out.a *= DepthFactor(-PositionVS.z, Fade.x, Fade.y);
-    if (SoftParticlesEnabled > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (SoftParticlesEnabled > 0.5))
         Out.a *= NBFX_SoftParticlesV1(SoftParticleFadeParams.x,
             SoftParticleFadeParams.y, sceneEyeDepth,
             -PositionVS.z);
@@ -706,7 +718,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         Out *= VertexColor;
     Out.rgb *= ColorA.rgb;
     Out.a *= ColorA.a;
-    if ((adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) == 0u)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
+        (adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) == 0u)
         Out = (float4)NBGraphApplyColorAdjustment((half4)Out,
             (half)HueShift, (half)Contrast, (half3)ContrastMidColor.rgb,
             (half)Saturability, (half4)BaseMapColorRefine,
@@ -792,7 +805,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     // The original ShaderLab _NORMALMAP keyword is represented by the
     // existing material toggle; no new SG keyword/variant is introduced.
     float3 normalForFeatures = (float3)NormalWS;
-    if (BumpMapToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (BumpMapToggle > 0.5))
         normalForFeatures = NBGraphNormalForFeatures(BumpTex, BumpUV,
             (half)BumpScale, (float3)NormalWS, TangentWS, BitangentWS,
             IsFrontFace, NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
@@ -822,23 +835,25 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     input.selectedAlpha = NBGraphSelectBaseAlpha(baseSample,
         NB_ColorChannelLo16);
     input.effectiveBaseColor = EffectiveBaseColor;
-    if ((NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
+        (NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
         FLAG_BIT_PARTICLE_BACKCOLOR) != 0u && IsFrontFace < 0.5)
         input.effectiveBaseColor = BaseBackColor;
     input.timelineIntensity = (half)BaseColorIntensityForTimeline;
-    input.applyTimelineIntensity = true;
+    input.applyTimelineIntensity = !NB_GRAPH_DEPTH_SHADOW_PASS;
     Out = NBFX_ComposeBaseColorV1(input);
     uint adjustmentFlags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
-    if ((adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) != 0u)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
+        (adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) != 0u)
         Out = NBGraphApplyColorAdjustment(Out,
             (half)HueShift, (half)Contrast, ContrastMidColor.rgb,
             (half)Saturability, BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
-    if (MatCapToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (MatCapToggle > 0.5))
         Out = NBGraphApplyMatCap(Out, MatCapTex, (float3)normalForFeatures,
             (half3)PositionVS, (half)IsFrontFace, MatCapColor,
             MatCapInfo, noMipFlags);
-    if (EmissionEnabled > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (EmissionEnabled > 0.5))
     {
         float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
             EmissionMapUVRotation, EmissionMapUVOffset.xy);
@@ -855,7 +870,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             (flags0 & FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY) != 0u,
             (flags1 & FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY) != 0u);
     }
-    if (RampColorToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (RampColorToggle > 0.5))
         Out = NBGraphApplyColorRamp(Out, RampColorMap,
             RampColorUV, RampColorMapOffset, RampColorSourceMode,
             RampColorCount, RampColor0, RampColor1,
@@ -890,7 +905,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             sampledDissolveMask, hasDissolveMask, Dissolve,
             (half)DissolveMaskMode, NB_ColorChannelLo16);
         Out.a *= resolved.coverage;
-        if (DissolveRampToggle > 0.5)
+        if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DissolveRampToggle > 0.5))
             Out = NBGraphApplyDissolveRamp(Out,
                 resolved.valueBeforeSoftStep, DissolveRampMap,
                 DissolveRampSourceMode, DissolveRampColor,
@@ -903,11 +918,12 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
                 NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16,
                 NB_Flags1Lo16, NB_Flags1Hi16,
                 NB_DissolveRampSTOverrideEnabled, NB_DissolveRampSTOverride);
-        Out = NBGraphApplyDissolveLine(Out, resolved.valueBeforeSoftStep,
+        if (!NB_GRAPH_DEPTH_SHADOW_PASS)
+            Out = NBGraphApplyDissolveLine(Out, resolved.valueBeforeSoftStep,
             DissolveLineRange, DissolveLineColor,
             NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16));
     }
-    if (ColorBlendMapToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (ColorBlendMapToggle > 0.5))
     {
         float2 overlayUV = NBGraphFeatureUV(ColorBlendMap, ColorBlendUV,
             ColorBlendVec.w, ColorBlendMapOffset.xy);
@@ -995,20 +1011,20 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         maskInput.overallStrength = MaskMapVec.x;
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
     }
-    if (FresnelEnabled > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (FresnelEnabled > 0.5))
         Out = NBGraphApplyFresnel(Out, ViewDirWS, normalForFeatures,
             (half)IsFrontFace, FresnelUnit, FresnelColor,
             FresnelRotation.xyz,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
     float sceneEyeDepth = 0.0;
-    if (DepthOutlineToggle > 0.5 || SoftParticlesEnabled > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DepthOutlineToggle > 0.5 || SoftParticlesEnabled > 0.5))
         sceneEyeDepth = NBGraphSceneEyeDepth(ScreenPosition.xy);
-    if (DepthOutlineToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DepthOutlineToggle > 0.5))
         NBFX_ApplyDepthOutlineV1(Out.rgb, Out.a, DepthOutlineColor,
             DepthOutlineVec.xy, sceneEyeDepth, -PositionVS.z);
-    if (DistanceFadeToggle > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DistanceFadeToggle > 0.5))
         Out.a *= DepthFactor(-PositionVS.z, Fade.x, Fade.y);
-    if (SoftParticlesEnabled > 0.5)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && (SoftParticlesEnabled > 0.5))
         Out.a *= NBFX_SoftParticlesV1(SoftParticleFadeParams.x,
             SoftParticleFadeParams.y, sceneEyeDepth,
             -PositionVS.z);
@@ -1017,7 +1033,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         Out *= VertexColor;
     Out.rgb *= ColorA.rgb;
     Out.a *= ColorA.a;
-    if ((adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) == 0u)
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
+        (adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) == 0u)
         Out = NBGraphApplyColorAdjustment(Out,
             (half)HueShift, (half)Contrast, ContrastMidColor.rgb,
             (half)Saturability, BaseMapColorRefine,
