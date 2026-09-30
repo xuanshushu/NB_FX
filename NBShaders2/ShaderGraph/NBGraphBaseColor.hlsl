@@ -372,6 +372,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 DissolveRampAlpha1, float4 DissolveRampAlpha2,
     float NB_ForceNoMipFlagsLo16, float NB_ForceNoMipFlagsHi16,
     float NB_DissolveRampSTOverrideEnabled, float4 NB_DissolveRampSTOverride,
+    float DistanceFadeToggle, float4 Fade, float3 PositionVS,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -541,6 +542,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             (half3)NormalWS, (half)IsFrontFace, (half4)FresnelUnit,
             (half4)FresnelColor, (half3)FresnelRotation.xyz,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
+    // ShaderLab applies camera-distance alpha after Fresnel, before vertex color.
+    if (DistanceFadeToggle > 0.5)
+        Out.a *= DepthFactor(-PositionVS.z, Fade.x, Fade.y);
     if ((NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) &
         FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR) == 0u)
         Out *= VertexColor;
@@ -609,6 +613,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half4 DissolveRampAlpha1, half4 DissolveRampAlpha2,
     float NB_ForceNoMipFlagsLo16, float NB_ForceNoMipFlagsHi16,
     float NB_DissolveRampSTOverrideEnabled, float4 NB_DissolveRampSTOverride,
+    float DistanceFadeToggle, half4 Fade, float3 PositionVS,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -766,6 +771,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             (half)IsFrontFace, FresnelUnit, FresnelColor,
             FresnelRotation.xyz,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
+    if (DistanceFadeToggle > 0.5)
+        Out.a *= DepthFactor(-PositionVS.z, Fade.x, Fade.y);
     if ((NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) &
         FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR) == 0u)
         Out *= VertexColor;

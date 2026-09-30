@@ -64,6 +64,11 @@ namespace NBShaderEditor
             "_FresnelRotation"
         };
 
+        static readonly string[] DistanceFadeProperties =
+        {
+            "_DistanceFade_Toggle", "_Fade"
+        };
+
         static readonly string[] DissolveProperties =
         {
             "_Dissolve_Toggle", "_DissolveMap", "_Dissolve",
@@ -118,6 +123,7 @@ namespace NBShaderEditor
                 DrawPackedFlag("feature.菲涅尔颜色受Alpha影响", "Color Affected By Alpha",
                     NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA, 0);
             }
+            DrawGroup(DistanceFadeProperties, "base.distanceFade", "Distance Fade");
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
             if (TryGetVisibleProperty("_DissolveLineColor", out _))
@@ -318,6 +324,8 @@ namespace NBShaderEditor
                 case "_DissolveLineColor": key = "feature.溶解描边颜色"; break;
                 case "_fresnelEnabled": key = "feature.菲涅尔"; break;
                 case "_FresnelColor": key = "feature.菲涅尔颜色"; break;
+                case "_DistanceFade_Toggle": key = "base.distanceFade"; break;
+                case "_Fade": key = "base.distanceFade.range"; break;
                 case "_NB_DistortionMode": key = "feature.屏幕扰动模式"; break;
                 case "_NB_DistortionIntensity": key = "feature.屏幕扭曲强度"; break;
                 default: return property.displayName;
