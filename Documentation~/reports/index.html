@@ -32,7 +32,8 @@
 <p>原后处理双路径补证：<a href="t05-g2-compat-p4-p5-final-checkpoint.html">当前 URP Compatibility 的 P4/P5 最终颜色 A/B（2026-09-29）</a>，限定输入下与 RenderGraph 截图一致；中间 RT、Player 和完整 Controller 组合未由此通过。</p>
 <p>原后处理中间数据补证：<a href="t05-g2-compat-intermediate-checkpoint.html">Compatibility 下 P4 opaque copy 与 P5 Mask/ScreenColorCopy 读回（2026-09-29）</a>；当前/Frozen 在受控输入下相同，不代表完整 G2。</p>
 <p>原 ShaderLab 构建补证：<a href="t05-g2-player-tier-build-checkpoint.html">StandaloneOSX 的 Ultra/Low 构建与实际 Tier 剥离回调（2026-09-29）</a>；未启动 Player，不宣称运行时画面或 SVC 预载通过。</p>
-<p>产品 Graph 最小链路：<a href="t06-g3-mesh-minimum-checkpoint.html">T06/G3 Mesh、双扭曲最终画面与 Deferred Mask 检查点（2026-09-30）</a>。产品 Graph 仍需 Player、完整参数/Pass 与后续 VFX 证据；G3 未放行。</p>
+<p>产品 Graph 最小链路：<a href="t06-g3-mesh-minimum-checkpoint.html">T06/G3 Mesh、双扭曲最终画面与 Deferred Mask 检查点（2026-09-30）</a>。已有最小 Player 证据，仍需完整参数/Pass 及普通 Mesh 审核；后续 VFX 不代替 G3，G3 未放行。</p>
+<p>普通 Mesh 统一对照：<a href="t07-mesh-surface-bc-checkpoint.html">88 项 ShaderLab/Graph 全 RGBA 严格 B/C + 4 项实际生成 Master Preview（2026-09-30）</a>；只覆盖已接入的 44 个预设，高级功能和完整 G3/G4 未闭合，不运行新 VFX。</p>
 <p>Graph 功能扩展切片：<a href="t07-graph-alpha-refine-checkpoint.html">Flags1 bit8 Alpha Refine 的 Mesh Editor/Metal Player 对照（2026-09-30）</a>；G4 未放行。</p>
 <p>Graph 单层遮罩切片：<a href="t07-graph-single-mask-checkpoint.html">共享 Mask V3 算术、Mesh 最终颜色/Deferred Mask、VFX Mesh Player 默认关闭回归（2026-09-30）</a>；完整遮罩功能及主动 VFX 遮罩未验证，G4/G5 未放行。</p>
 <p>Graph Mask2/Mask3 纹理子路径：<a href="t07-graph-mask23-checkpoint.html">三层相乘、独立通道/旋转/ST/滚动 Mesh 对照及 VFX 默认值回归（2026-09-30）</a>；Gradient/Noise/非 UV0 未验证，G4/G5 未放行。</p>

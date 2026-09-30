@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 表面功能统一 B/C 对照</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../tasks/t06-graph-minimum.html">T06</a> · <a href="../tasks/t07-graph-parity-gui.html">T07</a> · <a href="../decisions.html#d24">D24 顺序</a></p>
+<h1>普通 Mesh 表面功能统一 B/C 对照</h1>
+<p><strong>人话结论：</strong>把同一块普通 Mesh、同一张纹理、同一套参数，先交给原 NBShader（B）再交给 Shader Graph（C）渲染。本轮已接入的 44 个预设，各在正交和透视相机下测一次，<strong>88 项的完整 RGBA 逐像素相同</strong>，重复渲染也没有变化。另有 4 项实际生成并渲染的 Master Preview，与运行时 Graph 相同。<strong>这不是“所有功能已经完成”，也不放行 G3/G4。</strong></p>
+<p>2026-09-30；主工程输入 <code>9d0f998</code>，包输入 <code>bbe0a72</code>（产品代码仍为 <code>6f51533</code>）。这些证据对应后续通用采样修复前的产品，不提前宣称 Wrap/ForceNoMip 已通过。测试源码和完整输入 hash 已归档。Unity 6000.3.18f1 / URP、SG、VFX 包 17.3 / Metal / RenderGraph。当前没有可调用的 unityMCP，因此只在隔离克隆使用 CLI；没有打开主工程或要求用户值守，没有运行真正 VFX。</p>
+<h2>本轮覆盖了什么</h2>
+<table border="1" cellpadding="6"><thead><tr><th>预设组</th><th>普通 Mesh 同输入 B/C</th></tr></thead><tbody>
+<tr><td>基础色与 Alpha</td><td>Base、主纹理 Alpha 的 R/G/B/A、AlphaAll、ColorA、Timeline、bit29 RGB×Alpha、bit28 背面颜色、非白顶点色与 bit9 忽略。</td></tr>
+<tr><td>双层叠加与颜色渐变</td><td>Overlay1/2 加/乘及 Alpha 模式；Color Ramp 的 UV/贴图来源；Hue/Contrast/Saturation/Refine，前期和晚期的 ColorA 排序。</td></tr>
+<tr><td>遮罩和溶解</td><td>单层/三层 Mask、Refine、三层 packed Alpha Gradient；Dissolve 单图、process/late Mask、边缘线；Dissolve Ramp 贴图/packed Gradient 及加/乘。</td></tr>
+<tr><td>Fresnel 与深度</td><td>Fresnel Alpha/颜色/Alpha 关联/Invert，距离淡出、Soft Particles、Depth Outline；一组深度组合和一组表面组合。深度相关预设由相机<strong>明确提供深度纹理</strong>。</td></tr>
+<tr><td>生成 Master Preview</td><td>Base 与表面组合 × 两种相机，共 4 项。用当前官方 PreviewManager 相同的 Generator / GenerationMode.Preview 入口生成 Shader，再实际渲染；不是仅查看源码，也不是可见 Graph 窗口交互测试。此处没有测试 Preview 的场景深度功能。</td></tr>
+</tbody></table>
+<h2>如何避免“双方都没生效”的假通过</h2>
+<p>除 Base 默认预设外，逐项保留“关闭功能”的 Graph 对照图；84 个普通 Mesh 功能预设和 4 个 Preview 功能预设，与关闭对照的 RGBA 最大差都大于 0.01。组合预设仅证明组合有作用，不能证明组合里每一个功能都独立改变结果；单功能预设另行覆盖。纹理使用线性 RGBA(64,128,160,192)，白色/原色 tint 避免把 SG 颜色 UI 编码混入本轮算术判定，不代表任意颜色输入或实际 Inspector 已验收。</p>
+<p>第一次扩展矩阵为 90 通过、2 失败：顶点色预设的“关闭”材质也使用了非白顶点色，所以开关画面相同，正对照断言正确地报失败；当时 B/C 的 RGBA 差仍为 0。只修正关闭对照材质的 Flags1 bit9，未改产品 Shader，复跑 <strong>92/92 通过</strong>。<a href="t07-evidence/surface-mesh-bc-20260930/fixture-correction/before-correction.xml">失败 XML</a> · <a href="t07-evidence/surface-mesh-bc-20260930/fixture-correction/before-correction.log.gz">原始日志</a>。</p>
+<h2>数值、证据和重放</h2>
+<ul>
+<li><a href="t07-evidence/surface-mesh-bc-20260930/results.xml">92 项测试 XML</a> · <a href="t07-evidence/surface-mesh-bc-20260930/unity.log.gz">Unity 原始日志</a> · <a href="t07-evidence/surface-mesh-bc-20260930/summary.json">逐 case 数值汇总</a>。全画面 maxRGB/maxAlpha、B/C 各自重复差均为 0，无 NaN/Inf。</li>
+<li>96×96 线性 RGBAHalf，用 float32 保存读回值；PNG 仅是截断到 8 位的预览，严格比较不使用 PNG。每次读回之前渲染 4 帧，明确为<strong>稳态</strong>，不覆盖或掩盖冷首帧问题。</li>
+<li><a href="t07-evidence/surface-mesh-bc-20260930/cases/surface-combination-ortho/B.png">表面组合 B</a> / <a href="t07-evidence/surface-mesh-bc-20260930/cases/surface-combination-ortho/C.png">C</a> / <a href="t07-evidence/surface-mesh-bc-20260930/cases/surface-combination-ortho/C-disabled.png">关闭对照</a>；<a href="t07-evidence/surface-mesh-bc-20260930/cases/depth-combination-perspective/B.png">深度组合 B</a> / <a href="t07-evidence/surface-mesh-bc-20260930/cases/depth-combination-perspective/C.png">C</a>。</li>
+<li><a href="t07-evidence/surface-mesh-bc-20260930/cases/preview-surface-combination-ortho/generated-preview.shader.gz">实际生成的 Preview Shader</a> · <a href="t07-evidence/surface-mesh-bc-20260930/G4GraphMeshParityTests.cs.txt">本次夹具快照</a> · <a href="../../Tests/URP/Editor/G4GraphMeshParityTests.cs">正式测试入口</a>。</li>
+<li><a href="t07-evidence/surface-mesh-bc-20260930/README.txt">环境、raw 格式与 CLI 重放步骤</a> · <a href="t07-evidence/surface-mesh-bc-20260930/input-sha256.txt">源码/资产输入 hash</a> · <a href="t07-evidence/surface-mesh-bc-20260930/sha256.txt">全部附件 hash</a>。逐 case 留有 B/C 原始数值、材质属性/keywords/ST、纹理和指标。</li>
+</ul>
+<h2>剩余边界，不能算通过的内容</h2>
+<p>高级 UV/CustomData、四种 wrap/高频 mip、Noise/折射/色散、Depth Decal、MatCap/Normal/POM/光照/Fog、VAT/Vertex Offset/Custom Local Transform、完整 Blend/Z/Stencil/Shadow/背面次序、NBPostprocess 中间 RT 和完整组合、GUI、Player、性能/variants/SRP Batcher、跨版本/平台，均不由这 92 项通过。Graph 保留 Support VFX Graph，但本轮只是普通 Mesh。缺失深度纹理的行为未测，默认深度请求不会被测试修改。</p>
+<p>原 MatCap 微差与 Dissolve 冷首帧按 D23 保留原始失败，等实现完成后一次性人工测试；本轮没有反复追查。原 ShaderLab/Graph 分别有 18/5 条 ShaderUtil 消息，Preview 有 5 条，日志保留现有 warning，不宣称零警告。预览场景、内存材质、纹理和 Mesh 均已销毁，无保存操作；<a href="t07-evidence/surface-mesh-bc-20260930/protected-settings-sha256.txt">三项隔离保护设置 hash</a>未变。未修改官方包、Target、NBPostprocess，未 push。</p>
+<p><strong>审核：</strong>本报告接纳上述限定测试证据；完整 Mesh 仍在实施，G3/G4 未放行。继续补齐实现和统一对照，不转入正式 VFX。</p>
+</body></html>

@@ -16,6 +16,7 @@
 <tr><td>T10/G7 交付兼容</td><td>当前运行环境是 Unity 6000.3.18f1、URP/SG/VFX 17.3、Metal；包内候选依赖当前 URP Editor 程序集。</td><td><strong>未开始正式验证。</strong>其他 Unity/包版本、DirectX/Vulkan、可选安装、SVC/stripping、发布与回退矩阵不得宣称支持。HDRP 按 D19/D20 留待最后可选轮次。</td></tr>
 </tbody></table>
 
+<p>后续普通 Mesh 统一补证：<a href="t07-mesh-surface-bc-checkpoint.html">44 个已接入预设 × 正交/透视，88 项全 RGBA 0 差；另有 4 项生成 Master Preview 0 差</a>。这是限定表面/深度稳态证据，不包含高级采样、光照、几何、状态/后处理或完整 G3/G4。</p>
 <h2>产品功能矩阵：T01 的 24 个候选组</h2>
 <p>“切片实测”仅说明所列子路径有报告；没有逐属性 B/C、C/D 闭环。“未接入”按当前 <a href="../../NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl">Graph 色函数</a>、<a href="../../NBShaders2/ShaderGraph/NBGraphBaseUV.hlsl">UV 适配</a>、<a href="../../NBShaders2/ShaderGraph/Passes/NBGraphDistortionPass.hlsl">扭曲 Pass</a>和 <a href="../../NBShaders2/ShaderGraph/NBShaderGraph.shadergraph">Graph 资产</a>判定，不将原 ShaderLab 中已有的共享 HLSL 算为 Graph 已调用。</p>
 <table border="1" cellpadding="6"><thead><tr><th>T01 功能组</th><th>当前 Graph/VFX 实际状态</th><th>主要缺口</th></tr></thead><tbody>
