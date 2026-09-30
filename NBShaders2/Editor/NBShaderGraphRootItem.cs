@@ -10,7 +10,7 @@ namespace NBShaderEditor
     // A capability-specific Root: Graph properties do not contain ShaderLab's
     // foldout, keyword, or single-float packed-flag protocol. Keep Unity's
     // MaterialEditor in charge of property drawers; write only the existing
-    // split Flags0 bits for controls with live Graph behavior.
+    // split packed-flag bits for controls with live Graph behavior.
     public sealed class NBShaderGraphRootItem : ShaderGUIRootItem
     {
         // Group only properties with a live Graph implementation. Unknown and
@@ -68,7 +68,8 @@ namespace NBShaderEditor
         {
             "_Dissolve_Toggle", "_DissolveMap", "_Dissolve",
             "_DissolveOffsetRotateDistort", "_DissolveMask_Toggle",
-            "_DissolveMaskMap", "_DissolveMaskMode"
+            "_DissolveMaskMap", "_DissolveMaskMode", "_Dissolve_Vec2",
+            "_DissolveLineColor"
         };
 
         static readonly string[] DistortionProperties =
@@ -98,15 +99,18 @@ namespace NBShaderEditor
             DrawGroup(FresnelProperties, "feature.菲涅尔", "Fresnel");
             if (TryGetVisibleProperty("_fresnelEnabled", out _))
             {
-                DrawFresnelFlag("feature.菲涅尔模式", "Fresnel Alpha Mode",
-                    NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON);
-                DrawFresnelFlag("feature.翻转菲涅尔", "Invert Fresnel",
-                    NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON);
-                DrawFresnelFlag("feature.菲涅尔颜色受Alpha影响", "Color Affected By Alpha",
-                    NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA);
+                DrawPackedFlag("feature.菲涅尔模式", "Fresnel Alpha Mode",
+                    NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON, 0);
+                DrawPackedFlag("feature.翻转菲涅尔", "Invert Fresnel",
+                    NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON, 0);
+                DrawPackedFlag("feature.菲涅尔颜色受Alpha影响", "Color Affected By Alpha",
+                    NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA, 0);
             }
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
+            if (TryGetVisibleProperty("_DissolveLineColor", out _))
+                DrawPackedFlag("feature.溶解描边", "Dissolve Line",
+                    NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK, 1);
             DrawGroup(DistortionProperties, "feature.扭曲", "Distort");
 
             // Graph properties can be added without changing this adapter.
@@ -148,12 +152,13 @@ namespace NBShaderEditor
             }
         }
 
-        void DrawFresnelFlag(string localizationKey, string fallback, int flag)
+        void DrawPackedFlag(string localizationKey, string fallback, int flag, int word)
         {
             int bitIndex = 0;
             for (int bits = flag; bits > 1; bits >>= 1)
                 bitIndex++;
-            string propertyName = bitIndex < 16 ? "_NB_Flags0Lo16" : "_NB_Flags0Hi16";
+            string prefix = word == 0 ? "_NB_Flags0" : "_NB_Flags1";
+            string propertyName = prefix + (bitIndex < 16 ? "Lo16" : "Hi16");
             int sliceBit = 1 << (bitIndex & 15);
             bool first = false, value = false, mixed = false;
             foreach (UnityEngine.Object target in MatEditor.targets)
@@ -233,6 +238,7 @@ namespace NBShaderEditor
                 case "_MaskMapOffsetAnition": key = "feature.遮罩偏移速度"; break;
                 case "_DissolveMap": key = "feature.溶解贴图"; break;
                 case "_DissolveMaskMap": key = "feature.溶解遮罩图"; break;
+                case "_DissolveLineColor": key = "feature.溶解描边颜色"; break;
                 case "_fresnelEnabled": key = "feature.菲涅尔"; break;
                 case "_FresnelColor": key = "feature.菲涅尔颜色"; break;
                 case "_NB_DistortionMode": key = "feature.屏幕扰动模式"; break;

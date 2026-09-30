@@ -87,7 +87,7 @@ half NBGraphSelectBaseAlpha(half4 albedo, float packedChannelsLo16)
 // The optional process/late mask uses the same two-stage numeric contract as
 // ShaderLab. The host owns texture/channel selection; custom data, noise,
 // wrap overrides and non-UV0 modes remain separate slices.
-half NBGraphResolveDissolveCoverage(half4 sampledDissolve,
+NBFX_DissolveResolvedV3 NBGraphResolveDissolve(half4 sampledDissolve,
     half4 sampledDissolveMask, bool hasDissolveMask, half4 dissolve,
     half dissolveMaskMode, float colorChannelLo16)
 {
@@ -122,7 +122,21 @@ half NBGraphResolveDissolveCoverage(half4 sampledDissolve,
     resolveInput.maskStrength = dissolve.z;
     resolveInput.maskMode = dissolveMaskMode;
     NBFX_DissolveResolvedV3 resolved = NBFX_ResolveDissolveV3(resolveInput);
-    return resolved.coverage;
+    return resolved;
+}
+
+// ShaderLab's line tint uses the value *before* the soft-step and late-mask
+// coverage, not the resulting alpha. Preserve that stage distinction.
+half4 NBGraphApplyDissolveLine(half4 color, half valueBeforeSoftStep,
+    half4 lineRange, half4 lineColor, uint flags1)
+{
+    if ((flags1 & FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK) != 0u)
+    {
+        half lineMask = 1.0h - saturate(NB_Remap01(valueBeforeSoftStep,
+            lineRange.x - lineRange.y, lineRange.x + lineRange.y));
+        color.rgb = lerp(color.rgb, lineColor.rgb, lineMask * lineColor.a);
+    }
+    return color;
 }
 
 // ShaderLab Ramp sampling/source selection, followed by the same packed-key
@@ -260,6 +274,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float Saturability, float4 BaseMapColorRefine,
     float FresnelEnabled, float4 FresnelUnit, float4 FresnelColor,
     float4 FresnelRotation, float3 NormalWS, float3 ViewDirWS,
+    float4 DissolveLineRange, float4 DissolveLineColor,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -320,9 +335,14 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
                 DissolveOffsetRotateDistort.z, float2(0.0, 0.0));
             sampledDissolveMask = (half4)NBGraphSampleMap(DissolveMaskMap, dissolveMaskUV);
         }
-        Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve,
+        NBFX_DissolveResolvedV3 resolved = NBGraphResolveDissolve(sampledDissolve,
             sampledDissolveMask, hasDissolveMask, (half4)Dissolve,
             (half)DissolveMaskMode, NB_ColorChannelLo16);
+        Out.a *= resolved.coverage;
+        Out = (float4)NBGraphApplyDissolveLine((half4)Out,
+            resolved.valueBeforeSoftStep, (half4)DissolveLineRange,
+            (half4)DissolveLineColor,
+            NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16));
     }
     // Overlay 2 keeps its ShaderLab position after Dissolve and before Mask.
     // Noise/custom-data/advanced UV are deliberately separate slices.
@@ -469,6 +489,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float Saturability, half4 BaseMapColorRefine,
     float FresnelEnabled, half4 FresnelUnit, half4 FresnelColor,
     half4 FresnelRotation, half3 NormalWS, half3 ViewDirWS,
+    half4 DissolveLineRange, half4 DissolveLineColor,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -523,9 +544,13 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
                 DissolveOffsetRotateDistort.z, float2(0.0, 0.0));
             sampledDissolveMask = (half4)NBGraphSampleMap(DissolveMaskMap, dissolveMaskUV);
         }
-        Out.a *= NBGraphResolveDissolveCoverage(sampledDissolve,
+        NBFX_DissolveResolvedV3 resolved = NBGraphResolveDissolve(sampledDissolve,
             sampledDissolveMask, hasDissolveMask, Dissolve,
             (half)DissolveMaskMode, NB_ColorChannelLo16);
+        Out.a *= resolved.coverage;
+        Out = NBGraphApplyDissolveLine(Out, resolved.valueBeforeSoftStep,
+            DissolveLineRange, DissolveLineColor,
+            NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16));
     }
     if (ColorBlendMapToggle > 0.5)
     {
