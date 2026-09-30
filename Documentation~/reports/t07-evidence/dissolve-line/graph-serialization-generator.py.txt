@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+"""One-off SG 17.3 Dissolve line Graph wiring; input->output only."""
+import importlib.util,copy,sys,hashlib
+from pathlib import Path
+spec=importlib.util.spec_from_file_location('base','/tmp/nbfx-fresnel-graph-generator.py')
+b=importlib.util.module_from_spec(spec);spec.loader.exec_module(b)
+b.PREFIX='nbfx/nbshadergraph/dissolveline/v1/'
+src,dst=map(Path,sys.argv[1:3]); assert src.resolve()!=dst.resolve() and not dst.exists()
+raw=src.read_text(); objects=b.parse_stream(raw); byid=b.index_objects(objects)
+graph=b.exactly_one(objects,lambda x:x.get('m_Type')==b.GRAPH_TYPE,'GraphData')
+cf=b.exactly_one(objects,lambda x:x.get('m_Type')==b.CF_TYPE and x.get('m_FunctionName')=='NBGraphBaseColor','CF')
+assert set(byid[x['m_Id']]['m_Id'] for x in cf['m_Slots'])==set(range(101))
+category=byid[graph['m_CategoryData'][0]['m_Id']]
+defs=[('DissolveLineRange','_Dissolve_Vec2','vector4',(0.2,0.1,0,0)),('DissolveLineColor','_DissolveLineColor','hdrcolor',(1,0,0,1))]
+new=[]
+for idx,(name,ref,kind,val) in enumerate(defs,101):
+ assert not any(x.get('m_DefaultReferenceName')==ref for x in objects)
+ p=b.make_property(objects,name,ref,kind,val); n,s=b.make_property_node(objects,byid,p,kind,620,3100+(idx-101)*90)
+ slot=b.make_cf_slot(objects,byid,cf,idx,name,"vector4",val)
+ new.extend([p,n,s,slot]);graph['m_Properties'].append({'m_Id':p['m_ObjectId']});category['m_ChildObjectList'].append({'m_Id':p['m_ObjectId']});graph['m_Nodes'].append({'m_Id':n['m_ObjectId']});cf['m_Slots'].append({'m_Id':slot['m_ObjectId']});graph['m_Edges'].append(b.edge(n['m_ObjectId'],cf['m_ObjectId'],idx))
+objects.extend(new); emitted=b.serialize_stream(objects); parsed=b.parse_stream(emitted); byid=b.index_objects(parsed)
+assert len(byid)==len(parsed)
+assert {byid[x['m_Id']]['m_Id'] for x in cf['m_Slots']}==set(range(103))
+assert all(any(o.get('m_DefaultReferenceName')==ref for o in parsed) for _,ref,_,_ in defs)
+dst.write_text(emitted)
+print('source_sha256',hashlib.sha256(raw.encode()).hexdigest(),'output_sha256',hashlib.sha256(emitted.encode()).hexdigest(),'objects',len(parsed))

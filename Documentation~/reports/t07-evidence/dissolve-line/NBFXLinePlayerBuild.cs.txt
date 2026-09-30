@@ -1,0 +1,222 @@
+// /tmp-only clone fixture: inspect real VFX Mesh Output bindings, then build Player.
+using System;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXLinePlayerBuild
+{
+    const string Root="/tmp/nbfx-vfx-dissolve-line-probe-20260930/run";
+    const string ScenePath="Assets/NBFXLinePlayer.unity";
+    const string AppPath=Root+"/player/NBFXLinePlayer.app";
+    const string GraphPath="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string BasePath="Assets/NBFXLineBaseRGBA_64_128_160_192.png";
+    const string GrayPath="Assets/NBFXLineDissolveGray133.png";
+    const string BaseGuid="d6afaba44fc655fcbe2e31eadd23fe3d";
+    const string GrayGuid="fbaf473b65c75b9d96030f1095b3bd59";
+    const long OutputId=8926484042661614853;
+    const long BaseMapId=8926484042661614854;
+    const long ColorId=8926484042661614855;
+    const long Flags1Id=8926484042661614871;
+    const long DissolveMapId=8926484042661614889;
+    const long DissolveToggleId=8926484042661614890;
+    const long DissolveId=8926484042661614891;
+    const long LineColorId=8926484042661617100;
+    const long LineVecId=8926484042661617110;
+    static readonly string[] Names={"Off","On"};
+    static readonly string[] Guids={"9e5c11786d9c51539dbaeed61463cbeb",
+        "e6a36fe80bdd5ea2b0aa2b843bb0b8f4"};
+    static readonly int[] Flags1={0,32};
+
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        using(var report=new StreamWriter(Path.Combine(Root,"editor-inspection.txt")))
+        {
+            ValidateTexture(BasePath,BaseGuid,new Color(64f/255f,128f/255f,
+                160f/255f,192f/255f),report);
+            ValidateTexture(GrayPath,GrayGuid,new Color(133f/255f,133f/255f,
+                133f/255f,1f),report);
+            var graph=AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            if(!graph||!graph.isSupported)
+                throw new Exception("Product Graph unavailable or unsupported");
+            var assets=new VisualEffectAsset[2];var shaders=new Shader[2];
+            for(int i=0;i<2;i++)
+            {
+                string path="Assets/NBFXLine"+Names[i]+".vfx";
+                AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+                if(AssetDatabase.AssetPathToGUID(path)!=Guids[i])
+                    throw new Exception("VFX GUID mismatch "+path);
+                ValidateSerialized(path,i,report);
+                assets[i]=AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+                shaders[i]=FindShader(path);
+                if(!assets[i]||!shaders[i]||!shaders[i].isSupported||
+                   !shaders[i].name.Contains("Mesh"))
+                    throw new Exception("Real VFX Mesh Output import failed "+path);
+                ValidateGenerated(path,i,report);
+                var material=new Material(shaders[i]);
+                try{report.WriteLine(path+" lazyEditorPassCount="+material.passCount);}
+                finally{UnityEngine.Object.DestroyImmediate(material);}
+            }
+            var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            var host=new GameObject("NBFX line VFX Player probe");
+            var probe=host.AddComponent<NBFXLinePlayerProbe>();
+            probe.graphShader=graph;probe.offAsset=assets[0];probe.onAsset=assets[1];
+            probe.offShader=shaders[0];probe.onShader=shaders[1];
+            if(!EditorSceneManager.SaveScene(scene,ScenePath))
+                throw new Exception("Could not save clone-only Player scene");
+            report.Flush();
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(AppPath));
+        var build=BuildPipeline.BuildPlayer(new BuildPlayerOptions{
+            scenes=new[]{ScenePath},locationPathName=AppPath,
+            target=BuildTarget.StandaloneOSX,options=BuildOptions.None
+        });
+        Debug.Log("NBFX_LINE_BUILD result="+build.summary.result+
+            " errors="+build.summary.totalErrors+
+            " warnings="+build.summary.totalWarnings);
+        if(build.summary.result!=BuildResult.Succeeded||
+           build.summary.totalErrors!=0)
+            throw new Exception("Line VFX Player build failed");
+    }
+    static void ValidateTexture(string path,string guid,Color expected,TextWriter report)
+    {
+        AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+        var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+        var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        if(!importer||!texture||AssetDatabase.AssetPathToGUID(path)!=guid||
+           importer.sRGBTexture||importer.mipmapEnabled||!importer.isReadable||
+           importer.textureCompression!=TextureImporterCompression.Uncompressed||
+           texture.width!=1||texture.height!=1||
+           importer.filterMode!=FilterMode.Point||importer.wrapMode!=TextureWrapMode.Clamp)
+            throw new Exception("Explicit texture import contract failed "+path);
+        Color actual=texture.GetPixel(0,0);
+        for(int i=0;i<4;i++)
+            if(Mathf.Abs(actual[i]-expected[i])>.003f)
+                throw new Exception("Texture pixel mismatch "+path+": "+actual);
+        report.WriteLine(path+" linearRGBA="+actual+" uncompressed/point/clamp");
+    }
+    static string Body(string text,long id)
+    {
+        var match=Regex.Match(text,@"(?ms)^--- !u!114 &"+id+
+            @"\n.*?(?=^--- !u!|\z)");
+        if(!match.Success)throw new Exception("Missing VFX object "+id);
+        return match.Value;
+    }
+    static bool Scalar(string text,long id,string name,string value)
+    {
+        string body=Body(text,id);
+        return body.Contains("name: "+name+"\n")&&
+            body.Contains("m_SerializableObject: "+value+"\n");
+    }
+    static bool Vector(string text,long id,string name,string json)
+    {
+        string body=Body(text,id);
+        return body.Contains("name: "+name+"\n")&&body.Contains(json);
+    }
+    static void ValidateSerialized(string path,int index,TextWriter report)
+    {
+        string text=File.ReadAllText(Path.Combine(
+            Directory.GetParent(Application.dataPath).FullName,path));
+        string output=Body(text,OutputId);
+        if(!text.Contains("  capacity: 1\n")||
+           !output.Contains("  cullMode: 0\n")||
+           !output.Contains("  blendMode: 1\n")||
+           !Body(text,BaseMapId).Contains(BaseGuid)||
+           !Body(text,DissolveMapId).Contains(GrayGuid)||
+           !Vector(text,ColorId,"_Color",
+                "{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6666667}")||
+           !Scalar(text,Flags1Id,"_NB_Flags1Lo16",Flags1[index].ToString())||
+           !Scalar(text,DissolveToggleId,"_Dissolve_Toggle","1")||
+           !Vector(text,DissolveId,"_Dissolve",
+                "{\"x\":0.5,\"y\":1.0,\"z\":1.0,\"w\":0.10000000149011612}")||
+           !Vector(text,LineColorId,"_DissolveLineColor",
+                "{\"r\":1.0,\"g\":0.0,\"b\":0.0,\"a\":1.0}")||
+           !Vector(text,LineVecId,"_Dissolve_Vec2",
+                "{\"x\":0.2,\"y\":0.1,\"z\":0.0,\"w\":0.0}"))
+            throw new Exception("Line serialized Output contract invalid "+path);
+        foreach(long id in new[]{LineColorId,LineVecId})
+            if(!output.Contains("  - {fileID: "+id+"}\n"))
+                throw new Exception("Output missing line slot "+id+" "+path);
+        report.WriteLine(path+" flag1="+Flags1[index]+" explicit gray133 DissolveMap");
+    }
+    static Shader FindShader(string path)
+    {
+        foreach(var obj in AssetDatabase.LoadAllAssetsAtPath(path))
+            if(obj is Shader shader&&shader.name.Contains("Mesh"))return shader;
+        return null;
+    }
+    static bool SourceScalar(string source,string name,float expected)
+    {
+        var found=Regex.Match(source,@"output\."+Regex.Escape(name)+
+            @"\s*=\s*\(float\)\s*([-+0-9.eE]+)\s*;");
+        if(!found.Success)return false;
+        float actual;
+        return float.TryParse(found.Groups[1].Value,NumberStyles.Float,
+            CultureInfo.InvariantCulture,out actual)&&
+            Mathf.Abs(actual-expected)<.005f;
+    }
+    static bool SourceVector(string source,string name,float[] expected)
+    {
+        var found=Regex.Match(source,@"output\."+Regex.Escape(name)+
+            @"\s*=\s*float4\(([^)]*)\)");
+        if(!found.Success)return false;
+        var parts=found.Groups[1].Value.Split(',');
+        if(parts.Length!=4)return false;
+        for(int i=0;i<4;i++){
+            float actual;
+            if(!float.TryParse(parts[i].Trim(),NumberStyles.Float,
+                CultureInfo.InvariantCulture,out actual)||
+               Mathf.Abs(actual-expected[i])>.005f)return false;
+        }
+        return true;
+    }
+    static void ValidateGenerated(string path,int index,TextWriter report)
+    {
+        const BindingFlags flags=BindingFlags.Public|BindingFlags.NonPublic|
+            BindingFlags.Static|BindingFlags.Instance;
+        Type type=null;
+        foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies()){
+            type=assembly.GetType("UnityEditor.VFX.VisualEffectResource");
+            if(type!=null)break;
+        }
+        if(type==null)throw new Exception("VFX generated-resource reflection unavailable");
+        var resource=type.GetMethod("GetResourceAtPath",flags)
+            .Invoke(null,new object[]{path});
+        if(resource==null)throw new Exception("VFX generated resource missing "+path);
+        int count=(int)type.GetMethod("GetShaderSourceCount",flags)
+            .Invoke(resource,null);
+        var getter=type.GetMethod("GetShaderSource",flags);
+        bool found=false;
+        for(int i=0;i<count;i++)
+        {
+            string source=(string)getter.Invoke(resource,new object[]{i});
+            if(!source.Contains("output._DissolveLineColor"))continue;
+            File.WriteAllText(Path.Combine(Root,
+                Path.GetFileNameWithoutExtension(path)+"-"+i+".shader"),source);
+            bool bindings=
+                SourceScalar(source,"_Dissolve_Toggle",1f)&&
+                SourceScalar(source,"_NB_Flags1Lo16",Flags1[index])&&
+                SourceVector(source,"_Color",new[]{1f,1f,1f,.6666667f})&&
+                SourceVector(source,"_Dissolve",new[]{.5f,1f,1f,.1f})&&
+                SourceVector(source,"_DissolveLineColor",new[]{1f,0f,0f,1f})&&
+                SourceVector(source,"_Dissolve_Vec2",new[]{.2f,.1f,0f,0f});
+            bool passes=source.Contains("\"LightMode\" = \"NBCameraOpaqueDistortPass\"")&&
+                source.Contains("\"LightMode\" = \"NBDeferredDistortPass\"");
+            bool function=source.Contains("NBGraphBaseColor_float(")&&
+                source.Contains("NBGraphBaseColor.hlsl");
+            report.WriteLine(path+" generatedSource="+i+
+                " exactBindings="+bindings+" exactPasses="+passes+
+                " graphHostIncludeAndCall="+function);
+            found|=bindings&&passes&&function;
+        }
+        if(!found)
+            throw new Exception("Line Output bindings or custom Passes absent "+path);
+    }
+}

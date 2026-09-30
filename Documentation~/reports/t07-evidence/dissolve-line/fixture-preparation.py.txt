@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Prepare two test-only, real one-particle VFX Mesh Dissolve-line Outputs."""
+from __future__ import annotations
+import gzip,hashlib,pathlib,re,shutil,uuid
+
+ROOT=pathlib.Path(__file__).resolve().parent
+OUT=ROOT/'Assets'
+ARCH=pathlib.Path('/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t08-evidence/vfx-basecolor-active')
+GRAY_ARCH=pathlib.Path('/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t08-evidence/vfx-dissolve-explicit-textures')
+SRC=ARCH/'NBFXBCA1.vfx.gz'
+OUTPUT=8926484042661614853
+COLOR=8926484042661614855
+VECTOR=8926484042661614903
+FLAGS1LO=8926484042661614871
+DISSOLVE_MAP=8926484042661614889
+DISSOLVE_TOGGLE=8926484042661614890
+LINE_COLOR=8926484042661617100
+LINE_VEC=8926484042661617110
+BASE_NAME='NBFXLineBaseRGBA_64_128_160_192.png'
+GRAY_NAME='NBFXLineDissolveGray133.png'
+RED="'{\"r\":1.0,\"g\":0.0,\"b\":0.0,\"a\":1.0}'"
+VEC="'{\"x\":0.2,\"y\":0.1,\"z\":0.0,\"w\":0.0}'"
+
+def guid(name:str)->str:return uuid.uuid5(uuid.NAMESPACE_URL,'nbfx-vfx-dissolve-line-probe-20260930/'+name).hex
+def once(s:str,a:str,b:str,why:str)->str:
+ n=s.count(a)
+ if n!=1:raise ValueError(f'{why}: expected one {a!r}, got {n}')
+ return s.replace(a,b,1)
+def match(s:str,id:int)->re.Match[str]:
+ m=re.search(rf'(?ms)^--- !u!114 &{id}\n.*?(?=^--- !u!|\Z)',s)
+ if not m:raise ValueError(f'missing VFX object {id}')
+ return m
+def change(s:str,id:int,a:str,b:str)->str:
+ m=match(s,id);body=once(m.group(),a,b,str(id))
+ return s[:m.start()]+body+s[m.end():]
+def meta(path:pathlib.Path,name:str)->str:
+ s=path.read_text();m=re.search(r'(?m)^guid: ([a-f0-9]{32})$',s)
+ if not m:raise ValueError('missing meta guid '+str(path))
+ return once(s,m.group(1),guid(name),name)
+def clone_struct(s:str,src:int,id:int,old_name:str,name:str,old_value:str,new_value:str)->list[str]:
+ master=match(s,src).group().replace(str(src),str(id))
+ for k in range(1,5):master=master.replace(str(src+k),str(id+k))
+ master=once(master,f'name: {old_name}\n',f'name: {name}\n',name)
+ master=once(master,old_value,new_value,name+' value')
+ children=[match(s,src+k).group().replace(str(src),str(id)).replace(str(src+k),str(id+k)) for k in range(1,5)]
+ return [master,*children]
+
+def main()->None:
+ OUT.mkdir(parents=True,exist_ok=True)
+ s=gzip.decompress(SRC.read_bytes()).decode()
+ ids=(*range(LINE_COLOR,LINE_COLOR+5),*range(LINE_VEC,LINE_VEC+5))
+ if any(str(i) in s for i in ids):raise ValueError('private fileID collision')
+ if '  capacity: 1\n' not in s or '  cullMode: 0\n' not in match(s,OUTPUT).group():
+  raise ValueError('not archived one-particle Cube/CullOff fixture')
+ for name in ('_DissolveLineColor','_Dissolve_Vec2'):
+  if 'name: '+name+'\n' in s:raise ValueError('line Output already present: '+name)
+ files=((ARCH/'NBFXBC_RGBA_64_128_160_192.png',ARCH/'NBFXBC_RGBA_64_128_160_192.png.meta.txt',BASE_NAME),
+        (GRAY_ARCH/'NBDissolveGray133Linear.png',GRAY_ARCH/'NBDissolveGray133Linear.png.meta',GRAY_NAME))
+ for source,source_meta,name in files:
+  shutil.copyfile(source,OUT/name)
+  (OUT/(name+'.meta')).write_text(meta(source_meta,name))
+  old=re.search(r'(?m)^guid: ([a-f0-9]{32})$',source_meta.read_text()).group(1)
+  if name==BASE_NAME:s=once(s,old,guid(name),name+' BaseMap GUID')
+ gray_old=re.search(r'm_SerializableObject: \'\{"obj":\{"fileID":2800000,"guid":"([a-f0-9]{32})"',match(s,DISSOLVE_MAP).group()).group(1)
+ s=change(s,DISSOLVE_MAP,gray_old,guid(GRAY_NAME))
+ s=change(s,DISSOLVE_TOGGLE,'m_SerializableObject: 0\n','m_SerializableObject: 1\n')
+ white="'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0}'"
+ zero="'{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}'"
+ slots=clone_struct(s,COLOR,LINE_COLOR,'_Color','_DissolveLineColor',white,RED)
+ slots+=clone_struct(s,VECTOR,LINE_VEC,'_BaseMapMaskMapOffset','_Dissolve_Vec2',zero,VEC)
+ s=change(s,COLOR,white,"'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6666667}'")
+ attach=''.join(f'  - {{fileID: {id}}}\n' for id in (LINE_COLOR,LINE_VEC))
+ s=change(s,OUTPUT,'  m_OutputSlots: []\n',attach+'  m_OutputSlots: []\n')
+ s+='\n'+'\n'.join(slots)
+ normalized=[]
+ for name,flag in (('Off',0),('On',32)):
+  variant=change(s,FLAGS1LO,'m_SerializableObject: 0\n',f'm_SerializableObject: {flag}\n')
+  filename='NBFXLine'+name+'.vfx'
+  (OUT/filename).write_text(variant)
+  (OUT/(filename+'.meta')).write_text(meta(ARCH/'NBFXBCA1.vfx.meta.txt',filename))
+  normalized.append(change(variant,FLAGS1LO,f'm_SerializableObject: {flag}\n','m_SerializableObject: VARIANT\n'))
+ if normalized[0]!=normalized[1]:raise ValueError('Off/On differ beyond Flags1 bit5')
+ for path in sorted(OUT.iterdir()):
+  if path.is_file():print(hashlib.sha256(path.read_bytes()).hexdigest(),path)
+
+if __name__=='__main__':main()

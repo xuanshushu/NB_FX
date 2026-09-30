@@ -1,0 +1,277 @@
+// /tmp-only real one-particle VFX Mesh Output line-color test.
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
+
+public sealed class NBFXLinePlayerProbe : MonoBehaviour
+{
+    public VisualEffectAsset offAsset, onAsset;
+    public Shader graphShader, offShader, onShader;
+    const int Size = 256;
+    const float RepeatTolerance = .005f;
+    static readonly string[] Names = { "Off", "On" };
+    [Serializable] public sealed class CaseInfo
+    {
+        public string name;
+        public int alive, passCount, opaquePass, deferredPass, visiblePixels, changedVsOffPixels;
+        public bool culled;
+        public float repeatMaxRGB, effectiveAlphaMedian, sourceRMedian, sourceGMedian, sourceBMedian;
+    }
+    [Serializable] public sealed class Result
+    {
+        public string unityVersion, graphicsDevice, status, error, note;
+        public bool linearTarget, fixtureValid, pass;
+        public int roiPixels;
+        public float blackBaselineMaxRGB, whiteBaselineMinRGB;
+        public CaseInfo off, on;
+    }
+    sealed class Context
+    {
+        public Camera camera;
+        public GameObject cameraObject;
+        public RenderTexture target;
+        public Texture2D readback;
+        public VisualEffect[] effects;
+    }
+    static string OutputPath()
+    {
+        foreach (string arg in Environment.GetCommandLineArgs())
+            if (arg.StartsWith("--nbfx-line-output=", StringComparison.Ordinal))
+                return arg.Substring("--nbfx-line-output=".Length);
+        return null;
+    }
+    IEnumerator Start()
+    {
+        string output = OutputPath();
+        if (string.IsNullOrEmpty(output)) { Application.Quit(2); yield break; }
+        Directory.CreateDirectory(output);
+        var result = new Result {
+            unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
+            note = "Single Cube/CullOff VFX particle, explicit linear gray133 DissolveMap; black/white linear pairs infer composite effective alpha and source RGB. Off/On differ solely in Flags1 bit5. Two visible faces are expected, so effective alpha is not the shader's per-face alpha."
+        };
+        Context c = null; int exitCode = 2;
+        try { c = Setup(); }
+        catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        if (c != null && result.error == null)
+        {
+            for (int frame = 0; frame < 3; frame++) { c.camera.Render(); yield return null; }
+            foreach (var effect in c.effects) effect.Simulate(1f / 60f, 21u);
+            for (int frame = 0; frame < 2; frame++) { c.camera.Render(); yield return null; }
+            foreach (var effect in c.effects) effect.pause = true;
+            try {
+                Run(c, output, result);
+                result.fixtureValid = FixtureValid(result);
+                result.pass = result.fixtureValid && NumericPass(result);
+                result.status = result.pass ? "PASS" :
+                    result.fixtureValid ? "NUMERIC_MISMATCH" : "FIXTURE_INVALID";
+                exitCode = result.pass ? 0 : 1;
+            }
+            catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        }
+        try { Cleanup(c); }
+        catch (Exception ex) {
+            result.status = "CLEANUP_FAILED";
+            result.error = (result.error ?? "") + "\n" + ex; exitCode = 2;
+        }
+        File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(result, true));
+        Debug.Log("NBFX_LINE_PLAYER " + JsonUtility.ToJson(result));
+        Application.Quit(exitCode);
+    }
+    Context Setup()
+    {
+        if (!graphShader || !offAsset || !onAsset || !offShader || !onShader)
+            throw new Exception("Graph/VFX/shader reference missing");
+        if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.Metal ||
+            !SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf))
+            throw new Exception("Requires Metal and ARGBHalf RenderTexture");
+        var c = new Context();
+        try
+        {
+            c.cameraObject = new GameObject("NBFX line VFX camera");
+            c.camera = c.cameraObject.AddComponent<Camera>();
+            c.camera.orthographic = true; c.camera.orthographicSize = .5f;
+            c.camera.nearClipPlane = .1f; c.camera.farClipPlane = 20f;
+            c.camera.transform.position = new Vector3(0,0,8);
+            c.camera.transform.rotation = Quaternion.Euler(0,180,0);
+            c.camera.clearFlags = CameraClearFlags.SolidColor;
+            c.camera.backgroundColor = Color.black;
+            c.camera.allowHDR = true; c.camera.allowMSAA = false; c.camera.cullingMask = 1;
+            c.target = new RenderTexture(Size,Size,24,RenderTextureFormat.ARGBHalf,
+                RenderTextureReadWrite.Linear);
+            c.target.antiAliasing = 1; c.target.Create();
+            if (!c.target.IsCreated() || c.target.sRGB)
+                throw new Exception("Linear ARGBHalf target failed");
+            c.camera.targetTexture = c.target;
+            c.readback = new Texture2D(Size,Size,TextureFormat.RGBAHalf,false,true);
+            c.effects = new[] { CreateEffect("Off",offAsset), CreateEffect("On",onAsset) };
+            return c;
+        }
+        catch { Cleanup(c); throw; }
+    }
+    static VisualEffect CreateEffect(string name, VisualEffectAsset asset)
+    {
+        var go = new GameObject("NBFX line " + name);
+        go.layer = 0; go.transform.position = new Vector3(0,0,2);
+        go.transform.localScale = Vector3.one * 4f;
+        var effect = go.AddComponent<VisualEffect>();
+        effect.resetSeedOnPlay = false; effect.startSeed = 12345;
+        effect.visualEffectAsset = asset; effect.Reinit(); return effect;
+    }
+    static Color[] Capture(Context c, string path)
+    {
+        c.camera.Render();
+        var previous = RenderTexture.active;
+        try {
+            RenderTexture.active = c.target;
+            c.readback.ReadPixels(new Rect(0,0,Size,Size),0,0);
+            c.readback.Apply(false);
+            var colors = c.readback.GetPixels();
+            var preview = new Texture2D(Size,Size,TextureFormat.RGBA32,false,true);
+            try { preview.SetPixels(colors); preview.Apply(false);
+                File.WriteAllBytes(path, preview.EncodeToPNG()); }
+            finally { Destroy(preview); }
+            return colors;
+        }
+        finally { RenderTexture.active = previous; }
+    }
+    static float MaxRGB(Color a, Color b) => Mathf.Max(
+        Mathf.Abs(a.r-b.r),Mathf.Abs(a.g-b.g),Mathf.Abs(a.b-b.b));
+    static float MaxRGB(Color[] a, Color[] b)
+    {
+        float max=0; for(int i=0;i<a.Length;i++) max=Mathf.Max(max,MaxRGB(a[i],b[i]));
+        return max;
+    }
+    static int Changed(Color[] a, Color[] b, float tolerance)
+    {
+        int count=0;for(int i=0;i<a.Length;i++)if(MaxRGB(a[i],b[i])>tolerance)count++;
+        return count;
+    }
+    static float Median(List<float> values)
+    {
+        if(values.Count==0)throw new Exception("No safe numeric samples");
+        values.Sort();return values[values.Count/2];
+    }
+    static CaseInfo Describe(string name, int alive, bool culled, Shader shader,
+        Color[] black,Color[] white,Color[] frameBlack,Color[] frameWhite,
+        Color[] repeatBlack,Color[] repeatWhite,List<int> roi,Color[] offBlack)
+    {
+        var material=new Material(shader);
+        try {
+            var info=new CaseInfo {
+                name=name, alive=alive, culled=culled,
+                passCount=material.passCount,
+                opaquePass=material.FindPass("NBCameraOpaqueDistortPass"),
+                deferredPass=material.FindPass("NBDeferredDistortPass"),
+                visiblePixels=Changed(black,frameBlack,.02f),
+                repeatMaxRGB=Mathf.Max(MaxRGB(frameBlack,repeatBlack),
+                    MaxRGB(frameWhite,repeatWhite))
+            };
+            var alpha=new List<float>();var red=new List<float>();
+            var green=new List<float>();var blue=new List<float>();
+            foreach(int i in roi) {
+                if(MaxRGB(offBlack[i],frameBlack[i])>.04f)info.changedVsOffPixels++;
+                float a=0;
+                for(int ch=0;ch<3;ch++) {
+                    float denominator=white[i][ch]-black[i][ch];
+                    if(denominator<.8f)throw new Exception("Black/white clear delta too small");
+                    a+=1f-(frameWhite[i][ch]-frameBlack[i][ch])/denominator;
+                }
+                a/=3f;
+                if(a<.01f||a>1.05f)throw new Exception("Unphysical alpha "+a);
+                alpha.Add(a);
+                red.Add((frameBlack[i].r-(1-a)*black[i].r)/a);
+                green.Add((frameBlack[i].g-(1-a)*black[i].g)/a);
+                blue.Add((frameBlack[i].b-(1-a)*black[i].b)/a);
+            }
+            info.effectiveAlphaMedian=Median(alpha);
+            info.sourceRMedian=Median(red);
+            info.sourceGMedian=Median(green);
+            info.sourceBMedian=Median(blue);
+            return info;
+        }
+        finally { Destroy(material); }
+    }
+    void Run(Context c,string output,Result r)
+    {
+        r.linearTarget=!c.target.sRGB;
+        foreach(var effect in c.effects)effect.gameObject.layer=31;
+        c.camera.cullingMask=0;c.camera.backgroundColor=Color.black;
+        var black=Capture(c,Path.Combine(output,"black.png"));
+        c.camera.backgroundColor=Color.white;
+        var white=Capture(c,Path.Combine(output,"white.png"));
+        var fb=new Color[2][];var fw=new Color[2][];
+        var rb=new Color[2][];var rw=new Color[2][];
+        var alive=new int[2];var culled=new bool[2];
+        for(int i=0;i<2;i++) {
+            c.effects[i].gameObject.layer=0;c.camera.cullingMask=1;
+            string stem=Names[i].ToLowerInvariant();
+            c.camera.backgroundColor=Color.black;
+            fb[i]=Capture(c,Path.Combine(output,stem+"-black.png"));
+            rb[i]=Capture(c,Path.Combine(output,stem+"-black-repeat.png"));
+            c.camera.backgroundColor=Color.white;
+            fw[i]=Capture(c,Path.Combine(output,stem+"-white.png"));
+            rw[i]=Capture(c,Path.Combine(output,stem+"-white-repeat.png"));
+            alive[i]=(int)c.effects[i].GetParticleSystemInfo("Simple Loop").aliveCount;
+            culled[i]=c.effects[i].culled;
+            c.effects[i].gameObject.layer=31;
+        }
+        var roi=new List<int>();
+        for(int y=1;y<Size-1;y++)for(int x=1;x<Size-1;x++) {
+            bool safe=true;
+            for(int dy=-1;dy<=1&&safe;dy++)for(int dx=-1;dx<=1&&safe;dx++) {
+                int n=(y+dy)*Size+x+dx;
+                if(MaxRGB(black[n],fb[0][n])<.08f||
+                   MaxRGB(white[n],fw[0][n])<.08f)safe=false;
+            }
+            if(safe)roi.Add(y*Size+x);
+        }
+        r.roiPixels=roi.Count;
+        if(roi.Count<100)throw new Exception("Not enough safe particle pixels "+roi.Count);
+        r.off=Describe("Off",alive[0],culled[0],offShader,black,white,
+            fb[0],fw[0],rb[0],rw[0],roi,fb[0]);
+        r.on=Describe("On",alive[1],culled[1],onShader,black,white,
+            fb[1],fw[1],rb[1],rw[1],roi,fb[0]);
+        float maxBlack=0,minWhite=float.MaxValue;
+        foreach(int i in roi) {
+            maxBlack=Mathf.Max(maxBlack,black[i].r,black[i].g,black[i].b);
+            minWhite=Mathf.Min(minWhite,white[i].r,white[i].g,white[i].b);
+        }
+        r.blackBaselineMaxRGB=maxBlack;r.whiteBaselineMinRGB=minWhite;
+    }
+    static bool FixtureValid(Result r)
+    {
+        if(!r.linearTarget||r.roiPixels<100||r.blackBaselineMaxRGB>.05f||
+           r.whiteBaselineMinRGB<.9f)return false;
+        foreach(var c in new[]{r.off,r.on})
+            if(c==null||c.alive!=1||c.culled||c.visiblePixels<=100||
+               c.repeatMaxRGB>RepeatTolerance||c.passCount<3||
+               c.opaquePass!=1||c.deferredPass!=2)return false;
+        return true;
+    }
+    static bool NumericPass(Result r)
+    {
+        // The edge-color branch changes RGB, not alpha. Two cube faces make
+        // effective alpha higher than single-face alpha; compare Off/On instead.
+        return Mathf.Abs(r.on.effectiveAlphaMedian-r.off.effectiveAlphaMedian)<.035f &&
+            r.off.effectiveAlphaMedian>.2f&&r.off.effectiveAlphaMedian<.95f &&
+            r.on.sourceRMedian>r.off.sourceRMedian+.25f &&
+            r.on.sourceGMedian<r.off.sourceGMedian-.15f &&
+            r.on.sourceBMedian<r.off.sourceBMedian-.15f &&
+            r.on.changedVsOffPixels>=100;
+    }
+    static void Cleanup(Context c)
+    {
+        if(c==null)return;
+        if(c.camera)c.camera.targetTexture=null;
+        if(c.target){c.target.Release();Destroy(c.target);}
+        if(c.readback)Destroy(c.readback);
+        if(c.cameraObject)Destroy(c.cameraObject);
+        if(c.effects!=null)foreach(var effect in c.effects)
+            if(effect)Destroy(effect.gameObject);
+    }
+}

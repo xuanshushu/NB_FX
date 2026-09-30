@@ -1,0 +1,43 @@
+{
+    "unityVersion": "6000.3.18f1",
+    "graphicsDevice": "Metal",
+    "status": "PASS",
+    "error": "",
+    "note": "Single Cube/CullOff VFX particle, explicit linear gray133 DissolveMap; black/white linear pairs infer composite effective alpha and source RGB. Off/On differ solely in Flags1 bit5. Two visible faces are expected, so effective alpha is not the shader's per-face alpha.",
+    "linearTarget": true,
+    "fixtureValid": true,
+    "pass": true,
+    "roiPixels": 576,
+    "blackBaselineMaxRGB": 0.0,
+    "whiteBaselineMinRGB": 1.0,
+    "off": {
+        "name": "Off",
+        "alive": 1,
+        "passCount": 5,
+        "opaquePass": 1,
+        "deferredPass": 2,
+        "visiblePixels": 676,
+        "changedVsOffPixels": 0,
+        "culled": false,
+        "repeatMaxRGB": 0.0,
+        "effectiveAlphaMedian": 0.5897216796875,
+        "sourceRMedian": 0.25067272782325747,
+        "sourceGMedian": 0.5013454556465149,
+        "sourceBMedian": 0.6267853379249573
+    },
+    "on": {
+        "name": "On",
+        "alive": 1,
+        "passCount": 5,
+        "opaquePass": 1,
+        "deferredPass": 2,
+        "visiblePixels": 676,
+        "changedVsOffPixels": 576,
+        "culled": false,
+        "repeatMaxRGB": 0.0,
+        "effectiveAlphaMedian": 0.5895182490348816,
+        "sourceRMedian": 0.9997238516807556,
+        "sourceGMedian": 0.0,
+        "sourceBMedian": 0.0
+    }
+}
