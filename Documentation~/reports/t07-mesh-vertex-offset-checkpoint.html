@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 顶点位移与主颜色修正</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="t07-mesh-blend-clip-checkpoint.html">前序混合与裁剪</a> · <a href="../decisions.html#d24">D24：普通 Mesh 在前</a></p>
+<h1>普通 Mesh 顶点位移与主颜色修正</h1>
+<p><strong>人话结论：</strong>Graph 现在能像现有 NBShader 一样，按自定义方向、法线、顶点颜色或贴图颜色移动网格顶点。<strong>14 项普通 Mesh 对照全部通过，整张测试图的 RGBA 差为 0。</strong>初次失败不是细微色差，而是 Graph 的主颜色被错误地再转换了一次、明显变暗；改正主颜色的 HDR 属性后，用完全相同的测试通过。<strong>本片仅证明以下顶点位移场景，不表示所有 Mesh 功能已经完成。</strong></p>
+<p>2026-10-01；固定产品提交 <code>64308ec</code>，输入提交 <code>58f2048</code>。Unity 6000.3.18f1 / URP、SG、VFX 包 17.3 / Metal / RenderGraph。主 Agent 使用独占隔离 clone CLI，unityMCP 当时不可调用；主工程未打开。本轮没有真正 VFX 或 Player 测试，按 D24 先完成普通 Mesh 完整对照。</p>
+<h2>本片范围：让顶点移动，不是新增一套算法</h2>
+<ul>
+<li>Graph 只增加输入适配，调用原有 <code>NBFX_ComputeVertexOffsetOSV1</code>。支持本片的四种方向；RGB 方向需要按世界空间转换时，保留原算法不做额外归一化。</li>
+<li>位移贴图和遮罩各自取 UV，保留原 ST 缩放平移、动画顺序、通道、Wrap 和半精度赋值边界。顶点用 LOD0 采样；与表面共享已有采样器实现，不复制另一套。表面的 HDR 贴图解码继续保留。</li>
+<li>仅修改位置；法线和切线原样传递。旧 ShaderLab 的 GeometryV1、UVV1、Forward 和 Shader 源码与输入提交字节相同；本片不为 Frozen ShaderLab 加入新功能。</li>
+</ul>
+<h2>实际运行与原始数据</h2>
+<p>这里的 B/C 指<strong>现有 ShaderLab / 候选 Graph</strong>，不是 Frozen / 当前的 A/B。图像是 128×128 linear RGBAHalf；数值比较读取 raw，不用 PNG 肉眼判断。此片严格比较整张图的 16,384 个像素，而不是只比较内部区域。</p>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>实测结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>顶点位移 7 配置 × 正交/透视</td><td><strong>14/14 通过。</strong>开启态、强度为 0 的关闭对照、6 项遮罩关闭对照，B/C 全帧 RGBA 差均为 0；开启态重复渲染差为 0，所有实际 raw 捕获均为有限数。</td><td><a href="t07-evidence/vertex-offset-20261001/results.xml">649 项 XML</a> · <a href="t07-evidence/vertex-offset-20261001/summary.json">14 项指标</a> · <a href="t07-evidence/vertex-offset-20261001/raw-fullframe-audit.json">独立 raw 全帧核对</a></td></tr>
+<tr><td>必须真的发生位移、遮罩必须真的有用</td><td>开启位移与强度 0 至少改变 <strong>313 像素</strong>，原门槛是 &gt;50；开启/关闭遮罩至少改变 <strong>288 像素</strong>，原门槛是 &gt;30。旧 Shader 与 Graph 都满足，不是两边同样没生效造成“0 差”。</td><td><a href="t07-evidence/vertex-offset-20261001/cases/normal-map1-uv2-mask8-shared-perspective/metrics.json">最弱响应样例</a></td></tr>
+<tr><td>合并运行 649 项</td><td><strong>627 通过 / 22 严格失败，无 skip，退出 2。</strong>顶点 14 项全通过；既有 635 项是 613 通过 / 22 失败。22 个失败仍为主 UV 3 项和功能 UV 19 项，名单未改变，不扩张 D23 例外，也未改写为通过。</td><td><a href="t07-evidence/vertex-offset-20261001/unity.log.gz">完整运行日志</a></td></tr>
+<tr><td>635 项旧回归的数据是否仍一样</td><td><strong>6542 个 PNG/raw payload 全部与前序归档一致，未匹配或不同为 0。</strong>分别映射 G2/G4 Noise 命名空间后，逐文件比较 PNG 字节或解压后的 float32 RGBA 字节。只引用核验一致的前序 N2/Blend 证据，不重复存放 635 项完整图片；本轮指标、材质和 Preview 快照保留。回归中的屏幕 13 项仍是 11 项真 B/C + 2 项 Graph 备用输入等价检查，不是 13 项 B/C。</td><td><a href="t07-evidence/vertex-offset-20261001/regression/capture-equivalence.json">635 目录及 6542 项 hash/前序路径</a></td></tr>
+</tbody></table>
+<h2>初次失败：主颜色被变暗，已修正产品，未放宽夹具</h2>
+<p>初次 649 项是 613 通过 / 36 失败，新增顶点 14 项全部失败，另有原来的 22 个 UV 失败。给两边设置同一个颜色 <code>(0.9, 0.25, 0.13)</code>，实际图中旧 Shader 约为 <code>(0.900, 0.250, 0.130)</code>，Graph 却约为 <code>(0.787, 0.051, 0.015)</code>。<strong>这不是 1/256 的微差，而是主颜色的类型设置错了，颜色又做了一次转换。</strong></p>
+<p>旧 Shader 的主颜色是 <code>[HDR] _BaseColor</code>，Graph 的 Color 属性当时仍为 LDR。产品仅将这个 Color 对象的 <code>m_ColorMode</code> 从 0 改为 1，匹配 HDR。对初次与最终 5 份源码的核对发现：Graph 对象语义只改了这一字段，顶点宿主、采样器、表面 CF 和测试源码字节完全相同；<strong>没有更换测试颜色、简化场景或调整阈值。</strong></p>
+<p><a href="t07-evidence/vertex-offset-20261001/hdr-correction/summary.json">初次 raw 颜色及源码逐项比对</a> · <a href="t07-evidence/vertex-offset-20261001/hdr-correction/v1/results.xml">初次 36 失败 XML</a> · <a href="t07-evidence/vertex-offset-20261001/hdr-correction/v1/unity.log.gz">初次运行日志</a> · <a href="t07-evidence/vertex-offset-20261001/hdr-correction/v1/source-sha256.txt">修正前 5 份源码 hash</a>。</p>
+<p>修正前的 14 项 raw/PNG 均保留。6 项带遮罩测试先在“遮罩关闭也必须 B/C 一致”的断言处失败，还没保存指标文件；<strong>这些初次 metrics 缺失如实记录，没有补造。</strong>可看同一例的 <a href="t07-evidence/vertex-offset-20261001/hdr-correction/v1/cases/custom-map0-ortho/C-on.png">修正前 Graph 图片</a>、<a href="t07-evidence/vertex-offset-20261001/cases/custom-map0-ortho/C-on.png">修正后 Graph 图片</a>；PNG 仅辅助查看，严格数值证据在 raw。</p>
+<h2>覆盖到哪里，还有哪里没测</h2>
+<ul>
+<li><strong>只测旋转且非均匀缩放的 Quad，没有曲面网格。</strong>旋转为 (7,34,3)，缩放为 (1.2,1.1,1.7)；正交与透视相机各 7 例。</li>
+<li>四种位移方向、UV source 0/1/2/8、独立位移/遮罩 UV、UV0.zw/UV1/UV2、Twirl、SharedUV、非单位 ST、StartFromZero 和部分 Wrap 组合已覆盖。位移取 G 通道，遮罩取 B 通道；<strong>不是四通道或全部 Wrap 的穷举证明。</strong></li>
+<li>其他位置/屏幕/柱面/MainTex 等位移 UV source 尚未接入：当前宿主返回“不支持”并保持输入位置，不会假装用 UV0 替代。剩余适配和 GUI 提示仍待实现与验证，不因此削减完整功能目标。</li>
+<li>本片不是 VAT、CustomLocalTransform、CustomData 或真正 VFX 验证；也不证明曲面法线、光照、Depth/Shadow 等其他链路、GUI 持久化、所有组合、HDR 材质迁移、Player、SRP Batcher、变体或性能。</li>
+<li>捕获前预热四帧，仅证明稳态，不证明冷首帧。重复捕获只针对开启态；强度 0 和遮罩关闭没有各自的重复捕获。</li>
+<li><strong>完整 G3/G4 尚未完成、未放行。</strong>未跑完整 NBPostprocess Controller / Manager → 正式 RT 收集 → 最终合成链；历史 VFX 证据仅作探索，不能代替普通 Mesh 或后续正式 VFX Gate。</li>
+</ul>
+<h2>固定源码、重放及保护边界</h2>
+<p><a href="t07-evidence/vertex-offset-20261001/README.txt">重放输入与 CLI</a> · <a href="t07-evidence/vertex-offset-20261001/product-source/commit.json">提交的准确 8 路径 + 2 原始 helper</a> · <a href="t07-evidence/vertex-offset-20261001/product-source/Tests/URP/Editor/G4GraphVertexOffsetTests.cs.gz">固定测试源码</a> · <a href="t07-evidence/vertex-offset-20261001/product-source/NBShaders2/ShaderGraph/NBGraphVertexOffset.hlsl.gz">固定顶点宿主源码</a> · <a href="t07-evidence/vertex-offset-20261001/input-sha256.txt">固定输入源码 hash</a> · <a href="t07-evidence/vertex-offset-20261001/sha256.txt">全部附件 hash</a>。</p>
+<p>源码从 <code>git show 64308ec:&lt;path&gt;</code> 提取，不读取随后其他切片的工作区版本。修正前/后导入日志均保留：<a href="t07-evidence/vertex-offset-20261001/hdr-correction/v1/import.log.gz">初次导入</a>、<a href="t07-evidence/vertex-offset-20261001/import.log.gz">HDR 修正导入</a>；两次运行及两次导入日志均无 error CS / Shader error，退出 2 是保留的断言失败。</p>
+<p><a href="t07-evidence/vertex-offset-20261001/protected-settings-audit.json">隔离 clone 保护设置 3/3 hash</a>与前序 Blend 归档一致；主 Agent 记录本片未开主工程、未改官方包、UniversalTarget 或原 NBPostprocess。归档 Agent 只整理证据与本报告，未启动 Unity，未改产品/Test/中央索引，未提交或 push。</p>
+<p><strong>审核建议：</strong>可以记录以上限定普通 Mesh 顶点位移切片完成，但不放行完整 G3/G4；继续普通 Mesh 后续功能与最终人工验收清单。</p>
+</body></html>

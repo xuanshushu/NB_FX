@@ -1,0 +1,317 @@
+{
+  "missingInitialMetrics": [
+    "custom-map8-shared-twirl-mask2-ortho",
+    "custom-map8-shared-twirl-mask2-perspective",
+    "normal-map1-uv2-mask8-shared-ortho",
+    "normal-map1-uv2-mask8-shared-perspective",
+    "texture-world-map0-mask1-uv0zw-ortho",
+    "texture-world-map0-mask1-uv0zw-perspective"
+  ],
+  "missingCount": 6,
+  "reason": "Six mask cases assert strict mask-off B/C before saving metrics. Their raw captures and XML assertion failures are preserved; missing metrics are not fabricated.",
+  "sourceComparison": [
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
+      "identicalToFinal": true,
+      "preSha256": "cb495bb2dfd7ba40e7cf9b8abf96a2cda1e13aa9ca3d50b63b2cab73a63a8a3b",
+      "finalSha256": "cb495bb2dfd7ba40e7cf9b8abf96a2cda1e13aa9ca3d50b63b2cab73a63a8a3b"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphSampling.hlsl",
+      "identicalToFinal": true,
+      "preSha256": "f859b9b61e4cc51ce61f59d39750199f674388e92ea66371325784f35e3da758",
+      "finalSha256": "f859b9b61e4cc51ce61f59d39750199f674388e92ea66371325784f35e3da758"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphVertexOffset.hlsl",
+      "identicalToFinal": true,
+      "preSha256": "e9ef0af1b77e7179d8ec83a77867d58359348f2483901d7bdfd687450f9930a5",
+      "finalSha256": "e9ef0af1b77e7179d8ec83a77867d58359348f2483901d7bdfd687450f9930a5"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+      "identicalToFinal": false,
+      "preSha256": "beb8d5143be1d210f898467725589841eea7134d80becdde3731b29e13141332",
+      "finalSha256": "ece1723b4be046248a1bf04838b2ad6e4334cb6f80f24757bebe5bd714ce2b5b"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphVertexOffsetTests.cs",
+      "identicalToFinal": true,
+      "preSha256": "301e39065780c9245e27f7b57af1bcec5bfca2b1b1ae007b54a0e3a7152491af",
+      "finalSha256": "301e39065780c9245e27f7b57af1bcec5bfca2b1b1ae007b54a0e3a7152491af"
+    }
+  ],
+  "onlyGraphObjectChange": [
+    {
+      "objectId": "e45731e3fcc249f8b23037c163d74165",
+      "name": "Color",
+      "referenceName": "_Color",
+      "changedFields": [
+        {
+          "field": "m_ColorMode",
+          "before": 0,
+          "after": 1
+        }
+      ]
+    }
+  ],
+  "legacyDependenciesUnchanged": [
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderGeometryV1.hlsl",
+      "unchangedFromInput": true,
+      "sha256": "36cd42e949ac9dd64e8804906d751e2a522e75d42eff8f3ec6c5abb603455c6b"
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderUVV1.hlsl",
+      "unchangedFromInput": true,
+      "sha256": "18760e871fe6ff409346b880dc9e7c431fdac533eff9f0d65a5fd2d67fd914c8"
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "unchangedFromInput": true,
+      "sha256": "609cc1456a34d742d84200780741a4c6cf0cc4d05443d87fb65c7909fc671af0"
+    },
+    {
+      "path": "NBShaders2/Shader/NBShader.shader",
+      "unchangedFromInput": true,
+      "sha256": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00"
+    }
+  ],
+  "initialExampleRaw": {
+    "caseId": "custom-map0-ortho",
+    "pixelIndex": 4306,
+    "ShaderLabRGB": [
+      0.89990234375,
+      0.25,
+      0.1298828125
+    ],
+    "GraphRGB": [
+      0.787109375,
+      0.050872802734375,
+      0.01531982421875
+    ],
+    "authoredRGB": [
+      0.9,
+      0.25,
+      0.13
+    ]
+  },
+  "rootCause": "Graph main Color was LDR (m_ColorMode0), causing additional gamma-to-linear conversion in this linear render setup; legacy _BaseColor is [HDR]. Product fixes Color metadata to HDR (m_ColorMode1). Not a microdifference; tests and sampler/vertex arithmetic are unchanged.",
+  "initialResults": {
+    "total": 649,
+    "passed": 613,
+    "failed": 36,
+    "skipped": 0,
+    "result": "Failed(Child)",
+    "startUTC": "2026-09-30 18:12:49Z",
+    "endUTC": "2026-09-30 18:15:01Z",
+    "fixtures": [
+      {
+        "name": "G2TextureNoiseExtractionTests",
+        "total": 92,
+        "passed": 92,
+        "failed": 0
+      },
+      {
+        "name": "G4GraphAdvancedUVTests",
+        "total": 22,
+        "passed": 19,
+        "failed": 3
+      },
+      {
+        "name": "G4GraphBlendClipTests",
+        "total": 48,
+        "passed": 48,
+        "failed": 0
+      },
+      {
+        "name": "G4GraphFeatureUVTests",
+        "total": 96,
+        "passed": 77,
+        "failed": 19
+      },
+      {
+        "name": "G4GraphMeshParityTests",
+        "total": 92,
+        "passed": 92,
+        "failed": 0
+      },
+      {
+        "name": "G4GraphRenderStateTests",
+        "total": 30,
+        "passed": 30,
+        "failed": 0
+      },
+      {
+        "name": "G4GraphSamplingTests",
+        "total": 63,
+        "passed": 63,
+        "failed": 0
+      },
+      {
+        "name": "G4GraphScreenNoiseTests",
+        "total": 13,
+        "passed": 13,
+        "failed": 0
+      },
+      {
+        "name": "G4GraphTextureNoiseTests",
+        "total": 179,
+        "passed": 179,
+        "failed": 0
+      },
+      {
+        "name": "G4GraphVertexOffsetTests",
+        "total": 14,
+        "passed": 0,
+        "failed": 14
+      }
+    ],
+    "failures": [
+      {
+        "caseId": "G4AdvancedUVBC_shared-default_ortho",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  1\n"
+      },
+      {
+        "caseId": "G4AdvancedUVBC_shared-special-uv2_ortho",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  1\n"
+      },
+      {
+        "caseId": "G4AdvancedUVBC_shared-special-uv2_perspective",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  1\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_mask1_special-uv1_perspective",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  10\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_mask1_special-uv2_ortho",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  2\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_mask1_special-uv2_perspective",
+        "message": "  Strict off-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  1\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_mask2_special-uv1_perspective",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  10\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_mask2_special-uv2_ortho",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  2\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_mask2_special-uv2_perspective",
+        "message": "  Strict off-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  1\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_mask3_special-uv1_perspective",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  10\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_mask3_special-uv2_ortho",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  2\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_mask3_special-uv2_perspective",
+        "message": "  Strict off-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  1\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_overlay1_special-uv1_perspective",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  2\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_overlay2_special-uv1_perspective",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  3\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_overlay2_special-uv2_ortho",
+        "message": "  Strict off-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  1\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_color-ramp_special-uv1_perspective",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  10\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_color-ramp_special-uv2_ortho",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  2\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_color-ramp_special-uv2_perspective",
+        "message": "  Strict off-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  1\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_dissolve_special-uv1_perspective",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  10\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_dissolve_special-uv2_ortho",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  2\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_dissolve_special-uv2_perspective",
+        "message": "  Strict off-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  1\n"
+      },
+      {
+        "caseId": "G4FeatureUVBC_dissolve-mask_special-uv2_ortho",
+        "message": "  Strict on-state RGBA Mesh B/C mismatch.\n  Expected: 0\n  But was:  1\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_custom-map0_ortho",
+        "message": "  Strict displaced Mesh B/C mismatch.\n  Expected: 0\n  But was:  3438\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_custom-map0_perspective",
+        "message": "  Strict displaced Mesh B/C mismatch.\n  Expected: 0\n  But was:  1273\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_normal-map1-uv1_ortho",
+        "message": "  Strict displaced Mesh B/C mismatch.\n  Expected: 0\n  But was:  3248\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_normal-map1-uv1_perspective",
+        "message": "  Strict displaced Mesh B/C mismatch.\n  Expected: 0\n  But was:  1165\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_color-map2-twirl_ortho",
+        "message": "  Strict displaced Mesh B/C mismatch.\n  Expected: 0\n  But was:  3374\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_color-map2-twirl_perspective",
+        "message": "  Strict displaced Mesh B/C mismatch.\n  Expected: 0\n  But was:  1281\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_color-world-map8-shared-uv2_ortho",
+        "message": "  Strict displaced Mesh B/C mismatch.\n  Expected: 0\n  But was:  3371\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_color-world-map8-shared-uv2_perspective",
+        "message": "  Strict displaced Mesh B/C mismatch.\n  Expected: 0\n  But was:  1394\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_texture-world-map0-mask1-uv0zw_ortho",
+        "message": "  Mask-off control must also be strict B/C.\n  Expected: 0\n  But was:  4837\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_texture-world-map0-mask1-uv0zw_perspective",
+        "message": "  Mask-off control must also be strict B/C.\n  Expected: 0\n  But was:  2115\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_custom-map8-shared-twirl-mask2_ortho",
+        "message": "  Mask-off control must also be strict B/C.\n  Expected: 0\n  But was:  3633\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_custom-map8-shared-twirl-mask2_perspective",
+        "message": "  Mask-off control must also be strict B/C.\n  Expected: 0\n  But was:  1293\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_normal-map1-uv2-mask8-shared_ortho",
+        "message": "  Mask-off control must also be strict B/C.\n  Expected: 0\n  But was:  3506\n"
+      },
+      {
+        "caseId": "G4VertexOffsetBC_normal-map1-uv2-mask8-shared_perspective",
+        "message": "  Mask-off control must also be strict B/C.\n  Expected: 0\n  But was:  1279\n"
+      }
+    ]
+  }
+}

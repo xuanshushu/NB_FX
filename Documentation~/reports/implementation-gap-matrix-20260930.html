@@ -38,6 +38,7 @@
 
 <p>采样协议后续补齐：<a href="t07-mesh-sampling-protocol-checkpoint.html">10 类已接入纹理的四种 Wrap/ForceNoMip 63 项 B/C 严格 ROI 0 差，92 项表面/Preview 回归通过</a>。当前默认 UV0 由 UVMaterialSlot 自动提供，无显式 edge 不代表零 UV；未接入的是 packed 可选路由/高级流，不应误判普通 UV0 不可用。</p>
 <p><strong>2026-10-01 普通 Mesh 增量（不覆盖历史快照）：</strong><a href="t07-mesh-texture-noise-checkpoint.html">纹理 Noise/Mask/独立 UV/采样 179 项严格通过</a>，原共享解码 <a href="t07-texture-noise-extraction-checkpoint.html">92 项 Frozen 对照通过</a>；<a href="t07-mesh-render-state-checkpoint.html">ColorMask/Stencil 30 项严格通过</a>。Noise 179 项未测屏幕 RT 的纹理传递、CustomData/PNoise/Refraction/色差；Stencil 30 项只证明普通 Forward 的受控矩阵，不证明所有 Pass/Portal/高级操作。395 项回归仍是 373 通过/22 已知 UV 微差，3376 个捕获与前序相同。继续普通 Mesh，G3/G4 未放行。</p>
+<p><strong>2026-10-01 顶点增量：</strong><a href="t07-mesh-vertex-offset-checkpoint.html">四种方向顶点位移 14 项整张 RGBA 0 差</a>；649 项回归 627 通过/22 既有 UV 严格失败。修正了 Graph 主颜色 HDR 类型；VAT、其它几何输入/UV、曲面与完整光照/阴影组合仍待补齐，不能沿用上表“顶点输出完全未接入”的旧快照作为当前状态。</p>
 <h2>跨组未验证项与现有异常</h2>
 <ul>
 <li>Graph 是当前包内 <code>.asmref + UniversalSubTarget</code> 候选，耦合 URP 17.3 的 Editor/internal API；不是跨版本或 URP 缺席安装证明。VFX Output 的实际 Inspector 仍是官方 <code>VFXShaderGraphUnlitGUI</code>，并非完整 NB GUI。</li>
