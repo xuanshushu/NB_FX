@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 共享 GUI 存储接缝</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：普通 Mesh 在前</a></p>
+<h1>普通 Mesh：让现有 GUI 后台正确读写 Graph 参数</h1>
+<p><strong>人话结论：</strong>现有 NBShader 界面使用的“打包开关、渐变和纹理缩放平移”后台，现在能正确保存 Graph 材质的数据。<strong>46 项实际测试全部通过</strong>，包括开关最高位、不会误改旁边的位，以及真实 GPU 对半字数据的读取。<strong>这只是把后台存储接上，不是完整 Inspector 已做好。</strong>可见界面、功能按钮与 Tier/Pass 同步、保存重导入等仍需后续接线和测试。</p>
+<p>2026-10-01；固定产品提交 <code>033b29f94994c0fd8b8ca25a0999c96a5427d1b6</code>。Unity 6000.3.18f1 / 当前 URP、SG 17.3 / Metal Apple M3 Pro。主 Agent 独占隔离 clone 用 CLI 导入和测试，unityMCP 当时不可调用；归档 Agent 未启动 Unity。按 D24，本轮只针对普通 Mesh 的材质后台，没有真正 VFX 或 Player 测试。</p>
+<h2>改了什么：复用原后台，不另做一套界面或协议</h2>
+<ul>
+<li>原 <code>ShaderFlagsBase</code> 的公开方法继续使用同一实现，只加入可覆写的 word 读写接缝。旧材质和所有 MaterialPropertyBlock 仍直接读写原整数，不把旧整数转成 Float。</li>
+<li>普通 Graph Material 使用其<strong>已有的两个 16 位 Float 半字</strong>保存每个 32 位 word：Flags0/1、Wrap、通道、PNoise、NoMip 和两个 UV word。保留 bit31 和不相关位，不增加影子整数属性，也不新增关键词。</li>
+<li>原渐变控件的 Count 可读取原 Integer 或 Graph Float；原纹理控件可显式绑定 Graph 的 <code>_BaseMap_ST</code> Vector。普通贴图默认 native ST、MatCap 不出现 ST 的行为不变。<strong>该能力尚未等于正式 Graph Root 已调用全部原控件。</strong></li>
+<li>固定提交只改 4 个原 C# 文件与新测试/meta，未改 ShaderLab、HLSL、CBUFFER、Graph、asmdef、AssemblyInfo、官方包、Target 或 NBPostprocess。</li>
+</ul>
+<h2>46 项到底测了什么</h2>
+<table border="1" cellpadding="6"><thead><tr><th>范围</th><th>实际项数</th><th>检查内容</th></tr></thead><tbody>
+<tr><td>原/Graph 的 6 个映射 word</td><td>12</td><td>每个 word 的全部 32 位设置、清除、读回、重复；bit31 与不相关位保留。</td></tr>
+<tr><td>原整数路径、MPB、null 与换材质</td><td>5</td><td>原 Material 的 9 个整数 word；两种宿主的 MPB 始终原整数；null 旧语义、SetMaterial 不缓存错误宿主。</td></tr>
+<tr><td>有限异常半字值 + 真实 Mesh GPU 解码</td><td>14</td><td>13 个有限边界值分别放低/高半字；真实 GPU 再检查 32 对输入，每对渲染两次。</td></tr>
+<tr><td>UV / Channel、Wrap、NoMip / PNoise 存储</td><td>6</td><td>两个宿主：UV 的 16 个位置×9值；10通道字段、16 Wrap 位对、18 NoMip 位；PNoise 5个三位字段×0..5。</td></tr>
+<tr><td>原共享渐变 Count、纹理 ST 与 Reset</td><td>6</td><td>原 Integer / Graph Float Count、颜色/透明度 keys 与 Count 边界；native ST / vector ST 与 MatCap 无 ST。</td></tr>
+<tr><td>多材质存储</td><td>3</td><td>两对象各自的 word Undo/Redo、两对象 Count/ST 写入。Undo 由测试调用者记录，不代表整套 GUI 回调事务已接好。</td></tr>
+</tbody></table>
+<p><strong>实际 46/46 通过，failed/skipped/inconclusive 均为 0；测试日志明确退出 0。</strong>项数从 XML 中实际执行的 46 个 <code>test-case</code> 与固定测试源码核对，不把其它被发现但未执行的测试套件算进来。<a href="t07-evidence/gui-storage-20261001/results.xml">完整 XML</a> · <a href="t07-evidence/gui-storage-20261001/summary.json">逐项名称与分组</a> · <a href="t07-evidence/gui-storage-20261001/unity.log.gz">完整日志</a> · <a href="t07-evidence/gui-storage-20261001/import.log.gz">导入日志</a>。</p>
+<h2>GPU 检查不是“CPU 自己算给自己看”</h2>
+<p>测试在内存创建一个小 Shader，直接 include 产品原有 <code>NBGraphFlags.hlsl</code>，用 <code>CommandBuffer.DrawMesh</code> 渲染 Quad 到 1×1 linear ARGBFloat，并用 RGBAFloat 读回。四个通道分别输出低16位、高16位、bit31和bit0；32 对有限输入包含 <code>0.5 / 1.5 / 2.5 / 32767.5 / 65534.5</code> 等边界。<strong>真实 GPU 与 CPU word 的四通道严格相等</strong>，相同输入第二次捕获也严格相等，并要求不同输入产生不同输出，防止夹具根本未生效。</p>
+<p><a href="t07-evidence/gui-storage-20261001/mesh-word-probe.json">32 条实际首捕获读回</a>从 XML 原日志提取，且与 Unity 日志 32 条完全一致。<strong>第二次读回只有测试内存断言，没有另存 raw/PNG。</strong>不能说归档了 64 份原始像素，也不能把这个 1×1 word 单元检查说成完整 Graph 表面渲染、Frozen/当前 A/B 或 ShaderLab/Graph B/C 图像对照。</p>
+<h2>尚未证明，不能偷换成“完整 GUI 通过”</h2>
+<ul>
+<li>UV0..8、PNoise0..5 是<strong>存储边界检查</strong>，不是所有 UV 来源都已接入渲染。PNoise 实际命名枚举仍是 0..3；4/5 只保留原字段/默认回退，不新增效果或界面选项。</li>
+<li>半字读取只做有限值 clamp/round，不自动改写原小数材质值；显式写入才规范化。NaN 的原 HLSL 转换未定义，正负 Infinity 未测，不声称它们 CPU/GPU 等价。</li>
+<li>MPB 即使拥有者是 Graph，也仍写原整数属性；<strong>不代表 Graph MPB 渲染协议已支持</strong>。</li>
+<li>可见 Inspector、同一完整 Root 接入、整套 callback/seed Undo、多选混合绘制、保存及重导入持久化、Tier 有效功能投影、Pass/keyword 状态、完整 Surface 对照仍待完成。</li>
+<li>新增 optional 构造参数对现有源码调用兼容，但 CLR 构造签名发生变化，预编译调用方需重编译；跨版本/安装兼容仍按 D21 留后续。</li>
+<li><strong>普通 Mesh 完整 G3/G4 尚未完成、未放行。</strong>没有完整 NBPostprocess Controller/Manager → 正式 RT → 最终合成链、性能/变体/SRP Batcher、冷首帧、真正 VFX 或 Player 的验收结论。</li>
+</ul>
+<h2>固定源码与保护边界</h2>
+<p><a href="t07-evidence/gui-storage-20261001/product-source/commit.json">固定提交准确6路径与7个未改输入快照</a> · <a href="t07-evidence/gui-storage-20261001/product-source/Tests/URP/Editor/G4GraphGuiStorageTests.cs.gz">固定测试源码</a> · <a href="t07-evidence/gui-storage-20261001/input-source/NBShaders2/ShaderGraph/NBGraphFlags.hlsl.gz">实际 HLSL helper</a> · <a href="t07-evidence/gui-storage-20261001/input-sha256.txt">固定输入 hash</a> · <a href="t07-evidence/gui-storage-20261001/sha256.txt">全部附件 hash</a> · <a href="t07-evidence/gui-storage-20261001/README.txt">重放命令与完整边界</a>。</p>
+<p>13 份源码从 <code>git show 033b29f:&lt;path&gt;</code> 固定提取，gzip 解压后 SHA256 全部逐项核对，不读取主 Agent 随后其它功能的工作区版本。候选阶段的 <a href="t07-evidence/gui-storage-20261001/preparation/README.txt.gz">历史 README</a>、离线编译 rsp/log 保留；其当时“未集成/未Unity”的说明属历史状态，现在由本次提交与 46 项实际 XML 取代。离线 exit0 不冒充 Unity 验证，不把 dll/pdb 当产品归档。</p>
+<p>导入和测试均无 <code>error CS</code> / <code>Shader error</code>；保留原网络/授权/退出警告，不说“日志没有任何警告”。<a href="t07-evidence/gui-storage-20261001/protected-settings-audit.json">隔离 clone 保护设置 3/3 hash</a>与前序顶点位移归档一致。归档 Agent 仅改本片报告/证据，未改产品/Test/中央索引，未启动 Unity，未提交或 push。</p>
+<p><strong>审核建议：</strong>记录“GUI 存储接缝通过”，继续同一共享 Root/Context/Sync 的构造与功能接线，最后集中人工看 Inspector；不以本片放行完整 GUI 或 G3/G4。</p>
+</body></html>

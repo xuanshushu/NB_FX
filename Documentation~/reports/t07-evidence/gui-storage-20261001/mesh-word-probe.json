@@ -1,0 +1,590 @@
+{
+  "source": "results.xml output; 32 records exactly also found in unity.log.gz",
+  "target": "1x1 linear ARGBFloat; Texture2D RGBAFloat, actual CommandBuffer.DrawMesh quad",
+  "helper": "actual NBGraphDecodeUInt32 from fixed input NBGraphFlags.hlsl",
+  "pairs": 32,
+  "rendersPerPair": 2,
+  "loggedReadbacksPerPair": 1,
+  "repeatEvidence": "strict finite RGBA assertion inside passed test; repeat pixels not separately logged or raw-archived",
+  "positiveControl": "test asserts distinct output between inputs",
+  "loggedCpuVsGpuStrictEqual": true,
+  "rows": [
+    {
+      "inputLo": -17.0,
+      "inputHi": 49153.0,
+      "cpuWord": 3221291008,
+      "loggedGpuRGBA": [
+        0.0,
+        49153.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        0,
+        49153,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": -17.0,
+      "cpuWord": 21931,
+      "loggedGpuRGBA": [
+        21931.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        0,
+        0,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": -0.5,
+      "inputHi": 49153.0,
+      "cpuWord": 3221291008,
+      "loggedGpuRGBA": [
+        0.0,
+        49153.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        0,
+        49153,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": -0.5,
+      "cpuWord": 21931,
+      "loggedGpuRGBA": [
+        21931.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        0,
+        0,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 0.0,
+      "inputHi": 49153.0,
+      "cpuWord": 3221291008,
+      "loggedGpuRGBA": [
+        0.0,
+        49153.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        0,
+        49153,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 0.0,
+      "cpuWord": 21931,
+      "loggedGpuRGBA": [
+        21931.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        0,
+        0,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 0.49,
+      "inputHi": 49153.0,
+      "cpuWord": 3221291008,
+      "loggedGpuRGBA": [
+        0.0,
+        49153.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        0,
+        49153,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 0.49,
+      "cpuWord": 21931,
+      "loggedGpuRGBA": [
+        21931.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        0,
+        0,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 0.5,
+      "inputHi": 49153.0,
+      "cpuWord": 3221291008,
+      "loggedGpuRGBA": [
+        0.0,
+        49153.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        0,
+        49153,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 0.5,
+      "cpuWord": 21931,
+      "loggedGpuRGBA": [
+        21931.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        0,
+        0,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 0.51,
+      "inputHi": 49153.0,
+      "cpuWord": 3221291009,
+      "loggedGpuRGBA": [
+        1.0,
+        49153.0,
+        1.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        1,
+        49153,
+        1,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 0.51,
+      "cpuWord": 87467,
+      "loggedGpuRGBA": [
+        21931.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        1,
+        0,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 1.5,
+      "inputHi": 49153.0,
+      "cpuWord": 3221291010,
+      "loggedGpuRGBA": [
+        2.0,
+        49153.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        2,
+        49153,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 1.5,
+      "cpuWord": 153003,
+      "loggedGpuRGBA": [
+        21931.0,
+        2.0,
+        0.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        2,
+        0,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 2.5,
+      "inputHi": 49153.0,
+      "cpuWord": 3221291010,
+      "loggedGpuRGBA": [
+        2.0,
+        49153.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        2,
+        49153,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 2.5,
+      "cpuWord": 153003,
+      "loggedGpuRGBA": [
+        21931.0,
+        2.0,
+        0.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        2,
+        0,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 32767.5,
+      "inputHi": 49153.0,
+      "cpuWord": 3221323776,
+      "loggedGpuRGBA": [
+        32768.0,
+        49153.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        32768,
+        49153,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 32767.5,
+      "cpuWord": 2147505579,
+      "loggedGpuRGBA": [
+        21931.0,
+        32768.0,
+        1.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        32768,
+        1,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 65534.5,
+      "inputHi": 49153.0,
+      "cpuWord": 3221356542,
+      "loggedGpuRGBA": [
+        65534.0,
+        49153.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        65534,
+        49153,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 65534.5,
+      "cpuWord": 4294858155,
+      "loggedGpuRGBA": [
+        21931.0,
+        65534.0,
+        1.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        65534,
+        1,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 65535.0,
+      "inputHi": 49153.0,
+      "cpuWord": 3221356543,
+      "loggedGpuRGBA": [
+        65535.0,
+        49153.0,
+        1.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        65535,
+        49153,
+        1,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 65535.0,
+      "cpuWord": 4294923691,
+      "loggedGpuRGBA": [
+        21931.0,
+        65535.0,
+        1.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        65535,
+        1,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 65536.0,
+      "inputHi": 49153.0,
+      "cpuWord": 3221356543,
+      "loggedGpuRGBA": [
+        65535.0,
+        49153.0,
+        1.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        65535,
+        49153,
+        1,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 65536.0,
+      "cpuWord": 4294923691,
+      "loggedGpuRGBA": [
+        21931.0,
+        65535.0,
+        1.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        65535,
+        1,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 100000.0,
+      "inputHi": 49153.0,
+      "cpuWord": 3221356543,
+      "loggedGpuRGBA": [
+        65535.0,
+        49153.0,
+        1.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        65535,
+        49153,
+        1,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 21931.0,
+      "inputHi": 100000.0,
+      "cpuWord": 4294923691,
+      "loggedGpuRGBA": [
+        21931.0,
+        65535.0,
+        1.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        21931,
+        65535,
+        1,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 0.0,
+      "inputHi": 0.0,
+      "cpuWord": 0,
+      "loggedGpuRGBA": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 65535.0,
+      "inputHi": 65535.0,
+      "cpuWord": 4294967295,
+      "loggedGpuRGBA": [
+        65535.0,
+        65535.0,
+        1.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        65535,
+        65535,
+        1,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 65535.0,
+      "inputHi": 32767.0,
+      "cpuWord": 2147483647,
+      "loggedGpuRGBA": [
+        65535.0,
+        32767.0,
+        0.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        65535,
+        32767,
+        0,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 0.0,
+      "inputHi": 32768.0,
+      "cpuWord": 2147483648,
+      "loggedGpuRGBA": [
+        0.0,
+        32768.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        0,
+        32768,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 1.0,
+      "inputHi": 1.0,
+      "cpuWord": 65537,
+      "loggedGpuRGBA": [
+        1.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "strictLoggedComparison": true
+    },
+    {
+      "inputLo": 32768.0,
+      "inputHi": 32768.0,
+      "cpuWord": 2147516416,
+      "loggedGpuRGBA": [
+        32768.0,
+        32768.0,
+        1.0,
+        0.0
+      ],
+      "expectedRGBAFromCpuWord": [
+        32768,
+        32768,
+        1,
+        0
+      ],
+      "strictLoggedComparison": true
+    }
+  ],
+  "notFullGraphSurfaceOrShaderLabBC": true
+}

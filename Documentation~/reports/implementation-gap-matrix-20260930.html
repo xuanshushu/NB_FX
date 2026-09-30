@@ -70,4 +70,5 @@
 <p>2026-10-01 光照与合并回归：<a href="t07-mesh-lighting-checkpoint.html">Unlit/Blinn/Half-Lambert/PBR 已接入；8 项 5 通过/3 严格差异留档，783 项合并回归为 724 通过/59 失败</a>。59 项为既有 UV22 + 法线34 + 光照3，均未改为通过。9,058 个旧图像 payload 与前档相同，但两项同名目录覆盖如实记录。SixWay、其余 Mesh 效果及完整共享 GUI/状态/后处理/Player/性能仍未完成。</p>
 <p>2026-10-01 程序噪波增量：<a href="t07-mesh-pnoise-checkpoint.html">Mask/Dissolve、DepthOnly 和 ShadowCaster 已接入，140 项为 47 通过/93 严格失败；完整现有自动矩阵 923 项为 771 通过/152 失败</a>。152 项恰为原 UV22、法线34、光照3 加本片93；11,970 份捕获逐份与持久旧档相同。MatCap/法线的同名目录覆盖已在本轮修正。微差保留给最后集中人工测试，不放宽标准；普通 Mesh 全功能、共享 GUI、完整状态/后处理、Player/性能仍未闭合，正式 VFX 继续等待。</p>
 <p>2026-10-01 SixWay 增量：<a href="t07-mesh-sixway-checkpoint.html">普通 Mesh 六向光照已接入，镜像负缩放的真实错误已修；30 行中 27 零差、3 行各 1 像素微差，两个 NUnit 项仍失败</a>。现有已编写矩阵 925 项为 771 通过/154 失败；旧152项失败身份不变。12,150 份捕获已实读核对，4 份跨轮次区域外单像素变化原图另存，不能宣传全图逐字节相同。完整 Mesh/共享 GUI/后处理/Player/性能仍未闭合，正式 VFX 不前移。</p>
+<p>2026-10-01 GUI 后台增量：<a href="t07-mesh-gui-storage-checkpoint.html">复用现有 Flags/渐变 Count/纹理 ST 存储后端，46 项真实测试全部通过，含 Mesh GPU 解码</a>。这不代表完整 Inspector、GUI 回调事务、保存重导入、Tier/Pass 有效投影已经完成；当前继续接同一共享 Root/Context/Sync，而不复制第二套业务界面。Graph MPB、Player、VFX 均未据此验证。</p>
 </body></html>
