@@ -24,5 +24,10 @@ ShaderUtil messages. This is not T00 Frozen strict B/C.
 
 Graph serial generator script archived; it was executed once to add four
 properties, two geometry nodes and six CF inputs, then imported in clone.
+The follow-up Graph GUI groups four implemented Fresnel properties under the
+existing localized section label, keeping Unity MaterialEditor drawers and
+unknown-property fallback. Clone CLI compiled exit0; visible GUI/Undo still
+not tested, and split-flag controls are not synchronized.
+
 No official package/Target/NBPostprocess/main Assets/ProjectSettings changes.
 unityMCP unavailable. No push.

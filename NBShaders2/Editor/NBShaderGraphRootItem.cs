@@ -56,6 +56,12 @@ namespace NBShaderEditor
             "_Saturability", "_BaseMapColorRefine"
         };
 
+        static readonly string[] FresnelProperties =
+        {
+            "_fresnelEnabled", "_FresnelUnit", "_FresnelColor",
+            "_FresnelRotation"
+        };
+
         static readonly string[] DissolveProperties =
         {
             "_Dissolve_Toggle", "_DissolveMap", "_Dissolve",
@@ -87,6 +93,7 @@ namespace NBShaderEditor
             DrawGroup(Overlay2Properties, "feature.叠加贴图2", "Overlay 2");
             DrawGroup(RampProperties, "feature.颜色映射", "Color Ramp");
             DrawGroup(AdjustmentProperties, "feature.颜色调整", "Color Adjustment");
+            DrawGroup(FresnelProperties, "feature.菲涅尔", "Fresnel");
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
             DrawGroup(DistortionProperties, "feature.扭曲", "Distort");
@@ -167,6 +174,8 @@ namespace NBShaderEditor
                 case "_MaskMapOffsetAnition": key = "feature.遮罩偏移速度"; break;
                 case "_DissolveMap": key = "feature.溶解贴图"; break;
                 case "_DissolveMaskMap": key = "feature.溶解遮罩图"; break;
+                case "_fresnelEnabled": key = "feature.菲涅尔"; break;
+                case "_FresnelColor": key = "feature.菲涅尔颜色"; break;
                 case "_NB_DistortionMode": key = "feature.屏幕扰动模式"; break;
                 case "_NB_DistortionIntensity": key = "feature.屏幕扭曲强度"; break;
                 default: return property.displayName;
