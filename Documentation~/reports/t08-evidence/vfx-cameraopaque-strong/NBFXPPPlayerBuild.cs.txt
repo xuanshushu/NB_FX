@@ -1,0 +1,146 @@
+// Isolated-clone Editor build harness. Never place in the product package.
+using System;
+using System.Collections;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public static class NBFXPPPlayerBuild
+{
+    const string Root = "/tmp/nbfx-vfx-cameraopaque-strong-20260930/run";
+    const string ScenePath = "Assets/NBFXPPPlayer.unity";
+    const string AppPath = Root + "/player/NBFXPPPlayer.app";
+    const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string MaskShaderPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Tests/PassFeasibility/FunctionalProbe/NBGFMaskView.shader";
+    static readonly string[] VfxPaths = { "Assets/NBFXPPMode0.vfx", "Assets/NBFXPPMode1.vfx" };
+    static readonly string[] VfxGuids = { "2b8c94e06f8d55dab88682a8ea9b2755", "869bbc77164e5bd98196d84e29767983" };
+    // Set above GUIDs are checked against generated .meta by the Python fixture.
+    const long OutputFileId = 8926484042661614853;
+    const long ModeFileId = 8926484042661614868;
+    const int ModeSlotCount = 2;
+
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        using (var log = new StreamWriter(Path.Combine(Root, "editor-inspection.txt")))
+        {
+            var graph = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            var maskView = AssetDatabase.LoadAssetAtPath<Shader>(MaskShaderPath);
+            if (!graph || !graph.isSupported || !maskView || !maskView.isSupported)
+                throw new Exception("Product Graph or test-only MaskView Shader unavailable");
+            var assets = new VisualEffectAsset[ModeSlotCount];
+            var shaders = new Shader[ModeSlotCount];
+            for (int i = 0; i < ModeSlotCount; i++)
+            {
+                var path = VfxPaths[i];
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+                if (AssetDatabase.AssetPathToGUID(path) != VfxGuids[i])
+                    throw new Exception("VFX GUID mismatch: " + path + " actual=" + AssetDatabase.AssetPathToGUID(path));
+                ValidateSerializedFixture(path, i == 0 ? 0 : 2, log);
+                assets[i] = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(path);
+                shaders[i] = FindGeneratedShader(path);
+                if (!assets[i] || !shaders[i] || !shaders[i].isSupported || !shaders[i].name.Contains("Mesh"))
+                    throw new Exception("VFX Mesh import/generated Shader unavailable: " + path);
+                ValidateGeneratedShader(path, i == 0 ? 0 : 2, log);
+                var material = new Material(shaders[i]);
+                try
+                {
+                    // VFX hidden shaders may report passCount=1 until first render;
+                    // Player verifies the actual compiled pass list at runtime.
+                    log.WriteLine(path + " shader=" + shaders[i].name + " lazyEditorPassCount=" + material.passCount +
+                        " opaque=" + material.FindPass("NBCameraOpaqueDistortPass") +
+                        " deferred=" + material.FindPass("NBDeferredDistortPass"));
+                }
+                finally { UnityEngine.Object.DestroyImmediate(material); }
+            }
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var host = new GameObject("NBFX Postprocess Player Probe");
+            var probe = host.AddComponent<NBFXPPPlayerProbe>();
+            probe.mode0Asset = assets[0];
+            probe.mode1Asset = assets[1];
+            probe.mode0Shader = shaders[0];
+            probe.mode1Shader = shaders[1];
+            probe.graphShader = graph;
+            probe.maskViewShader = maskView;
+            if (!EditorSceneManager.SaveScene(scene, ScenePath))
+                throw new Exception("Unable to save isolated Player scene");
+            log.Flush();
+        }
+        Directory.CreateDirectory(Path.GetDirectoryName(AppPath));
+        var build = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+        {
+            scenes = new[] { ScenePath },
+            locationPathName = AppPath,
+            target = BuildTarget.StandaloneOSX,
+            options = BuildOptions.None
+        });
+        Debug.Log("NBFX_PP_BUILD result=" + build.summary.result + " errors=" + build.summary.totalErrors +
+            " warnings=" + build.summary.totalWarnings);
+        if (build.summary.result != BuildResult.Succeeded || build.summary.totalErrors != 0)
+            throw new Exception("NBFX postprocess Player build failed");
+    }
+
+    static string Body(string text, long fileId)
+    {
+        var match = Regex.Match(text, @"(?ms)^--- !u!114 &" + fileId + @"\n.*?(?=^--- !u!|\z)");
+        if (!match.Success) throw new Exception("Missing VFX object " + fileId);
+        return match.Value;
+    }
+
+    static void ValidateSerializedFixture(string path, int mode, TextWriter log)
+    {
+        var projectRoot = Directory.GetParent(Application.dataPath).FullName;
+        string text = File.ReadAllText(Path.Combine(projectRoot, path));
+        if (!text.Contains("  capacity: 1\n") || !text.Contains("  cullMode: 0\n") ||
+            !Body(text, OutputFileId).Contains("  blendMode: 1\n") ||
+            !Body(text, ModeFileId).Contains("m_SerializableObject: " + mode + "\n") ||
+            !Body(text, ModeFileId).Contains("name: _NB_DistortionMode"))
+            throw new Exception("One-particle VFX Output fixture invalid: " + path);
+        log.WriteLine(path + " mode=" + mode + " capacity=1 CullOff source-over");
+    }
+
+    static Shader FindGeneratedShader(string path)
+    {
+        foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(path))
+            if (asset is Shader shader && shader.name.Contains("Mesh")) return shader;
+        return null;
+    }
+
+    static void ValidateGeneratedShader(string path, int mode, TextWriter log)
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Static | BindingFlags.Instance;
+        Type resourceType = null;
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            resourceType = assembly.GetType("UnityEditor.VFX.VisualEffectResource");
+            if (resourceType != null) break;
+        }
+        if (resourceType == null) throw new Exception("VFX VisualEffectResource type unavailable");
+        var getter = resourceType.GetMethod("GetResourceAtPath", flags);
+        if (getter == null) throw new Exception("VFX GetResourceAtPath unavailable");
+        var resource = getter.Invoke(null, new object[] { path });
+        if (resource == null) throw new Exception("VFX resource unavailable: " + path);
+        int count = (int)resourceType.GetMethod("GetShaderSourceCount", flags).Invoke(resource, null);
+        var sourceGetter = resourceType.GetMethod("GetShaderSource", flags);
+        bool found = false;
+        for (int i = 0; i < count; i++)
+        {
+            var source = (string)sourceGetter.Invoke(resource, new object[] { i });
+            if (!source.Contains("output._NB_DistortionMode")) continue;
+            File.WriteAllText(Path.Combine(Root, "generated-mode" + mode + "-" + i + ".shader"), source);
+            bool modePresent = source.Contains("output._NB_DistortionMode = (float)" + mode + ";");
+            bool passesPresent = source.Contains("\"LightMode\" = \"NBCameraOpaqueDistortPass\"") &&
+                source.Contains("\"LightMode\" = \"NBDeferredDistortPass\"");
+            log.WriteLine(path + " generatedSource=" + i + " exactMode=" + modePresent +
+                " exactPasses=" + passesPresent);
+            found |= modePresent && passesPresent;
+        }
+        if (!found) throw new Exception("Generated VFX source lacks expected Output mode/custom Passes: " + path);
+    }
+}
