@@ -537,18 +537,14 @@
         #ifdef _NORMALMAP
             bool forceBumpLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_BUMPTEX);
             half4 normalMapSample = SampleTexture2DWithWrapFlags(_BumpTex,BumpTex_uv,FLAG_BIT_WRAPMODE_BUMPTEX,forceBumpLod0);
-            if (CheckLocalFlags(FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE))
-            {
-                normalTS = UnpackNormalRGB(half4(normalMapSample.xy,1,1),_BumpScale);
-                metallic *= normalMapSample.z;
-                smoothness *= normalMapSample.w;
-            }
-            else
-            {
-                normalTS = UnpackNormalScale(half4(normalMapSample),_BumpScale);
-            }
-
-            input.normalWSAndAnimBlend.xyz =  normalize(TransformTangentToWorld(normalTS, tangentToWorld));
+            half metallicWeight, smoothnessWeight;
+            half3 mappedNormalWS;
+            NBFX_DecodeNormalMapV2(normalMapSample, _BumpScale,
+                CheckLocalFlags(FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE), tangentToWorld,
+                normalTS, mappedNormalWS, metallicWeight, smoothnessWeight);
+            metallic *= metallicWeight;
+            smoothness *= smoothnessWeight;
+            input.normalWSAndAnimBlend.xyz = mappedNormalWS;
         #endif
 
         half2 cum_noise = 0;

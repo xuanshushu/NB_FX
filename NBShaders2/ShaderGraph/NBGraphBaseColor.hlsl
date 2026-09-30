@@ -358,6 +358,30 @@ half4 NBGraphApplyMatCap(half4 color, UnityTexture2D map, float3 normalWS,
     return color;
 }
 
+// N0: Graph receives the same geometric N/T/B basis as URP 17.3's
+// SurfaceDescriptionInputs. SG's bitangent includes tangent.w * odd-scale;
+// VFACE reverses N and B but not T, matching the ShaderLab fragment stage.
+// Return an unfaced vector because the existing Fresnel/MatCap adapters each
+// apply VFACE once. There is no normal-map sampling when the toggle is off.
+half3 NBGraphNormalForFeatures(UnityTexture2D map, float2 sourceUV,
+    half scale, float3 normalWS, float3 tangentWS, float3 bitangentWS,
+    float isFrontFace, uint flags0, uint wrapFlags, uint noMipFlags)
+{
+    half side = isFrontFace > 0.5 ? 1.0h : -1.0h;
+    float2 uv = map.GetTransformedUV(sourceUV);
+    half4 sampled = NBGraphSampleRawMap(map, uv,
+        NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_BUMPTEX),
+        (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BUMPTEX) != 0u);
+    half3x3 tangentToWorld = half3x3((half3)tangentWS,
+        (half3)(side * bitangentWS), (half3)(side * normalWS));
+    half3 normalTS, facedNormalWS;
+    half metallicWeight, smoothnessWeight;
+    NBFX_DecodeNormalMapV2(sampled, scale,
+        (flags0 & FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE) != 0u,
+        tangentToWorld, normalTS, facedNormalWS, metallicWeight, smoothnessWeight);
+    return facedNormalWS * side;
+}
+
 void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 EffectiveBaseColor,
     float NB_Flags0Lo16, float NB_Flags0Hi16,
@@ -425,12 +449,22 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float MaskDistortionIntensity,
     float MatCapToggle, UnityTexture2D MatCapTex,
     float4 MatCapColor, float4 MatCapInfo,
+    float BumpMapToggle, UnityTexture2D BumpTex, float BumpScale,
+    float2 BumpUV, float3 TangentWS, float3 BitangentWS,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
+    // The original ShaderLab _NORMALMAP keyword is represented by the
+    // existing material toggle; no new SG keyword/variant is introduced.
+    float3 normalForFeatures = (float3)NormalWS;
+    if (BumpMapToggle > 0.5)
+        normalForFeatures = NBGraphNormalForFeatures(BumpTex, BumpUV,
+            (half)BumpScale, (float3)NormalWS, TangentWS, BitangentWS,
+            IsFrontFace, NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
+            wrapFlags, noMipFlags);
     // Preserve the existing Noise-off uniform prototype for screen passes;
     // it must not distort the surface's texture consumers when Noise is off.
     half2 signedRG = (half2)NB_DistortionNoise;
@@ -473,7 +507,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             (half)Saturability, (half4)BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
     if (MatCapToggle > 0.5)
-        Out = (float4)NBGraphApplyMatCap((half4)Out, MatCapTex, NormalWS,
+        Out = (float4)NBGraphApplyMatCap((half4)Out, MatCapTex, (float3)normalForFeatures,
             (half3)PositionVS, (half)IsFrontFace, (half4)MatCapColor,
             (half4)MatCapInfo, noMipFlags);
     if (EmissionEnabled > 0.5)
@@ -645,7 +679,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     }
     if (FresnelEnabled > 0.5)
         Out = (float4)NBGraphApplyFresnel((half4)Out, ViewDirWS,
-            (half3)NormalWS, (half)IsFrontFace, (half4)FresnelUnit,
+            normalForFeatures, (half)IsFrontFace, (half4)FresnelUnit,
             (half4)FresnelColor, (half3)FresnelRotation.xyz,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
     // ShaderLab applies camera-distance alpha after Fresnel, before vertex color.
@@ -747,12 +781,22 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float MaskDistortionIntensity,
     float MatCapToggle, UnityTexture2D MatCapTex,
     half4 MatCapColor, half4 MatCapInfo,
+    float BumpMapToggle, UnityTexture2D BumpTex, float BumpScale,
+    float2 BumpUV, float3 TangentWS, float3 BitangentWS,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
+    // The original ShaderLab _NORMALMAP keyword is represented by the
+    // existing material toggle; no new SG keyword/variant is introduced.
+    float3 normalForFeatures = (float3)NormalWS;
+    if (BumpMapToggle > 0.5)
+        normalForFeatures = NBGraphNormalForFeatures(BumpTex, BumpUV,
+            (half)BumpScale, (float3)NormalWS, TangentWS, BitangentWS,
+            IsFrontFace, NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
+            wrapFlags, noMipFlags);
     half2 signedRG = (half2)NB_DistortionNoise;
     half noiseMask = 1;
     half2 textureNoise = 0;
@@ -791,7 +835,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             (half)Saturability, BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
     if (MatCapToggle > 0.5)
-        Out = NBGraphApplyMatCap(Out, MatCapTex, (float3)NormalWS,
+        Out = NBGraphApplyMatCap(Out, MatCapTex, (float3)normalForFeatures,
             (half3)PositionVS, (half)IsFrontFace, MatCapColor,
             MatCapInfo, noMipFlags);
     if (EmissionEnabled > 0.5)
@@ -952,7 +996,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
     }
     if (FresnelEnabled > 0.5)
-        Out = NBGraphApplyFresnel(Out, ViewDirWS, NormalWS,
+        Out = NBGraphApplyFresnel(Out, ViewDirWS, normalForFeatures,
             (half)IsFrontFace, FresnelUnit, FresnelColor,
             FresnelRotation.xyz,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
