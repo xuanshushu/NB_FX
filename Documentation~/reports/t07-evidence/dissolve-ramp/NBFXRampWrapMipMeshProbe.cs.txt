@@ -1,0 +1,334 @@
+// /tmp-only controlled Mesh B/C: Ramp wrap0..3, nonidentity ST, and ForceNoMip.
+using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+public static class NBFXRampWrapMipMeshProbe
+{
+    const string Root="/tmp/nbfx-vfx-dissolve-ramp-probe-20260930/run/wrap-mip-mesh";
+    const string GraphPath="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string LegacyPath="Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader";
+    const string LegacySample="Assets/NBShaderSamples/NBShaderSamples/UnLit.mat";
+    const int Size=128;
+    static readonly string[] Names={"Identity","Wrap0","Wrap1","Wrap2","Wrap3",
+        "LodAuto","LodForce"};
+    [Serializable] sealed class Entry
+    {
+        public string name;
+        public int wrapMode,forceNoMip,visiblePixels,graphLegacyChangedPixels;
+        public float graphLegacyMaxRGB,graphLegacyP95RGB,graphAlphaMedian,
+            legacyAlphaMedian,graphCenterR,graphCenterG,graphCenterB,
+            legacyCenterR,legacyCenterG,legacyCenterB;
+    }
+    [Serializable] sealed class Result
+    {
+        public string status,error,note;
+        public bool renderReady,graphLegacyBC,wrap0Eq2,wrap1Eq3,
+            repeatClampSeparated,nonIdentitySTChanges,
+            graphForceNoMipChanges,legacyForceNoMipChanges;
+        public int graphLodChangedPixels,legacyLodChangedPixels;
+        public Entry[] cases;
+    }
+    sealed class Fixture
+    {
+        public GameObject quad,cameraObject;
+        public Camera camera;
+        public RenderTexture target;
+        public Texture2D readback,white,gray,gradient,wrapRamp,lodRamp;
+        public Material[] graph,legacy;
+    }
+    sealed class Frames
+    {
+        public Color[] black,white;
+    }
+    static bool IsLod(int index)=>index>=5;
+    static int Wrap(int index)=>index>=1&&index<=4?index-1:0;
+    static bool Force(int index)=>index==6;
+    static Vector2 Scale(int index)=>Vector2.one;
+    static Vector2 Offset(int index)=>index==0?Vector2.zero:
+        IsLod(index)?new Vector2(-.1f,0):new Vector2(1.25f,0);
+
+    static Texture2D Solid(Color color)
+    {
+        var t=new Texture2D(1,1,TextureFormat.RGBA32,false,true);
+        t.SetPixel(0,0,color);t.Apply(false);
+        t.filterMode=FilterMode.Point;t.wrapMode=TextureWrapMode.Clamp;
+        return t;
+    }
+    static Texture2D GradientMap()
+    {
+        var t=new Texture2D(256,1,TextureFormat.RGBA32,true,true);
+        var p=new Color[256];
+        for(int x=0;x<256;x++)
+            p[x]=new Color(x/255f,x/255f,x/255f,1);
+        t.SetPixels(p);t.Apply(true);
+        t.filterMode=FilterMode.Bilinear;t.wrapMode=TextureWrapMode.Clamp;
+        return t;
+    }
+    static Texture2D WrapRamp()
+    {
+        var t=new Texture2D(8,1,TextureFormat.RGBA32,true,true);
+        t.SetPixels(new[]{
+            new Color(1,0,0,1),new Color(1,.5f,0,1),
+            new Color(0,1,0,1),new Color(0,0,1,1),
+            new Color(1,1,0,1),new Color(0,1,1,1),
+            new Color(.5f,0,1,1),new Color(1,0,1,1)});
+        t.Apply(true);t.filterMode=FilterMode.Bilinear;
+        t.wrapMode=TextureWrapMode.Clamp;return t;
+    }
+    static Texture2D LodRamp()
+    {
+        var t=new Texture2D(1024,1,TextureFormat.RGBA32,true,true);
+        var p=new Color[1024];
+        for(int x=0;x<p.Length;x++)
+            p[x]=x%31<15?new Color(1,0,0,1):new Color(0,0,1,1);
+        t.SetPixels(p);t.Apply(true);t.filterMode=FilterMode.Bilinear;
+        t.wrapMode=TextureWrapMode.Clamp;return t;
+    }
+    static void Common(Material m,Fixture f,int index,bool graph)
+    {
+        m.SetTexture("_BaseMap",f.white);
+        if(!graph)m.SetTexture("_MainTex",f.white);
+        Color linear=new Color(.25f,.5f,.625f,.6666667f);
+        if(graph){
+            Color gamma=new Color(linear.r,linear.g,linear.b,1).gamma;
+            gamma.a=linear.a;m.SetColor("_Color",gamma);
+        }else m.SetColor("_BaseColor",linear);
+        m.SetTexture("_DissolveMap",IsLod(index)?f.gradient:f.gray);
+        m.SetFloat("_Dissolve_Toggle",1);
+        m.SetVector("_Dissolve",IsLod(index)?
+            new Vector4(0,1,1,.1f):new Vector4(.5f,1,1,.1f));
+        m.SetTexture("_DissolveRampMap",IsLod(index)?f.lodRamp:f.wrapRamp);
+        m.SetTextureScale("_DissolveRampMap",Scale(index));
+        m.SetTextureOffset("_DissolveRampMap",Offset(index));
+        m.SetFloat("_Dissolve_useRampMap_Toggle",1);
+        m.SetFloat("_DissolveRampSourceMode",1);
+        m.SetFloat("_DissolveRampColorBlendMode",0);
+        m.SetColor("_DissolveRampColor",Color.white);
+        int wrap=Wrap(index);
+        int low=(wrap&1)!=0?128:0;
+        int high=(wrap&2)!=0?128:0;
+        if(graph){
+            m.SetFloat("_NB_Flags1Lo16",0);
+            m.SetFloat("_NB_WrapFlagsLo16",low);
+            m.SetFloat("_NB_WrapFlagsHi16",high);
+            m.SetFloat("_NB_ForceNoMipFlagsLo16",0);
+            m.SetFloat("_NB_ForceNoMipFlagsHi16",Force(index)?1:0);
+            m.SetFloat("_NB_DistortionMode",0);
+            m.SetFloat("_Surface",1);
+            m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        }else{
+            m.SetInteger("_W9ParticleShaderFlags",0);
+            m.SetInteger("_W9ParticleShaderFlags1",1);
+            m.SetInteger("_W9ParticleShaderWrapFlags",
+                ((wrap&1)!=0?1<<7:0)|((wrap&2)!=0?1<<23:0));
+            m.SetInteger("_NBShaderForceNoMipFlags",Force(index)?1<<16:0);
+            m.SetInteger("_W9ParticleColorChannelFlag0",0);
+            m.SetFloat("_DissolveLineMaskToggle",0);
+            m.EnableKeyword("_FX_LIGHT_MODE_UNLIT");
+            m.EnableKeyword("_DISSOLVE");
+            m.EnableKeyword("_DISSOLVE_RAMP");
+            m.EnableKeyword("_DISSOLVE_RAMP_MAP");
+            m.DisableKeyword("_DISSOLVE_MASK");
+            m.DisableKeyword("_EMISSION");
+            m.SetFloat("_ZTest",4);
+            m.SetFloat("_ColorMask",15);
+        }
+        m.SetFloat("_SrcBlend",(float)BlendMode.SrcAlpha);
+        m.SetFloat("_DstBlend",(float)BlendMode.OneMinusSrcAlpha);
+        m.SetFloat("_SrcBlendAlpha",(float)BlendMode.One);
+        m.SetFloat("_DstBlendAlpha",(float)BlendMode.OneMinusSrcAlpha);
+        m.SetFloat("_ZWrite",0);m.SetFloat("_Cull",0);
+        m.renderQueue=3000;
+    }
+    static Fixture Setup()
+    {
+        AssetDatabase.ImportAsset(GraphPath,ImportAssetOptions.ForceUpdate);
+        AssetDatabase.ImportAsset(LegacyPath,ImportAssetOptions.ForceUpdate);
+        var graph=AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+        var legacy=AssetDatabase.LoadAssetAtPath<Shader>(LegacyPath);
+        var sample=AssetDatabase.LoadAssetAtPath<Material>(LegacySample);
+        if(!graph||!legacy||!sample||!graph.isSupported||!legacy.isSupported)
+            throw new Exception("Graph, legacy shader or sample unavailable");
+        if(!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf))
+            throw new Exception("Requires ARGBHalf RT");
+        var f=new Fixture();
+        f.white=Solid(Color.white);
+        f.gray=Solid(new Color(133f/255f,133f/255f,133f/255f,1));
+        f.gradient=GradientMap();f.wrapRamp=WrapRamp();f.lodRamp=LodRamp();
+        f.graph=new Material[Names.Length];f.legacy=new Material[Names.Length];
+        for(int i=0;i<Names.Length;i++){
+            f.graph[i]=new Material(graph);Common(f.graph[i],f,i,true);
+            f.legacy[i]=new Material(sample);f.legacy[i].shader=legacy;
+            Common(f.legacy[i],f,i,false);
+        }
+        f.quad=GameObject.CreatePrimitive(PrimitiveType.Quad);
+        f.quad.layer=2;f.quad.transform.rotation=Quaternion.Euler(0,180,0);
+        f.quad.transform.localScale=new Vector3(2,2,1);
+        f.cameraObject=new GameObject("NBFX Ramp Wrap/LOD Mesh B/C camera");
+        f.camera=f.cameraObject.AddComponent<Camera>();
+        f.camera.orthographic=true;f.camera.orthographicSize=1.5f;
+        f.camera.nearClipPlane=.1f;f.camera.farClipPlane=20;
+        f.camera.cullingMask=1<<2;
+        f.camera.transform.position=new Vector3(0,0,5);
+        f.camera.transform.rotation=Quaternion.Euler(0,180,0);
+        f.camera.clearFlags=CameraClearFlags.SolidColor;
+        f.camera.backgroundColor=Color.black;
+        f.camera.allowHDR=true;f.camera.allowMSAA=false;
+        f.target=new RenderTexture(Size,Size,24,RenderTextureFormat.ARGBHalf,
+            RenderTextureReadWrite.Linear);f.target.Create();
+        if(!f.target.IsCreated()||f.target.sRGB)
+            throw new Exception("Linear ARGBHalf target failed");
+        f.camera.targetTexture=f.target;
+        f.readback=new Texture2D(Size,Size,TextureFormat.RGBAHalf,false,true);
+        return f;
+    }
+    static void Cleanup(Fixture f)
+    {
+        if(f==null)return;
+        if(f.camera)f.camera.targetTexture=null;
+        if(f.target){f.target.Release();UnityEngine.Object.DestroyImmediate(f.target);}
+        if(f.graph!=null)foreach(var m in f.graph)
+            if(m)UnityEngine.Object.DestroyImmediate(m);
+        if(f.legacy!=null)foreach(var m in f.legacy)
+            if(m)UnityEngine.Object.DestroyImmediate(m);
+        foreach(var t in new[]{f.readback,f.white,f.gray,f.gradient,
+            f.wrapRamp,f.lodRamp})if(t)UnityEngine.Object.DestroyImmediate(t);
+        if(f.quad)UnityEngine.Object.DestroyImmediate(f.quad);
+        if(f.cameraObject)UnityEngine.Object.DestroyImmediate(f.cameraObject);
+    }
+    static Color[] Capture(Fixture f,Material material,Color clear,string file)
+    {
+        f.quad.GetComponent<MeshRenderer>().sharedMaterial=material;
+        f.camera.backgroundColor=clear;
+        for(int i=0;i<3;i++)f.camera.Render();
+        var previous=RenderTexture.active;
+        try{
+            RenderTexture.active=f.target;
+            f.readback.ReadPixels(new Rect(0,0,Size,Size),0,0);
+            f.readback.Apply(false);
+            var colors=f.readback.GetPixels();
+            var png=new Texture2D(Size,Size,TextureFormat.RGBA32,false,true);
+            try{png.SetPixels(colors);png.Apply(false);
+                File.WriteAllBytes(Path.Combine(Root,file+".png"),png.EncodeToPNG());}
+            finally{UnityEngine.Object.DestroyImmediate(png);}
+            return colors;
+        }finally{RenderTexture.active=previous;}
+    }
+    static float Diff(Color a,Color b)=>Mathf.Max(
+        Mathf.Abs(a.r-b.r),Mathf.Abs(a.g-b.g),Mathf.Abs(a.b-b.b));
+    static int Changed(Color[] a,Color[] b,float tolerance)
+    {
+        int count=0;
+        for(int y=32;y<96;y++)for(int x=32;x<96;x++)
+            if(Diff(a[y*Size+x],b[y*Size+x])>tolerance)count++;
+        return count;
+    }
+    static float P95(List<float> values)
+    {
+        values.Sort();
+        return values[Mathf.FloorToInt((values.Count-1)*.95f)];
+    }
+    static float Median(List<float> values)
+    {
+        values.Sort();return values[values.Count/2];
+    }
+    static Entry Describe(int index,Frames graph,Frames legacy,
+        Color[] bgBlack,Color[] bgWhite)
+    {
+        var diffs=new List<float>();var ga=new List<float>();
+        var la=new List<float>();float max=0;int changed=0,visible=0;
+        for(int y=32;y<96;y++)for(int x=32;x<96;x++)
+        {
+            int i=y*Size+x;
+            float d=Diff(graph.black[i],legacy.black[i]);
+            diffs.Add(d);max=Mathf.Max(max,d);
+            if(d>.03f)changed++;
+            if(Diff(graph.black[i],bgBlack[i])>.03f)visible++;
+            float da=0,db=0;
+            for(int ch=0;ch<3;ch++)
+            {
+                float denominator=bgWhite[i][ch]-bgBlack[i][ch];
+                if(denominator<.8f)throw new Exception("Baseline clear delta small");
+                da+=1f-(graph.white[i][ch]-graph.black[i][ch])/denominator;
+                db+=1f-(legacy.white[i][ch]-legacy.black[i][ch])/denominator;
+            }
+            ga.Add(da/3f);la.Add(db/3f);
+        }
+        Color gc=graph.black[64*Size+64],lc=legacy.black[64*Size+64];
+        return new Entry{
+            name=Names[index],wrapMode=Wrap(index),forceNoMip=Force(index)?1:0,
+            visiblePixels=visible,graphLegacyChangedPixels=changed,
+            graphLegacyMaxRGB=max,graphLegacyP95RGB=P95(diffs),
+            graphAlphaMedian=Median(ga),legacyAlphaMedian=Median(la),
+            graphCenterR=gc.r,graphCenterG=gc.g,graphCenterB=gc.b,
+            legacyCenterR=lc.r,legacyCenterG=lc.g,legacyCenterB=lc.b
+        };
+    }
+    static bool Near(Color[] a,Color[] b,float tolerance)
+        =>Changed(a,b,tolerance)<=5;
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        var result=new Result{
+            note="Wrap tests: nonuniform 8×1 RampMap, U=pre+1.25, V=.5, 0/2 U-repeat and 1/3 U-clamp; identity control. LOD tests: 256×1 gradient DissolveMap, 1024×1 period-31 RampMap with mipchain, U≈DissolveMap.r, ForceNoMip bit16. Compare Graph/ShaderLab per pixel, not strict zero. Identity and LOD geometry/texture quality may affect discrimination."
+        };
+        Fixture f=null;
+        try{
+            f=Setup();result.renderReady=true;
+            f.quad.SetActive(false);
+            var bgBlack=Capture(f,f.graph[0],Color.black,"background-black");
+            var bgWhite=Capture(f,f.graph[0],Color.white,"background-white");
+            f.quad.SetActive(true);
+            var graph=new Frames[Names.Length];
+            var legacy=new Frames[Names.Length];
+            result.cases=new Entry[Names.Length];
+            for(int i=0;i<Names.Length;i++)
+            {
+                string stem=Names[i].ToLowerInvariant();
+                graph[i]=new Frames{
+                    black=Capture(f,f.graph[i],Color.black,"graph-"+stem+"-black"),
+                    white=Capture(f,f.graph[i],Color.white,"graph-"+stem+"-white")};
+                legacy[i]=new Frames{
+                    black=Capture(f,f.legacy[i],Color.black,"legacy-"+stem+"-black"),
+                    white=Capture(f,f.legacy[i],Color.white,"legacy-"+stem+"-white")};
+                result.cases[i]=Describe(i,graph[i],legacy[i],bgBlack,bgWhite);
+            }
+            result.graphLegacyBC=true;
+            foreach(var c in result.cases)
+                if(c.visiblePixels<100||c.graphLegacyP95RGB>.06f||
+                    Mathf.Abs(c.graphAlphaMedian-c.legacyAlphaMedian)>.035f)
+                    result.graphLegacyBC=false;
+            result.wrap0Eq2=Near(graph[1].black,graph[3].black,.02f)&&
+                Near(legacy[1].black,legacy[3].black,.02f);
+            result.wrap1Eq3=Near(graph[2].black,graph[4].black,.02f)&&
+                Near(legacy[2].black,legacy[4].black,.02f);
+            result.repeatClampSeparated=
+                Changed(graph[1].black,graph[2].black,.1f)>100&&
+                Changed(legacy[1].black,legacy[2].black,.1f)>100;
+            result.nonIdentitySTChanges=
+                Changed(graph[0].black,graph[1].black,.1f)>100&&
+                Changed(legacy[0].black,legacy[1].black,.1f)>100;
+            result.graphLodChangedPixels=
+                Changed(graph[5].black,graph[6].black,.08f);
+            result.legacyLodChangedPixels=
+                Changed(legacy[5].black,legacy[6].black,.08f);
+            result.graphForceNoMipChanges=result.graphLodChangedPixels>100;
+            result.legacyForceNoMipChanges=result.legacyLodChangedPixels>100;
+            result.status=result.graphLegacyBC&&result.wrap0Eq2&&
+                result.wrap1Eq3&&result.repeatClampSeparated&&
+                result.nonIdentitySTChanges&&result.graphForceNoMipChanges&&
+                result.legacyForceNoMipChanges?"PASS":"NUMERIC_MISMATCH";
+        }
+        catch(Exception ex){result.status="FIXTURE_INVALID";result.error=ex.ToString();}
+        finally{Cleanup(f);}
+        File.WriteAllText(Path.Combine(Root,"result.json"),JsonUtility.ToJson(result,true));
+        Debug.Log("NBFX_RAMP_WRAP_MIP "+JsonUtility.ToJson(result));
+        if(result.status!="PASS")
+            throw new Exception("NBFX Ramp Wrap/Mip "+result.status+
+                "; inspect "+Root+"/result.json");
+    }
+}

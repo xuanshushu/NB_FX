@@ -1,0 +1,303 @@
+// /tmp-only real one-particle VFX Mesh Output Dissolve Ramp test.
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
+
+public sealed class NBFXRampPlayerProbe : MonoBehaviour
+{
+    public VisualEffectAsset offAsset, gradientLerpAsset, gradientMultiplyAsset,
+        textureLerpAsset, textureMultiplyAsset;
+    public Shader graphShader, offShader, gradientLerpShader,
+        gradientMultiplyShader, textureLerpShader, textureMultiplyShader;
+    const int Size = 256;
+    const float RepeatTolerance = .005f;
+    static readonly string[] Names = { "Off", "GradientLerp", "GradientMultiply",
+        "TextureLerp", "TextureMultiply" };
+    [Serializable] public sealed class CaseInfo
+    {
+        public string name;
+        public int alive, passCount, opaquePass, deferredPass, visiblePixels, changedVsOffPixels;
+        public bool culled;
+        public float repeatMaxRGB, effectiveAlphaMedian, sourceRMedian, sourceGMedian, sourceBMedian;
+    }
+    [Serializable] public sealed class Result
+    {
+        public string unityVersion, graphicsDevice, status, error, note;
+        public bool linearTarget, fixtureValid, pass;
+        public int roiPixels;
+        public float blackBaselineMaxRGB, whiteBaselineMinRGB;
+        public CaseInfo off, gradientLerp, gradientMultiply,
+            textureLerp, textureMultiply;
+    }
+    sealed class Context
+    {
+        public Camera camera;
+        public GameObject cameraObject;
+        public RenderTexture target;
+        public Texture2D readback;
+        public VisualEffect[] effects;
+    }
+    static string OutputPath()
+    {
+        foreach (string arg in Environment.GetCommandLineArgs())
+            if (arg.StartsWith("--nbfx-ramp-output=", StringComparison.Ordinal))
+                return arg.Substring("--nbfx-ramp-output=".Length);
+        return null;
+    }
+    IEnumerator Start()
+    {
+        string output = OutputPath();
+        if (string.IsNullOrEmpty(output)) { Application.Quit(2); yield break; }
+        Directory.CreateDirectory(output);
+        var result = new Result {
+            unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
+            note = "Single Cube/CullOff VFX particle with explicit BaseMap, gray133 DissolveMap and yellow-alpha192 RampMap. Five cases differ solely by Ramp enable/source/Flags1 bit6. Black/white linear pairs infer composite effective alpha and source RGB; two visible faces mean effective alpha is not per-face shader alpha."
+        };
+        Context c = null; int exitCode = 2;
+        try { c = Setup(); }
+        catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        if (c != null && result.error == null)
+        {
+            for (int frame = 0; frame < 3; frame++) { c.camera.Render(); yield return null; }
+            foreach (var effect in c.effects) effect.Simulate(1f / 60f, 21u);
+            for (int frame = 0; frame < 2; frame++) { c.camera.Render(); yield return null; }
+            foreach (var effect in c.effects) effect.pause = true;
+            try {
+                Run(c, output, result);
+                result.fixtureValid = FixtureValid(result);
+                result.pass = result.fixtureValid && NumericPass(result);
+                result.status = result.pass ? "PASS" :
+                    result.fixtureValid ? "NUMERIC_MISMATCH" : "FIXTURE_INVALID";
+                exitCode = result.pass ? 0 : 1;
+            }
+            catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        }
+        try { Cleanup(c); }
+        catch (Exception ex) {
+            result.status = "CLEANUP_FAILED";
+            result.error = (result.error ?? "") + "\n" + ex; exitCode = 2;
+        }
+        File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(result, true));
+        Debug.Log("NBFX_RAMP_PLAYER " + JsonUtility.ToJson(result));
+        Application.Quit(exitCode);
+    }
+    Context Setup()
+    {
+        if (!graphShader || !offAsset || !gradientLerpAsset || !gradientMultiplyAsset ||
+            !textureLerpAsset || !textureMultiplyAsset || !offShader ||
+            !gradientLerpShader || !gradientMultiplyShader ||
+            !textureLerpShader || !textureMultiplyShader)
+            throw new Exception("Graph/VFX/shader reference missing");
+        if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.Metal ||
+            !SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf))
+            throw new Exception("Requires Metal and ARGBHalf RenderTexture");
+        var c = new Context();
+        try
+        {
+            c.cameraObject = new GameObject("NBFX ramp VFX camera");
+            c.camera = c.cameraObject.AddComponent<Camera>();
+            c.camera.orthographic = true; c.camera.orthographicSize = .5f;
+            c.camera.nearClipPlane = .1f; c.camera.farClipPlane = 20f;
+            c.camera.transform.position = new Vector3(0,0,8);
+            c.camera.transform.rotation = Quaternion.Euler(0,180,0);
+            c.camera.clearFlags = CameraClearFlags.SolidColor;
+            c.camera.backgroundColor = Color.black;
+            c.camera.allowHDR = true; c.camera.allowMSAA = false; c.camera.cullingMask = 1;
+            c.target = new RenderTexture(Size,Size,24,RenderTextureFormat.ARGBHalf,
+                RenderTextureReadWrite.Linear);
+            c.target.antiAliasing = 1; c.target.Create();
+            if (!c.target.IsCreated() || c.target.sRGB)
+                throw new Exception("Linear ARGBHalf target failed");
+            c.camera.targetTexture = c.target;
+            c.readback = new Texture2D(Size,Size,TextureFormat.RGBAHalf,false,true);
+            var assets = new[] { offAsset, gradientLerpAsset, gradientMultiplyAsset,
+                textureLerpAsset, textureMultiplyAsset };
+            c.effects = new VisualEffect[Names.Length];
+            for (int i=0;i<Names.Length;i++)
+                c.effects[i] = CreateEffect(Names[i], assets[i]);
+            return c;
+        }
+        catch { Cleanup(c); throw; }
+    }
+    static VisualEffect CreateEffect(string name, VisualEffectAsset asset)
+    {
+        var go = new GameObject("NBFX ramp " + name);
+        go.layer = 0; go.transform.position = new Vector3(0,0,2);
+        go.transform.localScale = Vector3.one * 4f;
+        var effect = go.AddComponent<VisualEffect>();
+        effect.resetSeedOnPlay = false; effect.startSeed = 12345;
+        effect.visualEffectAsset = asset; effect.Reinit(); return effect;
+    }
+    static Color[] Capture(Context c, string path)
+    {
+        c.camera.Render();
+        var previous = RenderTexture.active;
+        try {
+            RenderTexture.active = c.target;
+            c.readback.ReadPixels(new Rect(0,0,Size,Size),0,0);
+            c.readback.Apply(false);
+            var colors = c.readback.GetPixels();
+            var preview = new Texture2D(Size,Size,TextureFormat.RGBA32,false,true);
+            try { preview.SetPixels(colors); preview.Apply(false);
+                File.WriteAllBytes(path, preview.EncodeToPNG()); }
+            finally { Destroy(preview); }
+            return colors;
+        }
+        finally { RenderTexture.active = previous; }
+    }
+    static float MaxRGB(Color a, Color b) => Mathf.Max(
+        Mathf.Abs(a.r-b.r),Mathf.Abs(a.g-b.g),Mathf.Abs(a.b-b.b));
+    static float MaxRGB(Color[] a, Color[] b)
+    {
+        float max=0; for(int i=0;i<a.Length;i++) max=Mathf.Max(max,MaxRGB(a[i],b[i]));
+        return max;
+    }
+    static int Changed(Color[] a, Color[] b, float tolerance)
+    {
+        int count=0;for(int i=0;i<a.Length;i++)if(MaxRGB(a[i],b[i])>tolerance)count++;
+        return count;
+    }
+    static float Median(List<float> values)
+    {
+        if(values.Count==0)throw new Exception("No safe numeric samples");
+        values.Sort();return values[values.Count/2];
+    }
+    static CaseInfo Describe(string name, int alive, bool culled, Shader shader,
+        Color[] black,Color[] white,Color[] frameBlack,Color[] frameWhite,
+        Color[] repeatBlack,Color[] repeatWhite,List<int> roi,Color[] offBlack)
+    {
+        var material=new Material(shader);
+        try {
+            var info=new CaseInfo {
+                name=name, alive=alive, culled=culled,
+                passCount=material.passCount,
+                opaquePass=material.FindPass("NBCameraOpaqueDistortPass"),
+                deferredPass=material.FindPass("NBDeferredDistortPass"),
+                visiblePixels=Changed(black,frameBlack,.02f),
+                repeatMaxRGB=Mathf.Max(MaxRGB(frameBlack,repeatBlack),
+                    MaxRGB(frameWhite,repeatWhite))
+            };
+            var alpha=new List<float>();var red=new List<float>();
+            var green=new List<float>();var blue=new List<float>();
+            foreach(int i in roi) {
+                if(MaxRGB(offBlack[i],frameBlack[i])>.04f)info.changedVsOffPixels++;
+                float a=0;
+                for(int ch=0;ch<3;ch++) {
+                    float denominator=white[i][ch]-black[i][ch];
+                    if(denominator<.8f)throw new Exception("Black/white clear delta too small");
+                    a+=1f-(frameWhite[i][ch]-frameBlack[i][ch])/denominator;
+                }
+                a/=3f;
+                if(a<.01f||a>1.05f)throw new Exception("Unphysical alpha "+a);
+                alpha.Add(a);
+                red.Add((frameBlack[i].r-(1-a)*black[i].r)/a);
+                green.Add((frameBlack[i].g-(1-a)*black[i].g)/a);
+                blue.Add((frameBlack[i].b-(1-a)*black[i].b)/a);
+            }
+            info.effectiveAlphaMedian=Median(alpha);
+            info.sourceRMedian=Median(red);
+            info.sourceGMedian=Median(green);
+            info.sourceBMedian=Median(blue);
+            return info;
+        }
+        finally { Destroy(material); }
+    }
+    void Run(Context c,string output,Result r)
+    {
+        r.linearTarget=!c.target.sRGB;
+        foreach(var effect in c.effects)effect.gameObject.layer=31;
+        c.camera.cullingMask=0;c.camera.backgroundColor=Color.black;
+        var black=Capture(c,Path.Combine(output,"black.png"));
+        c.camera.backgroundColor=Color.white;
+        var white=Capture(c,Path.Combine(output,"white.png"));
+        var fb=new Color[Names.Length][];var fw=new Color[Names.Length][];
+        var rb=new Color[Names.Length][];var rw=new Color[Names.Length][];
+        var alive=new int[Names.Length];var culled=new bool[Names.Length];
+        for(int i=0;i<Names.Length;i++) {
+            c.effects[i].gameObject.layer=0;c.camera.cullingMask=1;
+            string stem=Names[i].ToLowerInvariant();
+            c.camera.backgroundColor=Color.black;
+            fb[i]=Capture(c,Path.Combine(output,stem+"-black.png"));
+            rb[i]=Capture(c,Path.Combine(output,stem+"-black-repeat.png"));
+            c.camera.backgroundColor=Color.white;
+            fw[i]=Capture(c,Path.Combine(output,stem+"-white.png"));
+            rw[i]=Capture(c,Path.Combine(output,stem+"-white-repeat.png"));
+            alive[i]=(int)c.effects[i].GetParticleSystemInfo("Simple Loop").aliveCount;
+            culled[i]=c.effects[i].culled;
+            c.effects[i].gameObject.layer=31;
+        }
+        var roi=new List<int>();
+        for(int y=1;y<Size-1;y++)for(int x=1;x<Size-1;x++) {
+            bool safe=true;
+            for(int dy=-1;dy<=1&&safe;dy++)for(int dx=-1;dx<=1&&safe;dx++) {
+                int n=(y+dy)*Size+x+dx;
+                if(MaxRGB(black[n],fb[0][n])<.08f||
+                   MaxRGB(white[n],fw[0][n])<.08f)safe=false;
+            }
+            if(safe)roi.Add(y*Size+x);
+        }
+        r.roiPixels=roi.Count;
+        if(roi.Count<100)throw new Exception("Not enough safe particle pixels "+roi.Count);
+        var shaders = new[] { offShader, gradientLerpShader, gradientMultiplyShader,
+            textureLerpShader, textureMultiplyShader };
+        var info = new CaseInfo[Names.Length];
+        for(int i=0;i<Names.Length;i++)
+            info[i]=Describe(Names[i],alive[i],culled[i],shaders[i],black,white,
+                fb[i],fw[i],rb[i],rw[i],roi,fb[0]);
+        r.off=info[0]; r.gradientLerp=info[1]; r.gradientMultiply=info[2];
+        r.textureLerp=info[3]; r.textureMultiply=info[4];
+        float maxBlack=0,minWhite=float.MaxValue;
+        foreach(int i in roi) {
+            maxBlack=Mathf.Max(maxBlack,black[i].r,black[i].g,black[i].b);
+            minWhite=Mathf.Min(minWhite,white[i].r,white[i].g,white[i].b);
+        }
+        r.blackBaselineMaxRGB=maxBlack;r.whiteBaselineMinRGB=minWhite;
+    }
+    static bool FixtureValid(Result r)
+    {
+        if(!r.linearTarget||r.roiPixels<100||r.blackBaselineMaxRGB>.05f||
+           r.whiteBaselineMinRGB<.9f)return false;
+        foreach(var c in new[]{r.off,r.gradientLerp,r.gradientMultiply,
+            r.textureLerp,r.textureMultiply})
+            if(c==null||c.alive!=1||c.culled||c.visiblePixels<=100||
+               c.repeatMaxRGB>RepeatTolerance||c.passCount<3||
+               c.opaquePass!=1||c.deferredPass!=2)return false;
+        return true;
+    }
+    static bool NumericPass(Result r)
+    {
+        var variants=new[]{r.gradientLerp,r.gradientMultiply,
+            r.textureLerp,r.textureMultiply};
+        foreach(var c in variants)
+            if(Mathf.Abs(c.effectiveAlphaMedian-r.off.effectiveAlphaMedian)>.035f ||
+               c.changedVsOffPixels<100)return false;
+        bool off=Mathf.Abs(r.off.sourceRMedian-64f/255f)<.07f &&
+            Mathf.Abs(r.off.sourceGMedian-128f/255f)<.07f &&
+            Mathf.Abs(r.off.sourceBMedian-160f/255f)<.07f;
+        bool gradient=r.gradientLerp.sourceBMedian>r.off.sourceBMedian+.2f &&
+            r.gradientLerp.sourceRMedian<r.off.sourceRMedian-.15f &&
+            r.gradientLerp.sourceGMedian<r.off.sourceGMedian-.25f &&
+            r.gradientMultiply.sourceBMedian<r.gradientLerp.sourceBMedian-.2f;
+        bool texture=r.textureLerp.sourceRMedian>r.off.sourceRMedian+.25f &&
+            r.textureLerp.sourceGMedian>r.off.sourceGMedian+.2f &&
+            r.textureLerp.sourceBMedian<r.off.sourceBMedian-.2f &&
+            r.textureMultiply.sourceRMedian<r.textureLerp.sourceRMedian-.25f &&
+            r.textureMultiply.sourceGMedian<r.textureLerp.sourceGMedian-.2f;
+        return off && gradient && texture;
+    }
+    static void Cleanup(Context c)
+    {
+        if(c==null)return;
+        if(c.camera)c.camera.targetTexture=null;
+        if(c.target){c.target.Release();Destroy(c.target);}
+        if(c.readback)Destroy(c.readback);
+        if(c.cameraObject)Destroy(c.cameraObject);
+        if(c.effects!=null)foreach(var effect in c.effects)
+            if(effect)Destroy(effect.gameObject);
+    }
+}

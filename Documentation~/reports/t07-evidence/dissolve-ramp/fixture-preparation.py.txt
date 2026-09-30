@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+"""Test-only real one-particle VFX Mesh Dissolve Ramp Outputs. No Unity calls."""
+from __future__ import annotations
+import hashlib,pathlib,re,shutil,struct,uuid,zlib
+
+ROOT=pathlib.Path(__file__).resolve().parent
+OUT=ROOT/'Assets'
+LINE=pathlib.Path('/tmp/nbfx-vfx-dissolve-line-probe-20260930/Assets')
+OUTPUT=8926484042661614853
+COLOR=8926484042661614855
+VECTOR=8926484042661614903
+FLOAT=8926484042661614890
+TEXTURE=8926484042661614889
+FLAGS1=8926484042661614871
+RAMP_TOGGLE=8926484042661617200
+RAMP_SOURCE=8926484042661617210
+RAMP_MAP=8926484042661617220
+RAMP_TINT=8926484042661617230
+RAMP_COUNT=8926484042661617240
+RAMP_COLORS=[8926484042661617250+i*10 for i in range(6)]
+RAMP_ALPHAS=[8926484042661617310+i*10 for i in range(3)]
+BASE_NAME='NBFXRampBaseRGBA_64_128_160_192.png'
+GRAY_NAME='NBFXRampDissolveGray133.png'
+RAMP_NAME='NBFXRampYellowA192.png'
+CASES=[('Off',0,0,0),('GradientLerp',1,0,0),
+       ('GradientMultiply',1,0,64),('TextureLerp',1,1,0),
+       ('TextureMultiply',1,1,64)]
+
+def guid(name:str)->str:
+ return uuid.uuid5(uuid.NAMESPACE_URL,'nbfx-vfx-dissolve-ramp-probe-20260930/'+name).hex
+def once(s:str,a:str,b:str,why:str)->str:
+ n=s.count(a)
+ if n!=1:raise ValueError(f'{why}: expected one {a!r}, got {n}')
+ return s.replace(a,b,1)
+def match(s:str,id:int)->re.Match[str]:
+ m=re.search(rf'(?ms)^--- !u!114 &{id}\n.*?(?=^--- !u!|\Z)',s)
+ if not m:raise ValueError(f'missing VFX object {id}')
+ return m
+def change(s:str,id:int,a:str,b:str)->str:
+ m=match(s,id);body=once(m.group(),a,b,str(id))
+ return s[:m.start()]+body+s[m.end():]
+def replace_meta(source:pathlib.Path,name:str)->str:
+ s=source.read_text();m=re.search(r'(?m)^guid: ([a-f0-9]{32})$',s)
+ if not m:raise ValueError('missing meta guid '+str(source))
+ return once(s,m.group(1),guid(name),name)
+def clone_master(s:str,src:int,id:int,old_name:str,name:str,
+                 old_value:str,new_value:str)->list[str]:
+ master=match(s,src).group().replace(str(src),str(id))
+ master=once(master,f'name: {old_name}\n',f'name: {name}\n',name)
+ master=once(master,old_value,new_value,name+' value')
+ return [master]
+def clone_struct(s:str,src:int,id:int,old_name:str,name:str,
+                 old_value:str,new_value:str)->list[str]:
+ master=match(s,src).group()
+ for k in range(4,-1,-1):master=master.replace(str(src+k),str(id+k))
+ master=once(master,f'name: {old_name}\n',f'name: {name}\n',name)
+ master=once(master,old_value,new_value,name+' value')
+ children=[]
+ for k in range(1,5):
+  child=match(s,src+k).group()
+  for j in range(4,-1,-1):child=child.replace(str(src+j),str(id+j))
+  children.append(child)
+ return [master,*children]
+def png_1x1(rgba:tuple[int,int,int,int])->bytes:
+ def chunk(tag:bytes,body:bytes)->bytes:
+  return struct.pack('>I',len(body))+tag+body+struct.pack('>I',zlib.crc32(tag+body))
+ ihdr=struct.pack('>IIBBBBB',1,1,8,6,0,0,0)
+ return b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',ihdr)+chunk(b'IDAT',zlib.compress(b'\0'+bytes(rgba)))+chunk(b'IEND',b'')
+
+def main()->None:
+ OUT.mkdir(parents=True,exist_ok=True)
+ s=(LINE/'NBFXLineOff.vfx').read_text()
+ ids=[RAMP_TOGGLE,RAMP_SOURCE,RAMP_MAP,RAMP_TINT,RAMP_COUNT]
+ for i in RAMP_COLORS+RAMP_ALPHAS:ids+=list(range(i,i+5))
+ if any(str(i) in s for i in ids):raise ValueError('private fileID collision')
+ if '  capacity: 1\n' not in s or '  cullMode: 0\n' not in match(s,OUTPUT).group():
+  raise ValueError('not prior Player-validated one-particle fixture')
+ for name in ('_DissolveRampMap','_DissolveRampCount','_DissolveRampColor0'):
+  if 'name: '+name+'\n' in s:raise ValueError('Ramp Output already present '+name)
+ # Copy controlled linear textures, replace all GUIDs deterministically.
+ for old_name,new_name in [('NBFXLineBaseRGBA_64_128_160_192.png',BASE_NAME),
+                            ('NBFXLineDissolveGray133.png',GRAY_NAME)]:
+  shutil.copyfile(LINE/old_name,OUT/new_name)
+  (OUT/(new_name+'.meta')).write_text(replace_meta(LINE/(old_name+'.meta'),new_name))
+  old_guid=re.search(r'(?m)^guid: ([a-f0-9]{32})$',(LINE/(old_name+'.meta')).read_text()).group(1)
+  s=once(s,old_guid,guid(new_name),old_name+' GUID')
+ (OUT/RAMP_NAME).write_bytes(png_1x1((255,255,0,192)))
+ (OUT/(RAMP_NAME+'.meta')).write_text(
+  replace_meta(LINE/'NBFXLineBaseRGBA_64_128_160_192.png.meta',RAMP_NAME))
+ white="'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0}'"
+ blue0="'{\"r\":0.0,\"g\":0.0,\"b\":1.0,\"a\":0.0}'"
+ blue1="'{\"r\":0.0,\"g\":0.0,\"b\":1.0,\"a\":1.0}'"
+ alpha0="'{\"x\":1.0,\"y\":0.0,\"z\":1.0,\"w\":1.0}'"
+ alpha1="'{\"x\":1.0,\"y\":0.0,\"z\":1.0,\"w\":1.0}'"
+ zero="'{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}'"
+ slots=[]
+ slots+=clone_master(s,FLOAT,RAMP_TOGGLE,'_Dissolve_Toggle',
+                     '_Dissolve_useRampMap_Toggle','m_SerializableObject: 1\n','m_SerializableObject: 1\n')
+ slots+=clone_master(s,FLOAT,RAMP_SOURCE,'_Dissolve_Toggle',
+                     '_DissolveRampSourceMode','m_SerializableObject: 1\n','m_SerializableObject: 0\n')
+ # Texture slot has no children; clone exact serialization with test texture.
+ texture=match(s,TEXTURE).group().replace(str(TEXTURE),str(RAMP_MAP))
+ texture=once(texture,'name: _DissolveMap\n','name: _DissolveRampMap\n','ramp map name')
+ old_gray=guid(GRAY_NAME)
+ texture=once(texture,old_gray,guid(RAMP_NAME),'ramp map texture GUID')
+ slots.append(texture)
+ slots+=clone_struct(s,COLOR,RAMP_TINT,'_Color','_DissolveRampColor',
+                     "'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6666667}'",white)
+ slots+=clone_master(s,FLOAT,RAMP_COUNT,'_Dissolve_Toggle',
+                     '_DissolveRampCount','m_SerializableObject: 1\n','m_SerializableObject: 131074\n')
+ for k,id in enumerate(RAMP_COLORS):
+  value=blue0 if k==0 else blue1 if k==1 else white
+  slots+=clone_struct(s,COLOR,id,'_Color',f'_DissolveRampColor{k}',
+                      "'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6666667}'",value)
+ for k,id in enumerate(RAMP_ALPHAS):
+  slots+=clone_struct(s,VECTOR,id,'_BaseMapMaskMapOffset',
+                      f'_DissolveRampAlpha{k}',zero,
+                      alpha0 if k==0 else alpha1)
+ attach=''.join(f'  - {{fileID: {id}}}\n' for id in
+                [RAMP_TOGGLE,RAMP_SOURCE,RAMP_MAP,RAMP_TINT,RAMP_COUNT,
+                 *RAMP_COLORS,*RAMP_ALPHAS])
+ s=change(s,OUTPUT,'  m_OutputSlots: []\n',attach+'  m_OutputSlots: []\n')
+ s+='\n'+'\n'.join(slots)
+ normalized=[]
+ for name,enabled,source,flag in CASES:
+  v=change(s,RAMP_TOGGLE,'m_SerializableObject: 1\n',
+           f'm_SerializableObject: {enabled}\n')
+  v=change(v,RAMP_SOURCE,'m_SerializableObject: 0\n',
+           f'm_SerializableObject: {source}\n')
+  v=change(v,FLAGS1,'m_SerializableObject: 0\n',
+           f'm_SerializableObject: {flag}\n')
+  file='NBFXRamp'+name+'.vfx'
+  (OUT/file).write_text(v)
+  (OUT/(file+'.meta')).write_text(
+   replace_meta(LINE/'NBFXLineOff.vfx.meta',file))
+  n=change(v,RAMP_TOGGLE,f'm_SerializableObject: {enabled}\n','m_SerializableObject: VARIABLE\n')
+  n=change(n,RAMP_SOURCE,f'm_SerializableObject: {source}\n','m_SerializableObject: VARIABLE\n')
+  n=change(n,FLAGS1,f'm_SerializableObject: {flag}\n','m_SerializableObject: VARIABLE\n')
+  normalized.append(n)
+ if len(set(normalized))!=1:raise ValueError('cases differ beyond enable/source/flag')
+ for path in sorted(OUT.rglob('*')):
+  if path.is_file():print(hashlib.sha256(path.read_bytes()).hexdigest(),path)
+
+if __name__=='__main__':main()
