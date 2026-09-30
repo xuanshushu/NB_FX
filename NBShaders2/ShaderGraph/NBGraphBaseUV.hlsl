@@ -20,7 +20,10 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     float UVModeFlagType0Lo16, float UVModeFlagType0Hi16,
     float4 SharedUVST, float4 SharedUVVec,
     float4 TWParameter, float TWStrength, float4 PCCenter,
-    out float2 Out)
+    out float2 Out, out float2 MaskUV, out float2 Mask2UV,
+    out float2 Mask3UV, out float2 EmissionUV, out float2 DissolveUV,
+    out float2 DissolveMaskUV, out float2 ColorBlendUV,
+    out float2 RampColorUV)
 {
     NBFX_BaseUVInputV1 input = (NBFX_BaseUVInputV1)0;
     input.meshTexcoord0 = UV;
@@ -53,6 +56,25 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     parameters.timeY = _Time.y;
     BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);
     Out = resolved.mainTexUV;
+    // These are source coordinates only. NBGraphBaseColor owns each feature's
+    // rotation, ST, animated offset and sampling, as ShaderLab does after
+    // GetUVByUVMode. In particular, they must not inherit MainTex's ST.
+    MaskUV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
+        FLAG_BIT_UVMODE_POS_0_MASKMAP, resolved);
+    Mask2UV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
+        FLAG_BIT_UVMODE_POS_0_MASKMAP_2, resolved);
+    Mask3UV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
+        FLAG_BIT_UVMODE_POS_0_MASKMAP_3, resolved);
+    EmissionUV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
+        FLAG_BIT_UVMODE_POS_0_EMISSION_MAP, resolved);
+    DissolveUV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
+        FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP, resolved);
+    DissolveMaskUV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
+        FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP, resolved);
+    ColorBlendUV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
+        FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP, resolved);
+    RampColorUV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
+        FLAG_BIT_UVMODE_POS_0_RAMP_COLOR_MAP, resolved);
 }
 
 void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
@@ -65,9 +87,14 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
     float UVModeFlagType0Lo16, float UVModeFlagType0Hi16,
     half4 SharedUVST, half4 SharedUVVec,
     half4 TWParameter, half TWStrength, half4 PCCenter,
-    out half2 Out)
+    out half2 Out, out half2 MaskUV, out half2 Mask2UV,
+    out half2 Mask3UV, out half2 EmissionUV, out half2 DissolveUV,
+    out half2 DissolveMaskUV, out half2 ColorBlendUV,
+    out half2 RampColorUV)
 {
-    float2 resolved;
+    float2 resolved, maskResolved, mask2Resolved, mask3Resolved;
+    float2 emissionResolved, dissolveResolved, dissolveMaskResolved;
+    float2 colorBlendResolved, rampColorResolved;
     NBGraphBaseUV_float((float4)UV, (float4)BaseMapST,
         (float)BaseMapUVRotation, (float)BaseMapUVRotationSpeed,
         (float4)BaseMapMaskMapOffset,
@@ -78,8 +105,18 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
         (float)UVModeFlagType0Lo16, (float)UVModeFlagType0Hi16,
         (float4)SharedUVST, (float4)SharedUVVec,
         (float4)TWParameter, (float)TWStrength, (float4)PCCenter,
-        resolved);
+        resolved, maskResolved, mask2Resolved, mask3Resolved,
+        emissionResolved, dissolveResolved, dissolveMaskResolved,
+        colorBlendResolved, rampColorResolved);
     Out = (half2)resolved;
+    MaskUV = (half2)maskResolved;
+    Mask2UV = (half2)mask2Resolved;
+    Mask3UV = (half2)mask3Resolved;
+    EmissionUV = (half2)emissionResolved;
+    DissolveUV = (half2)dissolveResolved;
+    DissolveMaskUV = (half2)dissolveMaskResolved;
+    ColorBlendUV = (half2)colorBlendResolved;
+    RampColorUV = (half2)rampColorResolved;
 }
 
 #endif
