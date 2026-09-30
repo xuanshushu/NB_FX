@@ -1070,25 +1070,11 @@
             half fresnelValue = 0;
             if(!ignoreFresnel())
             {
-                half3 fresnelDir = normalize(viewDirWS+_FresnelRotation.rgb);
-
-                half dotNV = dot(fresnelDir,input.normalWSAndAnimBlend.xyz) ;
-                fresnelValue =  dotNV;
-
-
                 _FresnelUnit.x += GetCustomData(_W9ParticleCustomDataFlag0,FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);;
-
-                // half fresnelHardness =  - _FresnelUnit.w*0.5 +0.5;
-                fresnelValue = NB_Remap(fresnelValue,_FresnelUnit.x,_FresnelUnit.x + 1.01 - _FresnelUnit.w,0,1);
-                UNITY_BRANCH
-                if(!CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON))
-                {
-                    fresnelValue = 1- fresnelValue;
-                }
-                fresnelValue = pow(fresnelValue,_FresnelUnit.y);
-
-
-                // fresnelValue = smoothstep(0.5-fresnelHardness,0.5+fresnelHardness,fresnelValue);
+                fresnelValue = NBFX_EvaluateFresnelV1(viewDirWS,
+                    input.normalWSAndAnimBlend.xyz, _FresnelRotation.rgb,
+                    _FresnelUnit,
+                    CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON));
             }
 
             #ifdef NB_DEBUG_FRESNEL
@@ -1096,23 +1082,10 @@
             #endif
 
 
-            UNITY_BRANCH
-            if(CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_FADE_ON))
-            {
-                fresnelValue *= alpha;
-                alpha = lerp(alpha,fresnelValue,_FresnelUnit.z);
-            }
-            else
-            {
-                float fresnelColorIntensity = fresnelValue*_FresnelColor.a*_FresnelUnit.z;
-
-                result = lerp(result,_FresnelColor.rgb,fresnelColorIntensity);
-                if (!CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA))
-                {
-                    alpha = max(alpha,fresnelColorIntensity);//颜色要不要不被主贴图Alpha影响呢？
-                }
-
-            }
+            NBFX_ApplyFresnelV1(result, alpha, fresnelValue,
+                _FresnelUnit.z, _FresnelColor,
+                CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_FADE_ON),
+                CheckLocalFlags(FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA));
 
         }
         #endif

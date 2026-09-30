@@ -133,4 +133,39 @@ void NBFX_ApplyColorAdjustmentV1(inout half3 color, half alpha,
         color *= alpha;
 }
 
+// Original NBShader Fresnel math. Hosts own the enable gate, normal source,
+// CustomData offset and back-face policy; the numerical operation is shared.
+half NBFX_EvaluateFresnelV1(float3 viewDirWS, half3 normalWS,
+    half3 directionOffset, half4 unit, bool invert)
+{
+    half3 fresnelDir = normalize(viewDirWS + directionOffset);
+    half fresnelValue = dot(fresnelDir, normalWS);
+    fresnelValue = NB_Remap(fresnelValue, unit.x,
+        unit.x + 1.01h - unit.w, 0.0h, 1.0h);
+    UNITY_BRANCH
+    if (!invert)
+        fresnelValue = 1.0h - fresnelValue;
+    return pow(fresnelValue, unit.y);
+}
+
+void NBFX_ApplyFresnelV1(inout half3 color, inout half alpha,
+    half fresnelValue, half strength, half4 fresnelColor,
+    bool alphaMode, bool colorAffectedByAlpha)
+{
+    UNITY_BRANCH
+    if (alphaMode)
+    {
+        fresnelValue *= alpha;
+        alpha = lerp(alpha, fresnelValue, strength);
+    }
+    else
+    {
+        float fresnelColorIntensity = fresnelValue * fresnelColor.a * strength;
+        color = lerp(color, fresnelColor.rgb, fresnelColorIntensity);
+        UNITY_BRANCH
+        if (!colorAffectedByAlpha)
+            alpha = max(alpha, fresnelColorIntensity);
+    }
+}
+
 #endif

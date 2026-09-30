@@ -189,6 +189,25 @@ half4 NBGraphApplyColorAdjustment(half4 color,
     return color;
 }
 
+// The original Fresnel stage is after Mask and before VertexColor. World
+// normal/view inputs come from SG geometry nodes; this first host path uses
+// the unperturbed normal and mirrors ShaderLab's VFACE back-face reversal.
+half4 NBGraphApplyFresnel(half4 color, float3 viewDirWS, half3 normalWS,
+    half isFrontFace, half4 unit, half4 fresnelColor,
+    half3 rotationOffset, uint flags0)
+{
+    if (isFrontFace < 0.5h)
+        normalWS = -normalWS;
+    half fresnelValue = NBFX_EvaluateFresnelV1(viewDirWS, normalWS,
+        rotationOffset, unit,
+        (flags0 & FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON) != 0u);
+    NBFX_ApplyFresnelV1(color.rgb, color.a, fresnelValue,
+        unit.z, fresnelColor,
+        (flags0 & FLAG_BIT_PARTICLE_FRESNEL_FADE_ON) != 0u,
+        (flags0 & FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA) != 0u);
+    return color;
+}
+
 // SHADERGRAPH_PREVIEW and runtime execute the same numeric shared function;
 // no preview-only camera/scene substitute is needed.
 // Stage: fragment BaseColor/Alpha. Preserve the GF BaseMap and Color controls.
@@ -239,6 +258,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 RampColorBlendColor,
     float HueShift, float Contrast, float4 ContrastMidColor,
     float Saturability, float4 BaseMapColorRefine,
+    float FresnelEnabled, float4 FresnelUnit, float4 FresnelColor,
+    float4 FresnelRotation, float3 NormalWS, float3 ViewDirWS,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -385,6 +406,11 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         maskInput.overallStrength = (half)MaskMapVec.x;
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
     }
+    if (FresnelEnabled > 0.5)
+        Out = (float4)NBGraphApplyFresnel((half4)Out, ViewDirWS,
+            (half3)NormalWS, (half)IsFrontFace, (half4)FresnelUnit,
+            (half4)FresnelColor, (half3)FresnelRotation.xyz,
+            NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
     if ((NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) &
         FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR) == 0u)
         Out *= VertexColor;
@@ -441,6 +467,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half4 RampColorBlendColor,
     float HueShift, float Contrast, half4 ContrastMidColor,
     float Saturability, half4 BaseMapColorRefine,
+    float FresnelEnabled, half4 FresnelUnit, half4 FresnelColor,
+    half4 FresnelRotation, half3 NormalWS, half3 ViewDirWS,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -576,6 +604,11 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         maskInput.overallStrength = MaskMapVec.x;
         Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
     }
+    if (FresnelEnabled > 0.5)
+        Out = NBGraphApplyFresnel(Out, ViewDirWS, NormalWS,
+            (half)IsFrontFace, FresnelUnit, FresnelColor,
+            FresnelRotation.xyz,
+            NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
     if ((NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16) &
         FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR) == 0u)
         Out *= VertexColor;

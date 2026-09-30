@@ -93,6 +93,11 @@ void NBFX_ApplyColorAdjustmentV1(inout half3 color, half alpha,
     bool saturationOn, half saturability,
     bool refineOn, half4 baseMapColorRefine,
     bool premultiplyRGB);
+half NBFX_EvaluateFresnelV1(float3 viewDirWS, half3 normalWS,
+    half3 directionOffset, half4 unit, bool invert);
+void NBFX_ApplyFresnelV1(inout half3 color, inout half alpha,
+    half fresnelValue, half strength, half4 fresnelColor,
+    bool alphaMode, bool colorAffectedByAlpha);
 NBFX_DistortionPayloadV1 NBFX_BuildDistortionPayloadV1(NBFX_DistortionInputV1 input);
 half3 NBFX_ComputeVertexOffsetOSV1(NBFX_VertexOffsetPreparedV1 input);
 
