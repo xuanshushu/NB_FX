@@ -3,6 +3,19 @@
 
 #include "NBShaderSharedContractV1.hlsl"
 
+// Original CustomRefract math, shared without material/global dependencies.
+// Keep full float arithmetic and the zero vector for total internal reflection;
+// each host retains its original half assignment before clip-direction transform.
+float3 NBFX_RefractDirectionV1(float3 incident, float3 normal, float eta)
+{
+    float N_dot_I = dot(normal, incident);
+    float k = 1.0f - eta * eta * (1.0f - N_dot_I * N_dot_I);
+    if (k < 0.0)
+        return float3(0, 0, 0);
+    else
+        return eta * incident - (eta * N_dot_I + sqrt(k)) * normal;
+}
+
 // Pure texture-noise decode shared by ShaderLab and future Graph hosts.
 // Keep the three original half assignment boundaries; alpha is a separate
 // weight, not part of signedRG. The host applies external NoiseMask,

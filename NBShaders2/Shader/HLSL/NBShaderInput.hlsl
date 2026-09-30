@@ -4,6 +4,7 @@
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
     #include "NBShaderFlags.hlsl"
     #include "NBShaderGeometryV1.hlsl"
+    #include "NBShaderDistortionV1.hlsl"
     #include "NBShaderUVV1.hlsl"
     #include "NBShaderUVV2.hlsl"
     #include "NBShaderPackedGradientV1.hlsl"
@@ -1156,20 +1157,7 @@
 
     float3 CustomRefract(float3 incident, float3 normal, float eta)
     {
-        float N_dot_I = dot(normal, incident);
-        float k = 1.0f - eta * eta * (1.0f - N_dot_I * N_dot_I);
-
-        // 检查全内反射
-        if (k < 0.0)
-        {
-            // 全内反射时返回零向量
-            return float3(0, 0, 0);
-        }
-        else
-        {
-            // 计算折射方向
-            return eta * incident - (eta * N_dot_I + sqrt(k)) * normal;
-        }
+        return NBFX_RefractDirectionV1(incident, normal, eta);
     }
 
     Texture2D _ParallaxMapping_Map;
