@@ -48,7 +48,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     pass = WithNBDistortionBlocks(pass);
                 if (forward || UsesNBStencil(pass.lightMode))
                     pass.renderStates = WithNBRenderStates(pass.renderStates, forward);
-                passes.Add(pass, item.fieldConditions);
+                passes.Add(forward ? WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl") : pass, item.fieldConditions);
                 if (!forward) continue;
                 AddDistortionPass(passes, pass, "NBCameraOpaqueDistortPass", "NBGraphCameraOpaquePass.hlsl");
                 AddDistortionPass(passes, pass, "NBDeferredDistortPass", "NBGraphDeferredDistortPass.hlsl");
@@ -95,9 +95,14 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 NBStencilState(),
                 RenderState.ColorMask("ColorMask [_ColorMask]")
             };
+            passes.Add(WithNBFragmentInclude(pass, fragmentInclude));
+        }
+
+        static PassDescriptor WithNBFragmentInclude(PassDescriptor pass, string fragmentInclude)
+        {
             var includes = new IncludeCollection();
             bool replaced = false;
-            foreach (var include in forward.includes)
+            foreach (var include in pass.includes)
             {
                 if (include.path == kURPUnlitPass)
                 {
@@ -105,15 +110,13 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     replaced = true;
                 }
                 else
-                {
                     includes.AddInternal(include.guid, include.path, include.location,
                         include.fieldConditions, include.shouldIncludeWithPragmas);
-                }
             }
             if (!replaced)
                 throw new InvalidOperationException("NB FX Graph: URP Unlit fragment include not found.");
             pass.includes = includes;
-            passes.Add(pass);
+            return pass;
         }
 
         // The original ShaderLab Stencil block belongs to the SubShader, so it

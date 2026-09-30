@@ -39,6 +39,9 @@ namespace NBFX.Baseline.Tests
                     "alpha-refine", "uniform-fallback" })
                     yield return new TestCaseData(pass, state).SetName(
                         "G4ScreenNoise_" + pass + "_" + state);
+            yield return new TestCaseData(Deferred, "clip-deferred-final-alpha").SetName("G4ScreenClip_DeferredFinalAlpha");
+            yield return new TestCaseData(Deferred, "clip-deferred-threshold").SetName("G4ScreenClip_DeferredThreshold");
+            yield return new TestCaseData(Opaque, "clip-opaque-final-alpha").SetName("G4ScreenClip_OpaqueFinalAlpha");
         }
 
         [Serializable]
@@ -175,12 +178,23 @@ namespace NBFX.Baseline.Tests
                 Color[] c = Capture(camera, target, readback, Path.Combine(output, "C-on"));
                 Color[] cr = Capture(camera, target, readback, Path.Combine(output, "C-repeat"));
 
-                SetStrength(graph, legacy, 0);
+                bool clipControl = state.StartsWith("clip-deferred", StringComparison.Ordinal);
+                if (clipControl)
+                {
+                    graph.SetFloat("_Cutoff", state == "clip-deferred-threshold" ? .2f : .1f);
+                    legacy.SetFloat("_Cutoff", state == "clip-deferred-threshold" ? .2f : .1f);
+                }
+                else SetStrength(graph, legacy, 0);
                 foregroundRenderer.sharedMaterial = legacy;
                 Color[] bOff = Capture(camera, target, readback, Path.Combine(output, "B-off"));
                 foregroundRenderer.sharedMaterial = graph;
                 Color[] cOff = Capture(camera, target, readback, Path.Combine(output, "C-off"));
-                SetStrength(graph, legacy, .5f);
+                if (clipControl)
+                {
+                    graph.SetFloat("_Cutoff", state == "clip-deferred-threshold" ? .1f : .2f);
+                    legacy.SetFloat("_Cutoff", state == "clip-deferred-threshold" ? .1f : .2f);
+                }
+                else SetStrength(graph, legacy, .5f);
 
                 // Both exact-tag lists are still invoked, but Graph's mode 0
                 // and opposite mode must clip before writing any pixel.
@@ -254,10 +268,13 @@ namespace NBFX.Baseline.Tests
                 {
                     Assert.That(metrics.centerB, Is.EqualTo(metrics.expectedBlue),
                         "Deferred blue must contain coverage × intensity with only one noise mask multiplication.");
-                    Assert.That(metrics.recoveredSignedR, Is.EqualTo(metrics.expectedSignedR),
-                        "Deferred signed R was masked or changed.");
-                    Assert.That(metrics.recoveredSignedG, Is.EqualTo(metrics.expectedSignedG),
-                        "Deferred signed G was masked or changed.");
+                    if (state != "clip-deferred-final-alpha")
+                    {
+                        Assert.That(metrics.recoveredSignedR, Is.EqualTo(metrics.expectedSignedR),
+                            "Deferred signed R was masked or changed.");
+                        Assert.That(metrics.recoveredSignedG, Is.EqualTo(metrics.expectedSignedG),
+                            "Deferred signed G was masked or changed.");
+                    }
                 }
             }
             finally
@@ -318,7 +335,7 @@ namespace NBFX.Baseline.Tests
             m.SetVector("_DistortionDirection", new Vector4(.5f, .75f, 0, 0));
             m.SetFloat("_NoiseIntensity", .5f);
             m.SetFloat("_noisemapEnabled", state == "uniform-fallback" ? 0 : 1);
-            m.SetFloat("_noiseMaskMap_Toggle", state == "mask-half" || state == "alpha-refine" ? 1 : 0);
+            m.SetFloat("_noiseMaskMap_Toggle", state == "mask-half" || state == "alpha-refine" || state.StartsWith("clip-deferred", StringComparison.Ordinal) ? 1 : 0);
             uint flags0 = state == "normalize-signed" ? 1u << 12 : 0;
             uint flags1 = (1u << 9) | (state == "alpha-refine" ? 1u << 8 : 0);
             uint channels = 3; // Noise mask channel R (bits 8..9 = 0).
@@ -348,8 +365,14 @@ namespace NBFX.Baseline.Tests
                 m.SetFloat("_ScreenDistortAlphaMulti", .5f);
                 m.SetFloat("_ScreenDistortAlphaAdd", .125f);
                 m.SetFloat("_ScreenDistortIntensity", .5f);
-                if (state == "mask-half" || state == "alpha-refine") m.EnableKeyword("_NOISE_MASKMAP");
+                if (state == "mask-half" || state == "alpha-refine" || state.StartsWith("clip-deferred", StringComparison.Ordinal)) m.EnableKeyword("_NOISE_MASKMAP");
                 if (state == "uniform-fallback") m.DisableKeyword("_NOISEMAP");
+            }
+            if (state.StartsWith("clip-", StringComparison.Ordinal))
+            {
+                m.SetFloat("_AlphaClip", 1); m.EnableKeyword("_ALPHATEST_ON");
+                m.SetFloat("_Cutoff", state == "clip-deferred-threshold" ? .1f : state == "clip-deferred-final-alpha" ? .2f : .5f);
+                if (state == "clip-opaque-final-alpha") m.SetFloat("_AlphaAll", .25f);
             }
             m.renderQueue = 3000;
             foreach (string name in new[] { "SRPDefaultUnlit", "SRPDEFAULTUNLIT", "UniversalForward",
@@ -374,9 +397,10 @@ namespace NBFX.Baseline.Tests
                 state == "normalize-signed" ? new Vector2(.125f, -.1875f) :
                 new Vector2(.1875f, .09375f);
             mask = state == "uniform-fallback" ? 1 :
-                state == "mask-half" || state == "alpha-refine" ? .25f : .5f;
+                state == "mask-half" || state == "alpha-refine" || state.StartsWith("clip-deferred", StringComparison.Ordinal) ? .25f : .5f;
             float coverage = state == "alpha-refine" ? Mathf.Pow(mask, 2) * .5f + .125f : mask;
-            sourceAlpha = coverage * .5f;
+            if (state == "clip-opaque-final-alpha") coverage *= .25f;
+            sourceAlpha = state == "clip-deferred-final-alpha" ? 0 : coverage * .5f;
         }
 
         static Texture2D MakeConstant(Color value)

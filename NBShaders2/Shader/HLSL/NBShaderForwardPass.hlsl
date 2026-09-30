@@ -1190,9 +1190,10 @@
 
         half alphaStrength = alpha;
         #if defined  (_ALPHAPREMULTIPLY_ON) || defined(_ALPHAMODULATE_ON)
-            result *= alpha;
             #ifdef _ALPHAPREMULTIPLY_ON
-                alpha *= _AdditiveToPreMultiplyAlphaLerp;
+                NBFX_ApplyBlendOutputV1(result, alpha, true, _AdditiveToPreMultiplyAlphaLerp);
+            #else
+                NBFX_ApplyBlendOutputV1(result, alpha, false, 1.0h);
             #endif
         #endif
 

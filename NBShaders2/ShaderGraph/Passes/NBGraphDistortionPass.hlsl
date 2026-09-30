@@ -77,6 +77,13 @@ void frag(
     outColor = half4(SampleSceneColor(uv + payload.signedRG * payload.coverage * payload.intensity), 1.0h);
 #endif
 
+// Match NBShader: Deferred clips its encoded coverage/intensity alpha;
+// CameraOpaque clips its final alpha=1, not SurfaceDescription.Alpha.
+#ifdef _ALPHATEST_ON
+    clip(outColor.a - surface.AlphaClipThreshold);
+#endif
+    outColor = min(outColor, 1000);
+
 #ifdef _WRITE_RENDERING_LAYERS
     outRenderingLayers = EncodeMeshRenderingLayer();
 #endif

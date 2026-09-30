@@ -208,4 +208,14 @@ void NBFX_ApplyFresnelV1(inout half3 color, inout half alpha,
     }
 }
 
+// Shared final NB blend arithmetic. Hosts retain keyword/Pass selection and
+// clip the final Pass alpha after this call; the source alpha is used for RGB.
+void NBFX_ApplyBlendOutputV1(inout half3 color, inout half alpha,
+    bool scaleFinalAlpha, half additiveToPremultiply)
+{
+    color *= alpha;
+    if (scaleFinalAlpha)
+        alpha *= additiveToPremultiply;
+}
+
 #endif
