@@ -564,13 +564,9 @@
             #else
                 bool forceNoiseLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_NOISEMAP);
                 half4 noiseSample = SampleNoise(_NoiseOffset, _NoiseMap, noiseMap_uv, input.positionWS.xyz, forceNoiseLod0);
-                cum_noise = noiseSample.xy;
-                UNITY_FLATTEN
-                if(CheckLocalFlags(FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON))
-                {
-                    cum_noise = cum_noise * 2 - 1;
-                }
-                noiseMask *= noiseSample.a;
+                NBFX_DecodeTextureNoiseV1(noiseSample,
+                    CheckLocalFlags(FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON),
+                    cum_noise, noiseMask);
                 _DistortionDirection.x += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
                 _DistortionDirection.y += GetCustomData(_W9ParticleCustomDataFlag2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y,0,input.VaryingsP_Custom1,input.VaryingsP_Custom2);
             #endif
