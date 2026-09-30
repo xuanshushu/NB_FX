@@ -1,0 +1,124 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+public static class NBFXDistanceFadeReplay
+{
+    const string Graph = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+    const string Legacy = "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader";
+    const string Root = "/tmp/nbfx-distance-fade-replay-20260930";
+    static void Need(bool ok, string why) { if (!ok) throw new Exception(why); }
+    static Color32[] Capture(Camera camera, RenderTexture rt, Texture2D readback, string name)
+    {
+        for (int i = 0; i < 4; i++) camera.Render();
+        RenderTexture old = RenderTexture.active;
+        try { RenderTexture.active = rt; readback.ReadPixels(new Rect(0, 0, 96, 96), 0, 0); readback.Apply(false); }
+        finally { RenderTexture.active = old; }
+        File.WriteAllBytes(Path.Combine(Root, name + ".png"), readback.EncodeToPNG());
+        return readback.GetPixels32();
+    }
+    static int AlphaDiff(Color32[] a, Color32[] b)
+    {
+        int n = 0; for (int i = 0; i < a.Length; i++) if (a[i].a != b[i].a) n++; return n;
+    }
+    static int RGBDiff(Color32[] a, Color32[] b)
+    {
+        int n = 0; for (int i = 0; i < a.Length; i++)
+            if (a[i].r != b[i].r || a[i].g != b[i].g || a[i].b != b[i].b) n++;
+        return n;
+    }
+    static Material MakeGraph(Shader shader)
+    {
+        Material m = new Material(shader);
+        m.SetTexture("_BaseMap", Texture2D.whiteTexture);
+        m.SetColor("_Color", new Color(Mathf.LinearToGammaSpace(.2f),
+            Mathf.LinearToGammaSpace(.3f), Mathf.LinearToGammaSpace(.4f), .6f));
+        m.SetColor("_ColorA", Color.white);
+        m.SetFloat("_NB_Flags0Lo16", 0); m.SetFloat("_NB_Flags0Hi16", 0);
+        m.SetFloat("_NB_Flags1Lo16", 0); m.SetFloat("_NB_Flags1Hi16", 0);
+        m.SetFloat("_NB_DistortionMode", 0);
+        m.SetFloat("_Cull", 0); m.SetFloat("_Surface", 1);
+        m.SetFloat("_ZWrite", 0); m.SetFloat("_ZTest", 4);
+        m.SetFloat("_SrcBlend", (float)BlendMode.One);
+        m.SetFloat("_DstBlend", (float)BlendMode.Zero);
+        m.SetFloat("_SrcBlendAlpha", (float)BlendMode.One);
+        m.SetFloat("_DstBlendAlpha", (float)BlendMode.Zero);
+        m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); m.renderQueue = 3000;
+        m.SetVector("_Fade", new Vector4(2, 4, 0, 0));
+        return m;
+    }
+    static Material MakeLegacy(Shader shader)
+    {
+        Material sample = AssetDatabase.LoadAssetAtPath<Material>("Assets/NBShaderSamples/NBShaderSamples/UnLit.mat");
+        Need(sample, "Legacy sample missing");
+        Material m = new Material(sample); m.shader = shader;
+        m.SetTexture("_BaseMap", Texture2D.whiteTexture);
+        m.SetColor("_BaseColor", new Color(.2f, .3f, .4f, .6f));
+        m.SetColor("_ColorA", Color.white);
+        m.SetVector("_Fade", new Vector4(2, 4, 0, 0));
+        m.SetInteger("_W9ParticleShaderFlags", 0); m.SetInteger("_W9ParticleShaderFlags1", 1);
+        m.EnableKeyword("_FX_LIGHT_MODE_UNLIT");
+        m.SetFloat("_SrcBlend", (float)BlendMode.One);
+        m.SetFloat("_DstBlend", (float)BlendMode.Zero);
+        m.SetFloat("_ZWrite", 0); m.SetFloat("_ZTest", 4);
+        m.SetFloat("_Cull", 0); m.SetFloat("_ColorMask", 15);
+        m.renderQueue = 3000;
+        return m;
+    }
+    public static void Run()
+    {
+        Directory.CreateDirectory(Root);
+        AssetDatabase.ImportAsset(Graph, ImportAssetOptions.ForceUpdate);
+        Shader graph = AssetDatabase.LoadAssetAtPath<Shader>(Graph);
+        Shader legacy = AssetDatabase.LoadAssetAtPath<Shader>(Legacy);
+        Need(graph && legacy && graph.isSupported && legacy.isSupported, "Shader unavailable");
+        Material gm = MakeGraph(graph), lm = MakeLegacy(legacy);
+        Need(gm.HasProperty("_DistanceFade_Toggle") && gm.HasProperty("_Fade"), "Graph properties missing");
+        GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad); quad.layer = 2;
+        quad.transform.localScale = new Vector3(2, 2, 1);
+        GameObject holder = new GameObject("NBFX Distance Fade Replay Camera");
+        Camera cam = holder.AddComponent<Camera>();
+        cam.orthographicSize = 1.5f; cam.fieldOfView = 45;
+        cam.nearClipPlane = .1f; cam.farClipPlane = 20;
+        cam.cullingMask = 1 << 2; cam.transform.position = new Vector3(0, 0, 5);
+        cam.transform.rotation = Quaternion.Euler(0, 180, 0);
+        cam.clearFlags = CameraClearFlags.SolidColor; cam.backgroundColor = Color.black;
+        cam.allowHDR = false; cam.allowMSAA = false;
+        RenderTexture rt = new RenderTexture(96, 96, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+        rt.Create(); cam.targetTexture = rt;
+        Texture2D rb = new Texture2D(96, 96, TextureFormat.RGBA32, false, true);
+        try
+        {
+            foreach (bool ortho in new[] { true, false })
+            foreach (float distance in new[] { 2f, 3f, 5f })
+            foreach (bool enabled in new[] { false, true })
+            {
+                cam.orthographic = ortho;
+                quad.transform.position = new Vector3(0, 0, 5 - distance);
+                gm.SetFloat("_DistanceFade_Toggle", enabled ? 1 : 0);
+                if (enabled) lm.EnableKeyword("_DISTANCE_FADE"); else lm.DisableKeyword("_DISTANCE_FADE");
+                string key = (ortho ? "ortho" : "persp") + "-" + distance + "-" + (enabled ? "on" : "off");
+                quad.GetComponent<MeshRenderer>().sharedMaterial = gm;
+                Color32[] a = Capture(cam, rt, rb, "graph-" + key);
+                quad.GetComponent<MeshRenderer>().sharedMaterial = lm;
+                Color32[] b = Capture(cam, rt, rb, "legacy-" + key);
+                int alphaDiff = AlphaDiff(a, b), rgbDiff = RGBDiff(a, b);
+                Debug.Log("NBFX_DISTANCE_FADE_REPLAY " + key + " graph=" + a[48*96+48] +
+                    " legacy=" + b[48*96+48] + " alphaDiff=" + alphaDiff + " rgbDiff=" + rgbDiff);
+                Need(alphaDiff == 0, "Alpha B/C failed: " + key);
+            }
+            Need(gm.FindPass("NBCameraOpaqueDistortPass") == 1 &&
+                gm.FindPass("NBDeferredDistortPass") == 2, "Custom Pass regression");
+            Debug.Log("NBFX_DISTANCE_FADE_REPLAY PASS graphPass=" + gm.passCount +
+                " legacyPass=" + lm.passCount + " graphMessages=" + ShaderUtil.GetShaderMessages(graph).Length);
+        }
+        finally
+        {
+            UnityEngine.Object.DestroyImmediate(quad); UnityEngine.Object.DestroyImmediate(holder);
+            UnityEngine.Object.DestroyImmediate(gm); UnityEngine.Object.DestroyImmediate(lm);
+            UnityEngine.Object.DestroyImmediate(rt); UnityEngine.Object.DestroyImmediate(rb);
+        }
+    }
+}

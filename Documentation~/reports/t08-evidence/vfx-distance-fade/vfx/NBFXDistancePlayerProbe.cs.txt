@@ -1,0 +1,357 @@
+// /tmp-only real one-particle VFX Mesh distance-fade Player probe.
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.VFX;
+
+public sealed class NBFXDistancePlayerProbe : MonoBehaviour
+{
+    public VisualEffectAsset offAsset, onAsset;
+    public Shader graphShader, offShader, onShader;
+    const int Size = 256;
+    const float RepeatTolerance = 0.005f;
+    const float PixelTolerance = 0.02f;
+    const float NearCameraZ = 7f;
+    const float FarCameraZ = 11f;
+    static readonly Vector3 BaseRGB = new Vector3(64f / 255f, 128f / 255f, 160f / 255f);
+    const float BaseAlpha = (192f / 255f) * 0.6666667f;
+
+    [Serializable] sealed class CaseInfo
+    {
+        public string name;
+        public int alive, passCount, opaquePass, deferredPass, visiblePixels,
+            changedVsOffPixels;
+        public bool culled;
+        public float repeatMaxRGB, effectiveAlphaMedian, effectiveAlphaP10,
+            effectiveAlphaP90, sourceRMedian, sourceGMedian, sourceBMedian;
+    }
+    [Serializable] sealed class DepthInfo
+    {
+        public string name;
+        public float cameraZ, viewDepthAtEffectOrigin;
+        public int roiPixels;
+        public CaseInfo off, on;
+    }
+    [Serializable] sealed class Result
+    {
+        public string unityVersion, graphicsDevice, status, error, note;
+        public bool linearTarget, fixtureValid, pass;
+        public DepthInfo near, far;
+    }
+    sealed class Context
+    {
+        public Camera camera;
+        public GameObject cameraObject;
+        public RenderTexture target;
+        public Texture2D readback;
+        public VisualEffect[] effects;
+    }
+    static string OutputPath()
+    {
+        foreach (string arg in Environment.GetCommandLineArgs())
+            if (arg.StartsWith("--nbfx-distance-output=", StringComparison.Ordinal))
+                return arg.Substring("--nbfx-distance-output=".Length);
+        return null;
+    }
+    IEnumerator Start()
+    {
+        string output = OutputPath();
+        if (string.IsNullOrEmpty(output)) { Application.Quit(2); yield break; }
+        Directory.CreateDirectory(output);
+        var result = new Result {
+            unityVersion = Application.unityVersion,
+            graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
+            note = "Real one-particle Cube/CullOff VFX Mesh Output. Off/On share _Fade=(4,12,0,0), only _DistanceFade_Toggle differs. Orthographic camera Z=7/11 gives two eye-depth conditions. Black/white linear source-over pairs infer effective alpha/source RGB; this is not direct GPU alpha or ShaderLab B/C."
+        };
+        Context context = null;
+        int exitCode = 2;
+        try { context = Setup(); }
+        catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        if (context != null && result.error == null)
+        {
+            // Same one-particle warmup and pause schedule as the archived VFX tests.
+            for (int frame = 0; frame < 3; frame++) { context.camera.Render(); yield return null; }
+            foreach (var effect in context.effects) effect.Simulate(1f / 60f, 21u);
+            for (int frame = 0; frame < 2; frame++) { context.camera.Render(); yield return null; }
+            foreach (var effect in context.effects) effect.pause = true;
+            try {
+                result.near = CaptureDepth(context, output, "near", NearCameraZ);
+                result.far = CaptureDepth(context, output, "far", FarCameraZ);
+                result.linearTarget = !context.target.sRGB;
+                result.fixtureValid = FixtureValid(result);
+                result.pass = result.fixtureValid && NumericPass(result);
+                result.status = result.pass ? "PASS" :
+                    result.fixtureValid ? "NUMERIC_MISMATCH" : "FIXTURE_INVALID";
+                exitCode = result.pass ? 0 : 1;
+            }
+            catch (Exception ex) { result.status = "FIXTURE_INVALID"; result.error = ex.ToString(); }
+        }
+        try { Cleanup(context); }
+        catch (Exception ex) {
+            result.status = "CLEANUP_FAILED";
+            result.error = (result.error ?? "") + "\n" + ex;
+            exitCode = 2;
+        }
+        File.WriteAllText(Path.Combine(output, "result.json"), JsonUtility.ToJson(result, true));
+        Debug.Log("NBFX_DISTANCE_PLAYER " + JsonUtility.ToJson(result));
+        Application.Quit(exitCode);
+    }
+    Context Setup()
+    {
+        if (!graphShader || !offAsset || !onAsset || !offShader || !onShader)
+            throw new Exception("Graph/VFX/Shader reference missing");
+        if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.Metal ||
+            !SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf))
+            throw new Exception("Requires Metal and ARGBHalf RenderTexture");
+        var c = new Context();
+        try {
+            c.cameraObject = new GameObject("NBFX Distance Fade VFX Camera");
+            c.camera = c.cameraObject.AddComponent<Camera>();
+            c.camera.orthographic = true;
+            c.camera.orthographicSize = 0.5f;
+            c.camera.nearClipPlane = 0.1f;
+            c.camera.farClipPlane = 20f;
+            c.camera.transform.position = new Vector3(0, 0, NearCameraZ);
+            c.camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+            c.camera.clearFlags = CameraClearFlags.SolidColor;
+            c.camera.backgroundColor = Color.black;
+            c.camera.allowHDR = true;
+            c.camera.allowMSAA = false;
+            c.camera.cullingMask = 1;
+            c.target = new RenderTexture(Size, Size, 24,
+                RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
+            c.target.antiAliasing = 1;
+            c.target.Create();
+            if (!c.target.IsCreated() || c.target.sRGB)
+                throw new Exception("Linear ARGBHalf target failed");
+            c.camera.targetTexture = c.target;
+            c.readback = new Texture2D(Size, Size, TextureFormat.RGBAHalf, false, true);
+            c.effects = new VisualEffect[2];
+            c.effects[0] = CreateEffect("Off", offAsset);
+            c.effects[1] = CreateEffect("On", onAsset);
+            return c;
+        }
+        catch { Cleanup(c); throw; }
+    }
+    static VisualEffect CreateEffect(string name, VisualEffectAsset asset)
+    {
+        var go = new GameObject("NBFX Distance Fade " + name);
+        go.layer = 0;
+        go.transform.position = new Vector3(0, 0, 2);
+        go.transform.localScale = Vector3.one * 4f;
+        var effect = go.AddComponent<VisualEffect>();
+        effect.resetSeedOnPlay = false;
+        effect.startSeed = 12345;
+        effect.visualEffectAsset = asset;
+        effect.Reinit();
+        return effect;
+    }
+    static Color[] Capture(Context c, string path)
+    {
+        c.camera.Render();
+        var previous = RenderTexture.active;
+        try {
+            RenderTexture.active = c.target;
+            c.readback.ReadPixels(new Rect(0, 0, Size, Size), 0, 0);
+            c.readback.Apply(false);
+            var colors = c.readback.GetPixels();
+            var preview = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+            try {
+                preview.SetPixels(colors);
+                preview.Apply(false);
+                File.WriteAllBytes(path, preview.EncodeToPNG());
+            }
+            finally { Destroy(preview); }
+            return colors;
+        }
+        finally { RenderTexture.active = previous; }
+    }
+    static float MaxRGB(Color a, Color b) => Mathf.Max(
+        Mathf.Abs(a.r - b.r), Mathf.Abs(a.g - b.g), Mathf.Abs(a.b - b.b));
+    static float MaxRGB(Color[] a, Color[] b)
+    {
+        float max = 0;
+        for (int i = 0; i < a.Length; i++) max = Mathf.Max(max, MaxRGB(a[i], b[i]));
+        return max;
+    }
+    static int Changed(Color[] a, Color[] b, float tolerance)
+    {
+        int count = 0;
+        for (int i = 0; i < a.Length; i++)
+            if (MaxRGB(a[i], b[i]) > tolerance) count++;
+        return count;
+    }
+    static int ChangedAt(List<int> roi, Color[] a, Color[] b, float tolerance)
+    {
+        int count = 0;
+        foreach (int i in roi) if (MaxRGB(a[i], b[i]) > tolerance) count++;
+        return count;
+    }
+    static float Quantile(List<float> values, float p)
+    {
+        if (values.Count == 0) throw new Exception("No safe numeric samples");
+        values.Sort();
+        float at = p * (values.Count - 1);
+        int low = Mathf.FloorToInt(at), high = Mathf.CeilToInt(at);
+        return Mathf.Lerp(values[low], values[high], at - low);
+    }
+    static CaseInfo Describe(string name, int alive, bool culled, Shader shader,
+        Color[] black, Color[] white, Color[] frameBlack, Color[] frameWhite,
+        Color[] repeatBlack, Color[] repeatWhite, List<int> roi, Color[] offBlack)
+    {
+        var material = new Material(shader);
+        try {
+            var info = new CaseInfo {
+                name = name,
+                alive = alive, culled = culled,
+                passCount = material.passCount,
+                opaquePass = material.FindPass("NBCameraOpaqueDistortPass"),
+                deferredPass = material.FindPass("NBDeferredDistortPass"),
+                visiblePixels = Changed(black, frameBlack, PixelTolerance),
+                changedVsOffPixels = ChangedAt(roi, offBlack, frameBlack, PixelTolerance),
+                repeatMaxRGB = Mathf.Max(MaxRGB(frameBlack, repeatBlack),
+                    MaxRGB(frameWhite, repeatWhite))
+            };
+            var alphas = new List<float>();
+            var reds = new List<float>();
+            var greens = new List<float>();
+            var blues = new List<float>();
+            foreach (int i in roi) {
+                var b0 = black[i]; var b1 = white[i];
+                var f0 = frameBlack[i]; var f1 = frameWhite[i];
+                float sum = 0;
+                for (int channel = 0; channel < 3; channel++) {
+                    float denominator = b1[channel] - b0[channel];
+                    if (denominator < 0.8f)
+                        throw new Exception("Black/white clear delta too small");
+                    sum += 1f - (f1[channel] - f0[channel]) / denominator;
+                }
+                float alpha = sum / 3f;
+                if (alpha < 0.005f || alpha > 1.05f)
+                    throw new Exception("Unphysical inferred effective alpha: " + alpha);
+                alphas.Add(alpha);
+                reds.Add((f0.r - (1f - alpha) * b0.r) / alpha);
+                greens.Add((f0.g - (1f - alpha) * b0.g) / alpha);
+                blues.Add((f0.b - (1f - alpha) * b0.b) / alpha);
+            }
+            info.effectiveAlphaMedian = Quantile(alphas, .5f);
+            info.effectiveAlphaP10 = Quantile(alphas, .1f);
+            info.effectiveAlphaP90 = Quantile(alphas, .9f);
+            info.sourceRMedian = Quantile(reds, .5f);
+            info.sourceGMedian = Quantile(greens, .5f);
+            info.sourceBMedian = Quantile(blues, .5f);
+            return info;
+        }
+        finally { Destroy(material); }
+    }
+    DepthInfo CaptureDepth(Context c, string output, string name, float cameraZ)
+    {
+        c.camera.transform.position = new Vector3(0, 0, cameraZ);
+        c.camera.Render();
+        var info = new DepthInfo {
+            name = name,
+            cameraZ = cameraZ,
+            viewDepthAtEffectOrigin = -c.camera.worldToCameraMatrix.MultiplyPoint3x4(
+                c.effects[0].transform.position).z
+        };
+        foreach (var effect in c.effects) effect.gameObject.layer = 31;
+        c.camera.cullingMask = 0;
+        c.camera.backgroundColor = Color.black;
+        var black = Capture(c, Path.Combine(output, name + "-background-black.png"));
+        c.camera.backgroundColor = Color.white;
+        var white = Capture(c, Path.Combine(output, name + "-background-white.png"));
+        var framesBlack = new Color[2][];
+        var framesWhite = new Color[2][];
+        var repeatBlack = new Color[2][];
+        var repeatWhite = new Color[2][];
+        var alive = new int[2];
+        var culled = new bool[2];
+        for (int i = 0; i < 2; i++) {
+            c.effects[i].gameObject.layer = 0;
+            c.camera.cullingMask = 1;
+            string stem = name + (i == 0 ? "-off" : "-on");
+            c.camera.backgroundColor = Color.black;
+            framesBlack[i] = Capture(c, Path.Combine(output, stem + "-black.png"));
+            repeatBlack[i] = Capture(c, Path.Combine(output, stem + "-black-repeat.png"));
+            c.camera.backgroundColor = Color.white;
+            framesWhite[i] = Capture(c, Path.Combine(output, stem + "-white.png"));
+            repeatWhite[i] = Capture(c, Path.Combine(output, stem + "-white-repeat.png"));
+            alive[i] = (int)c.effects[i].GetParticleSystemInfo("Simple Loop").aliveCount;
+            culled[i] = c.effects[i].culled;
+            c.effects[i].gameObject.layer = 31;
+        }
+        var roi = new List<int>();
+        for (int y = 1; y < Size - 1; y++) for (int x = 1; x < Size - 1; x++) {
+            bool safe = true;
+            for (int dy = -1; dy <= 1 && safe; dy++)
+                for (int dx = -1; dx <= 1 && safe; dx++) {
+                    int n = (y + dy) * Size + x + dx;
+                    if (MaxRGB(black[n], framesBlack[0][n]) < .08f ||
+                        MaxRGB(white[n], framesWhite[0][n]) < .08f)
+                        safe = false;
+                }
+            if (safe) roi.Add(y * Size + x);
+        }
+        info.roiPixels = roi.Count;
+        if (roi.Count < 100) throw new Exception("Too few safe particle pixels: " + roi.Count);
+        info.off = Describe(name + "Off", alive[0], culled[0], offShader,
+            black, white, framesBlack[0], framesWhite[0], repeatBlack[0], repeatWhite[0],
+            roi, framesBlack[0]);
+        info.on = Describe(name + "On", alive[1], culled[1], onShader,
+            black, white, framesBlack[1], framesWhite[1], repeatBlack[1], repeatWhite[1],
+            roi, framesBlack[0]);
+        return info;
+    }
+    static bool FixtureValid(Result r)
+    {
+        if (!r.linearTarget || r.near == null || r.far == null ||
+            r.near.roiPixels < 100 || r.far.roiPixels < 100 ||
+            r.far.viewDepthAtEffectOrigin < r.near.viewDepthAtEffectOrigin + 3f ||
+            r.near.viewDepthAtEffectOrigin < 3f ||
+            r.far.viewDepthAtEffectOrigin > 13f)
+            return false;
+        foreach (var depth in new[] { r.near, r.far })
+            foreach (var c in new[] { depth.off, depth.on })
+                if (c == null || c.alive != 1 || c.culled || c.visiblePixels < 30 ||
+                    c.repeatMaxRGB > RepeatTolerance || c.passCount < 3 ||
+                    c.opaquePass != 1 || c.deferredPass != 2)
+                    return false;
+        return true;
+    }
+    static float RGBDistance(CaseInfo a, CaseInfo b) => Mathf.Max(
+        Mathf.Abs(a.sourceRMedian - b.sourceRMedian),
+        Mathf.Abs(a.sourceGMedian - b.sourceGMedian),
+        Mathf.Abs(a.sourceBMedian - b.sourceBMedian));
+    static bool NumericPass(Result r)
+    {
+        float offExpected = 1f - (1f - BaseAlpha) * (1f - BaseAlpha);
+        bool off = Mathf.Abs(r.near.off.effectiveAlphaMedian - offExpected) < .06f &&
+            Mathf.Abs(r.far.off.effectiveAlphaMedian - offExpected) < .06f &&
+            Mathf.Abs(r.near.off.effectiveAlphaMedian - r.far.off.effectiveAlphaMedian) < .025f &&
+            Mathf.Abs(r.near.off.sourceRMedian - BaseRGB.x) < .07f &&
+            Mathf.Abs(r.near.off.sourceGMedian - BaseRGB.y) < .07f &&
+            Mathf.Abs(r.near.off.sourceBMedian - BaseRGB.z) < .07f;
+        bool fade = r.near.on.effectiveAlphaMedian > .03f &&
+            r.near.on.effectiveAlphaMedian < r.near.off.effectiveAlphaMedian - .10f &&
+            r.far.on.effectiveAlphaMedian > r.near.on.effectiveAlphaMedian + .10f &&
+            r.far.on.effectiveAlphaMedian < r.far.off.effectiveAlphaMedian - .03f;
+        bool rgb = RGBDistance(r.near.on, r.near.off) < .10f &&
+            RGBDistance(r.far.on, r.far.off) < .07f;
+        bool pixels = r.near.on.changedVsOffPixels >= 100 &&
+            r.far.on.changedVsOffPixels >= 100;
+        return off && fade && rgb && pixels;
+    }
+    static void Cleanup(Context c)
+    {
+        if (c == null) return;
+        if (c.camera) c.camera.targetTexture = null;
+        if (c.target) { c.target.Release(); Destroy(c.target); }
+        if (c.readback) Destroy(c.readback);
+        if (c.cameraObject) Destroy(c.cameraObject);
+        if (c.effects != null) foreach (var effect in c.effects)
+            if (effect) Destroy(effect.gameObject);
+    }
+}

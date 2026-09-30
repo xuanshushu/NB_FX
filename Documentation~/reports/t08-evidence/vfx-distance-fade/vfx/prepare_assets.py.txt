@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+"""Create test-only real one-particle VFX Mesh Off/On Distance Fade Outputs."""
+from __future__ import annotations
+import gzip
+import hashlib
+import pathlib
+import re
+import shutil
+import uuid
+
+ROOT = pathlib.Path(__file__).resolve().parent
+OUT = ROOT / "Assets"
+ARCH = pathlib.Path("/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t08-evidence/vfx-basecolor-active")
+SRC = ARCH / "NBFXBCA1.vfx.gz"
+OUTPUT = 8926484042661614853
+BASEMAP = 8926484042661614854
+COLOR = 8926484042661614855
+SCALAR = 8926484042661614869
+VECTOR = 8926484042661614903
+ENABLED = 8926484042661617600
+FADE = 8926484042661617610
+IDS = (ENABLED, *(FADE+i for i in range(5)))
+TEXTURE = "NBFXDistanceBaseRGBA_64_128_160_192.png"
+FADE_JSON = "'{\"x\":4.0,\"y\":12.0,\"z\":0.0,\"w\":0.0}'"
+BASE_TINT = "'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":0.6666667}'"
+
+
+def guid(name: str) -> str:
+    return uuid.uuid5(uuid.NAMESPACE_URL, "nbfx-vfx-distance-fade-probe-20260930/" + name).hex
+
+
+def once(text: str, old: str, new: str, label: str) -> str:
+    count = text.count(old)
+    if count != 1:
+        raise ValueError(f"{label}: expected one {old!r}; found {count}")
+    return text.replace(old, new, 1)
+
+
+def match(text: str, object_id: int) -> re.Match[str]:
+    found = re.search(rf"(?ms)^--- !u!114 &{object_id}\n.*?(?=^--- !u!|\Z)", text)
+    if not found:
+        raise ValueError(f"VFX object {object_id} missing")
+    return found
+
+
+def change(text: str, object_id: int, old: str, new: str) -> str:
+    found = match(text, object_id)
+    body = once(found.group(), old, new, str(object_id))
+    return text[:found.start()] + body + text[found.end():]
+
+
+def meta(source: pathlib.Path, name: str) -> str:
+    raw = source.read_text()
+    found = re.search(r"(?m)^guid: ([a-f0-9]{32})$", raw)
+    if not found:
+        raise ValueError("meta GUID absent: " + str(source))
+    return once(raw, found.group(1), guid(name), name)
+
+
+def clone_scalar(text: str, new_id: int, name: str, value: str) -> str:
+    body = match(text, SCALAR).group().replace(str(SCALAR), str(new_id))
+    body = once(body, "name: _NB_Flags0Lo16\n", f"name: {name}\n", name)
+    return once(body, "m_SerializableObject: 0\n",
+                f"m_SerializableObject: {value}\n", name)
+
+
+def clone_vector(text: str, new_id: int, name: str, value: str) -> list[str]:
+    old_zero = "'{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":0.0}'"
+    master = match(text, VECTOR).group().replace(str(VECTOR), str(new_id))
+    for i in range(1, 5):
+        master = master.replace(str(VECTOR + i), str(new_id + i))
+    master = once(master, "name: _BaseMapMaskMapOffset\n", f"name: {name}\n", name)
+    master = once(master, old_zero, value, name + " value")
+    children = [match(text, VECTOR + i).group()
+                .replace(str(VECTOR), str(new_id))
+                .replace(str(VECTOR + i), str(new_id + i))
+                for i in range(1, 5)]
+    return [master, *children]
+
+
+def main() -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
+    text = gzip.decompress(SRC.read_bytes()).decode("utf-8")
+    for object_id in IDS:
+        if str(object_id) in text:
+            raise ValueError(f"private VFX fileID collision: {object_id}")
+    output = match(text, OUTPUT).group()
+    if "  capacity: 1\n" not in text or "  cullMode: 0\n" not in output or "  blendMode: 1\n" not in output:
+        raise ValueError("source is not archived one-particle Cube/CullOff transparent Output")
+    if "name: _DistanceFade_Toggle\n" in text or "name: _Fade\n" in text:
+        raise ValueError("Distance Fade Output inputs already present")
+
+    original_texture = "NBFXBC_RGBA_64_128_160_192.png"
+    texture_meta = ARCH / (original_texture + ".meta.txt")
+    old_guid = re.search(r"(?m)^guid: ([a-f0-9]{32})$", texture_meta.read_text()).group(1)
+    shutil.copyfile(ARCH / original_texture, OUT / TEXTURE)
+    (OUT / (TEXTURE + ".meta")).write_text(meta(texture_meta, TEXTURE))
+    text = text.replace(old_guid, guid(TEXTURE))
+    text = change(text, COLOR,
+        "'{\"r\":1.0,\"g\":1.0,\"b\":1.0,\"a\":1.0}'", BASE_TINT)
+
+    slots = [clone_scalar(text, ENABLED, "_DistanceFade_Toggle", "0")]
+    slots += clone_vector(text, FADE, "_Fade", FADE_JSON)
+    attach = f"  - {{fileID: {ENABLED}}}\n  - {{fileID: {FADE}}}\n"
+    text = change(text, OUTPUT, "  m_OutputSlots: []\n", attach + "  m_OutputSlots: []\n")
+    text += "\n" + "\n".join(slots)
+
+    variants = []
+    for name, enabled in (("Off", 0), ("On", 1)):
+        variant = change(text, ENABLED, "m_SerializableObject: 0\n",
+                         f"m_SerializableObject: {enabled}\n")
+        filename = f"NBFXDistance{name}.vfx"
+        (OUT / filename).write_text(variant)
+        (OUT / (filename + ".meta")).write_text(
+            meta(ARCH / "NBFXBCA1.vfx.meta.txt", filename))
+        variants.append(change(variant, ENABLED,
+            f"m_SerializableObject: {enabled}\n", "m_SerializableObject: VARIANT\n"))
+    if variants[0] != variants[1]:
+        raise ValueError("Off/On assets differ outside Distance Fade toggle")
+    for path in sorted(OUT.iterdir()):
+        if path.is_file():
+            print(hashlib.sha256(path.read_bytes()).hexdigest(), path)
+
+
+if __name__ == "__main__":
+    main()
