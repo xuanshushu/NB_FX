@@ -27,7 +27,7 @@
 <tr><td>F-HOST_MODE / F-PARTICLE_CONTROLS</td><td>部分：URP Mesh 与真正 VFX Mesh 粒子已运行，age→Red/Alpha 已测。</td><td>粒子 Flipbook/soft particle、空间/旋转/自定义属性、连接端口覆盖与持久化、其它 Output 类型均无完整结论。</td></tr>
 <tr><td>F-INSPECTOR_FOLDOUT / F-INSPECTOR_RANGE_METADATA</td><td>部分：Mesh Graph 借共享 SectionLabelItem/本地化排 Base、Mask、Dissolve、Distortion；属性由 MaterialEditor 绘制，未识别属性回退原生 UI。</td><td>不是原 NB 功能控件/SyncService 的完整共享；可见 Inspector 多选、Undo、动画提示、默认值、VFX Output 端口状态/冲突提示未测。</td></tr>
 <tr><td>F-RENDER_STATE / F-Z_STATE / F-STENCIL / F-MIXED_DEPTH_LEGACY</td><td>部分：当前 URP Unlit Target 提供基本 Blend/Cull/ZTest/ZWrite，扭曲 Pass 固定自身混合状态。</td><td>旧高级 Blend/ColorMask、OverrideZ、Stencil/Portal、深度/背面顺序及各 Pass 相互作用无等价证据；不可把基本 URP 状态当作完整支持。</td></tr>
-<tr><td>F-LIGHTING / F-FRESNEL_DEPTH / F-PARALLAX</td><td>原效果未接入当前 Unlit Graph 色/几何链。</td><td>法线/MatCap/光照/阴影、Fresnel、Depth Fade/Decal、Parallax 及组合。</td></tr>
+<tr><td>F-LIGHTING / F-FRESNEL_DEPTH / F-PARALLAX</td><td>原效果未接入当前 Unlit Graph 色/几何链。</td><td>法线/MatCap/光照/阴影、Depth Fade/Decal、Parallax 及组合；Fresnel 已有<a href="t07-graph-fresnel-checkpoint.html">无 NormalMap/CustomData 的 Mesh 切片</a>，未覆盖完整法线与 VFX。</td></tr>
 <tr><td>F-SHARED_UV_CUSTOM_DATA / F-TWIRL_POLAR_LEGACY</td><td>原高级共享 UV 路由未接入；现有图只验证限定 UV0 子集。</td><td>UV1/特殊 UV、Custom1/Custom2、Twirl/Polar、非 UV0 对所有功能的传播。</td></tr>
 <tr><td>F-VAT / F-VERTEX_OFFSET</td><td>原几何效果未接入当前 Graph 的顶点输出。</td><td>VAT 多模式/高 UV/Buffer、Vertex Offset、法线/切线/阴影与 VFX Mesh 逐粒子空间。</td></tr>
 </tbody></table>

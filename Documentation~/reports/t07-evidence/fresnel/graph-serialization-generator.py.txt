@@ -1,0 +1,352 @@
+#!/usr/bin/env python3
+"""Generate a test-only NBShaderGraph Fresnel wiring candidate.
+
+Usage: python3 nbfx-fresnel-graph-generator.py INPUT.shadergraph OUTPUT.shadergraph
+
+This script never edits INPUT in place and refuses to overwrite OUTPUT.  It
+adds only the four requested properties, six NBGraphBaseColor inputs, four
+property nodes, two world-space geometry nodes, and six edges.  It assumes
+the corresponding NBGraphBaseColor_float/half HLSL signatures are changed
+separately, in the same order (slots 95..100).
+
+The geometry-node serialization below is copied from the installed Shader
+Graph 17.3 FresnelEffect sample; property and Custom Function slot templates
+are copied from INPUT itself.  This is not a general Shader Graph writer.
+"""
+
+from __future__ import annotations
+
+import argparse
+import copy
+import hashlib
+import json
+from pathlib import Path
+import uuid
+
+
+GRAPH_TYPE = "UnityEditor.ShaderGraph.GraphData"
+CF_TYPE = "UnityEditor.ShaderGraph.CustomFunctionNode"
+PROPERTY_NODE_TYPE = "UnityEditor.ShaderGraph.PropertyNode"
+NORMAL_NODE_TYPE = "UnityEditor.ShaderGraph.NormalVectorNode"
+VIEW_NODE_TYPE = "UnityEditor.ShaderGraph.ViewDirectionNode"
+PREFIX = "nbfx/nbshadergraph/fresnel/v1/"
+SLOT_NAMES = (
+    "FresnelEnabled", "FresnelUnit", "FresnelColor",
+    "FresnelRotation", "NormalWS", "ViewDirWS",
+)
+PROPERTY_DEFS = (
+    ("FresnelEnabled", "_fresnelEnabled", "float", 0.0),
+    ("FresnelUnit", "_FresnelUnit", "vector4", (0.0, 0.5, 1.0, 0.5)),
+    ("FresnelColor", "_FresnelColor", "hdrcolor", (1.0, 1.0, 1.0, 1.0)),
+    ("FresnelRotation", "_FresnelRotation", "vector4", (0.0, 0.0, 0.0, 0.5)),
+)
+
+
+def stable_id(label: str) -> str:
+    return uuid.uuid5(uuid.NAMESPACE_URL, PREFIX + label).hex
+
+
+def stable_guid(label: str) -> str:
+    return str(uuid.uuid5(uuid.NAMESPACE_URL, PREFIX + label))
+
+
+def parse_stream(source: str) -> list[dict]:
+    decoder = json.JSONDecoder()
+    result = []
+    index = 0
+    while index < len(source):
+        while index < len(source) and source[index].isspace():
+            index += 1
+        if index == len(source):
+            break
+        value, index = decoder.raw_decode(source, index)
+        if not isinstance(value, dict):
+            raise ValueError("Shader Graph stream contains a non-object value")
+        result.append(value)
+    return result
+
+
+def serialize_stream(objects: list[dict]) -> str:
+    return "\n\n".join(json.dumps(obj, indent=4, ensure_ascii=False)
+                       for obj in objects) + "\n"
+
+
+def index_objects(objects: list[dict]) -> dict[str, dict]:
+    ids = [obj.get("m_ObjectId") for obj in objects]
+    if any(not isinstance(object_id, str) or not object_id for object_id in ids):
+        raise ValueError("Every stream object must have an m_ObjectId")
+    if len(ids) != len(set(ids)):
+        raise ValueError("Duplicate m_ObjectId in Shader Graph stream")
+    return dict(zip(ids, objects))
+
+
+def exactly_one(objects: list[dict], predicate, label: str) -> dict:
+    matches = [obj for obj in objects if predicate(obj)]
+    if len(matches) != 1:
+        raise ValueError(f"Expected exactly one {label}; found {len(matches)}")
+    return matches[0]
+
+
+def vector4(value) -> dict[str, float]:
+    return dict(zip(("x", "y", "z", "w"), value))
+
+
+def position(node: dict, x: float, y: float) -> None:
+    node["m_DrawState"]["m_Position"].update(x=x, y=y)
+
+
+def world_geometry_node(kind: str, x: float, y: float) -> tuple[dict, dict]:
+    # Source schema: SG 17.3 Samples~/NodeReference/Math/FresnelEffect.shadergraph.
+    # CoordinateSpace.World == 2 in NeededCoordinateSpace.cs.
+    normal = kind == "normal"
+    label = "Normal Vector" if normal else "View Direction"
+    node_type = NORMAL_NODE_TYPE if normal else VIEW_NODE_TYPE
+    node_id = stable_id(f"geometry/{kind}/node")
+    slot_id = stable_id(f"geometry/{kind}/slot")
+    node = {
+        "m_SGVersion": 0 if normal else 1,
+        "m_Type": node_type,
+        "m_ObjectId": node_id,
+        "m_Group": {"m_Id": ""},
+        "m_Name": label,
+        "m_DrawState": {
+            "m_Expanded": True,
+            "m_Position": {
+                "serializedVersion": "2", "x": x, "y": y,
+                "width": 206.0, "height": 131.0,
+            },
+        },
+        "m_Slots": [{"m_Id": slot_id}],
+        "synonyms": ["surface direction" if normal else "eye direction"],
+        "m_Precision": 0,
+        "m_PreviewExpanded": False,
+        "m_DismissedVersion": 0,
+        "m_PreviewMode": 2,
+        "m_CustomColors": {"m_SerializableColors": []},
+        "m_Space": 2,
+    }
+    default = {"x": 0.0, "y": 0.0, "z": 1.0 if normal else 0.0}
+    slot = {
+        "m_SGVersion": 0,
+        "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
+        "m_ObjectId": slot_id,
+        "m_Id": 0,
+        "m_DisplayName": "Out",
+        "m_SlotType": 1,
+        "m_Hidden": False,
+        "m_ShaderOutputName": "Out",
+        "m_StageCapability": 3,
+        "m_Value": default.copy(),
+        "m_DefaultValue": default.copy(),
+        "m_Labels": [],
+    }
+    return node, slot
+
+
+def property_template(objects: list[dict], ref_name: str) -> dict:
+    return exactly_one(
+        objects,
+        lambda obj: obj.get("m_DefaultReferenceName") == ref_name,
+        f"property {ref_name}",
+    )
+
+
+def make_property(objects: list[dict], name: str, ref_name: str,
+                  kind: str, value) -> dict:
+    template_ref = {
+        "float": "_NB_DistortionMode",
+        "vector4": "_MaskMapVec",
+        "hdrcolor": "_Color",
+    }[kind]
+    prop = copy.deepcopy(property_template(objects, template_ref))
+    prop["m_ObjectId"] = stable_id(f"property/{name}")
+    prop["m_Guid"]["m_GuidSerialized"] = stable_guid(f"property/{name}/guid")
+    prop["m_Name"] = name
+    prop["m_RefNameGeneratedByDisplayName"] = name
+    prop["m_DefaultReferenceName"] = ref_name
+    prop["m_OverrideReferenceName"] = ref_name
+    if kind == "float":
+        prop["m_Value"] = value
+    elif kind == "vector4":
+        prop["m_Value"] = vector4(value)
+    else:
+        prop["m_Value"] = dict(zip(("r", "g", "b", "a"), value))
+        prop["m_ColorMode"] = 1  # SG ColorMode.HDR; legacy _FresnelColor is HDR.
+        prop["isMainColor"] = False
+    return prop
+
+
+def make_property_node(objects: list[dict], by_id: dict[str, dict],
+                       prop: dict, kind: str, x: float, y: float) -> tuple[dict, dict]:
+    template_ref = {"float": "_NB_DistortionMode",
+                    "vector4": "_MaskMapVec", "hdrcolor": "_Color"}[kind]
+    template_prop = property_template(objects, template_ref)
+    template_node = exactly_one(
+        objects,
+        lambda obj: obj.get("m_Type") == PROPERTY_NODE_TYPE
+        and obj["m_Property"]["m_Id"] == template_prop["m_ObjectId"],
+        f"PropertyNode for {template_ref}",
+    )
+    template_slot = by_id[template_node["m_Slots"][0]["m_Id"]]
+    node = copy.deepcopy(template_node)
+    slot = copy.deepcopy(template_slot)
+    name = prop["m_Name"]
+    node["m_ObjectId"] = stable_id(f"property/{name}/node")
+    slot["m_ObjectId"] = stable_id(f"property/{name}/output")
+    node["m_Property"]["m_Id"] = prop["m_ObjectId"]
+    node["m_Slots"] = [{"m_Id": slot["m_ObjectId"]}]
+    slot["m_DisplayName"] = name
+    position(node, x, y)
+    return node, slot
+
+
+def make_cf_slot(objects: list[dict], by_id: dict[str, dict],
+                 cf: dict, index: int, name: str, kind: str, value) -> dict:
+    template_index = {"float": 93, "vector4": 94, "vector3": None}[kind]
+    if kind == "vector3":
+        # Use SG's Vector3MaterialSlot schema from a GeometryNode; then turn it
+        # into an input.  Graph CF currently has no Vector3 input exemplar.
+        _, slot = world_geometry_node("normal", 0.0, 0.0)
+        slot["m_SlotType"] = 0
+    else:
+        original = exactly_one(
+            [by_id[ref["m_Id"]] for ref in cf["m_Slots"] if ref["m_Id"] in by_id],
+            lambda item: item["m_Id"] == template_index,
+            f"CF slot {template_index}",
+        )
+        slot = copy.deepcopy(original)
+    slot["m_ObjectId"] = stable_id(f"cf/slot/{index}/{name}")
+    slot["m_Id"] = index
+    slot["m_DisplayName"] = name
+    slot["m_ShaderOutputName"] = name
+    if kind == "vector4":
+        slot["m_Value"] = vector4(value)
+        slot["m_DefaultValue"] = vector4(value)
+    elif kind == "vector3":
+        xyz = dict(zip(("x", "y", "z"), value))
+        slot["m_Value"] = xyz.copy()
+        slot["m_DefaultValue"] = xyz.copy()
+    else:
+        slot["m_Value"] = value
+        slot["m_DefaultValue"] = value
+    return slot
+
+
+def edge(node_id: str, cf_id: str, input_slot: int) -> dict:
+    return {
+        "m_OutputSlot": {"m_Node": {"m_Id": node_id}, "m_SlotId": 0},
+        "m_InputSlot": {"m_Node": {"m_Id": cf_id}, "m_SlotId": input_slot},
+    }
+
+
+def validate_graph(objects: list[dict], added: bool) -> None:
+    by_id = index_objects(objects)
+    graph = exactly_one(objects, lambda obj: obj.get("m_Type") == GRAPH_TYPE,
+                        "GraphData")
+    cf = exactly_one(objects, lambda obj: obj.get("m_Type") == CF_TYPE
+                     and obj.get("m_FunctionName") == "NBGraphBaseColor",
+                     "NBGraphBaseColor Custom Function")
+    for key in ("m_Properties", "m_Nodes", "m_CategoryData"):
+        refs = [ref["m_Id"] for ref in graph[key]]
+        if len(refs) != len(set(refs)) or any(ref not in by_id for ref in refs):
+            raise ValueError(f"Invalid or duplicate {key} references")
+    slot_ids = [ref["m_Id"] for ref in cf["m_Slots"]]
+    slot_numbers = [by_id[ref]["m_Id"] for ref in slot_ids]
+    if len(slot_ids) != len(set(slot_ids)) or len(slot_numbers) != len(set(slot_numbers)):
+        raise ValueError("Duplicate NBGraphBaseColor slot object or slot number")
+    destinations = [(e["m_InputSlot"]["m_Node"]["m_Id"],
+                     e["m_InputSlot"]["m_SlotId"]) for e in graph["m_Edges"]]
+    if len(destinations) != len(set(destinations)):
+        raise ValueError("More than one edge targets an input slot")
+    if added:
+        expected_names = [definition[1] for definition in PROPERTY_DEFS]
+        for ref_name in expected_names:
+            prop = property_template(objects, ref_name)
+            if prop["m_ObjectId"] not in [r["m_Id"] for r in graph["m_Properties"]]:
+                raise ValueError(f"New property {ref_name} missing from GraphData")
+        for index, name in enumerate(SLOT_NAMES, 95):
+            slot = exactly_one([by_id[ref] for ref in slot_ids],
+                               lambda item: item["m_Id"] == index,
+                               f"CF slot {index}")
+            if slot["m_ShaderOutputName"] != name or (cf["m_ObjectId"], index) not in destinations:
+                raise ValueError(f"CF slot {index} not correctly named/wired")
+
+
+def generate(objects: list[dict]) -> list[dict]:
+    objects = copy.deepcopy(objects)
+    validate_graph(objects, added=False)
+    by_id = index_objects(objects)
+    graph = exactly_one(objects, lambda obj: obj.get("m_Type") == GRAPH_TYPE,
+                        "GraphData")
+    cf = exactly_one(objects, lambda obj: obj.get("m_Type") == CF_TYPE
+                     and obj.get("m_FunctionName") == "NBGraphBaseColor",
+                     "NBGraphBaseColor Custom Function")
+    category = by_id[graph["m_CategoryData"][0]["m_Id"]]
+    if category.get("m_Type") != "UnityEditor.ShaderGraph.CategoryData":
+        raise ValueError("First GraphData category is not CategoryData")
+    current_indices = {by_id[ref["m_Id"]]["m_Id"] for ref in cf["m_Slots"]}
+    if current_indices != set(range(95)):
+        raise ValueError("Expected the existing CF to have exactly slots 0..94")
+    for _, ref_name, _, _ in PROPERTY_DEFS:
+        if any(obj.get("m_DefaultReferenceName") == ref_name for obj in objects):
+            raise ValueError(f"Fresnel property already exists: {ref_name}")
+
+    new_objects: list[dict] = []
+    source_nodes: list[dict] = []
+    for offset, (name, ref_name, kind, value) in enumerate(PROPERTY_DEFS):
+        prop = make_property(objects, name, ref_name, kind, value)
+        node, output = make_property_node(objects, by_id, prop, kind,
+                                          620.0, 2500.0 + offset * 85.0)
+        new_objects.extend((prop, node, output))
+        graph["m_Properties"].append({"m_Id": prop["m_ObjectId"]})
+        category["m_ChildObjectList"].append({"m_Id": prop["m_ObjectId"]})
+        graph["m_Nodes"].append({"m_Id": node["m_ObjectId"]})
+        source_nodes.append(node)
+
+    for kind, y in (("normal", 2840.0), ("view", 2980.0)):
+        node, output = world_geometry_node(kind, 620.0, y)
+        new_objects.extend((node, output))
+        graph["m_Nodes"].append({"m_Id": node["m_ObjectId"]})
+        source_nodes.append(node)
+
+    slot_defs = (
+        ("float", 0.0), ("vector4", (0.0, 0.5, 1.0, 0.5)),
+        ("vector4", (1.0, 1.0, 1.0, 1.0)),
+        ("vector4", (0.0, 0.0, 0.0, 0.5)),
+        ("vector3", (0.0, 0.0, 1.0)),
+        ("vector3", (0.0, 0.0, 0.0)),
+    )
+    for index, (name, (kind, value), source_node) in enumerate(
+            zip(SLOT_NAMES, slot_defs, source_nodes), 95):
+        slot = make_cf_slot(objects, by_id, cf, index, name, kind, value)
+        new_objects.append(slot)
+        cf["m_Slots"].append({"m_Id": slot["m_ObjectId"]})
+        graph["m_Edges"].append(edge(source_node["m_ObjectId"],
+                                     cf["m_ObjectId"], index))
+
+    objects.extend(new_objects)
+    validate_graph(objects, added=True)
+    return objects
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("input", type=Path)
+    parser.add_argument("output", type=Path)
+    args = parser.parse_args()
+    if args.input.resolve() == args.output.resolve():
+        parser.error("INPUT and OUTPUT must differ; in-place editing is disabled")
+    if args.output.exists():
+        parser.error("OUTPUT already exists; remove it explicitly before rerunning")
+    source = args.input.read_text(encoding="utf-8")
+    generated = serialize_stream(generate(parse_stream(source)))
+    # Validate the emitted stream too, not just the in-memory objects.
+    validate_graph(parse_stream(generated), added=True)
+    args.output.write_text(generated, encoding="utf-8")
+    print(f"source_sha256={hashlib.sha256(source.encode('utf-8')).hexdigest()}")
+    print(f"output_sha256={hashlib.sha256(generated.encode('utf-8')).hexdigest()}")
+    print(f"wrote={args.output}")
+
+
+if __name__ == "__main__":
+    main()

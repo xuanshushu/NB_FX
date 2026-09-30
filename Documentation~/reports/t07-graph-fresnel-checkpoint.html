@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>T07 · Graph Fresnel 切片</title></head><body>
+<p><a href="index.html">返回报告索引</a> · <a href="implementation-gap-matrix-20260930.html">缺口矩阵</a></p>
+<h1>T07 · Fresnel 共享算术和 Graph Mesh 限定对照</h1>
+<p><strong>限定结论：</strong>产品代码 <code>0ecb5b5</code> 将原 ShaderLab Fresnel 的 remap、反转、pow、颜色/透明度混合抽为共享函数；Graph 接入 World Normal/View Direction、原同名控制量及现有 Flags0 bit2/13/18，在 Mask 后、顶点色前运行。没有新增 keyword/Pass，未改官方包、UniversalTarget 或 NBPostprocess。当前 Unity 6000.3.18f1 / URP、SG、VFX 17.3 / Metal 隔离 Graph Mesh 数值测试通过；<strong>不等于法线贴图、逐粒子 CustomData、完整 B/C 或 G4/G5 放行</strong>。</p>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>Graph Mesh</td><td>线性 ARGBHalf 中心：关闭 (.033,.073,.133,.600)、颜色 (.808,.014,.026,.802)、bit13 颜色受 Alpha (.808,.014,.026,.600)、bit2 透明模式 (.033,.073,.133,.481)、bit18 反转 (.224,.059,.107,.600)、方向偏移 (.362,.048,.088,.600)、背面 (.808,.014,.026,.802)。Pass=10，两个精确自定义 Pass 索引 1/2。ShaderUtil 5 条 warning，非干净 Console。</td><td><a href="t07-evidence/fresnel/mesh-final.log.gz">最终日志</a> · <a href="t07-evidence/fresnel/color.png">颜色</a>/<a href="t07-evidence/fresnel/alpha-mode.png">透明模式</a>/<a href="t07-evidence/fresnel/back.png">背面</a></td></tr>
+<tr><td>旧 ShaderLab 回归</td><td>当前 vs 仅克隆中的抽取前同源版本，在 off/color/alpha/invert/affect/rotation/back 七例，经每侧 4 次预热后 RGBA32 每像素严格差 0；均 Pass=7、ShaderUtil 消息 18。不是 T00 Frozen B/C。</td><td><a href="t07-evidence/fresnel/legacy-ab.log.gz">A/B 日志</a> · <a href="t07-evidence/fresnel/NBShaderPreFresnelForwardPass.hlsl.gz">抽取前源</a></td></tr>
+<tr><td>夹具纠正</td><td>首测相机方向错误使全部像素为黑；第二次期望把 Gamma 输入 .2 误作线性输出而失败。修正的仅是测试夹具，保留原失败日志，最终数值与画面通过。</td><td><a href="t07-evidence/fresnel/mesh.log.gz">首测</a> · <a href="t07-evidence/fresnel/mesh-fixed-camera.log.gz">第二次</a> · <a href="t07-evidence/fresnel/NBFXFresnelMeshProbe.cs.txt">最终夹具</a></td></tr>
+</tbody></table>
+<p><strong>仍缺：</strong>原法线贴图扰动后的法线、CustomData Fresnel offset、独立背面 Pass 忽略策略、Graph GUI 对 split Flags 的安全写回、主动 VFX Output、Fog/Lighting/Depth 组合、旧 ShaderLab T00 Frozen B/C、其它平台。Graph 原生属性回退能显示新控制量，但不等于完整 NB Fresnel 控件或 VFX Output 端口持久化。<a href="t07-evidence/fresnel/README.txt">重放与限制</a> · <a href="t07-evidence/fresnel/sha256.txt">附件哈希</a>。unityMCP 未暴露，隔离 CLI 清理编译 exit 0；不 push。</p>
+</body></html>

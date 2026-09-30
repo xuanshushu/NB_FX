@@ -1,0 +1,27 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+public static class NBFXFresnelMeshProbe
+{
+ const string Graph="Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+ const string Root="/tmp/nbfx-fresnel-mesh-20260930";
+ static Color Capture(Camera c,RenderTexture rt,Texture2D rb,string name){c.Render();var old=RenderTexture.active;try{RenderTexture.active=rt;rb.ReadPixels(new Rect(0,0,96,96),0,0);rb.Apply(false);}finally{RenderTexture.active=old;}var p=new Texture2D(96,96,TextureFormat.RGBA32,false,true);p.SetPixels(rb.GetPixels());p.Apply(false);File.WriteAllBytes(Root+"/"+name+".png",p.EncodeToPNG());UnityEngine.Object.DestroyImmediate(p);return rb.GetPixel(48,48);}
+ static void Need(bool x,string m){if(!x)throw new Exception(m);}
+ static void Near(float a,float b,string n,float t=.03f){Need(Mathf.Abs(a-b)<=t,n+" actual="+a+" expected="+b);}
+ public static void Run()
+ {
+  Directory.CreateDirectory(Root);AssetDatabase.ImportAsset(Graph,ImportAssetOptions.ForceUpdate);var shader=AssetDatabase.LoadAssetAtPath<Shader>(Graph);Need(shader&&shader.isSupported,"Graph unsupported");
+  var quad=GameObject.CreatePrimitive(PrimitiveType.Quad);quad.layer=2;quad.transform.rotation=Quaternion.Euler(0,60,0);quad.transform.localScale=new Vector3(2,2,1);var m=new Material(shader);foreach(var name in new[]{"_fresnelEnabled","_FresnelUnit","_FresnelColor","_FresnelRotation"})Need(m.HasProperty(name),"missing property "+name);
+  m.SetColor("_Color",new Color(.2f,.3f,.4f,.6f));m.SetFloat("_NB_Flags0Lo16",0);m.SetFloat("_NB_Flags0Hi16",0);m.SetFloat("_NB_Flags1Lo16",0);m.SetFloat("_NB_Flags1Hi16",0);m.SetFloat("_NB_DistortionMode",0);m.SetFloat("_Cull",0);m.SetFloat("_Surface",1);m.SetFloat("_ZWrite",0);m.SetFloat("_SrcBlend",(float)BlendMode.One);m.SetFloat("_DstBlend",(float)BlendMode.Zero);m.SetFloat("_SrcBlendAlpha",(float)BlendMode.One);m.SetFloat("_DstBlendAlpha",(float)BlendMode.Zero);m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");m.renderQueue=3000;m.SetVector("_FresnelUnit",new Vector4(.3f,1,1,0));m.SetColor("_FresnelColor",new Color(1,0,0,1));m.SetVector("_FresnelRotation",Vector4.zero);quad.GetComponent<MeshRenderer>().sharedMaterial=m;
+  var go=new GameObject("fresnel camera");var cam=go.AddComponent<Camera>();cam.orthographic=true;cam.orthographicSize=1.5f;cam.nearClipPlane=.1f;cam.farClipPlane=20;cam.cullingMask=1<<2;cam.transform.position=new Vector3(0,0,5);cam.transform.rotation=Quaternion.Euler(0,180,0);cam.clearFlags=CameraClearFlags.SolidColor;cam.backgroundColor=Color.black;cam.allowHDR=true;cam.allowMSAA=false;var rt=new RenderTexture(96,96,24,RenderTextureFormat.ARGBHalf,RenderTextureReadWrite.Linear);rt.Create();cam.targetTexture=rt;var rb=new Texture2D(96,96,TextureFormat.RGBAHalf,false,true);
+  try
+  {
+   var off=Capture(cam,rt,rb,"off");m.SetFloat("_fresnelEnabled",1);var color=Capture(cam,rt,rb,"color");m.SetFloat("_NB_Flags0Lo16",8192);var affect=Capture(cam,rt,rb,"color-affect-alpha");m.SetFloat("_NB_Flags0Lo16",4);var fade=Capture(cam,rt,rb,"alpha-mode");m.SetFloat("_NB_Flags0Lo16",0);m.SetFloat("_NB_Flags0Hi16",4);var invert=Capture(cam,rt,rb,"invert");m.SetFloat("_NB_Flags0Hi16",0);m.SetVector("_FresnelRotation",new Vector4(1,0,0,0));var rotated=Capture(cam,rt,rb,"rotation");m.SetVector("_FresnelRotation",Vector4.zero);quad.transform.rotation=Quaternion.Euler(0,120,0);var back=Capture(cam,rt,rb,"back");
+   Debug.Log("NBFX_FRESNEL_MESH off="+off+" color="+color+" affect="+affect+" fade="+fade+" invert="+invert+" rotated="+rotated+" back="+back+" passes="+m.passCount+" p1="+m.FindPass("NBCameraOpaqueDistortPass")+" p2="+m.FindPass("NBDeferredDistortPass")+" messages="+ShaderUtil.GetShaderMessages(shader).Length);
+   Near(off.r,.033f,"off.r",.01f);Near(off.g,.073f,"off.g",.01f);Near(off.b,.133f,"off.b",.01f);Near(off.a,.6f,"off.a");Need(color.r>off.r+.3f&&color.g<off.g*.5f&&color.a>off.a+.1f,"color branch inactive");Near(affect.r,color.r,"affect RGB");Near(affect.a,off.a,"affect alpha");Near(fade.r,off.r,"fade RGB");Need(fade.a<off.a-.05f,"fade alpha inactive");Need(invert.r<color.r-.25f,"invert inactive");Need(rotated.r<color.r-.15f,"direction offset inactive");Near(back.r,color.r,"back face",.08f);Need(m.FindPass("NBCameraOpaqueDistortPass")==1&&m.FindPass("NBDeferredDistortPass")==2,"Pass regression");
+   foreach(var msg in ShaderUtil.GetShaderMessages(shader))Debug.Log("NBFX_FRESNEL_SHADER_MESSAGE "+msg.severity+" "+msg.message);
+  }finally{UnityEngine.Object.DestroyImmediate(quad);UnityEngine.Object.DestroyImmediate(go);UnityEngine.Object.DestroyImmediate(m);UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(rb);}
+ }
+}
