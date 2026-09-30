@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Failed(Child)" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-30 19:05:48Z" end-time="2026-09-30 19:05:49Z" duration="1.2204827">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="807" result="Failed" site="Child" start-time="2026-09-30 19:05:48Z" end-time="2026-09-30 19:05:49Z" duration="1.220483" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1865" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:05:48Z" end-time="2026-09-30 19:05:49Z" duration="1.213575" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="2843" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1866" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:05:48Z" end-time="2026-09-30 19:05:49Z" duration="1.207633" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1867" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:05:48Z" end-time="2026-09-30 19:05:49Z" duration="1.199911" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1868" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:05:48Z" end-time="2026-09-30 19:05:49Z" duration="1.196970" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1356" name="G4GraphLightingTests" fullname="NBFX.Baseline.Tests.G4GraphLightingTests" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-09-30 19:05:48Z" end-time="2026-09-30 19:05:49Z" duration="1.189106" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1365" name="OrdinaryMeshLightingL0" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-09-30 19:05:49Z" end-time="2026-09-30 19:05:49Z" duration="0.022623" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1357" name="G4LightingABC_unlit_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_unlit_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="527988558" result="Failed" label="Error" start-time="2026-09-30 19:05:49Z" end-time="2026-09-30 19:05:49Z" duration="0.010392" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : Cannot create a new scene additively with an untitled scene unsaved.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) <0x36dd8f2d0 + 0x0004f> in <a16942c861084a1a9a16d607d70db522>:0 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1358" name="G4LightingABC_unlit_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_unlit_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="955134920" result="Failed" label="Error" start-time="2026-09-30 19:05:49Z" end-time="2026-09-30 19:05:49Z" duration="0.000323" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : Cannot create a new scene additively with an untitled scene unsaved.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) <0x36dd8f2d0 + 0x0004f> in <a16942c861084a1a9a16d607d70db522>:0 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1359" name="G4LightingABC_blinn_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_blinn_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="736154088" result="Failed" label="Error" start-time="2026-09-30 19:05:49Z" end-time="2026-09-30 19:05:49Z" duration="0.000250" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : Cannot create a new scene additively with an untitled scene unsaved.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) <0x36dd8f2d0 + 0x0004f> in <a16942c861084a1a9a16d607d70db522>:0 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1360" name="G4LightingABC_blinn_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_blinn_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="849676765" result="Failed" label="Error" start-time="2026-09-30 19:05:49Z" end-time="2026-09-30 19:05:49Z" duration="0.000234" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : Cannot create a new scene additively with an untitled scene unsaved.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) <0x36dd8f2d0 + 0x0004f> in <a16942c861084a1a9a16d607d70db522>:0 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1361" name="G4LightingABC_half-lambert_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_half-lambert_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="1400330685" result="Failed" label="Error" start-time="2026-09-30 19:05:49Z" end-time="2026-09-30 19:05:49Z" duration="0.000222" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : Cannot create a new scene additively with an untitled scene unsaved.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) <0x36dd8f2d0 + 0x0004f> in <a16942c861084a1a9a16d607d70db522>:0 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1362" name="G4LightingABC_half-lambert_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_half-lambert_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="24260093" result="Failed" label="Error" start-time="2026-09-30 19:05:49Z" end-time="2026-09-30 19:05:49Z" duration="0.000214" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : Cannot create a new scene additively with an untitled scene unsaved.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) <0x36dd8f2d0 + 0x0004f> in <a16942c861084a1a9a16d607d70db522>:0 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1363" name="G4LightingABC_pbr_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_pbr_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="1385102784" result="Failed" label="Error" start-time="2026-09-30 19:05:49Z" end-time="2026-09-30 19:05:49Z" duration="0.000218" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : Cannot create a new scene additively with an untitled scene unsaved.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) <0x36dd8f2d0 + 0x0004f> in <a16942c861084a1a9a16d607d70db522>:0 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1364" name="G4LightingABC_pbr_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_pbr_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="1898755262" result="Failed" label="Error" start-time="2026-09-30 19:05:49Z" end-time="2026-09-30 19:05:49Z" duration="0.000221" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : Cannot create a new scene additively with an untitled scene unsaved.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) <0x36dd8f2d0 + 0x0004f> in <a16942c861084a1a9a16d607d70db522>:0 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

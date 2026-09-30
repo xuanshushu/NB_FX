@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Failed(Child)" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-30 19:09:45Z" end-time="2026-09-30 19:09:47Z" duration="1.7845908">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="807" result="Failed" site="Child" start-time="2026-09-30 19:09:45Z" end-time="2026-09-30 19:09:47Z" duration="1.784591" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1865" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:09:45Z" end-time="2026-09-30 19:09:47Z" duration="1.777491" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="3974" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1866" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:09:45Z" end-time="2026-09-30 19:09:47Z" duration="1.774210" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1867" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:09:45Z" end-time="2026-09-30 19:09:47Z" duration="1.771079" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1868" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:09:45Z" end-time="2026-09-30 19:09:47Z" duration="1.768056" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1356" name="G4GraphLightingTests" fullname="NBFX.Baseline.Tests.G4GraphLightingTests" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-09-30 19:09:45Z" end-time="2026-09-30 19:09:47Z" duration="1.751778" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1365" name="OrdinaryMeshLightingL0" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-09-30 19:09:47Z" end-time="2026-09-30 19:09:47Z" duration="0.028147" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1357" name="G4LightingABC_unlit_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_unlit_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="574013267" result="Failed" label="Error" start-time="2026-09-30 19:09:47Z" end-time="2026-09-30 19:09:47Z" duration="0.010294" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : This can only be used during play mode, please use EditorSceneManager.NewScene() instead.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEngine.SceneManagement.SceneManager.CreateScene_Injected(UnityEngine.Bindings.ManagedSpanWrapper&,UnityEngine.SceneManagement.CreateSceneParameters&,UnityEngine.SceneManagement.Scene&)
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName, UnityEngine.SceneManagement.CreateSceneParameters parameters) [0x00038] in <452626f60c4e4d92869aee93b7efc523>:0 
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName) [0x00009] in /Users/bokken/build/output/unity/unity/Runtime/Export/SceneManager/SceneManager.cs:106 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1358" name="G4LightingABC_unlit_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_unlit_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="776345206" result="Failed" label="Error" start-time="2026-09-30 19:09:47Z" end-time="2026-09-30 19:09:47Z" duration="0.000326" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : This can only be used during play mode, please use EditorSceneManager.NewScene() instead.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEngine.SceneManagement.SceneManager.CreateScene_Injected(UnityEngine.Bindings.ManagedSpanWrapper&,UnityEngine.SceneManagement.CreateSceneParameters&,UnityEngine.SceneManagement.Scene&)
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName, UnityEngine.SceneManagement.CreateSceneParameters parameters) [0x00038] in <452626f60c4e4d92869aee93b7efc523>:0 
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName) [0x00009] in /Users/bokken/build/output/unity/unity/Runtime/Export/SceneManager/SceneManager.cs:106 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1359" name="G4LightingABC_blinn_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_blinn_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="951510440" result="Failed" label="Error" start-time="2026-09-30 19:09:47Z" end-time="2026-09-30 19:09:47Z" duration="0.000232" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : This can only be used during play mode, please use EditorSceneManager.NewScene() instead.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEngine.SceneManagement.SceneManager.CreateScene_Injected(UnityEngine.Bindings.ManagedSpanWrapper&,UnityEngine.SceneManagement.CreateSceneParameters&,UnityEngine.SceneManagement.Scene&)
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName, UnityEngine.SceneManagement.CreateSceneParameters parameters) [0x00038] in <452626f60c4e4d92869aee93b7efc523>:0 
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName) [0x00009] in /Users/bokken/build/output/unity/unity/Runtime/Export/SceneManager/SceneManager.cs:106 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1360" name="G4LightingABC_blinn_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_blinn_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="1478888541" result="Failed" label="Error" start-time="2026-09-30 19:09:47Z" end-time="2026-09-30 19:09:47Z" duration="0.000219" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : This can only be used during play mode, please use EditorSceneManager.NewScene() instead.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEngine.SceneManagement.SceneManager.CreateScene_Injected(UnityEngine.Bindings.ManagedSpanWrapper&,UnityEngine.SceneManagement.CreateSceneParameters&,UnityEngine.SceneManagement.Scene&)
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName, UnityEngine.SceneManagement.CreateSceneParameters parameters) [0x00038] in <452626f60c4e4d92869aee93b7efc523>:0 
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName) [0x00009] in /Users/bokken/build/output/unity/unity/Runtime/Export/SceneManager/SceneManager.cs:106 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1361" name="G4LightingABC_half-lambert_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_half-lambert_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="1163277386" result="Failed" label="Error" start-time="2026-09-30 19:09:47Z" end-time="2026-09-30 19:09:47Z" duration="0.000224" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : This can only be used during play mode, please use EditorSceneManager.NewScene() instead.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEngine.SceneManagement.SceneManager.CreateScene_Injected(UnityEngine.Bindings.ManagedSpanWrapper&,UnityEngine.SceneManagement.CreateSceneParameters&,UnityEngine.SceneManagement.Scene&)
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName, UnityEngine.SceneManagement.CreateSceneParameters parameters) [0x00038] in <452626f60c4e4d92869aee93b7efc523>:0 
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName) [0x00009] in /Users/bokken/build/output/unity/unity/Runtime/Export/SceneManager/SceneManager.cs:106 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1362" name="G4LightingABC_half-lambert_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_half-lambert_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="379480300" result="Failed" label="Error" start-time="2026-09-30 19:09:47Z" end-time="2026-09-30 19:09:47Z" duration="0.000228" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : This can only be used during play mode, please use EditorSceneManager.NewScene() instead.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEngine.SceneManagement.SceneManager.CreateScene_Injected(UnityEngine.Bindings.ManagedSpanWrapper&,UnityEngine.SceneManagement.CreateSceneParameters&,UnityEngine.SceneManagement.Scene&)
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName, UnityEngine.SceneManagement.CreateSceneParameters parameters) [0x00038] in <452626f60c4e4d92869aee93b7efc523>:0 
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName) [0x00009] in /Users/bokken/build/output/unity/unity/Runtime/Export/SceneManager/SceneManager.cs:106 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1363" name="G4LightingABC_pbr_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_pbr_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="2056173365" result="Failed" label="Error" start-time="2026-09-30 19:09:47Z" end-time="2026-09-30 19:09:47Z" duration="0.000227" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : This can only be used during play mode, please use EditorSceneManager.NewScene() instead.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEngine.SceneManagement.SceneManager.CreateScene_Injected(UnityEngine.Bindings.ManagedSpanWrapper&,UnityEngine.SceneManagement.CreateSceneParameters&,UnityEngine.SceneManagement.Scene&)
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName, UnityEngine.SceneManagement.CreateSceneParameters parameters) [0x00038] in <452626f60c4e4d92869aee93b7efc523>:0 
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName) [0x00009] in /Users/bokken/build/output/unity/unity/Runtime/Export/SceneManager/SceneManager.cs:106 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1364" name="G4LightingABC_pbr_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_pbr_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="805895441" result="Failed" label="Error" start-time="2026-09-30 19:09:47Z" end-time="2026-09-30 19:09:47Z" duration="0.000233" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.InvalidOperationException : This can only be used during play mode, please use EditorSceneManager.NewScene() instead.]]></message>
+                    <stack-trace><![CDATA[  at (wrapper managed-to-native) UnityEngine.SceneManagement.SceneManager.CreateScene_Injected(UnityEngine.Bindings.ManagedSpanWrapper&,UnityEngine.SceneManagement.CreateSceneParameters&,UnityEngine.SceneManagement.Scene&)
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName, UnityEngine.SceneManagement.CreateSceneParameters parameters) [0x00038] in <452626f60c4e4d92869aee93b7efc523>:0 
+  at UnityEngine.SceneManagement.SceneManager.CreateScene (System.String sceneName) [0x00009] in /Users/bokken/build/output/unity/unity/Runtime/Export/SceneManager/SceneManager.cs:106 
+  at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00115] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:64 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5eeda5e65d44b388e164c6c5cfe0702>:0 ]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,20 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 灯光对照</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：完整 Mesh 优先</a></p>
+<h1>普通 Mesh 灯光：已接入四种模式，严格对照 5 通过 / 3 失败</h1>
+<p><strong>人话结论：</strong>Graph 普通 Mesh 现在能按现有 NBShader 的 Unlit、Blinn-Phong、Half-Lambert、PBR 模式渲染。改变主方向光、环境球谐光、附加点光或法线贴图 mask，画面会按预期变化，说明不是“连了接口却没起作用”。但逐像素<strong>必须完全相同</strong>的规则下，8 项中 5 项通过、3 项失败；最大单通道差值为 <code>0.015625</code>。按用户要求暂不追查这些颜色/HDR 差异，也没有放宽标准。<strong>不能据此放行完整 Mesh 的 G3/G4。</strong></p>
+<p>2026-10-01；固定产品与测试提交 <code>dc9543b2873b6349697b903669904a5660b8d158</code>，证据取自随后同代码的 783 项合并回归，而不是正在进行的 PN1 工作区。Unity 6000.3.18f1 / URP 17.3 / Metal / RenderGraph。主 Agent 报告 unityMCP 不可用，故独占隔离工程用 Unity CLI 验证；本归档未启动 Unity、修改产品/Test/官方包/Target/NBPostprocess/保护设置，也未 push。</p>
+<h2>这 8 项究竟测了什么</h2>
+<p>四种灯光模式分别用正交和透视相机拍普通 Mesh，96×96 linear RGBAHalf 目标，中心 40×40 区域严格比较原始 RGBA。A 是 G0 Frozen ShaderLab，B 是当前 ShaderLab，C 是生成的 Shader Graph；每项都保留无损 float32 原始帧和重复帧。六项有光模式中，主光方向、环境 SH、附加点光和法线贴图 mask 的强对照均有效；Unlit 不受这些灯光改变，是有意的不变性对照。</p>
+<ul>
+<li><strong>A/B 保护：</strong>8 项 Frozen 与当前 ShaderLab 的主画面均为 <code>0</code> 差；全帧数值有限，B/C 的同一次测试内重复拍摄均为 <code>0</code> 差。</li>
+<li><strong>B/C 结果：</strong>Unlit 正交/透视、Blinn-Phong 正交/透视、Half-Lambert 正交共 5 项主画面及控制画面严格 <code>0</code> 差。Half-Lambert 透视的控制画面 2 个像素非零（最大 <code>0.000244140625</code>）；PBR 正交控制画面 19 个像素非零（最大 <code>0.015625</code>）；PBR 透视主画面 54 个像素非零（最大 <code>0.0078125</code>），控制画面 170 个像素非零（最大 <code>0.015625</code>）。这三项在原 XML 中仍判<strong>失败</strong>。</li>
+<li><strong>阴影的准确说法：</strong>现有 NBShader Forward 没有接收阴影的 keyword 轴，本轮只核对打开阴影设置后旧 Forward 的颜色<strong>不应改变</strong>，最终夹具对此用严格零差检查并通过。这<strong>不是</strong>“Graph 接收阴影成功”。投影阴影的 ShadowCaster 另见 <a href="t07-mesh-depth-shadow-checkpoint.html">DS0 36/36 报告</a>。L0 只给 Graph 普通 Forward 增加包内 AdditionalLights 三态轴，没有修改官方 URP 程序集。</li>
+</ul>
+<p><a href="t07-evidence/lighting-20261001/summary.json">8 项原始指标与汇总</a> · <a href="t07-evidence/lighting-20261001/cases/">8 项无损 raw</a> · <a href="t07-evidence/lighting-20261001/results.xml">完整 783 项 XML</a> · <a href="t07-evidence/lighting-20261001/unity.log.gz">完整 Unity 日志</a>。最终导入与测试日志未见 C# 或 Shader 编译错误。</p>
+<h2>全套回归与较早试验</h2>
+<p>同一代码的合并回归共 <strong>783 项：724 项严格通过、59 项严格失败、0 跳过</strong>。59 项正好是既有 UV 22、法线贴图 34、灯光 3；失败项没有新增或消失。但我们<strong>没有只看失败名单</strong>：对其余测试留下的 9,058 个 PNG/无损 raw 数据逐份与以前的持久证据比较，全部数值/文件内容完全相同；凡是相同的才用<a href="t07-evidence/lighting-20261001/regression/capture-equivalence.json">逐文件 hash 与旧档路径</a>替代重复拷贝。合并回归的 metrics、材质状态与生成 Preview 源仍<a href="t07-evidence/lighting-20261001/regression/cases/">独立保留</a>。两个旧测试碰巧同名写入目录，最终目录是最后写入者的集合；其各自早期原始帧仍在原报告，不把合并目录误称为两份独立 raw。</p>
+<p>前几轮的失败也保留：v1–v3 是 EditMode 测试场景夹具在渲染前失败；v4 是误 include 导致 GPU 找不到 <code>_SixWayInfo</code>；v5 有不正确的接收阴影控制和 RT 清理错误。它们都不是最终产品需要用户决策的卡点。v6 单片为 5/3；最终合并回归才使用提交中的严格阴影不变性检查。v6 与最终各自重复帧为零，但跨两次运行有 4 张 PBR 透视阴影控制 raw 存在不超过 <code>0.0009765625</code> 的差异，两个版本都完整保留，不声称跨运行字节相同。<a href="t07-evidence/lighting-20261001/history/summary.json">历史列表</a>。</p>
+<h2>边界和 Gate</h2>
+<p>本轮尚未证明 SixWay、顶点 SH/Mixed、顶点附加光、所有材质功能组合、真正 VFX、Player、GUI 持久化、变体剔除、SRP Batcher、性能或冷首帧。SixWay 和原有 SH 模式继续实现；原顶点附加光有待先验证 Frozen 变体。光照贴图/APV、Forward+ 不是原 NBShader Forward 已声明的功能，不应仅因 URP 支持就额外列为旧功能迁移的必需项。先继续普通 Mesh 完整对照，再集中交用户人工测试；HDRP 是最后轮次待选。<a href="t07-evidence/lighting-20261001/README.txt">重放及范围</a> · <a href="t07-evidence/lighting-20261001/product-source/commit.json">固定六路径源码</a> · <a href="t07-evidence/lighting-20261001/protected-settings-audit.json">保护文件核对</a> · <a href="t07-evidence/lighting-20261001/sha256.txt">附件 hash</a>。</p>
+<p><strong>审核：</strong>本次 L0 灯光已产生功能响应，但严格结果 5/8；完整普通 Mesh 仍未完成，G3/G4 未放行。未 push。</p>
+</body></html>

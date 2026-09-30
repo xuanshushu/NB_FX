@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Failed(Child)" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-30 19:18:44Z" end-time="2026-09-30 19:18:59Z" duration="14.1846125">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="807" result="Failed" site="Child" start-time="2026-09-30 19:18:44Z" end-time="2026-09-30 19:18:59Z" duration="14.184613" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1865" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:18:44Z" end-time="2026-09-30 19:18:59Z" duration="14.177879" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="5323" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1866" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:18:44Z" end-time="2026-09-30 19:18:59Z" duration="14.171916" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1867" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:18:44Z" end-time="2026-09-30 19:18:59Z" duration="14.164189" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1868" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="789" result="Failed" site="Child" start-time="2026-09-30 19:18:44Z" end-time="2026-09-30 19:18:59Z" duration="14.161456" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1356" name="G4GraphLightingTests" fullname="NBFX.Baseline.Tests.G4GraphLightingTests" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-09-30 19:18:44Z" end-time="2026-09-30 19:18:59Z" duration="14.153991" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1365" name="OrdinaryMeshLightingL0" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-09-30 19:18:46Z" end-time="2026-09-30 19:18:59Z" duration="13.007608" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1357" name="G4LightingABC_unlit_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_unlit_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="204294189" result="Failed" start-time="2026-09-30 19:18:46Z" end-time="2026-09-30 19:18:54Z" duration="8.011582" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[Unhandled log message: '[Error] Releasing render texture that is set as Camera.targetTexture!'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                    <stack-trace><![CDATA[UnityEngine.Object:DestroyImmediate (UnityEngine.Object)
+NBFX.Baseline.Tests.G4GraphLightingTests:OrdinaryMeshLightingL0 (int,bool) (at ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:234)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1374
+Releasing render texture that is set as Camera.targetTexture!
+]]></output>
+                </test-case>
+                <test-case id="1358" name="G4LightingABC_unlit_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_unlit_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="813081179" result="Failed" start-time="2026-09-30 19:18:54Z" end-time="2026-09-30 19:18:54Z" duration="0.293084" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[Unhandled log message: '[Error] Releasing render texture that is set as Camera.targetTexture!'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                    <stack-trace><![CDATA[UnityEngine.Object:DestroyImmediate (UnityEngine.Object)
+NBFX.Baseline.Tests.G4GraphLightingTests:OrdinaryMeshLightingL0 (int,bool) (at ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:234)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1374
+Releasing render texture that is set as Camera.targetTexture!
+]]></output>
+                </test-case>
+                <test-case id="1359" name="G4LightingABC_blinn_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_blinn_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="378908307" result="Failed" start-time="2026-09-30 19:18:54Z" end-time="2026-09-30 19:18:55Z" duration="1.224016" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  strict raw B/C L0 controls differ; see metrics/raw RGBA
+  Expected: 0
+  But was:  701
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00f1f] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:219
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1374
+Releasing render texture that is set as Camera.targetTexture!
+]]></output>
+                </test-case>
+                <test-case id="1360" name="G4LightingABC_blinn_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_blinn_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="484709761" result="Failed" start-time="2026-09-30 19:18:55Z" end-time="2026-09-30 19:18:55Z" duration="0.286906" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  strict raw B/C L0 controls differ; see metrics/raw RGBA
+  Expected: 0
+  But was:  447
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00f1f] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:219
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1374
+Releasing render texture that is set as Camera.targetTexture!
+]]></output>
+                </test-case>
+                <test-case id="1361" name="G4LightingABC_half-lambert_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_half-lambert_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="659210605" result="Failed" start-time="2026-09-30 19:18:55Z" end-time="2026-09-30 19:18:57Z" duration="1.224935" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  strict raw B/C L0 controls differ; see metrics/raw RGBA
+  Expected: 0
+  But was:  701
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00f1f] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:219
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1374
+Releasing render texture that is set as Camera.targetTexture!
+]]></output>
+                </test-case>
+                <test-case id="1362" name="G4LightingABC_half-lambert_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_half-lambert_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="1249854201" result="Failed" start-time="2026-09-30 19:18:57Z" end-time="2026-09-30 19:18:57Z" duration="0.299864" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  strict raw B/C L0 controls differ; see metrics/raw RGBA
+  Expected: 0
+  But was:  449
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00f1f] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:219
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1374
+Releasing render texture that is set as Camera.targetTexture!
+]]></output>
+                </test-case>
+                <test-case id="1363" name="G4LightingABC_pbr_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_pbr_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="1567828585" result="Failed" start-time="2026-09-30 19:18:57Z" end-time="2026-09-30 19:18:58Z" duration="1.333235" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  strict raw B/C L0 controls differ; see metrics/raw RGBA
+  Expected: 0
+  But was:  720
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00f1f] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:219
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1374
+Releasing render texture that is set as Camera.targetTexture!
+]]></output>
+                </test-case>
+                <test-case id="1364" name="G4LightingABC_pbr_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_pbr_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="273392897" result="Failed" start-time="2026-09-30 19:18:58Z" end-time="2026-09-30 19:18:59Z" duration="0.322698" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  strict raw B/C L0 differs; see metrics/raw RGBA
+  Expected: 0
+  But was:  57
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00f03] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphLightingTests.cs:218
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1374
+Releasing render texture that is set as Camera.targetTexture!
+Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
