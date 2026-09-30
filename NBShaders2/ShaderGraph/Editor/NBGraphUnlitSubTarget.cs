@@ -42,10 +42,14 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             bool found = false;
             foreach (var item in subShader.passes)
             {
-                passes.Add(item.descriptor, item.fieldConditions);
-                if (item.descriptor.referenceName != "SHADERPASS_UNLIT") continue;
-                AddDistortionPass(passes, item.descriptor, "NBCameraOpaqueDistortPass", "NBGraphCameraOpaquePass.hlsl");
-                AddDistortionPass(passes, item.descriptor, "NBDeferredDistortPass", "NBGraphDeferredDistortPass.hlsl");
+                var pass = item.descriptor;
+                bool forward = pass.referenceName == "SHADERPASS_UNLIT";
+                if (forward || UsesNBStencil(pass.lightMode))
+                    pass.renderStates = WithNBRenderStates(pass.renderStates, forward);
+                passes.Add(pass, item.fieldConditions);
+                if (!forward) continue;
+                AddDistortionPass(passes, pass, "NBCameraOpaqueDistortPass", "NBGraphCameraOpaquePass.hlsl");
+                AddDistortionPass(passes, pass, "NBDeferredDistortPass", "NBGraphDeferredDistortPass.hlsl");
                 found = true;
             }
             if (!found)
@@ -72,7 +76,9 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 RenderState.Blend(Blend.SrcAlpha, Blend.OneMinusSrcAlpha),
                 RenderState.Cull("[_Cull]"),
                 RenderState.ZTest("[_ZTest]"),
-                RenderState.ZWrite("Off")
+                RenderState.ZWrite("Off"),
+                NBStencilState(),
+                RenderState.ColorMask("ColorMask [_ColorMask]")
             };
             var includes = new IncludeCollection();
             bool replaced = false;
@@ -95,10 +101,57 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             passes.Add(pass);
         }
 
+        // The original ShaderLab Stencil block belongs to the SubShader, so it
+        // also constrains its depth and shadow passes. Keep URP's existing state
+        // descriptors (notably DepthOnly R and ShadowCaster 0 ColorMask) intact.
+        // Selection/Picking and XR motion-vector passes are URP editor/runtime
+        // internals, not equivalents of the original NBShader passes.
+        static bool UsesNBStencil(string lightMode) =>
+            lightMode == "DepthOnly" || lightMode == "ShadowCaster" ||
+            lightMode == "DepthNormalsOnly" || lightMode == "UniversalGBuffer" ||
+            lightMode == "MotionVectors";
+
+        static RenderStateCollection WithNBRenderStates(RenderStateCollection original,
+            bool colorMask)
+        {
+            var states = new RenderStateCollection();
+            if (original != null)
+                foreach (var item in original)
+                    states.Add(item.descriptor, item.fieldConditions);
+            states.Add(NBStencilState());
+            if (colorMask)
+                states.Add(RenderState.ColorMask("ColorMask [_ColorMask]"));
+            return states;
+        }
+
+        static RenderStateDescriptor NBStencilState() => RenderState.Stencil(
+            new StencilDescriptor
+            {
+                Ref = "[_Stencil]",
+                Comp = "[_StencilComp]",
+                Pass = "[_StencilOp]",
+                Fail = "[_StencilFail]",
+                ZFail = "[_StencilZFail]",
+                ReadMask = "[_StencilReadMask]",
+                WriteMask = "[_StencilWriteMask]"
+            });
+
         public override void GetActiveBlocks(ref TargetActiveBlockContext context) => Builtin().GetActiveBlocks(ref context);
         public override void GetFields(ref TargetFieldContext context) => base.GetFields(ref context);
         public override void CollectShaderProperties(PropertyCollector collector, GenerationMode mode)
-            => Builtin().CollectShaderProperties(collector, mode);
+        {
+            Builtin().CollectShaderProperties(collector, mode);
+            // ShaderLab render-state substitutions need material properties, not
+            // duplicate HLSL uniforms. Match the old names/defaults exactly.
+            collector.AddFloatProperty("_ColorMask", 15.0f);
+            collector.AddFloatProperty("_Stencil", 0.0f);
+            collector.AddFloatProperty("_StencilComp", 8.0f);
+            collector.AddFloatProperty("_StencilOp", 0.0f);
+            collector.AddFloatProperty("_StencilFail", 0.0f);
+            collector.AddFloatProperty("_StencilZFail", 0.0f);
+            collector.AddFloatProperty("_StencilReadMask", 255.0f);
+            collector.AddFloatProperty("_StencilWriteMask", 255.0f);
+        }
         public override void ProcessPreviewMaterial(Material material) => Builtin().ProcessPreviewMaterial(material);
         public override void GetPropertiesGUI(ref TargetPropertyGUIContext context, Action onChange, Action<string> registerUndo)
             => Builtin().GetPropertiesGUI(ref context, onChange, registerUndo);
