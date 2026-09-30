@@ -1,0 +1,21 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 程序噪波扭曲 PN2</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：完整 Mesh 优先</a> · <a href="t07-mesh-pnoise-checkpoint.html">前一片 PN1 表面噪波</a></p>
+<h1>程序噪波已接入普通 Mesh 的两条扭曲 Pass；本片 20/20 严格通过</h1>
+<p><strong>人话结论：</strong>PN1 已让程序生成的噪波参与普通 Mesh 表面颜色/遮罩。本片 PN2 又把<strong>同一次生成的噪波</strong>接给原有屏幕扭曲的两条专用 Pass，同时检查普通 Forward 的遮罩路径。改变噪波或遮罩确实使画面变化；原 NBShader 与 Shader Graph 的结果，在本次 20 个用例中逐像素<strong>完全相同</strong>。但这只是一片通过：全部普通 Mesh 还有旧的严格失败，G3/G4 不能因此放行。</p>
+<p>固定产品与测试提交 <code>6a7682682fd2c46bead49ce89237dc6106677bf7</code>，仅改包内 Graph、现有颜色函数及 PN2 测试/.meta 四路径；没有改原 ShaderLab、官方 URP、Target、NBPostprocess 或保护设置。Unity 6000.3.18f1 / Metal / URP RenderGraph。主 Agent 报告 unityMCP 不可用，使用独占隔离工程的 Unity CLI；本证据归档未运行 Unity、修改产品/测试/索引/Git 或 push。</p>
+<h2>20 项测的是什么</h2>
+<p>这里的 A 是<strong>当前 NBShader 关掉程序噪波</strong>，B 是同一个当前 NBShader 打开它，C 是实际生成的 Graph 打开它。<strong>A 不是 G0 Frozen</strong>，所以本片不能被误读成 Frozen/当前的基线证明。2 项普通 Forward、9 项 <code>NBCameraOpaqueDistortPass</code>、9 项 <code>NBDeferredDistortPass</code>；128×128 linear RGBAHalf，中央 48×48 区域原始 RGBA 严格零差。</p>
+<ul>
+<li><strong>画面一致：</strong>20 项的 B/C 主画面及“把 NoiseMask 改为白色”的控制画面都严格 <code>0</code> 差；A 与 Graph 关程序噪波也为 <code>0</code>。全部整帧数值有限，B/C 重复拍摄为 <code>0</code> 差，实际可见像素最少仍有 1,588 个，不是空图“通过”。</li>
+<li><strong>功能会动，也会正确停止：</strong>改变噪波、遮罩时 B/C 都有明确响应；关闭纹理 Noise 后，程序噪波不能独自启动扭曲，这一点两边都保持。错误 Pass 模式、mode 0 和原设计的回退/无效模式不会误画。blend 值 4/5 是<strong>沿用原行为的回退</strong>，不能说新增了第 4/5 种噪波算法。</li>
+<li><strong>避免遮罩乘两遍：</strong>Deferred Pass 把扭曲方向存在 RG、覆盖度存在 B，测试通过改遮罩后比较 RG/B 的<strong>派生比例</strong>来查是否重复乘遮罩。这里的 <code>0.001</code> 只是 RGBAHalf 数据做除法后的因果检测上界，<strong>不是截图零差规则的容差</strong>；实际派生差也测得 <code>0</code>。</li>
+</ul>
+<p>本片 NUnit <strong>20 通过 / 0 失败 / 0 跳过</strong>。<a href="t07-evidence/pnoise-screen-20261001/results.xml">原始 XML</a> · <a href="t07-evidence/pnoise-screen-20261001/summary.json">逐例指标</a> · <a href="t07-evidence/pnoise-screen-20261001/cases/">316 PNG＋316 无损 float32 原始帧及指标</a> · <a href="t07-evidence/pnoise-screen-20261001/unity.log.gz">日志</a>。</p>
+<h2>最初 17/20 为什么失败</h2>
+<p>初版测试的两个 Forward 例子把物体放在 layer 3，但隔离 Renderer 的透明层遮罩值 <code>55</code> 没包含它，于是旧 Shader 和 Graph <strong>都没画出来</strong>；最终夹具先读遮罩，再选允许的 layer 4，<strong>没有修改 Renderer 资产</strong>。另一个 Opaque 例子强度 <code>0.5</code> 只画出 61 像素，低于夹具“必须超过 100 像素”的防空图线；改为强度 <code>2</code> 后可见 1,588 像素，B/C 仍零差。初版指标文字还误把 A 称为 Frozen；实际它一直是当前 ShaderLab 关程序噪波。原始旧 XML、652 个 case 文件、夹具和两次导入/测试日志均<a href="t07-evidence/pnoise-screen-20261001/history/v1/">保留</a>，没有重写旧结果或把夹具错误当成用户卡点。</p>
+<h2>1003 项合并回归：旧失败未增加</h2>
+<p>同一固定产品提交的完整回归为 <strong>1003 项：845 通过、158 严格失败、0 跳过</strong>。上次 SH 归档的 983 项里那 158 个失败身份全保留，没有新增/消失；PN2 新增 20 项全通过。46 项 GUI 存取测试没有截图，因此实际是 <strong>957 个画面对照目录</strong>，不是“1003 张图”。<a href="t07-evidence/pnoise-screen-20261001/full/results.xml">完整 XML</a> · <a href="t07-evidence/pnoise-screen-20261001/full/failure-id-audit.json">失败身份核对</a>。</p>
+<p>我们实读并比对了全部 <strong>13,082</strong> 份 PNG 或解压后的 float32 RGBA；其中本片新增实际是 <strong>632</strong> 份。它们逐份与最近的持久档<strong>完全一致</strong>，本次没有跨轮次不同的 raw。只在真实相等后才引用前档，映射和 hash 见<a href="t07-evidence/pnoise-screen-20261001/full/capture-equivalence.json">逐份载荷审计</a>。完整运行另有 1,279 份非截图文件——指标、材质状态、Shader 警告文本、生成的 Preview Shader——均保留。日志没有 C# 或 Shader <em>编译错误</em>，但保留了警告，以及测试结束后后台 dotnet 找不到 SDK/build-server 的退出消息；不能把它写成“环境零警告”。<a href="t07-evidence/pnoise-screen-20261001/full/metadata-audit.json">元数据审计</a> · <a href="t07-evidence/pnoise-screen-20261001/full/unity.log.gz">完整日志</a>。</p>
+<h2>边界</h2>
+<p>本片没有 Frozen A/B 对照，也未证明真正 VFX、Player、CustomData/所有 UV 组合、完整普通 Mesh 全功能、所有材质组合、变体剔除、SRP Batcher、性能或冷首帧。继续按 D24 做普通 Mesh 与最后的人工综合测试；HDRP 仍是末轮待选。<strong>G3/G4 未放行。</strong><a href="t07-evidence/pnoise-screen-20261001/README.txt">重放说明</a> · <a href="t07-evidence/pnoise-screen-20261001/product-source/commit.json">固定四路径源码</a> · <a href="t07-evidence/pnoise-screen-20261001/protected-settings-audit.json">保护设置</a> · <a href="t07-evidence/pnoise-screen-20261001/sha256.txt">附件 hash</a>。</p>
+</body></html>

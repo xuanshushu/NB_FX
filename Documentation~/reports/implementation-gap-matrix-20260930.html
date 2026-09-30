@@ -72,4 +72,5 @@
 <p>2026-10-01 SixWay 增量：<a href="t07-mesh-sixway-checkpoint.html">普通 Mesh 六向光照已接入，镜像负缩放的真实错误已修；30 行中 27 零差、3 行各 1 像素微差，两个 NUnit 项仍失败</a>。现有已编写矩阵 925 项为 771 通过/154 失败；旧152项失败身份不变。12,150 份捕获已实读核对，4 份跨轮次区域外单像素变化原图另存，不能宣传全图逐字节相同。完整 Mesh/共享 GUI/后处理/Player/性能仍未闭合，正式 VFX 不前移。</p>
 <p>2026-10-01 GUI 后台增量：<a href="t07-mesh-gui-storage-checkpoint.html">复用现有 Flags/渐变 Count/纹理 ST 存储后端，46 项真实测试全部通过，含 Mesh GPU 解码</a>。这不代表完整 Inspector、GUI 回调事务、保存重导入、Tier/Pass 有效投影已经完成；当前继续接同一共享 Root/Context/Sync，而不复制第二套业务界面。Graph MPB、Player、VFX 均未据此验证。</p>
 <p>2026-10-01 SH 增量：<a href="t07-mesh-sh-evaluation-checkpoint.html">沿用原顶点/混合环境光算法，新12项为8通过/4 PBR严格差异；现有983项合并矩阵为825通过/158失败</a>。其中46项是无截图的GUI存取测试，不应把总项数当作全部功能覆盖。12,450份捕获实读比对，12份PBR跨轮次阴影图差异已另存；同轮repeat稳定不等于跨轮稳定。原158项差异留给集中人工，完整GUI/状态/后处理/Player/性能继续补齐；正式VFX仍不进入。</p>
+<p>2026-10-01 PN2 增量：<a href="t07-mesh-pnoise-screen-checkpoint.html">程序噪波接入两种NB扭曲和Forward遮罩，20/20严格通过；1003项矩阵845通过/158既有失败</a>。13,082份捕获均实读核对相同。A是当前ShaderLab关程序噪波，不是Frozen；历史表中程序噪波缺口已被所列切片部分覆盖，但不是完整Mesh、GUI、后处理、Player或VFX结论。</p>
 </body></html>

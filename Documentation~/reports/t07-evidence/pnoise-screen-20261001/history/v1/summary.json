@@ -1,0 +1,46 @@
+{
+  "status": "Historical first fixture only, not product outcome",
+  "nunit": {
+    "total": 20,
+    "passed": 17,
+    "failed": 3,
+    "skipped": 0
+  },
+  "failingCaseNames": [
+    "NBFX.Baseline.Tests.G4GraphPNoiseScreenTests.G4PN2_NBCameraOpaqueDistortPass_both_blend1",
+    "NBFX.Baseline.Tests.G4GraphPNoiseScreenTests.G4PN2_Forward_masked_blend1",
+    "NBFX.Baseline.Tests.G4GraphPNoiseScreenTests.G4PN2_Forward_masked_blend3"
+  ],
+  "failingCaseMetrics": [
+    {
+      "case": "Forward-both-blend1",
+      "legacyVisible": 0,
+      "graphVisible": 0,
+      "legacyOnOff": 0.0,
+      "graphOnOff": 0.0,
+      "bcDifferent": 0
+    },
+    {
+      "case": "Forward-both-blend3",
+      "legacyVisible": 0,
+      "graphVisible": 0,
+      "legacyOnOff": 0.0,
+      "graphOnOff": 0.0,
+      "bcDifferent": 0
+    },
+    {
+      "case": "NBCameraOpaqueDistortPass-both-blend1",
+      "legacyVisible": 61,
+      "graphVisible": 61,
+      "legacyOnOff": 0.0146484375,
+      "graphOnOff": 0.0146484375,
+      "bcDifferent": 0
+    }
+  ],
+  "fixtureFindings": [
+    "Forward foreground on layer 3 was excluded by the isolated renderer transparentLayerMask=55, so both old and Graph drew zero visible pixels; v2 selects permitted layer 4 after reading the mask, without editing the renderer asset.",
+    "Opaque mode 1 strength 0.5 drew only 61 visible ROI pixels, below the fixture >100 visibility threshold despite B/C exact zero; v2 uses strength 2 with 1,588 visible pixels.",
+    "v1 metrics note incorrectly called A Frozen; A always was current ShaderLab with procedural noise OFF, B current ShaderLab procedural noise ON, C Graph ON. Historical raw/JSON remains unmodified; the correction is documented here."
+  ],
+  "notUserBlocker": true
+}
