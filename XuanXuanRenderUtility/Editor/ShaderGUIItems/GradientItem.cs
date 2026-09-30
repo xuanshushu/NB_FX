@@ -200,7 +200,7 @@ namespace NBShaderEditor
 
         private void GetGradientKeyCounts(out int colorKeyCount, out int alphaKeyCount)
         {
-            int countValue = PropertyInfo.Property.intValue;
+            int countValue = ReadCountValue();
             bool hasColorProperties = _colorPropertyInfos.Length > 0;
             bool hasAlphaProperties = _alphaPropertyInfos.Length > 0;
 
@@ -259,7 +259,7 @@ namespace NBShaderEditor
             bool hasColorProperties = _colorPropertyInfos.Length > 0;
             bool hasAlphaProperties = _alphaPropertyInfos.Length > 0;
             bool isBlackAndWhiteGradient = !hasColorProperties && hasAlphaProperties;
-            int countPropertyValue = PropertyInfo.Property.intValue;
+            int countPropertyValue = ReadCountValue();
 
             if (isBlackAndWhiteGradient)
             {
@@ -267,7 +267,7 @@ namespace NBShaderEditor
                 if (finalColorKeyCount <= _maxCount)
                 {
                     WriteBlackAndWhiteGradient(gradient, finalColorKeyCount);
-                    PropertyInfo.Property.intValue = finalColorKeyCount;
+                    WriteCountValue(finalColorKeyCount);
                 }
 
                 return;
@@ -295,7 +295,7 @@ namespace NBShaderEditor
                 }
             }
 
-            PropertyInfo.Property.intValue = countPropertyValue;
+            WriteCountValue(countPropertyValue);
         }
 
         private void WriteColorKeys(Gradient gradient, int colorKeyCount)
@@ -434,6 +434,33 @@ namespace NBShaderEditor
             }
         }
 
+        // Existing ShaderLab counts are Integer; ShaderGraph exposes the same small packed count as Float.
+        private int ReadCountValue()
+        {
+            return ShaderGUIUnityCompat.GetPropertyType(PropertyInfo.Property) == ShaderPropertyType.Int
+                ? PropertyInfo.Property.intValue
+                : Mathf.RoundToInt(PropertyInfo.Property.floatValue);
+        }
+
+        private void WriteCountValue(int value)
+        {
+            if (ShaderGUIUnityCompat.GetPropertyType(PropertyInfo.Property) == ShaderPropertyType.Int)
+            {
+                PropertyInfo.Property.intValue = value;
+            }
+            else
+            {
+                PropertyInfo.Property.floatValue = value;
+            }
+        }
+
+        private int GetDefaultCountValue()
+        {
+            return ShaderGUIUnityCompat.GetPropertyType(PropertyInfo.Property) == ShaderPropertyType.Int
+                ? GetDefaultInt(PropertyInfo)
+                : Mathf.RoundToInt(GetDefaultScalar(PropertyInfo));
+        }
+
         private bool IsCountDefault()
         {
             if (PropertyInfo == null || PropertyInfo.Property == null || PropertyInfo.Property.hasMixedValue)
@@ -441,7 +468,7 @@ namespace NBShaderEditor
                 return false;
             }
 
-            return PropertyInfo.Property.intValue == GetDefaultInt(PropertyInfo);
+            return ReadCountValue() == GetDefaultCountValue();
         }
 
         private void ResetCountProperty()
@@ -451,7 +478,7 @@ namespace NBShaderEditor
                 return;
             }
 
-            PropertyInfo.Property.intValue = GetDefaultInt(PropertyInfo);
+            WriteCountValue(GetDefaultCountValue());
         }
 
         private bool IsDefault(ShaderPropertyInfo info)

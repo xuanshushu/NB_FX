@@ -111,6 +111,76 @@ namespace NBShader
         {
         }
 
+        // Ordinary Graph Materials transport the same words as two exact float halfwords.
+        // MPBs have no Graph schema here and must retain the original integer IDs.
+        private static readonly int GraphFlags0Lo = Shader.PropertyToID("_NB_Flags0Lo16");
+        private static readonly int GraphFlags0Hi = Shader.PropertyToID("_NB_Flags0Hi16");
+        private static readonly int GraphFlags1Lo = Shader.PropertyToID("_NB_Flags1Lo16");
+        private static readonly int GraphFlags1Hi = Shader.PropertyToID("_NB_Flags1Hi16");
+        private static readonly int GraphWrapLo = Shader.PropertyToID("_NB_WrapFlagsLo16");
+        private static readonly int GraphWrapHi = Shader.PropertyToID("_NB_WrapFlagsHi16");
+        private static readonly int GraphChannelLo = Shader.PropertyToID("_NB_ColorChannelLo16");
+        private static readonly int GraphChannelHi = Shader.PropertyToID("_NB_ColorChannelHi16");
+        private static readonly int GraphPNoiseLo = Shader.PropertyToID("_NB_PNoiseBlendLo16");
+        private static readonly int GraphPNoiseHi = Shader.PropertyToID("_NB_PNoiseBlendHi16");
+        private static readonly int GraphNoMipLo = Shader.PropertyToID("_NB_ForceNoMipFlagsLo16");
+        private static readonly int GraphNoMipHi = Shader.PropertyToID("_NB_ForceNoMipFlagsHi16");
+        private static readonly int GraphUVLo = Shader.PropertyToID("_NB_UVModeFlag0Lo16");
+        private static readonly int GraphUVHi = Shader.PropertyToID("_NB_UVModeFlag0Hi16");
+        private static readonly int GraphUVTypeLo = Shader.PropertyToID("_NB_UVModeFlagType0Lo16");
+        private static readonly int GraphUVTypeHi = Shader.PropertyToID("_NB_UVModeFlagType0Hi16");
+        private static readonly int GraphDistortionMode = Shader.PropertyToID("_NB_DistortionMode");
+
+        private bool TryGetGraphWordProperties(int propertyId, out int loId, out int hiId)
+        {
+            loId = hiId = 0;
+            // Property signature, not a shader-name assumption; changing the owning shader is safe.
+            if (material == null || !material.HasProperty(GraphDistortionMode) ||
+                !material.HasProperty(GraphFlags0Lo) || !material.HasProperty(GraphFlags0Hi) ||
+                !material.HasProperty(GraphFlags1Lo) || !material.HasProperty(GraphFlags1Hi))
+            {
+                return false;
+            }
+
+            if (propertyId == FlagsId) { loId = GraphFlags0Lo; hiId = GraphFlags0Hi; }
+            else if (propertyId == Flags1Id) { loId = GraphFlags1Lo; hiId = GraphFlags1Hi; }
+            else if (propertyId == WrapFlagsId) { loId = GraphWrapLo; hiId = GraphWrapHi; }
+            else if (propertyId == colorChannelFlagId) { loId = GraphChannelLo; hiId = GraphChannelHi; }
+            else if (propertyId == pNoiseBlendFlagId) { loId = GraphPNoiseLo; hiId = GraphPNoiseHi; }
+            else if (propertyId == ForceNoMipFlagsId) { loId = GraphNoMipLo; hiId = GraphNoMipHi; }
+            else if (propertyId == UVModeFlag0PropID) { loId = GraphUVLo; hiId = GraphUVHi; }
+            else if (propertyId == UVModeFlagType0PropID) { loId = GraphUVTypeLo; hiId = GraphUVTypeHi; }
+            else { return false; }
+
+            return material.HasProperty(loId) && material.HasProperty(hiId);
+        }
+
+        protected override int ReadWord(int propertyId, MaterialPropertyBlock propertyBlock = null)
+        {
+            if (propertyBlock is null && TryGetGraphWordProperties(propertyId, out int loId, out int hiId))
+            {
+                // Same finite-value clamp/round rule as NBGraphDecodeUInt32, without mutating on read.
+                uint lo = (uint)Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(loId), 0f, 65535f));
+                uint hi = (uint)Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(hiId), 0f, 65535f));
+                return unchecked((int)(lo | (hi << 16)));
+            }
+
+            return base.ReadWord(propertyId, propertyBlock);
+        }
+
+        protected override void WriteWord(int propertyId, int value, MaterialPropertyBlock propertyBlock = null)
+        {
+            if (propertyBlock is null && TryGetGraphWordProperties(propertyId, out int loId, out int hiId))
+            {
+                uint word = unchecked((uint)value);
+                material.SetFloat(loId, word & 0xFFFFu);
+                material.SetFloat(hiId, word >> 16);
+                return;
+            }
+
+            base.WriteWord(propertyId, value, propertyBlock);
+        }
+
         public const int FLAG_BIT_SATURABILITY_ON = 1 << 0;
         public const int FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE = 1 << 1;
         public const int FLAG_BIT_PARTICLE_FRESNEL_FADE_ON = 1 << 2;
@@ -661,8 +731,8 @@ namespace NBShader
         public void SetUVMode(UVMode mode, int uvModePos, int flagIndex = 0)
         {
             GetUVModeFlagPropID(flagIndex, out int uvModeFlagPropId, out int uvModeFlagTypePropId);
-            int uvModeFlag = material.GetInteger(uvModeFlagPropId);
-            int uvModeFlagType = material.GetInteger(uvModeFlagTypePropId);
+            int uvModeFlag = ReadWord(uvModeFlagPropId);
+            int uvModeFlagType = ReadWord(uvModeFlagTypePropId);
 
 
             int clearFlag = 0b_11 << uvModePos;
@@ -675,17 +745,17 @@ namespace NBShader
             int typeBit = (int)mode / 4 << uvModePos;
             uvModeFlagType |= typeBit;
 
-            material.SetInteger(uvModeFlagPropId, uvModeFlag);
-            material.SetInteger(uvModeFlagTypePropId, uvModeFlagType);
+            WriteWord(uvModeFlagPropId, uvModeFlag);
+            WriteWord(uvModeFlagTypePropId, uvModeFlagType);
         }
 
         public UVMode GetUVMode(int uvModePos, int flagIndex = 0)
         {
             GetUVModeFlagPropID(flagIndex, out int uvModeFlagPropId, out int uvModeFlagTypePropId);
-            int uvModeFlag = material.GetInteger(uvModeFlagPropId);
+            int uvModeFlag = ReadWord(uvModeFlagPropId);
             uvModeFlag = uvModeFlag >> uvModePos;
             uvModeFlag &= 0b_11;
-            int uvModeFlagType = material.GetInteger(uvModeFlagTypePropId);
+            int uvModeFlagType = ReadWord(uvModeFlagTypePropId);
             uvModeFlagType = uvModeFlagType >> uvModePos;
             uvModeFlagType &= 0b_11;
             return (UVMode)(uvModeFlag + 4 * uvModeFlagType);
@@ -693,8 +763,8 @@ namespace NBShader
 
         public bool CheckIsUVModeOn(UVMode mode)
         {
-            uint uvModeFlag0 = (uint)material.GetInteger(UVModeFlag0PropID);
-            uint uvModeFlagType0 = (uint)material.GetInteger(UVModeFlagType0PropID);
+            uint uvModeFlag0 = (uint)ReadWord(UVModeFlag0PropID);
+            uint uvModeFlagType0 = (uint)ReadWord(UVModeFlagType0PropID);
 
             uint uvModeflagBit = (uint)mode % 4;
             uint uvModeflagTypeBit = (uint)mode / 4;
@@ -739,7 +809,7 @@ namespace NBShader
 
         public void SetColorChanel(ColorChannel channel, int colorChannelFlagPos)
         {
-            int colorChannelFlag = material.GetInteger(colorChannelFlagId);
+            int colorChannelFlag = ReadWord(colorChannelFlagId);
 
             int clearFlag = 0b_11 << colorChannelFlagPos;
             clearFlag = ~ clearFlag;
@@ -748,12 +818,12 @@ namespace NBShader
             int channelBit = (int)channel << colorChannelFlagPos;
             colorChannelFlag |= channelBit;
 
-            material.SetInteger(colorChannelFlagId, colorChannelFlag);
+            WriteWord(colorChannelFlagId, colorChannelFlag);
         }
 
         public ColorChannel GetColorChanel(int colorChannelFlagPos)
         {
-            int colorChannelFlag = material.GetInteger(colorChannelFlagId);
+            int colorChannelFlag = ReadWord(colorChannelFlagId);
             colorChannelFlag = colorChannelFlag >> colorChannelFlagPos;
             colorChannelFlag &= 0b_11;
             return (ColorChannel)colorChannelFlag;
@@ -778,7 +848,7 @@ namespace NBShader
 
         public void SetPNoiseBlendMode(PNoiseBlendMode mode, int pNoiseBlendModeFlagPos)
         {
-            int pNoiseBlendFlag = material.GetInteger(pNoiseBlendFlagId);
+            int pNoiseBlendFlag = ReadWord(pNoiseBlendFlagId);
             int blendMode = (int)mode;
             if (blendMode < 0) return;
             int clearFlag = 0b_111 << pNoiseBlendModeFlagPos;
@@ -787,12 +857,12 @@ namespace NBShader
             int pNoiseBlendBit = blendMode << pNoiseBlendModeFlagPos;
             //先不考虑超过4个选项（2bit）的情况
             pNoiseBlendFlag |= pNoiseBlendBit;
-            material.SetInteger(pNoiseBlendFlagId, pNoiseBlendFlag);
+            WriteWord(pNoiseBlendFlagId, pNoiseBlendFlag);
         }
 
         public PNoiseBlendMode GetPNoiseBlendMode(int pNoiseBlendModeFlagPos)
         {
-            int pNoiseBlendFlag = material.GetInteger(pNoiseBlendFlagId);
+            int pNoiseBlendFlag = ReadWord(pNoiseBlendFlagId);
             pNoiseBlendFlag = pNoiseBlendFlag >> pNoiseBlendModeFlagPos;
             pNoiseBlendFlag &= 0b_111;
             //先不考虑超过4个选项（2bit）的情况

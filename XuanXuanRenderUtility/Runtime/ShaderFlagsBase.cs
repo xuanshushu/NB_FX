@@ -31,13 +31,24 @@ namespace NBShader
         public abstract int GetShaderFlagsId(int index = 0);
         protected abstract string GetShaderFlagsName(int index = 0);
 
-        private void SetIntValue(Material material, int flagBits, int index = 0)
+        // One physical word access seam; the default integer Material/MPB contract is unchanged.
+        protected virtual int ReadWord(int propertyId, MaterialPropertyBlock propertyBlock = null)
         {
-#if UNITY_EDITOR
-            material.SetInteger(GetShaderFlagsId(index), flagBits);
-#else
-        material.SetInteger(GetShaderFlagsId(index), flagBits);
-#endif
+            return propertyBlock is null
+                ? _material.GetInteger(propertyId)
+                : propertyBlock.GetInteger(propertyId);
+        }
+
+        protected virtual void WriteWord(int propertyId, int value, MaterialPropertyBlock propertyBlock = null)
+        {
+            if (propertyBlock is null)
+            {
+                _material.SetInteger(propertyId, value);
+            }
+            else
+            {
+                propertyBlock.SetInteger(propertyId, value);
+            }
         }
 
         public void SetFlagBits(int flagBits, MaterialPropertyBlock propertyBlock = null, int index = 0)
@@ -45,13 +56,13 @@ namespace NBShader
             if (propertyBlock is null)
             {
                 if (_material is null) return;
-                int flags = _material.GetInteger(GetShaderFlagsId(index));
-                SetIntValue(_material, flags | flagBits, index);
+                int flags = ReadWord(GetShaderFlagsId(index));
+                WriteWord(GetShaderFlagsId(index), flags | flagBits);
             }
             else
             {
-                int flags = propertyBlock.GetInteger(GetShaderFlagsId(index));
-                propertyBlock.SetInteger(GetShaderFlagsId(index), flags | flagBits);
+                int flags = ReadWord(GetShaderFlagsId(index), propertyBlock);
+                WriteWord(GetShaderFlagsId(index), flags | flagBits, propertyBlock);
             }
         }
 
@@ -60,13 +71,13 @@ namespace NBShader
             if (propertyBlock is null)
             {
                 if (_material is null) return;
-                int flags = _material.GetInteger(GetShaderFlagsId(index));
-                SetIntValue(_material, flags & ~flagBits, index);
+                int flags = ReadWord(GetShaderFlagsId(index));
+                WriteWord(GetShaderFlagsId(index), flags & ~flagBits);
             }
             else
             {
-                int flags = propertyBlock.GetInteger(GetShaderFlagsId(index));
-                propertyBlock.SetInteger(GetShaderFlagsId(index), flags & ~flagBits);
+                int flags = ReadWord(GetShaderFlagsId(index), propertyBlock);
+                WriteWord(GetShaderFlagsId(index), flags & ~flagBits, propertyBlock);
             }
         }
 
@@ -76,11 +87,11 @@ namespace NBShader
             if (propertyBlock is null)
             {
                 if (_material is null) throw new NullReferenceException("material");
-                flags = _material.GetInteger(GetShaderFlagsId(index));
+                flags = ReadWord(GetShaderFlagsId(index));
             }
             else
             {
-                flags = propertyBlock.GetInteger(GetShaderFlagsId(index));
+                flags = ReadWord(GetShaderFlagsId(index), propertyBlock);
             }
 
             return (flags & flagBits) != 0;

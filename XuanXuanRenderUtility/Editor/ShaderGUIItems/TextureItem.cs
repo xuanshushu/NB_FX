@@ -21,7 +21,8 @@ namespace NBShaderEditor
             Action<MaterialProperty> afterDraw = null,
             Func<bool> isVisible = null,
             Func<GUIContent> tillingContentProvider = null,
-            Func<GUIContent> offsetContentProvider = null) : base(rootItem, parentItem)
+            Func<GUIContent> offsetContentProvider = null,
+            string scaleOffsetPropertyName = null) : base(rootItem, parentItem)
         {
             _texturePropertyName = texturePropertyName;
             _isVisible = isVisible;
@@ -34,7 +35,8 @@ namespace NBShaderEditor
                 contentProvider,
                 drawScaleOffset,
                 tillingContentProvider: tillingContentProvider,
-                offsetContentProvider: offsetContentProvider);
+                offsetContentProvider: offsetContentProvider,
+                scaleOffsetPropertyName: scaleOffsetPropertyName);
             InitTriggerByChild();
         }
 
@@ -70,7 +72,8 @@ namespace NBShaderEditor
             bool drawScaleOffset = true,
             Func<bool> isVisible = null,
             Func<GUIContent> tillingContentProvider = null,
-            Func<GUIContent> offsetContentProvider = null) : base(rootItem, parentItem)
+            Func<GUIContent> offsetContentProvider = null,
+            string scaleOffsetPropertyName = null) : base(rootItem, parentItem)
         {
             _isVisible = isVisible;
             _textureItem = new TextureObjectItem(rootItem, this, texturePropertyName, contentProvider);
@@ -81,8 +84,8 @@ namespace NBShaderEditor
                 ? new TextureScaleOffsetItem(
                     rootItem,
                     this,
-                    texturePropertyName,
-                    false,
+                    string.IsNullOrEmpty(scaleOffsetPropertyName) ? texturePropertyName : scaleOffsetPropertyName,
+                    !string.IsNullOrEmpty(scaleOffsetPropertyName),
                     tillingContentProvider: tillingContentProvider,
                     offsetContentProvider: offsetContentProvider)
                 : null;
