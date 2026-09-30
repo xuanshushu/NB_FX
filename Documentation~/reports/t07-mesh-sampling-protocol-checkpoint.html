@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 采样协议与高频溶解 Ramp 修复</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="t07-mesh-surface-bc-checkpoint.html">前序普通 Mesh 统一对照</a> · <a href="t07-graph-dissolve-ramp-checkpoint.html">原高频失败</a> · <a href="../decisions.html#d24">D24</a></p>
+<h1>普通 Mesh 采样协议与高频溶解 Ramp 修复</h1>
+<p><strong>人话结论：</strong>原 NBShader 用材质里的“纹理循环方式”和“强制不用 mip”来决定怎么采样；之前 Graph 的许多贴图却直接使用纹理资产自己的采样设置，两个规则并不相同。现在 Graph 也按原 NB 的规则采样。<strong>63 项采样对照通过；原来失败的高频溶解 Ramp，用同一夹具重测也已相同。</strong>不是放宽颜色容差，而是修正采样路径。</p>
+<p>产品提交 <code>d31bdfe</code>；前置包 <code>e3dae2e</code>、主工程输入 <code>6081fae</code>。Unity 6000.3.18f1 / URP、SG、VFX 包 17.3 / Metal / RenderGraph。无可调用的 unityMCP，使用独占隔离克隆 CLI，无可见主工程窗口。本轮只有普通 Mesh 和生成 Master Preview，没有新 VFX 测试。</p>
+<h2>实现边界</h2>
+<ul>
+<li>BaseMap、Mask1–3、Overlay1/2、DissolveMap、DissolveMaskMap、ColorRampMap、DissolveRampMap 共 10 类纹理，使用现有 packed Wrap/ForceNoMip 位和原 ShaderLab 的 inline linear sampler。四种循环为 UV 都重复、UV 都截断、仅 U 重复、仅 V 重复；ForceNoMip 开启时采 LOD0。</li>
+<li>保留原 118 个 Graph 属性和 0–129 端口，追加 130/131（BaseMap / 已变换 BaseUV）；删除上游重复采样节点。BaseMap 由当前颜色函数采一次，旧采样值端口保留但断开不用。其它可选纹理仍只在开启功能时采样。</li>
+<li>默认 Wrap=0、ForceNoMip=0 现在执行原 NB 的 linear/repeat/autoLOD；因此不继续继承旧 Graph 的资产 Point/Clamp 等设置。没有改变 packed 位含义、原 ShaderLab、官方包、UniversalTarget 或 NBPostprocess，没有新 keyword。</li>
+</ul>
+<h2>真实测试结果</h2>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>63 项普通 Mesh 采样 B/C</td><td>10 类贴图 × 四种 Wrap + auto/force LOD，共 60；另有源梯度、周期31 Ramp auto/force 三项。全部通过；安全内部区域 4096 像素的 RGBA 最大差、重复差均为 0，非诊断例的循环/mip 开关都有可测响应。没有用 PNG 或画面中位数替代原始值。</td><td><a href="t07-evidence/sampling-protocol-20260930/sampling-results.xml">XML</a> · <a href="t07-evidence/sampling-protocol-20260930/sampling.log.gz">日志</a> · <a href="t07-evidence/sampling-protocol-20260930/summary.json">逐例汇总</a></td></tr>
+<tr><td>原高频失败复现</td><td>只恢复修复前两文件、同一夹具：自动 LOD 的 P95 RGB 差 0.0731201，强制 LOD0 为 0.5962524；仍是 NUMERIC_MISMATCH / exit1。不是无法复现后“认为修好”。</td><td><a href="t07-evidence/sampling-protocol-20260930/old-high-frequency/before/result.json">修复前结果</a> · <a href="t07-evidence/sampling-protocol-20260930/old-high-frequency/before/unity.log.gz">日志</a></td></tr>
+<tr><td>单因素根因隔离</td><td>保持旧 Graph 不变，只把源纹理采样从资产 sampler 改为原 NB 的 inline linear/repeat（移动已有声明以便使用）；同一七例的 ROI maxRGB 全部变为 0，PASS / exit0。这确认当前 Metal 夹具的源 sampler 合同差异是原因；并未逐一拆分 min/mag/mip/wrap 的内部影响，也不外推其它平台。</td><td><a href="t07-evidence/sampling-protocol-20260930/old-high-frequency/source-sampler-only/result.json">单因素结果</a> · <a href="t07-evidence/sampling-protocol-20260930/old-high-frequency/source-sampler-only/NBGraphBaseColor.hlsl.gz">测试专用 HLSL</a></td></tr>
+<tr><td>正式候选重放原夹具</td><td>七例均 ROI maxRGB=0，PASS / exit0；Graph 与原 ShaderLab 各有 3904 像素因 auto/force 切换改变，证明 LOD0 仍实际有效，而非功能被关闭。只重放原 Mesh 夹具，未重跑历史 VFX。</td><td><a href="t07-evidence/sampling-protocol-20260930/old-high-frequency/candidate/result.json">候选结果</a> · <a href="t07-evidence/sampling-protocol-20260930/old-high-frequency/candidate/unity.log.gz">日志</a></td></tr>
+<tr><td>88 项表面 + 4 项 Preview 回归</td><td>恢复正式候选、清理测试探针后，92/92 通过，完整画面 RGBA/重复差全 0；B/C/关闭对照共 552 份 raw/PNG 数据与前序证据相同（gzip 解压后比较）。PNG 和 raw 一致时引用前序附件，不重复存一套。</td><td><a href="t07-evidence/sampling-protocol-20260930/surface-regression/results.xml">回归 XML</a> · <a href="t07-evidence/sampling-protocol-20260930/surface-regression/unity.log.gz">日志</a> · <a href="t07-evidence/sampling-protocol-20260930/surface-regression/capture-equivalence.json">552 份数据对比</a></td></tr>
+</tbody></table>
+<h2>夹具失败与修正，不暗改断言</h2>
+<p>采样矩阵首次 53 通过、10 失败；所有 B/C RGBA 差仍为 0，但测试纹理的 mip 红色值 .5 恰好等于细格纹理的平均红色，遮罩/溶解的开关响应仅 .00439/.00293，没达到 .005 正对照门槛。把测试 mip 换成明显不同的 (.9,.1,.2)，<strong>不改门槛或严格 0 差断言</strong>，63/63 通过。<a href="t07-evidence/sampling-protocol-20260930/fixture-correction/v1-results.xml">首次 XML</a> · <a href="t07-evidence/sampling-protocol-20260930/fixture-correction/v1.log.gz">原日志</a> · <a href="t07-evidence/sampling-protocol-20260930/fixture-correction/G4GraphSamplingTests.v1.cs.txt">原夹具</a>。</p>
+<h2>重放、完整性与仍未完成的范围</h2>
+<p><a href="t07-evidence/sampling-protocol-20260930/README.txt">CLI、原夹具、raw 格式和边界</a> · <a href="t07-evidence/sampling-protocol-20260930/G4GraphSamplingTests.cs.txt">本轮夹具快照</a> · <a href="../../Tests/URP/Editor/G4GraphSamplingTests.cs">正式测试</a> · <a href="t07-evidence/sampling-protocol-20260930/input-sha256.txt">输入 hash</a> · <a href="t07-evidence/sampling-protocol-20260930/sha256.txt">附件 hash</a>。</p>
+<p>采样测试为正交相机、UV0、显式 ST、线性 RGBAHalf；只对内部 ROI 做严格比较，完整 raw 仍保留。每次捕获前渲染 4 帧，是稳态，不覆盖冷首帧；不是 UI 或任意 ST 读写持久化证明。<a href="t07-evidence/sampling-protocol-20260930/import.log.gz">导入/编译</a>退出 0；测试日志无 error CS/Shader error，仍有既有 ShaderUtil/服务 warning。临时因果 HLSL 与旧探针已清理，正式候选已恢复，<a href="t07-evidence/sampling-protocol-20260930/protected-settings-sha256.txt">三项保护设置 hash</a>未变，未 push。</p>
+<p>高级 UV/CustomData、Noise/折射/色散、光照/Normal/POM/MatCap、几何、完整 Pass/深度/阴影/Stencil/后处理/GUI/Player、实际 GPU 采样成本、variants/SRP Batcher/性能仍待补齐；采样协议“已接入 10 类”不代表未接入的其它纹理功能也通过。生成源码/Graph 不再有旧上游 SampleTexture2D，不能据此声称所有 GPU cost 已测。</p>
+<p><strong>审核：</strong>限定采样修复及回归证据接纳，原周期31高频失败在上述当前环境/夹具已修复；旧失败仍保留。完整 G3/G4 未放行，继续普通 Mesh，不正式进入 VFX。D23 的原 MatCap 微差和 Dissolve 冷首帧仍保留最终一次性人工测试，不由本修复改判。</p>
+</body></html>

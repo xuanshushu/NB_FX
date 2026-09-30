@@ -1,0 +1,309 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using NUnit.Framework;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
+
+namespace NBFX.Baseline.Tests
+{
+    /// <summary>
+    /// Ordinary-Mesh sampling protocol B/C. No VFX, saved project mutations,
+    /// first-frame claims or post-hoc tolerances. Linear float readback is kept.
+    /// </summary>
+    public sealed class G4GraphSamplingTests
+    {
+        const string GraphPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph";
+        const string LegacyPath = "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader";
+        const int Size = 128, Layer = 2;
+        static readonly string[] Features = { "base", "mask1", "mask2", "mask3", "overlay1", "overlay2", "dissolve", "dissolve-mask", "color-ramp", "dissolve-ramp" };
+        static IEnumerable<TestCaseData> Cases()
+        {
+            foreach (string feature in Features)
+                foreach (string mode in new[] { "wrap0", "wrap1", "wrap2", "wrap3", "lod-auto", "lod-force" })
+                    yield return new TestCaseData(feature, mode).SetName("G4SamplingBC_" + feature + "_" + mode);
+            yield return new TestCaseData("dissolve", "source-gradient").SetName("G4SamplingBC_DissolveRamp_SourceGradient");
+            yield return new TestCaseData("dissolve-ramp", "period31-auto").SetName("G4SamplingBC_DissolveRamp_Period31Auto");
+            yield return new TestCaseData("dissolve-ramp", "period31-force").SetName("G4SamplingBC_DissolveRamp_Period31Force");
+        }
+        [Serializable] sealed class Metrics
+        {
+            public string caseId, unityVersion, api, target, note;
+            public int roiPixels, differingRGB, differingAlpha, graphPasses, legacyPasses;
+            public int graphVisible, legacyVisible;
+            public int wrapMode, wrapBit, forceNoMipBit;
+            public bool forceNoMip, finite;
+            public float maxRGB, maxAlpha, graphRepeat, legacyRepeat, graphControlDelta, legacyControlDelta;
+        }
+
+        [TestCaseSource(nameof(Cases))]
+        public void SamplingProtocolMatchesShaderLab(string feature, string mode)
+        {
+            Assert.That(GraphicsSettings.currentRenderPipeline, Is.InstanceOf<UniversalRenderPipelineAsset>());
+            Assert.That(SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf), Is.True);
+            Shader graphShader = AssetDatabase.LoadAssetAtPath<Shader>(GraphPath);
+            Shader legacyShader = AssetDatabase.LoadAssetAtPath<Shader>(LegacyPath);
+            Assert.That(graphShader && legacyShader && graphShader.isSupported && legacyShader.isSupported, Is.True);
+            string root = Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR");
+            if (string.IsNullOrEmpty(root)) root = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG4Sampling");
+            string output = Path.Combine(root, feature + "-" + mode);
+            Directory.CreateDirectory(output);
+            var scene = EditorSceneManager.NewPreviewScene();
+            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            var cameraObject = new GameObject("NBFX ordinary Mesh sampling B/C");
+            SceneManager.MoveGameObjectToScene(quad, scene);
+            SceneManager.MoveGameObjectToScene(cameraObject, scene);
+            var camera = cameraObject.AddComponent<Camera>();
+            var graph = new Material(graphShader);
+            var legacy = new Material(legacyShader);
+            var target = new RenderTexture(Size, Size, 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
+            var readback = new Texture2D(Size, Size, TextureFormat.RGBAHalf, false, true);
+            var map = MakeMap(mode);
+            var gradient = MakeGradient();
+            var previousActive = RenderTexture.active;
+            try
+            {
+                int wrapMode = mode.StartsWith("wrap", StringComparison.Ordinal) ? mode[4] - '0' : 0;
+                bool force = mode.StartsWith("wrap", StringComparison.Ordinal) || mode.EndsWith("force", StringComparison.Ordinal);
+                int wrapBit, mipBit;
+                Configure(graph, true, feature, mode, map, gradient, out wrapBit, out mipBit);
+                Configure(legacy, false, feature, mode, map, gradient, out _, out _);
+                SetProtocol(graph, legacy, wrapMode, wrapBit, force, mipBit);
+                quad.layer = Layer;
+                quad.transform.localScale = new Vector3(2, 2, 1);
+                var renderer = quad.GetComponent<MeshRenderer>();
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+                camera.scene = scene;
+                camera.transform.position = new Vector3(0, 0, 5);
+                camera.transform.rotation = Quaternion.Euler(0, 180, 0);
+                camera.orthographic = true;
+                camera.orthographicSize = 1.5f;
+                camera.nearClipPlane = .1f;
+                camera.farClipPlane = 20;
+                camera.cullingMask = 1 << Layer;
+                camera.clearFlags = CameraClearFlags.SolidColor;
+                camera.backgroundColor = Color.clear;
+                camera.allowHDR = true;
+                camera.allowMSAA = false;
+                camera.targetTexture = target;
+                target.Create();
+                Assert.That(target.IsCreated() && !target.sRGB, Is.True);
+                renderer.sharedMaterial = legacy;
+                Color[] b = Capture(camera, target, readback, Path.Combine(output, "B"));
+                Color[] br = Capture(camera, target, readback, null);
+                renderer.sharedMaterial = graph;
+                Color[] c = Capture(camera, target, readback, Path.Combine(output, "C"));
+                Color[] cr = Capture(camera, target, readback, null);
+                int controlWrap = wrapMode == 0 || wrapMode == 2 ? 1 : 0;
+                bool isWrap = mode.StartsWith("wrap", StringComparison.Ordinal);
+                SetProtocol(graph, legacy, isWrap ? controlWrap : wrapMode, wrapBit, isWrap ? force : !force, mipBit);
+                renderer.sharedMaterial = graph;
+                Color[] gc = Capture(camera, target, readback, Path.Combine(output, "C-control"));
+                renderer.sharedMaterial = legacy;
+                Color[] bc = Capture(camera, target, readback, Path.Combine(output, "B-control"));
+                var metrics = Compare(b, c);
+                metrics.caseId = feature + "-" + mode;
+                metrics.unityVersion = Application.unityVersion;
+                metrics.api = SystemInfo.graphicsDeviceType.ToString();
+                metrics.target = "linear RGBAHalf; float32 RGBA stream; safe ROI x/y=32..95";
+                metrics.note = "Ordinary Mesh UV0, static controls, four warm-up renders; no VFX/first-frame claims. Texture asset intentionally Point/Clamp; NB material must use inline linear sampler and packed wrap/LOD. Strict zero is not relaxed after failure. SourceGradient has no required force-LOD response because its manual gradient mips may coincide.";
+                metrics.wrapMode = wrapMode;
+                metrics.wrapBit = wrapBit;
+                metrics.forceNoMipBit = mipBit;
+                metrics.forceNoMip = force;
+                metrics.graphPasses = graph.passCount;
+                metrics.legacyPasses = legacy.passCount;
+                metrics.graphRepeat = MaxDelta(c, cr);
+                metrics.legacyRepeat = MaxDelta(b, br);
+                metrics.graphControlDelta = MaxDelta(c, gc);
+                metrics.legacyControlDelta = MaxDelta(b, bc);
+                File.WriteAllText(Path.Combine(output, "metrics.json"), JsonUtility.ToJson(metrics, true));
+                Debug.Log("NBFX_G4_SAMPLING_BC " + JsonUtility.ToJson(metrics));
+                Assert.That(metrics.finite, Is.True);
+                Assert.That(metrics.graphVisible, Is.GreaterThan(100), "Graph sampling positive foreground absent.");
+                Assert.That(metrics.legacyVisible, Is.GreaterThan(100), "ShaderLab sampling positive foreground absent.");
+                Assert.That(metrics.graphRepeat, Is.Zero, "Graph repeated capture changed.");
+                Assert.That(metrics.legacyRepeat, Is.Zero, "ShaderLab repeated capture changed.");
+                if (mode != "source-gradient")
+                {
+                    Assert.That(metrics.graphControlDelta, Is.GreaterThan(.005f), "Graph wrap/LOD positive control had no effect.");
+                    Assert.That(metrics.legacyControlDelta, Is.GreaterThan(.005f), "ShaderLab wrap/LOD positive control had no effect.");
+                }
+                Assert.That(metrics.differingAlpha, Is.Zero, "Strict safe-ROI Alpha sampling B/C mismatch.");
+                Assert.That(metrics.differingRGB, Is.Zero, "Strict safe-ROI RGB sampling B/C mismatch.");
+            }
+            finally
+            {
+                camera.targetTexture = null;
+                RenderTexture.active = previousActive;
+                target.Release();
+                foreach (var obj in new UnityEngine.Object[] { graph, legacy, target, readback, map, gradient })
+                    UnityEngine.Object.DestroyImmediate(obj);
+                EditorSceneManager.ClosePreviewScene(scene);
+            }
+        }
+
+        static Texture2D MakeMap(string mode)
+        {
+            bool period31 = mode.StartsWith("period31", StringComparison.Ordinal);
+            bool lod = mode.StartsWith("lod", StringComparison.Ordinal);
+            int width = period31 ? 1024 : lod ? 512 : 8;
+            int height = period31 ? 1 : width;
+            var map = new Texture2D(width, height, TextureFormat.RGBA32, true, true);
+            var pixels = new Color[width * height];
+            for (int y = 0; y < height; y++) for (int x = 0; x < width; x++)
+            {
+                if (period31) pixels[y * width + x] = x % 31 < 15 ? Color.red : Color.blue;
+                else if (lod) pixels[y * width + x] = ((x / 8 + y / 8) & 1) == 0 ? new Color(.25f, .5f, .75f, 1) : new Color(.75f, .25f, .5f, 1);
+                else pixels[y * width + x] = new Color((x + 1) / 9f, (y + 1) / 9f, ((x + 2 * y) % 7 + 1) / 8f, 1);
+            }
+            map.SetPixels(pixels, 0);
+            map.Apply(true);
+            if (lod)
+            {
+                // A conspicuous, deterministic mip response; not relying on
+                // an importer or on whether auto-generated mip colors average out.
+                for (int mip = 1; mip < map.mipmapCount; mip++)
+                {
+                    int count = Mathf.Max(1, width >> mip) * Mathf.Max(1, height >> mip);
+                    var mipPixels = new Color[count];
+                    for (int i = 0; i < count; i++) mipPixels[i] = new Color(.5f, .75f, .25f, 1);
+                    map.SetPixels(mipPixels, mip);
+                }
+                map.Apply(false);
+            }
+            map.filterMode = FilterMode.Point;
+            map.wrapMode = TextureWrapMode.Clamp;
+            return map;
+        }
+        static Texture2D MakeGradient()
+        {
+            var texture = new Texture2D(256, 1, TextureFormat.RGBA32, true, true);
+            var colors = new Color[256];
+            for (int x = 0; x < 256; x++) colors[x] = new Color(x / 255f, x / 255f, x / 255f, 1);
+            texture.SetPixels(colors); texture.Apply(true);
+            texture.filterMode = FilterMode.Bilinear;
+            texture.wrapMode = TextureWrapMode.Clamp;
+            return texture;
+        }
+        static void Configure(Material m, bool graph, string feature, string mode, Texture2D map, Texture2D gradient, out int wrapBit, out int mipBit)
+        {
+            m.SetTexture("_BaseMap", Texture2D.whiteTexture);
+            m.SetTexture("_MaskMap", Texture2D.whiteTexture);
+            m.SetTexture("_MaskMap2", Texture2D.whiteTexture);
+            m.SetTexture("_MaskMap3", Texture2D.whiteTexture);
+            m.SetVector("_MaskMapVec", new Vector4(1, 0, 0, 0));
+            m.SetColor(graph ? "_Color" : "_BaseColor", Color.white);
+            m.SetColor("_ColorA", Color.white);
+            m.SetFloat("_BaseColorIntensityForTimeline", 1);
+            m.SetFloat("_AlphaAll", 1);
+            m.SetFloat("_Cull", 0); m.SetFloat("_ZTest", 4); m.SetFloat("_ZWrite", 0);
+            m.SetFloat("_SrcBlend", (float)BlendMode.One); m.SetFloat("_DstBlend", (float)BlendMode.Zero);
+            m.renderQueue = 3000;
+            if (graph)
+            {
+                m.SetFloat("_Surface", 1); m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                m.SetFloat("_SrcBlendAlpha", (float)BlendMode.One); m.SetFloat("_DstBlendAlpha", (float)BlendMode.Zero);
+                m.SetFloat("_NB_DistortionMode", 0); m.SetFloat("_NB_ColorChannelLo16", 3);
+                m.SetFloat("_NB_Flags1Lo16", 1 << 9); // Ignore vertex color in both hosts.
+            }
+            else
+            {
+                m.EnableKeyword("_FX_LIGHT_MODE_UNLIT"); m.SetFloat("_ColorMask", 15); m.SetFloat("_fogintensity", 0);
+                m.SetInteger("_W9ParticleShaderColorChannelFlag", 3); m.SetInteger("_W9ParticleShaderFlags1", 1 << 9);
+                m.SetShaderPassEnabled("SRPDefaultUnlit", false); m.SetShaderPassEnabled("SRPDEFAULTUNLIT", false);
+            }
+            string property;
+            switch (feature)
+            {
+                case "base": property = "_BaseMap"; wrapBit = 0; mipBit = 0; break;
+                case "mask1": property = "_MaskMap"; wrapBit = 1; mipBit = 6; Enable(m, "_Mask_Toggle", "_MASKMAP_ON"); break;
+                case "mask2": property = "_MaskMap2"; wrapBit = 2; mipBit = 7; Enable(m, "_Mask_Toggle", "_MASKMAP_ON"); Enable(m, "_Mask2_Toggle", "_MASKMAP2_ON"); break;
+                case "mask3": property = "_MaskMap3"; wrapBit = 11; mipBit = 8; Enable(m, "_Mask_Toggle", "_MASKMAP_ON"); Enable(m, "_Mask3_Toggle", "_MASKMAP3_ON"); break;
+                case "overlay1": property = "_EmissionMap"; wrapBit = 4; mipBit = 11; Enable(m, "_EmissionEnabled", "_EMISSION"); m.SetColor("_EmissionMapColor", Color.white); break;
+                case "overlay2": property = "_ColorBlendMap"; wrapBit = 8; mipBit = 12; Enable(m, "_ColorBlendMap_Toggle", "_COLORMAPBLEND"); m.SetColor("_ColorBlendColor", Color.white); break;
+                case "dissolve": property = "_DissolveMap"; wrapBit = 5; mipBit = 14; Enable(m, "_Dissolve_Toggle", "_DISSOLVE"); m.SetVector("_Dissolve", new Vector4(.5f, 1, 1, 1)); break;
+                case "dissolve-mask":
+                    property = "_DissolveMaskMap"; wrapBit = 6; mipBit = 15;
+                    Enable(m, "_Dissolve_Toggle", "_DISSOLVE"); Enable(m, "_DissolveMask_Toggle", "_DISSOLVE_MASK");
+                    m.SetTexture("_DissolveMap", Texture2D.grayTexture); m.SetVector("_Dissolve", new Vector4(.5f, 1, 1, 1)); m.SetFloat("_DissolveMaskMode", 1); break;
+                case "color-ramp":
+                    property = "_RampColorMap"; wrapBit = 15; mipBit = 13;
+                    Enable(m, "_RampColorToggle", "_COLOR_RAMP"); if (!graph) m.EnableKeyword("_COLOR_RAMP_MAP"); m.SetFloat("_RampColorSourceMode", 1);
+                    m.SetColor("_RampColor0", new Color(1, 0, 0, 0)); m.SetColor("_RampColor1", new Color(0, 0, 1, 1));
+                    m.SetVector("_RampColorAlpha0", new Vector4(1, 0, 1, 1)); m.SetColor("_RampColorBlendColor", Color.white);
+                    if (graph) m.SetFloat("_RampColorCount", 131074); else m.SetInteger("_RampColorCount", 131074); break;
+                case "dissolve-ramp":
+                    property = "_DissolveRampMap"; wrapBit = 7; mipBit = 16;
+                    Enable(m, "_Dissolve_Toggle", "_DISSOLVE"); Enable(m, "_Dissolve_useRampMap_Toggle", "_DISSOLVE_RAMP"); if (!graph) m.EnableKeyword("_DISSOLVE_RAMP_MAP");
+                    m.SetTexture("_DissolveMap", mode.StartsWith("wrap", StringComparison.Ordinal) ? Texture2D.grayTexture : gradient);
+                    m.SetVector("_Dissolve", mode.StartsWith("period31", StringComparison.Ordinal) ? new Vector4(0, 1, 1, .1f) : new Vector4(.5f, 1, 1, 1));
+                    m.SetFloat("_DissolveRampSourceMode", 1); m.SetColor("_DissolveRampColor", Color.white); break;
+                default: throw new ArgumentException(feature);
+            }
+            if (mode == "source-gradient") map = gradient;
+            m.SetTexture(property, map);
+            Vector4 st = mode.StartsWith("wrap", StringComparison.Ordinal) ? new Vector4(2, 3, -.25f, 1.25f) : new Vector4(8, 8, -.25f, -.25f);
+            if (feature == "dissolve-ramp" && mode.StartsWith("wrap", StringComparison.Ordinal)) st = new Vector4(2, 3, 1.25f, 1.25f);
+            if (mode.StartsWith("period31", StringComparison.Ordinal)) st = new Vector4(1, 1, -.1f, 0);
+            if (mode == "source-gradient") st = new Vector4(1, 1, 0, 0);
+            m.SetTextureScale(property, new Vector2(st.x, st.y)); m.SetTextureOffset(property, new Vector2(st.z, st.w));
+            if (property == "_BaseMap" && graph) m.SetVector("_BaseMap_ST", st);
+        }
+        static void Enable(Material m, string property, string keyword)
+        { if (m.HasProperty(property)) m.SetFloat(property, 1); if (!m.HasProperty("_NB_WrapFlagsLo16")) m.EnableKeyword(keyword); }
+        static void SetProtocol(Material graph, Material legacy, int mode, int wrapBit, bool force, int mipBit)
+        {
+            uint wrap = ((mode & 1) != 0 ? 1u << wrapBit : 0u) | ((mode & 2) != 0 ? 1u << (wrapBit + 16) : 0u);
+            uint lod = force ? 1u << mipBit : 0u;
+            graph.SetFloat("_NB_WrapFlagsLo16", wrap & 65535); graph.SetFloat("_NB_WrapFlagsHi16", wrap >> 16);
+            graph.SetFloat("_NB_ForceNoMipFlagsLo16", lod & 65535); graph.SetFloat("_NB_ForceNoMipFlagsHi16", lod >> 16);
+            legacy.SetInteger("_W9ParticleShaderWrapFlags", unchecked((int)wrap)); legacy.SetInteger("_NBShaderForceNoMipFlags", unchecked((int)lod));
+        }
+        static Color[] Capture(Camera camera, RenderTexture target, Texture2D readback, string path)
+        {
+            for (int i = 0; i < 4; i++) camera.Render();
+            var previous = RenderTexture.active;
+            try
+            {
+                RenderTexture.active = target; readback.ReadPixels(new Rect(0, 0, Size, Size), 0, 0); readback.Apply(false);
+                Color[] pixels = readback.GetPixels();
+                if (path != null)
+                {
+                    using (var file = File.Create(path + ".rgba-f32.gz")) using (var gzip = new GZipStream(file, CompressionMode.Compress)) using (var writer = new BinaryWriter(gzip))
+                        foreach (Color c in pixels) { writer.Write(c.r); writer.Write(c.g); writer.Write(c.b); writer.Write(c.a); }
+                    var png = new Texture2D(Size, Size, TextureFormat.RGBA32, false, true);
+                    try { png.SetPixels(pixels); png.Apply(false); File.WriteAllBytes(path + ".png", png.EncodeToPNG()); }
+                    finally { UnityEngine.Object.DestroyImmediate(png); }
+                }
+                return pixels;
+            }
+            finally { RenderTexture.active = previous; }
+        }
+        static Metrics Compare(Color[] b, Color[] c)
+        {
+            var m = new Metrics { finite = true };
+            for (int y = 32; y < 96; y++) for (int x = 32; x < 96; x++)
+            {
+                int i = y * Size + x; float rgb = 0;
+                for (int channel = 0; channel < 4; channel++)
+                    if (float.IsNaN(b[i][channel]) || float.IsInfinity(b[i][channel]) || float.IsNaN(c[i][channel]) || float.IsInfinity(c[i][channel])) m.finite = false;
+                for (int channel = 0; channel < 3; channel++) rgb = Mathf.Max(rgb, Mathf.Abs(b[i][channel] - c[i][channel]));
+                float alpha = Mathf.Abs(b[i].a - c[i].a); m.roiPixels++;
+                if (b[i].maxColorComponent > .01f) m.legacyVisible++;
+                if (c[i].maxColorComponent > .01f) m.graphVisible++;
+                if (rgb > 0) m.differingRGB++; if (alpha > 0) m.differingAlpha++;
+                m.maxRGB = Mathf.Max(m.maxRGB, rgb); m.maxAlpha = Mathf.Max(m.maxAlpha, alpha);
+            }
+            return m;
+        }
+        static float MaxDelta(Color[] a, Color[] b)
+        { var m = Compare(a, b); return Mathf.Max(m.maxRGB, m.maxAlpha); }
+    }
+}
