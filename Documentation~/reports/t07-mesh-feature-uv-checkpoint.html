@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 八类贴图的独立高级 UV</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="t07-mesh-advanced-main-uv-checkpoint.html">前序主纹理 UV</a> · <a href="../decisions.html#d24">D24</a></p>
+<h1>普通 Mesh 八类贴图的独立高级 UV</h1>
+<p><strong>人话结论：</strong>遮罩 1/2/3、叠加贴图 1/2、颜色 Ramp、溶解及溶解遮罩，现在都能独立选择 UV 通道、Twirl 或共享 UV。它们不会错误地继承主纹理的缩放和偏移。96 项对照中，77 项完全一致，19 项因少量像素的微差未达到严格 0 差；最大通道差约为 0–1 范围的 0.098%。按用户要求只记录，不继续追查微差，不改通过标准。<strong>当前仍在普通 Mesh 阶段，没有进入新的 VFX 验证。</strong></p>
+<p>测试跨 2026-09-30 晚至 2026-10-01 凌晨。主工程输入 <code>55697fe</code>，包输入 <code>d8e772b</code>，产品 <code>9e2455d</code>；主工程输入 gitlink 当时仍为 <code>4358856</code>，后续由主 Agent 集成指针，不把未推送的包提交冒充远端。Unity 6000.3.18f1 / URP、SG、VFX 包 17.3 / Metal / RenderGraph；无可调用 unityMCP，用独占隔离 clone 的 CLI。原 ShaderLab、官方包、UniversalTarget、NBPostprocess 和主工程保护资产在本片不改。</p>
+<h2>本片做了什么</h2>
+<ul>
+<li>在现有 <code>NBGraphBaseUV</code> 中，从<strong>同一次</strong>共享 <code>NBFX_BuildBaseUVsV1</code> 的 BaseUVs，按原 UVModeFlag0/Type0 位置 2/4/6/12/14/16/18/26 取八路独立源，连到现有颜色函数的八个 UV 槽。保留全部旧输入/Out，只追加输出。</li>
+<li>各功能仍在颜色函数内独立执行原有旋转 → 自身 ST → 滚动速度 → 采样，没有第二次 ST，没有把八路接到 MainTexUV。DissolveRamp 的 U 来自溶解数值，不当作普通 UV 路由。</li>
+<li>限定模式 0/1/2/8：UV0、特殊 UV、Twirl/Polar 源、共享 UV。本矩阵测试 UV0.xy、UV0.zw、UV1/UV2、Twirl、Shared→UV2；不是各功能 Polar 的全组合验收。非均匀纹理、不同 float4 UV0/1/2、自身非 identity ST；特殊 UV2 例另有静态 17° 旋转，速度均为 0。</li>
+<li>CustomData、位置/屏幕/圆柱宿主源、Noise、时间动画、UI/Flipbook、half 精度和 VFX 仍不由本片宣称支持。Support VFX 设置保留，没有新 keyword 或 packed 位重定义。</li>
+</ul>
+<h2>真实测试与失败</h2>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>结果</th><th>证据</th></tr></thead><tbody>
+<tr><td>8 功能 × 6 UV 源 × 两种相机</td><td>96 项：77 严格通过，19 严格失败。13 项开启态微差，另 6 项只在关闭对照微差；开启态最大 0.0009765625、关闭态最大 0.00048828125，开启态最多 10/2304 ROI 像素非零。全部重复差 0、有限/可见，UV 切换响应至少 0.142578，未用无效功能制造一致。</td><td><a href="t07-evidence/feature-uv-20261001/results.xml">XML</a> · <a href="t07-evidence/feature-uv-20261001/summary.json">逐例和严格失败</a> · <a href="t07-evidence/feature-uv-20261001/unity.log.gz">日志</a></td></tr>
+<tr><td>前序 177 项回归</td><td>174 通过，3 项仍为已记录的主纹理共享 UV 单像素微差。主纹理全部 22 项指标与前片相同；其它 155 项表面/生成 Preview/采样全部通过。全部捕获与前序 raw/PNG 对比结果见 JSON；不把测试退出 2 写成通过。</td><td><a href="t07-evidence/feature-uv-20261001/regression/results.xml">回归 XML</a> · <a href="t07-evidence/feature-uv-20261001/regression/unity.log.gz">日志</a> · <a href="t07-evidence/feature-uv-20261001/regression/capture-equivalence.json">捕获一致性</a></td></tr>
+</tbody></table>
+<p>微差未继续诊断，未断言是某种编译或插值根因，未调阈值；最终一次性人工清单保留这些失败。不是“19 个功能不可用”，也不是“96 项全部通过”。完整 raw 可区分 RGB/Alpha 差与 PNG 量化，不能只靠缩略图判断严格一致。</p>
+<h2>可重放与后续</h2>
+<p><a href="t07-evidence/feature-uv-20261001/README.txt">输入、CLI、范围和 raw 格式</a> · <a href="../../Tests/URP/Editor/G4GraphFeatureUVTests.cs">正式测试</a> · <a href="t07-evidence/feature-uv-20261001/input-sha256.txt">输入 hash</a> · <a href="t07-evidence/feature-uv-20261001/sha256.txt">附件 hash</a>。严格 ROI 为内部 48×48 完整 RGBA，不是整张图；每次捕获前四帧预热，是稳态，不是冷首帧。</p>
+<p><a href="t07-evidence/feature-uv-20261001/import.log.gz">导入</a>退出 0，编译/测试日志无 error CS/Shader error；两个测试运行退出 2 对应保留的严格断言失败。<a href="t07-evidence/feature-uv-20261001/protected-settings-sha256.txt">保护设置 hash</a>未变，所有临时 Mesh/材质/相机都在 PreviewScene 内销毁，没有保存主工程场景。只有本地提交，没有 push。</p>
+<p><strong>审核：</strong>八路接入、功能响应与回归证据留档，严格失败保持原结果；继续普通 Mesh 的 Noise、CustomData、光照/几何和 Pass/状态/GUI/后处理等缺口。完整 G3/G4 未放行，不要求用户现在人工值守，也不将局部结果移交为 VFX Gate。</p>
+</body></html>
