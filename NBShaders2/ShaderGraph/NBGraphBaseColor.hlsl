@@ -10,6 +10,9 @@
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderUVV2.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphSampling.hlsl"
+#define NB_HALF_LAMBERT_ONLY 1
+#include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
+#undef NB_HALF_LAMBERT_ONLY
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
@@ -336,6 +339,41 @@ half4 NBGraphApplyFresnel(half4 color, float3 viewDirWS, half3 normalWS,
     return color;
 }
 
+// L0: ordinary Mesh only, SH per pixel and pixel additional lights.
+// This is not the later interpolator/lightmap/APV/SixWay parity slice.
+half4 NBGraphApplyLighting(half4 color, float mode, float3 positionWS,
+    float3 unfacedNormalWS, float3 viewDirWS, float2 normalizedScreenUV,
+    half isFrontFace, half3 normalTS, half metallicWeight,
+    half smoothnessWeight, half4 materialInfo, half4 specularColor)
+{
+    if (mode < 0.5 || mode >= 3.5) return color;
+    InputData inputData = (InputData)0;
+    inputData.positionWS = positionWS;
+    inputData.normalWS = isFrontFace > 0.5h ? unfacedNormalWS : -unfacedNormalWS;
+    // SG ViewDirection(World) is already GetWorldSpaceNormalizeViewDir.
+    // Match the old float -> half InputData boundary, without normalizing twice.
+    inputData.viewDirectionWS = (half3)viewDirWS;
+    #if defined(MAIN_LIGHT_CALCULATE_SHADOWS)
+        inputData.shadowCoord = TransformWorldToShadowCoord(positionWS);
+    #endif
+    inputData.normalizedScreenSpaceUV = normalizedScreenUV;
+    inputData.bakedGI = SampleSH((half3)inputData.normalWS);
+    inputData.shadowMask = SAMPLE_SHADOWMASK(float2(0, 0));
+    half metallic = metallicWeight * materialInfo.x;
+    half smoothness = smoothnessWeight * materialInfo.y;
+    half4 lit;
+    if (mode < 1.5)
+        lit = UniversalFragmentBlinnPhong(inputData, color.rgb,
+            specularColor, smoothness, 0, color.a, normalTS);
+    else if (mode < 2.5)
+        lit = UniversalFragmentHalfLambert(inputData, color.rgb,
+            specularColor, smoothness, 0, color.a, normalTS);
+    else
+        lit = UniversalFragmentPBR(inputData, color.rgb, metallic,
+            0, smoothness, 1, 0, color.a);
+    return lit;
+}
+
 // SHADERGRAPH_PREVIEW and runtime share the color arithmetic; optional scene
 // depth uses the explicit preview substitute in NBGraphSceneEyeDepth.
 // Stage: fragment BaseColor/Alpha. BaseMap is sampled here once, after BaseUV,
@@ -374,7 +412,8 @@ half4 NBGraphApplyMatCap(half4 color, UnityTexture2D map, float3 normalWS,
 // apply VFACE once. There is no normal-map sampling when the toggle is off.
 half3 NBGraphNormalForFeatures(UnityTexture2D map, float2 sourceUV,
     half scale, float3 normalWS, float3 tangentWS, float3 bitangentWS,
-    float isFrontFace, uint flags0, uint wrapFlags, uint noMipFlags)
+    float isFrontFace, uint flags0, uint wrapFlags, uint noMipFlags,
+    out half3 normalTS, out half metallicWeight, out half smoothnessWeight)
 {
     half side = isFrontFace > 0.5 ? 1.0h : -1.0h;
     float2 uv = map.GetTransformedUV(sourceUV);
@@ -383,8 +422,7 @@ half3 NBGraphNormalForFeatures(UnityTexture2D map, float2 sourceUV,
         (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BUMPTEX) != 0u);
     half3x3 tangentToWorld = half3x3((half3)tangentWS,
         (half3)(side * bitangentWS), (half3)(side * normalWS));
-    half3 normalTS, facedNormalWS;
-    half metallicWeight, smoothnessWeight;
+    half3 facedNormalWS;
     NBFX_DecodeNormalMapV2(sampled, scale,
         (flags0 & FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE) != 0u,
         tangentToWorld, normalTS, facedNormalWS, metallicWeight, smoothnessWeight);
@@ -460,6 +498,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 MatCapColor, float4 MatCapInfo,
     float BumpMapToggle, UnityTexture2D BumpTex, float BumpScale,
     float2 BumpUV, float3 TangentWS, float3 BitangentWS,
+    float FxLightMode, float4 MaterialInfo, float4 SpecularColor,
+    float3 PositionWS,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
@@ -469,11 +509,14 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     // The original ShaderLab _NORMALMAP keyword is represented by the
     // existing material toggle; no new SG keyword/variant is introduced.
     float3 normalForFeatures = (float3)NormalWS;
+    half3 lightingNormalTS = half3(0, 0, 1);
+    half lightingMetallicWeight = 1, lightingSmoothnessWeight = 1;
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (BumpMapToggle > 0.5))
         normalForFeatures = NBGraphNormalForFeatures(BumpTex, BumpUV,
             (half)BumpScale, (float3)NormalWS, TangentWS, BitangentWS,
             IsFrontFace, NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
-            wrapFlags, noMipFlags);
+            wrapFlags, noMipFlags, lightingNormalTS,
+            lightingMetallicWeight, lightingSmoothnessWeight);
     // Preserve the existing Noise-off uniform prototype for screen passes;
     // it must not distort the surface's texture consumers when Noise is off.
     half2 signedRG = (half2)NB_DistortionNoise;
@@ -517,6 +560,11 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             (half)HueShift, (half)Contrast, (half3)ContrastMidColor.rgb,
             (half)Saturability, (half4)BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && FxLightMode > 0.5)
+        Out = NBGraphApplyLighting((half4)Out, FxLightMode, PositionWS,
+            normalForFeatures, (float3)ViewDirWS, ScreenPosition.xy,
+            (half)IsFrontFace, lightingNormalTS, lightingMetallicWeight,
+            lightingSmoothnessWeight, (half4)MaterialInfo, (half4)SpecularColor);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (MatCapToggle > 0.5))
         Out = (float4)NBGraphApplyMatCap((half4)Out, MatCapTex, (float3)normalForFeatures,
             (half3)PositionVS, (half)IsFrontFace, (half4)MatCapColor,
@@ -796,6 +844,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half4 MatCapColor, half4 MatCapInfo,
     float BumpMapToggle, UnityTexture2D BumpTex, float BumpScale,
     float2 BumpUV, float3 TangentWS, float3 BitangentWS,
+    float FxLightMode, float4 MaterialInfo, float4 SpecularColor,
+    float3 PositionWS,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
@@ -805,11 +855,14 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     // The original ShaderLab _NORMALMAP keyword is represented by the
     // existing material toggle; no new SG keyword/variant is introduced.
     float3 normalForFeatures = (float3)NormalWS;
+    half3 lightingNormalTS = half3(0, 0, 1);
+    half lightingMetallicWeight = 1, lightingSmoothnessWeight = 1;
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (BumpMapToggle > 0.5))
         normalForFeatures = NBGraphNormalForFeatures(BumpTex, BumpUV,
             (half)BumpScale, (float3)NormalWS, TangentWS, BitangentWS,
             IsFrontFace, NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
-            wrapFlags, noMipFlags);
+            wrapFlags, noMipFlags, lightingNormalTS,
+            lightingMetallicWeight, lightingSmoothnessWeight);
     half2 signedRG = (half2)NB_DistortionNoise;
     half noiseMask = 1;
     half2 textureNoise = 0;
@@ -849,6 +902,11 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             (half)HueShift, (half)Contrast, ContrastMidColor.rgb,
             (half)Saturability, BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && FxLightMode > 0.5)
+        Out = NBGraphApplyLighting((half4)Out, FxLightMode, PositionWS,
+            normalForFeatures, (float3)ViewDirWS, ScreenPosition.xy,
+            (half)IsFrontFace, lightingNormalTS, lightingMetallicWeight,
+            lightingSmoothnessWeight, (half4)MaterialInfo, (half4)SpecularColor);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (MatCapToggle > 0.5))
         Out = NBGraphApplyMatCap(Out, MatCapTex, (float3)normalForFeatures,
             (half3)PositionVS, (half)IsFrontFace, MatCapColor,

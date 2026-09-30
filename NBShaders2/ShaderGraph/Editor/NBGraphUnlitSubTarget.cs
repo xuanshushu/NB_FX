@@ -49,7 +49,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     pass = WithNBDistortionBlocks(pass);
                 if (forward || UsesNBStencil(pass.lightMode))
                     pass.renderStates = WithNBRenderStates(pass.renderStates, forward);
-                passes.Add(forward ? WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl") :
+                passes.Add(forward ? WithNBLightingKeywords(WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl")) :
                     pass.lightMode == "ShadowCaster" ? WithNBFragmentInclude(pass, "NBGraphShadowCasterPass.hlsl", kURPShadowPass) :
                     pass, item.fieldConditions);
                 if (!forward) continue;
@@ -63,6 +63,20 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             // The delegated built-in Unlit instance is not this active VFX
             // SubTarget. Convert this instance only after its NB passes exist.
             context.subShaders[index] = PostProcessSubShader(subShader);
+        }
+
+        // Copy URP's collection; never mutate the delegated built-in Unlit pass.
+        // L0 uses runtime _FxLightMode, not new local mode keywords. The URP
+        // only existing additional-light axis is required by the old Forward.
+        // Old Forward declares no shadow axes: do not add new receiving behavior.
+        static PassDescriptor WithNBLightingKeywords(PassDescriptor pass)
+        {
+            var keywords = new KeywordCollection();
+            if (pass.keywords != null)
+                keywords.Add(pass.keywords);
+            keywords.Add(CoreKeywordDescriptors.AdditionalLights);
+            pass.keywords = keywords;
+            return pass;
         }
 
         static PassDescriptor WithNBDistortionBlocks(PassDescriptor pass)

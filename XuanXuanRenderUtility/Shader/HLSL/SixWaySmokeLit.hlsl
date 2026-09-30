@@ -4,6 +4,10 @@
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
+// Half-Lambert consumers need no SixWay material globals or vertex inputs.
+// Default ShaderLab inclusion retains the complete original SixWay path.
+#if !defined(NB_HALF_LAMBERT_ONLY)
+
 // Generated from UnityEditor.VFX.HDRP.SixWaySmokeLit+BSDFData
 // PackingRules = Exact
 struct BSDFData
@@ -258,6 +262,8 @@ half4 UniversalFragmentSixWay(InputData inputData,BSDFData bsdfData)
 
     return CalculateFinalColor(lightingData, bsdfData.alpha);
 }
+#endif // !NB_HALF_LAMBERT_ONLY
+
 half3 LightingHalfLambert(half3 lightColor, half3 lightDir, half3 normal)
 {
     half NdotL = saturate(dot(normal, lightDir));
