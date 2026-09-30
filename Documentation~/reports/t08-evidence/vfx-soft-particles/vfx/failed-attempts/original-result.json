@@ -1,0 +1,76 @@
+{
+    "unityVersion": "6000.3.18f1",
+    "graphicsDevice": "Metal",
+    "status": "FIXTURE_INVALID",
+    "error": "System.Exception: URP Unlit board shader unavailable\n  at NBFXSoftPlayerProbe.Setup () [0x00333] in <4fe075e2c85d40bdadff9b73f9a80bc4>:0 \n  at NBFXSoftPlayerProbe+<Start>d__18.MoveNext () [0x000be] in <4fe075e2c85d40bdadff9b73f9a80bc4>:0 ",
+    "note": "Real one-particle Cube/CullOff VFX Mesh Output. Off/On differ only in _SoftParticlesEnabled; both use (near,far)=(0,1). URP camera requiresDepthTexture=true. Fixed opaque URP Unlit board at z=1.5 is behind effect center z=2; empty is negative control. On-board metric is source-color displacement from the SAME board baseline, normalized by Off, not a direct fragment/GPU alpha.",
+    "linearTarget": false,
+    "requiresDepthTexture": false,
+    "fixtureValid": false,
+    "pass": false,
+    "cameraZ": 7.0,
+    "effectZ": 2.0,
+    "boardZ": 1.5,
+    "empty": {
+        "name": "",
+        "boardVisible": false,
+        "roiPixels": 0,
+        "baselineBlackWhiteMaxRGB": 0.0,
+        "offOnMaxRGB": 0.0,
+        "off": {
+            "name": "",
+            "alive": 0,
+            "passCount": 0,
+            "opaquePass": 0,
+            "deferredPass": 0,
+            "visiblePixels": 0,
+            "culled": false,
+            "repeatMaxRGB": 0.0,
+            "medianSignal": 0.0,
+            "relativeToOff": 0.0
+        },
+        "on": {
+            "name": "",
+            "alive": 0,
+            "passCount": 0,
+            "opaquePass": 0,
+            "deferredPass": 0,
+            "visiblePixels": 0,
+            "culled": false,
+            "repeatMaxRGB": 0.0,
+            "medianSignal": 0.0,
+            "relativeToOff": 0.0
+        }
+    },
+    "occluded": {
+        "name": "",
+        "boardVisible": false,
+        "roiPixels": 0,
+        "baselineBlackWhiteMaxRGB": 0.0,
+        "offOnMaxRGB": 0.0,
+        "off": {
+            "name": "",
+            "alive": 0,
+            "passCount": 0,
+            "opaquePass": 0,
+            "deferredPass": 0,
+            "visiblePixels": 0,
+            "culled": false,
+            "repeatMaxRGB": 0.0,
+            "medianSignal": 0.0,
+            "relativeToOff": 0.0
+        },
+        "on": {
+            "name": "",
+            "alive": 0,
+            "passCount": 0,
+            "opaquePass": 0,
+            "deferredPass": 0,
+            "visiblePixels": 0,
+            "culled": false,
+            "repeatMaxRGB": 0.0,
+            "medianSignal": 0.0,
+            "relativeToOff": 0.0
+        }
+    }
+}

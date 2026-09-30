@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+"""/tmp-only VFX Soft Particles Off/On assets from archived Distance fixture."""
+from pathlib import Path
+import hashlib, re, uuid
+ROOT = Path(__file__).resolve().parent
+SOURCE = Path('/tmp/nbfx-vfx-distance-fade-probe-20260930/Assets')
+OUT = ROOT / 'Assets'
+OUT.mkdir(parents=True, exist_ok=True)
+def guid(name): return uuid.uuid5(uuid.NAMESPACE_URL, 'nbfx-vfx-soft-particles-probe-20260930/' + name).hex
+def meta(src, name):
+    text = src.read_text()
+    old = re.search(r'(?m)^guid: ([a-f0-9]{32})$', text)
+    assert old, src
+    return text.replace(old.group(1), guid(name), 1)
+old_texture = 'NBFXDistanceBaseRGBA_64_128_160_192.png'
+new_texture = 'NBFXSoftBaseRGBA_64_128_160_192.png'
+old_guid = re.search(r'(?m)^guid: ([a-f0-9]{32})$', (SOURCE / (old_texture + '.meta')).read_text()).group(1)
+(OUT / new_texture).write_bytes((SOURCE / old_texture).read_bytes())
+(OUT / (new_texture + '.meta')).write_text(meta(SOURCE / (old_texture + '.meta'), new_texture))
+normalized = []
+for name in ('Off', 'On'):
+    old = 'NBFXDistance' + name + '.vfx'; new = 'NBFXSoft' + name + '.vfx'
+    text = (SOURCE / old).read_text()
+    changes = [(old_guid, guid(new_texture)), ('name: _DistanceFade_Toggle\n', 'name: _SoftParticlesEnabled\n'),
+               ('name: _Fade\n', 'name: _SoftParticleFadeParams\n'),
+               ('\'{"x":4.0,"y":12.0,"z":0.0,"w":0.0}\'', '\'{"x":0.0,"y":1.0,"z":0.0,"w":0.0}\'')]
+    for before, after in changes:
+        assert text.count(before) == 1, (new, before, text.count(before))
+        text = text.replace(before, after, 1)
+    assert '  capacity: 1\n' in text and '  blendMode: 1\n' in text
+    assert text.count('name: _SoftParticlesEnabled\n') == 1
+    assert text.count('name: _SoftParticleFadeParams\n') == 1
+    assert '_DistanceFade_Toggle' not in text and 'name: _Fade\n' not in text
+    ids = re.findall(r'(?m)^--- !u!\d+ &(\d+)$', text)
+    assert len(ids) == len(set(ids)), 'duplicate serialized fileID'
+    (OUT / new).write_text(text)
+    (OUT / (new + '.meta')).write_text(meta(SOURCE / (old + '.meta'), new))
+    normalized.append(re.sub(r'm_SerializableObject: [01]\n(?=    m_Space: -1\n  m_Property:\n    name: _SoftParticlesEnabled)', 'm_SerializableObject: VARIANT\n', text))
+assert normalized[0] == normalized[1], 'Off/On differ beyond toggle'
+for p in sorted(OUT.iterdir()):
+    if p.is_file() and p.suffix in ('.vfx', '.png', '.meta'):
+        print(hashlib.sha256(p.read_bytes()).hexdigest(), p)
