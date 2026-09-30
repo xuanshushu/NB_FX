@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · Noise 共享抽取的原 ShaderLab 回归</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="t07-mesh-feature-uv-checkpoint.html">普通 Mesh 功能 UV</a> · <a href="../decisions.html#d24">D24</a></p>
+<h1>Noise 共享抽取：原 NBShader 没有变化</h1>
+<p><strong>人话结论：</strong>为了让 Graph 重用原噪声计算，先把“读 RG、按需转成正负值、读取 Alpha 权重”这三步移成共享函数。原 NBShader 与冻结版本的 92 项 Mesh 对照全部完全一致，开关也确实有效。<strong>这只证明抽取没有改变原渲染，还不是 Graph 的 Noise 功能已经验证。</strong></p>
+<p>2026-10-01；主工程输入 <code>1181639</code>、包输入 <code>e3dd725</code>、产品 <code>99e9207</code>。Unity 6000.3.18f1 / URP、SG、VFX 包 17.3 / Metal / RenderGraph。无可调用 unityMCP，使用独占隔离工程 CLI；没有主工程 Assets/设置、官方包、UniversalTarget、NBPostprocess 或 Frozen 改动，没有 VFX 测试，没有 push。</p>
+<h2>最小实现边界</h2>
+<p>只改现有 <a href="../../NBShaders2/Shader/HLSL/NBShaderDistortionV1.hlsl">NBShaderDistortionV1.hlsl</a> 与 <a href="../../NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl">NBShaderForwardPass.hlsl</a>，保留原三处 half 赋值边界。Refraction、CustomData、外部 NoiseMask、Direction/Intensity、PNoise 和屏幕 payload 保存次序不动：屏幕 RG 仍未预乘 mask，普通纹理 UV 偏移才在最后乘 mask。没有新增关键词、属性或采样。</p>
+<h2>真实证据</h2>
+<table border="1" cellpadding="6"><thead><tr><th>检查</th><th>结果</th><th>附件</th></tr></thead><tbody>
+<tr><td>Frozen A / 当前 B，92 项</td><td>Base/Emission/Dissolve/Mask1 四消费者 × 23 输入；包含 RG 归一化/0/1、Alpha 0/.375/1、方向/强度的零值与负方向、NoiseMask 四通道和零值。开启态及反事实对照的 ROI RGB/Alpha 差全为 0，重复全为 0，所有捕获全帧有限值；每例正对照至少 0.03515625、4096 个 ROI 像素响应，门槛 .01 没有放宽。</td><td><a href="t07-evidence/texture-noise-extraction-20261001/results.xml">92/92 XML</a> · <a href="t07-evidence/texture-noise-extraction-20261001/summary.json">逐项状态/指标</a> · <a href="t07-evidence/texture-noise-extraction-20261001/unity.log.gz">日志</a></td></tr>
+<tr><td>导入与保护</td><td>导入、测试均退出 0；无 error CS/Shader error，三项保护设置 hash 不变。所有 Mesh/材质/相机/纹理在内存 PreviewScene 内释放。</td><td><a href="t07-evidence/texture-noise-extraction-20261001/import.log.gz">导入日志</a> · <a href="t07-evidence/texture-noise-extraction-20261001/protected-settings-sha256.txt">设置 hash</a></td></tr>
+</tbody></table>
+<p><a href="t07-evidence/texture-noise-extraction-20261001/README.txt">重放命令、raw 格式与范围</a> · <a href="../../Tests/URP/Editor/G2TextureNoiseExtractionTests.cs">正式夹具</a> · <a href="t07-evidence/texture-noise-extraction-20261001/input-sha256.txt">输入 hash</a> · <a href="t07-evidence/texture-noise-extraction-20261001/sha256.txt">附件 hash</a>。线性 RGBAHalf 128²，严格内部 64² ROI，保留六组 raw/PNG；正交、常量 Noise/NoiseMask 和非均匀消费者贴图，四帧预热的稳态。</p>
+<h2>不由本片证明的事项</h2>
+<p>未验收 Graph Noise、屏幕扭曲 RT、Refraction/PNoise/CustomData/色散、时间动画或 VFX，也不是所有 Pass/GUI/持久化/Player/性能验收。后续普通 Mesh Graph N1 接入独立测试；已有严格微差与冷首帧仍留到最终一次人工测试。<strong>完整 G2/G3/G4 不由这 92 项放行。</strong></p>
+</body></html>

@@ -37,6 +37,7 @@
 <p>普通 Mesh 采样协议：<a href="t07-mesh-sampling-protocol-checkpoint.html">10 类纹理 Wrap/ForceNoMip，63 项 B/C + 92 项回归；原周期31高频失败同夹具修复</a>。不放行完整 G3/G4。</p>
 <p>普通 Mesh 主纹理高级 UV：<a href="t07-mesh-advanced-main-uv-checkpoint.html">22 项对照：19 严格通过，3 项各一像素微差留档；已有 155 项回归通过</a>。继续其它功能 UV 与 Mesh 缺口，不新跑 VFX，不放行完整 G3/G4。</p>
 <p>普通 Mesh 八类贴图高级 UV：<a href="t07-mesh-feature-uv-checkpoint.html">96 项：77 严格通过、19 少量像素微差留档；前序 177 项结果未扩大</a>。八路独立取源与自身变换，继续 Noise 等 Mesh 缺口。</p>
+<p>Noise 共享抽取：<a href="t07-texture-noise-extraction-checkpoint.html">原 ShaderLab 的 92 项 Frozen/当前 Mesh 对照严格 RGBA 全 0，正对照有效</a>；Graph 接入另片验证，不宣称屏幕扭曲/VFX 完成。</p>
 <p>Graph 功能扩展切片：<a href="t07-graph-alpha-refine-checkpoint.html">Flags1 bit8 Alpha Refine 的 Mesh Editor/Metal Player 对照（2026-09-30）</a>；G4 未放行。</p>
 <p>Graph 单层遮罩切片：<a href="t07-graph-single-mask-checkpoint.html">共享 Mask V3 算术、Mesh 最终颜色/Deferred Mask、VFX Mesh Player 默认关闭回归（2026-09-30）</a>；完整遮罩功能及主动 VFX 遮罩未验证，G4/G5 未放行。</p>
 <p>Graph Mask2/Mask3 纹理子路径：<a href="t07-graph-mask23-checkpoint.html">三层相乘、独立通道/旋转/ST/滚动 Mesh 对照及 VFX 默认值回归（2026-09-30）</a>；Gradient/Noise/非 UV0 未验证，G4/G5 未放行。</p>
