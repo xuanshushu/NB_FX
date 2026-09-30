@@ -36,3 +36,6 @@ metrics, material inputs, XML and logs are stored. Import exits0, no errorCS or
 Shader error; assertion-only UV test exit2. Protected settings hashes unchanged.
 Full G3/G4 NOT passed. Tiny failures are recorded for final one-time manual test,
 not put back into a diagnosis loop. Continue ordinary Mesh implementation.
+
+Material-input JSON and generated Preview source are losslessly gzip-compressed;
+original Unity-generated whitespace is preserved inside .gz, not edited.
