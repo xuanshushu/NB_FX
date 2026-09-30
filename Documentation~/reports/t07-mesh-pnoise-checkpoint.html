@@ -1,0 +1,22 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 程序噪波对照</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：完整 Mesh 优先</a></p>
+<h1>普通 Mesh 程序噪波：功能有效，严格对照 47 通过 / 93 失败</h1>
+<p><strong>人话结论：</strong>Graph 已能生成 Simplex 与 Voronoi 程序噪波，并把它们按现有 NBShader 的顺序混入遮罩和溶解，影响普通 Mesh 的透明度；深度与投影阴影的 Alpha 路径也吃到同一结果。开关、噪波组合及 UV 来源改变时画面有明显响应，不是空图假通过。但是逐像素必须完全一样的规则下，140 项仅 47 项通过、93 项失败。失败的 Graph/现有 ShaderLab 最大单通道差为 <code>0.00048828125</code>；用户要求暂不追查这类低幅差异，我们保留失败而不放宽标准。<strong>本切片不能放行 G3/G4。</strong></p>
+<p>2026-10-01；固定产品与测试提交 <code>94e8d7cd3518c225766031d056cd346362199efa</code>。Unity 6000.3.18f1 / URP、Shader Graph、VFX 包 17.3 / Metal / RenderGraph；主 Agent 报告 unityMCP 不可用，故独占隔离工程用 Unity CLI 运行。本归档没有启动 Unity、修改产品/Test/官方包/Target/NBPostprocess/保护设置或推送。</p>
+<h2>测到的功能与结果</h2>
+<ul>
+<li><strong>Forward 普通 Mesh 116 项：</strong>测试关闭、只用 Simplex、只用 Voronoi、两者并用；分别混入 Mask 或 Dissolve，含 UV0、UV0.zw、UV1、UV2、Twirl、Shared UV，正交/透视相机。<strong>23 严格通过、93 严格失败</strong>。最大 B/C 差 <code>0.00048828125</code>；G0 Frozen 与当前 ShaderLab 只有一项的一个像素出现 <code>0.00006103515625</code> 差，也原样记录。所有失败均按原测试 XML 判失败。</li>
+<li><strong>DepthOnly 12 项、ShadowCaster 12 项：</strong>前者是真实深度遮挡，后者使用实际 URP 主方向光和接收平面；各自的主画面、关闭/改变噪波对照画面，Frozen/当前与当前/Graph 均严格 <code>0</code> 差。两者共 24/24 通过，不等于其它深度/阴影组合全部完成。</li>
+<li><strong>有效性控制：</strong>140 项所有已捕获整帧数值有限，启用状态的 A/B/C 重复拍摄均为 <code>0</code> 差；<strong>没有拍控制状态的重复帧</strong>。Forward 改动噪波的 Graph 对照至少变化 <code>0.601806640625</code>，至少 2,552 个中心像素明显改变。两种噪波混合方式另有 32 项直接反向对照，至少变化 <code>0.1839599609375</code>、2,448 个像素，因此功能响应真实存在。</li>
+</ul>
+<p>测试目标为 128×128 linear RGBAHalf，中心 x/y=32..95 共 4,096 像素严格比对 RGBA；每次保存无损 float32 RGBA 原始帧和 PNG。<a href="t07-evidence/pnoise-20261001/results.xml">原始 XML</a> · <a href="t07-evidence/pnoise-20261001/summary.json">全部 140 项数值</a> · <a href="t07-evidence/pnoise-20261001/cases/">原始帧</a> · <a href="t07-evidence/pnoise-20261001/unity.log.gz">Unity 日志</a>。最终导入/测试日志未见 C# 或 Shader 编译错误。</p>
+<h2>“六档”不是六种算法；历史错误不是产品卡点</h2>
+<p>测试把打包的混合字段设为 <code>0..5</code>，但原 NBShader 共用的 <code>BlendPNoise</code> 实际只定义 <code>0..3</code> 四种行为；<code>4/5</code> 按原逻辑保持输入不变。Graph 保留这一协议，不能宣传“六种程序噪波混合算法”。程序噪波影响屏幕扭曲的 <strong>PN2 仍未做</strong>。</p>
+<p>第一次 <a href="t07-evidence/pnoise-20261001/history/v1/results.xml">0/140</a> 是测试夹具在渲染前按错误时点/名称检查 Pass，得到 <code>-1</code>，没有 raw；这不证明最终 Graph 缺 Pass。第二次 <a href="t07-evidence/pnoise-20261001/history/v2/results.xml">24/140</a> 误关 <code>SRPDefaultUnlit</code>，116 项 Forward 不渲染；24 项深度/阴影已通过。两版夹具、日志和第二版 raw 均保留；最终版改正后才得到上述 47/93。它们不是要用户修改官方包或降低功能的决策卡点。</p>
+<h2>随后完整回归：没有新增失败，也核对了每份原始数据</h2>
+<p>同一固定产品再次运行全部 <strong>923 项：771 严格通过、152 严格失败、0 跳过</strong>。152 项恰为此前 59 项（UV 22、法线贴图 34、灯光 3）加本片 93 项，没有新出现或消失的失败。<strong>这不是只看失败名单</strong>：归档程序实际读取了 11,970 份捕获，PNG 比较完整字节，无损 raw 比较解压后的 float32 RGBA 字节和长度；以前 783 项的 9,258 份、本片 140 项的 2,712 份全部与持久旧档相同，零份不同或找不到来源。每份 SHA 和相对旧档路径列在<a href="t07-evidence/pnoise-20261001/full/capture-equivalence.json">逐文件核验清单</a>，重复数据才不再拷贝；完整回归的 1,203 份 metrics、材质状态、生成 Preview 和 Shader 消息仍<a href="t07-evidence/pnoise-20261001/full/cases/">独立保留</a>。MatCap 和 NormalMap 本轮各用独立命名空间，不再覆盖同名 back-face 目录；两组图像分别核对其原始 M0/N0 档案。</p>
+<p><a href="t07-evidence/pnoise-20261001/full/results.xml">923 项原始 XML</a> · <a href="t07-evidence/pnoise-20261001/full/failure-id-audit.json">失败 ID 核对</a> · <a href="t07-evidence/pnoise-20261001/full/unity.log.gz">完整测试日志</a> · <a href="t07-evidence/pnoise-20261001/full/import.log.gz">导入日志</a>。日志无 C# 或 Shader 编译错误；152 项严格失败并没有被记成通过，仍待最后集中人工确认。</p>
+<h2>边界和 Gate</h2>
+<p>这一片还没有验证程序噪波驱动扭曲、procedural wrap、CustomData 偏移、UV 模式 3..7 及位置/屏幕/圆柱来源、真正 VFX、Player、全部功能组合、GUI 持久化、变体剔除、SRP Batcher 或性能。前四次预热后的重复稳定也不等于冷首帧可靠。按既定顺序继续<strong>普通 Mesh 完整对照</strong>，之后才正式推进 VFX；HDRP 留在最后待选轮次。<a href="t07-evidence/pnoise-20261001/README.txt">重放说明</a> · <a href="t07-evidence/pnoise-20261001/product-source/commit.json">固定五路径源码</a> · <a href="t07-evidence/pnoise-20261001/protected-settings-audit.json">保护设置核对</a> · <a href="t07-evidence/pnoise-20261001/sha256.txt">附件 hash</a>。</p>
+<p><strong>审核：</strong>PN1 功能已接入且控制有效，但严格 47/140；完整普通 Mesh/G3/G4 未完成或放行。未 push。</p>
+</body></html>
