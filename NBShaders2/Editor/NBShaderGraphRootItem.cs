@@ -108,9 +108,17 @@ namespace NBShaderEditor
 
         readonly HashSet<string> _drawnProperties = new HashSet<string>(StringComparer.Ordinal);
         MaterialProperty[] _properties;
+        readonly HashSet<string> _sharedPropertyNames = new HashSet<string>(StringComparer.Ordinal);
 
         public override void OnGUI(MaterialEditor editor, MaterialProperty[] properties)
+            => OnGUI(editor, properties, null);
+
+        public void OnGUI(MaterialEditor editor, MaterialProperty[] properties,
+            IEnumerable<string> sharedPropertyNames)
         {
+            _sharedPropertyNames.Clear();
+            if (sharedPropertyNames != null)
+                foreach (string name in sharedPropertyNames) _sharedPropertyNames.Add(name);
             _properties = properties;
             base.OnGUI(editor, properties);
         }
@@ -118,6 +126,7 @@ namespace NBShaderEditor
         public override void OnChildOnGUI()
         {
             _drawnProperties.Clear();
+            _drawnProperties.UnionWith(_sharedPropertyNames);
             DrawGroup(BaseProperties, "block.maintex", "Main Texture");
             DrawGroup(Overlay1Properties, "feature.叠加贴图1", "Overlay 1");
             DrawGroup(Overlay2Properties, "feature.叠加贴图2", "Overlay 2");

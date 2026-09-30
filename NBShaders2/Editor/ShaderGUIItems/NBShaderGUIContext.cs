@@ -14,6 +14,35 @@ namespace NBShaderEditor
         private readonly NBShaderRootItem _rootItem;
         private HashSet<string> _currentTierAllowedKeywords;
 
+        // Only an editor host distinction, not a GraphMPB/VFX capability claim.
+        public bool IsGraphMaterialHost { get; private set; }
+        public bool HasMixedMaterialHosts { get; private set; }
+
+        public static bool IsGraphMaterial(Material material)
+        {
+            // Matches the existing Material halfword-store signature. Do not
+            // guess a host from the first material or require a legacy name.
+            return material != null && material.shader != null &&
+                material.HasProperty("_NB_DistortionMode") &&
+                material.HasProperty("_NB_Flags0Lo16") && material.HasProperty("_NB_Flags0Hi16") &&
+                material.HasProperty("_NB_Flags1Lo16") && material.HasProperty("_NB_Flags1Hi16");
+        }
+
+        public static bool HasMixedHosts(IList<Material> materials)
+        {
+            if (materials == null || materials.Count < 2) return false;
+            bool first = false, graph = false;
+            Shader graphShader = null;
+            foreach (Material material in materials)
+            {
+                if (material == null) continue;
+                bool current = IsGraphMaterial(material);
+                if (!first) { first = true; graph = current; graphShader = material.shader; }
+                else if (current != graph || (graph && material.shader != graphShader)) return true;
+            }
+            return false;
+        }
+
         public NBShaderGUIContext(NBShaderRootItem rootItem)
         {
             _rootItem = rootItem;
@@ -34,6 +63,9 @@ namespace NBShaderEditor
 
         public bool IsKeywordAllowed(string keyword)
         {
+            // GUI1A has no effective Graph Tier projection. Do not falsely
+            // gate existing native Graph inputs via an unimplemented Tier.
+            if (IsGraphMaterialHost) return true;
             if (!NBShaderFeatureCatalog.IsManagedKeyword(keyword))
             {
                 return true;
@@ -119,7 +151,36 @@ namespace NBShaderEditor
 
         public void Refresh()
         {
+            HasMixedMaterialHosts = HasMixedHosts(_rootItem.Mats);
+            IsGraphMaterialHost = !HasMixedMaterialHosts && _rootItem.Mats != null &&
+                _rootItem.Mats.Count > 0 && IsGraphMaterial(_rootItem.Mats[0]);
             RefreshFeatureTier();
+
+            if (IsGraphMaterialHost)
+            {
+                MeshSourceMode = MeshSourceMode.Mesh;
+                UIEffectEnabled = UseGraphicMainTex = ParticleMode = MixedBool.False;
+                // Official URP properties are read-only here. No shadow
+                // _TransparentMode or second surface-state writer.
+                TransparentMode = TransparentMode.UnKnowOrMixed;
+                if (HasProperty("_Surface") && !GetProperty("_Surface").hasMixedValue &&
+                    HasProperty("_AlphaClip") && !GetProperty("_AlphaClip").hasMixedValue)
+                {
+                    TransparentMode = GetProperty("_Surface").floatValue > 0.5f
+                        ? TransparentMode.Transparent
+                        : GetProperty("_AlphaClip").floatValue > 0.5f
+                            ? TransparentMode.CutOff : TransparentMode.Opaque;
+                }
+                if (HasProperty("_FxLightMode"))
+                {
+                    MaterialProperty light = GetProperty("_FxLightMode");
+                    FxLightMode = light.hasMixedValue ? FxLightMode.UnKnownOrMixedValue : (FxLightMode)light.floatValue;
+                }
+                NoiseEnabled = GetToggleState("_noisemapEnabled");
+                ProgramNoiseEnabled = GetToggleState("_ProgramNoise_Toggle");
+                VatEnabled = FlipbookEnabled = MixedBool.False;
+                return;
+            }
 
             if (HasProperty("_MeshSourceMode"))
             {

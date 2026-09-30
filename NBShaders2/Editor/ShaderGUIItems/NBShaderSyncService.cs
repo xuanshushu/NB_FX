@@ -116,6 +116,14 @@ namespace NBShaderEditor
             new NBShaderSyncService(rootItem).SyncMaterialState();
         }
 
+        bool HasGraphTargets()
+        {
+            if (_rootItem.Mats == null) return false;
+            foreach (Material material in _rootItem.Mats)
+                if (NBShaderGUIContext.IsGraphMaterial(material)) return true;
+            return false;
+        }
+
         public void NotifyKeywordsMayHaveChanged()
         {
             KeywordVersion++;
@@ -123,6 +131,7 @@ namespace NBShaderEditor
 
         public void ApplyTransparentMode(TransparentMode mode)
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             if (!_rootItem.PropertyInfoDic.ContainsKey("_ZWrite") || !_rootItem.PropertyInfoDic.ContainsKey("_QueueBias"))
             {
                 return;
@@ -166,8 +175,39 @@ namespace NBShaderEditor
             }
         }
 
+        internal const string GraphGUIStateVersionProperty = "_NB_GraphGUIStateVersion";
+
+        internal void PrepareGraphGUIState()
+        {
+            if (_rootItem.Mats == null || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return;
+            var uninitialized = new List<UnityEngine.Object>();
+            foreach (Material material in _rootItem.Mats)
+            {
+                if (NBShaderGUIContext.IsGraphMaterial(material) &&
+                    NBShaderRootItem.HasFloatProperty(material, GraphGUIStateVersionProperty) &&
+                    NBShaderRootItem.HasFloatProperty(material, "_MainTexBigBlockItemFoldOut") &&
+                    NBShaderRootItem.HasFloatProperty(material, "_BaseMapFoldOut") &&
+                    material.GetFloat(GraphGUIStateVersionProperty) < 1f)
+                    uninitialized.Add(material);
+            }
+            if (uninitialized.Count == 0) return;
+            Undo.RecordObjects(uninitialized.ToArray(), "Initialize NB Graph GUI state");
+            foreach (UnityEngine.Object target in uninitialized)
+            {
+                var material = (Material)target;
+                // GUI1A adds no functional toggle/mode intent. Existing packed
+                // words and all native feature inputs remain exactly unchanged.
+                // Foldouts use shader Float defaults; version is committed last.
+                material.SetFloat(GraphGUIStateVersionProperty, 1f);
+                EditorUtility.SetDirty(material);
+            }
+        }
+
         public void SyncMaterialState()
         {
+            // Static Material/list entry must also be protected without Context.
+            if (NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return;
+            PrepareGraphGUIState();
             for (int i = 0; i < _rootItem.Mats.Count; i++)
             {
                 Material mat = _rootItem.Mats[i];
@@ -175,6 +215,10 @@ namespace NBShaderEditor
                 {
                     continue;
                 }
+
+                // Graph GUI1A's shared controls write their own supported words.
+                // Never run legacy Mesh/Surface/Time/Tier/Pass projection here.
+                if (NBShaderGUIContext.IsGraphMaterial(mat)) continue;
 
                 NBShaderFlags flags = GetFlags(i);
                 SyncMeshSourceMode(mat, flags);
@@ -192,6 +236,7 @@ namespace NBShaderEditor
 
         public void ApplyToggleFlag(int flagBits, bool enabled, int flagIndex = 0)
         {
+            if (NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return;
             foreach (ShaderFlagsBase flagBase in _rootItem.ShaderFlags)
             {
                 if (enabled)
@@ -207,6 +252,7 @@ namespace NBShaderEditor
 
         public void ApplyShaderPass(string passName, bool enabled)
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
                 if (IsResolvedIntentPass(passName) && NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat))
@@ -218,6 +264,7 @@ namespace NBShaderEditor
 
         public void ApplyScreenDistortMode(int mode)
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
                 if (mat == null)
@@ -235,6 +282,7 @@ namespace NBShaderEditor
 
         public void ApplyDepthDecalEnabled(bool enabled)
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             ApplyToggleKeyword("_DEPTH_DECAL", enabled);
             foreach (Material mat in _rootItem.Mats)
             {
@@ -254,6 +302,7 @@ namespace NBShaderEditor
 
         public void ApplyPortalState()
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
                 if (mat == null)
@@ -296,6 +345,7 @@ namespace NBShaderEditor
 
         public void ApplyVatEnabled(bool enabled)
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
                 SetFloatIfExists(mat, "_VAT_Toggle", enabled ? 1f : 0f);
@@ -312,6 +362,7 @@ namespace NBShaderEditor
 
         public void ApplyFlipbookEnabled(bool enabled)
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
                 SetFloatIfExists(mat, "_FlipbookBlending", enabled ? 1f : 0f);
@@ -330,6 +381,7 @@ namespace NBShaderEditor
 
         public void ApplyBlendMode(BlendMode mode)
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
                 bool nbShaderMaterial = NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat);
@@ -389,6 +441,7 @@ namespace NBShaderEditor
 
         public void ApplyLightMode(FxLightMode mode)
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
                 if (NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat))
@@ -400,6 +453,7 @@ namespace NBShaderEditor
 
         public void ApplyToggleKeyword(string keyword, bool enabled)
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
                 if (NBShaderFeatureCatalog.IsManagedKeyword(keyword) &&
@@ -412,6 +466,7 @@ namespace NBShaderEditor
 
         public void ApplyStencilPreset(string key)
         {
+            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
                 if (mat == null)
