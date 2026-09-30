@@ -188,15 +188,20 @@ half4 NBGraphApplyDissolveRamp(half4 color, half valueBeforeSoftStep,
     half4 color0, half4 color1, half4 color2, half4 color3,
     half4 color4, half4 color5, half4 alpha0, half4 alpha1, half4 alpha2,
     float wrapLo16, float wrapHi16, float forceNoMipLo16,
-    float forceNoMipHi16, float flags1Lo16, float flags1Hi16)
+    float forceNoMipHi16, float flags1Lo16, float flags1Hi16,
+    float stOverrideEnabled, float4 stOverride)
 {
     uint wrapFlags = NBGraphDecodeUInt32(wrapLo16, wrapHi16);
     uint wrapMode = NBGraphMaskWrapMode(wrapFlags,
         FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP);
     // Keep ShaderLab's two half-precision assignments. In LOD0 on a rapidly
     // varying ramp, fusing the ST expression shifts which texel is sampled.
+    // VFX Output material settings do not expose texture ST as a connected
+    // value. Keep Mesh's texture ST by default; the explicit Graph port lets
+    // VFX supply the same U scale/offset without changing its Target.
+    float4 rampST = stOverrideEnabled > 0.5 ? stOverride : map.scaleTranslate;
     half rampRange = valueBeforeSoftStep;
-    rampRange = rampRange * map.scaleTranslate.x + map.scaleTranslate.z;
+    rampRange = rampRange * rampST.x + rampST.z;
     half4 rampSample;
     if (sourceMode > 0.5)
     {
@@ -366,6 +371,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 DissolveRampColor5, float4 DissolveRampAlpha0,
     float4 DissolveRampAlpha1, float4 DissolveRampAlpha2,
     float NB_ForceNoMipFlagsLo16, float NB_ForceNoMipFlagsHi16,
+    float NB_DissolveRampSTOverrideEnabled, float4 NB_DissolveRampSTOverride,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -441,7 +447,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
                 (half4)DissolveRampAlpha1, (half4)DissolveRampAlpha2,
                 NB_WrapFlagsLo16, NB_WrapFlagsHi16,
                 NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16,
-                NB_Flags1Lo16, NB_Flags1Hi16);
+                NB_Flags1Lo16, NB_Flags1Hi16,
+                NB_DissolveRampSTOverrideEnabled, NB_DissolveRampSTOverride);
         Out = (float4)NBGraphApplyDissolveLine((half4)Out,
             resolved.valueBeforeSoftStep, (half4)DissolveLineRange,
             (half4)DissolveLineColor,
@@ -601,6 +608,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half4 DissolveRampColor5, half4 DissolveRampAlpha0,
     half4 DissolveRampAlpha1, half4 DissolveRampAlpha2,
     float NB_ForceNoMipFlagsLo16, float NB_ForceNoMipFlagsHi16,
+    float NB_DissolveRampSTOverrideEnabled, float4 NB_DissolveRampSTOverride,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
@@ -670,7 +678,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
                 DissolveRampAlpha1, DissolveRampAlpha2,
                 NB_WrapFlagsLo16, NB_WrapFlagsHi16,
                 NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16,
-                NB_Flags1Lo16, NB_Flags1Hi16);
+                NB_Flags1Lo16, NB_Flags1Hi16,
+                NB_DissolveRampSTOverrideEnabled, NB_DissolveRampSTOverride);
         Out = NBGraphApplyDissolveLine(Out, resolved.valueBeforeSoftStep,
             DissolveLineRange, DissolveLineColor,
             NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16));

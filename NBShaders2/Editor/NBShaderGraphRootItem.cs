@@ -75,7 +75,8 @@ namespace NBShaderEditor
         static readonly string[] DissolveRampProperties =
         {
             "_Dissolve_useRampMap_Toggle", "_DissolveRampSourceMode",
-            "_DissolveRampMap", "_DissolveRampColor",
+            "_DissolveRampMap", "_NB_DissolveRampSTOverrideEnabled",
+            "_NB_DissolveRampSTOverride", "_DissolveRampColor",
             "_DissolveRampColor0", "_DissolveRampColor1",
             "_DissolveRampColor2", "_DissolveRampColor3",
             "_DissolveRampColor4", "_DissolveRampColor5",
