@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="36" result="Failed(Child)" total="36" passed="0" failed="36" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.1703027">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="799" result="Failed" site="Child" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.170303" total="36" passed="0" failed="36" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1855" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="781" result="Failed" site="Child" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.164678" total="36" passed="0" failed="36" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="97611" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1856" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="781" result="Failed" site="Child" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.162939" total="36" passed="0" failed="36" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1857" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="781" result="Failed" site="Child" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.161333" total="36" passed="0" failed="36" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1858" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="781" result="Failed" site="Child" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.156785" total="36" passed="0" failed="36" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1219" name="G4GraphDepthShadowTests" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" testcasecount="36" result="Failed" site="Child" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.143413" total="36" passed="0" failed="36" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1244" name="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.123071" total="24" passed="0" failed="24" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1220" name="G4DepthShadow_Depth_base_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_base_0.25_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1046219433" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.041177" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1221" name="G4DepthShadow_Depth_base_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_base_0.25_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="888182611" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002826" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1222" name="G4DepthShadow_Depth_base_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_base_0.5_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1494016755" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.005625" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1223" name="G4DepthShadow_Depth_base_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_base_0.5_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="888785166" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002849" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1224" name="G4DepthShadow_Depth_base_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_base_0.8_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1223337043" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.007396" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1225" name="G4DepthShadow_Depth_base_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_base_0.8_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="450086861" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002536" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1226" name="G4DepthShadow_Depth_mask_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.25_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1785094078" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002552" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1227" name="G4DepthShadow_Depth_mask_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.25_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="65445922" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002536" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1228" name="G4DepthShadow_Depth_mask_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.5_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="543313830" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002501" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1229" name="G4DepthShadow_Depth_mask_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.5_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1667679193" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002492" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1230" name="G4DepthShadow_Depth_mask_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.8_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="464037101" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002493" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1231" name="G4DepthShadow_Depth_mask_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.8_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="751722311" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002463" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1232" name="G4DepthShadow_Depth_dissolve_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.25_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1075539170" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002465" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1233" name="G4DepthShadow_Depth_dissolve_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.25_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="2043941041" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002468" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1234" name="G4DepthShadow_Depth_dissolve_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.5_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1912311401" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002485" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1235" name="G4DepthShadow_Depth_dissolve_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.5_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="736200128" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002471" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1236" name="G4DepthShadow_Depth_dissolve_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.8_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1614940584" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002531" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1237" name="G4DepthShadow_Depth_dissolve_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.8_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="2036522779" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002523" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1238" name="G4DepthShadow_Depth_forward-only_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.25_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="591301326" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002917" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1239" name="G4DepthShadow_Depth_forward-only_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.25_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="518506590" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002556" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1240" name="G4DepthShadow_Depth_forward-only_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.5_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="443035418" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.005575" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1241" name="G4DepthShadow_Depth_forward-only_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.5_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="20397765" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002682" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1242" name="G4DepthShadow_Depth_forward-only_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.8_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1150874520" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.007370" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1243" name="G4DepthShadow_Depth_forward-only_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.8_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1742187744" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.002547" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks DepthOnly
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph (System.String feature, System.Single cutoff, System.Boolean ortho) [0x001ca] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:79
+]]></stack-trace>
+                  </failure>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1257" name="MainLightShadowCasterMatchesFrozenAndGraph" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.018133" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1245" name="G4DepthShadow_Shadow_cutoff25_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_cutoff25_ortho" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="2063184978" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.003385" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1246" name="G4DepthShadow_Shadow_cutoff25_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_cutoff25_perspective" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1517791821" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001284" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1247" name="G4DepthShadow_Shadow_cutoff50_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_cutoff50_ortho" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1267521704" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001248" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1248" name="G4DepthShadow_Shadow_cutoff50_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_cutoff50_perspective" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="483081206" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001236" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1249" name="G4DepthShadow_Shadow_cutoff80_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_cutoff80_ortho" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="232210858" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001218" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1250" name="G4DepthShadow_Shadow_cutoff80_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_cutoff80_perspective" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1003186434" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001200" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1251" name="G4DepthShadow_Shadow_transparent-fixed_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_transparent-fixed_ortho" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="619057579" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001199" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1252" name="G4DepthShadow_Shadow_transparent-fixed_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_transparent-fixed_perspective" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1933695449" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001194" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1253" name="G4DepthShadow_Shadow_transparent-dither_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_transparent-dither_ortho" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="603623650" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001194" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1254" name="G4DepthShadow_Shadow_transparent-dither_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_transparent-dither_perspective" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1658196147" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001197" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1255" name="G4DepthShadow_Shadow_forward-only_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_forward-only_ortho" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="19178757" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001218" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1256" name="G4DepthShadow_Shadow_forward-only_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Shadow_forward-only_perspective" methodname="MainLightShadowCasterMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1837091507" result="Failed" start-time="2026-09-30 18:39:55Z" end-time="2026-09-30 18:39:55Z" duration="0.001200" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  NB FX/Shader Graph/NBShaderGraph lacks ShadowCaster
+  Expected: greater than or equal to 0
+  But was:  -1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphDepthShadowTests.VerifyPass (UnityEngine.Material m, System.String lightMode) [0x00009] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:450
+at NBFX.Baseline.Tests.G4GraphDepthShadowTests.MainLightShadowCasterMatchesFrozenAndGraph (System.String mode, System.Boolean ortho) [0x0022c] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphDepthShadowTests.cs:228
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

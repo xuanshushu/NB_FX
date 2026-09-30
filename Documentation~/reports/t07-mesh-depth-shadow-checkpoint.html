@@ -1,0 +1,19 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 深度与阴影</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：普通 Mesh 在前</a></p>
+<h1>普通 Mesh 的深度写入与投影阴影：限定场景 36/36 通过</h1>
+<p><strong>人话结论：</strong>在这些普通 Mesh 测试里，Graph 的 <code>DepthOnly</code> 能挡住后方物体，<code>ShadowCaster</code> 能在地面投下阴影；按材质 Alpha、遮罩、溶解及阴影裁剪设置改变时，结果与现有 NBShader 完全相同。最终 <strong>36 项严格逐像素测试全部通过</strong>。这不是“整个深度/阴影系统都做完了”，也不放行 G3/G4。</p>
+<p>固定 DS0 产品及测试提交 <code>999aea335d4e8cdf33a0f4cb99b5d6d7a413f198</code>，不是随后 L0 Lighting 工作区源码。Unity 6000.3.18f1 / URP、Shader Graph、VFX 包 17.3 / Metal / RenderGraph；独占隔离 clone 的 Unity CLI 运行。主 Agent 报告 unityMCP 当时不可用。归档仅处理证据，没有启动 Unity、修改官方包、UniversalTarget、NBPostprocess、产品/Test 或主索引，也未 push。</p>
+<h2>实测内容</h2>
+<ul>
+<li><strong>24 项 DepthOnly：</strong>四类输入（主贴图 Alpha、Mask、Dissolve、只应影响 Forward 的功能）× 三个 Cutoff（0.25、0.5、0.8）× 正交/透视。通过真正的 RendererList 深度写入，让前方网格遮住后方绿色平面；关闭 DepthOnly 后，后方平面恢复。每项记录的 27 帧均为有效深度帧。0.8 案例另把 Cutoff 临时调回 0.5，验证“该出现时确实出现”。</li>
+<li><strong>12 项 ShadowCaster：</strong>六类设置（Cutoff 0.25/0.5/0.8、透明固定 0.5 裁剪、透明 4×4 抖动、只应影响 Forward 的功能）× 正交/透视。使用实际 URP 主方向光、遮挡物和接收平面拍摄阴影，不是只查 Pass 名称。关闭 ShadowCaster 后阴影消失；固定裁剪与抖动有不同的可见结果。</li>
+<li><strong>严格比较：</strong>A 为 G0 Frozen ShaderLab，B 为当前 ShaderLab，C 为生成的 Graph。36 项全部为整张 128×128 linear RGBAHalf 原始 RGBA 数值 A/B <code>0</code> 差、B/C <code>0</code> 差；关闭 Pass 对照、B/C 重复拍摄和 Forward-only 不变性也均为 <code>0</code> 差。36 项捕获均为有限值。26 项主设置有可见响应；其余有意为“该功能不该改变此 Pass”的不变性/对照案例，不当成空图假通过。</li>
+</ul>
+<p><a href="t07-evidence/depth-shadow-20261001/results.xml">最终 36/36 XML</a> · <a href="t07-evidence/depth-shadow-20261001/summary.json">36 项指标与汇总</a> · <a href="t07-evidence/depth-shadow-20261001/cases/">全部原始 float32 RGBA 与 PNG</a> · <a href="t07-evidence/depth-shadow-20261001/unity.log.gz">最终 Unity 日志</a>。PNG 只方便查看，零差结论基于无损 raw；无 skip、未调宽阈值。</p>
+<h2>先前失败也保留，不误判为产品缺 Pass</h2>
+<p>第一次运行 <a href="t07-evidence/depth-shadow-20261001/history/v1/results.xml">0/36</a>：测试在 Graph 刚重载、尚未完成强制导入时过早调用 <code>FindPass</code>，读到了临时占位状态的 <code>-1</code>。这<strong>不能证明最终生成的 Shader 缺少 DepthOnly 或 ShadowCaster</strong>。第二版先强制同步导入并推迟查 Pass，<a href="t07-evidence/depth-shadow-20261001/history/v2/results.xml">34/36</a>；剩余正交/透视两例是 Cutoff 0.8 的夹具在临时 0.5 正控制后没恢复，导致后一个不变性对照拿错输入，<strong>不是新的产品功能失败</strong>。第三版恢复输入后，原门槛不变，<a href="t07-evidence/depth-shadow-20261001/results.xml">36/36</a>。<a href="t07-evidence/depth-shadow-20261001/history/fixtures/">两版旧夹具</a>、<a href="t07-evidence/depth-shadow-20261001/history/v2/cases/">第二版 raw/metrics</a>、<a href="t07-evidence/depth-shadow-20261001/history/">初次/二次日志及四次导入日志</a>均保留。</p>
+<h2>没有测到的边界</h2>
+<p>DepthOnly 测的是<strong>被明确调用时</strong>真实写入深度并发生遮挡；没有证明 URP 在所有相机/Renderer 配置下会自动选择深度预通道，也没有逐值核对深度纹理、DepthColor 等输出。ShadowCaster 测的是本次主方向光和接收平面的可见阴影；没有穷举级联、偏移、软阴影、点光/聚光灯或不同 shadow matrix。两 Pass 的完整透明/混合/顶点位移及其它 Mesh 功能交叉组合、正式 VFX、Player、NBPostprocess 的 RT 收集与合成、GUI 持久化、变体剔除、SRP Batcher 与性能均未据此验证。稳定重复帧也不等于冷首帧保证。</p>
+<p><a href="t07-evidence/depth-shadow-20261001/README.txt">重放与限制</a> · <a href="t07-evidence/depth-shadow-20261001/product-source/commit.json">固定提交的八个源码路径</a> · <a href="t07-evidence/depth-shadow-20261001/product-source-sha256.txt">八路径 hash</a> · <a href="t07-evidence/depth-shadow-20261001/input-sha256.txt">Graph/现有/冻结 Shader 输入 hash</a> · <a href="t07-evidence/depth-shadow-20261001/protected-settings-audit.json">隔离 clone 三项保护文件核对</a> · <a href="t07-evidence/depth-shadow-20261001/sha256.txt">全部附件 hash</a>。</p>
+<p><strong>审核：</strong>可记录此限定普通 Mesh DS0 切片通过；完整 G3/G4 未放行。继续普通 Mesh 功能与最后集中人工测试，不推送。</p>
+</body></html>
