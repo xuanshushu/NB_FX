@@ -75,7 +75,7 @@ namespace NBFX.Baseline.Tests
             Assert.That(currentShader.isSupported && frozenShader.isSupported, Is.True);
             string root = Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR");
             if (string.IsNullOrEmpty(root)) root = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG2TextureNoise");
-            string output = Path.Combine(root, consumer + "-" + inputId);
+            string output = Path.Combine(root, "g2-texture-noise", consumer + "-" + inputId);
             Directory.CreateDirectory(output);
             var scene = EditorSceneManager.NewPreviewScene();
             var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);

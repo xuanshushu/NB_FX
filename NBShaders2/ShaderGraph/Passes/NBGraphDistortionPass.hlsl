@@ -24,14 +24,12 @@ void frag(
     SurfaceDescriptionInputs graphInputs = BuildSurfaceDescriptionInputs(unpacked);
     float distortionMode, distortionIntensity, flags1Lo16, flags1Hi16;
     float alphaPow, alphaMultiplier, alphaAdd;
-    float2 distortionNoise;
 #if defined(HAVE_VFX_MODIFICATION)
     GraphProperties graphProperties = (GraphProperties)0;
     GetElementPixelProperties(graphInputs, graphProperties);
     SurfaceDescription surface = SurfaceDescriptionFunction(graphInputs, graphProperties);
     distortionMode = graphProperties._NB_DistortionMode;
     distortionIntensity = graphProperties._NB_DistortionIntensity;
-    distortionNoise = graphProperties._NB_DistortionNoise;
     flags1Lo16 = graphProperties._NB_Flags1Lo16;
     flags1Hi16 = graphProperties._NB_Flags1Hi16;
     alphaPow = graphProperties._NB_DistortionAlphaPow;
@@ -41,7 +39,6 @@ void frag(
     SurfaceDescription surface = SurfaceDescriptionFunction(graphInputs);
     distortionMode = _NB_DistortionMode;
     distortionIntensity = _NB_DistortionIntensity;
-    distortionNoise = _NB_DistortionNoise.xy;
     flags1Lo16 = _NB_Flags1Lo16;
     flags1Hi16 = _NB_Flags1Hi16;
     alphaPow = _NB_DistortionAlphaPow;
@@ -60,8 +57,11 @@ void frag(
 #endif
 
     NBFX_DistortionInputV1 input = (NBFX_DistortionInputV1)0;
-    input.signedNoise = distortionNoise;
-    input.noiseMask = 1.0h;
+    // Both values came from the same SurfaceDescriptionFunction evaluation.
+    // signedRG is deliberately unmasked: the shared payload multiplies the
+    // independent mask once into coverage, not again into RG.
+    input.signedNoise = surface.NBDistortionSignedRG;
+    input.noiseMask = surface.NBDistortionNoiseMask;
     input.alphaBeforePremultiply = surface.Alpha;
     input.refineAlpha = (NBGraphDecodeUInt32(flags1Lo16, flags1Hi16) & FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE) != 0u;
     input.alphaPow = alphaPow;

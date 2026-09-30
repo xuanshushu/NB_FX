@@ -44,6 +44,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             {
                 var pass = item.descriptor;
                 bool forward = pass.referenceName == "SHADERPASS_UNLIT";
+                if (forward)
+                    pass = WithNBDistortionBlocks(pass);
                 if (forward || UsesNBStencil(pass.lightMode))
                     pass.renderStates = WithNBRenderStates(pass.renderStates, forward);
                 passes.Add(pass, item.fieldConditions);
@@ -58,6 +60,19 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             // The delegated built-in Unlit instance is not this active VFX
             // SubTarget. Convert this instance only after its NB passes exist.
             context.subShaders[index] = PostProcessSubShader(subShader);
+        }
+
+        static PassDescriptor WithNBDistortionBlocks(PassDescriptor pass)
+        {
+            if (pass.validPixelBlocks == null)
+                throw new InvalidOperationException("NB FX Graph: URP Unlit pixel blocks not found.");
+            var existing = pass.validPixelBlocks;
+            var blocks = new BlockFieldDescriptor[existing.Length + 2];
+            Array.Copy(existing, blocks, existing.Length);
+            blocks[existing.Length] = NBGraphDistortionBlocks.SurfaceDescription.SignedRG;
+            blocks[existing.Length + 1] = NBGraphDistortionBlocks.SurfaceDescription.NoiseMask;
+            pass.validPixelBlocks = blocks;
+            return pass;
         }
 
         static void AddDistortionPass(PassCollection passes, PassDescriptor forward,
@@ -136,7 +151,14 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 WriteMask = "[_StencilWriteMask]"
             });
 
-        public override void GetActiveBlocks(ref TargetActiveBlockContext context) => Builtin().GetActiveBlocks(ref context);
+        public override void GetActiveBlocks(ref TargetActiveBlockContext context)
+        {
+            Builtin().GetActiveBlocks(ref context);
+            // Also active when GraphData asks without a pass: its fragment
+            // context must keep the serialized NB blocks and their CF edges.
+            context.AddBlock(NBGraphDistortionBlocks.SurfaceDescription.SignedRG);
+            context.AddBlock(NBGraphDistortionBlocks.SurfaceDescription.NoiseMask);
+        }
         public override void GetFields(ref TargetFieldContext context) => base.GetFields(ref context);
         public override void CollectShaderProperties(PropertyCollector collector, GenerationMode mode)
         {

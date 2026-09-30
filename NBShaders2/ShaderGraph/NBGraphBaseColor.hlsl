@@ -108,15 +108,17 @@ half4 NBGraphSampleMap(UnityTexture2D map, float2 uv,
     return sampled;
 }
 
-// N1 surface texture noise only. Preserve ParticleUVCommonProcess's rotation
+// Shared N1 surface/N2 screen texture noise. Preserve ParticleUVCommonProcess's rotation
 // -> ST and SampleNoise's later scrolling, with ShaderLab's half material
 // boundaries. NoiseMask has its own source/ST and no rotation or scrolling.
-// Screen passes keep their uniform prototype inputs until the N2 transport
-// slice; CustomData, PNoise, Refraction and chromatic aberration are pending.
-half2 NBGraphTextureNoise(UnityTexture2D noiseMap, float2 noiseSourceUV,
+// The caller weights only texture-consumer offsets by noiseMask; the screen
+// passes receive signedRG and noiseMask separately. CustomData, PNoise,
+// Refraction and chromatic aberration remain pending.
+void NBGraphTextureNoise(UnityTexture2D noiseMap, float2 noiseSourceUV,
     float noiseRotation, half4 noiseOffset, half intensity, half4 direction,
     UnityTexture2D maskMap, float2 maskSourceUV, bool hasMask,
-    uint flags0, uint channels, uint wrapFlags, uint noMipFlags)
+    uint flags0, uint channels, uint wrapFlags, uint noMipFlags,
+    out half2 signedRG, out half noiseMask)
 {
     NBFX_FeatureUVTransformInputV2 uvInput = (NBFX_FeatureUVTransformInputV2)0;
     uvInput.originUV = noiseSourceUV;
@@ -130,11 +132,11 @@ half2 NBGraphTextureNoise(UnityTexture2D noiseMap, float2 noiseSourceUV,
     half4 noiseSample = NBGraphSampleMap(noiseMap, noiseUV,
         NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_NOISEMAP),
         (noMipFlags & FLAG_BIT_FORCE_NO_MIP_NOISEMAP) != 0u);
-    half2 cumNoise = 0;
-    half noiseMask = 1;
+    signedRG = 0;
+    noiseMask = 1;
     NBFX_DecodeTextureNoiseV1(noiseSample,
         (flags0 & FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON) != 0u,
-        cumNoise, noiseMask);
+        signedRG, noiseMask);
     if (hasMask)
     {
         uvInput.originUV = maskSourceUV;
@@ -149,10 +151,9 @@ half2 NBGraphTextureNoise(UnityTexture2D noiseMap, float2 noiseSourceUV,
             channel == 1u ? maskSample.g : channel == 2u ? maskSample.b : maskSample.a;
         noiseMask *= maskWeight;
     }
-    cumNoise = cumNoise * direction.xy * intensity;
-    // This is only the texture-consumer offset, not the unmasked screen RG.
-    cumNoise *= noiseMask;
-    return cumNoise;
+    // ShaderLab saves screenDistort_Noise.xy before multiplying the texture
+    // consumer offset by noiseMask. The same value feeds both NB passes.
+    signedRG = signedRG * direction.xy * intensity;
 }
 
 // Texture-only layer 2/3 adapter. Both layers multiply before the one shared
@@ -456,19 +457,30 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NoiseMaskToggle, float2 NoiseMaskUV,
     float TexDistortionIntensity, float EmiDistortionIntensity,
     float MaskDistortionIntensity,
-    out float4 Out)
+    out float4 Out, out float2 NBDistortionSignedRG,
+    out float NBDistortionNoiseMask)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
+    // Preserve the existing Noise-off uniform prototype for screen passes;
+    // it must not distort the surface's texture consumers when Noise is off.
+    half2 signedRG = (half2)NB_DistortionNoise;
+    half noiseMask = 1;
     half2 textureNoise = 0;
     if (NoiseEnabled > 0.5)
-        textureNoise = NBGraphTextureNoise(NoiseMap, NoiseUV,
+    {
+        NBGraphTextureNoise(NoiseMap, NoiseUV,
             NoiseMapUVRotation, (half4)NoiseOffset, (half)NoiseIntensity,
             (half4)DistortionDirection, NoiseMaskMap, NoiseMaskUV,
             NoiseMaskToggle > 0.5,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
-            NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0), wrapFlags, noMipFlags);
+            NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0), wrapFlags, noMipFlags,
+            signedRG, noiseMask);
+        textureNoise = signedRG * noiseMask;
+    }
+    NBDistortionSignedRG = (float2)signedRG;
+    NBDistortionNoiseMask = (float)noiseMask;
     float2 mainTexNoise = textureNoise * (half)TexDistortionIntensity;
     float2 baseUV = BaseMapUV + mainTexNoise;
     half4 baseSample = NBGraphSampleMap(BaseMap, baseUV,
@@ -761,19 +773,28 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NoiseMaskToggle, float2 NoiseMaskUV,
     float TexDistortionIntensity, float EmiDistortionIntensity,
     float MaskDistortionIntensity,
-    out half4 Out)
+    out half4 Out, out half2 NBDistortionSignedRG,
+    out half NBDistortionNoiseMask)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
+    half2 signedRG = (half2)NB_DistortionNoise;
+    half noiseMask = 1;
     half2 textureNoise = 0;
     if (NoiseEnabled > 0.5)
-        textureNoise = NBGraphTextureNoise(NoiseMap, NoiseUV,
+    {
+        NBGraphTextureNoise(NoiseMap, NoiseUV,
             NoiseMapUVRotation, (half4)NoiseOffset, (half)NoiseIntensity,
             (half4)DistortionDirection, NoiseMaskMap, NoiseMaskUV,
             NoiseMaskToggle > 0.5,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
-            NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0), wrapFlags, noMipFlags);
+            NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0), wrapFlags, noMipFlags,
+            signedRG, noiseMask);
+        textureNoise = signedRG * noiseMask;
+    }
+    NBDistortionSignedRG = signedRG;
+    NBDistortionNoiseMask = noiseMask;
     float2 mainTexNoise = textureNoise * (half)TexDistortionIntensity;
     float2 baseUV = BaseMapUV + mainTexNoise;
     half4 baseSample = NBGraphSampleMap(BaseMap, baseUV,
