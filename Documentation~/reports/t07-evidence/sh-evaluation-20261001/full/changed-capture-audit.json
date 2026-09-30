@@ -1,0 +1,291 @@
+{
+  "changedCaptureFiles": 12,
+  "changedCases": 3,
+  "roi": "96x96 linear RGBAHalf, x/y28..67 strict comparison ROI",
+  "interpretation": "All changes are PBR perspective shadow-on B/C frames and their matching repeated captures. Full-run within-run repeats are byte-identical in these pairs, but several cross-run differences lie inside ROI. In the 20-case single run, legacyForwardShadowInvariant was false in these three cases; in the 983-case combined run, it is true. This is not stable proof of invariance or shadow receiving. Every changed raw is retained.",
+  "caseMetricChanges": [
+    {
+      "case": "pbr-perspective",
+      "metricsChanged": {
+        "controlBCDiff": {
+          "singleSHv2": 172,
+          "combined983": 170
+        },
+        "legacyForwardShadowInvariant": {
+          "singleSHv2": false,
+          "combined983": true
+        }
+      }
+    },
+    {
+      "case": "pbr-perspective-EVALUATE_SH_MIXED",
+      "metricsChanged": {
+        "controlBCDiff": {
+          "singleSHv2": 154,
+          "combined983": 155
+        },
+        "legacyForwardShadowInvariant": {
+          "singleSHv2": false,
+          "combined983": true
+        }
+      }
+    },
+    {
+      "case": "pbr-perspective-EVALUATE_SH_VERTEX",
+      "metricsChanged": {
+        "legacyForwardShadowInvariant": {
+          "singleSHv2": false,
+          "combined983": true
+        }
+      }
+    }
+  ],
+  "captures": [
+    {
+      "capture": "pbr-perspective/B-shadow-on-repeat.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective/B-shadow-on-repeat.rgba-f32.gz",
+      "previousPayloadSha256": "54d3aee8b6002b79c3758cbe5359eaa3dd28f23c22d0916546e79698f8a50778",
+      "currentPayloadSha256": "9411c7fec440a24b5da1aef16692ea21c3ea1955d01ad9393371c6db772c5873",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective/B-shadow-on-repeat.rgba-f32.gz",
+      "fullFrameDifferentPixels": 1,
+      "roiDifferentPixels": 0,
+      "maximumFullFrameDelta": 0.0009765625,
+      "maximumRoiDelta": 0,
+      "pixels": [
+        [
+          57,
+          68,
+          0.0009765625
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective/B-shadow-on.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective/B-shadow-on.rgba-f32.gz",
+      "previousPayloadSha256": "54d3aee8b6002b79c3758cbe5359eaa3dd28f23c22d0916546e79698f8a50778",
+      "currentPayloadSha256": "9411c7fec440a24b5da1aef16692ea21c3ea1955d01ad9393371c6db772c5873",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective/B-shadow-on.rgba-f32.gz",
+      "fullFrameDifferentPixels": 1,
+      "roiDifferentPixels": 0,
+      "maximumFullFrameDelta": 0.0009765625,
+      "maximumRoiDelta": 0,
+      "pixels": [
+        [
+          57,
+          68,
+          0.0009765625
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective/C-shadow-on-repeat.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective/C-shadow-on-repeat.rgba-f32.gz",
+      "previousPayloadSha256": "97ddfa8991465d0f8a016556dddca367b8e5e087ec31f19fd6895fba5fd3e1b2",
+      "currentPayloadSha256": "ddb00dae6c2645c383ee7ad6a2bdbde60babc62e1a2589b645921ead82ef0a15",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective/C-shadow-on-repeat.rgba-f32.gz",
+      "fullFrameDifferentPixels": 3,
+      "roiDifferentPixels": 2,
+      "maximumFullFrameDelta": 0.000244140625,
+      "maximumRoiDelta": 0.000244140625,
+      "pixels": [
+        [
+          26,
+          30,
+          0.0001220703125
+        ],
+        [
+          55,
+          33,
+          0.000244140625
+        ],
+        [
+          30,
+          61,
+          0.0001220703125
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective/C-shadow-on.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective/C-shadow-on.rgba-f32.gz",
+      "previousPayloadSha256": "97ddfa8991465d0f8a016556dddca367b8e5e087ec31f19fd6895fba5fd3e1b2",
+      "currentPayloadSha256": "ddb00dae6c2645c383ee7ad6a2bdbde60babc62e1a2589b645921ead82ef0a15",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective/C-shadow-on.rgba-f32.gz",
+      "fullFrameDifferentPixels": 3,
+      "roiDifferentPixels": 2,
+      "maximumFullFrameDelta": 0.000244140625,
+      "maximumRoiDelta": 0.000244140625,
+      "pixels": [
+        [
+          26,
+          30,
+          0.0001220703125
+        ],
+        [
+          55,
+          33,
+          0.000244140625
+        ],
+        [
+          30,
+          61,
+          0.0001220703125
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective-EVALUATE_SH_MIXED/B-shadow-on-repeat.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective-EVALUATE_SH_MIXED/B-shadow-on-repeat.rgba-f32.gz",
+      "previousPayloadSha256": "be439f682820ea73845133db3d4992864aa12c3af5416548ef95ecbe71797aec",
+      "currentPayloadSha256": "c5849866c37a022ee07cdc3dc72f5f8af5a1b46cf05058f59dc5c17c5618fc91",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective-EVALUATE_SH_MIXED/B-shadow-on-repeat.rgba-f32.gz",
+      "fullFrameDifferentPixels": 1,
+      "roiDifferentPixels": 1,
+      "maximumFullFrameDelta": 0.000244140625,
+      "maximumRoiDelta": 0.000244140625,
+      "pixels": [
+        [
+          43,
+          29,
+          0.000244140625
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective-EVALUATE_SH_MIXED/B-shadow-on.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective-EVALUATE_SH_MIXED/B-shadow-on.rgba-f32.gz",
+      "previousPayloadSha256": "be439f682820ea73845133db3d4992864aa12c3af5416548ef95ecbe71797aec",
+      "currentPayloadSha256": "c5849866c37a022ee07cdc3dc72f5f8af5a1b46cf05058f59dc5c17c5618fc91",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective-EVALUATE_SH_MIXED/B-shadow-on.rgba-f32.gz",
+      "fullFrameDifferentPixels": 1,
+      "roiDifferentPixels": 1,
+      "maximumFullFrameDelta": 0.000244140625,
+      "maximumRoiDelta": 0.000244140625,
+      "pixels": [
+        [
+          43,
+          29,
+          0.000244140625
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective-EVALUATE_SH_MIXED/C-shadow-on-repeat.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective-EVALUATE_SH_MIXED/C-shadow-on-repeat.rgba-f32.gz",
+      "previousPayloadSha256": "d9d72e107abb81df2cb6a1ed1e915fd5bd38dc1b4ff4168203558d90788b06a0",
+      "currentPayloadSha256": "f5232d36feddbf3721971127132a2eca413d172062fd7c81335496343f45fa24",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective-EVALUATE_SH_MIXED/C-shadow-on-repeat.rgba-f32.gz",
+      "fullFrameDifferentPixels": 2,
+      "roiDifferentPixels": 0,
+      "maximumFullFrameDelta": 0.001953125,
+      "maximumRoiDelta": 0,
+      "pixels": [
+        [
+          70,
+          42,
+          0.001953125
+        ],
+        [
+          27,
+          58,
+          0.0009765625
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective-EVALUATE_SH_MIXED/C-shadow-on.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective-EVALUATE_SH_MIXED/C-shadow-on.rgba-f32.gz",
+      "previousPayloadSha256": "d9d72e107abb81df2cb6a1ed1e915fd5bd38dc1b4ff4168203558d90788b06a0",
+      "currentPayloadSha256": "f5232d36feddbf3721971127132a2eca413d172062fd7c81335496343f45fa24",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective-EVALUATE_SH_MIXED/C-shadow-on.rgba-f32.gz",
+      "fullFrameDifferentPixels": 2,
+      "roiDifferentPixels": 0,
+      "maximumFullFrameDelta": 0.001953125,
+      "maximumRoiDelta": 0,
+      "pixels": [
+        [
+          70,
+          42,
+          0.001953125
+        ],
+        [
+          27,
+          58,
+          0.0009765625
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective-EVALUATE_SH_VERTEX/B-shadow-on-repeat.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective-EVALUATE_SH_VERTEX/B-shadow-on-repeat.rgba-f32.gz",
+      "previousPayloadSha256": "c0c34cc6c21b003b3551645eb53d20f9643cd8d3809bdf1989d69b4aa8f2faaf",
+      "currentPayloadSha256": "ae097feca55d9a8809afc067ce99c88e2dc56cf3ced0b053b3c8820b6b656c59",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective-EVALUATE_SH_VERTEX/B-shadow-on-repeat.rgba-f32.gz",
+      "fullFrameDifferentPixels": 1,
+      "roiDifferentPixels": 1,
+      "maximumFullFrameDelta": 0.00390625,
+      "maximumRoiDelta": 0.00390625,
+      "pixels": [
+        [
+          50,
+          52,
+          0.00390625
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective-EVALUATE_SH_VERTEX/B-shadow-on.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective-EVALUATE_SH_VERTEX/B-shadow-on.rgba-f32.gz",
+      "previousPayloadSha256": "c0c34cc6c21b003b3551645eb53d20f9643cd8d3809bdf1989d69b4aa8f2faaf",
+      "currentPayloadSha256": "ae097feca55d9a8809afc067ce99c88e2dc56cf3ced0b053b3c8820b6b656c59",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective-EVALUATE_SH_VERTEX/B-shadow-on.rgba-f32.gz",
+      "fullFrameDifferentPixels": 1,
+      "roiDifferentPixels": 1,
+      "maximumFullFrameDelta": 0.00390625,
+      "maximumRoiDelta": 0.00390625,
+      "pixels": [
+        [
+          50,
+          52,
+          0.00390625
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective-EVALUATE_SH_VERTEX/C-shadow-on-repeat.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective-EVALUATE_SH_VERTEX/C-shadow-on-repeat.rgba-f32.gz",
+      "previousPayloadSha256": "acb83fb30e1c13a8e3d58a3e9e1896fde8821233bdbf87be404946475f02eafd",
+      "currentPayloadSha256": "80193db6d3904d97f211401fa19866686a3504d3c87297e2354d5440853f93ff",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective-EVALUATE_SH_VERTEX/C-shadow-on-repeat.rgba-f32.gz",
+      "fullFrameDifferentPixels": 1,
+      "roiDifferentPixels": 1,
+      "maximumFullFrameDelta": 0.000244140625,
+      "maximumRoiDelta": 0.000244140625,
+      "pixels": [
+        [
+          37,
+          44,
+          0.000244140625
+        ]
+      ]
+    },
+    {
+      "capture": "pbr-perspective-EVALUATE_SH_VERTEX/C-shadow-on.rgba-f32.gz",
+      "previousEvidence": "t07-evidence/sh-evaluation-20261001/cases/pbr-perspective-EVALUATE_SH_VERTEX/C-shadow-on.rgba-f32.gz",
+      "previousPayloadSha256": "acb83fb30e1c13a8e3d58a3e9e1896fde8821233bdbf87be404946475f02eafd",
+      "currentPayloadSha256": "80193db6d3904d97f211401fa19866686a3504d3c87297e2354d5440853f93ff",
+      "savedEvidence": "t07-evidence/sh-evaluation-20261001/full/changed-captures/pbr-perspective-EVALUATE_SH_VERTEX/C-shadow-on.rgba-f32.gz",
+      "fullFrameDifferentPixels": 1,
+      "roiDifferentPixels": 1,
+      "maximumFullFrameDelta": 0.000244140625,
+      "maximumRoiDelta": 0.000244140625,
+      "pixels": [
+        [
+          37,
+          44,
+          0.000244140625
+        ]
+      ]
+    }
+  ]
+}

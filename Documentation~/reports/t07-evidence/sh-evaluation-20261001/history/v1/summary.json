@@ -1,0 +1,102 @@
+{
+  "status": "historical first attempt; not final",
+  "nunit": {
+    "total": 20,
+    "passed": 8,
+    "failed": 12,
+    "skipped": 0
+  },
+  "oldL0": {
+    "total": 8,
+    "passed": 5,
+    "failed": 3
+  },
+  "newSH": {
+    "total": 12,
+    "passed": 3,
+    "failed": 9
+  },
+  "cases": [
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_unlit_ortho",
+      "result": "Passed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_unlit_perspective",
+      "result": "Passed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_blinn_ortho",
+      "result": "Passed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_blinn_perspective",
+      "result": "Passed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_half-lambert_ortho",
+      "result": "Passed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_half-lambert_perspective",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_pbr_ortho",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_pbr_perspective",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_blinn_ortho_EVALUATE_SH_VERTEX",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_blinn_ortho_EVALUATE_SH_MIXED",
+      "result": "Passed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_blinn_perspective_EVALUATE_SH_VERTEX",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_blinn_perspective_EVALUATE_SH_MIXED",
+      "result": "Passed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_half-lambert_ortho_EVALUATE_SH_VERTEX",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_half-lambert_ortho_EVALUATE_SH_MIXED",
+      "result": "Passed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_half-lambert_perspective_EVALUATE_SH_VERTEX",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_half-lambert_perspective_EVALUATE_SH_MIXED",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_pbr_ortho_EVALUATE_SH_VERTEX",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_pbr_ortho_EVALUATE_SH_MIXED",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_pbr_perspective_EVALUATE_SH_VERTEX",
+      "result": "Failed"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_pbr_perspective_EVALUATE_SH_MIXED",
+      "result": "Failed"
+    }
+  ],
+  "interpretation": "Some EVALUATE_SH_VERTEX rows failed a fixed .01/.005 positive-control threshold even when old ShaderLab B and generated Graph C control response was identical and nonzero (~.009/.004). This is a fixture sensitivity issue, not evidence that Graph SH is disconnected. Root is strengthening only new SH test lighting/probe inputs in v2; strict zero comparisons and old eight inputs remain unchanged."
+}

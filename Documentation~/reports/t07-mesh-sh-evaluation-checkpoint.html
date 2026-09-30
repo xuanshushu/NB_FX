@@ -1,0 +1,26 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 环境光 SH 模式对照</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：完整 Mesh 优先</a> · <a href="t07-mesh-lighting-checkpoint.html">上一轮普通灯光 L0</a></p>
+<h1>普通 Mesh 环境光两种模式已接通；20 项中 13 项零差、7 项严格失败</h1>
+<p><strong>人话结论：</strong>SH 是“周围环境从各个方向照到物体上的光”。原 NBShader 还能选择在<strong>网格顶点</strong>先算一部分环境光，或<strong>顶点加像素混合</strong>地算。现在 Shader Graph 的普通 Mesh 能沿用这两种原有模式：改变环境光、主光、法线贴图或附加点光，旧 Shader 和 Graph 的画面都有实际反应，不是连着一个空接口。但“每个像素必须完全一样”的检查下，本轮 20 项仍有 7 项失败，最大单通道差值 <code>0.03125</code>；这是保留的 HDR 颜色差，<strong>不能说视觉无差，也没有提高容差或放行 G3/G4。</strong></p>
+<p>固定产品与测试提交 <code>51d64f4577aaa82e72be52992f345b6008a9a0d2</code>，仅改包内现有 Shader Graph 颜色函数和灯光测试两个文件。Unity 6000.3.18f1、URP/Shader Graph 17.3、Metal、RenderGraph。主 Agent 报告 unityMCP 不可用，故在独占隔离工程用 Unity CLI；本证据归档没有启动 Unity、改产品/测试/官方 URP/Target/NBPostprocess/保护设置或 push。</p>
+<h2>20 项具体结果</h2>
+<p>原来的 8 项 Unlit/Blinn-Phong/Half-Lambert/PBR 正交与透视对照，输入没有改，仍是 <strong>5 通过、3 失败</strong>。新加的 12 项用 Blinn-Phong、Half-Lambert、PBR × 两种相机 × 顶点/混合 SH，结果为 <strong>8 通过、4 失败</strong>，4 项都是 PBR。合计 NUnit <strong>13 通过 / 7 失败 / 0 跳过</strong>。A 为 G0 Frozen ShaderLab、B 为当前 ShaderLab、C 为生成的 Graph；96×96 linear RGBAHalf 的中心 40×40 区域逐像素比较原始 RGBA。</p>
+<ul>
+<li><strong>旧实现没有被碰坏：</strong>20 项 A/B 主画面全部严格 <code>0</code> 差；全部捕获整帧数值有限，本轮 B/C 主画面及控制画面的重复拍摄均为 <code>0</code> 差。</li>
+<li><strong>功能确实起作用：</strong>新 12 项中，主光、环境 SH、法线贴图 mask、像素附加光的因果对照在 B 和 C 均有效。这里没有证明“顶点附加光”。</li>
+<li><strong>新 4 项失败的原始幅度：</strong>PBR 正交顶点/混合模式仅在控制画面分别有 27/28 个像素不等，最大 <code>0.015625</code>；PBR 透视顶点模式主画面 53 个像素、最大 <code>0.015625</code>，控制 163 个、最大 <code>0.03125</code>；透视混合模式主画面 50 个、控制 154 个，最大均 <code>0.03125</code>。旧 3 项严格失败仍照旧保留，不以平均色差或肉眼观感替代规则。</li>
+</ul>
+<p><a href="t07-evidence/sh-evaluation-20261001/results.xml">20 项 NUnit 原始 XML</a> · <a href="t07-evidence/sh-evaluation-20261001/summary.json">逐项数值</a> · <a href="t07-evidence/sh-evaluation-20261001/cases/">无损原始帧</a> · <a href="t07-evidence/sh-evaluation-20261001/unity.log.gz">Unity 日志</a>。最终导入与测试日志未见 C# 或 Shader 编译错误。</p>
+<h2>怎么接的、为什么上一次有更多失败</h2>
+<p>Graph 在顶点阶段原本已经有一组用于六向光照的环境光数据，其中 <code>SixBack2</code> 恰好是对物体法线调用原共享函数 <code>SampleSHVertex</code> 的结果。本轮在普通灯光的像素阶段将它交给原本的 <code>SampleSHPixel</code>，让已有的顶点/混合关键词走与旧 Forward 相同的分支。没有新增 Graph 端口、关键词、官方包改动或新的 GUI 选项；测试是直接给材质打开现有关键词，<strong>用户界面的选择与保存仍待做</strong>。</p>
+<p>第一次 20 项试验只有 8 通过、12 失败，其中有些“画面有没有明显改变”的测试条件本身太弱：旧 Shader 的变化也只有约 <code>0.009</code> 或 <code>0.004</code>，达不到夹具固定的 <code>0.01/0.005</code> 检测线，Graph 与旧 Shader 的实际图像却一致。第二次只把<strong>新增 SH 用例</strong>的测试太阳和环境光对照调强；原 8 项输入与所有严格逐像素阈值不变。第一次夹具、XML、日志和全部 raw 均<a href="t07-evidence/sh-evaluation-20261001/history/v1/">保留</a>，没有把夹具敏感度误报为功能缺失。</p>
+<h2>不能偷称“阴影检查全过”</h2>
+<p>旧 Forward 没声明接收阴影的关键词轴，但在<strong>20 项单组运行</strong>里，把阴影设置打开后，旧 PBR 透视以及本轮新增的 PBR 透视顶点/混合共 <strong>3 项</strong>并非严格零变化。它们先因其他 B/C 差异失败，所以不能仅看 NUnit 的首个失败理由而称“所有阴影不变性控制通过”。原始控制图和指标都在档；这也<strong>不等于</strong>已经验证 Graph 的接收阴影功能，留给后续人工综合检查。</p>
+<h2>随后跑了全套回归，但并非 983 张截图</h2>
+<p>同一固定产品提交还跑了 <strong>983 项 NUnit：825 通过、158 严格失败、0 跳过</strong>。原有 925 项的 154 个失败身份全部保持，新增恰是本轮 4 个 SH-PBR 失败，没有旧项新增或消失。983 项由原有 <strong>925 项普通 Mesh 测试</strong>、新增 <strong>12 项 SH 画面对照</strong>及 <strong>46 项 GUI 状态存取测试</strong>组成；GUI 46 项都通过，但只检查状态/存取，<strong>没有截图</strong>。因此实际有 937 个画面对照目录，不能说“983 项都拍了图”。<a href="t07-evidence/sh-evaluation-20261001/full/results.xml">983 项原始 XML</a> · <a href="t07-evidence/sh-evaluation-20261001/full/failure-id-audit.json">失败身份与 GUI 数量核对</a>。</p>
+<p>我们也没有只核对失败名单：12,450 份 PNG 或解压后的原始像素逐份与最近一次持久证据比对，<strong>12,438 份相同，12 份不同</strong>。不同者全是上述 3 项 PBR 透视的 B/C 阴影打开图及各自重复图，已全部单独存档。每张不同图跨轮次最多差 3 个像素，有些落在严格比较区内，最大通道差 <code>0.00390625</code>；同一轮内部“原图/重复图”仍完全相同。在这次全套运行里，3 项“旧 Forward 开阴影后应不变”的指标由单组运行的 <code>false</code> 变成 <code>true</code>，另有两项控制差异像素数量变化。<strong>因此不能把阴影不变性描述成稳定通过，也不能抹掉单组运行的失败事实。</strong><a href="t07-evidence/sh-evaluation-20261001/full/changed-capture-audit.json">12 份原图及指标变化</a> · <a href="t07-evidence/sh-evaluation-20261001/full/capture-equivalence.json">逐文件映射与 hash</a>。</p>
+<p>全套的 1,259 份非截图文件也保留：逐项指标及材质状态 JSON、92 份 Shader 警告消息与 4 份生成的 Preview Shader。日志未见 C# 或 Shader 编译<strong>错误</strong>，但确有警告记录，不能说“零警告”。<a href="t07-evidence/sh-evaluation-20261001/full/metadata-audit.json">元数据清单</a> · <a href="t07-evidence/sh-evaluation-20261001/full/unity.log.gz">完整日志</a>。</p>
+<h2>边界与下一步</h2>
+<p>全套回归已在固定提交运行，但仍有 158 项严格失败，远非 Gate 放行。46 项 GUI 存取通过<strong>不等于</strong> SH 关键词的 GUI 选择与持久化已实现；光照贴图/APV/Forward+ 是原 Forward 未声明的关键词轴，不作为当前确认功能迁移的前置卡点。也尚未证明顶点附加光、曲面网格、Forward+、真正 VFX、Player、全部材质组合、变体剔除、SRP Batcher、性能或冷首帧。继续做普通 Mesh 全功能和集中人工检查；G3/G4 未放行。<a href="t07-evidence/sh-evaluation-20261001/README.txt">重放与边界</a> · <a href="t07-evidence/sh-evaluation-20261001/product-source/commit.json">固定两路径源码</a> · <a href="t07-evidence/sh-evaluation-20261001/protected-settings-audit.json">保护设置核对</a> · <a href="t07-evidence/sh-evaluation-20261001/sha256.txt">附件 hash</a>。</p>
+<p><strong>审核：</strong>原有 SH 顶点/混合模式已接通，新增 12 项为 8/4；严格失败和阴影控制异常均保留，不替用户判断为无差。未 push。</p>
+</body></html>
