@@ -23,7 +23,7 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     out float2 Out, out float2 MaskUV, out float2 Mask2UV,
     out float2 Mask3UV, out float2 EmissionUV, out float2 DissolveUV,
     out float2 DissolveMaskUV, out float2 ColorBlendUV,
-    out float2 RampColorUV)
+    out float2 RampColorUV, out float2 NoiseUV, out float2 NoiseMaskUV)
 {
     NBFX_BaseUVInputV1 input = (NBFX_BaseUVInputV1)0;
     input.meshTexcoord0 = UV;
@@ -75,6 +75,10 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
         FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP, resolved);
     RampColorUV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
         FLAG_BIT_UVMODE_POS_0_RAMP_COLOR_MAP, resolved);
+    NoiseUV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
+        FLAG_BIT_UVMODE_POS_0_NOISE_MAP, resolved);
+    NoiseMaskUV = GetUVByUVMode(parameters.uvModeFlag0, parameters.uvModeFlagType0,
+        FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP, resolved);
 }
 
 void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
@@ -90,11 +94,11 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
     out half2 Out, out half2 MaskUV, out half2 Mask2UV,
     out half2 Mask3UV, out half2 EmissionUV, out half2 DissolveUV,
     out half2 DissolveMaskUV, out half2 ColorBlendUV,
-    out half2 RampColorUV)
+    out half2 RampColorUV, out half2 NoiseUV, out half2 NoiseMaskUV)
 {
     float2 resolved, maskResolved, mask2Resolved, mask3Resolved;
     float2 emissionResolved, dissolveResolved, dissolveMaskResolved;
-    float2 colorBlendResolved, rampColorResolved;
+    float2 colorBlendResolved, rampColorResolved, noiseResolved, noiseMaskResolved;
     NBGraphBaseUV_float((float4)UV, (float4)BaseMapST,
         (float)BaseMapUVRotation, (float)BaseMapUVRotationSpeed,
         (float4)BaseMapMaskMapOffset,
@@ -107,7 +111,7 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
         (float4)TWParameter, (float)TWStrength, (float4)PCCenter,
         resolved, maskResolved, mask2Resolved, mask3Resolved,
         emissionResolved, dissolveResolved, dissolveMaskResolved,
-        colorBlendResolved, rampColorResolved);
+        colorBlendResolved, rampColorResolved, noiseResolved, noiseMaskResolved);
     Out = (half2)resolved;
     MaskUV = (half2)maskResolved;
     Mask2UV = (half2)mask2Resolved;
@@ -117,6 +121,8 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
     DissolveMaskUV = (half2)dissolveMaskResolved;
     ColorBlendUV = (half2)colorBlendResolved;
     RampColorUV = (half2)rampColorResolved;
+    NoiseUV = (half2)noiseResolved;
+    NoiseMaskUV = (half2)noiseMaskResolved;
 }
 
 #endif

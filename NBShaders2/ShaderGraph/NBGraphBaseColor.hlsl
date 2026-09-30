@@ -2,6 +2,7 @@
 #define NB_GRAPH_BASE_COLOR_INCLUDED
 
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl"
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDistortionV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderMaskV3.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderDissolveV3.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderPackedGradientV1.hlsl"
@@ -105,6 +106,53 @@ half4 NBGraphSampleMap(UnityTexture2D map, float2 uv,
     if (map.hdrDecode.x > 0.0)
         sampled = (half4)DecodeHDRSample(sampled, map.hdrDecode);
     return sampled;
+}
+
+// N1 surface texture noise only. Preserve ParticleUVCommonProcess's rotation
+// -> ST and SampleNoise's later scrolling, with ShaderLab's half material
+// boundaries. NoiseMask has its own source/ST and no rotation or scrolling.
+// Screen passes keep their uniform prototype inputs until the N2 transport
+// slice; CustomData, PNoise, Refraction and chromatic aberration are pending.
+half2 NBGraphTextureNoise(UnityTexture2D noiseMap, float2 noiseSourceUV,
+    float noiseRotation, half4 noiseOffset, half intensity, half4 direction,
+    UnityTexture2D maskMap, float2 maskSourceUV, bool hasMask,
+    uint flags0, uint channels, uint wrapFlags, uint noMipFlags)
+{
+    NBFX_FeatureUVTransformInputV2 uvInput = (NBFX_FeatureUVTransformInputV2)0;
+    uvInput.originUV = noiseSourceUV;
+    uvInput.scaleOffset = (half4)noiseMap.scaleTranslate;
+    uvInput.rotationDegrees = noiseRotation;
+    uvInput.rotationCenter = float2(0.5, 0.5);
+    uvInput.timeY = _Time.y;
+    float2 noiseUV = NBFX_TransformFeatureUVV2(uvInput);
+    noiseUV = float2(noiseOffset.x * _Time.y + noiseUV.x,
+        noiseOffset.y * _Time.y + noiseUV.y);
+    half4 noiseSample = NBGraphSampleMap(noiseMap, noiseUV,
+        NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_NOISEMAP),
+        (noMipFlags & FLAG_BIT_FORCE_NO_MIP_NOISEMAP) != 0u);
+    half2 cumNoise = 0;
+    half noiseMask = 1;
+    NBFX_DecodeTextureNoiseV1(noiseSample,
+        (flags0 & FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON) != 0u,
+        cumNoise, noiseMask);
+    if (hasMask)
+    {
+        uvInput.originUV = maskSourceUV;
+        uvInput.scaleOffset = (half4)maskMap.scaleTranslate;
+        uvInput.rotationDegrees = 0;
+        float2 maskUV = NBFX_TransformFeatureUVV2(uvInput);
+        half4 maskSample = NBGraphSampleMap(maskMap, maskUV,
+            NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_NOISE_MASKMAP),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_NOISE_MASKMAP) != 0u);
+        uint channel = (channels >> FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK) & 3u;
+        half maskWeight = channel == 0u ? maskSample.r :
+            channel == 1u ? maskSample.g : channel == 2u ? maskSample.b : maskSample.a;
+        noiseMask *= maskWeight;
+    }
+    cumNoise = cumNoise * direction.xy * intensity;
+    // This is only the texture-consumer offset, not the unmasked screen RG.
+    cumNoise *= noiseMask;
+    return cumNoise;
 }
 
 // Texture-only layer 2/3 adapter. Both layers multiply before the one shared
@@ -402,12 +450,28 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float SoftParticlesEnabled, float4 SoftParticleFadeParams, float4 ScreenPosition,
     float DepthOutlineToggle, float4 DepthOutlineColor, float4 DepthOutlineVec,
     UnityTexture2D BaseMap, float2 BaseMapUV,
+    UnityTexture2D NoiseMap, float NoiseEnabled, float2 NoiseUV,
+    float NoiseMapUVRotation, float4 NoiseOffset, float NoiseIntensity,
+    float4 DistortionDirection, UnityTexture2D NoiseMaskMap,
+    float NoiseMaskToggle, float2 NoiseMaskUV,
+    float TexDistortionIntensity, float EmiDistortionIntensity,
+    float MaskDistortionIntensity,
     out float4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
-    half4 baseSample = NBGraphSampleMap(BaseMap, BaseMapUV,
+    half2 textureNoise = 0;
+    if (NoiseEnabled > 0.5)
+        textureNoise = NBGraphTextureNoise(NoiseMap, NoiseUV,
+            NoiseMapUVRotation, (half4)NoiseOffset, (half)NoiseIntensity,
+            (half4)DistortionDirection, NoiseMaskMap, NoiseMaskUV,
+            NoiseMaskToggle > 0.5,
+            NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
+            NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0), wrapFlags, noMipFlags);
+    float2 mainTexNoise = textureNoise * (half)TexDistortionIntensity;
+    float2 baseUV = BaseMapUV + mainTexNoise;
+    half4 baseSample = NBGraphSampleMap(BaseMap, baseUV,
         NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_BASEMAP),
         (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
     input.sampledAlbedo = baseSample;
@@ -432,6 +496,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     {
         float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
             EmissionMapUVRotation, EmissionMapUVOffset.xy);
+        if (NoiseEnabled > 0.5)
+            emissionUV += textureNoise * (half)EmiDistortionIntensity;
         half4 emission = NBGraphSampleMap(EmissionMap, emissionUV,
             NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_EMISSIONMAP),
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP) != 0u);
@@ -461,6 +527,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     {
         float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
             DissolveOffsetRotateDistort.z, DissolveOffsetRotateDistort.xy);
+        if (NoiseEnabled > 0.5)
+            dissolveUV += textureNoise * (half)DissolveOffsetRotateDistort.w;
         half4 sampledDissolve = NBGraphSampleMap(DissolveMap, dissolveUV,
             NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_DISSOLVE_MAP),
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP) != 0u);
@@ -470,6 +538,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         {
             float2 dissolveMaskUV = NBGraphFeatureUV(DissolveMaskMap, DissolveMaskUV,
                 DissolveOffsetRotateDistort.z, float2(0.0, 0.0));
+            if (NoiseEnabled > 0.5)
+                dissolveMaskUV += textureNoise * (half)DissolveOffsetRotateDistort.w;
             sampledDissolveMask = NBGraphSampleMap(DissolveMaskMap, dissolveMaskUV,
             NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP),
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP) != 0u);
@@ -497,11 +567,13 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16));
     }
     // Overlay 2 keeps its ShaderLab position after Dissolve and before Mask.
-    // Noise/custom-data/advanced UV are deliberately separate slices.
+    // N1 texture Noise offsets this layer; CustomData remains a later slice.
     if (ColorBlendMapToggle > 0.5)
     {
         float2 overlayUV = NBGraphFeatureUV(ColorBlendMap, ColorBlendUV,
             ColorBlendVec.w, ColorBlendMapOffset.xy);
+        if (NoiseEnabled > 0.5)
+            overlayUV += textureNoise * (half)ColorBlendVec.x;
         half4 overlay = NBGraphSampleMap(ColorBlendMap, overlayUV,
             NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_COLORBLENDMAP),
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP) != 0u);
@@ -525,6 +597,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             maskRotation += _Time.y * MaskMapRotationSpeed;
         float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
             maskRotation, MaskMapOffsetAnition.xy);
+        if (NoiseEnabled > 0.5)
+            maskUV += textureNoise * (half)MaskDistortionIntensity;
         uint packedChannels = NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0);
         half channelValue;
         if ((maskFlags & FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT) != 0u)
@@ -681,12 +755,28 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float SoftParticlesEnabled, float4 SoftParticleFadeParams, float4 ScreenPosition,
     float DepthOutlineToggle, half4 DepthOutlineColor, half4 DepthOutlineVec,
     UnityTexture2D BaseMap, float2 BaseMapUV,
+    UnityTexture2D NoiseMap, float NoiseEnabled, float2 NoiseUV,
+    float NoiseMapUVRotation, half4 NoiseOffset, float NoiseIntensity,
+    half4 DistortionDirection, UnityTexture2D NoiseMaskMap,
+    float NoiseMaskToggle, float2 NoiseMaskUV,
+    float TexDistortionIntensity, float EmiDistortionIntensity,
+    float MaskDistortionIntensity,
     out half4 Out)
 {
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
-    half4 baseSample = NBGraphSampleMap(BaseMap, BaseMapUV,
+    half2 textureNoise = 0;
+    if (NoiseEnabled > 0.5)
+        textureNoise = NBGraphTextureNoise(NoiseMap, NoiseUV,
+            NoiseMapUVRotation, (half4)NoiseOffset, (half)NoiseIntensity,
+            (half4)DistortionDirection, NoiseMaskMap, NoiseMaskUV,
+            NoiseMaskToggle > 0.5,
+            NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16),
+            NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0), wrapFlags, noMipFlags);
+    float2 mainTexNoise = textureNoise * (half)TexDistortionIntensity;
+    float2 baseUV = BaseMapUV + mainTexNoise;
+    half4 baseSample = NBGraphSampleMap(BaseMap, baseUV,
         NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_BASEMAP),
         (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
     input.sampledAlbedo = baseSample;
@@ -709,6 +799,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     {
         float2 emissionUV = NBGraphFeatureUV(EmissionMap, EmissionUV,
             EmissionMapUVRotation, EmissionMapUVOffset.xy);
+        if (NoiseEnabled > 0.5)
+            emissionUV += textureNoise * (half)EmiDistortionIntensity;
         half4 emission = NBGraphSampleMap(EmissionMap, emissionUV,
             NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_EMISSIONMAP),
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_EMISSIONMAP) != 0u);
@@ -734,6 +826,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     {
         float2 dissolveUV = NBGraphFeatureUV(DissolveMap, DissolveUV,
             DissolveOffsetRotateDistort.z, DissolveOffsetRotateDistort.xy);
+        if (NoiseEnabled > 0.5)
+            dissolveUV += textureNoise * (half)DissolveOffsetRotateDistort.w;
         half4 sampledDissolve = NBGraphSampleMap(DissolveMap, dissolveUV,
             NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_DISSOLVE_MAP),
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MAP) != 0u);
@@ -743,6 +837,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         {
             float2 dissolveMaskUV = NBGraphFeatureUV(DissolveMaskMap, DissolveMaskUV,
                 DissolveOffsetRotateDistort.z, float2(0.0, 0.0));
+            if (NoiseEnabled > 0.5)
+                dissolveMaskUV += textureNoise * (half)DissolveOffsetRotateDistort.w;
             sampledDissolveMask = NBGraphSampleMap(DissolveMaskMap, dissolveMaskUV,
             NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP),
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP) != 0u);
@@ -772,6 +868,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     {
         float2 overlayUV = NBGraphFeatureUV(ColorBlendMap, ColorBlendUV,
             ColorBlendVec.w, ColorBlendMapOffset.xy);
+        if (NoiseEnabled > 0.5)
+            overlayUV += textureNoise * (half)ColorBlendVec.x;
         half4 overlay = NBGraphSampleMap(ColorBlendMap, overlayUV,
             NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_COLORBLENDMAP),
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_COLORBLENDMAP) != 0u);
@@ -792,6 +890,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             maskRotation += _Time.y * MaskMapRotationSpeed;
         float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
             maskRotation, MaskMapOffsetAnition.xy);
+        if (NoiseEnabled > 0.5)
+            maskUV += textureNoise * (half)MaskDistortionIntensity;
         uint packedChannels = NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0);
         half channelValue;
         if ((maskFlags & FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT) != 0u)
