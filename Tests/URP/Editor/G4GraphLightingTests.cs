@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 
 namespace NBFX.Baseline.Tests
 {
-    /// <summary>L0 ordinary Mesh lighting only. Candidate fixture; root owns Unity verification.
+    /// <summary>Ordinary Mesh lighting and explicit SH-keyword evaluation; root owns Unity verification.
     /// A=Frozen, B=current ShaderLab, C=Graph. No LM/APV/vertex-light/SixWay/VFX/Player claim.</summary>
     public sealed class G4GraphLightingTests
     {
@@ -39,8 +39,20 @@ namespace NBFX.Baseline.Tests
                 foreach (bool ortho in new[] { true, false })
                     yield return new TestCaseData(mode, ortho).SetName("G4LightingABC_" + Modes[mode] + (ortho ? "_ortho" : "_perspective"));
         }
+        static IEnumerable<TestCaseData> SHCases()
+        {
+            for (int mode = 1; mode < Modes.Length; mode++)
+                foreach (bool ortho in new[] { true, false })
+                    foreach (string keyword in new[] { "EVALUATE_SH_VERTEX", "EVALUATE_SH_MIXED" })
+                        yield return new TestCaseData(mode, ortho, keyword).SetName("G4LightingSHABC_" + Modes[mode] + (ortho ? "_ortho_" : "_perspective_") + keyword);
+        }
+        [TestCaseSource(nameof(SHCases))]
+        public void OrdinaryMeshSHEvaluation(int mode, bool ortho, string shKeyword)
+            => Replay(mode, ortho, shKeyword);
         [TestCaseSource(nameof(Cases))]
         public void OrdinaryMeshLightingL0(int mode, bool ortho)
+            => Replay(mode, ortho, null);
+        void Replay(int mode, bool ortho, string shKeyword)
         {
             var pipeline = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
             Assert.That(pipeline, Is.Not.Null);
@@ -51,7 +63,7 @@ namespace NBFX.Baseline.Tests
             Assert.That(frozenShader && currentShader && graphShader &&
                 frozenShader.isSupported && currentShader.isSupported && graphShader.isSupported, Is.True);
             Assert.That(frozenShader.name, Is.EqualTo("Effects/NBShader_T00_Frozen"));
-            string id = Modes[mode] + (ortho ? "-ortho" : "-perspective");
+            string id = Modes[mode] + (ortho ? "-ortho" : "-perspective") + (shKeyword == null ? "" : "-" + shKeyword);
             string root = Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR");
             if (string.IsNullOrEmpty(root)) root = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG4Lighting");
             string output = Path.Combine(root, id); Directory.CreateDirectory(output);
@@ -108,14 +120,19 @@ namespace NBFX.Baseline.Tests
                 camera.allowHDR = true; camera.allowMSAA = false; camera.targetTexture = rt;
                 cameraGO.AddComponent<UniversalAdditionalCameraData>().renderPostProcessing = false;
                 var sun = sunGO.GetComponent<Light>(); sun.type = LightType.Directional;
-                sun.color = new Color(.9f, .8f, .7f); sun.intensity = 1.4f; sun.shadows = LightShadows.None;
+                sun.color = new Color(.9f, .8f, .7f); sun.intensity = shKeyword == null ? 1.4f : 4.2f; sun.shadows = LightShadows.None;
                 sun.transform.rotation = Quaternion.LookRotation(new Vector3(-.4f, -.2f, -1).normalized);
                 var point = pointGO.GetComponent<Light>(); point.type = LightType.Point;
                 point.color = Color.blue; point.intensity = 4; point.range = 7;
                 point.transform.position = new Vector3(.7f, .4f, 1.3f); point.enabled = false;
                 var sh = new SphericalHarmonicsL2(); sh.AddDirectionalLight(Vector3.forward, new Color(.25f, .05f, .02f), 1);
+                // Explicit SH variants need stronger controls: the old vertex SH
+                // path weakens this normal/probe fixture below its response threshold.
+                // Keep L0 input values and all strict parity thresholds unchanged.
+                if (shKeyword != null) sh.AddAmbientLight(new Color(.18f, .06f, .02f));
                 RenderSettings.ambientMode = AmbientMode.Custom; RenderSettings.ambientProbe = sh;
                 foreach (var m in new[] { a, b, c }) Configure(m, m == c, mode, baseMap);
+                if (shKeyword != null) foreach (var m in new[] { a, b, c }) m.EnableKeyword(shKeyword);
                 rt.Create(); Assert.That(rt.IsCreated() && !rt.sRGB, Is.True);
                 mesh.sharedMaterial = a; var aa = Capture(camera, rt, read, output, "A-frozen");
                 mesh.sharedMaterial = b; var bb = Capture(camera, rt, read, output, "B-current");
@@ -124,7 +141,7 @@ namespace NBFX.Baseline.Tests
                 var cr = Capture(camera, rt, read, output, "C-repeat");
                 var metrics = new Metrics { caseId = id, unityVersion = Application.unityVersion,
                     api = SystemInfo.graphicsDeviceType.ToString(), mode = mode,
-                    limitation = "L0 Mesh only; per-pixel SH / pixel additional / legacy Forward shadow receiving invariance. LM/APV/vertex interpolators/SixWay/Forward+/VFX/Player remain L1." };
+                    limitation = "Mesh SH=" + (shKeyword ?? "pixel(default)") + "; pixel additional and legacy Forward shadow receiving invariance. SH GUI selection, curved Mesh, LM/APV/vertex additional/SixWay/Forward+/VFX/Player not claimed here." };
                 Compare(aa, bb, out metrics.abDiff, out metrics.abMax);
                 Compare(bb, cc, out metrics.bcDiff, out metrics.bcMax);
                 Compare(bb, br, out metrics.bRepeatDiff, out metrics.bRepeatMax);
@@ -148,6 +165,7 @@ namespace NBFX.Baseline.Tests
                 sun.transform.rotation = Quaternion.LookRotation(new Vector3(-.4f, -.2f, -1).normalized);
                 // Controlled SH probe change, with state restored in finally.
                 var sh2 = new SphericalHarmonicsL2(); sh2.AddDirectionalLight(Vector3.forward, new Color(.02f, .05f, .25f), 1);
+                if (shKeyword != null) sh2.AddAmbientLight(new Color(.02f, .06f, .2f));
                 RenderSettings.ambientProbe = sh2;
                 mesh.sharedMaterial = b; var bs = Capture(camera, rt, read, output, "B-SH-blue");
                 var bsRepeat = Capture(camera, rt, read, output, "B-SH-blue-repeat");

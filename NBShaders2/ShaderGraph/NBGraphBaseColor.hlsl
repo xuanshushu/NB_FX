@@ -428,12 +428,13 @@ half4 NBGraphApplySixWay(half4 preAdjustAlbedo, UnityTexture2D rigPositive,
     return UniversalFragmentSixWay(inputData,bsdfData);
 }
 
-// L0: ordinary Mesh only, SH per pixel and pixel additional lights.
-// This is not the later interpolator/lightmap/APV/SixWay parity slice.
+// Ordinary Mesh lighting consumes the existing post-vertex geometry SH
+// interpolator. SampleSHPixel preserves original pixel/mixed/vertex keywords;
+// this does not add lightmap/APV/vertex-additional-light support.
 half4 NBGraphApplyLighting(half4 color, float mode, float3 positionWS,
     float3 unfacedNormalWS, float3 viewDirWS, float2 normalizedScreenUV,
     half isFrontFace, half3 normalTS, half metallicWeight,
-    half smoothnessWeight, half4 materialInfo, half4 specularColor)
+    half smoothnessWeight, half4 materialInfo, half4 specularColor, half3 vertexSH)
 {
     if (mode < 0.5 || mode >= 3.5) return color;
     InputData inputData = (InputData)0;
@@ -446,7 +447,7 @@ half4 NBGraphApplyLighting(half4 color, float mode, float3 positionWS,
         inputData.shadowCoord = TransformWorldToShadowCoord(positionWS);
     #endif
     inputData.normalizedScreenSpaceUV = normalizedScreenUV;
-    inputData.bakedGI = SampleSH((half3)inputData.normalWS);
+    inputData.bakedGI = SampleSHPixel(vertexSH, inputData.normalWS);
     inputData.shadowMask = SAMPLE_SHADOWMASK(float2(0, 0));
     half metallic = metallicWeight * materialInfo.x;
     half smoothness = smoothnessWeight * materialInfo.y;
@@ -714,7 +715,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         Out = NBGraphApplyLighting((half4)Out, FxLightMode, PositionWS,
             normalForFeatures, (float3)ViewDirWS, ScreenPosition.xy,
             (half)IsFrontFace, lightingNormalTS, lightingMetallicWeight,
-            lightingSmoothnessWeight, (half4)MaterialInfo, (half4)SpecularColor);
+            lightingSmoothnessWeight, (half4)MaterialInfo, (half4)SpecularColor,
+            (half3)SixBack2);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (MatCapToggle > 0.5))
         Out = (float4)NBGraphApplyMatCap((half4)Out, MatCapTex, (float3)normalForFeatures,
             (half3)PositionVS, (half)IsFrontFace, (half4)MatCapColor,
@@ -1092,7 +1094,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         Out = NBGraphApplyLighting((half4)Out, FxLightMode, PositionWS,
             normalForFeatures, (float3)ViewDirWS, ScreenPosition.xy,
             (half)IsFrontFace, lightingNormalTS, lightingMetallicWeight,
-            lightingSmoothnessWeight, (half4)MaterialInfo, (half4)SpecularColor);
+            lightingSmoothnessWeight, (half4)MaterialInfo, (half4)SpecularColor,
+            (half3)SixBack2);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (MatCapToggle > 0.5))
         Out = NBGraphApplyMatCap(Out, MatCapTex, (float3)normalForFeatures,
             (half3)PositionVS, (half)IsFrontFace, MatCapColor,
