@@ -643,6 +643,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float3 SixBack0, float3 SixBack1, float3 SixBack2,
     float4 SixTangentSigned, float PNoiseDistortBlendOpacity,
     float DistortMode, float RefractionIOR,
+    float DecalAlpha,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
@@ -944,6 +945,10 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         Out *= VertexColor;
     Out.rgb *= ColorA.rgb;
     Out.a *= ColorA.a;
+    // Alpha=1 is the disabled/depth-shadow identity. Do not inject a
+    // new half truncation into every existing Graph material.
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && DecalAlpha != 1.0)
+        Out.a = (half)((half)Out.a * (half)DecalAlpha);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
         (adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) == 0u)
         Out = (float4)NBGraphApplyColorAdjustment((half4)Out,
@@ -1036,6 +1041,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float3 SixBack0, float3 SixBack1, float3 SixBack2,
     float4 SixTangentSigned, float PNoiseDistortBlendOpacity,
     float DistortMode, float RefractionIOR,
+    half DecalAlpha,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
@@ -1316,6 +1322,10 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         Out *= VertexColor;
     Out.rgb *= ColorA.rgb;
     Out.a *= ColorA.a;
+    // Alpha=1 is the disabled/depth-shadow identity. Do not inject a
+    // new half truncation into every existing Graph material.
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS && DecalAlpha != 1.0)
+        Out.a = (half)((half)Out.a * (half)DecalAlpha);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
         (adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) == 0u)
         Out = NBGraphApplyColorAdjustment(Out,

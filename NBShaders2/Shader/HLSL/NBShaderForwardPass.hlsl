@@ -6,6 +6,7 @@
     #include "NBShaderEnvironmentV2.hlsl"
     #include "NBShaderMaskV3.hlsl"
     #include "NBShaderDissolveV3.hlsl"
+    #include "NBShaderDepthDecalV1.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
 
@@ -353,14 +354,9 @@
             float3 fragWorldPos = ComputeWorldSpacePosition(screenUV, sceneZBufferDepth, UNITY_MATRIX_I_VP);
             float3 fragobjectPos = TransformWorldToObject_NB(fragWorldPos);
 
-            float3 absFragObjectPos = abs(fragobjectPos);
-            half clipValue = step(absFragObjectPos.x,0.5);
-            clipValue *= step(absFragObjectPos.y,0.5);
-            clipValue *= step(absFragObjectPos.z,0.5);
-            half decalAlpha = NB_Remap (abs(fragobjectPos.y),0.1,0.5,1,0);
-        decalAlpha = decalAlpha*decalAlpha;
-            decalAlpha *= clipValue;
-            float2 decalUV = fragobjectPos.xz + 0.5;
+            NBFX_DepthDecalProjectionV1 depthDecal = NBFX_ResolveDepthDecalV1(fragobjectPos);
+            half decalAlpha = depthDecal.alpha;
+            float2 decalUV = depthDecal.uv;
         #endif
         #endif
 
