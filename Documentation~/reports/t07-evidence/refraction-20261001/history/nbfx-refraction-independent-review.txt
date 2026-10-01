@@ -1,0 +1,110 @@
+RF1 ordinary-Mesh candidate independent read-only review — 2026-10-01
+Scope reviewed:
+  /private/tmp/nbfx-apply-refraction.py
+  /private/tmp/nbfx-refraction-preview/{audit.json,NBShaders2/...}
+  Packages/NB_FX/Tests/URP/Editor/G4GraphRefractionTests.cs
+  current NBShaderForwardPass.hlsl, NBShaderInput.hlsl,
+  NBShaderDistortionV1.hlsl, NBGraphBaseColor.hlsl,
+  NBGraphDistortionPass.hlsl, NBShader.shader and GUI keyword resolver.
+No candidate was applied, no Unity/Git mutation or pass behavior run by this reviewer.
+
+Classification: shared HLSL numeric extraction + Graph fragment host routing;
+existing material keyword/property mapping; exact-tag ordinary Mesh
+RendererList fixture. No static evidence requires official URP, Target,
+NBPostprocess, pass-label, packed-flag or original ShaderLab mutation.
+
+CONFIRMED STATIC MATCHES
+1. The extracted NBFX_RefractDirectionV1 body copies original CustomRefract
+   dot/k/TIR-zero/eta-incident/sqrt math expression for expression. The old
+   CustomRefract name remains a wrapper. Old and Graph paths each assign the
+   float3 result to half3 refracVec before TransformWorldToHClipDir, then to
+   half2 signed noise. _RefractionIOR is half in ShaderLab; Graph casts its
+   float property to half before 1/IOR. Exact Metal behavior still needs
+   Unity compile/render; this is a source-level conclusion only.
+2. Old Forward's _DISTORT_REFRACTION branch is INSIDE _NOISEMAP and replaces
+   NoiseMap sampling rather than layering on it. Its NoiseMap alpha must not
+   contribute to noiseMask. The preview Graph candidate likewise skips
+   NBGraphSampleMap(NoiseMap) in the refractive branch, initializes mask=1,
+   then applies separate NoiseMaskMap/channel, direction*intensity, PN2
+   BlendPNoise, screen signedRG payload before mask, and surface texture
+   offset after multiplying mask. Noise OFF remains the existing uniform
+   prototype. No extra mask multiplication or second NoiseMap sample found.
+3. Original fragment applies VFACE to normal before refraction. Graph's
+   NormalMap adapter returns an unfaced vector specifically for downstream
+   one-time VFACE application; RF candidate passes side*normalForFeatures.
+   Without NormalMap, SG WorldSpaceNormal is used with that one-time side.
+   SG generated Preview already showed ViewDirection(World) built with
+   GetWorldSpaceNormalizeViewDir(positionWS), as the original ShaderLab does.
+4. Original DepthOnly/ShadowCaster ShaderLab passes do not declare the
+   _DISTORT_REFRACTION local keyword; Graph forces useRefraction=false under
+   NB_GRAPH_DEPTH_SHADOW_PASS. This matches the old variant boundary rather
+   than silently adding refraction to depth/shadow. Scene/compilation must
+   still verify the new include in each pass.
+5. Existing _DistortMode defaults to 0 and _RefractionIOR to 1.5 in old
+   ShaderLab. The candidate adds full-float Graph properties and live CF
+   inputs as the last slots 189/190 in its current snapshot. Slot IDs are
+   computed as max existing +1, so a later Depth slice can precede it. The
+   existing packed flags and PN2 bit positions are untouched.
+
+ONE PREVIEW SERIALIZATION FIX (ROOT ALREADY ACKNOWLEDGED)
+The initial script cloned NoiseIntensity's Vector1MaterialSlot and set only
+m_Value, leaving m_DefaultValue=1.0 for BOTH new slots. Connected property
+edges should supply correct values, so this was not evidence of a rendered
+error; nevertheless an edge/import fallback would wrongly enable refraction
+and use IOR1. Set both m_Value and m_DefaultValue to 0 / 1.5 respectively.
+Root reports its preview has already been corrected. Reaudit generated Graph
+JSON immediately before application, especially if a Depth slice changes
+input slot numbering. Do not restore a stale Graph snapshot.
+
+FIXTURE COVERAGE / COUNTERFACTUAL LOGIC
+* TestCaseSource is 3 routes x 2 cameras x 3 IOR values (18) plus 3 routes
+  x normal/backface/PN/TIR (12) = 30 NUnit cases. Frozen A is a material
+  made from FrozenPath, not current ShaderLab; B uses LegacyPath, C GraphPath.
+  Main/texture-mode/mask1 A/B and B/C use strict ROI zero, IOR control B/C
+  also strict zero. B/C repeats and ignored NoiseMap/no-NOISE gates compare
+  entire raw frames to strict zero. Finite checks cover all captures.
+* The quad's Y65-degree TIR case with IOR=.65 gives eta~1.538 and center
+  normal-incidence cosine~.423; k=1-eta²(1-cos²)<0, so the original helper
+  intentionally returns zero. The orthographic IOR1 flat case likewise
+  returns the incident -Z direction with zero projected XY. These are
+  legitimate NO-OP primary refraction outputs, not missing pass evidence.
+  An unconditional >100 visible-primary-pixel guard is therefore wrong for
+  Opaque (and possibly Forward) in those two cases. Root is changing the
+  guard to require >100 visible pixels in the nonzero texture-mode / other-
+  IOR counterfactual instead, while keeping zero primary-offset expectations,
+  B/C strict-zero, IOR/on-off causal response and actual image metrics.
+* The existing mask-causality exception for Forward/Opaque IOR1 orthographic
+  flat and TIR is logically sound: no offset means changing the external
+  mask need not change visible color. Deferred is different: its encoded
+  blue/alpha coverage responds to mask even when signed RG is zero, so its
+  mask response requirement is meaningful. There is no need to relax image
+  zero-difference assertions or the overall finite/repeat checks.
+* Requiring onOff>0.005 in zero-offset cases is not intrinsically wrong:
+  its OFF control changes to the deliberately nonzero texture Noise source,
+  not merely toggles the mask. Requiring IOR-difference is also meaningful:
+  TIR/.65 versus 1.5, or IOR1 versus 1.5, creates a nonzero counterfactual.
+  Actual GPU values/visibility remain to be checked by the root's serial
+  Unity validation, not asserted as a result by this review.
+* The test uses 1x1 noise textures with strongly different RG/alpha, a
+  nonuniform BaseMap/background, explicit mask/normal/PNoise controls,
+  exact named pass selection and a renderer-mask read. It does not mutate
+  renderer asset on disk; its finally block checks bytes. Normal and
+  backface cases are orthographic only; curved geometry, all UVs, VFX,
+  Player and invalid material intent states are outside this RF1 matrix.
+
+NONBLOCKING COMPATIBILITY BOUNDARY
+Graph's bool is DistortMode>0.5; the old GUI toggles the keyword at >0.5,
+while NBShaderMaterialIntentResolver adds _DISTORT_REFRACTION only when the
+integer property equals 1. Valid UI material values are 0/1 and match;
+invalid/stale states >1 or keyword/property out of sync may differ. Do not
+call this a supported mode or a reason to change packed protocol now. The
+fixture explicitly sets both property and old keyword consistently.
+
+REQUIRED NEXT ROOT VERIFICATION (NOT CLAIMED COMPLETE HERE)
+Apply only after rechecking current source hashes and slot defaults; import
+in exclusive Unity clone; check CS/Shader compilation, 30 raw case metrics,
+Frozen/current A/B, B/C main/texture/mask/IOR, repeat/finite and positive
+counterfactual visibility. Inspect TIR/IOR1 zero-offset results before any
+fixture adjustment. Preserve all strict failures and logs. Run previous
+ordinary-Mesh regression after the isolated case suite. No true VFX/Player
+or Gate claim from this RF1 review.

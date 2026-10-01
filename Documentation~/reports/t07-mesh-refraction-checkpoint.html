@@ -1,0 +1,19 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 折射 RF1</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：普通 Mesh 优先</a> · <a href="t07-mesh-gui-maintexture-checkpoint.html">前一片 GUI1A</a></p>
+<h1>普通 Mesh 折射已接入 Graph；30 项中 25 项严格通过、5 项保留原样失败</h1>
+<p><strong>人话结论：</strong>现在 Graph 的普通 Mesh 可以像原 NBShader 一样，用物体法线与折射率决定屏幕扭曲方向；扭曲方向继续进入已有的前向显示、相机不透明扭曲和延后扭曲路径。原 NBShader 的折射数学被抽成包内共享函数，旧入口仍调用它；Graph 不会把折射额外叠到纹理噪波上，也不会把遮罩乘两遍。当前只是这部分功能接入，<strong>不是全功能或 Gate 放行</strong>。</p>
+<p>固定产品/测试提交 <code>bf0942b979013ae5079029b5a5ab5027729368c4</code>，<a href="t07-evidence/refraction-20261001/product-source/commit.json">6 条固定路径源码</a>均从该提交无损保存；没有修改官方 URP、UniversalTarget、NBPostprocess、原 ShaderLab Pass 或 packed 协议。主 Agent 在独占隔离工程用 Unity CLI 验证；本证据归档者未启动 Unity、编辑产品/测试/中央索引/Git 或 push。</p>
+<h2>30 项怎样比</h2>
+<p>A 是<strong>不可变 G0 Frozen NBShader</strong>，B 是当前 NBShader，C 是实际生成的 Graph。普通 Forward、<code>NBCameraOpaqueDistortPass</code>、<code>NBDeferredDistortPass</code> 各 10 项，覆盖正交/透视、三个折射率，以及法线贴图、背面、程序噪波和全反射控制。每项保存 21 张 PNG、21 份可重算的 float32 RGBA 原始帧与指标：总共 <strong>630 PNG＋630 原始帧＋30 指标</strong>。测试检查主画面、关闭折射、遮罩改白、换折射率、换 NoiseMap、重复拍摄与有限数值，并用非零对照防止空图误过。</p>
+<ul>
+<li><strong>Frozen 未漂移：</strong>30 项 A/B 的主画面、关闭/遮罩控制均严格 <code>0</code> 差；B/C 的关闭控制也都是 <code>0</code>。B/C 重复拍摄全帧 <code>0</code>，全部捕获数值有限。改变折射开关或折射率在 B/C 两边都确实使画面变化，不是只接了属性而没有渲染。</li>
+<li><strong>三项 Deferred 透视严格失败：</strong>B/C 主画面或折射率/遮罩控制出现非零差，最大 <code>0.000030517578125</code>。仍按严格 <code>0</code> 判失败；用户要求不追微弱颜色差，本轮保留原始像素和指标，不改容差，也不凭小幅值宣称“完全相同”。</li>
+<li><strong>两项 Opaque 辅助断言失败：</strong>折射率 1 的正交平面和全反射理论上给零屏幕偏移。测试另加了“输出应与纯背景逐值相同”的严苛检查，B 与 C <em>各自</em>都差 <code>0.000244140625</code>，但这两项的 <strong>B/C 本身严格为 0</strong>。因此它们是辅助零背景断言失败，<strong>不能写成 Graph 相对旧 Shader 不一致</strong>；目前也不把差异原因定论为某个采样边界问题。</li>
+</ul>
+<p>本片 NUnit <strong>25 通过 / 5 严格失败 / 0 跳过</strong>。<a href="t07-evidence/refraction-20261001/results.xml">原始 XML</a> · <a href="t07-evidence/refraction-20261001/failure-audit.json">5 项原始报错</a> · <a href="t07-evidence/refraction-20261001/cases/">全部单片捕获与指标</a> · <a href="t07-evidence/refraction-20261001/unity.log.gz">日志</a>。</p>
+<h2>1071 项合并回归</h2>
+<p>同一固定提交的完整回归 <strong>1071 项：908 通过、163 失败、0 跳过</strong>。此前 GUI1A 全量的 158 个失败身份一个未增减；新增失败<strong>恰好就是本片的 5 项</strong>。<a href="t07-evidence/refraction-20261001/full/results.xml">完整 XML</a> · <a href="t07-evidence/refraction-20261001/full/failure-id-audit.json">失败身份核对</a>。</p>
+<p>逐份打开全量运行的 <strong>14,342</strong> 个画面载荷，把 PNG 原字节或解压后的 float32 原始帧，与 GUI1A 最近持久证据的 13,082 个载荷及本片 1,260 个载荷所指向的<strong>实际文件</strong>算 SHA-256 比对：<strong>14,342 份相同，0 份新增、变化或缺失</strong>，故不重复存一批相同截图。全量运行另有 1,309 份非截图指标/状态/Preview 文件全部保留。<a href="t07-evidence/refraction-20261001/full/capture-equivalence.json">逐份映射和 hash</a> · <a href="t07-evidence/refraction-20261001/full/metadata-audit.json">非截图清单</a> · <a href="t07-evidence/refraction-20261001/full/unity.log.gz">完整日志</a>。导入/测试日志没有 C# 或 Shader 编译错误，但含原有过时 API 等警告；NUnit 的 163 个严格失败令最终运行以代码 2 退出。工程/Renderer 三个受保护文件只读 hash 仍与前档相同，见<a href="t07-evidence/refraction-20261001/protected-settings-audit.json">核对</a>。</p>
+<h2>证据边界</h2>
+<p>最早的独立静态评审只审了<strong>候选预览</strong>，没有运行 Unity；最终 Graph 的两个属性/槽默认值与模式判定已修正，差异在<a href="t07-evidence/refraction-20261001/history/review-addendum.txt">历史评审补注</a>，不能拿旧评审充当最终源码证明。这里还没覆盖所有 UV/曲面/材质状态、Inspector 可见操作、真正 VFX 或 Player。继续普通 Mesh 余项及最终人工综合测试；<strong>G3/G4 未放行。</strong> <a href="t07-evidence/refraction-20261001/README.txt">重放说明</a> · <a href="t07-evidence/refraction-20261001/summary.json">统计</a> · <a href="t07-evidence/refraction-20261001/sha256.txt">附件 hash</a>。</p>
+</body></html>

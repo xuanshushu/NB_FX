@@ -1,0 +1,7 @@
+RF1 historical review addendum for fixed product commit bf0942b979013ae5079029b5a5ab5027729368c4.
+
+The saved nbfx-refraction-independent-review.txt is an INITIAL, pre-application, read-only review of the preview candidate. It did not test Unity or validate final source. The final fixed Graph differs from that preview in two points acknowledged by the main Agent and checked in the fixed git-show source snapshot here:
+1. Both the property and slot m_Value/m_DefaultValue pairs are DistortMode=0 and RefractionIOR=1.5, not the initial cloned-slot fallback value 1.0.
+2. NBGraphBaseColor.hlsl gates refraction with round(DistortMode)==1.0 in both full and half wrappers, not the preview's DistortMode>0.5. This maintains the current expected 0/1 material mode and avoids treating arbitrary greater-than-one modes as on.
+
+Neither this addendum nor the old review is a product test. Actual isolated Unity results are in results.xml, cases/, failure-audit.json and unity.log.gz. The final product source must be read from product-source/commit.json and compressed files, not from the initial preview. No official URP/UniversalTarget/NBPostprocess/legacy ShaderLab pass was changed by RF1.
