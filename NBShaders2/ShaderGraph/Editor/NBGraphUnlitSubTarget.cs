@@ -49,7 +49,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     pass = WithNBDistortionBlocks(pass);
                 if (forward || UsesNBStencil(pass.lightMode))
                     pass.renderStates = WithNBRenderStates(pass.renderStates, forward);
-                passes.Add(forward ? WithNBLightingKeywords(WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl")) :
+                passes.Add(forward ? WithNBMainForwardDefine(WithNBLightingKeywords(WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl"))) :
                     pass.lightMode == "ShadowCaster" ? WithNBFragmentInclude(pass, "NBGraphShadowCasterPass.hlsl", kURPShadowPass) :
                     pass, item.fieldConditions);
                 if (!forward) continue;
@@ -88,6 +88,23 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 stages = KeywordShaderStage.Fragment,
             });
             pass.keywords = keywords;
+            return pass;
+        }
+
+        // Static pass define, not a material keyword or new variant axis.
+        // Copy the delegated collection: two NB distortion clones use the
+        // original pass and must never inherit POM from main Forward.
+        static PassDescriptor WithNBMainForwardDefine(PassDescriptor pass)
+        {
+            var defines = pass.defines == null ? new DefineCollection() :
+                new DefineCollection(pass.defines);
+            defines.Add(new KeywordDescriptor
+            {
+                referenceName = "NB_GRAPH_MAIN_FORWARD",
+                type = KeywordType.Boolean,
+                definition = KeywordDefinition.Predefined,
+            }, 1);
+            pass.defines = defines;
             return pass;
         }
 

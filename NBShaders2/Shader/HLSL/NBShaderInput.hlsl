@@ -484,6 +484,8 @@
         #endif
     }
 
+    #include "NBShaderParallaxV1.hlsl"
+
     half GetColorChannel(half4 color, int bitPos)
     {
         uint bits = _W9ParticleShaderColorChannelFlag >> bitPos;
@@ -1199,52 +1201,10 @@
     }
     float2 ParallaxOcclusionMapping(float2 texCoords, float3 viewDir, bool forceLod0)
     {
-        texCoords = texCoords * _ParallaxMapping_Map_ST + _ParallaxMapping_Map_ST.zw;
-        // number of depth layers
-        // const float minLayers = 10;
-        // const float maxLayers = 10;
-        const float minLayers = _ParallaxMapping_Vec.x;
-        const float maxLayers = _ParallaxMapping_Vec.y;
-        float numLayers = lerp(maxLayers, minLayers, abs(dot(half3(0.0, 0.0, 1.0), viewDir)));  
-        // calculate the size of each layer
-        float layerDepth = 1.0 / numLayers;
-        // depth of current layer
-        float currentLayerDepth = 0.0;
-        // the amount to shift the texture coordinates per layer (from vector P)
-        float2 P = viewDir.xy / viewDir.z * _ParallaxMapping_Intensity;
-        float2 deltaTexCoords = P / numLayers;
-      
-        // get initial values
-        float2 currentTexCoords     = texCoords;
-        float currentDepthMapValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map, currentTexCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,forceLod0).r;
-        currentLayerDepth = clamp(currentLayerDepth,0,1);
-
-        int i = 0;
-        [loop]
-        while(currentLayerDepth < currentDepthMapValue && i<numLayers)
-        {
-            // shift texture coordinates along direction of P
-            currentTexCoords -= deltaTexCoords;
-            // get depthmap value at current texture coordinates
-            currentDepthMapValue = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map, currentTexCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,forceLod0).r;
-            // get depth of next layer
-            currentLayerDepth += layerDepth;
-            i++;
-        }
-        
-        // -- parallax occlusion mapping interpolation from here on
-        // get texture coordinates before collision (reverse operations)
-        float2 prevTexCoords = currentTexCoords + deltaTexCoords;
-
-        // get depth after and before collision for linear interpolation
-        float afterDepth  = currentDepthMapValue - currentLayerDepth;
-        float beforeDepth = SampleTexture2DWithWrapFlags(_ParallaxMapping_Map, prevTexCoords,FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,forceLod0).r - currentLayerDepth + layerDepth;
-     
-        // interpolation of texture coordinates
-        float weight = afterDepth / (afterDepth - beforeDepth);
-        float2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
-
-        return finalTexCoords;
+        return NBFX_ParallaxOcclusionMappingV1(_ParallaxMapping_Map,
+            texCoords, viewDir, _ParallaxMapping_Map_ST,
+            _ParallaxMapping_Intensity, _ParallaxMapping_Vec,
+            CheckLocalWrapFlags(FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP), forceLod0);
     }
 
 //--------------MatCap------------------

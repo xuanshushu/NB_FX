@@ -10,6 +10,7 @@
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderUVV2.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphSampling.hlsl"
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderParallaxV1.hlsl"
 #define NB_GRAPH_SIX_WAY 1
 #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
 #undef NB_GRAPH_SIX_WAY
@@ -560,6 +561,29 @@ half NBGraphProgramNoise(float2 sourceUV, half rotation, float4 vec,
     return simpleOn ? simpleValue : voronoiValue;
 }
 
+// POM uses the pre-normalmap fragment basis. Current URP SharedCode already
+// forms fragment BitangentWS with tangentOS.w * GetOddNegativeScale().
+// This differs from the vertex-stage SixWay bake adapter: do not apply odd twice.
+float2 NBGraphApplyParallax(UnityTexture2D map, float2 baseUV,
+    float intensity, float4 layerVec, float3 normalWS,
+    float3 tangentWS, float3 bitangentWS, float3 viewDirWS,
+    float isFrontFace, uint wrapFlags, uint noMipFlags)
+{
+    half3 rawN = (half3)normalWS;
+    half3 tangent = (half3)tangentWS;
+    half tangentSign = dot((half3)bitangentWS,
+        cross(rawN, tangent)) < 0.0h ? -1.0h : 1.0h;
+    half3 facedN = isFrontFace > 0.5 ? rawN : -rawN;
+    half3 bitangent = tangentSign * cross(facedN, tangent);
+    half3x3 tangentToWorld = half3x3(tangent, bitangent, facedN);
+    float3 tangentViewDir = (float3)SafeNormalize(mul(tangentToWorld, (half3)viewDirWS));
+    return NBFX_ParallaxOcclusionMappingV1(map.tex, baseUV,
+        tangentViewDir, (half4)map.scaleTranslate, (half)intensity,
+        (half4)layerVec,
+        NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP),
+        (noMipFlags & FLAG_BIT_FORCE_NO_MIP_PARALLAXMAPPINGMAP) != 0u);
+}
+
 void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 EffectiveBaseColor,
     float NB_Flags0Lo16, float NB_Flags0Hi16,
@@ -644,6 +668,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 SixTangentSigned, float PNoiseDistortBlendOpacity,
     float DistortMode, float RefractionIOR,
     float DecalAlpha,
+    UnityTexture2D ParallaxMappingMap, float ParallaxMappingToggle,
+    float ParallaxMappingIntensity, float4 ParallaxMappingVec,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
@@ -699,7 +725,16 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     NBDistortionSignedRG = (float2)signedRG;
     NBDistortionNoiseMask = (float)noiseMask;
     float2 mainTexNoise = textureNoise * (half)TexDistortionIntensity;
-    float2 baseUV = BaseMapUV + mainTexNoise;
+    // ShaderLab saves originUV before POM. Do not alter other feature UVs.
+    float2 baseUVPreNoise = BaseMapUV;
+#if defined(NB_GRAPH_MAIN_FORWARD) && !NB_GRAPH_DEPTH_SHADOW_PASS
+    if (ParallaxMappingToggle > 0.5)
+        baseUVPreNoise = NBGraphApplyParallax(ParallaxMappingMap,
+            BaseMapUV, ParallaxMappingIntensity, ParallaxMappingVec,
+            NormalWS, TangentWS, BitangentWS, ViewDirWS,
+            IsFrontFace, wrapFlags, noMipFlags);
+#endif
+    float2 baseUV = baseUVPreNoise + mainTexNoise;
     half4 baseSample = NBGraphSampleMap(BaseMap, baseUV,
         NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_BASEMAP),
         (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
@@ -1042,6 +1077,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float4 SixTangentSigned, float PNoiseDistortBlendOpacity,
     float DistortMode, float RefractionIOR,
     half DecalAlpha,
+    UnityTexture2D ParallaxMappingMap, float ParallaxMappingToggle,
+    float ParallaxMappingIntensity, float4 ParallaxMappingVec,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
@@ -1095,7 +1132,16 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     NBDistortionSignedRG = signedRG;
     NBDistortionNoiseMask = noiseMask;
     float2 mainTexNoise = textureNoise * (half)TexDistortionIntensity;
-    float2 baseUV = BaseMapUV + mainTexNoise;
+    // ShaderLab saves originUV before POM. Do not alter other feature UVs.
+    float2 baseUVPreNoise = BaseMapUV;
+#if defined(NB_GRAPH_MAIN_FORWARD) && !NB_GRAPH_DEPTH_SHADOW_PASS
+    if (ParallaxMappingToggle > 0.5)
+        baseUVPreNoise = NBGraphApplyParallax(ParallaxMappingMap,
+            BaseMapUV, ParallaxMappingIntensity, ParallaxMappingVec,
+            NormalWS, TangentWS, BitangentWS, ViewDirWS,
+            IsFrontFace, wrapFlags, noMipFlags);
+#endif
+    float2 baseUV = baseUVPreNoise + mainTexNoise;
     half4 baseSample = NBGraphSampleMap(BaseMap, baseUV,
         NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_BASEMAP),
         (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
