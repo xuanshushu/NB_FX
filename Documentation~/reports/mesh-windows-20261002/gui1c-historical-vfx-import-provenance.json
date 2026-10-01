@@ -1,0 +1,22 @@
+{
+  "scope": "Original-root VFX sample copied into GUI-only isolated project, then imported; not formal VFX validation",
+  "preparationAssertionNote": "Initial preparation incorrectly compared restored root source bytes against an already Editor-serialized quarantine version. Root baseline files had already been copied; its source SHA differs legitimately. Import proceeded in isolation; the native GUI110 and Mesh45 verdicts succeeded. The three states are recorded separately.",
+  "formalVFXStarted": false,
+  "versions": [
+    {
+      "scope": "root-source",
+      "sha256": "7d631de747fc1fb4c62b19f4f605cdab9f61984b4273815bb30cc3cf914ccb64",
+      "bytes": 87447
+    },
+    {
+      "scope": "prior-quarantine",
+      "sha256": "438c1f4b4ee4302a726c4294088a6a615952da822b41f75031fd474a18e6a19c",
+      "bytes": 615471
+    },
+    {
+      "scope": "gui-slice-isolated-after-import",
+      "sha256": "9439aa06e1671c291c0099e77dfc521e87d1783a1410bfb9f1bac7e4cfff6e35",
+      "bytes": 602814
+    }
+  ]
+}

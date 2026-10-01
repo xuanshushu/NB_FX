@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="56" result="Failed(Child)" total="56" passed="0" failed="56" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-01 19:21:45Z" end-time="2026-10-01 19:22:00Z" duration="15.7981807">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="1580" result="Failed" site="Child" start-time="2026-10-01 19:21:45Z" end-time="2026-10-01 19:22:00Z" duration="15.798181" total="56" passed="0" failed="56" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2683" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="1561" result="Failed" site="Child" start-time="2026-10-01 19:21:45Z" end-time="2026-10-01 19:22:00Z" duration="15.619701" total="56" passed="0" failed="56" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="11672" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2684" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="1561" result="Failed" site="Child" start-time="2026-10-01 19:21:45Z" end-time="2026-10-01 19:22:00Z" duration="15.563918" total="56" passed="0" failed="56" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2685" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="1561" result="Failed" site="Child" start-time="2026-10-01 19:21:45Z" end-time="2026-10-01 19:22:00Z" duration="15.524112" total="56" passed="0" failed="56" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2686" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="1561" result="Failed" site="Child" start-time="2026-10-01 19:21:45Z" end-time="2026-10-01 19:22:00Z" duration="15.466339" total="56" passed="0" failed="56" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1959" name="G4GraphPositionUVTests" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" testcasecount="376" result="Failed" site="SetUp" start-time="2026-10-01 19:21:49Z" end-time="2026-10-01 19:22:00Z" duration="11.444644" total="56" passed="0" failed="56" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                <stack-trace><![CDATA[UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+NBFX.Baseline.Tests.G4GraphPositionUVTests:Import () (at ./Packages/NB_FX/Tests/URP/Editor/G4GraphPositionUVTests.cs:58)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object)
+NUnit.Framework.Internal.Commands.SetUpTearDownItem:RunNonAsyncMethod (System.Reflection.MethodInfo,NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.SetUpTearDownItem:RunSetUpOrTearDownMethod (NUnit.Framework.Internal.ITestExecutionContext,System.Reflection.MethodInfo)
+NUnit.Framework.Internal.Commands.SetUpTearDownItem:RunSetUp (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.OneTimeSetUpCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+              <test-suite type="ParameterizedMethod" id="2336" name="PositionalSourceMatchesOriginalMesh" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" testcasecount="376" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" total="0" passed="0" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-suite>
+              <test-case id="1960" name="G4PositionUVABC_main_direct3_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct3_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="357993337" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1961" name="G4PositionUVABC_main_direct3_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct3_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="69979507" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1962" name="G4PositionUVABC_main_direct3_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct3_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1072970382" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1963" name="G4PositionUVABC_main_direct3_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct3_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="42465013" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1964" name="G4PositionUVABC_main_shared3_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared3_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1656959147" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1965" name="G4PositionUVABC_main_shared3_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared3_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1566774790" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1966" name="G4PositionUVABC_main_shared3_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared3_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1360323674" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1967" name="G4PositionUVABC_main_shared3_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared3_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="2091193171" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1968" name="G4PositionUVABC_main_direct4_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct4_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1330704772" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1969" name="G4PositionUVABC_main_direct4_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct4_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1017779777" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1970" name="G4PositionUVABC_main_direct4_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct4_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1018453612" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1971" name="G4PositionUVABC_main_direct4_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct4_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="199922341" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1972" name="G4PositionUVABC_main_shared4_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared4_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1723932037" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1973" name="G4PositionUVABC_main_shared4_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared4_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="2145846285" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1974" name="G4PositionUVABC_main_shared4_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared4_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="848764654" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1975" name="G4PositionUVABC_main_shared4_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared4_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1530323480" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1976" name="G4PositionUVABC_main_direct5_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct5_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1535547105" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1977" name="G4PositionUVABC_main_direct5_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct5_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="902277561" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1978" name="G4PositionUVABC_main_direct5_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct5_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1186363365" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1979" name="G4PositionUVABC_main_direct5_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct5_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1639893209" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1980" name="G4PositionUVABC_main_shared5_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared5_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1941776547" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1981" name="G4PositionUVABC_main_shared5_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared5_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1393996243" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1982" name="G4PositionUVABC_main_shared5_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared5_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1363156162" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1983" name="G4PositionUVABC_main_shared5_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared5_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="573852592" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1984" name="G4PositionUVABC_main_direct6_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="907235833" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1985" name="G4PositionUVABC_main_direct6_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="847411860" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1986" name="G4PositionUVABC_main_direct6_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1213566866" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1987" name="G4PositionUVABC_main_direct6_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1251763750" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1988" name="G4PositionUVABC_main_shared6_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared6_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="545741900" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1989" name="G4PositionUVABC_main_shared6_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared6_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1174201382" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1990" name="G4PositionUVABC_main_shared6_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared6_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1365983695" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1991" name="G4PositionUVABC_main_shared6_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared6_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1002663019" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1992" name="G4PositionUVABC_main_direct7_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1236532709" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1993" name="G4PositionUVABC_main_direct7_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1358867764" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1994" name="G4PositionUVABC_main_direct7_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="252854633" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1995" name="G4PositionUVABC_main_direct7_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="651051861" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1996" name="G4PositionUVABC_main_shared7_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared7_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1426284185" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1997" name="G4PositionUVABC_main_shared7_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared7_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="5572642" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1998" name="G4PositionUVABC_main_shared7_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared7_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1046043686" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1999" name="G4PositionUVABC_main_shared7_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_shared7_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="629158034" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2320" name="G4PositionUVABC_main_direct6_axis0_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis0_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="137619782" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2321" name="G4PositionUVABC_main_direct6_axis0_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis0_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1206318576" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2322" name="G4PositionUVABC_main_direct6_axis0_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis0_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="426543757" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2323" name="G4PositionUVABC_main_direct6_axis0_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis0_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1960038794" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2324" name="G4PositionUVABC_main_direct6_axis2_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis2_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="245705043" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2325" name="G4PositionUVABC_main_direct6_axis2_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis2_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1969534367" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2326" name="G4PositionUVABC_main_direct6_axis2_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis2_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1428899441" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2327" name="G4PositionUVABC_main_direct6_axis2_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct6_axis2_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1525326572" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2328" name="G4PositionUVABC_main_direct7_axis0_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis0_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="527666830" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2329" name="G4PositionUVABC_main_direct7_axis0_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis0_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="543596260" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2330" name="G4PositionUVABC_main_direct7_axis0_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis0_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1796634390" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2331" name="G4PositionUVABC_main_direct7_axis0_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis0_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1224416222" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2332" name="G4PositionUVABC_main_direct7_axis2_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis2_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="320929546" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2333" name="G4PositionUVABC_main_direct7_axis2_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis2_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1710912237" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2334" name="G4PositionUVABC_main_direct7_axis2_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis2_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1654984931" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="2335" name="G4PositionUVABC_main_direct7_axis2_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_main_direct7_axis2_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1722586491" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _CylinderMatrix0
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,348 @@
+#!/usr/bin/env python3
+"""V0 Houdini SoftBody ordinary-Mesh dynamic PREVIEW ONLY. No Unity/Git/product writes.
+
+Reads current Graph each invocation, appends only new node/property objects, rewires
+VertexOffset inputs, and emits package-file previews + SHA manifest in /tmp.
+"""
+import copy, hashlib, json, re, uuid
+from pathlib import Path
+
+_nb_original_write_text = Path.write_text
+def _nb_write_text_lf(self, data, encoding=None, errors=None, newline=None):
+    return _nb_original_write_text(self, data, encoding=encoding or 'utf-8', errors=errors, newline='\n')
+Path.write_text = _nb_write_text_lf
+P=Path('D:/UnityProject/NBUnityProject/Packages/NB_FX')
+F={
+ 'graph': P/'NBShaders2/ShaderGraph/NBShaderGraph.shadergraph',
+ 'vertex': P/'NBShaders2/ShaderGraph/NBGraphVATSoftBody.hlsl',
+ 'vertex_meta': P/'NBShaders2/ShaderGraph/NBGraphVATSoftBody.hlsl.meta',
+ 'shared': P/'XuanXuanRenderUtility/Shader/HLSL/HoudiniVATMathV1.hlsl',
+ 'shared_meta': P/'XuanXuanRenderUtility/Shader/HLSL/HoudiniVATMathV1.hlsl.meta',
+ 'oldvat': P/'XuanXuanRenderUtility/Shader/HLSL/HoudiniVAT.hlsl',
+ 'subtarget': P/'NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs',
+}
+OUT=Path('D:/UnityProject/NBUnityProject/.utmp/nbfx-resume-20261002/vat/preview')
+NS=uuid.UUID('54891ab6-4f08-4cb6-a5fa-a331d4f3cc13')
+VERTEX_GUID='9273db2982f35f4498dc78a1dd69f32c'
+SHARED_GUID='7b536162cff35b6b8847698d44ea75c0'
+def uid(key):return uuid.uuid5(NS,'V0:'+key).hex
+def one(s,a,b,n=1):
+ c=s.count(a)
+ if c!=n:raise AssertionError(f'needle {a[:90]!r}: {c}, expected {n}')
+ return s.replace(a,b)
+def decode(s):
+ d=json.JSONDecoder();i=0;o=[]
+ while i<len(s):
+  while i<len(s) and s[i].isspace():i+=1
+  if i==len(s):break
+  x,i=d.raw_decode(s,i);o.append(x)
+ return o
+
+def shared_and_old(s):
+ # Extract the exact existing pure helpers. The old include delegates to the
+ # same leaf source used by Graph, so its other three Houdini modes keep math.
+ names=['HVAT_RotateByQuat','HVAT_DecodeCompressedNormal','HVAT_VatUV']
+ extracts=[]
+ for name in names:
+  m=re.search(r'(?:float3|float2) '+name+r'\([^)]*\)\s*\{',s)
+  assert m,name
+  at=m.end();depth=1
+  while depth:
+   depth += (s[at]=='{')-(s[at]=='}');at+=1
+  extracts.append(s[m.start():at])
+  s=s[:m.start()]+s[at:]
+ frame='''void HVAT_ComputeMeshFrameSelectionV1(float totalFrames, float timeY,
+    float gameTimeAtFirstFrame, float fps, float playbackSpeed,
+    float autoPlayback, float displayFrame,
+    out float selectedFrame, out float frameAlpha)
+{
+    float animTime    = (timeY - gameTimeAtFirstFrame)
+                        * (fps / (totalFrames - 0.01))
+                        * playbackSpeed;
+    float frameFloat  = frac(animTime) * totalFrames;
+    selectedFrame = autoPlayback ? floor(frameFloat) + 1.0 : floor(displayFrame);
+    frameAlpha = frac(autoPlayback ? frameFloat : displayFrame);
+}
+'''
+ soft='''void HVAT_ApplySoftBodySamplesV1(inout float3 positionOS,
+    inout float3 normalOS, float4 posSample, float4 pos2,
+    float4 rotSample, float loadPosTwoTex, float unloadRotTex,
+    float comparisonBoundMaxb, float3 boundsMax, float3 boundsMin)
+{
+    float3 posRGB = posSample.rgb;
+    float posA = posSample.a;
+    if (loadPosTwoTex > 0.5)
+        posRGB += pos2.rgb * 0.01;
+    float3 posDecoded = posRGB * (boundsMax - boundsMin) + boundsMin;
+    float3 displacement = comparisonBoundMaxb ? posRGB : posDecoded;
+    positionOS += displacement;
+    if (unloadRotTex > 0.5)
+        normalOS = normalize(HVAT_DecodeCompressedNormal(posA));
+    else
+    {
+        float4 rotFinal = comparisonBoundMaxb ? rotSample : (rotSample - 0.5) * 2.0;
+        normalOS = normalize(HVAT_RotateByQuat(float3(0.0, 1.0, 0.0), rotFinal));
+    }
+}
+'''
+ shared='#ifndef NB_FX_HOUDINI_VAT_MATH_V1_INCLUDED\n#define NB_FX_HOUDINI_VAT_MATH_V1_INCLUDED\n\n'+'\n\n'.join(extracts)+'\n\n'+frame+'\n'+soft+'\n#endif\n'
+ # The old wrapper's particle override remains untouched. Replace only common frame math.
+ start=s.index('    float totalFrames = _frameCount;',s.index('void HVAT_ComputeFrameSelection('))
+ end=s.index('    if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM))',start)
+ s=s[:start]+'''    float totalFrames = _frameCount;
+    HVAT_ComputeMeshFrameSelectionV1(totalFrames, _Time.y,
+        _gameTimeAtFirstFrame, _houdiniFPS, _playbackSpeed,
+        _B_autoPlayback, _displayFrame, selectedFrame, frameAlpha);
+
+'''+s[end:]
+ # Replace only old SoftBody decode, not upstream UV, frame or sample order.
+ start=s.index('        // 采样位置',s.index('#if defined(_HOUDINI_VAT_SOFTBODY)'))
+ end=s.index('        return;',start)
+ s=s[:start]+'''        float4 posSample = SAMPLE_TEXTURE2D_LOD(_posTexture, sampler_posTexture, texUV, 0);
+        float4 pos2 = 0;
+        if (_B_LOAD_POS_TWO_TEX > 0.5)
+            pos2 = SAMPLE_TEXTURE2D_LOD(_posTexture2, sampler_posTexture2, texUV, 0);
+        float4 rotSample = 0;
+        if (_B_UNLOAD_ROT_TEX <= 0.5)
+            rotSample = SAMPLE_TEXTURE2D_LOD(_rotTexture, sampler_rotTexture, texUV, 0);
+        float3 softBodyPositionOS = positionOS.xyz;
+        HVAT_ApplySoftBodySamplesV1(softBodyPositionOS, normalOS,
+            posSample, pos2, rotSample, _B_LOAD_POS_TWO_TEX, _B_UNLOAD_ROT_TEX,
+            comparisonBoundMaxb, boundsMax, boundsMin);
+        positionOS.xyz = softBodyPositionOS;
+
+'''+s[end:]
+ s=one(s,'#define HOUDINI_VAT_INCLUDED\n','#define HOUDINI_VAT_INCLUDED\n\n#include "HoudiniVATMathV1.hlsl"\n')
+ return shared,s
+
+def vertex_hlsl():
+ return '''#ifndef NB_GRAPH_VAT_SOFTBODY_INCLUDED
+#define NB_GRAPH_VAT_SOFTBODY_INCLUDED
+#include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/HoudiniVATMathV1.hlsl"
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
+
+// V0 only: ordinary Mesh Houdini SoftBody. NB screen passes are statically
+// excluded; other VAT submodes are not replaced by a fake SoftBody result.
+void NBGraphVATSoftBody_float(float3 PositionOS, float3 NormalOS, float4 UV1,
+    UnityTexture2D PosTexture, UnityTexture2D PosTexture2,
+    UnityTexture2D RotTexture, float VATToggle, float VATMode,
+    float HoudiniVATSubMode, float AutoPlayback,
+    float GameTimeAtFirstFrame, float PlaybackSpeed, float HoudiniFPS,
+    float DisplayFrame, float FrameCount,
+    float BoundMinX, float BoundMinY, float BoundMinZ,
+    float BoundMaxX, float BoundMaxY, float BoundMaxZ,
+    float LoadPosTwoTex, float UnloadRotTex,
+    float Flags1Lo16, float Flags1Hi16,
+    out float3 OutPositionOS, out float3 OutNormalOS, out float Supported)
+{
+    OutPositionOS=PositionOS; OutNormalOS=NormalOS; Supported=1.0;
+#if defined(NB_GRAPH_NO_VAT)
+    return;
+#else
+    if (VATToggle < 0.5) return;
+    uint flags1=NBGraphDecodeUInt32(Flags1Lo16,Flags1Hi16);
+    if (round(VATMode)!=0.0 || round(HoudiniVATSubMode)!=0.0 ||
+        (flags1 & FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM)!=0u)
+    { Supported=0.0; return; }
+    float selectedFrame, frameAlpha;
+    HVAT_ComputeMeshFrameSelectionV1(FrameCount, _Time.y,
+        GameTimeAtFirstFrame,HoudiniFPS,PlaybackSpeed,AutoPlayback,
+        DisplayFrame,selectedFrame,frameAlpha);
+    float comparisonBoundMaxb=(frac(BoundMaxZ*10.0)>=0.5)?1.0:0.0;
+    float oneMinusBoundMaxR=1.0-frac(BoundMaxX*(-10.0));
+    float boundMinMul10z=BoundMinZ*10.0;
+    float oneMinusBoundMinB=1.0-(ceil(boundMinMul10z)-boundMinMul10z);
+    float pscaleDenom=max(1.0-frac(BoundMaxY*10.0),1e-5);
+    float uv1r=UV1.x,uv1g=UV1.y;
+    float multiplyBoundMinB=uv1r*oneMinusBoundMinB;
+    float2 texUV=HVAT_VatUV(selectedFrame,uv1r,uv1g,
+        oneMinusBoundMaxR,multiplyBoundMinB,FrameCount);
+    float4 posSample=SAMPLE_TEXTURE2D_LOD(PosTexture.tex,PosTexture.samplerstate,texUV,0);
+    float4 pos2=0;
+    if (LoadPosTwoTex>0.5)
+        pos2=SAMPLE_TEXTURE2D_LOD(PosTexture2.tex,PosTexture2.samplerstate,texUV,0);
+    float4 rotSample=0;
+    if (UnloadRotTex<=0.5)
+        rotSample=SAMPLE_TEXTURE2D_LOD(RotTexture.tex,RotTexture.samplerstate,texUV,0);
+    HVAT_ApplySoftBodySamplesV1(OutPositionOS,OutNormalOS,
+        posSample,pos2,rotSample,LoadPosTwoTex,UnloadRotTex,
+        comparisonBoundMaxb,float3(BoundMaxX,BoundMaxY,BoundMaxZ),
+        float3(BoundMinX,BoundMinY,BoundMinZ));
+#endif
+}
+
+// VertexDescriptionInputs WorldSpace N/T/B are built from original Attributes
+// before VertexDescription.Position/Normal blocks are assigned. Feed the
+// actual post-VAT normal to SixWay vertex SH; VAT-off is exact passthrough.
+void NBGraphVATWorldBasis_float(float3 VATNormalOS, float3 RawNormalWS,
+    float3 RawTangentWS, float3 RawBitangentWS, float VATToggle,
+    float Supported, out float3 NormalWS, out float3 TangentWS,
+    out float3 BitangentWS)
+{
+    NormalWS=RawNormalWS; TangentWS=RawTangentWS;
+    BitangentWS=RawBitangentWS;
+#if !defined(NB_GRAPH_NO_VAT)
+    if (VATToggle < 0.5 || Supported < 0.5) return;
+    NormalWS=TransformObjectToWorldNormal(VATNormalOS);
+    float originalSign=dot(cross(RawNormalWS,RawTangentWS),RawBitangentWS)<0 ? -1.0 : 1.0;
+    BitangentWS=originalSign*cross(NormalWS,TangentWS);
+#endif
+}
+#endif
+'''
+
+def patch_subtarget(s):
+ # Two NB screen passes inherit the vertex description but ShaderLab does not
+ # compile VAT there. Predefined define adds no variant axis.
+ a='''            if (lightMode == "NBCameraOpaqueDistortPass")
+                pass = WithNBPassDefine(pass, "NB_GRAPH_CAMERA_OPAQUE_PASS");
+'''
+ b='''            pass = WithNBPassDefine(pass, "NB_GRAPH_NO_VAT");
+            if (lightMode == "NBCameraOpaqueDistortPass")
+                pass = WithNBPassDefine(pass, "NB_GRAPH_CAMERA_OPAQUE_PASS");
+'''
+ return one(s,a,b)
+
+def patch_graph(s):
+ old=decode(s);o=copy.deepcopy(old);root=o[0]
+ by={x['m_ObjectId']:x for x in o if 'm_ObjectId' in x};ids=set(by)
+ assert not any(x.get('m_FunctionName')=='NBGraphVATSoftBody' for x in o)
+ cat=next(x for x in o if x.get('m_Type')=='UnityEditor.ShaderGraph.CategoryData')
+ vo=next(x for x in o if x.get('m_FunctionName')=='NBGraphVertexOffset')
+ def add(x):
+  assert x['m_ObjectId'] not in ids
+  ids.add(x['m_ObjectId']);by[x['m_ObjectId']]=x;o.append(x)
+ def slot(node,name):
+  return next(by[q['m_Id']] for q in node['m_Slots'] if by[q['m_Id']]['m_DisplayName']==name)
+ def source(node,name):
+  sid=slot(node,name)['m_Id']
+  e=[e for e in root['m_Edges'] if e['m_InputSlot']['m_Node']['m_Id']==node['m_ObjectId'] and e['m_InputSlot']['m_SlotId']==sid]
+  assert len(e)==1,(node['m_Name'],name,len(e))
+  return copy.deepcopy(e[0]['m_OutputSlot'])
+ def edge(src,dst,slotid):
+  root['m_Edges'].append({'m_OutputSlot':src,'m_InputSlot':{'m_Node':{'m_Id':dst},'m_SlotId':slotid}})
+ def clone_slot(template,key,name,index,io=0):
+  x=copy.deepcopy(template);x['m_ObjectId']=uid('slot:'+key);x['m_Id']=index;x['m_DisplayName']=name;x['m_ShaderOutputName']=name;x['m_SlotType']=io;x['m_StageCapability']=1
+  add(x);return x
+ def prop(name,default,kind):
+  assert not any(x.get('m_OverrideReferenceName')==name for x in old),name
+  template_name='_VertexOffset_Map' if kind=='tex' else '_VertexOffset_Toggle'
+  template=next(x for x in old if x.get('m_OverrideReferenceName')==template_name)
+  tmpl_node=next(x for x in old if x.get('m_Property',{}).get('m_Id')==template['m_ObjectId'])
+  p=copy.deepcopy(template);p['m_ObjectId']=uid('property:'+name)
+  p['m_Guid']={'m_GuidSerialized':str(uuid.uuid5(NS,'V0:guid:'+name))}
+  p['m_Name']=p['m_RefNameGeneratedByDisplayName']=name.lstrip('_')
+  p['m_DefaultReferenceName']=p['m_OverrideReferenceName']=name
+  p['m_Hidden']=name not in ('_VAT_Toggle','_VATMode')
+  if kind=='tex':
+   p['useTilingAndOffset']=False;p['m_DefaultType']=1
+  else:p['m_Value']=float(default)
+  pn=copy.deepcopy(tmpl_node);pn['m_ObjectId']=uid('prop-node:'+name)
+  pn['m_Property']={'m_Id':p['m_ObjectId']}
+  pn['m_DrawState']['m_Position']['y']=32500+len(root['m_Properties'])*55
+  out=copy.deepcopy(by[tmpl_node['m_Slots'][0]['m_Id']]);out['m_ObjectId']=uid('prop-slot:'+name)
+  out['m_DisplayName']=name.lstrip('_')
+  if kind!='tex':out['m_Value']=out['m_DefaultValue']=float(default)
+  add(out);pn['m_Slots']=[{'m_Id':out['m_ObjectId']}]
+  add(p);add(pn);root['m_Properties'].append({'m_Id':p['m_ObjectId']});root['m_Nodes'].append({'m_Id':pn['m_ObjectId']});cat['m_ChildObjectList'].append({'m_Id':p['m_ObjectId']})
+  return {'m_Node':{'m_Id':pn['m_ObjectId']},'m_SlotId':0}
+ # Gating + old ShaderLab names/defaults. No shadow-mode/property substitute.
+ defs=[('_posTexture',None,'tex'),('_posTexture2',None,'tex'),('_rotTexture',None,'tex'),
+  ('_VAT_Toggle',0,'float'),('_VATMode',0,'float'),('_HoudiniVATSubMode',0,'float'),
+  ('_B_autoPlayback',1,'float'),('_gameTimeAtFirstFrame',0,'float'),
+  ('_playbackSpeed',1,'float'),('_houdiniFPS',24,'float'),('_displayFrame',0,'float'),
+  ('_frameCount',1,'float'),('_boundMinX',-1,'float'),('_boundMinY',-1,'float'),
+  ('_boundMinZ',-1,'float'),('_boundMaxX',1,'float'),('_boundMaxY',1,'float'),
+  ('_boundMaxZ',1,'float'),('_B_LOAD_POS_TWO_TEX',0,'float'),('_B_UNLOAD_ROT_TEX',0,'float')]
+ sources={name:prop(name,val,kind) for name,val,kind in defs}
+ vat=copy.deepcopy(vo);vat['m_ObjectId']=uid('vertex-cf');vat['m_Name']='NBGraphVATSoftBody (Custom Function)'
+ vat['m_FunctionName']='NBGraphVATSoftBody';vat['m_FunctionSource']=VERTEX_GUID
+ vat['m_DrawState']['m_Position']['y']=-950.0
+ inputs=[('PositionOS','v3',source(vo,'PositionOS')),
+  ('NormalOS','v3',source(vo,'NormalOS')),
+  ('UV1','v4',source(vo,'UV1'))]
+ mapper=[('PosTexture','_posTexture'),('PosTexture2','_posTexture2'),('RotTexture','_rotTexture'),
+  ('VATToggle','_VAT_Toggle'),('VATMode','_VATMode'),('HoudiniVATSubMode','_HoudiniVATSubMode'),
+  ('AutoPlayback','_B_autoPlayback'),('GameTimeAtFirstFrame','_gameTimeAtFirstFrame'),
+  ('PlaybackSpeed','_playbackSpeed'),('HoudiniFPS','_houdiniFPS'),('DisplayFrame','_displayFrame'),
+  ('FrameCount','_frameCount'),('BoundMinX','_boundMinX'),('BoundMinY','_boundMinY'),
+  ('BoundMinZ','_boundMinZ'),('BoundMaxX','_boundMaxX'),('BoundMaxY','_boundMaxY'),
+  ('BoundMaxZ','_boundMaxZ'),('LoadPosTwoTex','_B_LOAD_POS_TWO_TEX'),('UnloadRotTex','_B_UNLOAD_ROT_TEX')]
+ inputs += [(label,'tex' if name in ('_posTexture','_posTexture2','_rotTexture') else 'f',sources[name]) for label,name in mapper]
+ inputs += [('Flags1Lo16','f',source(vo,'Flags1Lo16')),('Flags1Hi16','f',source(vo,'Flags1Hi16'))]
+ templates={'v3':slot(vo,'PositionOS'),'v4':slot(vo,'UV1'),'tex':slot(vo,'VertexOffsetMap'),'f':slot(vo,'VertexOffsetToggle')}
+ vat['m_Slots']=[]
+ for n,(label,kind,src) in enumerate(inputs):
+  sl=clone_slot(templates[kind],label,label,n)
+  vat['m_Slots'].append({'m_Id':sl['m_ObjectId']});edge(src,vat['m_ObjectId'],n)
+ outs=[]
+ for j,label in enumerate(('OutPositionOS','OutNormalOS','Supported')):
+  idx=len(inputs)+j;tmpl=slot(vo,'Supported' if label=='Supported' else label)
+  sl=clone_slot(tmpl,label,label,idx,1);vat['m_Slots'].append({'m_Id':sl['m_ObjectId']});outs.append(idx)
+ add(vat);root['m_Nodes'].append({'m_Id':vat['m_ObjectId']})
+ # Rewire exactly VO Position/Normal. Existing VO and block IDs remain stable.
+ for name,outid in (('PositionOS',outs[0]),('NormalOS',outs[1])):
+  sid=slot(vo,name)['m_Id']
+  matches=[e for e in root['m_Edges'] if e['m_InputSlot']['m_Node']['m_Id']==vo['m_ObjectId'] and e['m_InputSlot']['m_SlotId']==sid]
+  assert len(matches)==1
+  matches[0]['m_OutputSlot']={'m_Node':{'m_Id':vat['m_ObjectId']},'m_SlotId':outid}
+ # SixWay/ordinary vertex SH currently reads original SG World N/T/B,
+ # created before VertexDescription outputs. Recompute its animated normal
+ # while preserving exact original vectors for VAT-off identity.
+ six=next(x for x in o if x.get('m_FunctionName')=='NBGraphSixWayBake')
+ raw_basis={name:source(six,name) for name in ('NormalWS','TangentWS','BitangentWS')}
+ basis=copy.deepcopy(vo);basis['m_ObjectId']=uid('world-basis-cf')
+ basis['m_Name']='NBGraphVATWorldBasis (Custom Function)'
+ basis['m_FunctionName']='NBGraphVATWorldBasis';basis['m_FunctionSource']=VERTEX_GUID
+ basis['m_DrawState']['m_Position']['y']=-725.0
+ basis_ins=[('VATNormalOS','v3',{'m_Node':{'m_Id':vat['m_ObjectId']},'m_SlotId':outs[1]}),
+  ('RawNormalWS','v3',raw_basis['NormalWS']),
+  ('RawTangentWS','v3',raw_basis['TangentWS']),
+  ('RawBitangentWS','v3',raw_basis['BitangentWS']),
+  ('VATToggle','f',sources['_VAT_Toggle']),
+  ('Supported','f',{'m_Node':{'m_Id':vat['m_ObjectId']},'m_SlotId':outs[2]})]
+ basis['m_Slots']=[]
+ for n,(label,kind,src) in enumerate(basis_ins):
+  sl=clone_slot(templates[kind],'basis-'+label,label,n)
+  basis['m_Slots'].append({'m_Id':sl['m_ObjectId']});edge(src,basis['m_ObjectId'],n)
+ for j,label in enumerate(('NormalWS','TangentWS','BitangentWS')):
+  idx=len(basis_ins)+j
+  sl=clone_slot(slot(vo,'OutNormalOS'),'basis-out-'+label,label,idx,1)
+  basis['m_Slots'].append({'m_Id':sl['m_ObjectId']})
+  sid=slot(six,label)['m_Id']
+  matches=[e for e in root['m_Edges'] if e['m_InputSlot']['m_Node']['m_Id']==six['m_ObjectId'] and e['m_InputSlot']['m_SlotId']==sid]
+  assert len(matches)==1
+  matches[0]['m_OutputSlot']={'m_Node':{'m_Id':basis['m_ObjectId']},'m_SlotId':idx}
+ add(basis);root['m_Nodes'].append({'m_Id':basis['m_ObjectId']})
+ # FG1 may be integrated later. It needs postVAT/pre-VertexOffset position.
+ fogs=[x for x in o if x.get('m_FunctionName')=='NBGraphFogVertex']
+ if fogs:
+  fog=fogs[0];sid=slot(fog,'PositionOS')['m_Id']
+  matches=[e for e in root['m_Edges'] if e['m_InputSlot']['m_Node']['m_Id']==fog['m_ObjectId'] and e['m_InputSlot']['m_SlotId']==sid]
+  assert len(matches)==1
+  matches[0]['m_OutputSlot']={'m_Node':{'m_Id':vat['m_ObjectId']},'m_SlotId':outs[0]}
+ changed={x['m_ObjectId'] for x,y in zip(o[:len(old)],old) if x!=y and 'm_ObjectId' in x}
+ expected={root['m_ObjectId'],cat['m_ObjectId'],vo['m_ObjectId']}
+ # VO only gets its source edge rewired in root; its serialized node stays byte-equivalent.
+ expected.remove(vo['m_ObjectId'])
+ assert changed==expected,(changed,expected)
+ return '\n\n'.join(json.dumps(x,ensure_ascii=False,indent=4) for x in o)+'\n',{'oldObjects':len(old),'newObjects':len(o),'changedOriginalIds':sorted(changed),'fogRewired':bool(fogs),'vatNode':vat['m_ObjectId']}
+
+def meta(guid):
+ return f'fileFormatVersion: 2\nguid: {guid}\nShaderIncludeImporter:\n  externalObjects: {{}}\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n'
+
+def main():
+ assert not F['vertex'].exists() and not F['shared'].exists(), 'V0 product already exists; rebase preview'
+ raw={k:p.read_bytes() for k,p in F.items() if p.exists()}
+ shared,oldvat=shared_and_old(raw['oldvat'].decode())
+ outputs={'graph':patch_graph(raw['graph'].decode())[0], 'vertex':vertex_hlsl(),
+  'vertex_meta':meta(VERTEX_GUID),'shared':shared,'shared_meta':meta(SHARED_GUID),
+  'oldvat':oldvat,'subtarget':patch_subtarget(raw['subtarget'].decode())}
+ audit=patch_graph(raw['graph'].decode())[1]
+ OUT.mkdir(parents=True,exist_ok=True);files={}
+ for k,content in outputs.items():
+  dst=OUT/F[k].name;data=content.encode();dst.write_bytes(data)
+  files[k]={'target':str(F[k]),'preview':str(dst),'inputSHA256':hashlib.sha256(raw[k]).hexdigest() if k in raw else None,'previewSHA256':hashlib.sha256(data).hexdigest()}
+ manifest={'mode':'preview-only','scope':'ordinary Mesh Houdini SoftBody V0 only','graphAudit':audit,'files':files,'noUnityOrGit':True}
+ (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');print(json.dumps(manifest,indent=2))
+if __name__=='__main__':main()

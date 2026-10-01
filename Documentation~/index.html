@@ -70,5 +70,7 @@
 <p>2026-10-01 RF1增量：<a href="reports/t07-mesh-refraction-checkpoint.html">普通Mesh折射已接入Graph，30项25通过/5严格失败留档；1071项合并回归为908通过/163失败</a>。原158失败身份不变。新增3项为Deferred透视微差，另2项为旧Shader与Graph同值的辅助零背景断言失败，不混作B/C失配；不追弱颜色、不放宽标准。完整Mesh/GUI/Tier/后处理/Player/性能仍未闭合，真正VFX仍等待。</p>
 <p>2026-10-01 DD1/POM1增量：<a href="reports/t07-mesh-depth-decal-checkpoint.html">深度贴花8/8严格通过</a>；<a href="reports/t07-mesh-parallax-checkpoint.html">视差已接入，但26项均仍有像素差、严格未通过</a>，保留给集中人工测试，不追弱色、不降标准。现有22个夹具的1105项在5个独立串行进程中完整重放，合计916通过/189严格失败/0跳过（旧163不变，新增26为视差）；这不是单进程的合成XML，也不是全部普通Mesh功能覆盖。15322份截图/解压raw实读核对，旧12份PBR阴影原始帧跨轮有1–3像素变化，前后版均留存；两次整帧空白的单进程回放另留历史，原因未证实。G3/G4仍未放行，正式VFX仍等完整Mesh。</p>
 <p><strong>2026-10-01 跨机器交接冻结：</strong><a href="reports/handoff-20261001/index.html">完整交接、拉取步骤、未集成候选与恢复指令</a>。产品最新源为07fb0d9；<a href="reports/t07-mesh-chromatic-checkpoint.html">色散58项47通过/11失败（两进程）</a>、<a href="reports/t07-mesh-fog-gamma-checkpoint.html">雾/Gamma16项严格通过</a>已补单片证据，未有这两片之后完整矩阵。1105=916/189仍是此前分批回放，GUI仍84项/schema1。UVP、GUI1B、VAT、Flipbook仅候选归档，完整普通Mesh/G3/G4未放行，正式VFX/HDRP不启动。</p>
+<p>2026-10-02：<a href="reports/resume-20261002.html">新机接任核验与普通Mesh下一入口</a>。两仓/LFS/交接SHA恢复完成，候选已基于当前源重新预览；等待6000.3与相关MCP环境做新验证。普通Mesh仍优先，G3/G4未放行。</p>
+<p>2026-10-02：<a href="reports/mesh-windows-20261002.html">当前Windows普通Mesh实测与独立阻塞</a>。使用6000.3.25f1与官方CLI；保留strict失败、CA GPU故障和候选未完成状态，仍按普通Mesh→正式VFX→HDRP推进。</p>
 </body>
 </html>

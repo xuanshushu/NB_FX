@@ -1,0 +1,116 @@
+========== OUTPUTTING STACK TRACE ==================
+
+0x00007FFCEF276192 (Unity) ShaderLab::SubProgram::GetParams
+0x00007FFCEED8B989 (Unity) GraphicsHelper::PrepareShaderParameterBuffer
+0x00007FFCEEC916A4 (Unity) GfxDeviceClient::SetShadersMainThread
+0x00007FFCEF27C046 (Unity) ShaderLab::ShaderState::ApplyShaderState
+0x00007FFCEF26C2B6 (Unity) ShaderLab::Pass::ApplyPass
+0x00007FFCEF1CE21B (Unity) ApplyMaterialPass
+0x00007FFCEEF28F0F (Unity) ScriptableBatchRenderer::ApplyShaderPass
+0x00007FFCEEF36CFE (Unity) ScriptableRenderLoopDrawSRPBatcher
+0x00007FFCEEF370EA (Unity) ScriptableRenderLoopJob
+0x00007FFCEEBF7E73 (Unity) GfxDevice::ExecuteAsync
+0x00007FFCEEC862F9 (Unity) GfxDeviceClient::ExecuteAsync
+0x00007FFCEEF34083 (Unity) ScheduleRenderJobs
+0x00007FFCEEF2AA79 (Unity) ExecuteDrawRenderersCommand
+0x00007FFCEEF1EEFF (Unity) ScriptableRenderContext::ExecuteRendererList
+0x00007FFCEEE7B1C1 (Unity) RenderingCommandBuffer::ExecuteCommandBufferWithState
+0x00007FFCEEE7A90A (Unity) RenderingCommandBuffer::ExecuteCommandBuffer
+0x00007FFCEEF1FAED (Unity) ScriptableRenderContext::ExecuteScriptableRenderLoop
+0x00007FFCEE68AB48 (Unity) ScriptableRenderContext_CUSTOM_Submit_Internal
+0x00000204C9027384 (Mono JIT Code) (wrapper managed-to-native) UnityEngine.Rendering.ScriptableRenderContext:Submit_Internal (UnityEngine.Rendering.ScriptableRenderContext&)
+0x00000204C90271E3 (Mono JIT Code) UnityEngine.Rendering.ScriptableRenderContext:Submit ()
+0x00000204C8E8F0E3 (Mono JIT Code) [.\Library\PackageCache\com.unity.render-pipelines.universal@a0dd9d2bd983\Runtime\UniversalRenderPipeline.cs:921] UnityEngine.Rendering.Universal.UniversalRenderPipeline:RenderSingleCamera (UnityEngine.Rendering.ScriptableRenderContext,UnityEngine.Rendering.Universal.UniversalCameraData) 
+0x00000204C8E67A4B (Mono JIT Code) [.\Library\PackageCache\com.unity.render-pipelines.universal@a0dd9d2bd983\Runtime\UniversalRenderPipeline.cs:1124] UnityEngine.Rendering.Universal.UniversalRenderPipeline:RenderCameraStack (UnityEngine.Rendering.ScriptableRenderContext,UnityEngine.Camera,bool) 
+0x00000204C8D8971B (Mono JIT Code) [.\Library\PackageCache\com.unity.render-pipelines.universal@a0dd9d2bd983\Runtime\UniversalRenderPipeline.cs:499] UnityEngine.Rendering.Universal.UniversalRenderPipeline:Render (UnityEngine.Rendering.ScriptableRenderContext,System.Collections.Generic.List`1<UnityEngine.Camera>) 
+0x00000204C8D889AC (Mono JIT Code) UnityEngine.Rendering.RenderPipeline:InternalRender (UnityEngine.Rendering.ScriptableRenderContext,System.Collections.Generic.List`1<UnityEngine.Camera>)
+0x00000204C8CAA7AB (Mono JIT Code) UnityEngine.Rendering.RenderPipelineManager:DoRenderLoop_Internal (UnityEngine.Rendering.RenderPipelineAsset,intptr,UnityEngine.Object,Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle)
+0x00000204C8CAAD25 (Mono JIT Code) (wrapper runtime-invoke) <Module>:runtime_invoke_void_object_intptr_object_AtomicSafetyHandle (object,intptr,intptr,intptr)
+0x00007FFD16776C0E (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\mini\mini-runtime.c:3445] mono_jit_runtime_invoke 
+0x00007FFD166B8984 (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\metadata\object.c:3068] do_runtime_invoke 
+0x00007FFD166B8A70 (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\metadata\object.c:3115] mono_runtime_invoke 
+0x00007FFCEF112F74 (Unity) scripting_method_invoke
+0x00007FFCEF119E33 (Unity) ScriptingInvocation::Invoke
+0x00007FFCEF1153D5 (Unity) ScriptingInvocation::Invoke<void>
+0x00007FFCEE5D90EF (Unity) Scripting::UnityEngine::Rendering::RenderPipelineManagerProxy::DoRenderLoop_Internal
+0x00007FFCEEF212F4 (Unity) ScriptableRenderContext::ExtractAndExecuteRenderPipeline
+0x00007FFCEEAD72B6 (Unity) Camera::CustomRenderWithPipeline
+0x00007FFCEEAE4ADD (Unity) Camera::StandaloneCustomRender
+0x00007FFCEEAE4D58 (Unity) Camera::StandaloneRender
+0x00007FFCEEADE75F (Unity) CameraScripting::Render
+0x00007FFCEE6FBD69 (Unity) Camera_CUSTOM_Render
+0x00000204C8CAA202 (Mono JIT Code) (wrapper managed-to-native) UnityEngine.Camera:Render_Injected (intptr)
+0x00000204C8CAA0D3 (Mono JIT Code) UnityEngine.Camera:Render ()
+0x00000204C8CA90DB (Mono JIT Code) [.\Packages\NB_FX\Tests\URP\Editor\G4GraphChromaticTests.cs:554] NBFX.Baseline.Tests.G4GraphChromaticTests:Capture (UnityEngine.Camera,UnityEngine.RenderTexture,UnityEngine.Texture2D,string) 
+0x00000204C904E873 (Mono JIT Code) [.\Packages\NB_FX\Tests\URP\Editor\G4GraphChromaticTests.cs:207] NBFX.Baseline.Tests.G4GraphChromaticTests:<ThreeChromaticSamplesMatchFrozenAndGraph>g__Snap|16_0 (UnityEngine.Material,bool,bool,bool,string,int,NBFX.Baseline.Tests.G4GraphChromaticTests/<>c__DisplayClass16_0&,NBFX.Baseline.Tests.G4GraphChromaticTests/<>c__DisplayClass16_1&) 
+0x00000204C8C755CB (Mono JIT Code) [.\Packages\NB_FX\Tests\URP\Editor\G4GraphChromaticTests.cs:219] NBFX.Baseline.Tests.G4GraphChromaticTests:ThreeChromaticSamplesMatchFrozenAndGraph (string,string,bool) 
+0x00000204C8C7AED6 (Mono JIT Code) (wrapper runtime-invoke) <Module>:runtime_invoke_void__this___object_object_byte (object,intptr,intptr,intptr)
+0x00007FFD16776C0E (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\mini\mini-runtime.c:3445] mono_jit_runtime_invoke 
+0x00007FFD166B8984 (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\metadata\object.c:3068] do_runtime_invoke 
+0x00007FFD166BFA36 (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\metadata\object.c:5774] mono_runtime_try_invoke_array 
+0x00007FFD165F19F1 (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\metadata\icall.c:4038] ves_icall_InternalInvoke 
+0x00007FFD16617DB1 (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\metadata\icall-def.h:692] ves_icall_InternalInvoke_raw 
+0x00000204AC7B1162 (Mono JIT Code) (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo:InternalInvoke (System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+0x00000204AAC2EA73 (Mono JIT Code) System.Reflection.RuntimeMethodInfo:Invoke (object,System.Reflection.BindingFlags,System.Reflection.Binder,object[],System.Globalization.CultureInfo)
+0x00000204A8232DBF (Mono JIT Code) System.Reflection.MethodBase:Invoke (object,object[])
+0x00000204C4E5B393 (Mono JIT Code) NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+0x00000204C8C6C6EB (Mono JIT Code) NUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])
+0x00000204C8C6C5CA (Mono JIT Code) NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+0x00000204C8C6C453 (Mono JIT Code) NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+0x00000204C8C6C073 (Mono JIT Code) NUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+0x00000204C8C6BCCB (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Commands\UnityTestMethodCommand.cs:19] UnityEngine.TestTools.UnityTestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) 
+0x00000204C8C6BA5B (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\UnityLogCheckDelegatingCommand.cs:24] UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand/<>c__DisplayClass2_0:<Execute>b__0 () 
+0x00000204C8C6B883 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\UnityLogCheckDelegatingCommand.cs:72] UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:CaptureException (NUnit.Framework.Internal.TestResult,System.Action) 
+0x00000204C8C6B723 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\UnityLogCheckDelegatingCommand.cs:83] UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:ExecuteAndCheckLog (UnityEngine.TestTools.Logging.LogScope,NUnit.Framework.Internal.TestResult,System.Action) 
+0x00000204C8C6B3CB (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\UnityLogCheckDelegatingCommand.cs:24] UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) 
+0x00000204C8C6A4C9 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\UnityLogCheckDelegatingCommand.cs:35] UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand/<ExecuteEnumerable>d__3:MoveNext () 
+0x00000204C4E4D831 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Commands\BeforeAfterTestCommandBase.cs:212] UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__16<T_REF>:MoveNext () 
+0x00000204C8C698BE (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Commands\ImmediateEnumerableCommand.cs:18] UnityEngine.TestTools.ImmediateEnumerableCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) 
+0x00000204C4E4D931 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Commands\BeforeAfterTestCommandBase.cs:219] UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__16<T_REF>:MoveNext () 
+0x00000204C4E4D831 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Commands\BeforeAfterTestCommandBase.cs:212] UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__16<T_REF>:MoveNext () 
+0x00000204C4E4D831 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Commands\BeforeAfterTestCommandBase.cs:212] UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__16<T_REF>:MoveNext () 
+0x00000204C8C6877F (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Commands\RetryCommand.cs:37] UnityEngine.TestTools.RetryCommand/<ExecuteEnumerable>d__2:MoveNext () 
+0x00000204C8C6731F (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Commands\RepeatCommand.cs:36] UnityEngine.TestTools.RepeatCommand/<ExecuteEnumerable>d__2:MoveNext () 
+0x00000204C8C6646E (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Commands\IgnoreTestCommand.cs:42] UnityEngine.TestTools.IgnoreTestCommand/<ExecuteEnumerable>d__3:MoveNext () 
+0x00000204C8C651D7 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Commands\StrictCheckCommand.cs:29] UnityEngine.TestTools.StrictCheckCommand/<ExecuteEnumerable>d__2:MoveNext () 
+0x00000204C8C645E9 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\DefaultTestWorkItem.cs:50] UnityEngine.TestRunner.NUnitExtensions.Runner.DefaultTestWorkItem/<PerformWork>d__2:MoveNext () 
+0x00000204C4E51892 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:207] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__17:MoveNext () 
+0x00000204C4E45AB6 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:82] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__13:MoveNext () 
+0x00000204C4E51892 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:207] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__17:MoveNext () 
+0x00000204C4E45AB6 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:82] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__13:MoveNext () 
+0x00000204C4E51892 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:207] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__17:MoveNext () 
+0x00000204C4E45AB6 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:82] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__13:MoveNext () 
+0x00000204C4E51892 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:207] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__17:MoveNext () 
+0x00000204C4E45AB6 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:82] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__13:MoveNext () 
+0x00000204C4E51892 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:207] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__17:MoveNext () 
+0x00000204C4E45AB6 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:82] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__13:MoveNext () 
+0x00000204C4E51892 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:207] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__17:MoveNext () 
+0x00000204C4E45AB6 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:82] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__13:MoveNext () 
+0x00000204C4E51892 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:207] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__17:MoveNext () 
+0x00000204C4E45AB6 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Runner\CompositeWorkItem.cs:82] UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__13:MoveNext () 
+0x00000204C4E4437C (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEditor.TestRunner\TestRunner\EditModeRunner.cs:167] UnityEditor.TestTools.TestRunner.EditModeRunner:MoveNextAndUpdateYieldObject () 
+0x00000204C4E43F8B (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEditor.TestRunner\TestRunner\EditModeRunner.cs:200] UnityEditor.TestTools.TestRunner.EditModeRunner:TestConsumer (UnityEditor.TestTools.TestRunner.TestRunnerStateSerializer) 
+0x00000204C4E3AA13 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEditor.TestRunner\TestRun\Tasks\EditModeRunTask.cs:48] UnityEditor.TestTools.TestRunner.TestRun.Tasks.EditModeRunTask/<Execute>d__1:MoveNext () 
+0x00000204C4B10E6E (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEditor.TestRunner\TestRun\TestJobRunner.cs:173] UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteStep () 
+0x00000204C4B0F8B3 (Mono JIT Code) [.\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEditor.TestRunner\TestRun\TestJobRunner.cs:108] UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteCallback () 
+0x00000204BF02C108 (Mono JIT Code) UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+0x00000204AC7C9145 (Mono JIT Code) (wrapper runtime-invoke) object:runtime_invoke_void (object,intptr,intptr,intptr)
+0x00007FFD16776C0E (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\mini\mini-runtime.c:3445] mono_jit_runtime_invoke 
+0x00007FFD166B8984 (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\metadata\object.c:3068] do_runtime_invoke 
+0x00007FFD166B8A70 (mono-2.0-bdwgc) [C:\build\output\Unity-Technologies\mono\mono\metadata\object.c:3115] mono_runtime_invoke 
+0x00007FFCEF112F74 (Unity) scripting_method_invoke
+0x00007FFCEF119E33 (Unity) ScriptingInvocation::Invoke
+0x00007FFCEF1153D5 (Unity) ScriptingInvocation::Invoke<void>
+0x00007FFCEF70054B (Unity) Scripting::UnityEditor::EditorApplicationProxy::Internal_CallUpdateFunctions
+0x00007FFCEFD806A7 (Unity) SceneTracker::Update
+0x00007FFCEF94DCCD (Unity) Application::TickTimer
+0x00007FFCEF72E8FC (Unity) MainMessageLoop
+0x00007FFCEF736392 (Unity) UnityMain
+0x00007FF6E9812F2A (Unity) __scrt_common_main_seh
+0x00007FFE38D0CCB7 (KERNEL32) BaseThreadInitThunk
+0x00007FFE3AAEAD6C (ntdll) RtlUserThreadStart
+
+========== END OF STACKTRACE ===========
+
+A crash has been intercepted by the crash handler. For call stack and other details, see the latest crash report generated in:
+ * C:/Users/Admin/AppData/Local/Temp/Unity/Editor/Crashes

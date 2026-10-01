@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>NB_FX 新机接任核验 · 2026-10-02</title></head>
+<body>
+<p><a href="index.html">报告索引</a> · <a href="handoff-20261001/index.html">原交接</a> · <a href="../tasks/t07-graph-parity-gui.html">T07</a> · <a href="../decisions.html#d24">D24</a></p>
+<h1>新机已恢复交接内容；最新6000.3与CLI已接通</h1>
+<p><strong>后续实际状态：</strong>用户已安装6000.3.25f1并授权优先CLI操作。NB独占隔离工程MCP已恢复，Unity CLI 1.0.0-beta.11/Pipeline0.7.0-exp.1实际连接、发现及GPU测试已执行；普通Mesh已有矩阵与顺序重生成候选实跑见<a href="mesh-windows-20261002.html">最新Windows检查点</a>。完整Mesh/G3/G4仍未放行，正式VFX/HDRP仍等待。</p>
+<p>下文保留<strong>安装完成前的接任恢复快照</strong>：主 Agent 已读取交接、恢复指令、候选说明与必读任务/Gate/验证/决策/Git 文档，恢复两个仓库的指定分支、submodule和Git LFS，完成附件字节核验与四组静态预览。当时尚未运行Unity，MCP只连接T3；这些历史“待安装/未实跑”描述不代表上述最新状态。</p>
+<h2>双仓版本与保护状态</h2>
+<table border="1" cellpadding="6"><tr><th>项目</th><th>接任核对结果</th></tr>
+<tr><td>主工程</td><td>codex/nb-fx-vfxgraph-implementation · <code>f23ca7d85643ee4fe91a23a1d42eaf74d22a07e4</code></td></tr>
+<tr><td>NB_FX</td><td>同名分支 · <code>29144c1fe676c15ba1fcbe83d9cf04eae94679d6</code></td></tr>
+<tr><td>主工程 gitlink</td><td>等于上述 NB_FX HEAD，两个本地 HEAD 均等于本次 fetch 的远端同名分支。</td></tr>
+<tr><td>产品冻结源</td><td><code>07fb0d908b28689eb45fdd259e5dd8b81559c9c9</code>；后续传输 HEAD 只归档文档/证据，不能混淆。</td></tr>
+<tr><td>工作区</td><td>恢复完成、写入本报告前，两仓状态均干净，staged diff 为空。随后仅新增本接任报告/附件与索引入口。</td></tr></table>
+<p>没有历史合并、reset、clean、stash、worktree、push 或新用户任务/自动化。保留已有 pre-push hook；LFS 只配置仓库本地过滤器。原 EXR 在恢复前的 SHA 与两个分支的 LFS oid 一致，先前异常来自沙箱过滤器检查，不是用户内容修改。Git 操作使用正确的 Git usr/bin PATH，并仅为 Git 元数据与网络取回使用受审查权限。</p>
+<p>本目录不在当前 Perforce client root 内，<code>p4 where</code>已核对；没有修改 T3 或 PackageRepo。</p>
+<h2>传输完整性与 Windows 换行</h2>
+<p>两个仓库的 <code>git lfs fsck</code>均返回 OK。原交接 <code>operations/verify-handoff.py --package Packages/NB_FX</code>核验了<strong>4,741 个文件及 38 份 UVP 无损解压载荷</strong>，通过。<a href="resume-20261002/verification-receipt.json">本次执行结果摘要</a>记录上述工具结果；它是回执摘要，不冒充原始 Unity 日志。</p>
+<p>本机全局 <code>core.autocrlf=true</code>最初改变了普通文本的检出字节，中央 Graph SHA 因此不同。恢复时先确认包干净，再为 NB_FX 设置本地 <code>core.autocrlf=false / core.eol=lf</code>；仅当检出字节去掉 CRLF 后与 Git blob 完全相等时恢复原始字节，共841文件，非换行真实差异0。逐件前后 SHA 见<a href="resume-20261002/checkout-byte-restoration.json">字节恢复清单</a>。更新索引统计后无 staged 或产品 diff。</p>
+<p>中央 Graph 实际 SHA 恢复为 <code>24bb84c9f37b34256f305a86dad0e3b4e4f74ee9db7895fec64f906723284da0</code>，997对象；BaseUV 恢复为 <code>305b618e9bb02276a64844db909ce58613529a88069161f9dc821d473ec3b33f</code>。没有调整原交接的任何 SHA 清单。</p>
+<h2>四组候选重新预览，仍未应用</h2>
+<p>在忽略的 <code>.utmp/nbfx-resume-20261002/</code>中解压/复制原脚本，重绑定本机输入和专属输出目录，保持所有接缝断言；Windows 预览写入使用 UTF-8/LF。原归档脚本未改。四组独立预览均读取同一未修改的当前源，<strong>不是顺序可直接应用的四份补丁</strong>。</p>
+<table border="1" cellpadding="6"><tr><th>候选</th><th>新机静态结果</th><th>仍未证明</th></tr>
+<tr><td>UVP</td><td>4源生成；Graph 997→1090，custom components 23→38；ordered CF signature、edge endpoint、唯一fan-in和含隐式CI的DAG审计通过。<a href="resume-20261002/uvp-manifest.json">manifest</a> · <a href="resume-20261002/uvp-static-structural-audit.json">静态审计</a></td><td>376候选用例未运行；实际插值预算、Shader编译、GPU，以及feature自身ST/rotation阶段仍待验证。</td></tr>
+<tr><td>GUI1B</td><td>同一22 toggle/7 mode绑定生成29真实隐藏Float，Graph 997→1026；旧非root对象保持。<a href="resume-20261002/gui1b-manifest.json">manifest</a></td><td>seed-only，无完整GUI/Tier；新增15用例未运行，产品仍schema1/既有84项。</td></tr>
+<tr><td>Flipbook</td><td>8源生成，Graph 997→1017；保留真实UV0.zw和TEXCOORD3来源及CA优先分支。<a href="resume-20261002/flipbook-manifest.json">manifest</a></td><td>36候选用例未运行；Depth/Shadow、Helper生命周期、wrap/LOD和组合仍待补齐。</td></tr>
+<tr><td>VAT V0</td><td>7源生成，Graph 997→1096；Fog重接，SixWay basis候选保留。<a href="resume-20261002/vat-manifest.json">manifest</a></td><td>仅Houdini SoftBody；10 Forward候选未运行，其它VAT/CustomLocal/Depth/Shadow未证明。</td></tr></table>
+<p><a href="resume-20261002/preview-byte-equivalence.json">21份候选产品字节</a>与原归档全部一致；此结论只证明新机动态预览正确恢复，不证明功能通过。<a href="resume-20261002/preview-replay-summary.json">执行摘要</a> · <a href="resume-20261002/preview-stdout/uvp.txt">UVP stdout</a> · <a href="resume-20261002/preview-stdout/gui1b.txt">GUI1B stdout</a> · <a href="resume-20261002/preview-stdout/flipbook.txt">Flipbook stdout</a> · <a href="resume-20261002/preview-stdout/vat.txt">VAT stdout</a>。</p>
+<h2>隔离环境准备与下一入口</h2>
+<p>已创建普通文件复制的独立验证工程 <code>D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002</code>，没有Git worktree；48份快照逐SHA/字节数核对后恢复，仅安装到这个新目录；574份包文件逐字节核对一致，Documentation~和Git元数据未复制。<a href="resume-20261002/isolated-project-preparation.json">准备记录与文件SHA</a>。<strong>未启动、未导入、未编译、未安装MCP</strong>；主工程Assets/ProjectSettings未改。</p>
+<p>已发现本机现有MCP for Unity 10.1.2嵌入T3。读取源码确认其启动可触发客户端配置重写，因此本轮没有直接复制并启动它，也没有修改T3或全局配置。待用户完成6000.3安装后，记录实际Editor/包/API版本，恢复相关NB隔离工程MCP连接，先读state与loaded scenes、再做串行验证；任何TAI场景下均遵守Domain Reload保护。若安装的是另一6000.3 patch，其结果另记新环境，不能继承旧Metal结论。</p>
+<ol><li>先在当前已提交Graph验证Shader编译、生成源码、<code>NBCameraOpaqueDistortPass / NBDeferredDistortPass</code>及普通Mesh最小链路；这是G3正式补证，不重复G0/GF。</li>
+<li>保持严格断言和独立输出目录，按已有五批模板补CA/FG后的普通Mesh回归，CA/POM等按需要另分短批；finite、visible、repeat和强反事实控制仍必查。原1105=916/189、CA58=47/11、FG16/16均为历史输入各自结论，不预设新机通过数。</li>
+<li>逐片审查并应用UVP、GUI1B、Flipbook、VAT。每片之后其余wholeGraph预览立即过期，必须基于实时新源重生成；VAT应用时进一步审计UV、Fog、VO、SixWay与法线的共同上游位置。</li>
+<li>继续全部CustomData/时间、CustomLocal/其它VAT、共享GUI/Tier、高级状态、完整NBPostprocess Controller/Manager、生成代码/variants/SVC/stripping、Player/性能。保留微弱色差与首帧失败供最终集中人工验收。</li>
+<li>普通Mesh完成并审核G3/G4后才正式验证VFX；HDRP及低版本兼容最后。未经用户再次要求不push。</li></ol>
+<p><strong>恢复快照结论：</strong>仓库/交接恢复已核验；该快照本身不包含Unity新增验证。后续实际状态以<a href="mesh-windows-20261002.html">Windows检查点</a>为准。G2–G7不因恢复完成放行，正式VFX/HDRP未启动。附件SHA见<a href="resume-20261002/sha256.txt">本报告附件清单</a>。</p>
+</body>
+</html>

@@ -1,0 +1,2649 @@
+{
+    "shader": "NB FX/Shader Graph/NBShaderGraph",
+    "queue": 3000,
+    "keywords": [
+        "_SURFACE_TYPE_TRANSPARENT"
+    ],
+    "properties": [
+        {
+            "name": "_BaseMap",
+            "type": "TexEnv",
+            "texture": "|",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Color",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_NB_DistortionNoise",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.25,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_DistortionIntensity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.25,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_DistortionMode",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_Flags0Lo16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_Flags0Hi16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_Flags1Lo16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_Flags1Hi16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_DistortionAlphaPow",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_DistortionAlphaMultiplier",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_DistortionAlphaAdd",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMap",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Mask_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMapVec",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskRefineVec",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_ColorChannelLo16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 3.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_BaseMap_ST",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_BaseMapUVRotation",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_BaseMapUVRotationSpeed",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_BaseMapMaskMapOffset",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMapUVRotation",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMapRotationSpeed",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMapOffsetAnition",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveOffsetRotateDistort",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveMaskMap",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveMask_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveMaskMode",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMap2",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Mask2_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMap3",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Mask3_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMap3OffsetAnition",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_WrapFlagsLo16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_WrapFlagsHi16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMapGradientCount",
+            "type": "Float",
+            "texture": "",
+            "scalar": 2.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMapGradientFloat0",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_MaskMapGradientFloat1",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_MaskMapGradientFloat2",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_MaskMap2GradientCount",
+            "type": "Float",
+            "texture": "",
+            "scalar": 2.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMap2GradientFloat0",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_MaskMap2GradientFloat1",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_MaskMap2GradientFloat2",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_MaskMap3GradientCount",
+            "type": "Float",
+            "texture": "",
+            "scalar": 2.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskMap3GradientFloat0",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_MaskMap3GradientFloat1",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_MaskMap3GradientFloat2",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_AlphaAll",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ColorA",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_BaseColorIntensityForTimeline",
+            "type": "Range",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_fresnelEnabled",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_FresnelUnit",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.5,
+                "z": 1.0,
+                "w": 0.5
+            }
+        },
+        {
+            "name": "_FresnelColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_FresnelRotation",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.5
+            }
+        },
+        {
+            "name": "_Dissolve_Vec2",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.20000000298023225,
+                "y": 0.10000000149011612,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveLineColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_Dissolve_useRampMap_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveRampMap",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveRampSourceMode",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveRampColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_DissolveRampCount",
+            "type": "Float",
+            "texture": "",
+            "scalar": 131074.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveRampColor0",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveRampColor1",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_DissolveRampColor2",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_DissolveRampColor3",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_DissolveRampColor4",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_DissolveRampColor5",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_DissolveRampAlpha0",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_DissolveRampAlpha1",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_DissolveRampAlpha2",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_NB_ForceNoMipFlagsLo16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_ForceNoMipFlagsHi16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_DissolveRampSTOverrideEnabled",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_DissolveRampSTOverride",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NoiseMap",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_noisemapEnabled",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NoiseMapUVRotation",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NoiseOffset",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NoiseIntensity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DistortionDirection",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NoiseMaskMap",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_noiseMaskMap_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_TexDistortion_intensity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.5,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Emi_Distortion_intensity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskDistortion_intensity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Cutoff",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.5,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_AdditiveToPreMultiplyAlphaLerp",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_VertexOffset_Map",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_VertexOffset_Vec",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_VertexOffset_CustomDir",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_VertexOffset_NormalDir_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_VertexOffset_DirectionSpace",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_VertexOffset_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_VertexOffset_MaskMap",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_VertexOffset_MaskMap_Vec",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_VertexOffset_Mask_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_ColorChannelHi16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MatCapToggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MatCapTex",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MatCapColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_MatCapInfo",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_BumpMapToggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_BumpTex",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_BumpScale",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_FxLightMode",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaterialInfo",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_SpecularColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_ProgramNoise_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ProgramNoise_Simple_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ProgramNoise_Voronoi_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ProgramNoise_Rotate",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveVoronoi_Vec",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 2.0,
+                "w": 2.0
+            }
+        },
+        {
+            "name": "_DissolveVoronoi_Vec2",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 2.0,
+                "w": 2.0
+            }
+        },
+        {
+            "name": "_DissolveVoronoi_Vec3",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveVoronoi_Vec4",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ProgramNoiseBaseBlendOpacity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MaskPNoiseBlendOpacity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolvePNoiseBlendOpacity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_PNoiseBlendLo16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_PNoiseBlendHi16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_RigRTBk",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_RigLBtF",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_SixWayEmissionRamp",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_SixWayInfo",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.5,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_SixWayEmissionColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.5,
+                "z": 0.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_SixWayColorAbsorptionToggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DistortPNoiseBlendOpacity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DistortMode",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_RefractionIOR",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.5,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DepthDecal_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ParallaxMapping_Map",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ParallaxMapping_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ParallaxMapping_Intensity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.05000000074505806,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ParallaxMapping_Vec",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 5.0,
+                "y": 30.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Distortion_Choraticaberrat_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_CustomDataFlag0Lo16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_CustomDataFlag0Hi16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_fogintensity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DissolveMap",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Dissolve_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Dissolve",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.5,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 0.10000000149011612
+            }
+        },
+        {
+            "name": "_BaseBackColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_EmissionMap",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_EmissionEnabled",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_EmissionMapUVOffset",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_EmissionMapUVRotation",
+            "type": "Range",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_EmissionMapColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_EmissionMapColorIntensity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_EmissionAlphaIntensity",
+            "type": "Range",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ColorBlendMap",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ColorBlendMap_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ColorBlendMapOffset",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ColorBlendVec",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ColorBlendColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_ColorBlendColorIntensity",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_RampColorMap",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_RampColorToggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_RampColorSourceMode",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_RampColorMapOffset",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_RampColor0",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_RampColor1",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_RampColor2",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_RampColor3",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_RampColor4",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_RampColor5",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_RampColorAlpha0",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 0.5,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_RampColorAlpha1",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_RampColorAlpha2",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 0.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_RampColorCount",
+            "type": "Float",
+            "texture": "",
+            "scalar": 131074.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_RampColorBlendColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_HueShift",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Contrast",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ContrastMidColor",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.5,
+                "y": 0.5,
+                "z": 0.5,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_Saturability",
+            "type": "Range",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_BaseMapColorRefine",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 2.0,
+                "w": 0.5
+            }
+        },
+        {
+            "name": "_DistanceFade_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Fade",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 2.0,
+                "y": 4.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_SoftParticlesEnabled",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_SoftParticleFadeParams",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.5,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DepthOutline_Toggle",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DepthOutline_Color",
+            "type": "Color",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "w": 1.0
+            }
+        },
+        {
+            "name": "_DepthOutline_Vec",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.5,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_UVModeFlag0Lo16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_UVModeFlag0Hi16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_UVModeFlagType0Lo16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_UVModeFlagType0Hi16",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_SharedUV_ST",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_SharedUV_Vec",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_TWParameter",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.5,
+                "y": 0.5,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_TWStrength",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_PCCenter",
+            "type": "Vector",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.5,
+                "y": 0.5,
+                "z": 1.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_MainTexBigBlockItemFoldOut",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_BaseMapFoldOut",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_NB_GraphGUIStateVersion",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_CastShadows",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Surface",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Blend",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_AlphaClip",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_SrcBlend",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DstBlend",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_SrcBlendAlpha",
+            "type": "Float",
+            "texture": "",
+            "scalar": 1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_DstBlendAlpha",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ZWrite",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ZWriteControl",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ZTest",
+            "type": "Float",
+            "texture": "",
+            "scalar": 4.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Cull",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_AlphaToMask",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_QueueOffset",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_QueueControl",
+            "type": "Float",
+            "texture": "",
+            "scalar": -1.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_ColorMask",
+            "type": "Float",
+            "texture": "",
+            "scalar": 15.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_Stencil",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_StencilComp",
+            "type": "Float",
+            "texture": "",
+            "scalar": 8.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_StencilOp",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_StencilFail",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_StencilZFail",
+            "type": "Float",
+            "texture": "",
+            "scalar": 0.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_StencilReadMask",
+            "type": "Float",
+            "texture": "",
+            "scalar": 255.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "_StencilWriteMask",
+            "type": "Float",
+            "texture": "",
+            "scalar": 255.0,
+            "vector": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "unity_Lightmaps",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "unity_LightmapsInd",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        },
+        {
+            "name": "unity_ShadowMasks",
+            "type": "TexEnv",
+            "texture": "null",
+            "scalar": 0.0,
+            "vector": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0,
+                "w": 0.0
+            }
+        }
+    ]
+}

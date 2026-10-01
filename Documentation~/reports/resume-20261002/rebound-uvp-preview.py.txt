@@ -1,0 +1,377 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""UVP1 ordinary Mesh complete position/source-stage dynamic candidate.
+Writes ONLY /tmp; parent owns apply, Unity and Git. No legacy/shared math edits.
+Feature-specific transform stages and full CustomData/VAT/CustomLocal remain
+explicit follow-ups; never claim unrun cases or full Mesh/VFX gate passed.
+"""
+from pathlib import Path
+
+_nb_original_write_text = Path.write_text
+def _nb_write_text_lf(self, data, encoding=None, errors=None, newline=None):
+    return _nb_original_write_text(self, data, encoding=encoding or 'utf-8', errors=errors, newline='\n')
+Path.write_text = _nb_write_text_lf
+import copy,difflib,hashlib,json,re,uuid
+P=Path('D:/UnityProject/NBUnityProject/Packages/NB_FX')
+OUT=Path('D:/UnityProject/NBUnityProject/.utmp/nbfx-resume-20261002/uvp/full-preview')
+NS=uuid.UUID('9f8f4842-eb4e-4b7b-9d38-cdf8f87773eb')
+REL={'graph':'NBShaders2/ShaderGraph/NBShaderGraph.shadergraph',
+ 'uv':'NBShaders2/ShaderGraph/NBGraphBaseUV.hlsl',
+ 'vertex':'NBShaders2/ShaderGraph/NBGraphVertexOffset.hlsl',
+ 'host':'NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs',
+ 'shared':'NBShaders2/Shader/HLSL/NBShaderUVV1.hlsl',
+ 'legacy':'NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl',
+ 'input':'NBShaders2/Shader/HLSL/NBShaderInput.hlsl',
+ 'color':'NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl'}
+def uid(k):return uuid.uuid5(NS,'UVP1:'+k).hex
+def hash(b):return hashlib.sha256(b).hexdigest()
+def once(s,a,b,n=1):
+ assert s.count(a)==n,(a[:100],s.count(a),n)
+ return s.replace(a,b)
+def decode(s):
+ d=json.JSONDecoder();i=0;arr=[]
+ while i<len(s):
+  while i<len(s) and s[i].isspace():i+=1
+  if i==len(s):break
+  x,i=d.raw_decode(s,i);arr.append(x)
+ assert arr and arr[0]['m_Type']=='UnityEditor.ShaderGraph.GraphData'
+ return arr
+
+def input_signature(s,name):
+ start=s.index('void '+name+'(')+len('void '+name+'(')
+ end=s.index('    out ',start)
+ parts=[x.strip() for x in s[start:end].split(',') if x.strip()]
+ result=[]
+ for item in parts:
+  m=re.fullmatch(r'(float[234]?|half[234]?)\s+(\w+)',item);assert m,item
+  result.append((m[1],m[2]))
+ return result
+POSITION_PARAMS=[('float3','PostPositionOS'),('float3','PositionWS'),
+ ('float4','PreCylinderScreen'),('float4','PreWorldObject'),('float4','PreSharedMain'),
+ ('float','WorldSelector'),('float','ObjectSelector')]+[('float4','CylinderMatrix'+str(i)) for i in range(4)]+[('float','ParallaxToggle')]
+SELECTOR_PARAMS=[('float','WorldSelector'),('float','ObjectSelector')]+[('float4','CylinderMatrix'+str(i)) for i in range(4)]
+VERTEX_MAIN_PARAMS=[('float4','BaseMapST'),('float','BaseMapUVRotation'),('float','BaseMapUVRotationSpeed'),('float4','BaseMapMaskMapOffset')]
+def decls(items):return ''.join('    '+t+' '+n+',\n' for t,n in items)
+def args(items):return ', '.join(n for _,n in items)
+
+def patch_uv(s):
+ assert 'NBGraphUVVertex_float' not in s and 'NBGraphUVInFragment' not in s
+ old_inputs=input_signature(s,'NBGraphBaseUV_float')
+ assert old_inputs[-2:]==[('float4','PixelPosition'),('float','DepthDecalToggle')]
+ prefix=old_inputs[:-2]
+ parameter_inputs=[x for x in prefix if x[1] not in ('UV','UV1','UV2')]+SELECTOR_PARAMS
+ start=s.index('    NBFX_BaseUVParamsV1 parameters = (NBFX_BaseUVParamsV1)0;')
+ end=s.index('    BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);',start)
+ literal=s[start:end]
+ assert literal.count('    parameters.timeY = _Time.y;')==1
+ literal=once(literal,'         FLAG_BIT_PARTICLE_1_USE_TEXCOORD2);',
+  '         FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 | FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE);')
+ literal=once(literal,'    parameters.timeY = _Time.y;',
+ '''    parameters.worldSpaceUVModeSelector = (half)WorldSelector;
+    parameters.objectSpaceUVModeSelector = (half)ObjectSelector;
+    parameters.cylinderUVMatrix = float4x4(CylinderMatrix0, CylinderMatrix1,
+        CylinderMatrix2, CylinderMatrix3);
+    parameters.timeY = _Time.y;''')
+ helpers='''// Material/stream binding only: the existing NBFX_BuildBaseUVsV1
+// remains the one UV arithmetic implementation shared with ShaderLab.
+NBFX_BaseUVParamsV1 NBGraphUVParameters(
+'''+decls(parameter_inputs).rstrip(',\n')+''')
+{
+'''+literal+'''    return parameters;
+}
+
+// Keep the old stage decision independent of the material's DistortMode.
+// Static pass defines are emitted before Custom Functions by our package
+// SubTarget; POM is only a main-Forward path, not inherited by NB clones.
+bool NBGraphUVInFragment(uint flags0, float depthDecalToggle,
+    float parallaxToggle)
+{
+#if defined(SHADERGRAPH_PREVIEW)
+    // Preview has no interpolated Mesh vertex blocks. Preserve the previous
+    // Graph preview's fragment evaluation instead of reading zero CI values.
+    return true;
+#else
+    if ((flags0 & (FLAG_BIT_PARTICLE_UTWIRL_ON |
+        FLAG_BIT_PARTICLE_POLARCOORDINATES_ON)) != 0u)
+        return true;
+    #if defined(NB_GRAPH_CAMERA_OPAQUE_PASS) || defined(NB_GRAPH_DEFERRED_DISTORT_PASS)
+        return true;
+    #elif defined(NB_GRAPH_MAIN_FORWARD)
+        return depthDecalToggle > 0.5 || parallaxToggle > 0.5;
+    #else
+        // DepthOnly/Shadow/ordinary 2D have no original POM/Decal variant.
+        return false;
+    #endif
+#endif
+}
+
+// Runs from the same pre-VertexOffset input as Fog and geometry preparation.
+// Future VAT/CustomLocal hosts must feed their post-VAT/pre-offset PositionOS
+// upstream here AND to Fog/VertexOffset, not replace this with final positions.
+void NBGraphUVVertex_float(float3 PositionOS,
+'''+decls(prefix+SELECTOR_PARAMS)+'''    out float4 PreCylinderScreen, out float4 PreWorldObject,
+    out float4 PreSharedMain)
+{
+    NBFX_BaseUVInputV1 input = (NBFX_BaseUVInputV1)0;
+    input.meshTexcoord0 = UV;
+    input.custom1 = UV1;
+    input.custom2 = UV2;
+    input.positionOS = PositionOS;
+    input.positionWS = TransformObjectToWorld(PositionOS);
+    float4 clipPosition = TransformObjectToHClip(PositionOS);
+    input.screenUV = clipPosition.xy / clipPosition.w;
+    input.screenUV = input.screenUV * 0.5 + 0.5;
+    NBFX_BaseUVParamsV1 parameters = NBGraphUVParameters(
+        '''+args(parameter_inputs)+''');
+    BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);
+    PreCylinderScreen = float4(resolved.cylinderUV, resolved.screenUV);
+    PreWorldObject = float4(resolved.worldPosUV, resolved.objectPosUV);
+    PreSharedMain = float4(resolved.sharedUV, resolved.mainTexUV);
+}
+
+'''
+ # Both serialized CF input lists append the new host inputs after all old inputs.
+ for prec in ('float','half'):
+  st=s.index('void NBGraphBaseUV_'+prec+'(');e=s.index('    out ',st)
+  s=s[:e]+decls(POSITION_PARAMS)+s[e:]
+ # Replace only float host's binding block; half wrapper still forwards exactly.
+ start=s.index('    NBFX_BaseUVParamsV1 parameters = (NBFX_BaseUVParamsV1)0;')
+ end=s.index('    BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);',start)
+ s=s[:start]+'''    NBFX_BaseUVParamsV1 parameters = NBGraphUVParameters(
+        '''+args(parameter_inputs)+''');
+'''+s[end:]
+ s=once(s,'    input.meshTexcoord0 = UV;','''    input.meshTexcoord0 = UV;
+    input.positionOS = PostPositionOS;
+    input.positionWS = PositionWS;
+    input.screenUV = NBGraphDecalRasterUV(PixelPosition);
+#if defined(SHADERGRAPH_PREVIEW)
+    input.positionOS = TransformWorldToObject(PositionWS);
+#endif''')
+ s=once(s,'    BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);',
+ '''    BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);
+    if (!NBGraphUVInFragment(parameters.flags0, DepthDecalToggle, ParallaxToggle))
+    {
+        // The old vertex path calculates spatial sources and Shared/Main
+        // before VertexOffset, then interpolates them. In particular NDC and
+        // atan2 must not be recalculated per pixel, nor MainST re-applied.
+        resolved.cylinderUV = PreCylinderScreen.xy;
+        resolved.screenUV = PreCylinderScreen.zw;
+        resolved.worldPosUV = PreWorldObject.xy;
+        resolved.objectPosUV = PreWorldObject.zw;
+        resolved.sharedUV = PreSharedMain.xy;
+        resolved.mainTexUV = PreSharedMain.zw;
+    }''')
+ s=once(s,'        (float4)PixelPosition, (float)DepthDecalToggle,',
+ '''        (float4)PixelPosition, (float)DepthDecalToggle,
+        '''+args(POSITION_PARAMS)+',')
+ # Put host helpers after the existing Pixel->raster helper, before first CF.
+ marker='void NBGraphBaseUV_float('
+ s=once(s,marker,helpers+marker)
+ old_comment='''// Mesh TEXCOORD0/1/2 streams and the original packed UV mode words enter
+// ShaderLab's shared contract. This first slice supplies the inputs needed
+// for MainTex modes 0/1/2/8 and SharedUV sources 0/1/2/8. Other modes retain
+// their original packed values but still need position/screen/cylinder host
+// inputs before they may be claimed as supported.'''
+ s=once(s,old_comment,'''// Mesh TEXCOORD0/1/2 streams, original packed UV words and stage-specific
+// position/screen/cylinder inputs enter ShaderLab's one shared contract.
+// Feature-specific ST/rotation/scroll remain owned by their current consumers;
+// full CustomData, CustomLocalTransform, VAT and VFX are separate host slices.''')
+ return s, prefix, parameter_inputs
+
+def patch_vertex(s):
+ assert 'float WorldSelector' not in s
+ s=once(s,'''    // Positional, screen, cylinder and MainTex UV sources need their own host
+    // inputs. Do not silently replace them by UV0 in this Mesh-only slice.
+    return source == 0u || source == 1u || source == 2u || source == 8u;''',
+ '''    // All original modes now have Mesh-host inputs. Packed 9..15 retain
+    // GetUVByUVMode's original default-UV0 fallback, not a new meaning.
+    return source <= 15u;''')
+ st=s.index('void NBGraphVertexOffset_float(');e=s.index('    out ',st)
+ s=s[:e]+decls(VERTEX_MAIN_PARAMS+SELECTOR_PARAMS)+s[e:]
+ s=once(s,'    uvInput.positionOS = PositionOS;',
+ '''    uvInput.positionOS = PositionOS;
+    uvInput.positionWS = TransformObjectToWorld(PositionOS);
+    float4 clipPosition = TransformObjectToHClip(PositionOS);
+    uvInput.screenUV = clipPosition.xy / clipPosition.w;
+    uvInput.screenUV = uvInput.screenUV * 0.5 + 0.5;''')
+ s=once(s,'            FLAG_BIT_PARTICLE_1_USE_TEXCOORD2);',
+ '            FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 | FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE);')
+ s=once(s,'    uvParams.baseMapST = float4(1, 1, 0, 0);',
+ '''    uvParams.baseMapST = BaseMapST;
+    uvParams.baseMapUVRotation = (half)BaseMapUVRotation;
+    uvParams.baseMapUVRotationSpeed = (half)BaseMapUVRotationSpeed;
+    uvParams.baseMapMaskMapOffset = (half4)BaseMapMaskMapOffset;
+    uvParams.worldSpaceUVModeSelector = (half)WorldSelector;
+    uvParams.objectSpaceUVModeSelector = (half)ObjectSelector;
+    uvParams.cylinderUVMatrix = float4x4(CylinderMatrix0, CylinderMatrix1,
+        CylinderMatrix2, CylinderMatrix3);''')
+ # Its own map ST is applied after mode4 selects transformed MainTex, not twice.
+ s=once(s,'''    // once, then the ShaderLab time scroll; never use an already transformed
+    // MainTex UV or Graph's implicit transformed texture UV here.''',
+ '''    // once, then ShaderLab time scroll. mode4 intentionally consumes already
+    // transformed MainTexUV before this map's own ST, as the original does.''')
+ return s
+
+def patch_host(s):
+ assert 'NB_GRAPH_DEFERRED_DISTORT_PASS' not in s
+ return once(s,'''            if (lightMode == "NBCameraOpaqueDistortPass")
+                pass = WithNBPassDefine(pass, "NB_GRAPH_CAMERA_OPAQUE_PASS");''',
+ '''            if (lightMode == "NBCameraOpaqueDistortPass")
+                pass = WithNBPassDefine(pass, "NB_GRAPH_CAMERA_OPAQUE_PASS");
+            else if (lightMode == "NBDeferredDistortPass")
+                pass = WithNBPassDefine(pass, "NB_GRAPH_DEFERRED_DISTORT_PASS");''')
+
+# CG JSON is concatenated serialized objects. Match real existing templates;
+# no invented official node APIs or manual old ID replacement.
+def patch_graph(raw,prefix):
+ old=decode(raw);o=copy.deepcopy(old);root=o[0];by={x['m_ObjectId']:x for x in o};seen=set(by)
+ uv=next(x for x in o if x.get('m_FunctionName')=='NBGraphBaseUV')
+ vo=next(x for x in o if x.get('m_FunctionName')=='NBGraphVertexOffset')
+ fog=next(x for x in o if x.get('m_FunctionName')=='NBGraphFogVertex')
+ color=next(x for x in o if x.get('m_FunctionName')=='NBGraphBaseColor')
+ cat=next(x for x in o if x.get('m_Type')=='UnityEditor.ShaderGraph.CategoryData')
+ def add(x):
+  assert x['m_ObjectId'] not in seen;xid=x['m_ObjectId'];seen.add(xid);by[xid]=x;o.append(x);return x
+ def sl(node,name):return next(by[q['m_Id']] for q in node['m_Slots'] if by[q['m_Id']]['m_DisplayName']==name)
+ def connection(node,name):
+  target=sl(node,name)
+  es=[e['m_OutputSlot'] for e in root['m_Edges'] if e['m_InputSlot']['m_Node']['m_Id']==node['m_ObjectId'] and e['m_InputSlot']['m_SlotId']==target['m_Id']]
+  assert len(es)==1,(node['m_Name'],name,es)
+  return copy.deepcopy(es[0])
+ def edge(src,node,slot):
+  target={'m_Node':{'m_Id':node['m_ObjectId']},'m_SlotId':slot['m_Id']}
+  assert not any(e['m_InputSlot']==target for e in root['m_Edges']),target
+  root['m_Edges'].append({'m_OutputSlot':copy.deepcopy(src),'m_InputSlot':target})
+ def out(node,slot):return {'m_Node':{'m_Id':node['m_ObjectId']},'m_SlotId':slot['m_Id']}
+ templates={k:next(x for x in o if x.get('m_Type')=='UnityEditor.ShaderGraph.Vector'+str(k)+'MaterialSlot') for k in (1,3,4)}
+ def clone_slot(k,key,name,number,direction,stage=3):
+  x=copy.deepcopy(templates[k]);x['m_ObjectId']=uid('slot:'+key);x['m_Id']=number
+  x['m_DisplayName']=x['m_ShaderOutputName']=name;x['m_SlotType']=direction;x['m_StageCapability']=stage
+  value=0.0 if k==1 else {axis:0.0 for axis in 'xyzw'[:k]}
+  x['m_Value']=copy.deepcopy(value);x['m_DefaultValue']=copy.deepcopy(value)
+  # Slot types must not retain a Texture/UV binding/channel from a template.
+  for key_to_remove in ('m_Channel','m_UVChannel','m_Texture','m_BareResource') : x.pop(key_to_remove,None)
+  return add(x)
+ def ref(slot):return {'m_Id':slot['m_ObjectId']}
+ # Exact pre-offset seam: FG and current geometry must share a source. We do
+ # not require it forever be a PositionNode; VAT must replace this upstream.
+ pre=connection(fog,'PositionOS');assert pre==connection(vo,'PositionOS')
+ pre_node=by[pre['m_Node']['m_Id']]
+ # Current source must be the known raw Object Position, not post-offset CF.
+ assert pre_node.get('m_Type')=='UnityEditor.ShaderGraph.PositionNode' and pre_node.get('m_Space')==0
+ world=connection(color,'PositionWS');world_node=by[world['m_Node']['m_Id']]
+ assert world_node.get('m_Type')=='UnityEditor.ShaderGraph.PositionNode' and world_node.get('m_Space')==2
+ # Actual properties are original shader names/defaults, not a packed shadow.
+ props={x.get('m_OverrideReferenceName') or x.get('m_DefaultReferenceName'):x for x in o if x.get('m_Type','').endswith('ShaderProperty')}
+ specs=[('_WorldSpaceUVModeSelector',1.0,False),('_ObjectSpaceUVModeSelector',1.0,False),
+ ('_CylinderUVRotate',[0.,0.,90.,0.],False),('_CylinderUVPosOffset',[0.,0.,0.,0.],False)]+[('_CylinderMatrix'+str(i),[0.,0.,0.,0.],True) for i in range(4)]
+ prop_sources={}
+ for name,value,hidden in specs:
+  assert name not in props,'Already integrated or schema changed; review before rerun: '+name
+  template=props['_ParallaxMapping_Toggle'] if isinstance(value,float) else props['_BaseMap_ST']
+  node_template=next(x for x in o if x.get('m_Property',{}).get('m_Id')==template['m_ObjectId'])
+  prop=copy.deepcopy(template);prop['m_ObjectId']=uid('property:'+name)
+  prop['m_Guid']={'m_GuidSerialized':str(uuid.UUID(uid('guid:'+name)))}
+  prop['m_Name']=prop['m_RefNameGeneratedByDisplayName']=name[1:]
+  prop['m_DefaultReferenceName']=prop['m_OverrideReferenceName']=name
+  prop['m_Value']=value if isinstance(value,float) else dict(zip('xyzw',value))
+  prop['m_Hidden']=hidden;prop['m_Precision']=1
+  if isinstance(value,float):prop['m_FloatType']=0
+  add(prop);root['m_Properties'].append({'m_Id':prop['m_ObjectId']});cat['m_ChildObjectList'].append({'m_Id':prop['m_ObjectId']})
+  node=copy.deepcopy(node_template);node['m_ObjectId']=uid('property-node:'+name);node['m_Property']={'m_Id':prop['m_ObjectId']}
+  node['m_DrawState']['m_Position']['y']=28000.+len(prop_sources)*120.
+  slot=clone_slot(1 if isinstance(value,float) else 4,'property-node:'+name,name[1:],0,1)
+  slot['m_Value']=copy.deepcopy(prop['m_Value']);slot['m_DefaultValue']=copy.deepcopy(prop['m_Value'])
+  node['m_Slots']=[ref(slot)];add(node);root['m_Nodes'].append({'m_Id':node['m_ObjectId']})
+  prop_sources[name]=out(node,slot)
+ selectors={'WorldSelector':prop_sources['_WorldSpaceUVModeSelector'],'ObjectSelector':prop_sources['_ObjectSpaceUVModeSelector']}
+ selectors.update({'CylinderMatrix'+str(i):prop_sources['_CylinderMatrix'+str(i)] for i in range(4)})
+ # New independent vertex invocation of the same shared UV math. All old UV
+ # streams/uniform nodes are reused, not sampled again or synthesized.
+ vertex=copy.deepcopy(uv);vertex['m_ObjectId']=uid('vertex-cf');vertex['m_Name']='NBGraphUVVertex (Custom Function)';vertex['m_FunctionName']='NBGraphUVVertex';vertex['m_Precision']=1
+ vertex['m_DrawState']['m_Position']['x']=-350.;vertex['m_DrawState']['m_Position']['y']=-1450.
+ vertex['m_Slots']=[];vertex_inputs=[('float3','PositionOS')]+prefix+SELECTOR_PARAMS
+ vertex_sources={'PositionOS':pre};vertex_sources.update({n:connection(uv,n) for _,n in prefix});vertex_sources.update(selectors)
+ for number,(type_name,name) in enumerate(vertex_inputs):
+  k=int(type_name[-1]) if type_name[-1].isdigit() else 1
+  slot=clone_slot(k,'vertex-input:'+name,name,number,0,1);vertex['m_Slots'].append(ref(slot))
+  edge(vertex_sources[name],vertex,slot)
+ vertex_outputs={}
+ for number,name in enumerate(('PreCylinderScreen','PreWorldObject','PreSharedMain'),start=len(vertex_inputs)):
+  slot=clone_slot(4,'vertex-output:'+name,name,number,1,1);vertex['m_Slots'].append(ref(slot));vertex_outputs[name]=out(vertex,slot)
+ add(vertex);root['m_Nodes'].append({'m_Id':vertex['m_ObjectId']})
+ # 3 float4 + 1 float3 custom interpolators; shared MainUV is pre-offset fully
+ # transformed. Keep all old CI blocks/precision/identifiers and append only.
+ block_template=next(x for x in o if x.get('m_SerializedDescriptor')=='VertexDescription.SixBake0#3')
+ ci_template=next(x for x in o if x.get('customBlockNodeName')=='SixBake0')
+ ci_sources={};new_ci=[]
+ for index,(name,k,src) in enumerate([('NBPreCylinderScreen',4,vertex_outputs['PreCylinderScreen']),
+ ('NBPreWorldObject',4,vertex_outputs['PreWorldObject']),('NBPreSharedMain',4,vertex_outputs['PreSharedMain']),
+ ('NBPostPositionOS',3,out(vo,sl(vo,'OutPositionOS')))]):
+  block=copy.deepcopy(block_template);block['m_ObjectId']=uid('block:'+name);block['m_SerializedDescriptor']='VertexDescription.'+name+'#'+str(k);block['m_Precision']=1
+  bs=clone_slot(k,'block-slot:'+name,name,0,0,1);block['m_Slots']=[ref(bs)];add(block);root['m_Nodes'].append({'m_Id':block['m_ObjectId']});root['m_VertexContext']['m_Blocks'].append({'m_Id':block['m_ObjectId']});edge(src,block,bs)
+  ci=copy.deepcopy(ci_template);ci['m_ObjectId']=uid('ci:'+name);ci['m_Name']=name+' (Custom Interpolator)';ci['customBlockNodeName']=name;ci['serializedType']=k;ci['m_Precision']=1;ci['m_DrawState']['m_Position']['y']=29000.+index*120.
+  cs=clone_slot(k,'ci-slot:'+name,'Out',0,1,2);ci['m_Slots']=[ref(cs)];add(ci);root['m_Nodes'].append({'m_Id':ci['m_ObjectId']});ci_sources[name]=out(ci,cs);new_ci.append({'name':name,'width':k,'blockId':block['m_ObjectId'],'nodeId':ci['m_ObjectId']})
+ # Append inputs after the last original slot ID, retaining every old connection.
+ new_uv_sources={'PostPositionOS':ci_sources['NBPostPositionOS'],'PositionWS':world,
+ 'PreCylinderScreen':ci_sources['NBPreCylinderScreen'],'PreWorldObject':ci_sources['NBPreWorldObject'],'PreSharedMain':ci_sources['NBPreSharedMain'],
+ 'ParallaxToggle':connection(color,'ParallaxMappingToggle')};new_uv_sources.update(selectors)
+ max_id=max(by[q['m_Id']]['m_Id'] for q in uv['m_Slots'])
+ for number,(type_name,name) in enumerate(POSITION_PARAMS,start=max_id+1):
+  k=int(type_name[-1]) if type_name[-1].isdigit() else 1
+  slot=clone_slot(k,'baseuv-input:'+name,name,number,0,2);uv['m_Slots'].append(ref(slot));edge(new_uv_sources[name],uv,slot)
+ uv['m_Precision']=1
+ max_id=max(by[q['m_Id']]['m_Id'] for q in vo['m_Slots'])
+ new_vertex_sources={n:connection(uv,n) for _,n in VERTEX_MAIN_PARAMS};new_vertex_sources.update(selectors)
+ for number,(type_name,name) in enumerate(VERTEX_MAIN_PARAMS+SELECTOR_PARAMS,start=max_id+1):
+  k=int(type_name[-1]) if type_name[-1].isdigit() else 1
+  slot=clone_slot(k,'vo-input:'+name,name,number,0,1);vo['m_Slots'].append(ref(slot));edge(new_vertex_sources[name],vo,slot)
+ vo['m_Precision']=1
+ # Structural audit: no old edge/slot/property disappears or changes silently.
+ modified={x['m_ObjectId'] for x,y in zip(o,old) if x!=y}
+ expected={root['m_ObjectId'],cat['m_ObjectId'],uv['m_ObjectId'],vo['m_ObjectId']};assert modified==expected,(modified,expected)
+ assert root['m_Edges'][:len(old[0]['m_Edges'])]==old[0]['m_Edges']
+ for node_name in ('NBGraphBaseUV','NBGraphVertexOffset'):
+  original=next(x for x in old if x.get('m_FunctionName')==node_name)
+  current=next(x for x in o if x.get('m_FunctionName')==node_name)
+  assert current['m_Slots'][:len(original['m_Slots'])]==original['m_Slots']
+ for key in ('m_ActiveTargets','m_Keywords','m_GraphPrecision'):
+  if key in old[0]:assert root[key]==old[0][key]
+ assert all(x==by[x['m_ObjectId']] for x in old if x['m_ObjectId'] not in expected)
+ # All CF appended inputs have exactly one upstream edge and use real sources.
+ for node in (uv,vo,vertex):
+  for q in node['m_Slots']:
+   slot=by[q['m_Id']]
+   if slot['m_SlotType']==0:connection(node,slot['m_DisplayName'])
+ custom_old=[]
+ for refb in old[0]['m_VertexContext']['m_Blocks']:
+  desc=by[refb['m_Id']].get('m_SerializedDescriptor','')
+  if '#' in desc:custom_old.append({'name':desc.split('#')[0],'width':int(desc.split('#')[1])})
+ audit={'oldObjects':len(old),'newObjects':len(o),'modifiedOldIds':sorted(modified),
+ 'oldEdgesExactRetained':True,'oldSlotsExactRetained':True,'oldPropertiesPackedDefaultsKeywordsSupportVFXTargetsExactRetained':True,
+ 'preOffsetRawPositionNode':pre,'preOffsetRawNodeType':pre_node['m_Type'],'worldNode':world,
+ 'newCustomInterpolators':new_ci,'oldCustomComponents':sum(x['width'] for x in custom_old),'newCustomComponents':sum(x['width'] for x in custom_old)+15,
+ 'schemaAppended':[x[0] for x in specs],
+ 'vertexCFInputs': [{'type':t,'name':n} for t,n in vertex_inputs],
+ 'baseUVAppendInputs':[{'type':t,'name':n,'id':sl(uv,n)['m_Id']} for t,n in POSITION_PARAMS],
+ 'vertexOffsetAppendInputs':[{'type':t,'name':n,'id':sl(vo,n)['m_Id']} for t,n in VERTEX_MAIN_PARAMS+SELECTOR_PARAMS]}
+ return '\n\n'.join(json.dumps(x,indent=4,ensure_ascii=False) for x in o)+'\n',audit
+
+raw={k:(P/r).read_bytes() for k,r in REL.items()}
+newuv,prefix,_=patch_uv(raw['uv'].decode())
+graph,audit=patch_graph(raw['graph'].decode(),prefix)
+outputs={'uv':newuv,'vertex':patch_vertex(raw['vertex'].decode()),'host':patch_host(raw['host'].decode()),'graph':graph}
+OUT.mkdir(parents=True,exist_ok=True)
+manifest={'mode':'review-only-complete-ordinary-Mesh-positional-source-stage-candidate','ranUnity':False,'packageWritten':False,
+ 'legacySharedMathUntouched':True,'noNewKeywords':True,'noOfficialPackagesTargetOrNBPostprocessChange':True,
+ 'graphAudit':audit,'files':{},'readonlyDependencies':{REL[k]:hash(raw[k]) for k in ('shared','legacy','input','color')},
+ 'remaining':['feature-own-ST/rotation/scroll stage strict-parity followup','full CustomData words','CustomLocalTransform','VAT','complete Matrix GUI/Tier intent','formal VFX/Player/fullMesh gates']}
+for key,value in outputs.items():
+ rel=REL[key];dest=OUT/rel;dest.parent.mkdir(parents=True,exist_ok=True);dest.write_text(value)
+ diff=''.join(difflib.unified_diff(raw[key].decode().splitlines(True),value.splitlines(True),fromfile='original/'+rel,tofile='candidate/'+rel))
+ if key=='graph':diff='Graph semantic audit (full content in candidate):\n'+json.dumps(audit,indent=2)+'\n'
+ (OUT/(Path(rel).name+'.diff')).write_text(diff)
+ manifest['files'][rel]={'target':str(P/rel),'candidate':str(dest),'inputSHA256':hash(raw[key]),'candidateSHA256':hash(dest.read_bytes())}
+for key,value in raw.items():assert (P/REL[key]).read_bytes()==value,'Live input changed during preview: rerun '+key
+(OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+print(json.dumps({'manifest':str(OUT/'manifest.json'),'graphAudit':audit,'files':manifest['files']},indent=2))
