@@ -49,7 +49,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     pass = WithNBDistortionBlocks(pass);
                 if (forward || UsesNBStencil(pass.lightMode))
                     pass.renderStates = WithNBRenderStates(pass.renderStates, forward);
-                passes.Add(forward ? WithNBMainForwardDefine(WithNBLightingKeywords(WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl"))) :
+                passes.Add(forward ? WithNBPassDefine(WithNBLightingKeywords(WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl")), "NB_GRAPH_MAIN_FORWARD") :
                     pass.lightMode == "ShadowCaster" ? WithNBFragmentInclude(pass, "NBGraphShadowCasterPass.hlsl", kURPShadowPass) :
                     pass, item.fieldConditions);
                 if (!forward) continue;
@@ -94,13 +94,13 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
         // Static pass define, not a material keyword or new variant axis.
         // Copy the delegated collection: two NB distortion clones use the
         // original pass and must never inherit POM from main Forward.
-        static PassDescriptor WithNBMainForwardDefine(PassDescriptor pass)
+        static PassDescriptor WithNBPassDefine(PassDescriptor pass, string referenceName)
         {
             var defines = pass.defines == null ? new DefineCollection() :
                 new DefineCollection(pass.defines);
             defines.Add(new KeywordDescriptor
             {
-                referenceName = "NB_GRAPH_MAIN_FORWARD",
+                referenceName = referenceName,
                 type = KeywordType.Boolean,
                 definition = KeywordDefinition.Predefined,
             }, 1);
@@ -141,6 +141,10 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 NBStencilState(),
                 RenderState.ColorMask("ColorMask [_ColorMask]")
             };
+            // CameraOpaque forces BaseMap Clamp independently of material
+            // mode. GraphDefines precedes CF code; PostGraph includes do not.
+            if (lightMode == "NBCameraOpaqueDistortPass")
+                pass = WithNBPassDefine(pass, "NB_GRAPH_CAMERA_OPAQUE_PASS");
             passes.Add(WithNBFragmentInclude(pass, fragmentInclude));
         }
 

@@ -1090,31 +1090,19 @@
     }
     #endif
 
+    #include "NBShaderChromaticV1.hlsl"
+
     //向UV横向两边的色散。
     #if defined(_CHROMATIC_ABERRATION)
     half4 DistortionChoraticaberrat(Texture2D baseTexture,half2 originUV, half2 uvAfterNoise,half ChoraticaberratIntensity,uint bits,bool forceLod0)
     {
-        half2 delta = half2(originUV.x *2-1,0);
-
-        if(CheckLocalFlags(FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE))
-        {
-            half2  NoiseIntensity = uvAfterNoise - originUV;
-            // half noiseXIntensity = abs(NoiseIntensity.x);
-            // delta *= ChoraticaberratIntensity*noiseXIntensity;
-            delta = NoiseIntensity*ChoraticaberratIntensity*10;
-        }
-        else
-        {
-            delta *= ChoraticaberratIntensity;
-        }
-        
+        half2 delta = NBFX_ChromaticDeltaV1(originUV, uvAfterNoise,
+            ChoraticaberratIntensity,
+            CheckLocalFlags(FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE));
         half2 ra = SampleTexture2DWithWrapFlags(baseTexture,uvAfterNoise,bits,forceLod0).xw;
-        ra.r *= ra.y;
         half2 ga = SampleTexture2DWithWrapFlags(baseTexture,uvAfterNoise - delta,bits,forceLod0).yw;
-        ga.r *= ga.y;
         half2 ba = SampleTexture2DWithWrapFlags(baseTexture,uvAfterNoise - delta*2,bits,forceLod0).zw;
-        ba.r *= ba.y;
-        return half4(ra.r,ga.r,ba.r,clamp(ra.y*0.5+ga.y*0.5+ba.y*0.5,0,1));
+        return NBFX_ComposeChromaticV1(ra, ga, ba);
     }
     #endif
 

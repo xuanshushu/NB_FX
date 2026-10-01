@@ -10,6 +10,7 @@
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderUVV2.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphSampling.hlsl"
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderChromaticV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderParallaxV1.hlsl"
 #define NB_GRAPH_SIX_WAY 1
 #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
@@ -584,6 +585,33 @@ float2 NBGraphApplyParallax(UnityTexture2D map, float2 baseUV,
         (noMipFlags & FLAG_BIT_FORCE_NO_MIP_PARALLAXMAPPINGMAP) != 0u);
 }
 
+// The original CameraOpaque pass forces BASEMAP wrap=Clamp even when
+// the material's saved wrap says Repeat. This is pass identity, not mode.
+uint NBGraphBaseMapWrapMode(uint wrapFlags)
+{
+#if defined(NB_GRAPH_CAMERA_OPAQUE_PASS)
+    return 1u;
+#else
+    return NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_BASEMAP);
+#endif
+}
+
+// Match the legacy raw three-sample path, not Graph's HDR-decoded
+// single BaseMap sample. The UV parameters are half2 before sampling.
+half4 NBGraphChromaticSample(UnityTexture2D map,
+    half2 originUV, half2 finalUV, half intensity, bool withNoise,
+    uint wrapFlags, uint noMipFlags)
+{
+    half2 delta = NBFX_ChromaticDeltaV1(originUV, finalUV,
+        intensity, withNoise);
+    uint wrap = NBGraphBaseMapWrapMode(wrapFlags);
+    bool lod0 = (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u;
+    half2 ra = NBGraphSampleRawMap(map, finalUV, wrap, lod0).xw;
+    half2 ga = NBGraphSampleRawMap(map, finalUV - delta, wrap, lod0).yw;
+    half2 ba = NBGraphSampleRawMap(map, finalUV - delta * 2, wrap, lod0).zw;
+    return NBFX_ComposeChromaticV1(ra, ga, ba);
+}
+
 void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 EffectiveBaseColor,
     float NB_Flags0Lo16, float NB_Flags0Hi16,
@@ -670,6 +698,8 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float DecalAlpha,
     UnityTexture2D ParallaxMappingMap, float ParallaxMappingToggle,
     float ParallaxMappingIntensity, float4 ParallaxMappingVec,
+    float ChromaticToggle, float CustomDataFlag0Lo16,
+    float CustomDataFlag0Hi16, float4 Custom1, float4 Custom2,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
@@ -735,9 +765,29 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             IsFrontFace, wrapFlags, noMipFlags);
 #endif
     float2 baseUV = baseUVPreNoise + mainTexNoise;
-    half4 baseSample = NBGraphSampleMap(BaseMap, baseUV,
-        NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_BASEMAP),
-        (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
+    half4 baseSample;
+#if !NB_GRAPH_DEPTH_SHADOW_PASS
+    if (ChromaticToggle > 0.5)
+    {
+        // Legacy half4 CBUFFER component, CustomData override and half
+        // *=0.1 occur before passing half2 UVs to the three raw samples.
+        half4 direction = (half4)DistortionDirection;
+        direction.z = (half)GetCustomData(
+            NBGraphDecodeUInt32(CustomDataFlag0Lo16, CustomDataFlag0Hi16),
+            FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY,
+            direction.z, (half4)Custom1, (half4)Custom2);
+        direction.z *= 0.1;
+        baseSample = NBGraphChromaticSample(BaseMap,
+            (half2)BaseMapUV, (half2)baseUV, direction.z,
+            (NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
+                FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE) != 0u,
+            wrapFlags, noMipFlags);
+    }
+    else
+#endif
+        baseSample = NBGraphSampleMap(BaseMap, baseUV,
+            NBGraphBaseMapWrapMode(wrapFlags),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
     input.sampledAlbedo = baseSample;
     // Historical sampled-color/A ports remain serialized but are disconnected.
     // The packed channel word selects alpha from this one protocol-owned sample.
@@ -1079,6 +1129,8 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half DecalAlpha,
     UnityTexture2D ParallaxMappingMap, float ParallaxMappingToggle,
     float ParallaxMappingIntensity, float4 ParallaxMappingVec,
+    float ChromaticToggle, float CustomDataFlag0Lo16,
+    float CustomDataFlag0Hi16, float4 Custom1, float4 Custom2,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
@@ -1142,9 +1194,29 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             IsFrontFace, wrapFlags, noMipFlags);
 #endif
     float2 baseUV = baseUVPreNoise + mainTexNoise;
-    half4 baseSample = NBGraphSampleMap(BaseMap, baseUV,
-        NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_BASEMAP),
-        (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
+    half4 baseSample;
+#if !NB_GRAPH_DEPTH_SHADOW_PASS
+    if (ChromaticToggle > 0.5)
+    {
+        // Legacy half4 CBUFFER component, CustomData override and half
+        // *=0.1 occur before passing half2 UVs to the three raw samples.
+        half4 direction = (half4)DistortionDirection;
+        direction.z = (half)GetCustomData(
+            NBGraphDecodeUInt32(CustomDataFlag0Lo16, CustomDataFlag0Hi16),
+            FLAGBIT_POS_0_CUSTOMDATA_CHORATICABERRAT_INTENSITY,
+            direction.z, (half4)Custom1, (half4)Custom2);
+        direction.z *= 0.1;
+        baseSample = NBGraphChromaticSample(BaseMap,
+            (half2)BaseMapUV, (half2)baseUV, direction.z,
+            (NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
+                FLAG_BIT_PARTICLE_NOISE_CHORATICABERRAT_WITH_NOISE) != 0u,
+            wrapFlags, noMipFlags);
+    }
+    else
+#endif
+        baseSample = NBGraphSampleMap(BaseMap, baseUV,
+            NBGraphBaseMapWrapMode(wrapFlags),
+            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
     input.sampledAlbedo = baseSample;
     input.selectedAlpha = NBGraphSelectBaseAlpha(baseSample,
         NB_ColorChannelLo16);
