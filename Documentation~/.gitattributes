@@ -15,3 +15,40 @@
 *.mp4 filter=lfs diff=lfs merge=lfs -text
 *.webm filter=lfs diff=lfs merge=lfs -text
 *.mov filter=lfs diff=lfs merge=lfs -text
+
+# Handoff binary evidence: keep captures/log archives out of ordinary Git.
+*.rgba-f32.gz filter=lfs diff=lfs merge=lfs -text
+*.log.gz filter=lfs diff=lfs merge=lfs -text
+**/generated*.shader filter=lfs diff=lfs merge=lfs -text
+
+# Evidence text >=1 MiB: exact paths override the normal text policy above.
+reports/g1-evidence/feature-property-pass-case-candidates.json filter=lfs diff=lfs merge=lfs -text
+reports/g1-evidence/feature-trace-coverage-audit.json filter=lfs diff=lfs merge=lfs -text
+reports/g1-evidence/g1-property-routing.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/gui-maintexture-20261001/full/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/gui-maintexture-20261001/full/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/gui-maintexture-20261001/history/v1-full/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/lighting-20261001/regression/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/lighting-20261001/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/parallax-20261001/batches/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/parallax-20261001/batches/root-independent-audit.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/parallax-20261001/history/contaminated-full-v1/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/parallax-20261001/history/contaminated-full-v1/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/parallax-20261001/history/contaminated-full-v2/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/parallax-20261001/history/contaminated-full-v2/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/parallax-20261001/sha256.txt filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/pnoise-20261001/full/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/pnoise-20261001/full/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/pnoise-screen-20261001/full/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/pnoise-screen-20261001/full/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/refraction-20261001/full/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/refraction-20261001/full/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/screen-noise-20261001/namespace-correction/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/screen-noise-20261001/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/sh-evaluation-20261001/full/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/sh-evaluation-20261001/full/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/sixway-20261001/full/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/sixway-20261001/full/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/vertex-offset-20261001/hdr-correction/v1/results.xml filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/vertex-offset-20261001/regression/capture-equivalence.json filter=lfs diff=lfs merge=lfs -text
+reports/t07-evidence/vertex-offset-20261001/results.xml filter=lfs diff=lfs merge=lfs -text
