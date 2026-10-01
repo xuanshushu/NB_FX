@@ -302,6 +302,7 @@ namespace NBShaderEditor
             int next = enabled ? current | sliceBit : current & ~sliceBit;
             if (next == current) return false;
             material.SetFloat(propertyName, next);
+            NBShaderSyncService.NotifyGraphPackedFlagsEdited(material, propertyName, sliceBit);
             return true;
         }
 
@@ -324,7 +325,17 @@ namespace NBShaderEditor
             string label = GetLabel(property);
             float height = MatEditor.GetPropertyHeight(property, label);
             Rect rect = GetControlRect(height);
+            bool intentHalf = NBShaderSyncService.IsGraphIntentPackedHalf(property.name);
+            if (intentHalf) Undo.RecordObjects(MatEditor.targets, label);
+            EditorGUI.BeginChangeCheck();
             MatEditor.ShaderProperty(rect, property, label);
+            if (EditorGUI.EndChangeCheck() && intentHalf)
+                foreach (UnityEngine.Object target in MatEditor.targets)
+                    if (target is Material material)
+                    {
+                        NBShaderSyncService.NotifyGraphPackedFlagsEdited(material, property.name);
+                        EditorUtility.SetDirty(material);
+                    }
         }
 
         static string GetLabel(MaterialProperty property)

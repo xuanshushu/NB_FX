@@ -464,12 +464,46 @@ namespace NBFX.Baseline.Tests
             a.AssertSame(graph, "Mixed graph"); b.AssertSame(legacy, "Mixed legacy");
         }
 
+        static string[] GraphSeedChangedNames(Material material)
+        {
+            var syncType = FindType("NBShaderEditor.NBShaderSyncService");
+            var schema = syncType.GetMethod("GraphFlagIntentSchemaAvailable", BindingFlags.Static | BindingFlags.NonPublic);
+            if (schema == null || !(bool)schema.Invoke(null, new object[] { material })) return new[] { Version };
+            var result = new List<string> { Version };
+            foreach (string table in new[] { "ToggleFlagBindings", "ModeFlagBindings" })
+                foreach (object binding in (Array)syncType.GetField(table, BindingFlags.Static | BindingFlags.NonPublic).GetValue(null))
+                    result.Add((string)Field(binding, "propertyName"));
+            Assert.That(result.Count, Is.EqualTo(30), "Same authority: 29 new UI mirrors plus marker");
+            return result.ToArray();
+        }
+
+        static float GraphSeedVersion(Material material) => GraphSeedChangedNames(material).Length == 30 ? 2f : 1f;
+
+        static void AssertGraphSeedMirrors(Material material)
+        {
+            if (GraphSeedVersion(material) < 2f) return;
+            var syncType = FindType("NBShaderEditor.NBShaderSyncService");
+            foreach (string table in new[] { "ToggleFlagBindings", "ModeFlagBindings" })
+                foreach (object binding in (Array)syncType.GetField(table, BindingFlags.Static | BindingFlags.NonPublic).GetValue(null))
+                {
+                    string name = (string)Field(binding, "propertyName");
+                    int bits = (int)Field(binding, "flagBits"), index = (int)Field(binding, "flagIndex");
+                    string prefix = index == 0 ? "_NB_Flags0" : "_NB_Flags1";
+                    uint low = (uint)Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(prefix + "Lo16"), 0, 65535));
+                    uint high = (uint)Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(prefix + "Hi16"), 0, 65535));
+                    bool on = (((high << 16) | low) & unchecked((uint)bits)) != 0;
+                    int enabled = table == "ToggleFlagBindings" ? 1 : (int)Field(binding, "enabledMode");
+                    int disabled = table == "ToggleFlagBindings" ? 0 : enabled == 0 ? 1 : 0;
+                    Assert.That(material.GetFloat(name), Is.EqualTo(on ? enabled : disabled), "Exact UI seed " + name);
+                }
+        }
+
         [TestCase(false)] [TestCase(true)]
         public void GUI1A_VersionSeed_ChangesOnlyMarker_EightRawWordsAreNeverReencoded(bool fractional)
         {
             var material = NewMaterial(true); SeedNonDefaultRaw(material, 0, fractional); var root = NewRoot(material); var before = Snapshot.Read(material);
             Assert.That((bool)Call(root, "InitializeGraphMainTextureInputs"), Is.True);
-            Assert.That(material.GetFloat(Version), Is.EqualTo(1f)); before.AssertSame(material, "Version-only seed", Version);
+            Assert.That(material.GetFloat(Version), Is.EqualTo(GraphSeedVersion(material))); AssertGraphSeedMirrors(material); before.AssertSame(material, "Version/UI-only seed", GraphSeedChangedNames(material));
             foreach (string prefix in WordPrefixes)
                 foreach (string suffix in new[] { "Lo16", "Hi16" }) Assert.That(material.GetFloat(prefix + suffix), Is.EqualTo(before.Floats[prefix + suffix]), prefix + suffix);
         }
@@ -494,8 +528,8 @@ namespace NBFX.Baseline.Tests
             var a = NewMaterial(true); var b = NewMaterial(true); SeedNonDefaultRaw(a, 0, false); SeedNonDefaultRaw(b, 3, true); b.SetFloat(Version, 4f);
             var root = NewRoot(a, b); var aa = Snapshot.Read(a); var bb = Snapshot.Read(b);
             Assert.That((bool)Call(root, "InitializeGraphMainTextureInputs"), Is.True);
-            aa.AssertSame(a, "Independent unseeded target", Version); bb.AssertSame(b, "Already seeded target");
-            Assert.That(a.GetFloat(Version), Is.EqualTo(1f)); Assert.That(b.GetFloat(Version), Is.EqualTo(4f));
+            aa.AssertSame(a, "Independent unseeded target", GraphSeedChangedNames(a)); AssertGraphSeedMirrors(a); bb.AssertSame(b, "Already seeded target");
+            Assert.That(a.GetFloat(Version), Is.EqualTo(GraphSeedVersion(a))); Assert.That(b.GetFloat(Version), Is.EqualTo(4f));
         }
 
         [Test]
@@ -509,10 +543,10 @@ namespace NBFX.Baseline.Tests
                 // No caller RecordObjects: test the product's actual version-seed Undo.
                 Assert.That((bool)Call(root, "InitializeGraphMainTextureInputs"), Is.True);
                 Undo.FlushUndoRecordObjects(); Undo.CollapseUndoOperations(group);
-                Assert.That(a.GetFloat(Version), Is.EqualTo(1f)); Assert.That(b.GetFloat(Version), Is.EqualTo(1f));
+                Assert.That(a.GetFloat(Version), Is.EqualTo(GraphSeedVersion(a))); Assert.That(b.GetFloat(Version), Is.EqualTo(GraphSeedVersion(b))); AssertGraphSeedMirrors(a); AssertGraphSeedMirrors(b);
                 Undo.PerformUndo(); aa.AssertSame(a, "Seed undo A"); bb.AssertSame(b, "Seed undo B");
-                Undo.PerformRedo(); aa.AssertSame(a, "Seed redo A", Version); bb.AssertSame(b, "Seed redo B", Version);
-                Assert.That(a.GetFloat(Version), Is.EqualTo(1f)); Assert.That(b.GetFloat(Version), Is.EqualTo(1f));
+                Undo.PerformRedo(); aa.AssertSame(a, "Seed redo A", GraphSeedChangedNames(a)); bb.AssertSame(b, "Seed redo B", GraphSeedChangedNames(b));
+                Assert.That(a.GetFloat(Version), Is.EqualTo(GraphSeedVersion(a))); Assert.That(b.GetFloat(Version), Is.EqualTo(GraphSeedVersion(b))); AssertGraphSeedMirrors(a); AssertGraphSeedMirrors(b);
             }
             finally { Undo.RevertAllDownToGroup(group); }
         }
@@ -616,7 +650,7 @@ namespace NBFX.Baseline.Tests
         [TestCaseSource(nameof(SurfaceCases))]
         public void GUI1A_OfficialSurface16Configurations_BothSyncEntrypointsPreserveAuthority(int surface, int blend, int clip)
         {
-            var material = NewMaterial(true); material.SetFloat(Version, 1);
+            var material = NewMaterial(true); material.SetFloat(Version, GraphSeedVersion(material));
             var root = NewRoot(material); material.SetFloat("_Surface", surface); material.SetFloat("_Blend", blend); material.SetFloat("_AlphaClip", clip);
             var bridge = Activator.CreateInstance(FindType("UnityEditor.Rendering.Universal.ShaderGraph.NBGraphUnlitGUIBridge"));
             Call(bridge, "ValidateMaterial", material); // One exact official baseline, no NB legacy surface implementation.
@@ -638,7 +672,11 @@ namespace NBFX.Baseline.Tests
         public void GUI1A_RealAssetSaveLoadReimport_PreservesRawWordsUIAndNativeFeatureState()
         {
             string project = Path.GetFullPath(Path.GetDirectoryName(Application.dataPath)).Replace('\\', '/');
-            Assert.That(project.StartsWith("/tmp/", StringComparison.Ordinal) || project.StartsWith("/private/tmp/", StringComparison.Ordinal), Is.True,
+            string explicitClone = Environment.GetEnvironmentVariable("NBFX_ISOLATED_PROJECT_DIR");
+            bool explicitlyOwnedClone = !string.IsNullOrEmpty(explicitClone) &&
+                string.Equals(project, Path.GetFullPath(explicitClone).Replace('\\', '/'), StringComparison.Ordinal) &&
+                string.Equals(Path.GetFileName(Path.GetDirectoryName(project)), ".utmp", StringComparison.Ordinal);
+            Assert.That(project.StartsWith("/tmp/", StringComparison.Ordinal) || project.StartsWith("/private/tmp/", StringComparison.Ordinal) || explicitlyOwnedClone, Is.True,
                 "Persistence fixture refuses to create Assets in the main project. Run the Root-owned isolated clone.");
             string name = "__NBFX_GUI1A_TEMP_" + Guid.NewGuid().ToString("N");
             AssetDatabase.CreateFolder("Assets", name); assetFolder = "Assets/" + name;

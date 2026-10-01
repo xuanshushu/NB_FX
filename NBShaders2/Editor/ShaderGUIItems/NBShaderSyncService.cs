@@ -177,28 +177,86 @@ namespace NBShaderEditor
 
         internal const string GraphGUIStateVersionProperty = "_NB_GraphGUIStateVersion";
 
+        // GUI1B candidate: serialized UI mirrors of the EXISTING flag protocol.
+        // No Graph Tier/effective projection, no periodic mirror->flags authority switch.
+        internal static bool GraphFlagIntentSchemaAvailable(Material material)
+        {
+            if (!NBShaderGUIContext.IsGraphMaterial(material)) return false;
+            for (int i = 0; i < ToggleFlagBindings.Length; ++i)
+                if (!NBShaderRootItem.HasFloatProperty(material, ToggleFlagBindings[i].propertyName)) return false;
+            for (int i = 0; i < ModeFlagBindings.Length; ++i)
+                if (!NBShaderRootItem.HasFloatProperty(material, ModeFlagBindings[i].propertyName)) return false;
+            return true;
+        }
+
+        internal static bool IsGraphIntentPackedHalf(string propertyName)
+            => propertyName == "_NB_Flags0Lo16" || propertyName == "_NB_Flags0Hi16" ||
+                propertyName == "_NB_Flags1Lo16" || propertyName == "_NB_Flags1Hi16";
+
+        // Explicit native editor callback only. The caller owns the existing
+        // Undo transaction and has already changed this raw slice. Ordinary
+        // Validate/Sync still never guesses whether an unowned mirror is newer.
+        internal static void NotifyGraphPackedFlagsEdited(Material material,
+            string propertyName, int editedSliceBits = 65535)
+        {
+            if (!IsGraphIntentPackedHalf(propertyName) ||
+                !GraphFlagIntentSchemaAvailable(material) ||
+                !NBShaderRootItem.HasFloatProperty(material, GraphGUIStateVersionProperty) ||
+                material.GetFloat(GraphGUIStateVersionProperty) != 2f) return;
+            int word = propertyName.StartsWith("_NB_Flags0", StringComparison.Ordinal) ? 0 : 1;
+            uint mask = unchecked((uint)editedSliceBits) & 65535u;
+            if (propertyName.EndsWith("Hi16", StringComparison.Ordinal)) mask <<= 16;
+            SeedGraphFlagIntents(material, word, mask);
+        }
+
+        private static void SeedGraphFlagIntents(Material material,
+            int editedWord = -1, uint editedBits = uint.MaxValue)
+        {
+            var flags = new NBShaderFlags(material); // Shared Material halfword read hooks; NEVER write words here.
+            for (int i = 0; i < ToggleFlagBindings.Length; ++i)
+            {
+                var binding = ToggleFlagBindings[i];
+                if (editedWord >= 0 && (binding.flagIndex != editedWord ||
+                    (unchecked((uint)binding.flagBits) & editedBits) == 0u)) continue;
+                material.SetFloat(binding.propertyName,
+                    flags.CheckFlagBits(binding.flagBits, index: binding.flagIndex) ? 1f : 0f);
+            }
+            for (int i = 0; i < ModeFlagBindings.Length; ++i)
+            {
+                var binding = ModeFlagBindings[i];
+                if (editedWord >= 0 && (binding.flagIndex != editedWord ||
+                    (unchecked((uint)binding.flagBits) & editedBits) == 0u)) continue;
+                int disabledMode = binding.enabledMode == 0 ? 1 : 0;
+                material.SetFloat(binding.propertyName,
+                    flags.CheckFlagBits(binding.flagBits, index: binding.flagIndex)
+                        ? binding.enabledMode : disabledMode);
+            }
+        }
+
         internal void PrepareGraphGUIState()
         {
             if (_rootItem.Mats == null || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return;
             var uninitialized = new List<UnityEngine.Object>();
             foreach (Material material in _rootItem.Mats)
             {
-                if (NBShaderGUIContext.IsGraphMaterial(material) &&
-                    NBShaderRootItem.HasFloatProperty(material, GraphGUIStateVersionProperty) &&
-                    NBShaderRootItem.HasFloatProperty(material, "_MainTexBigBlockItemFoldOut") &&
-                    NBShaderRootItem.HasFloatProperty(material, "_BaseMapFoldOut") &&
-                    material.GetFloat(GraphGUIStateVersionProperty) < 1f)
-                    uninitialized.Add(material);
+                if (!NBShaderGUIContext.IsGraphMaterial(material) ||
+                    !NBShaderRootItem.HasFloatProperty(material, GraphGUIStateVersionProperty) ||
+                    !NBShaderRootItem.HasFloatProperty(material, "_MainTexBigBlockItemFoldOut") ||
+                    !NBShaderRootItem.HasFloatProperty(material, "_BaseMapFoldOut")) continue;
+                float targetVersion = GraphFlagIntentSchemaAvailable(material) ? 2f : 1f;
+                if (material.GetFloat(GraphGUIStateVersionProperty) < targetVersion) uninitialized.Add(material);
             }
             if (uninitialized.Count == 0) return;
             Undo.RecordObjects(uninitialized.ToArray(), "Initialize NB Graph GUI state");
             foreach (UnityEngine.Object target in uninitialized)
             {
                 var material = (Material)target;
-                // GUI1A adds no functional toggle/mode intent. Existing packed
-                // words and all native feature inputs remain exactly unchanged.
-                // Foldouts use shader Float defaults; version is committed last.
-                material.SetFloat(GraphGUIStateVersionProperty, 1f);
+                bool seedFlagIntents = GraphFlagIntentSchemaAvailable(material);
+                if (seedFlagIntents) SeedGraphFlagIntents(material);
+                // Commit version LAST. Existing Graph functional properties, raw
+                // halfwords (including noncanonical finite values), URP surface,
+                // keywords, passes, queue, textures and prior foldouts are untouched.
+                material.SetFloat(GraphGUIStateVersionProperty, seedFlagIntents ? 2f : 1f);
                 EditorUtility.SetDirty(material);
             }
         }
