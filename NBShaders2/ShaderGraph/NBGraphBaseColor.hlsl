@@ -612,6 +612,62 @@ half4 NBGraphChromaticSample(UnityTexture2D map,
     return NBFX_ComposeChromaticV1(ra, ga, ba);
 }
 
+// Frozen NBShaderForwardPass computes this before _VERTEX_OFFSET, after
+// ApplyVAT. SG PositionOS feeding NBGraphVertexOffset is the pre-offset source.
+void NBGraphFogVertex_float(float3 PositionOS, out float FogFactor)
+{
+    FogFactor = ComputeFogFactor(TransformObjectToHClip(PositionOS).z);
+}
+void NBGraphFogVertex_half(half3 PositionOS, out half FogFactor)
+{
+    float computed;
+    NBGraphFogVertex_float((float3)PositionOS, computed);
+    FogFactor = (half)computed;
+}
+
+// NBShader's half3 fog path. The identity branch keeps all existing Graph
+// fog-off materials unchanged, including non-8-bit intermediate values.
+void NBGraphApplyFogV1(inout float3 rgb, float interpolatedFogFactor,
+    float fogIntensity)
+{
+    bool active = false;
+    #if defined(FOG_LINEAR_KEYWORD_DECLARED)
+        if (FOG_LINEAR) active = true;
+    #endif
+    #if defined(FOG_EXP_KEYWORD_DECLARED)
+        if (FOG_EXP) active = true;
+    #endif
+    #if defined(FOG_EXP2_KEYWORD_DECLARED)
+        if (FOG_EXP2) active = true;
+    #endif
+    if (active && IsFogEnabled())
+    {
+        half3 beforeFog = (half3)rgb;
+        half3 mixed = MixFog(beforeFog, (half)interpolatedFogFactor);
+        rgb = (float3)lerp(beforeFog, mixed, (half)fogIntensity);
+    }
+}
+void NBGraphApplyFogV1(inout half3 rgb, float interpolatedFogFactor,
+    float fogIntensity)
+{
+    bool active = false;
+    #if defined(FOG_LINEAR_KEYWORD_DECLARED)
+        if (FOG_LINEAR) active = true;
+    #endif
+    #if defined(FOG_EXP_KEYWORD_DECLARED)
+        if (FOG_EXP) active = true;
+    #endif
+    #if defined(FOG_EXP2_KEYWORD_DECLARED)
+        if (FOG_EXP2) active = true;
+    #endif
+    if (active && IsFogEnabled())
+    {
+        half3 beforeFog = rgb;
+        rgb = lerp(beforeFog, MixFog(rgb, (half)interpolatedFogFactor),
+            (half)fogIntensity);
+    }
+}
+
 void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 EffectiveBaseColor,
     float NB_Flags0Lo16, float NB_Flags0Hi16,
@@ -700,6 +756,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float ParallaxMappingIntensity, float4 ParallaxMappingVec,
     float ChromaticToggle, float CustomDataFlag0Lo16,
     float CustomDataFlag0Hi16, float4 Custom1, float4 Custom2,
+    float FogFactor, float FogIntensity,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
@@ -1034,12 +1091,18 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     // new half truncation into every existing Graph material.
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && DecalAlpha != 1.0)
         Out.a = (half)((half)Out.a * (half)DecalAlpha);
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS)
+        NBGraphApplyFogV1(Out.rgb, FogFactor, FogIntensity);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
         (adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) == 0u)
         Out = (float4)NBGraphApplyColorAdjustment((half4)Out,
             (half)HueShift, (half)Contrast, (half3)ContrastMidColor.rgb,
             (half)Saturability, (half4)BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
+        (NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
+            FLAG_BIT_PARTICLE_LINEARTOGAMMA_ON) != 0u)
+        Out.rgb = (float3)(half3)LinearToGammaSpace((half3)Out.rgb);
     Out.a = saturate(Out.a * AlphaAll);
 }
 
@@ -1131,6 +1194,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float ParallaxMappingIntensity, float4 ParallaxMappingVec,
     float ChromaticToggle, float CustomDataFlag0Lo16,
     float CustomDataFlag0Hi16, float4 Custom1, float4 Custom2,
+    float FogFactor, float FogIntensity,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
@@ -1444,12 +1508,18 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     // new half truncation into every existing Graph material.
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && DecalAlpha != 1.0)
         Out.a = (half)((half)Out.a * (half)DecalAlpha);
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS)
+        NBGraphApplyFogV1(Out.rgb, FogFactor, FogIntensity);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
         (adjustmentFlags0 & FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX) == 0u)
         Out = NBGraphApplyColorAdjustment(Out,
             (half)HueShift, (half)Contrast, ContrastMidColor.rgb,
             (half)Saturability, BaseMapColorRefine,
             NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16);
+    if (!NB_GRAPH_DEPTH_SHADOW_PASS &&
+        (NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16) &
+            FLAG_BIT_PARTICLE_LINEARTOGAMMA_ON) != 0u)
+        Out.rgb = LinearToGammaSpace(Out.rgb);
     Out.a = saturate(Out.a * (half)AlphaAll);
 }
 
