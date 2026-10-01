@@ -1,0 +1,5 @@
+POM1 history; keep distinct from fixed v2 single-run and accepted five-process replay.
+
+v1/ is the first 26-case POM GPU run with a genuine fragment handedness mismatch on negative scale. It contains the original XML/log, 338 PNG, 338 gzip float32 frames and 26 metrics. v1-correction-addendum.txt explains the mistaken extra odd-scale factor and final v2 source boundary; initial scripts, plan, preview files and audits are saved alongside it.
+
+contaminated-full-v1/ and contaminated-full-v2/ are two invalid single-process 1,105-case attempts. Their original XML/logs and every available noncapture file are retained. Each produced capture was SHA-compared to durable references; changed payloads are saved, identical payloads mapped, missing captures listed. v2 shares 8,372 identical anomalous changed payloads with v1 rather than duplicate them, and saves its three distinct changed payloads. The observer source/audit under state-audit/ documents loss of render/capture state, including Frozen repeat/clear abnormality, but does NOT prove the underlying cause. Do not use either attempt for product regression or Gate clearance.

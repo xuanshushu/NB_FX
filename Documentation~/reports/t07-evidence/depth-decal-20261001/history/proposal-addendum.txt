@@ -1,0 +1,5 @@
+Depth Decal DD1 candidate history addendum for final fixed source 6b92c45c5de4fafec1d85683d4e7c2ed67fe6721.
+
+The saved nbfx-DD-ScreenParams-proposal-v1-* and proposal-v1-audit.json are the INITIAL proposal only. That static proposal used _ScreenParams for PixelPosition Y inversion. Main Agent compared the local current official URP 17.3 SharedCode.template.hlsl lines 62/64 and corrected the final package adapter to use _ScaledScreenParams.y, consistent with the SG screen-position source. The 8/8 isolated Unity result is from the fixed corrected source, not from the initial proposal. This does not prove dynamic-resolution scaling: the fixture used a static 128x128 render target.
+
+The two initial import logs contain C# CS0136 in the test fixture: a foreach local 'm' collided with an enclosing metrics local 'm'. This was a fixture naming error, not a shader compile result. The final tested source and Unity test log no longer contain CS/Shader compilation errors. Both historical logs and the initial fixture source are retained; the error has not been erased or described as a product blocker. No official package or protected Renderer asset was edited by DD1.

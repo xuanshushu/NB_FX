@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="26" result="Failed(Child)" total="26" passed="0" failed="26" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-01 00:29:14Z" end-time="2026-10-01 00:29:30Z" duration="16.8542428">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="1129" result="Failed" site="Child" start-time="2026-10-01 00:29:14Z" end-time="2026-10-01 00:29:30Z" duration="16.854243" total="26" passed="0" failed="26" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2220" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="1111" result="Failed" site="Child" start-time="2026-10-01 00:29:14Z" end-time="2026-10-01 00:29:30Z" duration="16.844492" total="26" passed="0" failed="26" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="56624" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2221" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="1111" result="Failed" site="Child" start-time="2026-10-01 00:29:14Z" end-time="2026-10-01 00:29:30Z" duration="16.836171" total="26" passed="0" failed="26" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2222" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="1111" result="Failed" site="Child" start-time="2026-10-01 00:29:14Z" end-time="2026-10-01 00:29:30Z" duration="16.825248" total="26" passed="0" failed="26" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2223" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="1111" result="Failed" site="Child" start-time="2026-10-01 00:29:14Z" end-time="2026-10-01 00:29:30Z" duration="16.820194" total="26" passed="0" failed="26" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1846" name="G4GraphParallaxTests" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" testcasecount="26" result="Failed" site="Child" start-time="2026-10-01 00:29:14Z" end-time="2026-10-01 00:29:30Z" duration="16.802388" total="26" passed="0" failed="26" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1873" name="ForwardParallaxMatchesFrozenAndGraph" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" testcasecount="26" result="Failed" site="Child" start-time="2026-10-01 00:29:15Z" end-time="2026-10-01 00:29:30Z" duration="15.454041" total="26" passed="0" failed="26" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1847" name="G4ParallaxABC_on_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_on_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1365927751" result="Failed" start-time="2026-10-01 00:29:15Z" end-time="2026-10-01 00:29:21Z" duration="6.214749" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  43
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"on","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":false,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":43,"abControlPixels":0,"bcControlPixels":0,"aVisible":4625,"bVisible":4625,"cVisible":4625,"aResponsePixels":4946,"bResponsePixels":4946,"cResponsePixels":4946,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.5904541015625,"bResponse":0.5904541015625,"cResponse":0.5904541015625}
+]]></output>
+                </test-case>
+                <test-case id="1848" name="G4ParallaxABC_on_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_on_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1311901923" result="Failed" start-time="2026-10-01 00:29:21Z" end-time="2026-10-01 00:29:22Z" duration="0.319519" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  26
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"on","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":false,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":25,"abControlPixels":0,"bcControlPixels":1,"aVisible":3050,"bVisible":3050,"cVisible":3050,"aResponsePixels":3229,"bResponsePixels":3229,"cResponsePixels":3229,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.00048828125,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.577392578125,"bResponse":0.577392578125,"cResponse":0.577392578125}
+]]></output>
+                </test-case>
+                <test-case id="1849" name="G4ParallaxABC_off_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_off_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="940648755" result="Failed" start-time="2026-10-01 00:29:22Z" end-time="2026-10-01 00:29:22Z" duration="0.323629" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  43
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"off","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":false,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":0,"abControlPixels":0,"bcControlPixels":43,"aVisible":4673,"bVisible":4673,"cVisible":4673,"aResponsePixels":4946,"bResponsePixels":4946,"cResponsePixels":4946,"abMax":0.0,"bcMax":0.0,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.5904541015625,"bResponse":0.5904541015625,"cResponse":0.5904541015625}
+]]></output>
+                </test-case>
+                <test-case id="1850" name="G4ParallaxABC_off_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_off_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="788445806" result="Failed" start-time="2026-10-01 00:29:22Z" end-time="2026-10-01 00:29:22Z" duration="0.332261" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  26
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"off","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":false,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":1,"abControlPixels":0,"bcControlPixels":25,"aVisible":2968,"bVisible":2968,"cVisible":2968,"aResponsePixels":3229,"bResponsePixels":3229,"cResponsePixels":3229,"abMax":0.0,"bcMax":0.00048828125,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.577392578125,"bResponse":0.577392578125,"cResponse":0.577392578125}
+]]></output>
+                </test-case>
+                <test-case id="1851" name="G4ParallaxABC_intensity-zero_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_intensity-zero_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="911184291" result="Failed" start-time="2026-10-01 00:29:22Z" end-time="2026-10-01 00:29:23Z" duration="0.328324" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  43
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"intensity-zero","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.0,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":0,"abControlPixels":0,"bcControlPixels":43,"aVisible":4572,"bVisible":4572,"cVisible":4572,"aResponsePixels":4946,"bResponsePixels":4946,"cResponsePixels":4946,"abMax":0.0,"bcMax":0.0,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.67626953125,"bResponse":0.67626953125,"cResponse":0.67626953125}
+]]></output>
+                </test-case>
+                <test-case id="1852" name="G4ParallaxABC_intensity-zero_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_intensity-zero_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1163205337" result="Failed" start-time="2026-10-01 00:29:23Z" end-time="2026-10-01 00:29:23Z" duration="0.316480" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  26
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"intensity-zero","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.0,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":1,"abControlPixels":0,"bcControlPixels":25,"aVisible":3020,"bVisible":3020,"cVisible":3020,"aResponsePixels":3229,"bResponsePixels":3229,"cResponsePixels":3229,"abMax":0.0,"bcMax":0.00048828125,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.6768798828125,"bResponse":0.6768798828125,"cResponse":0.6768798828125}
+]]></output>
+                </test-case>
+                <test-case id="1853" name="G4ParallaxABC_low-layers_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_low-layers_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="730892467" result="Failed" start-time="2026-10-01 00:29:23Z" end-time="2026-10-01 00:29:23Z" duration="0.343179" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  73
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"low-layers","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":2.0,"maxLayers":3.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":16.0,"maxLayers":40.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":34,"abControlPixels":0,"bcControlPixels":39,"aVisible":4601,"bVisible":4601,"cVisible":4601,"aResponsePixels":3660,"bResponsePixels":3660,"cResponsePixels":3664,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.640869140625,"bResponse":0.640869140625,"cResponse":0.640869140625}
+]]></output>
+                </test-case>
+                <test-case id="1854" name="G4ParallaxABC_low-layers_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_low-layers_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1005658238" result="Failed" start-time="2026-10-01 00:29:23Z" end-time="2026-10-01 00:29:24Z" duration="0.321827" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  46
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"low-layers","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":2.0,"maxLayers":3.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":16.0,"maxLayers":40.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":26,"abControlPixels":0,"bcControlPixels":20,"aVisible":3034,"bVisible":3034,"cVisible":3034,"aResponsePixels":2208,"bResponsePixels":2208,"cResponsePixels":2209,"abMax":0.0,"bcMax":0.00244140625,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.5701904296875,"bResponse":0.5701904296875,"cResponse":0.5701904296875}
+]]></output>
+                </test-case>
+                <test-case id="1855" name="G4ParallaxABC_high-layers_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_high-layers_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1658376633" result="Failed" start-time="2026-10-01 00:29:24Z" end-time="2026-10-01 00:29:24Z" duration="0.322070" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  73
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"high-layers","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":16.0,"maxLayers":40.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":2.0,"maxLayers":3.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":39,"abControlPixels":0,"bcControlPixels":34,"aVisible":4630,"bVisible":4630,"cVisible":4630,"aResponsePixels":3660,"bResponsePixels":3660,"cResponsePixels":3664,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.640869140625,"bResponse":0.640869140625,"cResponse":0.640869140625}
+]]></output>
+                </test-case>
+                <test-case id="1856" name="G4ParallaxABC_high-layers_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_high-layers_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="165504395" result="Failed" start-time="2026-10-01 00:29:24Z" end-time="2026-10-01 00:29:24Z" duration="0.330036" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  46
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"high-layers","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":16.0,"maxLayers":40.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":2.0,"maxLayers":3.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":20,"abControlPixels":0,"bcControlPixels":26,"aVisible":3051,"bVisible":3051,"cVisible":3051,"aResponsePixels":2208,"bResponsePixels":2208,"cResponsePixels":2209,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.00244140625,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.5701904296875,"bResponse":0.5701904296875,"cResponse":0.5701904296875}
+]]></output>
+                </test-case>
+                <test-case id="1857" name="G4ParallaxABC_wrap-repeat_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_wrap-repeat_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="134332976" result="Failed" start-time="2026-10-01 00:29:24Z" end-time="2026-10-01 00:29:25Z" duration="0.329129" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  75
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"wrap-repeat","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":1,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":43,"abControlPixels":0,"bcControlPixels":32,"aVisible":4625,"bVisible":4625,"cVisible":4625,"aResponsePixels":3183,"bResponsePixels":3183,"cResponsePixels":3183,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.679443359375,"bResponse":0.679443359375,"cResponse":0.679443359375}
+]]></output>
+                </test-case>
+                <test-case id="1858" name="G4ParallaxABC_wrap-repeat_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_wrap-repeat_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="2097001550" result="Failed" start-time="2026-10-01 00:29:25Z" end-time="2026-10-01 00:29:25Z" duration="0.317657" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  56
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"wrap-repeat","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":1,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":25,"abControlPixels":0,"bcControlPixels":31,"aVisible":3050,"bVisible":3050,"cVisible":3050,"aResponsePixels":2212,"bResponsePixels":2212,"cResponsePixels":2212,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.02197265625,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.6707763671875,"bResponse":0.6707763671875,"cResponse":0.6707763671875}
+]]></output>
+                </test-case>
+                <test-case id="1859" name="G4ParallaxABC_wrap-clamp_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_wrap-clamp_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="830645956" result="Failed" start-time="2026-10-01 00:29:25Z" end-time="2026-10-01 00:29:25Z" duration="0.323132" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  75
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"wrap-clamp","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":1,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":32,"abControlPixels":0,"bcControlPixels":43,"aVisible":4608,"bVisible":4608,"cVisible":4608,"aResponsePixels":3183,"bResponsePixels":3183,"cResponsePixels":3183,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.679443359375,"bResponse":0.679443359375,"cResponse":0.679443359375}
+]]></output>
+                </test-case>
+                <test-case id="1860" name="G4ParallaxABC_wrap-clamp_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_wrap-clamp_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1522873651" result="Failed" start-time="2026-10-01 00:29:25Z" end-time="2026-10-01 00:29:25Z" duration="0.336266" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  56
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"wrap-clamp","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":1,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":31,"abControlPixels":0,"bcControlPixels":25,"aVisible":3040,"bVisible":3040,"cVisible":3040,"aResponsePixels":2212,"bResponsePixels":2212,"cResponsePixels":2212,"abMax":0.0,"bcMax":0.02197265625,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.6707763671875,"bResponse":0.6707763671875,"cResponse":0.6707763671875}
+]]></output>
+                </test-case>
+                <test-case id="1861" name="G4ParallaxABC_wrap-repeatU-clampV_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_wrap-repeatU-clampV_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1681426312" result="Failed" start-time="2026-10-01 00:29:25Z" end-time="2026-10-01 00:29:26Z" duration="0.325295" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  79
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"wrap-repeatU-clampV","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":2,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":36,"abControlPixels":0,"bcControlPixels":43,"aVisible":4648,"bVisible":4648,"cVisible":4648,"aResponsePixels":1946,"bResponsePixels":1946,"cResponsePixels":1946,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.493896484375,"bResponse":0.493896484375,"cResponse":0.49658203125}
+]]></output>
+                </test-case>
+                <test-case id="1862" name="G4ParallaxABC_wrap-repeatU-clampV_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_wrap-repeatU-clampV_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="318578702" result="Failed" start-time="2026-10-01 00:29:26Z" end-time="2026-10-01 00:29:26Z" duration="0.325207" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  57
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"wrap-repeatU-clampV","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":2,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":32,"abControlPixels":0,"bcControlPixels":25,"aVisible":3062,"bVisible":3062,"cVisible":3062,"aResponsePixels":1342,"bResponsePixels":1342,"cResponsePixels":1342,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.4384765625,"bResponse":0.4384765625,"cResponse":0.4384765625}
+]]></output>
+                </test-case>
+                <test-case id="1863" name="G4ParallaxABC_wrap-clampU-repeatV_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_wrap-clampU-repeatV_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="726669028" result="Failed" start-time="2026-10-01 00:29:26Z" end-time="2026-10-01 00:29:26Z" duration="0.342243" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  85
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"wrap-clampU-repeatV","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":3,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":42,"abControlPixels":0,"bcControlPixels":43,"aVisible":4579,"bVisible":4579,"cVisible":4579,"aResponsePixels":2061,"bResponsePixels":2061,"cResponsePixels":2061,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.679443359375,"bResponse":0.679443359375,"cResponse":0.679443359375}
+]]></output>
+                </test-case>
+                <test-case id="1864" name="G4ParallaxABC_wrap-clampU-repeatV_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_wrap-clampU-repeatV_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="747103008" result="Failed" start-time="2026-10-01 00:29:26Z" end-time="2026-10-01 00:29:27Z" duration="0.320323" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  56
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"wrap-clampU-repeatV","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":3,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":31,"abControlPixels":0,"bcControlPixels":25,"aVisible":3025,"bVisible":3025,"cVisible":3025,"aResponsePixels":1497,"bResponsePixels":1497,"cResponsePixels":1497,"abMax":0.0,"bcMax":0.02197265625,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.6624755859375,"bResponse":0.6624755859375,"cResponse":0.6624755859375}
+]]></output>
+                </test-case>
+                <test-case id="1865" name="G4ParallaxABC_lod-auto_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_lod-auto_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1398685184" result="Failed" start-time="2026-10-01 00:29:27Z" end-time="2026-10-01 00:29:27Z" duration="0.323582" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  129
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"lod-auto","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":false,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":86,"abControlPixels":0,"bcControlPixels":43,"aVisible":4573,"bVisible":4573,"cVisible":4573,"aResponsePixels":4946,"bResponsePixels":4946,"cResponsePixels":4946,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.6790771484375,"bResponse":0.6790771484375,"cResponse":0.6790771484375}
+]]></output>
+                </test-case>
+                <test-case id="1866" name="G4ParallaxABC_lod-auto_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_lod-auto_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1702433756" result="Failed" start-time="2026-10-01 00:29:27Z" end-time="2026-10-01 00:29:27Z" duration="0.332978" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  85
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"lod-auto","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":false,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":60,"abControlPixels":0,"bcControlPixels":25,"aVisible":3017,"bVisible":3017,"cVisible":3017,"aResponsePixels":3229,"bResponsePixels":3229,"cResponsePixels":3229,"abMax":0.0,"bcMax":0.0029296875,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.6722412109375,"bResponse":0.6722412109375,"cResponse":0.6722412109375}
+]]></output>
+                </test-case>
+                <test-case id="1867" name="G4ParallaxABC_lod-zero_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_lod-zero_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1876772021" result="Failed" start-time="2026-10-01 00:29:27Z" end-time="2026-10-01 00:29:28Z" duration="0.333116" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  129
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"lod-zero","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":false,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":43,"abControlPixels":0,"bcControlPixels":86,"aVisible":4625,"bVisible":4625,"cVisible":4625,"aResponsePixels":4946,"bResponsePixels":4946,"cResponsePixels":4946,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.002685546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.6790771484375,"bResponse":0.6790771484375,"cResponse":0.6790771484375}
+]]></output>
+                </test-case>
+                <test-case id="1868" name="G4ParallaxABC_lod-zero_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_lod-zero_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="1609105692" result="Failed" start-time="2026-10-01 00:29:28Z" end-time="2026-10-01 00:29:28Z" duration="0.317395" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  85
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"lod-zero","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":true,"lod0":false,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":25,"abControlPixels":0,"bcControlPixels":60,"aVisible":3050,"bVisible":3050,"cVisible":3050,"aResponsePixels":3229,"bResponsePixels":3229,"cResponsePixels":3229,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.0029296875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.6722412109375,"bResponse":0.6722412109375,"cResponse":0.6722412109375}
+]]></output>
+                </test-case>
+                <test-case id="1869" name="G4ParallaxABC_negative-scale_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_negative-scale_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="694568409" result="Failed" start-time="2026-10-01 00:29:28Z" end-time="2026-10-01 00:29:28Z" duration="0.364822" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  5184
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"negative-scale","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":false,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":5184,"abControlPixels":0,"bcControlPixels":0,"aVisible":4766,"bVisible":4766,"cVisible":4749,"aResponsePixels":5184,"bResponsePixels":5184,"cResponsePixels":5184,"abMax":0.0,"bcMax":0.6669921875,"abControlMax":0.0,"bcControlMax":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.5755615234375,"bResponse":0.5755615234375,"cResponse":0.5704345703125}
+]]></output>
+                </test-case>
+                <test-case id="1870" name="G4ParallaxABC_negative-scale_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_negative-scale_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="282784333" result="Failed" start-time="2026-10-01 00:29:28Z" end-time="2026-10-01 00:29:29Z" duration="0.348372" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  4239
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"negative-scale","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":false,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":4239,"abControlPixels":0,"bcControlPixels":0,"aVisible":3923,"bVisible":3923,"cVisible":3890,"aResponsePixels":4281,"bResponsePixels":4281,"cResponsePixels":4281,"abMax":0.0,"bcMax":0.6553955078125,"abControlMax":0.0,"bcControlMax":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.5738525390625,"bResponse":0.5738525390625,"cResponse":0.60400390625}
+]]></output>
+                </test-case>
+                <test-case id="1871" name="G4ParallaxABC_backface_ortho" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_backface_ortho" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="34059834" result="Failed" start-time="2026-10-01 00:29:29Z" end-time="2026-10-01 00:29:30Z" duration="1.307965" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  78
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"backface","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":true,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":false,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":78,"abControlPixels":0,"bcControlPixels":0,"aVisible":4486,"bVisible":4486,"cVisible":4486,"aResponsePixels":4896,"bResponsePixels":4896,"cResponsePixels":4896,"abMax":0.0,"bcMax":0.0029296875,"abControlMax":0.0,"bcControlMax":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.58544921875,"bResponse":0.58544921875,"cResponse":0.58544921875}
+]]></output>
+                </test-case>
+                <test-case id="1872" name="G4ParallaxABC_backface_perspective" fullname="NBFX.Baseline.Tests.G4GraphParallaxTests.G4ParallaxABC_backface_perspective" methodname="ForwardParallaxMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphParallaxTests" runstate="Runnable" seed="2128742436" result="Failed" start-time="2026-10-01 00:29:30Z" end-time="2026-10-01 00:29:30Z" duration="0.334573" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Current/Graph POM mismatch.
+  Expected: 0
+  But was:  47
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphParallaxTests.ForwardParallaxMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x00a8b] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphParallaxTests.cs:180
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_PARALLAX_ABC {"name":"backface","api":"Metal","unityVersion":"6000.3.18f1","note":"POM1 ordinary Mesh Forward/backface only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI 28..99. Raw/full-frame PNG and gzip f32; all compares strict0. No VFX, Player, CustomLocal, CA or cross-feature claim.","ortho":false,"finite":true,"primary":{"enabled":true,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"control":{"enabled":false,"lod0":true,"intensity":0.1599999964237213,"minLayers":5.0,"maxLayers":30.0,"wrap":0,"st":{"x":1.7999999523162842,"y":1.649999976158142,"z":-0.3799999952316284,"w":-0.23999999463558198}},"abPixels":0,"bcPixels":47,"abControlPixels":0,"bcControlPixels":0,"aVisible":3231,"bVisible":3231,"cVisible":3231,"aResponsePixels":3500,"bResponsePixels":3500,"cResponsePixels":3500,"abMax":0.0,"bcMax":0.002685546875,"abControlMax":0.0,"bcControlMax":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.59033203125,"bResponse":0.59033203125,"cResponse":0.59033203125}
+Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,66 @@
+DepthDecal ordinary-Mesh candidate (2026-10-01; preview-only)
+
+Baseline / exact boundaries
+- Old NBShaderForwardPass.hlsl fragments sample scene depth before any UV processing,
+  reconstruct world point, transform World->Object (or _CUSTOM_LOCAL_TRANSFORM
+  override), cube-clip |xyz|<=.5, decalUV=object.xz+.5, decalAlpha=
+  [NB_Remap(abs(object.y),.1,.5,1,0)]^2 * cubeMask. UV0.xy is replaced before
+  ProcessBaseUVs/ParticleProcessUV; all default UV selectors see it. Alpha is
+  multiplied after VertexColor and _ColorA, before late ColorAdjustment and
+  _AlphaAll. See NBShaderForwardPass.hlsl:319-372,400-422,1110-1145.
+- Old pragma is in backface SRPDefaultUnlit, UniversalForward, NB CameraOpaque,
+  NB Deferred; not DepthOnly (commented) or ShadowCaster. Graph candidate will
+  cover its Forward and both NB distortion passes through common BaseUV/Color
+  CF, not claim the separate backface prepass. Depth/Shadow skip depth sample,
+  UV replacement and alpha multiplication exactly.
+- Old fragment UV = SV_POSITION.xy / _ScaledScreenParams.xy. Existing Graph
+  ScreenPosition mode Default is *not* equivalent: ShaderGraph template makes
+  NDCPosition using _ScreenParams and flips Y. Candidate appends a Pixel-mode
+  ScreenPositionNode, inverts the official template's PixelPosition Y
+  transform, then divides by _ScaledScreenParams. This preserves the old
+  raster-space UV, including dynamic-resolution denominator. Primary sources:
+  ShaderGraph 17.3 BuildSurfaceDescriptionInputs.template.hlsl:49-57 and
+  ScreenSpaceType.cs; URP ShaderVariablesFunctions.hlsl:563-573.
+
+Proposed preview product delta
+1. New pure NBShaderDepthDecalV1.hlsl: only cubeMask/remap-squared/decalUV
+   math, same half assignment boundaries as old. No depth sample/transform.
+2. NBShaderForwardPass.hlsl: include new helper, replace six original math
+   lines with one helper invocation; do not change depth fetch/World->Object,
+   UV sequencing, alpha sequencing or keyword/pass definitions. FrozenA vs
+   CurrentB strict0 proves this extraction did not alter production behavior.
+3. NBGraphBaseUV.hlsl: append PixelPosition and DepthDecalToggle inputs after
+   all existing inputs, DecalAlpha last output; when enabled in non-depth/shadow
+   actual camera stage, sample scene depth + same NDC adjustment and world
+   reconstruction, TransformWorldToObject, shared pure helper, replace UV0.xy
+   before shared BaseUV builder. Compile-time SHADERPASS_UNLIT only (normal
+   Forward plus two cloned NB passes); DepthOnly/ShadowCaster/2D/Meta/
+   MotionVectors/preview return Alpha=1 and leave UV unchanged.
+4. NBGraphBaseColor.hlsl: append DecalAlpha after *all current inputs* before
+   out Out; multiply only alpha just after ColorA.a and before late adjustment,
+   guarded against DepthOnly/ShadowCaster. No new keyword, integer shadow,
+   official Target/Pass/NBPostprocess edit. Only old-name float property
+   _DepthDecal_Toggle default0 added to Graph.
+5. Graph appends property node, Pixel-mode ScreenPosition node, BaseUV input/
+   output slots, BaseColor input slot, 3 live edges. Every old object/slot ID
+   retained; script reads current Graph/CF at invocation. Root must compare
+   object diff and force import/compile serially.
+
+Test candidate
+- Real opaque depth-writing asymmetric back geometry + transparent cube
+  projector, camera requiresDepthTexture true, orthographic/perspective;
+  true rendered Forward and NB exact screen passes; no main Assets/Settings
+  writes. A Frozen, B current, C Graph; A/B and B/C strict RGBA0 for each
+  on/off state, repeat/fullframe finite/raw RT, renderer asset bytes restored.
+- Controls: depth writer off, projector disabled, decal disabled, proxy Y
+  raised >.5, proxy rotated/translated, base map UV gradient, alpha edge.
+  Positive B/C response required. Screen cases include alpha/clip payload,
+  but exact-pass mode and layer are controlled; do not infer from shader
+  introspection before warm real Graph draw.
+- Scoped pending: _CUSTOM_LOCAL_TRANSFORM alternative matrix, separately
+  rendered backface prepass, VFX/Player, dynamic resolution (formula preserved
+  but not exercised). These are future work, not deleted features. If full
+  custom-matrix parity is required now, add matrix protocol and tests before
+  accepting this slice; don't claim it silently.
+
+This is a candidate. No Gate pass or Unity compile/result is asserted.

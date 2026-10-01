@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>T07 · 普通 Mesh 深度贴花 DD1</title></head><body>
+<p><a href="index.html">报告索引</a> · <a href="../decisions.html#d24">D24：普通 Mesh 优先</a> · <a href="t07-mesh-refraction-checkpoint.html">前一片 RF1</a> · <a href="t07-mesh-parallax-checkpoint.html">后一片 POM1 与分批回放</a></p>
+<h1>普通 Mesh 深度贴花 DD1 已接入；本片 8/8 严格通过</h1>
+<p><strong>人话结论：</strong>深度贴花要先读场景深度，再把画面上的地面位置还原到贴花物体内部，决定在立方体里的哪一处显示纹理。Graph 现在沿用原 NBShader 的贴花投射/透明度数学，并在普通 Mesh 的前向显示和两条专用扭曲 Pass 里使用。<strong>本片在当前固定测试场景中和原 Shader 逐像素一致</strong>；但它不等于动态分辨率、所有场景或整包功能都通过。</p>
+<p>固定 8 路径提交 <code>6b92c45c5de4fafec1d85683d4e7c2ed67fe6721</code>，<a href="t07-evidence/depth-decal-20261001/product-source/commit.json">源码无损快照</a>。没有修改官方 URP、UniversalTarget、NBPostprocess 或原 ShaderLab Pass 布局/标签；主 Agent 用独占隔离 Unity CLI 验证，本证据归档者未运行 Unity、修改产品/测试/中央索引/Git 或 push。</p>
+<h2>8 项实际证明了什么</h2>
+<p>A 为不可变 Frozen NBShader，B 为当前 NBShader，C 为实际 Graph。4 项普通 Forward、2 项 <code>NBCameraOpaqueDistortPass</code>、2 项 <code>NBDeferredDistortPass</code>；包含正交/透视和地面高度变化。不是画一张空白贴花来比较：场景有实际写深度的不透明倾斜地面，贴花内外、移动地面、关闭深度路径都是有区别的控制。最低可见像素 <strong>1,391</strong>，单独改变深度造成的响应最小 <strong>0.4723968505859375</strong>。</p>
+<p>8 项的 Frozen/当前和当前/Graph 在打开、关闭、地面移动、贴花范围外等对照中，原始 RGBA <strong>严格 0 差</strong>；重复拍摄也是 0，所有值有限。保留 <strong>152 PNG＋152 份 float32 原始帧＋8 指标</strong>。<a href="t07-evidence/depth-decal-20261001/results.xml">原始 XML</a> · <a href="t07-evidence/depth-decal-20261001/cases/">逐例画面和指标</a> · <a href="t07-evidence/depth-decal-20261001/summary.json">汇总</a> · <a href="t07-evidence/depth-decal-20261001/unity.log.gz">日志</a>。</p>
+<h2>初版问题与边界</h2>
+<p>最初静态提案把 Graph 像素 Y 坐标反转所用的屏幕高度写成 <code>_ScreenParams.y</code>。主 Agent 对照当前官方 Shader Graph 模板后，包内最终实现改成与输入一致的 <code>_ScaledScreenParams.y</code>，上述 8/8 是<strong>修正后源码</strong>的 GPU 结果。两个初次导入日志还有测试夹具同名局部变量 <code>m</code> 造成的 C# CS0136；仅把夹具局部变量改名后完成测试，原错误日志仍保留，不能写成产品 Shader 错误。<a href="t07-evidence/depth-decal-20261001/history/proposal-addendum.txt">提案/夹具历史说明</a> · <a href="t07-evidence/depth-decal-20261001/import-v1.log.gz">初导入日志</a>。</p>
+<p>测试使用固定 <strong>128×128</strong> RT，<strong>没有验证动态分辨率</strong>。也没有验证真正 VFX、Player、首帧、所有相机/贴花几何或完整普通 Mesh 功能。3 个受保护工程/Renderer 文件只读 hash 与前档相同，见<a href="t07-evidence/depth-decal-20261001/protected-settings-audit.json">核对</a>。</p>
+<h2>后续合并回放如何读</h2>
+<p>随后 DD1 与 POM1 在同一代码基线上分 <strong>5 个独立、串行 Unity 进程</strong>回放既有 1,105 个不同 NUnit 用例，合计 <strong>916 通过、189 严格失败</strong>；旧 RF1 的 163 个失败全保留，新增只有 POM1 的 26 个，DD1 的 8 个仍通过。DD1 的 304 份画面载荷在分批回放中与本片完全相同。<strong>这不是单进程 1,105 项通过的 XML</strong>：两次先前单进程长跑出现未解释清楚的捕获/清屏异常，只作为历史留档，不能当产品回归判据。每批原 XML/日志、命令、对照映射和异常历史统一在<a href="t07-evidence/parallax-20261001/batches/batch-manifest.json">POM1 分批档</a>及<a href="t07-mesh-parallax-checkpoint.html">POM1 报告</a>，这里不重复造一份“全量通过”证据。</p>
+<p><strong>G3/G4 未放行，普通 Mesh 仍有余项与严格失败。</strong> <a href="t07-evidence/depth-decal-20261001/README.txt">证据说明</a> · <a href="t07-evidence/depth-decal-20261001/sha256.txt">附件 hash</a>。</p>
+</body></html>

@@ -72,5 +72,6 @@
 <p>2026-10-01 PN2 增量：<a href="../reports/t07-mesh-pnoise-screen-checkpoint.html">同次程序噪波送入两种 NB 扭曲和 Forward 遮罩路径，20/20 严格通过；现有1003项矩阵为845通过/158既有失败</a>。957项有图像、46项GUI无截图；13,082份载荷逐份与最近持久证据相同。仍补完整普通Mesh/共享GUI/后处理/Player/性能，不用项数代替完整覆盖。</p>
 <p>2026-10-01 GUI1A增量：<a href="../reports/t07-mesh-gui-maintexture-checkpoint.html">现有主纹理控件接入普通 Mesh Graph，新增38项后台测试通过；1041项合并回归为883通过/158既有失败</a>。GUI总84项不含图像对照；13,082份原截图/解压raw实读SHA与最近证据相同。真实OnGUI只为旧控件构造准备上下文，不代表可视Inspector验收。继续完整普通Mesh，其余共享GUI/Tier/后处理/Player/性能未闭合，真正VFX不启动。</p>
 <p>2026-10-01 RF1增量：<a href="../reports/t07-mesh-refraction-checkpoint.html">普通Mesh折射已接入Graph，30项25通过/5严格失败留档；1071项合并回归为908通过/163失败</a>。原158失败身份不变。新增3项为Deferred透视微差，另2项为旧Shader与Graph同值的辅助零背景断言失败，不混作B/C失配；不追弱颜色、不放宽标准。完整Mesh/GUI/Tier/后处理/Player/性能仍未闭合，真正VFX仍等待。</p>
+<p>2026-10-01 DD1/POM1增量：<a href="../reports/t07-mesh-depth-decal-checkpoint.html">深度贴花8/8严格通过</a>；<a href="../reports/t07-mesh-parallax-checkpoint.html">视差已接入，但26项均仍有像素差、严格未通过</a>，保留给集中人工测试，不追弱色、不降标准。现有22个夹具的1105项在5个独立串行进程中完整重放，合计916通过/189严格失败/0跳过（旧163不变，新增26为视差）；这不是单进程的合成XML，也不是全部普通Mesh功能覆盖。15322份截图/解压raw实读核对，旧12份PBR阴影原始帧跨轮有1–3像素变化，前后版均留存；两次整帧空白的单进程回放另留历史，原因未证实。G3/G4仍未放行，正式VFX仍等完整Mesh。</p>
 </body>
 </html>

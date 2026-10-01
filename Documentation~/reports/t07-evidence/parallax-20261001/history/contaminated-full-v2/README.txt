@@ -1,0 +1,5 @@
+NOT A VALID COMBINED REGRESSION. This second single-process 1,105-case replay is preserved only as anomaly-investigation history.
+
+Original XML: 528 passed / 577 failed / 0 skipped. The previous RF1 163 failure IDs remain, with 414 additional failures. Observer notes and raw audits under ../state-audit/ show capture/clear abnormalities already affecting Frozen A repeats, but do not establish the underlying root cause. No C#/Shader compiler error. Do not call this a shader regression or a valid full Gate result; use the five independent serial batches as the accepted replay.
+
+Of 15,116 produced PNG/decompressed float32 RGBA payloads, 6,741 matched durable reference files, 8,375 changed, 206 expected captures were absent. Every 1,296 noncapture file was saved. 8,372 changed payloads matched the preserved invalid v1 anomaly payload exactly and are referenced there rather than duplicated; only 3 distinct changed payloads are copied in this v2 directory. The capture-equivalence.json map records both original durable comparison and the actual archive location. Original XML/log and failure/missing audits remain unchanged.
