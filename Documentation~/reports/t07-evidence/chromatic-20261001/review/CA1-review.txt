@@ -1,0 +1,107 @@
+NB_FX · CA1 普通 Mesh 独立只读 review
+2026-10-01。只写 /tmp review/preview，无产品/Test/Unity/Git操作；rootfull1105运行中，未碰clone。
+本文件没有“CA42通过”声明，没有重查POM微差。
+
+结论
+当前 CA1 算术抽取/Graph接口方向可保留，但 CameraOpaque 的 BaseMap 强制 Clamp 合同遗漏。
+不建议传 NB_DistortionMode==2 的 uniform bool 来替代 Pass身份；同一材质还可以画 Forward，Forward不能因该uniform改成Clamp。
+Root已同意采用包内 SubTarget clone 提前 static define；最小候选准备完毕。无需改官方包/官方Target/NBPostprocess。
+
+交接候选
+/tmp/nbfx-ca1-review/build-pass-clamp-preview.py
+调用：python3 /tmp/nbfx-ca1-review/build-pass-clamp-preview.py
+默认候选目录：/tmp/nbfx-ca1-static-pass-preview/
+manifest：/tmp/nbfx-ca1-static-pass-preview/manifest.json
+仅static修法差异：
+/tmp/nbfx-ca1-static-pass-preview/diffs/NBShaders2__ShaderGraph__Editor__NBGraphUnlitSubTarget.cs.diff（相对当前product）
+/tmp/nbfx-ca1-static-pass-preview/diffs/NBShaders2__ShaderGraph__NBGraphBaseColor.hlsl.diff（相对已应用CA1的dynamicPreview）
+其它3份helper/legacy/graph与当前CA dynamicPreview完全相同，不是额外产品修改。
+脚本只导入原 /tmp/nbfx-apply-chromatic.py 的纯patch函数，不执行其main、不修改原脚本。
+每次读当前live Graph/CF/Input/SubTarget；生成前后核验来源没变。保留全部RF/DD/POM已有属性/端口。
+重跑输出新manifest，Root合并时按最新源hash审核；不能把旧wholeGraph覆盖到新输入上。
+本次Graph971objects→CA985objects，新增5CFports196..200；staticfix额外0port/0property/0keyword axis。
+
+1 原始合同确证（当前与Frozen相同）
+/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderInput.hlsl:437-484
+  宏实际拼写 _CAMERA_OPAQUE_DISTORT_PASS，不是 _CAMER_OPAQUE_DISTORT_PASS。
+  宏开启且bits==FLAG_BIT_WRAPMODE_BASEMAP时wrapMode=1；其它bits才读CheckLocalWrapFlags。
+  因此三次CA raw和CA关闭普通BaseMap都强制Clamp，不是只CameraOpaqueTexture采样强制Clamp。
+  ForceLod0保持材料原bit；非Opaque其它Pass仍用户wrap0/1/2/3。
+/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Shader/NBShader.shader:974-1007
+  CameraOpaque Pass在include前#define该宏，并声明_CHROMATIC_ABERRATION原keyword。
+/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderInput.hlsl
+  Frozen保留相同wrap强制合同，本轮绝不修改Frozen。
+
+2 为什么现有后置macro对CF无效
+/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/ShaderGraph/Passes/NBGraphCameraOpaquePass.hlsl:1
+  当前 NB_GRAPH_CAMERA_OPAQUE_PASS1 定义位于PostGraph fragmentinclude。
+/Users/bytedance/UnityProject/NBUnityProject/Library/PackageCache/com.unity.render-pipelines.universal@35356061dd01/Editor/ShaderGraph/Templates/ShaderPass.template
+  实际顺序GraphDefines75 →PreGraphIncludes82 →GraphIncludes101 →GraphFunctions115 →PostGraphIncludes143。
+/Users/bytedance/UnityProject/NBUnityProject/Library/PackageCache/com.unity.shadergraph@2b401d56d4b3/Editor/Generation/Processors/Generator.cs:1082-1093
+  pass.defines真正发射到GraphDefines；包内PassDescriptor static define可让CF提前看到，不需编辑官方template/generator。
+  不把新的shader_feature/multi_compile/materialkeyword加入集合；只使用KeywordDefinition.Predefined生成常量#define。
+
+3 最小候选做了什么
+/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs
+  复用现有POM WithNBMainForwardDefine，泛化为WithNBPassDefine(pass,string referenceName)。
+  Main调用同一helper传NB_GRAPH_MAIN_FORWARD，结果不变。
+  AddDistortionPass只对lightMode==NBCameraOpaqueDistortPass复制现有DefineCollection并加NB_GRAPH_CAMERA_OPAQUE_PASS1。
+  Deferred clone不加该宏，不继承MainPOM宏；renderStates/includes/LightMode/validPixelBlocks/keywords/官方Target均不变。
+  原wrapper后置相同#define1仍保留；不改变fragment的mode clip或输出。相同replacement重复define不是新条件轴；真实Unity导入需root确认。
+/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl
+  新小helper NBGraphBaseMapWrapMode：staticOpaque→1u；其它→原NBGraphMaskWrapMode。
+  CA三采样adapter的wrap和float/half普通CA-off BaseSample同时走该helper；不改原采样UV/LOD/half赋值/alpha组合。
+  不额外传DistortionMode/不更换material源意图；staticfix无需改变Graph/CF端口。
+  Rig/SixWay原BaseMapslot采样不顺手替换；该Pass原无SixWaykeyword，完整PassCombination/Tier后续处理。
+可重复离线文本预处理：
+  clang -E -P -x c -DNB_GRAPH_CAMERA_OPAQUE_PASS=1 /tmp/nbfx-ca1-static-pass-preview/NBGraphBaseMapWrapMode.extracted.hlsl →函数只return1u
+  clang -E -P -x c 同文件不加宏 →函数只return原wrapdecode
+  这是预处理文本检查，不是HLSL编译/Unity/渲染证明。
+
+4 为什么uniform候选不完整
+当前CF已有float NB_DistortionMode可以拿来算bool==2，但这是“材质选择想画哪个屏幕Pass”，不是“当前正在执行哪个Pass”。
+同一mode2材质绘制普通Forward时旧Shader仍按原wrap；uniform判定会把Forward也Clamp。
+若Graph只在Opaque Pass把bool常量true、其余false传入才是完整Pass语义，但依然需要pass专属生成信息；staticdefine更小且无需新增CFslot。
+当前实际Forward wrapper源码只alpha clip，不按NB_DistortionMode裁掉Forward：
+/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/ShaderGraph/Passes/NBGraphForwardPass.hlsl
+所以可设计同材质Forward mode0/2输入不变控制；必须root真实draw确认，不能仅此源码结论声称旧mode2已可画。
+
+5 CA其它算术/接口审核结果（静态符合；实测待root）
+- PrePOM origin：旧Forward:493保存half2 originUV=MainTex_UV，再POM再Noise；candidate以(half2)BaseMapUV为origin，以(half2)baseUV(POM+Noise)为final，顺序正确。
+- WithoutNoise：delta=half2(origin.x*2-1,0)再*=half intensity；WithNoise：half2(final-origin)*intensity*10；helper逐原half变量边界。
+- 三次采样：ra=xw、ga=yw、ba=zw，每次先half4 sample→half2；三个各颜色×本次alpha；最终alpha=clamp(.5*ra.a+.5*ga.a+.5*ba.a,0,1)，不是除3/不是统一alpha。
+- raw而非Graph HDR decode：NBGraphSampleRawMap与旧SAMPLE_TEXTURE2D返回half4匹配；CA-off保持现有NBGraphSampleMap，不顺便改HDR路径。
+- 材料intensity：旧_DistortionDirection为half4，z=GetCustomData(float返回)赋half后*=.1；candidate half4局部direction、显式half GetCustomData、再*=.1，半精度边界保留。
+- CustomData0：完整word拆成现有NBGraphDecodeUInt32(lo,hi)，唯一消费者位28..31；不是float32存整uint/影子旧Integer。
+  ExistingUV1/UV2 nodes原始float4源append到Custom1/Custom2，GetCustomData调用边界cast half4，与旧input.Custom1/2一致。
+  新5ports仅追加，旧全部端口/SupportVFX/Targets保留；未验证真实VFX，不宣称全CustomData其它nibble消费者已迁移。
+- Depth/Shadow：CA条件!NB_GRAPH_DEPTH_SHADOW_PASS，与旧!NB_DEPTH_SHADOW_PASS一致；关闭后旧普通BaseSampler。
+- POM只main staticdefine；旧屏幕Pass没有POM keyword，candidate屏幕保持inert；不追已有POM微差。
+- Opaque最终仍SceneColor.xyz +alpha1；CA色值不是直接显示到Opaque，影响其baseAlpha/coverage→opaqueUV，deferred也是coverage。
+  原NBGraphDistortionPass最终XYZ/alpha与alpha-clip顺序未被此fix改动；屏幕RT只是test directed exacttags，不是完整Controller/Player链。
+
+6 当前42fixture的范围与不足（没有实测通过声明）
+/Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs
+  11 Forward kinds×2camera=22；2screenroutes×5kinds×2camera=20；共42case。
+  普通Mesh真实Camera.Render四帧/warm后metadata与3新property断言、A Frozen/B current/C Graph、raw RGBAf32 gzip+preview、ROI40..87严格0、全帧finite、repeat严格0。
+  CA On/Off每路线三宿主response>.005且changed>20，visible>100；WithNoise/pnoise/refraction/pom再WithNoise flip>.003；screenPOMinert严格0。
+  上述都是设计中的断言，不表示未跑/未归档42case全部通过。
+  旧regular "wrap-clampU-repeatV"只Forward、没有不同wrap的反事实对照；UV0..1+没有Noise且intensity*.1=.12时三路UV仍在0..1，不能作为跨边界wrap证明。
+  "lod0"没有manual mip强信号或force vsauto控制，不能把CA-on/off响应算作ForceNoMip因果证明。
+  Custom1X/Custom2W分别nibble15/8<<28包含bit31，高半word是有效覆盖，但不是全部8CustomData分量/完整custom协议的实测。
+  PNoise/refraction组合依赖既有独立功能证据；42本身没有各kernel/IOR关闭专属positivecontrol。
+
+7 建议扩展当前42（root分配测试，不改Test）
+A Opaque真正跨边界四wrap×LOD0/auto×两相机：新增16case，每case内部原有CA-on/off/repeat/ABC保留。
+  用非均匀BaseMap，真实BaseMap ST保证ROI采样跨两轴边界，例如scale(12,10)/offset(-3.2,-2.4)，Graph_BaseMap_ST与旧nativeST等同；速度0。
+  4 saved wrap全部比较同宿主wrap1参照，应strict相等（Opaque强制Clamp无视savedwrap）；保持其他words精确同值。
+  与test-only错误Repeat实现/非Opaque选择的反事实明确强差>阈值/changedcount，防全部采样范围都在0..1或常量texture假通过。
+  手工mips与LOD0颜色尤其alpha明显不同（Opaque最终alpha1，只靠baseAlpha→coverage→SceneColor展示）；验证auto/force差强，不能只生成自动模糊mip。
+  CA-off也必须ABC严格0，确保regularBaseSample的同一passClamp修正，不只测CA三路。
+B 同一真实材质保留mode2，只明确启用Forward，强边界fixture：与mode0 Forward严格相同（只有mode变化），wrap0与wrap1强差。
+  A/B旧Shader原mainPass需实际显示，Graph实际FindPass预检；若当前外壳clip/no draw，诚实记录无法证明，不把背景0差当控制通过。
+  source当前NBGraphForwardPass无mode clip，root实测之前仍只是可执行设计。
+C import/generatedsource审核：GraphDefines中的Opaque宏必须在CFinclude前；main onlyMainPOM、Opaque onlyOpaque宏、Deferred两者都无。
+  variant/CBUFFER/SRPBatcher/PassName/LightMode/keywords无新增轴；原1105已知失败不扩大，不因CA修复改POM阈值。
+
+本review只解决CA实际BaseMap Pass采样合同。Rig/SixWay跨screen组合、完整GUI/Tier/CustomData/VFX/Player/全NBPostprocess Controller链仍后续独立验收。

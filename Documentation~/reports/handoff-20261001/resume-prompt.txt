@@ -1,0 +1,15 @@
+请接任 NB_FX 重构的主 Agent，在此机器继续。第一步以实时Git状态为准核对主工程和 Packages/NB_FX，两者都使用 codex/nb-fx-vfxgraph-implementation；主工程gitlink必须等于已推送NB_FX HEAD。不要重复合并/清分支，不reset/clean，不覆盖本机修改。
+
+先阅读实际工程根目录的AGENTS.md、.codex/rules.md、.codex/project.md；然后读 Packages/NB_FX/Documentation~/reports/handoff-20261001/index.html、其resume-prompt与候选README、Documentation~/index.html、tasks/main-agent.html、tasks/t00-baseline.html、tasks/t06-graph-minimum.html、tasks/t07-graph-parity-gui.html、gates.html、validation.html、decisions.html、tooling.html的Git管理。拉取Git LFS和submodule，核验附件SHA。文档“仅计划”为历史，实施已授权。
+
+当前优先完成普通Mesh的完整ShaderGraph对照（T06/G3、T07/G4），再正式VFX（T08/G5、T09/G6）；URP常规Mesh产品仍旧NBShader。HDRP最后待选、低版本兼容T10最后，不因旧版本停止当前工作。G0/GF/G1限定范围已过，G2-G7未过。不能拿GF代替G3，不能把历史提前VFX当正式进度。
+
+已提交最新产品冻结点NB_FX 07fb0d908b28689eb45fdd259e5dd8b81559c9c9；最终传输HEAD可能是后续文档归档提交，以实时HEAD为准。最近完整已写矩阵为e054a03源的5串行进程1105=916pass/189fail，不是CA/FG后回归也不是全部功能。CA58=47/11，两进程；FG最终16/16；GUI仍schema1、后台84/84，文件名99但实跑84，不把新GUI15候选当已过。不要复查微弱颜色差和冷态首帧，保留严格失败不降容差，最后集中交用户人工验收。空图/NaN不能当相同通过。
+
+四组未应用候选已完整进Documentation~/reports/handoff-20261001/candidates/：UVP4路径+376tests；GUI1B29意图字段seed-only+15tests；Flipbook8路径+36tests；VAT SoftBody7路径+10tests。均非Unity验证。旧绝对路径先修，动态preview基于实时源，每应用一片其它wholeGraph候选都过期；禁止盲复制旧Graph覆盖新接线。候选测试存文档目录而非可执行Tests，集成后才安装。不要重复从零开发或建立第二套GUI/Resolver。
+
+你负责SubAgent文件所有权、唯一中央Graph/CF/文档集成、Unity串行、Git和Gate审核。新机先发现unityMCP，可用时先读state再改，改后读compile/console；不可用清楚说明，再用独占可丢弃隔离工程CLI/Pipeline。不要反复打开用户主工程、要求人值守。本机旧/tmp clone不会传过来，环境snapshot只装隔离副本，不能覆盖主工程。不同API须新实测。
+
+起手建议：报告边界、核验已提交Graph/两精确Pass编译，补CA/FG后的已有矩阵分批回放；随后逐片UVP、GUI1B、Flipbook、VAT并继续全部CustomData/时间、CustomLocal/其它VAT、全部GUI/Tier/高级状态/完整NBPostprocessControllerManager/Player/perf。不要每遇问题都停，只有证明需要修改官方包/UniversalTarget/NBPostprocess或削减功能时停受影响部分向用户交决策。
+
+本次上传授权只用于交接冻结内容；新机继续时默认本地可回退切片提交，未经用户再次要求不要push。不要新建用户任务/自动化或修改无关Assets/ProjectSettings。所有无法解决的问题如实统一留档，最后一次性给用户人工测试，不宣称完整Mesh或Gate已过。

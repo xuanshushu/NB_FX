@@ -1,0 +1,42 @@
+--- /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t07-evidence/chromatic-20261001/audits/nbfx-chromatic-fixture-v3-20261001.cs	2026-10-01 09:22:56
++++ /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/Documentation~/reports/t07-evidence/chromatic-20261001/product-source/Tests/URP/Editor/G4GraphChromaticTests.cs	2026-10-01 09:44:40
+@@ -2,6 +2,8 @@
+ using System.Collections.Generic;
+ using System.IO;
+ using System.IO.Compression;
++using System.Linq;
++using System.Reflection;
+ using NUnit.Framework;
+ using UnityEditor;
+ using UnityEditor.SceneManagement;
+@@ -40,8 +42,28 @@
+                 opaqueAltAB, opaqueAltBC, opaqueShiftAB, opaqueShiftBC;
+         }
+         [OneTimeSetUp]
+-        public void ForceGraphImportAfterReload() => AssetDatabase.ImportAsset(GraphPath,
+-            ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
++        public void ForceGraphImportAfterReload()
++        {
++            AssetDatabase.ImportAsset(GraphPath,
++                ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
++            // Test-only current SG17.3 importer API, also used by existing
++            // Mesh preview tests. No product reflection or official-file edit.
++            var assembly = AppDomain.CurrentDomain.GetAssemblies().Single(
++                x => x.GetName().Name == "Unity.ShaderGraph.Editor");
++            var importer = assembly.GetType("UnityEditor.ShaderGraph.ShaderGraphImporter", true);
++            var method = importer.GetMethods(BindingFlags.Static | BindingFlags.NonPublic).Single(
++                x => x.Name == "GetShaderText" && x.GetParameters().Length == 4 &&
++                    x.GetParameters()[3].IsOut);
++            object[] arguments = { GraphPath, null, null, null };
++            string generated = (string)method.Invoke(null, arguments);
++            Assert.That(arguments[3], Is.Not.Null);
++            Assert.That(generated, Does.Contain("NB_GRAPH_CAMERA_OPAQUE_PASS"));
++            string root = Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR");
++            if (string.IsNullOrEmpty(root)) root = Path.Combine(
++                Path.GetDirectoryName(Application.dataPath), "Temp/NBFXG4Chromatic");
++            Directory.CreateDirectory(root);
++            File.WriteAllText(Path.Combine(root, "generated-urp-graph.shader"), generated);
++        }
+         static IEnumerable<TestCaseData> Cases()
+         {
+             foreach (string kind in ForwardKinds)

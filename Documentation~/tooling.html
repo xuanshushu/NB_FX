@@ -72,7 +72,7 @@ unity build --help</code></pre>
   <li>正文直接编辑对应 HTML；<code>index.html</code> 只列出文件入口，不维护重复正文。任务、决策和报告模板是可独立打开的 HTML 范例。</li>
   <li>代码与专业术语原文保留，说明文字中文。文档维护应同步任务、契约、决策、Gate 和证据链接。</li>
   <li>可包含表格、code、SVG 流程图、截图和 video；媒体采用相对链接，不嵌入大段 Base64。当前未生成假截图或运行视频。</li>
-  <li>HTML/JSON/XML/log/SVG 等文本使用普通 Git；大图和视频通过 LFS。本目录的 .gitattributes 对常见媒体明确 LFS 规则。发布离线包前确认 LFS 媒体已实际取回，而不是 pointer。</li>
+  <li>HTML/JSON/XML/log/SVG 等文本使用普通 Git；大图和视频通过 LFS。 2026-10-01 按用户推送要求增加证据例外：float RGBA 压缩捕获、压缩 Unity 日志、生成 Shader 导出使用 LFS；当前 >=1 MiB 的大证据文本按精确路径加入 LFS。普通产品源码和小正文仍保留 Git diff。大证据清单见交接目录；这不授权改写历史或强推。本目录的 .gitattributes 对常见媒体明确 LFS 规则。发布离线包前确认 LFS 媒体已实际取回，而不是 pointer。</li>
   <li>报告原始日志必须删去凭据、访问令牌或无关私人内容，保留与复现有关的结构与时间。证据不得伪造或仅靠摘要替代。</li>
   <li>真正测试代码、场景、材质、shadergraph、vfx 不放进 Documentation~。该目录不会作为 Unity 测试资产入口。</li>
   <li>新任务使用独立任务模板；新决策和验证报告使用对应模板。模板占位不代表已执行或已批准。</li>

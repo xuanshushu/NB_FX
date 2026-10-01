@@ -1,0 +1,43 @@
+{
+  "scope": "GUI2 INPUT-GATE DESIGN PREVIEW ONLY. CPU normalization/resolver/projector/pass mapping NOT implemented. No Tier GUI support claim. No Unity/shader compilation.",
+  "records": [
+    {
+      "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+      "sourceSha256": "24bb84c9f37b34256f305a86dad0e3b4e4f74ee9db7895fec64f906723284da0",
+      "candidateSha256": "286ef5bd93d53225b42dabb4ecc0919e20715b3ad4fa6efcae69946252e7895d"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
+      "sourceSha256": "5bd25d0be2ece6db716095801569fa36b43c803610593e499099ea5e469d7704",
+      "candidateSha256": "9d20cd552af3bd0e4059217cabc1181383ab844059fe5fe1745138bd9ff31471"
+    }
+  ],
+  "inputs": [
+    {
+      "logicalManagedKeyword": "_NOISEMAP",
+      "serializedIntentSource": "_noisemapEnabled",
+      "allowUniform": "_NB_TierAllowNoise",
+      "portLabel": "NBGraphTierAllowNoise",
+      "appendedCFPortId": 203,
+      "consumerParameter": "NoiseEnabled",
+      "default": 1.0
+    },
+    {
+      "logicalManagedKeyword": "_NOISE_MASKMAP",
+      "serializedIntentSource": "_noiseMaskMap_Toggle",
+      "allowUniform": "_NB_TierAllowNoiseMask",
+      "portLabel": "NBGraphTierAllowNoiseMask",
+      "appendedCFPortId": 204,
+      "consumerParameter": "NoiseMaskToggle",
+      "default": 1.0
+    }
+  ],
+  "objectsBefore": 997,
+  "objectsAfter": 1005,
+  "oldCFPortsUnchanged": true,
+  "oldPropertiesValuesAndTargetsUnchanged": true,
+  "newKeywords": 0,
+  "newPackedBits": 0,
+  "onlyTwoNormalFloatReadOnlyAllowInputs": true,
+  "wholeGraphTierSupport": false
+}

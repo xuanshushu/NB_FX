@@ -1,0 +1,74 @@
+--- /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs
++++ /private/tmp/nbfx-gui1b-preview-latest/NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs
+@@ -177,28 +177,61 @@
+ 
+         internal const string GraphGUIStateVersionProperty = "_NB_GraphGUIStateVersion";
+ 
++        // GUI1B candidate: serialized UI mirrors of the EXISTING flag protocol.
++        // No Graph Tier/effective projection, no periodic mirror->flags authority switch.
++        internal static bool GraphFlagIntentSchemaAvailable(Material material)
++        {
++            if (!NBShaderGUIContext.IsGraphMaterial(material)) return false;
++            for (int i = 0; i < ToggleFlagBindings.Length; ++i)
++                if (!NBShaderRootItem.HasFloatProperty(material, ToggleFlagBindings[i].propertyName)) return false;
++            for (int i = 0; i < ModeFlagBindings.Length; ++i)
++                if (!NBShaderRootItem.HasFloatProperty(material, ModeFlagBindings[i].propertyName)) return false;
++            return true;
++        }
++
++        private static void SeedGraphFlagIntents(Material material)
++        {
++            var flags = new NBShaderFlags(material); // Shared Material halfword read hooks; NEVER write words here.
++            for (int i = 0; i < ToggleFlagBindings.Length; ++i)
++            {
++                var binding = ToggleFlagBindings[i];
++                material.SetFloat(binding.propertyName,
++                    flags.CheckFlagBits(binding.flagBits, index: binding.flagIndex) ? 1f : 0f);
++            }
++            for (int i = 0; i < ModeFlagBindings.Length; ++i)
++            {
++                var binding = ModeFlagBindings[i];
++                int disabledMode = binding.enabledMode == 0 ? 1 : 0;
++                material.SetFloat(binding.propertyName,
++                    flags.CheckFlagBits(binding.flagBits, index: binding.flagIndex)
++                        ? binding.enabledMode : disabledMode);
++            }
++        }
++
+         internal void PrepareGraphGUIState()
+         {
+             if (_rootItem.Mats == null || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return;
+             var uninitialized = new List<UnityEngine.Object>();
+             foreach (Material material in _rootItem.Mats)
+             {
+-                if (NBShaderGUIContext.IsGraphMaterial(material) &&
+-                    NBShaderRootItem.HasFloatProperty(material, GraphGUIStateVersionProperty) &&
+-                    NBShaderRootItem.HasFloatProperty(material, "_MainTexBigBlockItemFoldOut") &&
+-                    NBShaderRootItem.HasFloatProperty(material, "_BaseMapFoldOut") &&
+-                    material.GetFloat(GraphGUIStateVersionProperty) < 1f)
+-                    uninitialized.Add(material);
++                if (!NBShaderGUIContext.IsGraphMaterial(material) ||
++                    !NBShaderRootItem.HasFloatProperty(material, GraphGUIStateVersionProperty) ||
++                    !NBShaderRootItem.HasFloatProperty(material, "_MainTexBigBlockItemFoldOut") ||
++                    !NBShaderRootItem.HasFloatProperty(material, "_BaseMapFoldOut")) continue;
++                float targetVersion = GraphFlagIntentSchemaAvailable(material) ? 2f : 1f;
++                if (material.GetFloat(GraphGUIStateVersionProperty) < targetVersion) uninitialized.Add(material);
+             }
+             if (uninitialized.Count == 0) return;
+             Undo.RecordObjects(uninitialized.ToArray(), "Initialize NB Graph GUI state");
+             foreach (UnityEngine.Object target in uninitialized)
+             {
+                 var material = (Material)target;
+-                // GUI1A adds no functional toggle/mode intent. Existing packed
+-                // words and all native feature inputs remain exactly unchanged.
+-                // Foldouts use shader Float defaults; version is committed last.
+-                material.SetFloat(GraphGUIStateVersionProperty, 1f);
++                bool seedFlagIntents = GraphFlagIntentSchemaAvailable(material);
++                if (seedFlagIntents) SeedGraphFlagIntents(material);
++                // Commit version LAST. Existing Graph functional properties, raw
++                // halfwords (including noncanonical finite values), URP surface,
++                // keywords, passes, queue, textures and prior foldouts are untouched.
++                material.SetFloat(GraphGUIStateVersionProperty, seedFlagIntents ? 2f : 1f);
+                 EditorUtility.SetDirty(material);
+             }
+         }

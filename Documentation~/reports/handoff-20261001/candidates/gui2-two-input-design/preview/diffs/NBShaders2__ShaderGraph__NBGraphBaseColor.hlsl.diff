@@ -1,0 +1,32 @@
+--- /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl
++++ /private/tmp/nbfx-gui2-input-preview-handoff/NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl
+@@ -757,9 +757,14 @@
+     float ChromaticToggle, float CustomDataFlag0Lo16,
+     float CustomDataFlag0Hi16, float4 Custom1, float4 Custom2,
+     float FogFactor, float FogIntensity,
++    float NBGraphTierAllowNoise, float NBGraphTierAllowNoiseMask,
+     out float4 Out, out float2 NBDistortionSignedRG,
+     out float NBDistortionNoiseMask)
+ {
++    // Read-only effective switches; serialized feature toggles/flags remain intent.
++    NoiseEnabled *= NBGraphTierAllowNoise > 0.5 ? 1.0 : 0.0;
++    NoiseMaskToggle *= NBGraphTierAllowNoiseMask > 0.5 ? 1.0 : 0.0;
++
+     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
+     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
+     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
+@@ -1195,9 +1200,14 @@
+     float ChromaticToggle, float CustomDataFlag0Lo16,
+     float CustomDataFlag0Hi16, float4 Custom1, float4 Custom2,
+     float FogFactor, float FogIntensity,
++    float NBGraphTierAllowNoise, float NBGraphTierAllowNoiseMask,
+     out half4 Out, out half2 NBDistortionSignedRG,
+     out half NBDistortionNoiseMask)
+ {
++    // Read-only effective switches; serialized feature toggles/flags remain intent.
++    NoiseEnabled *= NBGraphTierAllowNoise > 0.5 ? 1.0 : 0.0;
++    NoiseMaskToggle *= NBGraphTierAllowNoiseMask > 0.5 ? 1.0 : 0.0;
++
+     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
+     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
+     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);

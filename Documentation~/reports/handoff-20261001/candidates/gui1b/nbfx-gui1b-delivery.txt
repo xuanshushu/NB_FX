@@ -1,0 +1,19 @@
+GUI1B seed-only candidate delivery, 2026-10-01. NO Unity run, NO product application, NO Git mutation.
+
+Dynamic producer:
+  python3 /private/tmp/nbfx-gui1b-design/build-preview.py --output /private/tmp/nbfx-gui1b-preview-current
+Reads live NBShaderSyncService.cs and NBShaderGraph.shadergraph each time; aborts if either changes during generation. Output contains exactly two candidate product files, diffs and source-manifest.json. New Graph ObjectIds and property GUIDs use deterministic UUID5 from the property name; identical input files produce byte-identical Graph output, verified with two separate /tmp generations. Re-run after every root product change; never restore an old Graph snapshot. Current preview read 985 Graph objects / 193 properties and generated 1014 / 222 (29 Hidden real Float). Source manifest has exact SHA and all 22 toggle + 7 mode mappings taken from existing binding arrays. _ColorBlendMode is inverse enabled0/disabled1. No flags or keyword/pass/Target/URP/Resolver/Tier mutation, no periodic mirror->flags sync.
+
+Offline-only validation:
+  /private/tmp/nbfx-gui1b-preview-current/offline-compile/com.xuanxuan.nb.shaders2.Editor.log (Roslyn exit0)
+  /private/tmp/nbfx-gui1b-test-offline.log (new test plus existing test assembly source Roslyn exit0; only pre-existing obsolete ShaderUtil warnings).
+These are not Unity import, Shader compile or NUnit success.
+
+New authorized test files only:
+  Packages/NB_FX/Tests/URP/Editor/G4GraphGuiFeatureIntentTests.cs
+  Packages/NB_FX/Tests/URP/Editor/G4GraphGuiFeatureIntentTests.cs.meta
+15 NUnit case rows: actual imported Graph property schema (29 true Hidden Float), all 29 on/off via dense zero/all/alternate/high-bit raw words, marker1->2 and 0->2, finite noncanonical halves read without rewrites, marker2 100-repeat native raw edit and stale UI mirror no rollback, future marker7 preserved, existing bit-specific setter changes only its own word, mixed Graph/ShaderLab both orders guarded, two Graph materials independent Undo/Redo, partial/wrong-type schema stays at marker1, isolated clone .mat save/reimport/Reload. Real MaterialEditor/Root/Context/Sync; actual URP camera warmup; no fake native GUI/skin. Test fixture uses reflection only in test assembly. No image parity or Tier/visible Inspector/VFX/Player/Gate assertion.
+
+Known regression-test handoff: existing G4GraphGuiMainTextureTests.cs currently strictly expects marker1 and 'version-only seed' in four GUI1A tests. GUI1B deliberately creates marker2 and 29 new mirror Floats. Root owns that pre-existing fixture and must calibrate those historical assertions to allow exactly 29 new UI mirrors + version2 while retaining all old raw/state strict checks. Do not mask this expected test evolution by suppressing GUI1A or downgrading marker2.
+
+Authority boundary: version0/1 seeds flag->mirror once from each material's current split raw halfwords; version2+ never seeds. Native fallback can edit raw words after marker2 and regular Sync does not use stale mirrors to overwrite them. The new Float values are UI intent mirrors ONLY; a shared-control callback and effective Tier projection are future slices, not included here. Official _Surface/_Blend/_AlphaClip authority remains URP.

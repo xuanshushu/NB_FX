@@ -1,0 +1,78 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>NB_FX 跨机器完整交接 · 2026-10-01</title></head><body>
+<p><a href="../../index.html">文档目录</a> · <a href="../index.html">报告索引</a> · <a href="../../decisions.html#d24">D24 普通 Mesh 优先</a></p>
+<h1>NB_FX 跨机器完整交接 · 2026-10-01</h1>
+<p><strong>先说人话：</strong>多数常用画面效果已接入普通 Mesh 的 ShaderGraph，但还没有达到完整可用。当前只补普通 Mesh，完整对照和 G3/G4 审核后才正式做 VFX；HDRP 最后待选。此交接冻结实现，不是功能验收通过。本次用户明确授权将已有全部任务内容提交、推送并换机器；授权不延续为后续自动 push。</p>
+<h2 id="git">1. 两个仓库与唯一交接分支</h2>
+<table border="1" cellpadding="6"><tr><th>仓库</th><th>远端</th><th>分支</th></tr>
+<tr><td>主工程</td><td><a href="https://github.com/xuanshushu/NBUnityProject">xuanshushu/NBUnityProject</a></td><td>codex/nb-fx-vfxgraph-implementation</td></tr>
+<tr><td>NB_FX 子模块</td><td><a href="https://github.com/xuanshushu/NB_FX">xuanshushu/NB_FX</a></td><td>codex/nb-fx-vfxgraph-implementation</td></tr></table>
+<p>交接前主工程 HEAD 为 <code>fbe40121b1ac60229845b3b9083808d25491912c</code>，当时 gitlink 仍为 <code>db1e304c18b88854a58ff40998b31bd642d66b04</code>。最终产品源码冻结点为 NB_FX <code>07fb0d908b28689eb45fdd259e5dd8b81559c9c9</code>；本交接文档、CA/FG 档案和未应用候选会在后续归档提交中加入，不再改产品。最终传输 commit 在推送后的聊天回执中给出，并以实时远端分支与主工程 gitlink 为准，不能把产品源码冻结点误当最终传输 HEAD。main/master 仍保留原交接点 57a0604 / 26917c0，不合并、不清分支、不强推、不改写历史。双仓顺序：先推 NB_FX，再 pin 主工程 gitlink，再推主工程，最后核验远端 SHA 与工作区。</p>
+<h2 id="restore">2. 新机器拉取</h2>
+<p>先安装 Git LFS。首次取得工程可运行下列命令；已有工作区必须先看两仓状态并保护当地修改，不直接 reset、clean 或覆盖。</p>
+<pre>git lfs install
+ git clone --branch codex/nb-fx-vfxgraph-implementation https://github.com/xuanshushu/NBUnityProject.git NBUnityProject
+ cd NBUnityProject
+ git submodule update --init --recursive
+ git lfs pull
+ git -C Packages/NB_FX lfs pull
+ git status --short
+ git submodule status
+ git ls-tree HEAD Packages/NB_FX
+ git -C Packages/NB_FX rev-parse HEAD</pre>
+<p>子模块初始化后 detached HEAD 是正常的精确 pin，不是文件丢失。继续实现之前，核对该 SHA 与子模块远端同名分支一致，再在子模块切到/跟踪 <code>codex/nb-fx-vfxgraph-implementation</code>；若本地已有该分支先核查历史，不能强行覆盖。仅下载 GitHub ZIP 不包含完整 submodule/LFS 内容，不能用于此次交接。两仓均运行 <code>git lfs fsck</code> 并查看关键 PNG 是否实际像素而非三行 pointer。 图片原已LFS；本次另将RGBA压缩原值、压缩Unity日志、生成Shader导出，以及≥1MiB的大证据文本转为当前快照LFS，规则和对象统计见 <a href="operations/lfs-storage-policy.json">存储策略</a>。不改写旧提交历史，因此历史Git大文本blob仍保留；不能用强推迁移历史破坏证据commit引用。取回后按 <a href="sha256.txt">交接附件 SHA</a> 核验（可运行交接目录 <code>operations/verify-handoff.py --package &lt;本机NB_FX路径&gt;</code>，只读核验）；其它证据目录有各自 SHA 清单。</p>
+<h2 id="read">3. 新主 Agent 必读顺序</h2>
+<ol><li>新机实际根目录下的 AGENTS.md、.codex/rules.md、.codex/project.md，以及相关 shader-debug / flag-protocol / inspector-sync skill。旧 NBShaders 路径部分已不存在，以检出源码为准。</li>
+<li>本页、<a href="../../index.html">index</a>、<a href="../../tasks/main-agent.html">主 Agent 任务书</a>、<a href="../../tasks/t00-baseline.html">T00</a>、<a href="../../gates.html">gates</a>、<a href="../../validation.html">validation</a>、<a href="../../decisions.html">decisions</a>、<a href="../../tooling.html#git">Git 管理</a>。</li>
+<li><a href="../../tasks/t06-graph-minimum.html">T06</a> / <a href="../../tasks/t07-graph-parity-gui.html">T07</a>、<a href="../implementation-gap-matrix-20260930.html">历史缺口矩阵与后续更新</a>、<a href="../t07-mesh-parallax-checkpoint.html">最近完整已编写矩阵</a>、<a href="../t07-mesh-chromatic-checkpoint.html">CA1</a>、<a href="../t07-mesh-fog-gamma-checkpoint.html">FG1</a>。</li>
+<li><a href="candidates/README.md">未集成候选说明</a>与 <a href="resume-prompt.txt">可直接给新 Agent 的恢复指令</a>。不要重新做 G0/GF，也不要重合并历史计划分支。</li></ol>
+<h2 id="constraints">4. 持续约束</h2>
+<ul><li>URP 常规 Mesh 产品继续使用现有 NBShader ShaderLab；Graph Mesh 是 URP VFX 产品的功能对照宿主，不替换常规产品。</li>
+<li>先完成 T06/G3 与 T07/G4 普通 Mesh 全功能、组合、共享 GUI/Tier/状态/NBPostprocess/Player/性能，再正式 T08/G5、T09/G6 真 VFX。已有 VFX/Player 结果是历史探索，不计正式 Gate。</li>
+<li>当前 Unity 6000.3.18f1 / URP、ShaderGraph、VFXGraph 17.3；低版本兼容 T10 最后评估，不能因此停当前功能工作。HDRP 留到最后待选，多管线安装流程在 HDRP 开始前设计。</li>
+<li>接受包内 .asmref + UniversalSubTarget 当前候选，不授权改官方包、UniversalTarget、NBPostprocess 或削减功能。有证据证明必须这样变更时，停受影响部分并提交决策材料；不要因每个普通问题反复要求用户确认。</li>
+<li>D22：Universal2D 手动开启属于用户现配置，不修改 Tier 默认允许列表。Graph UI/Sprite/UIParticle/Universal2D 不在当前产品范围。</li>
+<li>不继续追微弱颜色差或 Editor 冷态首帧；保留严格失败、原始证据和未运行项，最后一次性人工测试。D23 不等于降容差/删断言/自动 Gate 放行。捕获全零/NaN/不稳定仍不能冒充 B/C 相同。</li>
+<li>主 Agent 独占中央 Graph/CF/文档集成、Git、Unity 时段；SubAgent 只写明确分配路径或候选，不能同时动同一 Graph 或启动 Editor。</li>
+<li>除本次移交推送外，之后未经再次要求不 push；只按可回退切片本地提交。不碰无关 Assets/ProjectSettings；不 reset、clean、stash 他人工作或强推。</li></ul>
+<h2 id="implemented">5. 已实现与证据，不等于全部通过</h2>
+<p>已接入并有普通 Mesh 切片：基础/背面色、Overlay1/2、Ramp/颜色调整、三 Mask、Dissolve/Mask/边缘/Ramp、UV0/1/2/Shared/Twirl/Polar 部分源、Wrap/LOD、纹理 Noise/Mask、程序噪声、两条精确 NB 扭曲 Pass、Blend/AlphaClip/ColorMask/Stencil 部分状态、Fresnel/软粒子/距离淡出/深度描边、MatCap/Normal、Unlit/Blinn/Half-Lambert/PBR/SixWay/顶点与混合 SH、顶点位移、DepthOnly/ShadowCaster、折射、深度贴花、视差、色散、Fog/Gamma。共享 GUI 的 Flags/Count/ST 后台与主纹理控件已接；不是整套原面板和 Tier 已完成。</p>
+<table border="1" cellpadding="6"><tr><th>最近证据</th><th>真实结果</th><th>限制</th></tr>
+<tr><td>DD1 / POM1 后的已编写矩阵</td><td>22 个夹具，5 个独立串行进程，1105 唯一项 = 916 通过 / 189 失败 / 0 跳过</td><td>源 e054a0342b578aea987a7356057984582486ae6e；不是 CA/FG 后全回归，不是全部功能覆盖。84 项 GUI 后台无截图。15322 份图像/解压raw已实读；12 份 PBR raw 阴影跨轮微变两版留档。</td></tr>
+<tr><td>深度贴花</td><td>8/8 严格通过</td><td>真实 opaque depth/cube projector，非所有相机/Pass/后处理。</td></tr>
+<tr><td>视差</td><td>26 项全部严格失败；有明显功能响应，Frozen/current 和 repeat 均0</td><td>BC 最大0.02197265625，保留给集中人工；不要说全是一个像素，也不要重查微差。</td></tr>
+<tr><td>色散 CA1</td><td>两个进程，56=46/10 与2=1/1，合计58=47/11</td><td>10 项 BC微差 max0.00048828125；1 项辅助响应 &gt;0.003 未满足，两侧相同、主BC0。固定666dfead；没有该片后完整矩阵。</td></tr>
+<tr><td>雾/Gamma FG1</td><td>单片最终16/16严格通过</td><td>固定07fb0d9；正交为本 Frozen 夹具负控制，不是正交雾支持；screen RGB 替换后忽略演员雾强度；没有该片后完整矩阵。</td></tr>
+<tr><td>GUI 最近重放</td><td>84/84 既有后台项通过</td><td><a href="operations/gui1b-named99-actual84-note.txt">文件名99但XML实际84的说明</a>。GUI1B 尚未应用；不能报告99通过或新15通过。</td></tr></table>
+<p><strong>Gate：</strong>G0、当前 URP/Metal GF、设计接口 G1 仅各自范围已放行；G2/G3/G4/G5/G6/G7 未放行。GF 不替代 G3。</p>
+<h2 id="candidates">6. 四组已准备、未集成候选</h2>
+<p>全部以中央 Graph SHA <code>24bb84c9f37b34256f305a86dad0e3b4e4f74ee9db7895fec64f906723284da0</code>（997对象）为输入；候选源码和测试现在归档于 Documentation~，Unity不会编译。三组新测试原来6个未跟踪文件已在比对SHA后移出可执行 Tests，原件字节完整保留，见 <a href="operations/pending-test-placement-final.json">精确迁移清单</a>。这不是已实现功能删除，也不是丢掉测试。</p>
+<table border="1" cellpadding="6"><tr><th>目录</th><th>候选及实际边界</th><th>恢复动作</th></tr>
+<tr><td>candidates/uvp/</td><td>4产品候选，完整位置来源阶段/Shared/Main插值与VO3..7；376测试候选。23→38 custom components +25padding=63只是预算，未Metal生成/渲染验证。各feature自身ST/rotation阶段及其余6消费者/组合未闭合。</td><td>先读专属README与manifest，重绑定动态脚本、基于当前源重新生成。9批串行候选56+8×40；不可直接覆盖过期Graph。</td></tr>
+<tr><td>candidates/gui1b/</td><td>29真实HiddenFloat，22toggle+7mode按原Flags一次性seed，schema1→2；15候选测试。没有两向业务GUI/Tier投影。</td><td>当前源码仍schema1。应用前校准原GUI1A版本专属断言，保留全部raw/Undo/authority检查；新15+旧84预计99，实跑后才计数。</td></tr>
+<tr><td>candidates/vat/</td><td>V0仅HoudiniSoftBody，7源，10Forward测试候选；VAT后Fog、SixWay、VO接线。其它模式/阴影/全部消费者未证。</td><td>复核原顺序CustomLocal→VAT→Fog/worldnormal/SH→VO；SG NormalBlock不改变提前读取raw Attribute的Normal节点，SixWay已改专用basis候选不可丢。</td></tr>
+<tr><td>candidates/flipbook/</td><td>8源，36测试候选，Forward+两精确screen；stream/helper/specialUV，0.25/0.75×两相机。Depth/Shadow/helper生命周期/wrapLOD/CA优先等未证。</td><td>AnimationSheetHelper原writer只写整数Flags，需薄适配Graph split16；TEXCOORD3.x/y/z不能冒充Custom1/2。先审候选再分片实测。</td></tr></table>
+<p>GUI2目录仅两个allow输入设计，不是Tier实现。所有动态脚本还含旧机 /Users/bytedance/... 或 /tmp 常量；先在新机修正路径，运行preview而非盲套缓存输出。每应用一个切片，其它wholeGraph预览即过期，须重跑。离线 C#/结构通过不等于 Unity/HLSL/GPU 通过。无须重做已完成的共享算法或从零写第二套GUI。</p>
+<h2 id="remaining">7. 剩余八类工作与下一步</h2>
+<ol><li>高级UV：位置/圆柱/屏幕/世界/物体，全部16字段及组合/阶段。</li><li>完整CustomData和时间输入：全部word/消费者、special streams，保持协议。</li><li>几何：CustomLocal、全部确认VAT、法线/切线/负缩放/深度阴影组合。</li><li>Flipbook：完整采样、Pass、脚本联动。</li><li>共享GUI：全部业务控件、Tier/intent/effective、Undo多选保存重导入；保留官方URP_Surface/_AlphaClip权威。</li><li>高级状态：OverrideZ/Portal/背面顺序/多Pass与阴影配置。</li><li>完整NBPostprocess：Controller/Manager→实际RT→最终合成、多相机与Compatibility，不改原组件。</li><li>最终集成：CA/FG后及新切片全回归、生成源码/variants/SVC/stripping、Player、SRP Batcher/性能/稳定性、统一人工清单与Gate审核。</li></ol>
+<p><strong>建议新主 Agent 起手：</strong>核对双仓/LFS/附件 → 发现unityMCP并读实时state/console → 新建独占可丢弃测试工程（不启动或占用用户主工程） → 先验证当前已提交Graph的编译/两精确Pass并补CA/FG后的已有矩阵分批回放 → 逐个集成UVP、GUI1B、Flipbook、VAT，余功能继续分片。先报告当前边界，再正常推进，不为每个微差停下来询问。</p>
+<h2 id="environment">8. Unity 运行与可重放环境</h2>
+<p>本机当前工具发现中没有unityMCP，无法读其Editor/Console资源，因此用CLI/Pipeline和日志。新机必须重新发现并优先unityMCP，不把本机缺工具写成永久不可用。最近测试环境：macOS/Apple M3 Pro/Metal，Unity6000.3.18f1，URP/SG/VFX17.3，RenderGraph开启。其它API未据此验证。主工程有用户打开的Editor，未由交接流程关闭/重启；隔离CLI已退出，无正在运行测试，无未完成SubAgent写入。新机单独获取license/runtime。</p>
+<p>旧隔离路径 <code>/tmp/NBFXG2DissolveMaskProbe-20260928</code> 不会通过Git传输；Library/Bee/Temp/PackageCache、Unity安装和许可证不是交接内容。可恢复的测试设置48份已存 <a href="environment/isolated-clone-settings/snapshot.json">snapshot</a>，只可按SHA审查后安装到<strong>新建隔离副本</strong>，不覆盖正式主工程。主工程当前Settings与旧clone并非完全相同，不应把新主工程直接当相同测试输入。</p>
+<pre>NBFX_MESH_EVIDENCE_DIR=&lt;新的唯一输出目录&gt; UNITY_BURST_DISABLE_COMPILATION=1 \
+&lt;Unity可执行路径&gt; -batchmode -projectPath &lt;隔离工程&gt; \
+-runTests -testPlatform EditMode -testFilter '&lt;fixture或regex&gt;' \
+-testResults &lt;新的唯一xml路径&gt; -logFile &lt;新的唯一log路径&gt;</pre>
+<p>渲染测试不能用-nographics；runTests不附加-quit（import-only可用-quit）。Graph强制import后可能先暴露placeholder，夹具已有实际URP Camera draw后再查schema的初始化边界，不可据此宣称用户冷态首帧通过。NBFX包物理目录 Packages/NB_FX，AssetDatabase包路径 Packages/com.xuanxuan.nb.fx。当前测试asmdef不引用NB runtime，测试业务API反射只是测试，不给产品发明reflective API。</p>
+<p><a href="operations/nbfx-run-depth-parallax-batches-20261001.sh">历史5进程脚本</a>保留精确旧输入/输出，只作模板，新机必须换目录和独立输出名，不能覆盖原证据。<a href="operations/nbfx-render-diagnostic-20261001.cs">clone-only只读observer</a>仅NBFX_RT_DIAGNOSTIC=1启用，默认unset，不放进正式产品。不会将相机callback成对当作真实Draw/Clear成功证明。</p>
+<h2 id="pitfalls">9. 必须保留的问题与接线陷阱</h2>
+<ul><li>两次1105单进程与一次CA58单进程出现整帧空白/非有限/重复差；原因未证实。短CA也能复现，所以不能声称长批次数阈值或Metal driver根因。历史完整保留，后续分批重放仍检查finite/visible/强对照/repeat。见<a href="operations/audit.txt">只读宿主审计</a>。</li>
+<li>CA fixture v2剩余56原XML/log/raw曾被root重用路径覆盖，无法恢复，只有源码+当时26/30摘要；<a href="../t07-evidence/chromatic-20261001/audits/nbfx-ca1-evidence-provenance-note-20261001.txt">来源错误说明</a>保留。不得伪造或把v3改名成v2。</li>
+<li>Pass Name是 Universal Forward，而实际LightMode为SRPDefaultUnlit；FindPass读Name，SetShaderPassEnabled读LightMode。不能照同名猜API。</li>
+<li>CameraOpaque与Deferred精确LightMode仍 NBCameraOpaqueDistortPass / NBDeferredDistortPass；宏需在CF include前，runtime distortion mode不是static Pass identity。CameraOpaque BaseMap强制clamp是原契约。</li>
+<li>SG CF参数顺序取m_Slots序列，不按数值ID自动排序；新增输入插在输出前，保留旧ObjectId/slot/edge/keyword。</li>
+<li>片元Bitangent已含OddNegativeScale；POM fragment不能重复乘。SixWay顶点basis规则另看真实原路径。</li>
+<li>屏幕pixel Y适配使用_ScaledScreenParams.y，不能改回_ScreenParams。常规actor layer4，定向screen layer3，旧renderer透明mask排3。</li>
+<li>原UV多在preVertexOffset顶点计算，Twirl/Polar/Decal/POM主Pass/两screen才走片元；Cylinder本身不强制片元。Shared mode4在Main计算前读零Main，Main self4先UV0；圆柱global bit同时改变ObjectPos来源。</li>
+<li>ShaderLab原Flags整数与Graph双16浮点是同一协议两物理宿主，不能把32位数直接Float或发明第二GUI/第二Resolver；默认/Serialized高位/MPB读写需完整验证。</li></ul>
+<p><a href="resume-prompt.txt">恢复指令</a> · <a href="sha256.txt">交接附件校验</a>。正文链接与源码附件校验只证明交接完整性，不是 Unity 行为新验证。</p>
+</body></html>

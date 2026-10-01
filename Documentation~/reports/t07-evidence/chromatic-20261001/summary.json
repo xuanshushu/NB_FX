@@ -1,0 +1,149 @@
+{
+  "scope": "CA1 ordinary URP Mesh only; no Gate clearance",
+  "fixedCommit": "666dfeadf219d074dfaa2b92c77319dbe4e09028",
+  "final": {
+    "kind": "two separate serial Unity test processes",
+    "total": 58,
+    "passed": 47,
+    "failed": 11,
+    "skipped": 0,
+    "runs": [
+      {
+        "label": "remaining56-v3",
+        "source": "/tmp/nbfx-g4-chromatic-v3-remaining56-20261001",
+        "total": 56,
+        "passed": 46,
+        "failed": 10,
+        "skipped": 0,
+        "caseFiles": 1840,
+        "extensions": {
+          "png": 892,
+          "gz": 892,
+          "json": 56
+        },
+        "extraFiles": [],
+        "xmlSHA256": "2f1ed08966d61ec9337424841536c5a9bde987cad4be5833ed871eccfb47997a",
+        "logSHA256": "a943571fa8c7b213433e522b1043d0c299b57e468e7573b23e1205fb1ee4adcb"
+      },
+      {
+        "label": "pom2-v4",
+        "source": "/tmp/nbfx-g4-chromatic-v4-pom-only-20261001",
+        "total": 2,
+        "passed": 1,
+        "failed": 1,
+        "skipped": 0,
+        "caseFiles": 58,
+        "extensions": {
+          "png": 28,
+          "gz": 28,
+          "json": 2
+        },
+        "extraFiles": [
+          "generated-urp-graph.shader"
+        ],
+        "xmlSHA256": "5f40c55866db32da188c7105b2b5db551b84dda2464a3bfce58188e5b33b5fd3",
+        "logSHA256": "4fb86245e56bcdcbb598c5acc089932f53df4dbff2cf6d5febcbd5dc6c6a3c13"
+      }
+    ],
+    "metricsCount": 58,
+    "failures": [
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_pnoise_ortho",
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_pnoise_perspective",
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_refraction_perspective",
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_with-noise_ortho",
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_with-noise_perspective",
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_pnoise_ortho",
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_refraction_perspective",
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_pom-inert_ortho",
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_pom-inert_perspective",
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_refraction_ortho",
+      "NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_pom_ortho"
+    ],
+    "allFinite": true,
+    "frozenCurrentOnOffMax": 0.0,
+    "repeatMax": 0.0,
+    "currentGraphOnOffMax": 0.00048828125,
+    "visibleMinimum": 536
+  },
+  "history": [
+    {
+      "label": "initial-single58-invalid",
+      "source": "/tmp/nbfx-g4-chromatic-20261001",
+      "total": 58,
+      "passed": 5,
+      "failed": 53,
+      "caseFiles": 1898,
+      "xmlSHA256": "9900075651a42d02dc018f9e2c5ce8aeaecc96b2854c644f0e5b46c0b3ffd5ef",
+      "logSHA256": "52e8e428c3c27d977e9ff53aff2e6f2bda81251e04546884f72047fd26689bd5"
+    },
+    {
+      "label": "first-pom2-v2",
+      "source": "/tmp/nbfx-g4-chromatic-pom-only-20261001",
+      "total": 2,
+      "passed": 1,
+      "failed": 1,
+      "caseFiles": 58,
+      "xmlSHA256": "e72775863255720a40213a41c349e1d1a678188cd8f876153ebcbd308121793f",
+      "logSHA256": "5a440a837166d747cb4ee48e088185a596687011bc22063083cdbdfc9b0090ae"
+    }
+  ],
+  "missingHistory": {
+    "compiledFixtureV2Remaining56": {
+      "observedCounts": {
+        "total": 56,
+        "passed": 26,
+        "failed": 30,
+        "skipped": 0
+      },
+      "originalXMLLogCaptures": "overwritten by root path reuse; unavailable; never relabeled as v3",
+      "survivor": "audits/nbfx-chromatic-fixture-v2-20261001.cs and provenance note"
+    }
+  },
+  "sourcePaths": [
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderChromaticV1.hlsl",
+      "sha256": "09bdb6e490a3e1bbda7177aafd1bad7479542b1075048bda1f40883bd2f37773",
+      "bytes": 881
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderChromaticV1.hlsl.meta",
+      "sha256": "f9496fc4b35e64450163c2aaa7de282712da885e5c8b516a22339b6670a5d50c",
+      "bytes": 60
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "sha256": "7a95d31df206684e42ec6d421375d41ad7bfa0e9665a99b2f9308ad74915ed9b",
+      "bytes": 51981
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs",
+      "sha256": "63358e53b9067af300c57b3c77117928e3e8c27c96eb203efe7777e52feb565f",
+      "bytes": 11980
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
+      "sha256": "569bb07c83fd18f50a0adf72900c1e278c9bb1e5c95984920ee9df5608268d9d",
+      "bytes": 76716
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+      "sha256": "1b553384f05fcea85ff630d7599df620e7dfff1d37c33064ae8e1c1dcad60cb9",
+      "bytes": 801418
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphChromaticTests.cs",
+      "sha256": "8c38b3e9053bad109155137d115bcc1ac6d28b3c76b4f0f8d235e2832e44ae43",
+      "bytes": 37625
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphChromaticTests.cs.meta",
+      "sha256": "f4e912aa9d8d25b94d28afbe6f476539dd4dead6d3a5a53ea3436b54c9389d2b",
+      "bytes": 60
+    }
+  ],
+  "fixtureProvenance": {
+    "remaining56": "v3 source in audits/nbfx-chromatic-fixture-v3-20261001.cs",
+    "pom2": "committed v4 test in product-source/Tests/URP/Editor/G4GraphChromaticTests.cs",
+    "difference": "v4 adds test-only generated-source dump in OneTimeSetUp; all case inputs and assertions unchanged; exact unified diff in audits/fixture-v3-to-v4.diff"
+  }
+}

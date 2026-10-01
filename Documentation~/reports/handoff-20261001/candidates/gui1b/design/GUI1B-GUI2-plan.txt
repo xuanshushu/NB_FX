@@ -1,0 +1,195 @@
+NB_FX · GUI1B/GUI2 普通 Mesh 共享 GUI 接线方案与预览交接
+2026-10-01。只读设计 + /tmp 候选；未写产品/Test/中央文档，未启动 Unity，未操作 Git。
+Root 正在串行验证 GUI1A v4。本文件不是 GUI1A 结果，不是完整 GUI/Tier/G3/G4/VFX/Player 通过声明。
+
+一、人话结论与下一片
+现在“显示了 Graph 输入”不等于“接好了原 NB GUI”，更不等于“Tier 已真正关闭渲染功能”。
+最小下一片可以先做一次无损搬运：从材料已有 Flags0/1 半字读出原 22 个开关和 7 个模式，填到原 GUI 需要的同名真 Float；版本 1→2。
+这个过程不动任何原渲染参数或原半字，只给后续复用控件准备真实字段。
+然后逐块接回同一个 Root/Context/Sync 与原控件，并逐块交接“谁负责这几个值”。
+Tier 最后不能只改 keyword 或藏界面：Graph 当前实际吃的是 CF Float 参数。必须把同一个原 resolver 计算的有效结果接进这些实际参数，并保留用户原意图。
+无需修改官方包、Target 或 NBPostprocess。当前没有需用户确认的削减功能决策；下面技术残余继续分片处理，不因复杂停工。
+
+二、交付的两个动态候选（全部 /tmp，不可直接覆盖最新中央 Graph）
+A. 一次种子候选：
+  /tmp/nbfx-gui1b-design/build-preview.py
+  调用：python3 /tmp/nbfx-gui1b-design/build-preview.py --output /tmp/nbfx-gui1b-preview
+  /tmp/nbfx-gui1b-preview/source-manifest.json
+  /tmp/nbfx-gui1b-preview/NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs
+  /tmp/nbfx-gui1b-preview/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph
+  /tmp/nbfx-gui1b-preview/diffs/
+  /tmp/nbfx-gui1b-design/compile-preview.py
+  /tmp/nbfx-gui1b-preview/offline-compile/com.xuanxuan.nb.shaders2.Editor.log
+  完整现有 Editor assembly 的离线 Roslyn 编译 exit 0；不是 Unity import/Shader compile/测试通过。
+B. Tier 实际消费点的两输入设计样本（不是完整 Tier 实现）：
+  /tmp/nbfx-gui1b-design/build-tier-input-preview.py
+  调用：python3 /tmp/nbfx-gui1b-design/build-tier-input-preview.py --output /tmp/nbfx-gui2-input-preview
+  /tmp/nbfx-gui2-input-preview/source-manifest.json
+  /tmp/nbfx-gui2-input-preview/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph
+  /tmp/nbfx-gui2-input-preview/NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl
+  /tmp/nbfx-gui2-input-preview/diffs/
+  只增加两个默认 1 的普通 Float allow 输入，不增加关键词、packed bit 或 MPB。
+  CPU 规范化入口、共享 resolver/projector/toolbar/pass 映射均未实现，也未做 HLSL/Unity 编译。
+
+动态安全约束：
+- 两脚本始终读取最新主 package 当前源码；不复用早先旧 Graph 快照，不固定 CF slot 上限。
+- 只允许写 /tmp 的子目录，绝不能写主源码路径；源码生成期间若变化则中止，重新读取。
+- 保留全部已有 Graph properties/defaults、旧端口 ID、Targets、SupportVFX 和所有非新增对象；不创建第二 wrapper。
+- append 的 property/slot 用当前原对象 schema 克隆；新 CF slot ID 从实际最大 ID 之后开始。
+- A 从当前 SyncService 的同一个 22/7 binding 数组解析；数量/二值模式/schema 改变则失败，不复制一份 flag 表。
+- A 遇到任何 29 同名已存在 property 会拒绝生成：这些新字段若已被别片实际使用，不能再次从 flags 覆盖用户值，需要审计迁移。
+- B 遇到两个 derived property 名碰撞也拒绝生成。Root 应依次应用，不把 A 与 B 的两份完整 Graph 互相覆盖；第二次重跑生成。
+- 最新此次 A/B 共用 Graph source SHA 7227ea9775aca4c0831af1bba5d01cf483f771046a87c360fb2bf1b89faac2c3：971 objects/190 blackboard props；已经保留当前 RF/DD/POM 新增字段。
+  A→1000 objects/219 props；B→979 objects，BaseColor 新 slot196/197。上述数字只是此快照，后续必须以重跑 manifest 为准。
+
+三、精确复用点（当前产品，根审核从这些函数开始）
+1 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/NBShaderGUI.cs
+  NBShaderRootItem.InitializeGraphMainTextureInputs、OnChildOnGUI、GetSharedGraphPropertyNames、ExecuteResetAllItems、GetToolbarResetRootItems。
+  GUI1A 已使用同一 Root/Context/Sync/MainTex，Graph 分支仅构造 MainTex；未接共享的功能仍在原 GraphRoot fallback。
+2 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/NBShaderGUIContext.cs
+  IsGraphMaterial、HasMixedHosts、Refresh、RefreshFeatureTier、IsKeywordAllowed。
+  Graph 普通 Mesh 已只读规范化 Mesh/UI/Particle/官方 Surface；当前 Graph IsKeywordAllowed 直接 true，明确尚无有效 Tier。
+3 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs
+  ToggleFlagBindings 22、ModeFlagBindings 7；PrepareGraphGUIState 当前 marker1；SyncMaterialState Graph continue。
+  SyncTogglePropertyFlags 是唯一正向映射；SetFlag 已有 CheckFlagBits==desired 的 no-op，未变化不会重新编码原半字。
+  ApplyToggleFlag 当前支持 shared word hooks；ApplyToggleKeyword/Surface/Pass/Light 等当前 Graph guard 不能直接解除全开。
+4 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs
+  IsNBShaderMaterial 精确 Effects/NBShader；Resolve、ToggleKeywordBindings 37、FilterAllowedKeywords、ApplyKeywordDependencies、ResolvePassIntents。
+  同一个 read-only resolver 处理意图/Tier/依赖/Pass，不再新增 GraphResolver。
+5 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs
+  Apply、ApplyResolvedIntent：当前拒绝 Graph，原实现循环 RawKeywords +旧 Pass +SixWay→VertexSH，不能直接对 Graph 执行。
+6 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/NBShaderGUIToolBar.cs
+  SetFeatureTier、FinishFeatureTierMutation、CleanUnusedTextures、ResetSpecialUVChannelValues。
+  SetFeatureTier 直接调 MaterialApplier，并非全 Sync；必须使用同一个 Graph projector，不能只接 OnGUI。
+7 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/NBShaderGraphGUI.cs
+  ValidateMaterial/OnGUI→官方 bridge +现有 SyncSixWayKeywords；要并入同一个最终有效态投影，不保留两条争抢链。
+8 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/ShaderGraph/Editor/NBGraphUnlitGUIBridge.cs
+  包内 asmref 公共 facade，嵌套官方 ShaderGraphUnlitGUI；只读/调用官方，不改官方源码。
+9 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/NBShaderGraphRootItem.cs
+  OnChildOnGUI、DrawPackedFlag、DrawDissolveRampWrapMode、DrawProperty：保持未交接功能可编辑的临时原生 fallback。
+10 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Editor/ShaderGUIItems/NBShaderProtocolItems.cs
+  PropertyToggleBlockItem、UVModeSelectItem、SpecialUVChannelModeItem、GradientItem；只能原类加 capability/真实映射，不能复制一套。
+11 /Users/bytedance/UnityProject/NBUnityProject/Packages/NB_FX/NBShaders2/Runtime/NBShaderFlags.cs
+  复用 GUI0 Material halfword hooks/UV/channel/PNoise 协议，MPB 未获 Graph 描述仍原旧整数路径。
+
+四、GUI1B marker1→2 一次 seed 的精确合同（候选 A 已具备）
+- 22 toggle/7 mode 用原同名 Hidden 真 Float Vector1ShaderProperty/m_FloatType0，不用 Integer、不生成影子旧 int words。
+- 从每个 Material 自己当前的 NBShaderFlags.CheckFlagBits 读取，绝不从混合 MaterialProperty.floatValue 广播。
+- 22 toggle 对应 bit on→1/off→0。7 mode 为 enabledMode 和另一二值；_ColorBlendMode enabledMode==0，必须 on→0/off→1。
+- 精确29映射在 A source-manifest.json；生成时直接取当前同一数组，不另写协议表。
+- 必须原 Graph signature、marker 与2foldouts都为实际 Float；全部29真实 Float schema 才升级到2；部分 schema 只保留1行为。
+- version0或1升级；version>=2不再 seed；版本最后写。已有用户 Flags 对应开关“意图”不变。
+- 统一 Undo.RecordObjects，UI mirrors+marker参与 Undo；原 halfwords、textures、ST/color、keywords、passes、queue、官方 Surface、原 folds 精确不动。
+- 有限非法 lo/hi 仅共享读取时 clamp/round，seed 不 canonicalize 或重写原 raw Float。NaN/Infinity 不新增未经实测规则。
+- 只 seed29新的 UI镜像，没有功能 seed；不重置 _EmissionEnabled/_noisemapEnabled 等已有 functional Float。
+- **当前候选没有启用周期性的 mirror→flags 全 Sync**，也没有启用 Tier/UI Toolbar。这是必要安全边界，不是功能完成。
+
+五、必须解决的权威交接：避免把用户刚改的原生 flags 又改回去
+现有 fallback 可直接编辑 Flags0/1 lo/hi，还提供 Fresnel/Dissolve 的 packed 开关。
+假如 seed 后全 Sync 用陈旧 UI mirror 回写所有29位，会覆盖这些实际刚编辑的 values；不允许这种无声回退。
+最窄接法（在原服务与原控件处，不增加并行 protocol）：
+1 原 SyncService 增加 readback UI mirror 的单一辅助函数，复用现有 binding；用于原生 packed 改变的显式通知。
+2 GraphRoot.DrawPackedFlag/DrawProperty：若真正编辑 flags0/1 半字，则在已有 Undo 事务里通知同一 SyncService 从 raw word 刷新对应 mirrors；不能初始化 render 值。
+   GraphRoot 只负责“编辑发生了”，不复制22/7映射。Wrap/channel/NoMip/PNoise words各走原 GUI0 hooks，不改 Flags0/1 UI镜像。
+3 Shared PropertyToggle/Mode business callback 先明确编辑 mirror，再用原 ApplyToggleFlag/同一 binding 写自己拥有的 bit。
+   单次改动不遍历 unrelated bindings；原材质 SetFlag no-op 保护、bit31/未知位都保留。
+4 每一片向 GetSharedGraphPropertyNames 注册真正已构造的 physical props；已接 shared block 的旧 packed快捷按钮也退出 fallback，画一份。
+   不是“名字加入黑名单就不画”：该 block 真 schema预检+构造+后台调用+图像测试通过后才交接。
+5 最稳过渡：Graph 一般 Sync 仍 raw flags 为真值，做需要的原生编辑 readback/同一个 effective resolver；只有实际 shared callback 前向写它拥有的位。
+   等29控件全部交接、raw高级编辑入口也接通知后，才考虑复用全 SyncTogglePropertyFlags；不急着新造 runtime ownership mask。
+6 version2之后新的 UI-only字段再次追加，按迁移分片新增 seed，不能把29重 seed成 default。
+   若已有镜像和 raw 值矛盾，不能由一般 Validate 偷猜来源；显式 setter/编辑通知决定权威，未编辑 raw preserved。
+
+六、GUI2 同一 resolver 的最小 host 接缝（候选 B 只有消费点，以下待实现）
+不要只把 IsNBShaderMaterial 改成“也认 Graph”：Runtime API、stripper、MaterialApplier仍假设旧 keyword/pass/Surface语义。
+推荐在现有 resolver 文件增加只读 normalized input/host reader 入口，原 Material overload仍精确旧宿主且行为不变；共用原核心。
+建议实际规范化字段：sourceMaterial、hostKind、MeshSourceMode、officialSurfaceType、alphaClipIntent、BlendMode、screenDistortMode、disableMainPassIntent、depth/shadow官方结果。
+- 旧宿主 reader 逐项读取原物理字段和原 fallback，保持 old Resolve 输出全同。
+- Graph reader 从实际 schema/material 只读：ordinaryMesh=1；_Surface(0opaque/1transparent)、_AlphaClip独立、_Blend原enum0..3；_NB_DistortionMode(0/1/2)映射 screen mode；功能名称多数与原相同。
+- 注意 Transparent+AlphaClip 两者可以同时开启；不要用单个旧 _TransparentMode 抹掉这一状态。
+- ToggleKeywordBindings37同表、mode分支/依赖/allowed集合/排序/Pass feature IDs共用；不造临时旧Material、不在PropertyInfoDic注入假 _TransparentMode/_BaseColor/旧packed ints。
+- 官方 Surface/alpha/blend keywords是URP拥有的状态：Graph result可只读用于诊断/Pass推导，但 NB Tier不能再写或把它们当 Graph 动态 feature gate。
+- 同一核心 ApplyKeywordDependencies保留：Mask→2/3/debug；Noise→Mask/debug/screen/refraction；Ramp→map；Dissolve→Mask/Ramp/debug；PNoise→内核/debug；Vertex→Mask/debug；SixWay→absorption。
+- 缺实际 consumer 的关键词/属性仍明确 pending，不把缺属性default0当“完整支持”。
+
+有效态与序列化意图分离：
+- intent=用户真实 functional Float/mode +现有 halfword protocol，serialized原值保留。
+- effective=现有 resolver(tier, projectallowedkeywords, allowedpassIDs)+原依赖链，仅派生结果。
+- Graph无多数旧 shader keywords，Enable/DisableKeyword不代表CF关闭。投影到真正 CF branch输入：新增隐藏普通 Float allow输入，非 packed bitmask/第二套协议。
+- 最小首对就是 B 的 _NB_TierAllowNoise/_NB_TierAllowNoiseMask，默认1；参数入口 NoiseEnabled*=allow，NoiseMaskToggle*=allow；保留原 _noisemapEnabled/_noiseMaskMap_Toggle以及 raw flags。
+- CPU投影由同一 MaterialApplier 的 host分支（可抽同文件internal helper）供 Sync/Toolbar/Validate共用，写值变化才写；无需MPB，不引入 per-material Batcher隐患。
+- 这两个 allow 默认1仅维持未管理 Graph 的旧行为；不能把“所有 default1”说成Tier已支持。
+- **GUI2-N pair验证阶段仍不启用全局Graph Tier编辑/Context keyword gating**：其它已实现功能尚无 gates，会出现界面消失而渲染继续的假支持。
+- 全功能 gate+有效mode+pass证明齐备才开启同一个原 Tier toolbar与 Context.IsKeywordAllowed。可先后台测试Noise pair的真实效果。
+- Schema readiness/version单一入口检查投影需要的全部真实props/CFconsumer，不用material shadowshader或序列化第二份int；版本2 seed完成不能自动等同“Tier ready”。
+- Light-mode、RampSource、DissolveRampSource、Refraction等枚举不能简单乘0；须按实际结果只读 derived effective mode/可用分支，原用户mode不覆盖，禁用light回真正Unlit。
+- SixWay真实variants与Vertex/Mixed/Pixel SH原官方keywords在同一个最终projector收口；不能继续硬写“不是SixWay就清VertexSH”，否则丢失现有后端SH能力。
+- Runtime/Player质量API、build stripping当前仍exact旧shader，另轮支持。Editor物料对照不能说Player/API/variantstripping已通过。
+
+七、URP唯一Surface authority与Pass真实映射
+同一个包内 bridge先官方Validate → 再NB有效投影；不要调用outer NBShaderGraphGUI.Validate递归。
+NB不写 _Surface/_Blend/_SrcBlend/_DstBlend/_SrcBlendAlpha/_DstBlendAlpha/_ZWrite/_ZWriteControl/_Cull/_AlphaClip/_Cutoff/RenderType/RenderQueue/官方queue参数；旧 ModeBlock/TA ForceZ/Blend/Stencil reset不能直接启用。
+Depth/Shadow受Tier时必须每次重新官方Validate读取结果，再AND NB allowed/intent；否则下Tier关闭后上Tier会粘false，或官方下一次把Pass重新打开。
+同一个原 pass catalog仍是唯一 feature ID定义：
+  main core: old UniversalForward；Graph实际生成Name为 Universal Forward（已由Root GUI1A真实warm验证）。
+  pass.screenDistort.cameraOpaque→NBCameraOpaqueDistortPass
+  pass.screenDistort.deferred→NBDeferredDistortPass
+  pass.depthOnly→DepthOnly
+  pass.shadowCaster→ShadowCaster
+  pass.backFirst→SRPDefaultUnlit
+  pass.universal2D→Universal2D
+Graph host在同 catalog adapter映射实际Name并FindPass>=0预检，不能对不存在的Pass写phantom state；缺BackFirst/2D等必须单独实现/验证，不能声称结果完整。
+D22 Universal2D 需要手动开、Tier默认配置是用户主观选择，不改package/主工程配置。
+屏幕UI原名 _ScreenDistortModeToggle 通过既有控件constructor accessor映射 _NB_DistortionMode；不是另加两个不同mode状态。
+屏幕强度/alpha fields也是实际 _NB_Distortion* property映射，不加影子旧float来蒙构造。
+
+八、逐块恢复原控件：同类capability，未接输入不消失
+所有 schema/capability 在 constructor前判断。ShaderGUIItem.InitTriggerByChild直接Dictionary索引；事后Hide OnGUI救不了缺字段。
+目前实际可先接：
+1 BaseOptionBigBlockItem：ColorIntensity/AlphaAll、coloradjustment、ColorMultiAlpha/BackColor/IgnoreVertexColor、DistanceFade/SoftParticles。
+  只构造真实consumer，Graph RangeVector不存在则用原shader默认min/max配置，不造假功能Range。
+  CustomData子项暂不构造（普通Mesh契约未实现），URP Surface子项不构造；Draw/Reset/Modified一起null/capguard。
+2 UVModeSelectItem：现有UV0/1/2/8；真实enum值映射而非过滤列表index。
+  Twirl/Polar原参数已有，补该块实际FoldOut Float+SpecialUV UI值，并从现有Flags1 Texcoord1/2 seed；both-set按原helper优先Texcoord2。
+  3..7保留原serialized值并pending警告，不主动改UV0。CustomData/Cylinder/World/Object构造按真实能力，不能为了“能画”造零字段。
+3 Emission/Overlay2/Ramp/Dissolve：原 ColorOverlayFeatureItem等同类复用；对应UI modes由上述29种子已备；texture ST除BaseMap外仍native，真实gradient Count Float用GUI0 helper。
+4 Mask1/2/3：原 MaskFeatureItem等conditional构造子项；refine/gradient从29seed；_Mask_RotationToggle不在原22bindings，后片在同唯一binding添加且独立迁移，不能另写Graph协议表。
+5 Noise/NoiseMask：真实贴图参数、方向/强度、消费者与归一化UI，屏幕fields按第七节映射；不能旧ApplyScreenDistortMode顺手改用户mainPassintent。
+6 PNoise：原ProgramNoiseFeatureItem；GUI0 slot7读写五个3bit字段0..5已实测，但原Popup仅0..3，不增加缺kernel的4/5效果、也不静默把已有4/5改0。
+7 Vertex/Fresnel/Normal/MatCap/Depth/SixWay/最新RF/POM/DD：原类每个实际属性能力复用，Root近期切片已向中央添加真实字段，不照旧inventory删它们。
+  DepthFeatureItem原来同时new Outline与Decal，必须子块级schemaguard；不能因为其中一个缺字段隐藏另一个已实现功能。
+8 全部block/schema/后台测试齐备后移除native fallback；此前每个未交接已存在Graph功能一直可编辑。
+  Reset/CleanUnusedTextures只对已构造与可判定状态执行；无全功能intent契约前不启用破坏性全清。
+需要的 folds只用原名字真 Hidden Float；不把旧450字段全搬，不fake _BaseColor/TransparentMode/MeshSourceMode/CustomData旧int。
+
+九、源码揭示的残余，不能用GUI接线伪装解决
+A SharedUV：原 NBShaderUVV1.hlsl/NBFX_BuildBaseUVsV1 一直构建SharedUV；全源未找到 _SHARED_UV 的算法#if，仅声明/catalog/UI。
+  保留原行为与用户intent，不能invent一个GraphOffgate反而造成旧/新差异；需要独立B/C证明原开关实际是否只UI意图。
+B Shadow透明coverage：当前 NBGraphShadowCasterPass.hlsl 读 Flags1低半字bit0/1作为transparent/dither；GUI1A不运行旧derivedSurfaceflags。
+  后片从官方Surface规范化实际coverage输入/adapter，不能一般Sync清用户words或造旧TransparentMode。
+C Specular开关：当前 Graph没 _BlinnPhongSpecularToggle真实开关；HalfLambert/BlinnPhong helper受 _SPECULAR_COLOR/_SPECGLOSSMAP宏。
+  加个UIFloat不能使specular生效，真实内核/已有variant必要性独立查证，不把“constructor成功”当功能支持。
+D Screen uniform fallback：当前Graph noise off仍有 _NB_DistortionNoise手动fallback，之前2case仅分析等价而非旧ShaderB/C。
+  原resolver Noise依赖会移除 _SCREEN_DISTORT_MODE；接Tier时要明确prototype与生产旧意图语义，不能悄悄削掉native入口或者把2case升级为B/C证明。
+E 当前中央RF/POM/DD源码可见不等于其实测完成；本候选只保留它们，无新增确认。VAT/Flipbook/CustomLocal/CustomData/其它UV/debug/fog等仍按实际实现审计，不由metadata生成来伪造功能。
+F 明确保留用户已放过的微弱颜色差/首帧项，未重新追查、未放宽strict comparator。UI/离线编译也不替代Mesh图像fullG3/G4。
+这些目前是可继续分片的包内技术任务；真需要改官方/Target/NBPostprocess或削减功能时，才另向用户提交决策材料。
+
+十、Root后续可执行顺序与验证输入（测试另行分配，本次没写Test）
+GUI1B-Seed（下一片推荐）：A 2productfiles → rootreview/集成 →隔离真实URPCamerawarm→seedbackend→GUI0+GUI1A回归。
+  29bits每个on/off、ColorBlend enabled0、randomdense/bit31；version0/1→2/2repeat/未来version；finite非法lo/hi精确raw不写。
+  2material各独立意图，mixed两个顺序保护；partial/Integer schema不升2；100repeat；实际Undo/Redo+保存重载强重导入。
+  snapshot only允许29新UIprops+version；官方Surface16状态和所有原功能原位完全不变。
+GUI1B-Authority +Base（第二片）：原生packed编辑显式readback→sameService，原BaseOption已支持子块逐块handoff。
+  功能callback一定走真实旧businesssetter，不用自写formula假装GUI行为；实际Mesh强positivecontrol/strict raw/finite/repeat。
+  nativeFlags刚改后Sync不得回滚；sharedtoggle更改后unrelated bits不得改；Undo跨两材质、save/import状态还原。
+GUI1C-UV：原控件0/1/2/8、Twirl/Polar/SpecialUV；3..7保留；多材料混合source；原nativeUV编辑入口不能漏最终人工清单。
+GUI2-N：同一resolver normalized入口+同一projector+默认1两Noisepair；后台下降/升Tier恢复功能，原用户float/raw不变。
+  后台render要有低/高Tier actual不同强因果与Off等价；原resolver旧Shader所有输出全同；GUI0/GUI1A/种子重复不变。
+  尚未接其它features/pass时禁用全局Tier toolbar，报告partial，不宣称有效Tier完成。
+GUI2-Expand：实际Gate/mode/lightSH/pass剩余逐块落实，再启用同一TierToolbar/Context/清理工具。
+  project自定义allowed表、每条parent dependency、全Tier、屏幕两个精确Pass、官方Depth/Shadow优先AND与升Tier恢复。
+  no phantom Pass/no new unsupportedkeywords/no official Surface变化；同shader两材质不同tier/mixed来源不互写。
+GUI1C-All：其它已实现Mesh功能原控件全handoff；最后移除fallback，普通MeshGUI集中可见Inspector人工验收。
+最终人工包括所有旧/原生UV、Noise/PNoise、SixWay/SH、RF/POM/DD、Folds/中英文/多选/Reset/Tier/保存，绝不因前面constructor nullitems把功能遗漏。
+Root独占Unity与提交，按可回退切片；本候选未运行Unity，不push。

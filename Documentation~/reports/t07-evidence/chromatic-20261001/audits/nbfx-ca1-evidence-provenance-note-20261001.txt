@@ -1,0 +1,22 @@
+CA history provenance, root 2026-10-01
+Compiled fixture v2 (SHA captured in /tmp/nbfx-chromatic-fixture-v2-20261001.cs)
+ran remaining56: observed NUnit XML 56=26pass/30fail/0skip, all finite,
+minvisible536 and all FrozenAB0. This run exposed an intent mismatch:
+Graph early GF explicit uniform noise default was not calibrated to old zero;
+Opaque noise-off positive-control assertions incorrectly demanded an observable
+CA response, and new Opaque clamp controls supplied no noise at all.
+
+Root then erroneously reused the same /tmp/nbfx-g4-chromatic-remaining56-20261001
+output paths for fixture v3, overwriting v2 original XML/log/captures before an
+archive backup. v2 full original payload is NOT recoverable; do not present
+v3 files as v2 evidence or claim a complete v2 raw archive. Only the fixture
+source and transcript-observed summary survive. Record this evidence handling
+error, not a shader issue; preserve v3 raw under a distinct renamed directory.
+
+v3 run kept all original58 cases and strict zero thresholds, explicitly set
+Graph prototype uniform to zero, asserted old Opaque no-noise inertness, and
+made Opaque16 use real texture noise so BaseMap clamp is actually observable.
+56v3=46pass/10fail/0skip. Original one-process58 invalid5pass/53fail, raw and
+both POM-only v2 cases remain separately intact. Final fixture v4 only adds
+an import-generated source dump, then replays POM2 with the same final source.
+No historical v2 result is relabeled as passing or synthesized as XML.

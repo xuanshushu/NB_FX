@@ -1,0 +1,81 @@
+{
+  "scope": "FG1 ordinary URP Mesh only, no Gate clearance",
+  "fixedCommit": "07fb0d908b28689eb45fdd259e5dd8b81559c9c9",
+  "final": {
+    "label": "v2-final",
+    "originalStem": "/tmp/nbfx-g4-fog-gamma-v2-20261001",
+    "nunit": {
+      "total": 16,
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0
+    },
+    "captureFiles": 322,
+    "rawFloat32Captures": 306,
+    "metricFiles": 16,
+    "suffixCount": {
+      ".gz": 306,
+      ".json": 16
+    },
+    "xmlSHA256": "4abcded26af9460d8f1e578e68c3e54d930066ac5e3a21ba9c7126e8c5900084",
+    "logSHA256": "da863126fdd0ed5cbd36d2661afeb376ddb366d3a91ee8562342883888a19a54",
+    "allRawFinite": true,
+    "failureIds": []
+  },
+  "originalHistory": {
+    "label": "v1-original",
+    "originalStem": "/tmp/nbfx-g4-fog-gamma-20261001",
+    "nunit": {
+      "total": 16,
+      "passed": 6,
+      "failed": 10,
+      "skipped": 0
+    },
+    "captureFiles": 322,
+    "rawFloat32Captures": 306,
+    "metricFiles": 16,
+    "suffixCount": {
+      ".gz": 306,
+      ".json": 16
+    },
+    "xmlSHA256": "96ce3a919b28e164e3c1bd9aa991629bbd0a5c506dac3e9df34378f124ba72bd",
+    "logSHA256": "bed3e4ab4e6cdadbdf341e70903da49e184fc9d532ffe7ddd0a6e2dbc849c7eb",
+    "allRawFinite": true,
+    "failureIds": [
+      "NBFX.Baseline.Tests.G4GraphFogGammaTests.G4FogGamma_Forward_Linear_ortho",
+      "NBFX.Baseline.Tests.G4GraphFogGammaTests.G4FogGamma_Forward_Exponential_ortho",
+      "NBFX.Baseline.Tests.G4GraphFogGammaTests.G4FogGamma_Forward_ExponentialSquared_ortho",
+      "NBFX.Baseline.Tests.G4GraphFogGammaTests.G4FogGamma_NBDeferredDistortPass_ortho",
+      "NBFX.Baseline.Tests.G4GraphFogGammaTests.G4FogGamma_NBDeferredDistortPass_perspective",
+      "NBFX.Baseline.Tests.G4GraphFogGammaTests.G4FogGamma_NBCameraOpaqueDistortPass_ortho",
+      "NBFX.Baseline.Tests.G4GraphFogGammaTests.G4FogGamma_NBCameraOpaqueDistortPass_perspective",
+      "NBFX.Baseline.Tests.G4GraphFogGammaTests.G4FogGamma_Gamma_ortho",
+      "NBFX.Baseline.Tests.G4GraphFogGammaTests.G4FogGamma_PreOffset_ortho",
+      "NBFX.Baseline.Tests.G4GraphFogGammaTests.G4FogGamma_LateAdjustment_ortho"
+    ]
+  },
+  "sourcePaths": [
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
+      "sha256": "5bd25d0be2ece6db716095801569fa36b43c803610593e499099ea5e469d7704",
+      "bytes": 79244
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+      "sha256": "24bb84c9f37b34256f305a86dad0e3b4e4f74ee9db7895fec64f906723284da0",
+      "bytes": 810955
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphFogGammaTests.cs",
+      "sha256": "749db375c75053b131b508630b1e271ab20d381e1e86acf9ab14321bef4298b8",
+      "bytes": 31140
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphFogGammaTests.cs.meta",
+      "sha256": "5208b8589dcd150ac83f1e81bb03364eb304645dd10f37ab9d8550bfa02ccf5f",
+      "bytes": 60
+    }
+  ],
+  "calibration": "v1 assertions incorrectly required orthographic fog response, screen fogIntensity response and observable Opaque draw over a constant background. v2 uses patterned background and Frozen-observed negative controls; original strict A/B and B/C image zero assertions retained.",
+  "boundary": "orthographic zero fog/intensity is a Frozen-observed negative control, NOT orthographic fog support; screen RGB replaces prior fog and screen fogIntensity is inert; ActorFogResponse delta-of-deltas is diagnostic, NOT isolated screen fog; no CA/FG combined full Mesh regression."
+}

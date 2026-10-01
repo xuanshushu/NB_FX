@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="58" result="Failed(Child)" total="58" passed="5" failed="53" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-01 01:09:11Z" end-time="2026-10-01 01:09:57Z" duration="45.790584">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="1187" result="Failed" site="Child" start-time="2026-10-01 01:09:11Z" end-time="2026-10-01 01:09:57Z" duration="45.790584" total="58" passed="5" failed="53" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2280" name="NBFX.G2.URP.Editor.Tests.dll" fullname="/private/tmp/NBFXG2DissolveMaskProbe-20260928/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="1169" result="Failed" site="Child" start-time="2026-10-01 01:09:11Z" end-time="2026-10-01 01:09:57Z" duration="45.784282" total="58" passed="5" failed="53" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="64904" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2281" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="1169" result="Failed" site="Child" start-time="2026-10-01 01:09:11Z" end-time="2026-10-01 01:09:57Z" duration="45.781427" total="58" passed="5" failed="53" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2282" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="1169" result="Failed" site="Child" start-time="2026-10-01 01:09:11Z" end-time="2026-10-01 01:09:57Z" duration="45.779557" total="58" passed="5" failed="53" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2283" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="1169" result="Failed" site="Child" start-time="2026-10-01 01:09:11Z" end-time="2026-10-01 01:09:57Z" duration="45.777638" total="58" passed="5" failed="53" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1219" name="G4GraphChromaticTests" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" testcasecount="58" result="Failed" site="Child" start-time="2026-10-01 01:09:11Z" end-time="2026-10-01 01:09:57Z" duration="45.756260" total="58" passed="5" failed="53" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1278" name="ThreeChromaticSamplesMatchFrozenAndGraph" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" testcasecount="58" result="Failed" site="Child" start-time="2026-10-01 01:09:12Z" end-time="2026-10-01 01:09:57Z" duration="44.370731" total="58" passed="5" failed="53" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1220" name="G4Chromatic_Forward_without-noise_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_without-noise_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="223714612" result="Passed" start-time="2026-10-01 01:09:12Z" end-time="2026-10-01 01:09:19Z" duration="6.678444" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"without-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":1104,"visibleB":1104,"visibleC":1104,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":2304,"responseBChanged":2304,"responseCChanged":2304,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.444091796875,"responseB":0.444091796875,"responseC":0.444091796875,"withNoiseDeltaA":0.1600341796875,"withNoiseDeltaB":0.1600341796875,"withNoiseDeltaC":0.1600341796875,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1221" name="G4Chromatic_Forward_without-noise_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_without-noise_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="479720506" result="Passed" start-time="2026-10-01 01:09:19Z" end-time="2026-10-01 01:09:20Z" duration="0.617451" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"without-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":1104,"visibleB":1104,"visibleC":1104,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":2304,"responseBChanged":2304,"responseCChanged":2304,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.446533203125,"responseB":0.446533203125,"responseC":0.446533203125,"withNoiseDeltaA":0.149169921875,"withNoiseDeltaB":0.149169921875,"withNoiseDeltaC":0.149169921875,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1222" name="G4Chromatic_Forward_with-noise_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_with-noise_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1929028654" result="Passed" start-time="2026-10-01 01:09:20Z" end-time="2026-10-01 01:09:22Z" duration="2.117008" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"with-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":952,"visibleB":952,"visibleC":952,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":2304,"responseBChanged":2304,"responseCChanged":2304,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.7828369140625,"responseB":0.7828369140625,"responseC":0.7828369140625,"withNoiseDeltaA":0.44403076171875,"withNoiseDeltaB":0.44403076171875,"withNoiseDeltaC":0.44403076171875,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1223" name="G4Chromatic_Forward_with-noise_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_with-noise_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="210540202" result="Passed" start-time="2026-10-01 01:09:22Z" end-time="2026-10-01 01:09:22Z" duration="0.603674" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"with-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":959,"visibleB":959,"visibleC":959,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":2304,"responseBChanged":2304,"responseCChanged":2304,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.7825927734375,"responseB":0.7825927734375,"responseC":0.7825927734375,"withNoiseDeltaA":0.443115234375,"withNoiseDeltaB":0.443115234375,"withNoiseDeltaC":0.443115234375,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1224" name="G4Chromatic_Forward_pnoise_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_pnoise_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1174117618" result="Failed" start-time="2026-10-01 01:09:22Z" end-time="2026-10-01 01:09:26Z" duration="3.563578" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Graph CA differs from current ShaderLab.
+  Expected: 0
+  But was:  2
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x011c0] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:280
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"pnoise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":746,"visibleB":746,"visibleC":746,"abOnChanged":0,"bcOnChanged":1,"abOffChanged":0,"bcOffChanged":1,"responseAChanged":2304,"responseBChanged":2304,"responseCChanged":2304,"abOn":0.0,"bcOn":0.00006103515625,"abOff":0.0,"bcOff":0.00048828125,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.75341796875,"responseB":0.75341796875,"responseC":0.75341796875,"withNoiseDeltaA":0.4061279296875,"withNoiseDeltaB":0.4061279296875,"withNoiseDeltaC":0.4061279296875,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1225" name="G4Chromatic_Forward_pnoise_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_pnoise_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="892151657" result="Failed" start-time="2026-10-01 01:09:26Z" end-time="2026-10-01 01:09:27Z" duration="0.595074" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Graph CA differs from current ShaderLab.
+  Expected: 0
+  But was:  2
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x011c0] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:280
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"pnoise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":762,"visibleB":762,"visibleC":762,"abOnChanged":0,"bcOnChanged":1,"abOffChanged":0,"bcOffChanged":1,"responseAChanged":2304,"responseBChanged":2304,"responseCChanged":2304,"abOn":0.0,"bcOn":0.00048828125,"abOff":0.0,"bcOff":0.00048828125,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.75347900390625,"responseB":0.75347900390625,"responseC":0.75347900390625,"withNoiseDeltaA":0.4063720703125,"withNoiseDeltaB":0.4063720703125,"withNoiseDeltaC":0.4063720703125,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1226" name="G4Chromatic_Forward_refraction_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_refraction_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="279547397" result="Passed" start-time="2026-10-01 01:09:27Z" end-time="2026-10-01 01:09:29Z" duration="2.165361" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"refraction","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":779,"visibleB":779,"visibleC":779,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":2304,"responseBChanged":2304,"responseCChanged":2304,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.532470703125,"responseB":0.532470703125,"responseC":0.532470703125,"withNoiseDeltaA":0.30218505859375,"withNoiseDeltaB":0.30218505859375,"withNoiseDeltaC":0.30218505859375,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1227" name="G4Chromatic_Forward_refraction_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_refraction_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1528308573" result="Failed" start-time="2026-10-01 01:09:29Z" end-time="2026-10-01 01:09:29Z" duration="0.600653" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Graph CA differs from current ShaderLab.
+  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x011c0] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:280
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"refraction","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":536,"visibleB":536,"visibleC":536,"abOnChanged":0,"bcOnChanged":1,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":2304,"responseBChanged":2304,"responseCChanged":2304,"abOn":0.0,"bcOn":0.00048828125,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.78692626953125,"responseB":0.78692626953125,"responseC":0.78692626953125,"withNoiseDeltaA":0.4212646484375,"withNoiseDeltaB":0.4212646484375,"withNoiseDeltaC":0.4212646484375,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1228" name="G4Chromatic_Forward_pom_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_pom_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="541274437" result="Failed" start-time="2026-10-01 01:09:29Z" end-time="2026-10-01 01:09:32Z" duration="2.315327" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x010a9] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:269
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"pom","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":1309,"visibleB":0,"visibleC":0,"abOnChanged":2304,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":2304,"responseBChanged":0,"responseCChanged":0,"abOn":0.97021484375,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.97021484375,"repeatB":0.0,"repeatC":0.0,"responseA":0.97021484375,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.97021484375,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1229" name="G4Chromatic_Forward_pom_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_pom_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="190015880" result="Failed" start-time="2026-10-01 01:09:32Z" end-time="2026-10-01 01:09:32Z" duration="0.216494" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"pom","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1230" name="G4Chromatic_Forward_custom1x_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_custom1x_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="278548618" result="Failed" start-time="2026-10-01 01:09:32Z" end-time="2026-10-01 01:09:32Z" duration="0.223308" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"custom1x","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1231" name="G4Chromatic_Forward_custom1x_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_custom1x_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1069930607" result="Failed" start-time="2026-10-01 01:09:32Z" end-time="2026-10-01 01:09:32Z" duration="0.254405" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"custom1x","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1232" name="G4Chromatic_Forward_custom2w_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_custom2w_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1356704033" result="Failed" start-time="2026-10-01 01:09:32Z" end-time="2026-10-01 01:09:33Z" duration="0.226393" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"custom2w","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1233" name="G4Chromatic_Forward_custom2w_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_custom2w_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1637110437" result="Failed" start-time="2026-10-01 01:09:33Z" end-time="2026-10-01 01:09:33Z" duration="0.220976" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"custom2w","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1234" name="G4Chromatic_Forward_wrap-clampU-repeatV_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_wrap-clampU-repeatV_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1969025339" result="Failed" start-time="2026-10-01 01:09:33Z" end-time="2026-10-01 01:09:33Z" duration="0.215431" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"wrap-clampU-repeatV","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1235" name="G4Chromatic_Forward_wrap-clampU-repeatV_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_wrap-clampU-repeatV_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="429265208" result="Failed" start-time="2026-10-01 01:09:33Z" end-time="2026-10-01 01:09:33Z" duration="0.244622" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"wrap-clampU-repeatV","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1236" name="G4Chromatic_Forward_lod0_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_lod0_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="431318851" result="Failed" start-time="2026-10-01 01:09:33Z" end-time="2026-10-01 01:09:33Z" duration="0.232149" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"lod0","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1237" name="G4Chromatic_Forward_lod0_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_lod0_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1415426508" result="Failed" start-time="2026-10-01 01:09:33Z" end-time="2026-10-01 01:09:34Z" duration="0.222828" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"lod0","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1238" name="G4Chromatic_Forward_backface_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_backface_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1608344946" result="Failed" start-time="2026-10-01 01:09:34Z" end-time="2026-10-01 01:09:35Z" duration="1.043758" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"backface","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1239" name="G4Chromatic_Forward_backface_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_backface_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="551516362" result="Failed" start-time="2026-10-01 01:09:35Z" end-time="2026-10-01 01:09:35Z" duration="0.237755" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"backface","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1240" name="G4Chromatic_Forward_negative-scale_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_negative-scale_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="369471532" result="Failed" start-time="2026-10-01 01:09:35Z" end-time="2026-10-01 01:09:35Z" duration="0.233993" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"negative-scale","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1241" name="G4Chromatic_Forward_negative-scale_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_Forward_negative-scale_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1892002490" result="Failed" start-time="2026-10-01 01:09:35Z" end-time="2026-10-01 01:09:35Z" duration="0.227275" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"Forward","kind":"negative-scale","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1242" name="G4Chromatic_NBDeferredDistortPass_without-noise_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_without-noise_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="767652340" result="Failed" start-time="2026-10-01 01:09:35Z" end-time="2026-10-01 01:09:38Z" duration="2.899306" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBDeferredDistortPass","kind":"without-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1243" name="G4Chromatic_NBDeferredDistortPass_without-noise_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_without-noise_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="598289838" result="Failed" start-time="2026-10-01 01:09:38Z" end-time="2026-10-01 01:09:39Z" duration="0.233235" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBDeferredDistortPass","kind":"without-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1244" name="G4Chromatic_NBDeferredDistortPass_with-noise_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_with-noise_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="577566394" result="Failed" start-time="2026-10-01 01:09:39Z" end-time="2026-10-01 01:09:40Z" duration="1.109546" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBDeferredDistortPass","kind":"with-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1245" name="G4Chromatic_NBDeferredDistortPass_with-noise_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_with-noise_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="355681332" result="Failed" start-time="2026-10-01 01:09:40Z" end-time="2026-10-01 01:09:40Z" duration="0.217900" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBDeferredDistortPass","kind":"with-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1246" name="G4Chromatic_NBDeferredDistortPass_pnoise_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_pnoise_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="579881754" result="Failed" start-time="2026-10-01 01:09:40Z" end-time="2026-10-01 01:09:42Z" duration="1.767296" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBDeferredDistortPass","kind":"pnoise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1247" name="G4Chromatic_NBDeferredDistortPass_pnoise_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_pnoise_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1645359737" result="Failed" start-time="2026-10-01 01:09:42Z" end-time="2026-10-01 01:09:42Z" duration="0.229116" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBDeferredDistortPass","kind":"pnoise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1248" name="G4Chromatic_NBDeferredDistortPass_refraction_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_refraction_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="581427713" result="Failed" start-time="2026-10-01 01:09:42Z" end-time="2026-10-01 01:09:43Z" duration="1.269964" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBDeferredDistortPass","kind":"refraction","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1249" name="G4Chromatic_NBDeferredDistortPass_refraction_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_refraction_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1685582643" result="Failed" start-time="2026-10-01 01:09:43Z" end-time="2026-10-01 01:09:43Z" duration="0.236269" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBDeferredDistortPass","kind":"refraction","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1250" name="G4Chromatic_NBDeferredDistortPass_pom-inert_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_pom-inert_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1319804010" result="Failed" start-time="2026-10-01 01:09:43Z" end-time="2026-10-01 01:09:44Z" duration="0.275096" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBDeferredDistortPass","kind":"pom-inert","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":0.0,"pomInertB":0.0,"pomInertC":0.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1251" name="G4Chromatic_NBDeferredDistortPass_pom-inert_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBDeferredDistortPass_pom-inert_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1994123499" result="Failed" start-time="2026-10-01 01:09:44Z" end-time="2026-10-01 01:09:44Z" duration="0.288054" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBDeferredDistortPass","kind":"pom-inert","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":0.0,"pomInertB":0.0,"pomInertC":0.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1252" name="G4Chromatic_NBCameraOpaqueDistortPass_without-noise_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_without-noise_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="946192897" result="Failed" start-time="2026-10-01 01:09:44Z" end-time="2026-10-01 01:09:46Z" duration="2.378026" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"without-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1253" name="G4Chromatic_NBCameraOpaqueDistortPass_without-noise_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_without-noise_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="758146342" result="Failed" start-time="2026-10-01 01:09:46Z" end-time="2026-10-01 01:09:47Z" duration="0.222079" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"without-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1254" name="G4Chromatic_NBCameraOpaqueDistortPass_with-noise_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_with-noise_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="499293215" result="Failed" start-time="2026-10-01 01:09:47Z" end-time="2026-10-01 01:09:47Z" duration="0.960421" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"with-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1255" name="G4Chromatic_NBCameraOpaqueDistortPass_with-noise_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_with-noise_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="245852427" result="Failed" start-time="2026-10-01 01:09:47Z" end-time="2026-10-01 01:09:48Z" duration="0.224217" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"with-noise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1256" name="G4Chromatic_NBCameraOpaqueDistortPass_pnoise_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_pnoise_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="711652456" result="Failed" start-time="2026-10-01 01:09:48Z" end-time="2026-10-01 01:09:49Z" duration="1.604835" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"pnoise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1257" name="G4Chromatic_NBCameraOpaqueDistortPass_pnoise_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_pnoise_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="803150459" result="Failed" start-time="2026-10-01 01:09:49Z" end-time="2026-10-01 01:09:50Z" duration="0.220739" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"pnoise","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1258" name="G4Chromatic_NBCameraOpaqueDistortPass_refraction_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_refraction_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="797089917" result="Failed" start-time="2026-10-01 01:09:50Z" end-time="2026-10-01 01:09:51Z" duration="1.123752" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"refraction","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1259" name="G4Chromatic_NBCameraOpaqueDistortPass_refraction_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_refraction_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="104443201" result="Failed" start-time="2026-10-01 01:09:51Z" end-time="2026-10-01 01:09:51Z" duration="0.222504" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"refraction","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1260" name="G4Chromatic_NBCameraOpaqueDistortPass_pom-inert_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_pom-inert_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1663464455" result="Failed" start-time="2026-10-01 01:09:51Z" end-time="2026-10-01 01:09:51Z" duration="0.300204" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"pom-inert","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":0.0,"pomInertB":0.0,"pomInertC":0.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1261" name="G4Chromatic_NBCameraOpaqueDistortPass_pom-inert_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_pom-inert_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1228602602" result="Failed" start-time="2026-10-01 01:09:51Z" end-time="2026-10-01 01:09:51Z" duration="0.272454" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"pom-inert","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":0.0,"pomInertB":0.0,"pomInertC":0.0,"opaquePackedWrapA":-1.0,"opaquePackedWrapB":-1.0,"opaquePackedWrapC":-1.0,"opaqueClampShiftA":-1.0,"opaqueClampShiftB":-1.0,"opaqueClampShiftC":-1.0,"opaqueAltAB":-1.0,"opaqueAltBC":-1.0,"opaqueShiftAB":-1.0,"opaqueShiftBC":-1.0}
+]]></output>
+                </test-case>
+                <test-case id="1262" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-0-lod1_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-0-lod1_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="15474906" result="Failed" start-time="2026-10-01 01:09:51Z" end-time="2026-10-01 01:09:52Z" duration="0.355365" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-0-lod1","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1263" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-0-lod1_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-0-lod1_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="25457740" result="Failed" start-time="2026-10-01 01:09:52Z" end-time="2026-10-01 01:09:52Z" duration="0.328228" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-0-lod1","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1264" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-0-lod0_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-0-lod0_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="614266792" result="Failed" start-time="2026-10-01 01:09:52Z" end-time="2026-10-01 01:09:52Z" duration="0.321966" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-0-lod0","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1265" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-0-lod0_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-0-lod0_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="909381878" result="Failed" start-time="2026-10-01 01:09:52Z" end-time="2026-10-01 01:09:53Z" duration="0.327767" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-0-lod0","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1266" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-1-lod1_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-1-lod1_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="491642259" result="Failed" start-time="2026-10-01 01:09:53Z" end-time="2026-10-01 01:09:53Z" duration="0.316958" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-1-lod1","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1267" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-1-lod1_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-1-lod1_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="243796027" result="Failed" start-time="2026-10-01 01:09:53Z" end-time="2026-10-01 01:09:53Z" duration="0.328495" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-1-lod1","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1268" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-1-lod0_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-1-lod0_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="778274451" result="Failed" start-time="2026-10-01 01:09:53Z" end-time="2026-10-01 01:09:54Z" duration="0.334761" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-1-lod0","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1269" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-1-lod0_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-1-lod0_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="232836375" result="Failed" start-time="2026-10-01 01:09:54Z" end-time="2026-10-01 01:09:54Z" duration="0.307966" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-1-lod0","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1270" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-2-lod1_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-2-lod1_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="860661423" result="Failed" start-time="2026-10-01 01:09:54Z" end-time="2026-10-01 01:09:54Z" duration="0.327551" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-2-lod1","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1271" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-2-lod1_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-2-lod1_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1161643409" result="Failed" start-time="2026-10-01 01:09:54Z" end-time="2026-10-01 01:09:55Z" duration="0.337501" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-2-lod1","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1272" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-2-lod0_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-2-lod0_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1436899998" result="Failed" start-time="2026-10-01 01:09:55Z" end-time="2026-10-01 01:09:55Z" duration="0.301440" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-2-lod0","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1273" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-2-lod0_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-2-lod0_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1353679062" result="Failed" start-time="2026-10-01 01:09:55Z" end-time="2026-10-01 01:09:55Z" duration="0.329350" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-2-lod0","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1274" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-3-lod1_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-3-lod1_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="632427021" result="Failed" start-time="2026-10-01 01:09:55Z" end-time="2026-10-01 01:09:56Z" duration="0.340864" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-3-lod1","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1275" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-3-lod1_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-3-lod1_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="479195769" result="Failed" start-time="2026-10-01 01:09:56Z" end-time="2026-10-01 01:09:56Z" duration="0.305316" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-3-lod1","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1276" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-3-lod0_ortho" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-3-lod0_ortho" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1859551813" result="Failed" start-time="2026-10-01 01:09:56Z" end-time="2026-10-01 01:09:56Z" duration="0.324597" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-3-lod0","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":true,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+]]></output>
+                </test-case>
+                <test-case id="1277" name="G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-3-lod0_perspective" fullname="NBFX.Baseline.Tests.G4GraphChromaticTests.G4Chromatic_NBCameraOpaqueDistortPass_opaque-wrap-3-lod0_perspective" methodname="ThreeChromaticSamplesMatchFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphChromaticTests" runstate="Runnable" seed="1330738816" result="Failed" start-time="2026-10-01 01:09:56Z" end-time="2026-10-01 01:09:57Z" duration="0.347890" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 100
+  But was:  0
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphChromaticTests.ThreeChromaticSamplesMatchFrozenAndGraph (System.String route, System.String kind, System.Boolean ortho) [0x01090] in ./Packages/NB_FX/Tests/URP/Editor/G4GraphChromaticTests.cs:268
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_CHROMATIC_ABC {"route":"NBCameraOpaqueDistortPass","kind":"opaque-wrap-3-lod0","api":"Metal","unityVersion":"6000.3.18f1","note":"CA1 ordinary Mesh only. A Frozen/B current/C Graph, 128x128 linear RGBAHalf, ROI40..87. Per-channel alpha composition and pre-POM origin; screen exact tags via test-only directed feature. Opaque-wrap cases cross UV 0/1, require packed-wrap invariance and a nonzero +1U clamp control under both implicit/LOD0. No VFX/Player, UI or GUI-sync claim.","ortho":false,"finite":true,"visibleA":0,"visibleB":0,"visibleC":0,"abOnChanged":0,"bcOnChanged":0,"abOffChanged":0,"bcOffChanged":0,"responseAChanged":0,"responseBChanged":0,"responseCChanged":0,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"repeatA":0.0,"repeatB":0.0,"repeatC":0.0,"responseA":0.0,"responseB":0.0,"responseC":0.0,"withNoiseDeltaA":0.0,"withNoiseDeltaB":0.0,"withNoiseDeltaC":0.0,"pomInertA":-1.0,"pomInertB":-1.0,"pomInertC":-1.0,"opaquePackedWrapA":0.0,"opaquePackedWrapB":0.0,"opaquePackedWrapC":0.0,"opaqueClampShiftA":0.0,"opaqueClampShiftB":0.0,"opaqueClampShiftC":0.0,"opaqueAltAB":0.0,"opaqueAltBC":0.0,"opaqueShiftAB":0.0,"opaqueShiftBC":0.0}
+Saving results to: /Users/bytedance/Library/Application Support/DefaultCompany/NBUnityProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
