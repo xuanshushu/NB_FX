@@ -1,0 +1,106 @@
+{
+  "task": "NBPOST-FULL-FIRST",
+  "installed": false,
+  "UnityRun": false,
+  "scope": "Only new test+meta. Current Graph transientrootUVP state not treated as finalVAT composite. Runtime test resolves and hashes actual installed package/Graph. No existing sources/assets/asmdef/contract/official package change.",
+  "records": [
+    {
+      "path": "Tests/URP/Editor/G4NBPostFullControllerTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "87fc1d0ac15df2c30af60ad0454deec3ea172b7f1ca9207153756c55c08d0f37"
+    },
+    {
+      "path": "Tests/URP/Editor/G4NBPostFullControllerTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "0273c956ddb29c661c4911cc55e403da92d839ea2e735e816c0e024c861b4305"
+    }
+  ],
+  "sourceAuditInputs": [
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/NBPostProcess.cs",
+      "sha256": "3e7aaece519bd86622635021984d9f484428ef604ec819e91423c9f947be5f4a"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/PostProcessingController.cs",
+      "sha256": "e814e89cf1359768c26c918182dca313b440b2dcc4c33e3c7d1f4a93c4965b79"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/PostProcessingManager.cs",
+      "sha256": "923ca437b15269311392857dfd59a32689fce7d2bc3a1903c7db100836f581c4"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/DisturbanceMaskRenderPass.cs",
+      "sha256": "99e78fcb5044208829d1391f7175181d98779056b3736035adaac3305ee0003a"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/ScreenColorRenderPass.cs",
+      "sha256": "1f60b3f3d149ec0aba9457002471c069e3e6a4156a5d35bc154a1b9e7b41dcd1"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/RenderCameraOpaqueDistortObjectPass.cs",
+      "sha256": "377a842525d896063d64b1f654418628339f70ce8f9b9278b07ce8899c02ad38"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/NBPostProcessRenderPass.cs",
+      "sha256": "143d9b450cc69d1cd1f61f1538510790b8fa9053d0ef3ef27296db99e981c7f8"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Runtime/NBPostprocessFlags.cs",
+      "sha256": "1a65014ef3063f2ee08781d871f278d3b9516420a5dd6f9ae1a2702558893988"
+    },
+    {
+      "path": "Packages/NB_FX/NBPostProcessing/Shader/NBPostProcessUber.shader",
+      "sha256": "75f352dce5d37b0d5d177bf190abf2dddc618adb3fe0cd9e416bcffcdd4094df"
+    },
+    {
+      "path": "Packages/NB_FX/Tests/URP/Editor/G4GraphScreenNoiseTests.cs",
+      "sha256": "c9690595ae9d1fde088a79d1fd01d46b80092580c41887f16f00144b21e076d2"
+    },
+    {
+      "path": "Packages/NB_FX/Tests/URP/Editor/G2MaskView.shader",
+      "sha256": "6f09fe051b9646b905a81371833fe5696b415cb7f504d2d2d064fc0ced9c069d"
+    }
+  ],
+  "actualAPIs": [
+    "NBPostProcess.Create/AddRenderPasses builds CameraOpaque/Copy/Mask/Uber with original tags and material",
+    "PostProcessingController.OnEnable->InitController->Manager.InitController/SetIndex and SetToggles; OnDisable clears/releases",
+    "Controller.ControllerEditorUpdate invokes productionUpdate; Manager.EditorUpdate invokes productionLateUpdate/EffectUpdater",
+    "NBPostProcessMaterial runtime-only checked with AssetDatabase.Contains false; real flags written only by services",
+    "Pure observer uses oldG2MaskView.shader and UseGlobalTexture, no NB RendererList or directing replacement"
+  ],
+  "caseCount": 12,
+  "firstPreflightIdentities": [
+    "NBFX.Baseline.Tests.G4NBPostFullControllerTests.NBPostFullABC_opaque_overlay_ortho",
+    "NBFX.Baseline.Tests.G4NBPostFullControllerTests.NBPostFullABC_deferred_overlay_ortho"
+  ],
+  "requiredGraphInputs": [
+    "_NB_DistortionMode",
+    "_NB_DistortionIntensity",
+    "_NB_Flags0Lo16",
+    "_NB_Flags1Lo16",
+    "_noisemapEnabled",
+    "_NoiseMap"
+  ],
+  "coverage": [
+    "Two real Controller lifecycle/index/toggle union/max intensity/disable-reenable",
+    "Native Deferred RG mask strength0 and two-mesh accumulation controls; CameraOpaque requires zero Deferred mask",
+    "Final/_DisturbanceMaskTex/_ScreenColorCopy1/_CameraOpaqueTexture RGBA raw finite/strict repeat/ABC0",
+    "Opaque+transparent scene inputs and controller/texture/mesh strength responses; scene copy partial alpha asserted",
+    "Actual two-camera sharednativeRT order/restoration in four bounded cases"
+  ],
+  "environmentContract": "Existing active NB RendererFeature with currently configured downSampling. RenderGraph only, camera.requiresColorTexture true; URP renderPostProcessing false intentionally because this feature does not need Volume. No loaded manager/controller allowed in owned isolation. All GOs/RT/materials in preview/inmemory, RendererData feature-list memory change only, fileSHA before/after asserted.",
+  "cleanup": "Observer registered before warm/static snapshot so nativeFeature rebuild cannot invalidate live runtimeUber. Normal success and partial setup failure destroy owned objects/removeobserver/closepreview. Controller disable releases productionindex; original manager static values and runtimeUber material properties restored. No asset saving.",
+  "staticCompile": {
+    "mode": "StandaloneRoslyn actual49test sources/references/defines, noEditor operations",
+    "exitCode": 0,
+    "log": "static-compile.log",
+    "runtimeUnverified": true
+  },
+  "remaining": [
+    "Exact screenRT observer does not replace Controller/Manager and does not measure Player, performance, full effect catalogue, all cameras/MSAA/resolutions or Compatibility.",
+    "Only existing downSampling, no pipeline settings override. Future separate tests must use temporary test copies to change configuration.",
+    "Unexpected controls, invalid output or tiny colour/alpha differences remain strictly Failed; no tolerances weakened.",
+    "FullController firstframe is not claimed: documented ownedproduction isFirstUpdate skip is consumed by three legitimate tickcycles before stablecapture; cold firstframe remains separate requirement.",
+    "WarmGraph/import currentVFX sample metadata/Shader errors remain infrastructurefailure and cannot be counted as visualpasses."
+  ]
+}

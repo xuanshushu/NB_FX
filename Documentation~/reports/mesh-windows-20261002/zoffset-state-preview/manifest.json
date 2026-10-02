@@ -1,0 +1,108 @@
+{
+  "task": "STATE-OFFSET-1",
+  "status": "builder/script and test preview only; NO Target generated, NO central/current source written, NO Unity/tests run",
+  "builder": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\zoffset-state-preview\\build_zoffset_subtarget.py",
+  "builderSHA256": "29b4a2d9cfe76d9d104e270dcf8e80ba486b956b4e07e19e4a01f6883e3ffa26",
+  "builderSyntax": "Python AST passes; not executed",
+  "sourceContext": {
+    "rootSubTargetSHA256": "0d96533588a10ea1b23a3cee9cc613bb1806d82733c4f7466fb5c8dda7bc726c",
+    "isolatedSubTargetSHA256": "9ed17f0917e5aa02651d85ecdf6934d6a8c05e1048cbcb5ce908f308ad4fad61",
+    "rootShaderSHA256": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00",
+    "isolatedGraphSHA256": "6fc363bf4eb4631df87432b55b0a82ae767c14f8696630e7a734c43b40a5266b",
+    "scope": "Current root35OVZ/source3eb not UVP-integrated, isolated temporary RootUVP1132; neither claimed complete combined source. Patcher reads actual selected package at invocation."
+  },
+  "properties": {
+    "_offsetFactor": {
+      "legacyType": "Range(-2000,2000), float storage",
+      "GraphType": "collector Float, hidden numeric property",
+      "default": 0
+    },
+    "_offsetUnits": {
+      "legacyType": "Range(-2000,2000), float storage",
+      "GraphType": "collector Float, hidden numeric property",
+      "default": 0
+    }
+  },
+  "existingGUIContract": "TABigBlockItem uses the existing two properties; disabling _ZOffset_Toggle zeros them. ShaderLab Offset itself is unconditional; toggle0 does not suppress script-set nonzero values. This preview changes no GUI/writer.",
+  "legacyMapping": {
+    "colourPassesWithOffset": [
+      "UniversalForward",
+      "NBCameraOpaqueDistortPass",
+      "NBDeferredDistortPass",
+      "Universal2D"
+    ],
+    "BackFirstAlsoHasOffset": "SRPDefaultUnlit at shader line595; excluded from this Graph slice because no existing Graph equivalent",
+    "legacyDepthShadowWithoutOffset": [
+      "DepthOnly",
+      "ShadowCaster"
+    ]
+  },
+  "GraphIncluded": [
+    "Universal Forward",
+    "NBCameraOpaqueDistortPass",
+    "NBDeferredDistortPass"
+  ],
+  "GraphExcluded": [
+    "DepthOnly",
+    "ShadowCaster",
+    "DepthNormalsOnly",
+    "MotionVectors",
+    "internal editor/XR passes",
+    "BackFirst/Universal2D absent/unclaimed"
+  ],
+  "descriptorPolicy": "Same ZTest descriptor.type and original fieldConditions, append exact standalone Offset [_offsetFactor], [_offsetUnits] line; no Offset API guessed, no new descriptor type; helper reached only by Forward colorMask=true and original NB clone ZTest item",
+  "testsAuthored": {
+    "count": 12,
+    "stages": 3,
+    "axes": [
+      "factor(+/-16)",
+      "units(+/-512)"
+    ],
+    "cameras": 2,
+    "controls": "negative/zero/positive each A/B/C plus repeats and actor-disabled fixed depth-board frame",
+    "checks": "GPU finite, all-frame AB/BC/repeat exactly0, actual sign response>.01, actor effects>150pixels, real Float/default0 schema, renderer source bytes restored. Not source-string assertions."
+  },
+  "records": [
+    {
+      "path": "Tests/URP/Editor/G4GraphZOffsetStateTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "26629686f5a1e54738c1785565e11d33129c1d3b345e03ea704cb4e75b07ae68",
+      "bytes": 16460
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphZOffsetStateTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "47b13cd004d79a656c909e1b9c67f24c5b110f6ff11ec4bd0419fb2c323af9fa",
+      "bytes": 62
+    }
+  ],
+  "newKeywords": 0,
+  "newPasses": 0,
+  "GraphAssetChanged": false,
+  "files": [
+    {
+      "path": "Tests/URP/Editor/G4GraphZOffsetStateTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "26629686f5a1e54738c1785565e11d33129c1d3b345e03ea704cb4e75b07ae68",
+      "bytes": 16460
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphZOffsetStateTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "47b13cd004d79a656c909e1b9c67f24c5b110f6ff11ec4bd0419fb2c323af9fa",
+      "bytes": 62
+    }
+  ],
+  "officialDescriptorEvidence": {
+    "RenderStateDescriptor": {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Library\\PackageCache\\com.unity.shadergraph@2fa139ee8b62\\Editor\\Generation\\Descriptors\\RenderStateDescriptor.cs",
+      "sha256": "1e364738ca5b257952be6f07c6064baac7b2fabc9f76b04be7a3da939c260c6c",
+      "notes": "RenderStateType/RenderState contain no Offset. ZTest descriptor stores command string in value."
+    },
+    "RenderStateCollection": {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Library\\PackageCache\\com.unity.shadergraph@2fa139ee8b62\\Editor\\Generation\\Collections\\RenderStateCollection.cs",
+      "sha256": "31a8891224edbf07bdb0ca945bf2e469045c4dac2dbc63195a60eab055281639",
+      "notes": "Add(descriptor, FieldCondition[]) keeps supplied condition array; helper modifies descriptor copy only."
+    }
+  }
+}

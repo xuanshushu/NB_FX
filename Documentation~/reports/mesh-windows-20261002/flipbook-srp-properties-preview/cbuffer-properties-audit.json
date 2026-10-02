@@ -1,0 +1,1810 @@
+{
+  "scope": "Full static UnityPerMaterial declaration inventory, not native compatibility proof",
+  "rootInputSHA256": "7a95d31df206684e42ec6d421375d41ad7bfa0e9665a99b2f9308ad74915ed9b",
+  "combinedInputSHA256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+  "shaderBeforeSHA256": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00",
+  "shaderAfterSHA256": "814df814d1ddded2281b0144da2a06f7068ab3f3f4d0e1a0855a0a21fe65875c",
+  "addedCBFields": {},
+  "removedCBFields": {},
+  "changedCBTypes": {},
+  "fullCBRows": [
+    {
+      "name": "_SoftParticleFadeParams",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_CameraFadeParams",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_IntersectRadius",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_IntersectColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_AdditiveToPreMultiplyAlphaLerp",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_Saturability",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "range(0,1",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "range(0,1"
+    },
+    {
+      "name": "_HueShift",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0,1",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0,1"
+    },
+    {
+      "name": "_Contrast",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_ContrastMidColor",
+      "hlslType": "half3",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_BaseMapColorRefine",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_AlphaAll",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0,1",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0,1"
+    },
+    {
+      "name": "_BaseMap_ST",
+      "hlslType": "float4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_BaseMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_BaseMap_AnimationSheetBlend_ST",
+      "hlslType": "float4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_AnimationSheetHelperBlendIntensity",
+      "hlslType": "half",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_MaskMap_ST",
+      "hlslType": "float4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_MaskMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_BaseColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_BaseBackColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_BaseColorIntensityForTimeline",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0,10",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0,10"
+    },
+    {
+      "name": "_EmissionMap_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_EmissionMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_NoiseMap_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_NoiseMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_NoiseMaskMap_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_NoiseMaskMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_DistortionDirection",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_BaseColorAddSubDiff",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_fogintensity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0, 1",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0, 1"
+    },
+    {
+      "name": "_Emi_Distortion_intensity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "float"
+    },
+    {
+      "name": "_BaseMapUVRotation",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0, 360",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0, 360"
+    },
+    {
+      "name": "_BaseMapUVRotationSpeed",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_MaskMapUVRotation",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0, 360",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0, 360"
+    },
+    {
+      "name": "_NoiseMapUVRotation",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0,360",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0,360"
+    },
+    {
+      "name": "_ScreenDistortIntensity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_ScreenDistortAlphaPow",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_ScreenDistortAlphaAdd",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_ScreenDistortAlphaMulti",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_NoiseIntensity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_RefractionIOR",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_uvRapSoft",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0, 1",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0, 1"
+    },
+    {
+      "name": "_EmissionMapColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_EmissionMapColorIntensity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "float"
+    },
+    {
+      "name": "_BumpTex_ST",
+      "hlslType": "float4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_BumpTex",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_BumpScale",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_MaterialInfo",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_SpecularColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_SixWayInfo",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_SixWayEmissionColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_MatCapColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_MatCapInfo",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_EdgeFade",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0, 1",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0, 1"
+    },
+    {
+      "name": "_NoiseOffset",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_EmissionMapUVOffset",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_EmissionMapUVRotation",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0, 360",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0, 360"
+    },
+    {
+      "name": "_EmissionSelfAlphaWeight",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "float"
+    },
+    {
+      "name": "_TexDistortion_intensity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "float"
+    },
+    {
+      "name": "_MaskDistortion_intensity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "float"
+    },
+    {
+      "name": "_BaseMapMaskMapOffset",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_MaskMapOffsetAnition",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_MaskMap3OffsetAnition",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_MaskMapVec",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_MaskRefineVec",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_MaskMapGradientCount",
+      "hlslType": "int",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_MaskMapGradientFloat0",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_MaskMapGradientFloat1",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_MaskMapGradientFloat2",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_MaskMap2GradientCount",
+      "hlslType": "int",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_MaskMap2GradientFloat0",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_MaskMap2GradientFloat1",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_MaskMap2GradientFloat2",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_MaskMap3GradientCount",
+      "hlslType": "int",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_MaskMap3GradientFloat0",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_MaskMap3GradientFloat1",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_MaskMap3GradientFloat2",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_PCCenter",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_TWParameter",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_TWStrength",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "float"
+    },
+    {
+      "name": "_Fade",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_OverrideZValue",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_MaskMapRotationSpeed",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "float"
+    },
+    {
+      "name": "_FrePower",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0,1",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0,1"
+    },
+    {
+      "name": "_FresnelInOutSlider",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0, 1",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0, 1"
+    },
+    {
+      "name": "_FresnelRotation",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_FresnelSelfAlphaWeight",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "float"
+    },
+    {
+      "name": "_FresnelUnit",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_FresnelUnit2",
+      "hlslType": "half4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "unlisted",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_DepthOutline_Vec",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_DepthOutline_Color",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_FresnelColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "COLOR",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "COLOR"
+    },
+    {
+      "name": "_ColorA",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_ClipRect",
+      "hlslType": "float4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "unlisted",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_CylinderMatrix0",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_CylinderMatrix1",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_CylinderMatrix2",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_CylinderMatrix3",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_Color",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_UI_MainTex_ST",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_MainTex_Reverse_ST",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_Cutoff",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "float"
+    },
+    {
+      "name": "_MaskMap2_ST",
+      "hlslType": "float4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_MaskMap2",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_MaskMap3_ST",
+      "hlslType": "float4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_MaskMap3",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_FresnelFadeDistance",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "float"
+    },
+    {
+      "name": "_Dissolve",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "vector"
+    },
+    {
+      "name": "_DissolveMap_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_DissolveMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_DissolveOffsetRotateDistort",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_DissolveMaskMap_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_DissolveMaskMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_DissolveMaskMode",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_DissolveLineColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_DissolveRampColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_DissolveVoronoi_Vec",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_DissolveVoronoi_Vec2",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_DissolveVoronoi_Vec3",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_DissolveVoronoi_Vec4",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_DissolveRampMap_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_DissolveRampMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_Dissolve_Vec2",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_ProgramNoise_Rotate",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_SharedUV_ST",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_SharedUV_Vec",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_ColorBlendMap_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_ColorBlendMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_ColorBlendMapOffset",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_ColorBlendColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_ColorBlendVec",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_RampColor0",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_RampColor1",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_RampColor2",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_RampColor3",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_RampColor4",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_RampColor5",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_RampColorAlpha0",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_RampColorAlpha1",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_RampColorAlpha2",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_RampColorCount",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_RampColorBlendColor",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_RampColorMapOffset",
+      "hlslType": "float4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_RampColorMap_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_RampColorMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_DissolveRampColor0",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_DissolveRampColor1",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_DissolveRampColor2",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_DissolveRampColor3",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_DissolveRampColor4",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_DissolveRampColor5",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Color",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Color"
+    },
+    {
+      "name": "_DissolveRampAlpha0",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_DissolveRampAlpha1",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_DissolveRampAlpha2",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_DissolveRampCount",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_VertexOffset_Vec",
+      "hlslType": "half3",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_VertexOffset_CustomDir",
+      "hlslType": "half3",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_VertexOffset_NormalDir_Toggle",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_VertexOffset_DirectionSpace",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_VertexOffset_Map_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_VertexOffset_Map",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_VertexOffset_MaskMap_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_VertexOffset_MaskMap",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_VertexOffset_MaskMap_Vec",
+      "hlslType": "half3",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_VAT_Toggle",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_VATMode",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_ImportScale",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_TyFlowVATSubMode",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_DeformingSkin",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_SkinBoneCount",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_RGBAEncoded",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_RGBAHalf",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_LinearToGamma",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_VATIncludesNormals",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_AffectsShadows",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_Frame",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_Frames",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_FrameInterpolation",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_Loop",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_InterpolateLoop",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_Autoplay",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_AutoplaySpeed",
+      "hlslType": "float",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_ParallaxMapping_Intensity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_ParallaxMapping_Map_ST",
+      "hlslType": "half4",
+      "statusBefore": "implicit texture companion",
+      "ShaderLabTypeBefore": null,
+      "texture": "_ParallaxMapping_Map",
+      "statusAfter": "implicit texture companion",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_ParallaxMapping_Vec",
+      "hlslType": "half4",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Vector",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_WorldSpaceUVModeSelector",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_ObjectSpaceUVModeSelector",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_W9ParticleShaderFlags",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_W9ParticleShaderFlags1",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_W9ParticleShaderWrapFlags",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_NBShaderForceNoMipFlags",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_W9ParticleCustomDataFlag0",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_W9ParticleCustomDataFlag1",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_W9ParticleCustomDataFlag2",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_W9ParticleCustomDataFlag3",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_UVModeFlag0",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_UVModeFlagType0",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_W9ParticleShaderColorChannelFlag",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_W9ParticleShaderPNoiseBlendFlag",
+      "hlslType": "uint",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Integer",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Integer"
+    },
+    {
+      "name": "_ProgramNoiseBaseBlendOpacity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_MaskPNoiseBlendOpacity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_DissolvePNoiseBlendOpacity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_DistortPNoiseBlendOpacity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_CustomLocalTransformLocalToWorld",
+      "hlslType": "float4x4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "unlisted",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_CustomLocalTransformWorldToLocal",
+      "hlslType": "float4x4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "unlisted",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_EmissionAlphaIntensity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Range(0, 1",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Range(0, 1"
+    },
+    {
+      "name": "_ColorBlendColorIntensity",
+      "hlslType": "half",
+      "statusBefore": "explicit",
+      "ShaderLabTypeBefore": "Float",
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    }
+  ],
+  "unlistedExistingFields": [
+    {
+      "name": "_BaseMap_AnimationSheetBlend_ST",
+      "hlslType": "float4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_AnimationSheetHelperBlendIntensity",
+      "hlslType": "half",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    },
+    {
+      "name": "_FresnelUnit2",
+      "hlslType": "half4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "unlisted",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_ClipRect",
+      "hlslType": "float4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "unlisted",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_CustomLocalTransformLocalToWorld",
+      "hlslType": "float4x4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "unlisted",
+      "ShaderLabTypeAfter": null
+    },
+    {
+      "name": "_CustomLocalTransformWorldToLocal",
+      "hlslType": "float4x4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "unlisted",
+      "ShaderLabTypeAfter": null
+    }
+  ],
+  "helperLiveFields": [
+    {
+      "name": "_BaseMap_AnimationSheetBlend_ST",
+      "hlslType": "float4",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Vector"
+    },
+    {
+      "name": "_AnimationSheetHelperBlendIntensity",
+      "hlslType": "half",
+      "statusBefore": "unlisted",
+      "ShaderLabTypeBefore": null,
+      "texture": null,
+      "statusAfter": "explicit",
+      "ShaderLabTypeAfter": "Float"
+    }
+  ],
+  "explanation": "No CBUFFER declaration/layout changes in F0 versus live root. Existing helper weight became live via shared NBFX_ResolveFlipbookWeightV1 call; both exact writer names lacked Properties. Correct hidden defaults zero match current Graph properties and prior unset material uniforms. Other historical unlisted fields are inventoried, not silently changed; native strict current/Graph0 must confirm no further active mismatch.",
+  "productWritten": false,
+  "ranUnity": false
+}

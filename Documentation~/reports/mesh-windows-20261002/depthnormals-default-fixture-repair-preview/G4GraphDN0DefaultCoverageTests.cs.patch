@@ -1,0 +1,137 @@
+--- a/Tests/URP/Editor/G4GraphDN0DefaultCoverageTests.cs
++++ b/Tests/URP/Editor/G4GraphDN0DefaultCoverageTests.cs
+@@ -25,6 +25,26 @@
+         MeshRenderer probeRenderer, stencilWriter;
+         string probeSource, writerSource;
+         string currentVariant;
++        MeshBasisProof meshProof;
++        bool framingChanged;
++        Light actualDirectionalLight;
++        [Serializable] sealed class LightInputProof
++        {
++            public string type, shadows;
++            public float intensity, shadowBias, shadowNormalBias;
++            public Color color;
++            public Vector3 eulerAngles, forward;
++            public int cullingMask;
++        }
++
++        [Serializable] sealed class MeshBasisProof
++        {
++            public int vertices, originalTangentCount;
++            public Vector4[] originalTangents, effectiveTangents;
++            public Vector3[] originalNormals;
++            public bool basisRepaired;
++        }
++
+         const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
+         static readonly string[] Variants = {
+             "softbody-normal-bias0", "softbody-clip-bias1",
+@@ -66,6 +86,7 @@
+         public void DefaultSSAOPipelineWithGeometryClipNormalsAndStencil(string variant, bool ortho)
+         {
+             currentVariant=variant;
++            meshProof=null; framingChanged=false; actualDirectionalLight=null;
+             bool custom=variant.StartsWith("customlocal", StringComparison.Ordinal);
+             bool ty=variant.StartsWith("ty", StringComparison.Ordinal) ||
+                 variant.Contains("tnegative") || variant.StartsWith("stencil-ty", StringComparison.Ordinal);
+@@ -84,6 +105,32 @@
+             fixture=new G4GraphVATTests { GeometryCaseId="dn0-"+variant };
+             tyflow=ty ? new G4GraphTyflowVATTests() : null;
+             fixture.GeometryMeshSetup=mesh => {
++                if(normalMap)
++                {
++                    // The previous fixture did not record the built-in Quad
++                    // tangent stream. Record it; supply a real tangent only if
++                    // that native stream is absent/zero/degenerate.
++                    var tangents=mesh.tangents; var normals=mesh.normals;
++                    meshProof=new MeshBasisProof { vertices=mesh.vertexCount,
++                        originalTangentCount=tangents.Length, originalTangents=tangents,
++                        originalNormals=normals };
++                    bool invalid=tangents.Length!=mesh.vertexCount;
++                    for(int i=0;i<tangents.Length&&!invalid;++i)
++                    {
++                        var tangent=new Vector3(tangents[i].x,tangents[i].y,tangents[i].z);
++                        invalid=tangent.sqrMagnitude==0 || tangents[i].w==0 ||
++                            normals.Length!=mesh.vertexCount || Vector3.Cross(normals[i],tangent).sqrMagnitude==0;
++                    }
++                    if(invalid)
++                    {
++                        mesh.tangents=Enumerable.Repeat(new Vector4(1,0,0,-1),mesh.vertexCount).ToArray();
++                        meshProof.basisRepaired=true;
++                    }
++                    meshProof.effectiveTangents=mesh.tangents;
++                    Assert.That(meshProof.effectiveTangents.Length,Is.EqualTo(mesh.vertexCount));
++                    foreach(var tangent in meshProof.effectiveTangents)
++                        Assert.That(new Vector3(tangent.x,tangent.y,tangent.z).sqrMagnitude,Is.GreaterThan(0));
++                }
+                 if(custom)
+                 {
+                     var vertices=mesh.vertices;
+@@ -163,6 +210,16 @@
+                 {
+                     m.SetTexture("_BumpTex",bump);m.SetFloat("_BumpMapToggle",1);m.SetFloat("_BumpScale",1);
+                     if(!graph)m.EnableKeyword("_NORMALMAP");
++                    // Use a proven normal-dependent lighting consumer in
++                    // addition to Fresnel. Float and legacy keyword must agree.
++                    m.SetFloat("_FxLightMode",1);m.SetVector("_MaterialInfo",new Vector4(.6f,.75f,0,0));
++                    m.SetColor("_SpecularColor",new Color(.8f,.7f,.6f,1));
++                    if(!graph)
++                    {
++                        foreach(string k in new[]{"_FX_LIGHT_MODE_UNLIT","_FX_LIGHT_MODE_BLINN_PHONG",
++                            "_FX_LIGHT_MODE_HALF_LAMBERT","_FX_LIGHT_MODE_PBR","_FX_LIGHT_MODE_SIX_WAY"})m.DisableKeyword(k);
++                        m.EnableKeyword("_FX_LIGHT_MODE_BLINN_PHONG");
++                    }
+                 }
+                 if(stencil)
+                 {
+@@ -173,8 +230,14 @@
+                 }
+                 if(graph)Assert.That(m.GetShaderPassEnabled("DepthNormalsOnly"),Is.True);
+             };
+-            fixture.DefaultFullChainLightSetup=light => {light.shadowNormalBias=bias;};
++            fixture.DefaultFullChainLightSetup=light => {light.shadowNormalBias=bias;actualDirectionalLight=light;};
+             if(stencil) fixture.DefaultFullChainSceneSetup=(camera,actor,receiver,target) => CreateStencilOracles(camera,target);
++            if(custom && variant.Contains("tnegative") && clip && ortho)
++                fixture.DefaultFullChainSceneSetup=(camera,actor,receiver,target) => {
++                    // Preserve the >150 visibility assertion. Make this small,
++                    // clipped actor occupy enough pixels using camera framing.
++                    camera.orthographicSize=3.0f; framingChanged=true;
++                };
+             fixture.DefaultFullChainVerify=(materials,writer,receiver,camera,target,readback,folder) => {
+                 WriteVariantInputs(materials,folder,localMatrix,bias);
+                 if(stencil) CheckStencilNoContribution(materials,writer,camera,target,readback,folder);
+@@ -195,6 +258,12 @@
+             public float normalBias;
+             public Vector4[] customLocalRows;
+             public float[] alphaClip, bumpScale, vatNormals, stencilFail, stencilZFail, stencilWriteMask;
++            public float[] fxLightMode;
++            public string[] lightKeywordState;
++            public MeshBasisProof nativeMeshBasis;
++            public bool cameraFramingChanged;
++            public float originalOrthographicSize, effectiveOrthographicSize;
++            public LightInputProof actualLight;
+         }
+         void WriteVariantInputs(Material[] m,string folder,Matrix4x4 matrix,float bias)
+         {
+@@ -202,7 +271,19 @@
+             var r=new VariantInput{variant=currentVariant,normalBias=bias,
+                 customLocalRows=Enumerable.Range(0,4).Select(matrix.GetRow).ToArray(),alphaClip=values("_AlphaClip"),
+                 bumpScale=values("_BumpScale"),vatNormals=values("_VATIncludesNormals"),stencilFail=values("_StencilFail"),
+-                stencilZFail=values("_StencilZFail"),stencilWriteMask=values("_StencilWriteMask")};
++                stencilZFail=values("_StencilZFail"),stencilWriteMask=values("_StencilWriteMask"),
++                fxLightMode=values("_FxLightMode"),
++                lightKeywordState=m.Select(x => string.Join(";",new[]{"_FX_LIGHT_MODE_UNLIT",
++                    "_FX_LIGHT_MODE_BLINN_PHONG","_FX_LIGHT_MODE_HALF_LAMBERT","_FX_LIGHT_MODE_PBR","_FX_LIGHT_MODE_SIX_WAY"}
++                    .Select(k=>k+"="+x.IsKeywordEnabled(k)))).ToArray(),nativeMeshBasis=meshProof,
++                cameraFramingChanged=framingChanged,originalOrthographicSize=3.5f,
++                effectiveOrthographicSize=framingChanged?3.0f:3.5f,
++                actualLight=actualDirectionalLight ? new LightInputProof {
++                    type=actualDirectionalLight.type.ToString(), shadows=actualDirectionalLight.shadows.ToString(),
++                    intensity=actualDirectionalLight.intensity, color=actualDirectionalLight.color,
++                    shadowBias=actualDirectionalLight.shadowBias, shadowNormalBias=actualDirectionalLight.shadowNormalBias,
++                    eulerAngles=actualDirectionalLight.transform.eulerAngles, forward=actualDirectionalLight.transform.forward,
++                    cullingMask=actualDirectionalLight.cullingMask } : null};
+             File.WriteAllText(Path.Combine(folder,"coverage-inputs.json"),JsonUtility.ToJson(r,true));
+         }
+ 

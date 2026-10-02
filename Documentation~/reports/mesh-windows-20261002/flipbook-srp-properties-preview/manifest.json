@@ -1,0 +1,55 @@
+{
+  "scope": "Combo F0 candidate SRP code19 repair only. Product/root/Frozen/isolation unchanged by Agent; no Unity run.",
+  "records": [
+    {
+      "beforeSHA256": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00",
+      "path": "NBShaders2/Shader/NBShader.shader",
+      "afterSHA256": "814df814d1ddded2281b0144da2a06f7068ab3f3f4d0e1a0855a0a21fe65875c"
+    },
+    {
+      "beforeSHA256": null,
+      "path": "Tests/URP/Editor/G4FlipbookSRPPropertiesTests.cs",
+      "afterSHA256": "9a1089051e88d68545cae41fcfc4596d8622abae373b71ea3b969d957fce7d59"
+    },
+    {
+      "beforeSHA256": null,
+      "path": "Tests/URP/Editor/G4FlipbookSRPPropertiesTests.cs.meta",
+      "afterSHA256": "be51049b0777c0f78035f8e2f349c883e95c3449d6f01138aba6b114f108707b"
+    }
+  ],
+  "implementation": "Only two hidden ShaderLab properties added under existing names; CBUFFER and all math/keyword/pass/flag code untouched.",
+  "interface": {
+    "_BaseMap_AnimationSheetBlend_ST": {
+      "default": "(0,0,0,0)",
+      "writer": "AnimationSheetHelper.SetVector existing _particleBaseAniBlendStPropertyID",
+      "hlsl": "float4",
+      "ShaderLab": "Vector"
+    },
+    "_AnimationSheetHelperBlendIntensity": {
+      "default": 0,
+      "writer": "AnimationSheetHelper.SetFloat existing _particleBaseAniBlendIntensityPropertyID",
+      "hlsl": "half",
+      "ShaderLab": "Float"
+    }
+  },
+  "aliasConflict": false,
+  "newCBFields": 0,
+  "changedCBLayout": false,
+  "fullCBInventory": "cbuffer-properties-audit.json (191 declarations; explicit/implicit/unlisted complete)",
+  "rootAndCombinedCBDeclarationsEqual": true,
+  "reason": "F0 shared weight invocation made preexisting UnityPerMaterial helper field active without corresponding Properties. ST is also live for helper flipbook variants and lacks any matching texture auto-ST property.",
+  "defaultsEvidence": "Real installed current Graph properties are Vector(0,0,0,0) and Float0; prior unassigned legacy uniforms zero; real Helper overwrites next ST/intensity on Init/Update. No new identity-ST default or public rename.",
+  "nativePolicy": "Current must0 and Graph must0 after actual verified Mesh warm. Frozen10 stays recorded as old incompatibility; it cannot allow current19 or any current nonzero. Missing/unknown fails.",
+  "originalFailure": "Root433 regression432 Passed/1 Failed code19; preserve original XML/JSON and classification as real SRP regression.",
+  "expectedCases": 2,
+  "exactCaseNames": [
+    "NBFX.Baseline.Tests.G4FlipbookSRPPropertiesTests.G4FlipbookSRP_source_properties",
+    "NBFX.Baseline.Tests.G4FlipbookSRPPropertiesTests.G4FlipbookSRP_native_current_graph_zero"
+  ],
+  "mathChanged": false,
+  "newKeywords": 0,
+  "newPackedBits": 0,
+  "installed": false,
+  "ranUnity": false,
+  "fullMeshGatePassed": false
+}
