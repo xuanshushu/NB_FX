@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Failed(Child)" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-02 19:06:53Z" end-time="2026-10-02 19:06:54Z" duration="0.8781856">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2300" result="Failed" site="Child" start-time="2026-10-02 19:06:53Z" end-time="2026-10-02 19:06:54Z" duration="0.878186" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3481" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2281" result="Failed" site="Child" start-time="2026-10-02 19:06:53Z" end-time="2026-10-02 19:06:54Z" duration="0.731320" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="67704" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="3482" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2281" result="Failed" site="Child" start-time="2026-10-02 19:06:53Z" end-time="2026-10-02 19:06:54Z" duration="0.664875" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="3483" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2281" result="Failed" site="Child" start-time="2026-10-02 19:06:53Z" end-time="2026-10-02 19:06:54Z" duration="0.561736" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="3484" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2281" result="Failed" site="Child" start-time="2026-10-02 19:06:53Z" end-time="2026-10-02 19:06:54Z" duration="0.456496" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="3453" name="G4GraphZOffsetStateTests" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-10-02 19:06:53Z" end-time="2026-10-02 19:06:54Z" duration="0.366559" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="3466" name="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-10-02 19:06:53Z" end-time="2026-10-02 19:06:54Z" duration="0.352497" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="3454" name="G4ZOffsetABC_Forward_factor_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_Forward_factor_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1876388935" result="Failed" start-time="2026-10-02 19:06:53Z" end-time="2026-10-02 19:06:54Z" duration="0.190662" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3455" name="G4ZOffsetABC_Forward_factor_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_Forward_factor_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="857975705" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.012440" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3456" name="G4ZOffsetABC_Forward_units_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_Forward_units_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="699143163" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.011767" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3457" name="G4ZOffsetABC_Forward_units_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_Forward_units_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1263064867" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.010979" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3458" name="G4ZOffsetABC_NBCameraOpaqueDistortPass_factor_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBCameraOpaqueDistortPass_factor_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1444831208" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.011088" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3459" name="G4ZOffsetABC_NBCameraOpaqueDistortPass_factor_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBCameraOpaqueDistortPass_factor_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1886234451" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.009986" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3460" name="G4ZOffsetABC_NBCameraOpaqueDistortPass_units_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBCameraOpaqueDistortPass_units_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1666419732" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.010181" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3461" name="G4ZOffsetABC_NBCameraOpaqueDistortPass_units_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBCameraOpaqueDistortPass_units_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1988203636" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.009385" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3462" name="G4ZOffsetABC_NBDeferredDistortPass_factor_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBDeferredDistortPass_factor_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="2065871587" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.009963" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3463" name="G4ZOffsetABC_NBDeferredDistortPass_factor_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBDeferredDistortPass_factor_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1569578265" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.009194" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3464" name="G4ZOffsetABC_NBDeferredDistortPass_units_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBDeferredDistortPass_units_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="744800547" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.010488" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="3465" name="G4ZOffsetABC_NBDeferredDistortPass_units_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBDeferredDistortPass_units_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="119208170" result="Failed" start-time="2026-10-02 19:06:54Z" end-time="2026-10-02 19:06:54Z" duration="0.011625" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Install two Float render-state properties before GPU test.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x001ad] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:118
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

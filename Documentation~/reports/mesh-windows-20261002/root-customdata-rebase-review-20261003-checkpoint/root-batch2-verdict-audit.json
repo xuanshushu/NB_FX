@@ -1,0 +1,350 @@
+{
+  "scope": "Only completed RootCustomData batch2 (28 cases), failures2 and historical exact matching identities; no future/root unfinished XML inspected",
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "xml": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\root-customdata152-isolated-1\\batch-2\\results.xml",
+  "xmlSha256": "c0c96e95a98b015946b596f2048f9c672e5f7b47c0df3e383952de66c4ec8604",
+  "sourceReadCurrentInstalled": {
+    "GraphSha256": "5c65d4215451aed92176c59f483a3b3eddfc3418b3bed749e71bac3bb21e46b7",
+    "fixtureSha256": "f4ccb1ee1af10fb85029672ea7033b36995323384dbbdc84b040baa253afdc21",
+    "sourceDiffersFromPriorCombined": true
+  },
+  "batch2Counts": {
+    "actualUniqueIdentities": 28,
+    "Passed": 26,
+    "Failed": 2,
+    "Skipped": 0,
+    "Inconclusive": 0
+  },
+  "failedCaseRawFramesAudited": 60,
+  "twoFailureCategories": {
+    "mildBCdiff": 2,
+    "functionalMissingOrZeroResponse": 0,
+    "invisible": 0,
+    "nonfiniteOrInvalidReadback": 0
+  },
+  "failureCases": [
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-x_perspective_varying",
+      "rootVerdict": "Failed",
+      "classification": "mild BCdiff; strict zero parity failure retained for manual review",
+      "failureMessage": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "stack": "at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x009ad] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphCustomDataTests.cs:275\n",
+      "metricsSha256": "0229e5abbd0057bee6f347457ce83b9b8a0eb7542ae87bf950038d9cfe77c7b1",
+      "finite": {
+        "metric": true,
+        "all30RawFramesFinite": true,
+        "allCDCD": false
+      },
+      "visible": {
+        "byShader": {
+          "A": 6084,
+          "B": 6084,
+          "C": 6084
+        },
+        "requiredGreaterThan": 128,
+        "observedSatisfied": true
+      },
+      "repeat": {
+        "byShader": {
+          "A": 0.0,
+          "B": 0.0,
+          "C": 0.0
+        },
+        "requiredSum": 0,
+        "observedSatisfied": true
+      },
+      "strongResponse": {
+        "byShader": {
+          "A": 0.586669921875,
+          "B": 0.586669921875,
+          "C": 0.586669921875
+        },
+        "requiredGreaterThan": 0.001,
+        "observedSatisfied": true
+      },
+      "AB": {
+        "bySelectorCode": {
+          "0": 0.0,
+          "15": 0.0,
+          "14": 0.0,
+          "13": 0.0,
+          "12": 0.0,
+          "11": 0.0,
+          "10": 0.0,
+          "9": 0.0,
+          "8": 0.0
+        },
+        "allZero": true
+      },
+      "BC": {
+        "bySelectorCode": {
+          "0": 0.0,
+          "15": 0.0,
+          "14": 0.00048828125,
+          "13": 0.0,
+          "12": 0.00048828125,
+          "11": 0.0,
+          "10": 0.0,
+          "9": 0.0,
+          "8": 0.0
+        },
+        "max": 0.00048828125,
+        "allZero": false
+      },
+      "rawAudit": {
+        "frames": 30,
+        "size": [
+          96,
+          96
+        ],
+        "format": "gzip little-endian RGBAfloat32",
+        "bytesPerFrame": 147456,
+        "computedMetricsExactlyMatchSaved": true
+      },
+      "assertionExecutionLimit": "finite assertion reached and passed; strict ABC failed at source275. Later repeat/visible/response assertions source276–277 not reached, but values independently recomputed from stored raw and satisfy original unchanged conditions.",
+      "history": [
+        {
+          "run": "customdata-gpu-first28-isolated-1",
+          "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-x_perspective_varying",
+          "result": "Failed",
+          "failureMessage": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+          "xmlSha256": "0fcdb3a678fa8182c049ff185ef4bd8b24798cdcf159a8f84f0d272a7595ca0c",
+          "metricsSha256": "0229e5abbd0057bee6f347457ce83b9b8a0eb7542ae87bf950038d9cfe77c7b1",
+          "metrics": {
+            "consumer": "mask-x",
+            "api": "Direct3D11",
+            "unityVersion": "6000.3.25f1",
+            "scope": "Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim",
+            "orthographic": false,
+            "varying": true,
+            "finite": true,
+            "abMax": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "bcMax": [
+              0.0,
+              0.0,
+              0.00048828125,
+              0.0,
+              0.00048828125,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "aResponse": 0.586669921875,
+            "bResponse": 0.586669921875,
+            "cResponse": 0.586669921875,
+            "aRepeat": 0.0,
+            "bRepeat": 0.0,
+            "cRepeat": 0.0,
+            "aVisible": 6084,
+            "bVisible": 6084,
+            "cVisible": 6084
+          },
+          "allParsedMetricFieldsEqualCurrent": true
+        }
+      ],
+      "comparisonToLatestHistoricalIdentity": "All parsed metric fields identical to corresponding prior finalized identity; no newly observed functional or invalid-output error in these two root cases.",
+      "manualStrictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_perspective_varying",
+      "rootVerdict": "Failed",
+      "classification": "mild BCdiff; strict zero parity failure retained for manual review",
+      "failureMessage": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "stack": "at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x009ad] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphCustomDataTests.cs:275\n",
+      "metricsSha256": "afc18c4a86fbdcea395cc640348828165ae47bf48454865487868406c86eff40",
+      "finite": {
+        "metric": true,
+        "all30RawFramesFinite": true,
+        "allCDCD": false
+      },
+      "visible": {
+        "byShader": {
+          "A": 6084,
+          "B": 6084,
+          "C": 6084
+        },
+        "requiredGreaterThan": 128,
+        "observedSatisfied": true
+      },
+      "repeat": {
+        "byShader": {
+          "A": 0.0,
+          "B": 0.0,
+          "C": 0.0
+        },
+        "requiredSum": 0,
+        "observedSatisfied": true
+      },
+      "strongResponse": {
+        "byShader": {
+          "A": 0.3153076171875,
+          "B": 0.3153076171875,
+          "C": 0.3153076171875
+        },
+        "requiredGreaterThan": 0.001,
+        "observedSatisfied": true
+      },
+      "AB": {
+        "bySelectorCode": {
+          "0": 0.0,
+          "15": 0.0,
+          "14": 0.0,
+          "13": 0.0,
+          "12": 0.0,
+          "11": 0.0,
+          "10": 0.0,
+          "9": 0.0,
+          "8": 0.0
+        },
+        "allZero": true
+      },
+      "BC": {
+        "bySelectorCode": {
+          "0": 0.0,
+          "15": 0.0,
+          "14": 0.00048828125,
+          "13": 0.000244140625,
+          "12": 0.0,
+          "11": 0.0,
+          "10": 0.0,
+          "9": 0.0,
+          "8": 0.0
+        },
+        "max": 0.00048828125,
+        "allZero": false
+      },
+      "rawAudit": {
+        "frames": 30,
+        "size": [
+          96,
+          96
+        ],
+        "format": "gzip little-endian RGBAfloat32",
+        "bytesPerFrame": 147456,
+        "computedMetricsExactlyMatchSaved": true
+      },
+      "assertionExecutionLimit": "finite assertion reached and passed; strict ABC failed at source275. Later repeat/visible/response assertions source276–277 not reached, but values independently recomputed from stored raw and satisfy original unchanged conditions.",
+      "history": [
+        {
+          "run": "customdata-gpu-first28-isolated-1",
+          "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_perspective_varying",
+          "result": "Failed",
+          "failureMessage": "  Expected: greater than 0.00100000005f\n  But was:  0.0f\n",
+          "xmlSha256": "0fcdb3a678fa8182c049ff185ef4bd8b24798cdcf159a8f84f0d272a7595ca0c",
+          "metricsSha256": "7cc1bedf06d048aef0ef6f1a2d7b1e17dfc4e27f560ac4d31d81eb7a68a94e34",
+          "metrics": {
+            "consumer": "mask-y",
+            "api": "Direct3D11",
+            "unityVersion": "6000.3.25f1",
+            "scope": "Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim",
+            "orthographic": false,
+            "varying": true,
+            "finite": true,
+            "abMax": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "bcMax": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "aResponse": 0.0,
+            "bResponse": 0.0,
+            "cResponse": 0.0,
+            "aRepeat": 0.0,
+            "bRepeat": 0.0,
+            "cRepeat": 0.0,
+            "aVisible": 6084,
+            "bVisible": 6084,
+            "cVisible": 6084
+          },
+          "allParsedMetricFieldsEqualCurrent": false
+        },
+        {
+          "run": "customdata-control-repair36-isolated-1",
+          "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_perspective_varying",
+          "result": "Failed",
+          "failureMessage": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+          "xmlSha256": "52d46761f8465f7a4daf6ce46a3810ab9c84803e1dccb351f87c5ba70f30bb5a",
+          "metricsSha256": "afc18c4a86fbdcea395cc640348828165ae47bf48454865487868406c86eff40",
+          "metrics": {
+            "consumer": "mask-y",
+            "api": "Direct3D11",
+            "unityVersion": "6000.3.25f1",
+            "scope": "Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim",
+            "orthographic": false,
+            "varying": true,
+            "finite": true,
+            "abMax": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "bcMax": [
+              0.0,
+              0.0,
+              0.00048828125,
+              0.000244140625,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "aResponse": 0.3153076171875,
+            "bResponse": 0.3153076171875,
+            "cResponse": 0.3153076171875,
+            "aRepeat": 0.0,
+            "bRepeat": 0.0,
+            "cRepeat": 0.0,
+            "aVisible": 6084,
+            "bVisible": 6084,
+            "cVisible": 6084
+          },
+          "allParsedMetricFieldsEqualCurrent": true
+        }
+      ],
+      "comparisonToLatestHistoricalIdentity": "All parsed metric fields identical to corresponding prior finalized identity; no newly observed functional or invalid-output error in these two root cases.",
+      "manualStrictFailureRetained": true
+    }
+  ],
+  "limits": [
+    "No whole152 verdict or Gate conclusion. Do not combine source versions/overlapping historical runs.",
+    "No tolerance/identity/source/assertion modification or Unity rerun performed.",
+    "Historical mask-y first run had zero response; finalized control-repair run regained .3153076171875 response and still failed tiny BCdiff. Root matches that finalized record, not the early zero-response failure.",
+    "Existing historical12 manual failures are not substituted for current root results; this audit proves only the current two identities."
+  ],
+  "fullMeshGatePassed": false
+}

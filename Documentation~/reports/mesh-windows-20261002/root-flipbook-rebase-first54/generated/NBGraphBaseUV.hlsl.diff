@@ -1,0 +1,129 @@
+--- 
++++ 
+@@ -51,7 +51,7 @@
+     float4 CylinderMatrix0,
+     float4 CylinderMatrix1,
+     float4 CylinderMatrix2,
+-    float4 CylinderMatrix3)
++    float4 CylinderMatrix3, float FlipbookToggle)
+ {
+     NBFX_BaseUVParamsV1 parameters = (NBFX_BaseUVParamsV1)0;
+     uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
+@@ -60,7 +60,7 @@
+         (FLAG_BIT_PARTICLE_UTWIRL_ON | FLAG_BIT_PARTICLE_POLARCOORDINATES_ON);
+     parameters.flags1 = flags1 &
+         (FLAG_BIT_PARTICLE_1_UV_FROM_MESH | FLAG_BIT_PARTICLE_1_USE_TEXCOORD1 |
+-         FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 | FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE);
++         FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 | FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE | FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM);
+     parameters.uvModeFlag0 = NBGraphDecodeUInt32(UVModeFlag0Lo16,
+         UVModeFlag0Hi16);
+     parameters.uvModeFlagType0 = NBGraphDecodeUInt32(UVModeFlagType0Lo16,
+@@ -78,6 +78,7 @@
+     parameters.objectSpaceUVModeSelector = (half)ObjectSelector;
+     parameters.cylinderUVMatrix = float4x4(CylinderMatrix0, CylinderMatrix1,
+         CylinderMatrix2, CylinderMatrix3);
++    parameters.flipbookBlending = FlipbookToggle > 0.5 ? 1u : 0u;
+     parameters.timeY = _Time.y;
+     return parameters;
+ }
+@@ -137,6 +138,7 @@
+     float4 CylinderMatrix1,
+     float4 CylinderMatrix2,
+     float4 CylinderMatrix3,
++    float4 UV3, float FlipbookToggle,
+     out float4 PreCylinderScreen, out float4 PreWorldObject,
+     out float4 PreSharedMain)
+ {
+@@ -144,13 +146,14 @@
+     input.meshTexcoord0 = UV;
+     input.custom1 = UV1;
+     input.custom2 = UV2;
++    input.specialUVInTexcoord3 = UV3.yz;
+     input.positionOS = PositionOS;
+     input.positionWS = TransformObjectToWorld(PositionOS);
+     float4 clipPosition = TransformObjectToHClip(PositionOS);
+     input.screenUV = clipPosition.xy / clipPosition.w;
+     input.screenUV = input.screenUV * 0.5 + 0.5;
+     NBFX_BaseUVParamsV1 parameters = NBGraphUVParameters(
+-        BaseMapST, BaseMapUVRotation, BaseMapUVRotationSpeed, BaseMapMaskMapOffset, NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16, UVModeFlag0Lo16, UVModeFlag0Hi16, UVModeFlagType0Lo16, UVModeFlagType0Hi16, SharedUVST, SharedUVVec, TWParameter, TWStrength, PCCenter, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3);
++        BaseMapST, BaseMapUVRotation, BaseMapUVRotationSpeed, BaseMapMaskMapOffset, NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16, UVModeFlag0Lo16, UVModeFlag0Hi16, UVModeFlagType0Lo16, UVModeFlagType0Hi16, SharedUVST, SharedUVVec, TWParameter, TWStrength, PCCenter, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3, FlipbookToggle);
+     BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);
+     PreCylinderScreen = float4(resolved.cylinderUV, resolved.screenUV);
+     PreWorldObject = float4(resolved.worldPosUV, resolved.objectPosUV);
+@@ -180,12 +183,14 @@
+     float4 CylinderMatrix2,
+     float4 CylinderMatrix3,
+     float ParallaxToggle,
++    float4 UV3, float FlipbookToggle,
++    float4 AnimationSheetBlendST, float AnimationSheetBlendIntensity,
+     out float2 Out, out float2 MaskUV, out float2 Mask2UV,
+     out float2 Mask3UV, out float2 EmissionUV, out float2 DissolveUV,
+     out float2 DissolveMaskUV, out float2 ColorBlendUV,
+     out float2 RampColorUV, out float2 NoiseUV, out float2 NoiseMaskUV,
+     out float2 BumpUV, out float2 ProgramNoiseUV,
+-    out float DecalAlpha)
++    out float DecalAlpha, out float2 BlendUV, out float BlendWeight)
+ {
+     NBFX_BaseUVInputV1 input = (NBFX_BaseUVInputV1)0;
+     input.meshTexcoord0 = UV;
+@@ -221,10 +226,15 @@
+     // from TEXCOORD1/2. Do not fold them into UV0.zw or into one stream.
+     input.custom1 = UV1;
+     input.custom2 = UV2;
++    input.specialUVInTexcoord3 = UV3.yz;
+ 
+     NBFX_BaseUVParamsV1 parameters = NBGraphUVParameters(
+-        BaseMapST, BaseMapUVRotation, BaseMapUVRotationSpeed, BaseMapMaskMapOffset, NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16, UVModeFlag0Lo16, UVModeFlag0Hi16, UVModeFlagType0Lo16, UVModeFlagType0Hi16, SharedUVST, SharedUVVec, TWParameter, TWStrength, PCCenter, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3);
++        BaseMapST, BaseMapUVRotation, BaseMapUVRotationSpeed, BaseMapMaskMapOffset, NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16, UVModeFlag0Lo16, UVModeFlag0Hi16, UVModeFlagType0Lo16, UVModeFlagType0Hi16, SharedUVST, SharedUVVec, TWParameter, TWStrength, PCCenter, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3, FlipbookToggle);
+     BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);
++    uint animationFlags1 = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
++    bool animationHelper = (animationFlags1 & FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER) != 0u;
++    BlendUV = NBFX_ResolveFlipbookUVV1(input.meshTexcoord0, AnimationSheetBlendST, animationHelper);
++    BlendWeight = NBFX_ResolveFlipbookWeightV1(UV3.x, (half)AnimationSheetBlendIntensity, animationHelper);
+     if (!NBGraphUVInFragment(parameters.flags0, DepthDecalToggle, ParallaxToggle))
+     {
+         // The old vertex path calculates spatial sources and Shared/Main
+@@ -290,17 +300,20 @@
+     float4 CylinderMatrix2,
+     float4 CylinderMatrix3,
+     float ParallaxToggle,
++    half4 UV3, half FlipbookToggle,
++    half4 AnimationSheetBlendST, half AnimationSheetBlendIntensity,
+     out half2 Out, out half2 MaskUV, out half2 Mask2UV,
+     out half2 Mask3UV, out half2 EmissionUV, out half2 DissolveUV,
+     out half2 DissolveMaskUV, out half2 ColorBlendUV,
+     out half2 RampColorUV, out half2 NoiseUV, out half2 NoiseMaskUV,
+     out half2 BumpUV, out half2 ProgramNoiseUV,
+-    out half DecalAlpha)
++    out half DecalAlpha, out half2 BlendUV, out half BlendWeight)
+ {
+     float2 resolved, maskResolved, mask2Resolved, mask3Resolved;
+     float2 emissionResolved, dissolveResolved, dissolveMaskResolved;
+     float2 colorBlendResolved, rampColorResolved, noiseResolved, noiseMaskResolved, bumpResolved, programNoiseResolved;
+-    float decalAlphaResolved;
++    float decalAlphaResolved, blendWeightResolved;
++    float2 blendUVResolved;
+     NBGraphBaseUV_float((float4)UV, (float4)BaseMapST,
+         (float)BaseMapUVRotation, (float)BaseMapUVRotationSpeed,
+         (float4)BaseMapMaskMapOffset,
+@@ -313,9 +326,10 @@
+         (float4)TWParameter, (float)TWStrength, (float4)PCCenter,
+         (float4)PixelPosition, (float)DepthDecalToggle,
+         PostPositionOS, PositionWS, PreCylinderScreen, PreWorldObject, PreSharedMain, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3, ParallaxToggle,
++        (float4)UV3, (float)FlipbookToggle, (float4)AnimationSheetBlendST, (float)AnimationSheetBlendIntensity,
+         resolved, maskResolved, mask2Resolved, mask3Resolved,
+         emissionResolved, dissolveResolved, dissolveMaskResolved,
+-        colorBlendResolved, rampColorResolved, noiseResolved, noiseMaskResolved, bumpResolved, programNoiseResolved, decalAlphaResolved);
++        colorBlendResolved, rampColorResolved, noiseResolved, noiseMaskResolved, bumpResolved, programNoiseResolved, decalAlphaResolved, blendUVResolved, blendWeightResolved);
+     Out = (half2)resolved;
+     MaskUV = (half2)maskResolved;
+     Mask2UV = (half2)mask2Resolved;
+@@ -330,6 +344,8 @@
+     BumpUV = (half2)bumpResolved;
+     ProgramNoiseUV = (half2)programNoiseResolved;
+     DecalAlpha = (half)decalAlphaResolved;
++    BlendUV = (half2)blendUVResolved;
++    BlendWeight = (half)blendWeightResolved;
+ }
+ 
+ #endif

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Failed(Child)" total="12" passed="8" failed="4" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-02 19:12:10Z" end-time="2026-10-02 19:13:15Z" duration="64.730793">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2300" result="Failed" site="Child" start-time="2026-10-02 19:12:10Z" end-time="2026-10-02 19:13:15Z" duration="64.730793" total="12" passed="8" failed="4" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3481" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2281" result="Failed" site="Child" start-time="2026-10-02 19:12:11Z" end-time="2026-10-02 19:13:15Z" duration="64.648013" total="12" passed="8" failed="4" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17148" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="3482" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2281" result="Failed" site="Child" start-time="2026-10-02 19:12:11Z" end-time="2026-10-02 19:13:15Z" duration="64.576578" total="12" passed="8" failed="4" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="3483" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2281" result="Failed" site="Child" start-time="2026-10-02 19:12:11Z" end-time="2026-10-02 19:13:15Z" duration="64.507226" total="12" passed="8" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="3484" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2281" result="Failed" site="Child" start-time="2026-10-02 19:12:11Z" end-time="2026-10-02 19:13:15Z" duration="64.459610" total="12" passed="8" failed="4" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="3453" name="G4GraphZOffsetStateTests" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-10-02 19:12:11Z" end-time="2026-10-02 19:13:15Z" duration="64.382575" total="12" passed="8" failed="4" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+NBFX_ZOFFSET_EXACT_IMPORT project=D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002 Target.WithNBZOffset=true _offsetFactor:present=True:type=Float:default=0 _offsetUnits:present=True:type=Float:default=0
+]]></output>
+              <test-suite type="ParameterizedMethod" id="3466" name="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-10-02 19:12:18Z" end-time="2026-10-02 19:13:15Z" duration="56.919176" total="12" passed="8" failed="4" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="3454" name="G4ZOffsetABC_Forward_factor_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_Forward_factor_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1574186066" result="Failed" start-time="2026-10-02 19:12:18Z" end-time="2026-10-02 19:12:43Z" duration="24.936389" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Full-frame strict zero B/C and Frozen/current/repeat required.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x009ec] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:219
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"Forward","axis":"factor","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":true,"finite":true,"magnitude":16.0,"ab":[0.0,0.0,0.0],"bc":[0.875,0.875,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.875,"bSignResponse":0.875,"cSignResponse":0.0,"visibleAgainstBoard":[6880,6880,0]}
+]]></output>
+                </test-case>
+                <test-case id="3455" name="G4ZOffsetABC_Forward_factor_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_Forward_factor_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="593748457" result="Failed" start-time="2026-10-02 19:12:43Z" end-time="2026-10-02 19:12:45Z" duration="2.164455" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Full-frame strict zero B/C and Frozen/current/repeat required.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x009ec] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:219
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"Forward","axis":"factor","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":false,"finite":true,"magnitude":16.0,"ab":[0.0,0.0,0.0],"bc":[0.875,0.875,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.875,"bSignResponse":0.875,"cSignResponse":0.0,"visibleAgainstBoard":[4224,4224,0]}
+]]></output>
+                </test-case>
+                <test-case id="3456" name="G4ZOffsetABC_Forward_units_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_Forward_units_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="340395258" result="Failed" start-time="2026-10-02 19:12:45Z" end-time="2026-10-02 19:12:48Z" duration="2.260733" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Full-frame strict zero B/C and Frozen/current/repeat required.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x009ec] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:219
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"Forward","axis":"units","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":true,"finite":true,"magnitude":512.0,"ab":[0.0,0.0,0.0],"bc":[0.875,0.875,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.875,"bSignResponse":0.875,"cSignResponse":0.0,"visibleAgainstBoard":[7396,7396,0]}
+]]></output>
+                </test-case>
+                <test-case id="3457" name="G4ZOffsetABC_Forward_units_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_Forward_units_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="537463261" result="Failed" start-time="2026-10-02 19:12:48Z" end-time="2026-10-02 19:12:49Z" duration="1.768289" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Full-frame strict zero B/C and Frozen/current/repeat required.
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphZOffsetStateTests.PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen (System.String stage, System.String axis, System.Boolean ortho) [0x009ec] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphZOffsetStateTests.cs:219
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"Forward","axis":"units","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":false,"finite":true,"magnitude":512.0,"ab":[0.0,0.0,0.0],"bc":[0.875,0.875,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.875,"bSignResponse":0.875,"cSignResponse":0.0,"visibleAgainstBoard":[4356,4356,0]}
+]]></output>
+                </test-case>
+                <test-case id="3458" name="G4ZOffsetABC_NBCameraOpaqueDistortPass_factor_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBCameraOpaqueDistortPass_factor_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="38381287" result="Passed" start-time="2026-10-02 19:12:49Z" end-time="2026-10-02 19:12:57Z" duration="7.081790" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"NBCameraOpaqueDistortPass","axis":"factor","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":true,"finite":true,"magnitude":16.0,"ab":[0.0,0.0,0.0],"bc":[0.0,0.0,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.7399826049804688,"bSignResponse":0.7399826049804688,"cSignResponse":0.7399826049804688,"visibleAgainstBoard":[5344,5344,5344]}
+]]></output>
+                </test-case>
+                <test-case id="3459" name="G4ZOffsetABC_NBCameraOpaqueDistortPass_factor_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBCameraOpaqueDistortPass_factor_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1249060975" result="Passed" start-time="2026-10-02 19:12:57Z" end-time="2026-10-02 19:12:58Z" duration="1.957305" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"NBCameraOpaqueDistortPass","axis":"factor","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":false,"finite":true,"magnitude":16.0,"ab":[0.0,0.0,0.0],"bc":[0.0,0.0,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.7399826049804688,"bSignResponse":0.7399826049804688,"cSignResponse":0.7399826049804688,"visibleAgainstBoard":[3430,3430,3430]}
+]]></output>
+                </test-case>
+                <test-case id="3460" name="G4ZOffsetABC_NBCameraOpaqueDistortPass_units_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBCameraOpaqueDistortPass_units_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="2010463006" result="Passed" start-time="2026-10-02 19:12:58Z" end-time="2026-10-02 19:13:00Z" duration="2.013168" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"NBCameraOpaqueDistortPass","axis":"units","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":true,"finite":true,"magnitude":512.0,"ab":[0.0,0.0,0.0],"bc":[0.0,0.0,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.7399826049804688,"bSignResponse":0.7399826049804688,"cSignResponse":0.7399826049804688,"visibleAgainstBoard":[5830,5830,5830]}
+]]></output>
+                </test-case>
+                <test-case id="3461" name="G4ZOffsetABC_NBCameraOpaqueDistortPass_units_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBCameraOpaqueDistortPass_units_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1246052903" result="Passed" start-time="2026-10-02 19:13:00Z" end-time="2026-10-02 19:13:02Z" duration="2.000902" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"NBCameraOpaqueDistortPass","axis":"units","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":false,"finite":true,"magnitude":512.0,"ab":[0.0,0.0,0.0],"bc":[0.0,0.0,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.7399826049804688,"bSignResponse":0.7399826049804688,"cSignResponse":0.7399826049804688,"visibleAgainstBoard":[3448,3448,3448]}
+]]></output>
+                </test-case>
+                <test-case id="3462" name="G4ZOffsetABC_NBDeferredDistortPass_factor_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBDeferredDistortPass_factor_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="1685099606" result="Passed" start-time="2026-10-02 19:13:02Z" end-time="2026-10-02 19:13:09Z" duration="6.568378" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"NBDeferredDistortPass","axis":"factor","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":true,"finite":true,"magnitude":16.0,"ab":[0.0,0.0,0.0],"bc":[0.0,0.0,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.375,"bSignResponse":0.375,"cSignResponse":0.375,"visibleAgainstBoard":[6880,6880,6880]}
+]]></output>
+                </test-case>
+                <test-case id="3463" name="G4ZOffsetABC_NBDeferredDistortPass_factor_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBDeferredDistortPass_factor_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="840398818" result="Passed" start-time="2026-10-02 19:13:09Z" end-time="2026-10-02 19:13:11Z" duration="1.948481" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"NBDeferredDistortPass","axis":"factor","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":false,"finite":true,"magnitude":16.0,"ab":[0.0,0.0,0.0],"bc":[0.0,0.0,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.375,"bSignResponse":0.375,"cSignResponse":0.375,"visibleAgainstBoard":[4224,4224,4224]}
+]]></output>
+                </test-case>
+                <test-case id="3464" name="G4ZOffsetABC_NBDeferredDistortPass_units_ortho" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBDeferredDistortPass_units_ortho" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="2068697150" result="Passed" start-time="2026-10-02 19:13:11Z" end-time="2026-10-02 19:13:13Z" duration="2.182152" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"NBDeferredDistortPass","axis":"units","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":true,"finite":true,"magnitude":512.0,"ab":[0.0,0.0,0.0],"bc":[0.0,0.0,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.375,"bSignResponse":0.375,"cSignResponse":0.375,"visibleAgainstBoard":[7396,7396,7396]}
+]]></output>
+                </test-case>
+                <test-case id="3465" name="G4ZOffsetABC_NBDeferredDistortPass_units_perspective" fullname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests.G4ZOffsetABC_NBDeferredDistortPass_units_perspective" methodname="PositiveNegativeOffset_RealCoplanarDepthMatchesFrozen" classname="NBFX.Baseline.Tests.G4GraphZOffsetStateTests" runstate="Runnable" seed="166836769" result="Passed" start-time="2026-10-02 19:13:13Z" end-time="2026-10-02 19:13:15Z" duration="2.011573" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_ZOFFSET_STATE {"stage":"NBDeferredDistortPass","axis":"units","api":"Direct3D11","unity":"6000.3.25f1","scope":"Three existing color Passes only; coplanar depth board then NB color depth rejection, signed slope-factor or unit bias. No BackFirst/Universal2D/DepthOnly/ShadowCaster/OverrideZ combination/VFX/Player/performance claim.","orthographic":false,"finite":true,"magnitude":512.0,"ab":[0.0,0.0,0.0],"bc":[0.0,0.0,0.0],"repeat":[0.0,0.0,0.0],"aSignResponse":0.375,"bSignResponse":0.375,"cSignResponse":0.375,"visibleAgainstBoard":[4356,4356,4356]}
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

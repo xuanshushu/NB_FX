@@ -1,0 +1,121 @@
+{
+  "scope": "Read-only log/invocation/capture-directory audit; no Unity/GPU/dump operation",
+  "incidentDirectory": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\root-flipbook-gui-ovz136-isolated-1",
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "logSha256": "bc965b011bb050afdb5f290793276ee36ff30b1118287dd2c6ab821a1c669e49",
+  "logLines": 2390,
+  "renderer": {
+    "name": "Intel(R) UHD Graphics 770",
+    "driver": "32.0.101.7040",
+    "logLines": [
+      111,
+      112,
+      113,
+      116
+    ],
+    "threading": "kGfxThreadingModeNonThreaded"
+  },
+  "correctProject": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002",
+  "commandProjectLines": [
+    34,
+    35,
+    48,
+    49
+  ],
+  "sourceSha256ReadAfterIncident": {
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "216061d118a630a1f07945b1191589fe3712db22b546e15f42d99133ba64a7e5",
+    "NBShaders2/ShaderGraph/NBGraphOverrideDepth.hlsl": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1",
+    "NBShaders2/ShaderGraph/NBGraphBaseUV.hlsl": "9d01621ec2ff96cc8b1e342c923772837bc108ed3f81c272fcbb44ea3e505e28",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "9ba3d6321ac3261c920f1bcb6e1b59189ab67e5f25fc677d300b8e1a86385b3c",
+    "NBShaders2/ShaderGraph/NBGraphVertexOffset.hlsl": "80ab3003f913d32dda734dc13d7d8afed54e71d74666d9e879198f85b36a4368",
+    "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs": "9ed17f0917e5aa02651d85ecdf6934d6a8c05e1048cbcb5ce908f308ad4fad61",
+    "NBShaders2/Shader/NBShader.shader": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b",
+    "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl": "17322f26b644db92d0b0419cbac46bc88ac1c0635a767cdac6a1f35d7ea6a227",
+    "Tests/URP/Editor/G4GraphOverrideDepthTests.cs": "2d642b530c2156df34372a590320225ed1892cd5b7e4f3f205393c037e5f87f6",
+    "Tests/URP/Editor/G4GraphGuiFeatureIntentTests.cs": "1645335fa40cfde3c6b8d236e48ff167e6d0d15b32b0f5014d4090223c83e370"
+  },
+  "timeline": [
+    {
+      "lines": [
+        277,
+        280,
+        281
+      ],
+      "observation": "Script compilation completed, ExitCode0/Tundra build success; no managed compile error before device failure."
+    },
+    {
+      "lines": [
+        513,
+        517
+      ],
+      "observation": "OVZ OneTimeSetUp calls real Graph camera warm; importer reports interpolation warning. Warm source:50,97 imports and renders four times. Log has no pre/post GPU health telemetry for this warm."
+    },
+    {
+      "lines": [
+        591,
+        598,
+        599
+      ],
+      "observation": "First observable GPU error 0x887a0005 creating 2x2 RGBAHalf white texture, OVZ fixture:50; KeywordAuthorityABC calls RenderOverrideZABC. This call can observe an already removed device; not proof of its originating shader/draw."
+    },
+    {
+      "lines": [
+        644,
+        804,
+        963,
+        1067,
+        1216
+      ],
+      "observation": "Subsequent invalid-view 80070057, additional texture/RT/buffer 887a0005, failed resource assertion: cascade after first observed device failure."
+    },
+    {
+      "lines": [
+        1998,
+        2000,
+        2009,
+        2020,
+        2021
+      ],
+      "observation": "Native crash while URP Submit/Camera.Render, managed test route remains KeywordAuthorityABC."
+    },
+    {
+      "lines": [
+        2213,
+        2228
+      ],
+      "observation": "Logged native stack D3DKMTOpenResource -> D3D11DynamicConstantBuffer::D3D11BufferUpdate -> DrawBuffersBatchMode -> ScriptableBatchRenderer/SRPBatcher -> ScriptableRenderContext Submit. It is after device failure; not an isolated SRP compatibility verdict or shader root cause."
+    },
+    {
+      "lines": [
+        2322,
+        2324
+      ],
+      "observation": "Crash handler then MCP socket closure. Closure is later context, not first failure."
+    }
+  ],
+  "managedCaseIdentity": {
+    "likelyExactName": "NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZKeywordABC_keyword_off_toggle_on_d3_ortho",
+    "basis": "Only capture subdirectory created by fixture:43 is keyword-off-toggle-on-d3-ortho; at first fault managed stack is KeywordAuthorityABC. No XML confirms any completed identity.",
+    "provesShaderCulprit": false
+  },
+  "outcome": {
+    "classification": "GPU device removal followed by native crash; invalid/incomplete test execution",
+    "cliEditorExitSigned": -1073741819,
+    "cliEditorExitHex": "0xC0000005",
+    "xmlAbsent": true,
+    "completedOVZCases": 0,
+    "OVZResultsUnknown": 24,
+    "sourceNativeLaterBatchNotRunCases": 2,
+    "completedGUIEvidenceCases": 110,
+    "rawFramesBeforeCrash": 0,
+    "metricsBeforeCrash": 0,
+    "fullMeshGatePassed": false
+  },
+  "limits": [
+    "No dump/all-thread analysis performed by this subagent; parent owns that workflow.",
+    "Logged symbolized crash stack is available, but exact device-removal reason/first triggering GPU workload is unknown.",
+    "No access-token/license/host identifiers copied into this artifact.",
+    "Prior F0/UVP/downstream/GUI success remains bounded evidence, not OVZ success or incident resolution."
+  ]
+}

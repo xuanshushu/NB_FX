@@ -1,0 +1,14 @@
+{
+  "officialSetAPI": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Material.SetShaderPassEnabled.html",
+  "officialFindAPI": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Shader.FindPassTagValue.html",
+  "mainReadOnlyApiEvidence": ".utmp/nbfx-resume-20261002/main-shader-pass-tag-api.json",
+  "generatedSourceEvidence": {
+    "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\generated-main-root-uvp.shader",
+    "sha256": "58c13fbe5f2654abd7ef842300d73c1440ae1b7d8c5daea3d264d6f08e5552f0",
+    "lineName": 279,
+    "snippet": "Name \"Universal Forward\"\n    Tags\n    {\n        // LightMode: <None>\n    }\n\n// Render State\nCull [_Cull]\nBlend",
+    "note": "Existing generated root UVP source, not the new ZOffset GPU readback. It proves delegated Forward had no explicit LightMode in this source snapshot."
+  },
+  "runtimeGetPassState": "New fixture logs actual tag/effectiveLightMode and before/after enabled values. Child did not query or run the Editor.",
+  "rootCause": "Fixture disabled all candidate tags including SRPDefaultUnlit, then enabled Graph displayName alias rather than effective tag. New code reads the actual tag and uses URP default for empty tag. Original invisible/strong-response failures remain in prior raw results."
+}

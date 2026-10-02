@@ -1,0 +1,13 @@
+# 最小normal draw-time仪器预览
+
+使用unity-inmemory-shader-debug：只生成newtest/meta；不安装、不Unity、不Git、不中央编辑、不改官方包或NBPost合同。首次运行normal-drawtime-basic2-plan，在当前根基础Mesh接口上无VAT依赖；另SoftBody2只在完整组合接口存在时运行，缺接口明确Failed/未运行，不跳过冒充通过。
+
+CPU回执发生在afterSetFloat、beginCameraRendering、afterReadPixels-beforeRestore：实际materialslot/shader、_NORMALMAP与Blinn keyword、BumpToggle/Scale、GetTexture name/ID/texel/SHA、MPB和真实maintag启用值。它们只证明CPU传入；GPU真实消费由inmemory程序输出验证。
+
+四GPU视图保持原Vertex/Pass/函数/采样/解码算法：uniform、actualsample、normalTS、normalWS；scale1与0分别capture+repeat。legacyuniform输出实际compiled_NORMALMAP/scale/Blinn；Graph输出runtimeToggle/scale/mode。rawsample要求与真TextureRGBAHalf CPUtexel exact；decodedNormals要求真实响应。仅插入early diagnostic return，不换公式。
+
+源shader来自运行现场：Frozen/current .shader+HLSL只读展开该main include；Graph动态生成并只改main程序include，中央asset不写。采用unique Hidden/Codex/ShaderDebug名、HideAndDontSave Shader/Material、真实clonedproperty/keywords/queue/tag状态，finally恢复slot、callbacks、NBmemoryactive、previewScene与ownedobjects。原frames在compile诊断前先拍，防观察者warmshader/PSO误判原恢复。
+
+不能以displayName启用Pass。FindPass只定位index，再读shader.FindPassTagValue的LightMode用于Material.Set/GetShaderPassEnabled；空tag明确以SRPDefaultUnlit。依据：[Unity SetShaderPassEnabled](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Material.SetShaderPassEnabled.html)。新ZOffset的displayName开关问题与这里分开记录，仪器不得复用错误tag假定。
+
+原default全链路SSAOn/ForwardDepthShadow与GraphNormals rawTrue先保存；之后只把receiver隐藏以读取actor内法线，是诊断视图，不宣称默认链路颜色一致。原AB/BC仍严格0断言，已有normal2失败不删不改，不放行G4。任何uniform/sample/decode断点都留下前后回执及原raw；只有具体断点才提出修复，不继续猜TBN。

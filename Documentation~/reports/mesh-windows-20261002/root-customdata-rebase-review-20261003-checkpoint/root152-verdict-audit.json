@@ -1,0 +1,651 @@
+{
+  "scope": "All5 completed RootCD XML,32storage+120nonVATconsumer identities; every current raw read; no Unity/GPU rerun or source/strict assertion mutation",
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "run": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\root-customdata152-isolated-1",
+  "batches": [
+    {
+      "batch": 1,
+      "xmlSha256": "e95f0e2fa2a1eb4724937cc6603112b2e771e5d16e73ae4603d5add4158fb6ba",
+      "count": 32,
+      "Passed": 32,
+      "Failed": 0
+    },
+    {
+      "batch": 2,
+      "xmlSha256": "c0c96e95a98b015946b596f2048f9c672e5f7b47c0df3e383952de66c4ec8604",
+      "count": 28,
+      "Passed": 26,
+      "Failed": 2
+    },
+    {
+      "batch": 3,
+      "xmlSha256": "c49278be7499fa63eff3ced38f2bcf76b94d096f4585c80b6fd7e894096ae596",
+      "count": 32,
+      "Passed": 30,
+      "Failed": 2
+    },
+    {
+      "batch": 4,
+      "xmlSha256": "f9e58c8f8259b9599d268237905fa908f64357aec5ddbee98cc44a600a5a4ef1",
+      "count": 28,
+      "Passed": 22,
+      "Failed": 6
+    },
+    {
+      "batch": 5,
+      "xmlSha256": "5952ad618b5f225c758ae9cd6e39a6f8f7358da4c1dff0473e5af4fd2c6d9484",
+      "count": 32,
+      "Passed": 30,
+      "Failed": 2
+    }
+  ],
+  "sourceSha256ReadDuringAudit": {
+    "Graph": "5c65d4215451aed92176c59f483a3b3eddfc3418b3bed749e71bac3bb21e46b7",
+    "fixture": "f4ccb1ee1af10fb85029672ea7033b36995323384dbbdc84b040baa253afdc21"
+  },
+  "counts": {
+    "uniqueActualCases": 152,
+    "Passed": 140,
+    "Failed": 12,
+    "Skipped": 0,
+    "Inconclusive": 0,
+    "storage": {
+      "cases": 32,
+      "Passed": 32
+    },
+    "consumers": {
+      "cases": 120,
+      "Passed": 108,
+      "Failed": 12
+    }
+  },
+  "currentEvidenceAudit": {
+    "consumerMetrics": 120,
+    "rawFrames": 3600,
+    "rawBytesUncompressed": 530841600,
+    "rawFormat": "gzip little-endian96x96RGBAfloat32",
+    "allRawFinite": true,
+    "allCDCDFrames": 0,
+    "recomputedMetricsMatch": 120,
+    "independentConditionsCount": {
+      "finite": 120,
+      "visible": 120,
+      "repeat": 120,
+      "strongResponse": 120,
+      "allABZero": 120,
+      "allBCZero": 108,
+      "metricRawExactMatch": 120,
+      "latestHistoricalMetricFieldsEqual": 120,
+      "latestHistoricalVerdictEqual": 120
+    },
+    "minimumVisiblePixelsAcrossABC": 3892,
+    "minimumStrongResponseAcrossABC": 0.269287109375,
+    "maximumAB": 0,
+    "maximumBC": 0.00048828125,
+    "maximumRepeat": 0
+  },
+  "failureClasses": {
+    "sameHistoricalStrictMicroBCdiff": 12,
+    "functionalMissingOrNoStrongResponse": 0,
+    "invisible": 0,
+    "nonfiniteOrAllCDCD": 0,
+    "ABBaselineDeviation": 0
+  },
+  "failures": [
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_dissolve-x_perspective_varying",
+      "batch": 3,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "fe517d509312727de42b3e31fe0b526d0e82d760cf05a81772590499d8bc6ea3",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 1.0,
+        "B": 1.0,
+        "C": 1.0
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.000244140625,
+      "BCNonzeroBySelector": {
+        "13": 0.000244140625
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-control-repair36-isolated-1",
+        "batch": 1,
+        "result": "Failed",
+        "metricsSha256": "fe517d509312727de42b3e31fe0b526d0e82d760cf05a81772590499d8bc6ea3",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_dissolve-y_perspective_varying",
+      "batch": 3,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "adeb9b3be1e3f3de5f247c17ac45b6c52fe77233ce397a23060967968c9f661c",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 1.0,
+        "B": 1.0,
+        "C": 1.0
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.00048828125,
+      "BCNonzeroBySelector": {
+        "14": 0.00048828125,
+        "13": 0.00018310546875,
+        "8": 0.00048828125
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-control-repair36-isolated-1",
+        "batch": 1,
+        "result": "Failed",
+        "metricsSha256": "adeb9b3be1e3f3de5f247c17ac45b6c52fe77233ce397a23060967968c9f661c",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-x_perspective_varying",
+      "batch": 2,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "0229e5abbd0057bee6f347457ce83b9b8a0eb7542ae87bf950038d9cfe77c7b1",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 0.586669921875,
+        "B": 0.586669921875,
+        "C": 0.586669921875
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.00048828125,
+      "BCNonzeroBySelector": {
+        "14": 0.00048828125,
+        "12": 0.00048828125
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-gpu-first28-isolated-1",
+        "batch": 1,
+        "result": "Failed",
+        "metricsSha256": "0229e5abbd0057bee6f347457ce83b9b8a0eb7542ae87bf950038d9cfe77c7b1",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_perspective_varying",
+      "batch": 2,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "afc18c4a86fbdcea395cc640348828165ae47bf48454865487868406c86eff40",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 0.3153076171875,
+        "B": 0.3153076171875,
+        "C": 0.3153076171875
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.00048828125,
+      "BCNonzeroBySelector": {
+        "14": 0.00048828125,
+        "13": 0.000244140625
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-control-repair36-isolated-1",
+        "batch": 1,
+        "result": "Failed",
+        "metricsSha256": "afc18c4a86fbdcea395cc640348828165ae47bf48454865487868406c86eff40",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_overlay-x_perspective_varying",
+      "batch": 5,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "bd411e284d5827fc29bd2b93d9d11a4f7f7cdbfce01aa52e25caa6174d3181b8",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 0.586669921875,
+        "B": 0.586669921875,
+        "C": 0.586669921875
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.00048828125,
+      "BCNonzeroBySelector": {
+        "14": 0.00048828125,
+        "13": 0.000244140625,
+        "12": 0.00048828125
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-gpu-rest96-isolated-1",
+        "batch": 3,
+        "result": "Failed",
+        "metricsSha256": "bd411e284d5827fc29bd2b93d9d11a4f7f7cdbfce01aa52e25caa6174d3181b8",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_overlay-y_perspective_varying",
+      "batch": 5,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "57635d2847e1f4d1cf121d6794b464cc3eb4763367b69cdbad8284536f1a6e27",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 0.540283203125,
+        "B": 0.540283203125,
+        "C": 0.540283203125
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.00048828125,
+      "BCNonzeroBySelector": {
+        "14": 0.000244140625,
+        "13": 0.000244140625,
+        "9": 0.00048828125,
+        "8": 0.00048828125
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-gpu-rest96-isolated-1",
+        "batch": 3,
+        "result": "Failed",
+        "metricsSha256": "57635d2847e1f4d1cf121d6794b464cc3eb4763367b69cdbad8284536f1a6e27",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-x_perspective_varying",
+      "batch": 4,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "ea808b850bb2ae6b2ce50604c2ae8d28e2a117a99a812080e41bbe113ce1dd09",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 0.67333984375,
+        "B": 0.67333984375,
+        "C": 0.67333984375
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.00048828125,
+      "BCNonzeroBySelector": {
+        "14": 0.00048828125,
+        "12": 0.00048828125,
+        "8": 0.000244140625
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-control-repair36-isolated-1",
+        "batch": 1,
+        "result": "Failed",
+        "metricsSha256": "ea808b850bb2ae6b2ce50604c2ae8d28e2a117a99a812080e41bbe113ce1dd09",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-y_perspective_constant",
+      "batch": 4,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "4a456e5e863b21b61063288ed1206c74bdf0a4cd213e79dfc0c76da2b4ee644a",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 0.705078125,
+        "B": 0.705078125,
+        "C": 0.705078125
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.000244140625,
+      "BCNonzeroBySelector": {
+        "14": 0.000244140625,
+        "11": 0.000244140625
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-control-repair36-isolated-1",
+        "batch": 1,
+        "result": "Failed",
+        "metricsSha256": "4a456e5e863b21b61063288ed1206c74bdf0a4cd213e79dfc0c76da2b4ee644a",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-y_perspective_varying",
+      "batch": 4,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "6f5263781ccf6dbbae6f2e857fa71b7685d8856267a408cd1f05da9b3bc97196",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 0.707763671875,
+        "B": 0.707763671875,
+        "C": 0.707763671875
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.00048828125,
+      "BCNonzeroBySelector": {
+        "14": 0.00048828125,
+        "13": 0.00048828125,
+        "12": 0.000244140625,
+        "10": 0.00048828125,
+        "8": 0.000244140625
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-control-repair36-isolated-1",
+        "batch": 1,
+        "result": "Failed",
+        "metricsSha256": "6f5263781ccf6dbbae6f2e857fa71b7685d8856267a408cd1f05da9b3bc97196",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-x_perspective_constant",
+      "batch": 4,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "46a2a77d32fb084e9a313c074f8bca217481199b65ab76fd8db1efff5b4addd6",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 0.36767578125,
+        "B": 0.36767578125,
+        "C": 0.36767578125
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.00048828125,
+      "BCNonzeroBySelector": {
+        "8": 0.00048828125
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-control-repair36-isolated-1",
+        "batch": 1,
+        "result": "Failed",
+        "metricsSha256": "46a2a77d32fb084e9a313c074f8bca217481199b65ab76fd8db1efff5b4addd6",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-x_perspective_varying",
+      "batch": 4,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "cac8001405049b391f7e96955e78f461a99f2240464dc5b2dff18bc3bd92f7b9",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 0.36767578125,
+        "B": 0.36767578125,
+        "C": 0.36767578125
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.00048828125,
+      "BCNonzeroBySelector": {
+        "14": 0.00048828125,
+        "13": 0.000244140625,
+        "10": 0.00048828125,
+        "9": 0.00048828125,
+        "8": 0.00048828125
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-control-repair36-isolated-1",
+        "batch": 1,
+        "result": "Failed",
+        "metricsSha256": "cac8001405049b391f7e96955e78f461a99f2240464dc5b2dff18bc3bd92f7b9",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    },
+    {
+      "exactIdentity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-y_perspective_varying",
+      "batch": 4,
+      "result": "Failed",
+      "classification": "same historical micro BCdiff, strict zero assertion remains failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n",
+      "metricsSha256": "b30435528d4fd37b589cf5432e8ddde2b831b059812f6444733a4e5dec9fa4d0",
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeat": {
+        "A": 0.0,
+        "B": 0.0,
+        "C": 0.0
+      },
+      "strongResponse": {
+        "A": 0.367431640625,
+        "B": 0.367431640625,
+        "C": 0.367431640625
+      },
+      "ABMax": 0.0,
+      "BCMax": 0.000244140625,
+      "BCNonzeroBySelector": {
+        "9": 0.000244140625
+      },
+      "onlyBCStrictParityFailure": true,
+      "oldFinalSameIdentity": {
+        "run": "customdata-control-repair36-isolated-1",
+        "batch": 1,
+        "result": "Failed",
+        "metricsSha256": "b30435528d4fd37b589cf5432e8ddde2b831b059812f6444733a4e5dec9fa4d0",
+        "allMetricFieldsIdentical": true
+      },
+      "strictFailureRetained": true
+    }
+  ],
+  "historicalComparison": {
+    "method": "Disjoint original28+96 forms124; overlay exactly the36 control-repair identities, never add overlapping counts. Compare current120 only against actual same120nonVAT identities.",
+    "xmlInputs": [
+      {
+        "run": "customdata-gpu-first28-isolated-1",
+        "batch": 1,
+        "xmlSha256": "0fcdb3a678fa8182c049ff185ef4bd8b24798cdcf159a8f84f0d272a7595ca0c",
+        "count": 28,
+        "layer": "First consumer verdict"
+      },
+      {
+        "run": "customdata-gpu-rest96-isolated-1",
+        "batch": 1,
+        "xmlSha256": "a9192622c8ef1ad90a926158c313e5958837375ae65547a68a0b2286a103c2e2",
+        "count": 32,
+        "layer": "First consumer verdict"
+      },
+      {
+        "run": "customdata-gpu-rest96-isolated-1",
+        "batch": 2,
+        "xmlSha256": "a8259c5fe1b797ecda948bc727a2264c5ab9542652b195c14385aca1e699921a",
+        "count": 32,
+        "layer": "First consumer verdict"
+      },
+      {
+        "run": "customdata-gpu-rest96-isolated-1",
+        "batch": 3,
+        "xmlSha256": "f73b94cb3142da99c652826f5cce6fb23888a14c942c8eedbfb8c4551f184e6f",
+        "count": 32,
+        "layer": "First consumer verdict"
+      },
+      {
+        "run": "customdata-control-repair36-isolated-1",
+        "batch": 1,
+        "xmlSha256": "52d46761f8465f7a4daf6ce46a3810ab9c84803e1dccb351f87c5ba70f30bb5a",
+        "count": 36,
+        "layer": "Replacement verdict for exact36 repaired control identities only"
+      }
+    ],
+    "oldFinal124": {
+      "Passed": 112,
+      "Failed": 12
+    },
+    "oldFinal120NonVAT": {
+      "Passed": 108,
+      "Failed": 12
+    },
+    "same120IdentitySet": true,
+    "same12FailureSet": true,
+    "all120VerdictsIdentical": true,
+    "metricFieldsIdenticalCases": 120,
+    "changedMetricCases": [],
+    "sourceVersionsRemainDistinct": true
+  },
+  "VATScope": {
+    "currentVATCasesRun": 0,
+    "originalVATIdentitiesDeferred": [
+      "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_vat-frame_ortho_constant",
+      "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_vat-frame_ortho_varying",
+      "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_vat-frame_perspective_constant",
+      "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_vat-frame_perspective_varying"
+    ],
+    "deferredCount": 4,
+    "claim": "Original4 VAT frame cases are absent here, not skipped/passed nor supported by this Root candidate; require genuine VAT node/consumer integration and execution later."
+  },
+  "assertionLimit": "12failedcases reachedfinite then failABC atsource275; laterrepeat/visible/response assertions not executed, but audit independently recomputes every frame and confirms original conditions. All originalfailXML retained.",
+  "recommendation": {
+    "supportsNextRootSliceIntegrationReview": true,
+    "reason": "Every current consumer finite/visible/repeat/strong/AB condition independently satisfied; exactly prior12tinyBC failures, no new missing/invalid output seen in covered120. Retain12strictmanual failures and VAT4 gap.",
+    "fullMeshGatePassed": false,
+    "scopeComplete": false
+  },
+  "limits": [
+    "Source and historical results are separate provenance; no inherited pass or tolerance relaxation.",
+    "Chromatic native crash branch remains explicitly outside this152, not a pass.",
+    "Pass/Player/performance and full combinations are not established by storage/consumer slice.",
+    "Parent owns full artifact/raw/png provenance audit; this report provides numeric verdict classification without capture listings."
+  ]
+}

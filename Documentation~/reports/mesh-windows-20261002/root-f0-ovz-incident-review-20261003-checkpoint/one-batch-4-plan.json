@@ -1,0 +1,88 @@
+{
+  "scope": "RootF0 incident follow-up OVZ24 group 4/6,4 unique existing identities; incomplete original remains failed infrastructure evidence",
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "cases": 4,
+  "batches": [
+    {
+      "batch": 4,
+      "label": "off-depth7-50",
+      "filter": "NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d7_ortho;NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d7_perspective;NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d50_ortho;NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d50_perspective",
+      "expectedCasesFromSource": 4,
+      "identitySource": "Exact original OVZ24 source identities; regrouped only",
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d7_ortho",
+        "NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d7_perspective",
+        "NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d50_ortho",
+        "NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d50_perspective"
+      ]
+    }
+  ],
+  "sourceSha256": {
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "216061d118a630a1f07945b1191589fe3712db22b546e15f42d99133ba64a7e5",
+    "NBShaders2/ShaderGraph/NBGraphOverrideDepth.hlsl": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1",
+    "NBShaders2/ShaderGraph/NBGraphBaseUV.hlsl": "9d01621ec2ff96cc8b1e342c923772837bc108ed3f81c272fcbb44ea3e505e28",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "9ba3d6321ac3261c920f1bcb6e1b59189ab67e5f25fc677d300b8e1a86385b3c",
+    "NBShaders2/ShaderGraph/NBGraphVertexOffset.hlsl": "80ab3003f913d32dda734dc13d7d8afed54e71d74666d9e879198f85b36a4368",
+    "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs": "9ed17f0917e5aa02651d85ecdf6934d6a8c05e1048cbcb5ce908f308ad4fad61",
+    "NBShaders2/Shader/NBShader.shader": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b",
+    "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl": "17322f26b644db92d0b0419cbac46bc88ac1c0635a767cdac6a1f35d7ea6a227",
+    "Tests/URP/Editor/G4GraphOverrideDepthTests.cs": "2d642b530c2156df34372a590320225ed1892cd5b7e4f3f205393c037e5f87f6",
+    "Tests/URP/Editor/G4GraphGuiFeatureIntentTests.cs": "1645335fa40cfde3c6b8d236e48ff167e6d0d15b32b0f5014d4090223c83e370"
+  },
+  "stopOnReadbackHealthFailure": true,
+  "healthGuard": {
+    "sourceChangesAllowed": false,
+    "assertionChangesAllowed": false,
+    "toleranceChangesAllowed": false,
+    "freshEditorPerBatch": true,
+    "serialExclusiveProject": true,
+    "noRetries": true,
+    "beforeLaunch": [
+      "Parent checks exact installed source SHA values match sourceSha256; owns isolation idle/live scene inspection; no TAI Domain Reload.",
+      "After device-removal/crash, parent completes crash diagnostics and confirms a healthy restart before running this plan."
+    ],
+    "requiresExternalGuardBeforeNextBatch": true,
+    "runnerLimit": "Existing run_current_mesh_matrix.py checks only *-readback-health.json after XML; OVZ Draw emits rgba32f and metrics without those health files. A plan flag alone does not provide raw/log health guarding. Run each one-batch plan and audit before next, or use an audited parent guard runner.",
+    "stopSubsequentBatchesOn": [
+      "Any device-removed/reset/hung GPU token including 887a0005/887a0006/887a0007, failed D3D resource creation, native crash or 0xC0000005.",
+      "Missing/incomplete XML, wrong/duplicate identity set, infrastructure exit, missing frames/metrics.",
+      "Any nonfinite float or all-CDCD readback; no readback is not health success."
+    ],
+    "rawFrameContract": {
+      "perCase": 9,
+      "perBatch": 36,
+      "total": 216,
+      "width": 128,
+      "height": 128,
+      "channels": 4,
+      "format": "little-endian RGBA float32",
+      "bytesPerFrame": 262144,
+      "requiredNames": [
+        "A-main.rgba32f",
+        "A-repeat.rgba32f",
+        "A-control.rgba32f",
+        "B-main.rgba32f",
+        "B-repeat.rgba32f",
+        "B-control.rgba32f",
+        "C-main.rgba32f",
+        "C-repeat.rgba32f",
+        "C-control.rgba32f"
+      ],
+      "mustBeFinite": true,
+      "rejectAllCDCD32": true
+    },
+    "metricsContract": {
+      "perCase": 1,
+      "finite": true,
+      "parity": "ab + bc + abControl + bcControl == 0",
+      "repeat": "aRepeat + bRepeat + cRepeat == 0",
+      "keywordOn": "each a/b/cResponse > .1; actorVisible>150 at depth<6, otherwise probeVisible>150",
+      "keywordOff": "aResponse+bResponse+cResponse==0 AND actorVisible>150",
+      "zeroKeywordOffResponseIsExpected": true
+    },
+    "strictFailureHandling": "Record unchanged strict XML failure separately from invalid GPU/infra failure. Low BCdiff never passes the zero assertion. Do not add original crashed24 to retry24 counts.",
+    "artifactRule": "New destination per rerun; retain original crash log/absent XML state and completed110 GUI XML; no overwrite."
+  },
+  "fullMeshGatePassed": false
+}

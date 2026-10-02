@@ -1,0 +1,55 @@
+{
+  "sources": {
+    "NBShaders2/Shader/NBShader.shader": "9ea2ad77d91cb3e668153b956fe684a5539a98ee5d603a90da93cd1a0a43cb00",
+    "NBShaders2/Editor/ShaderGUIItems/BaseOptionBigBlockItem.cs": "9e0406589ee72b0278064c497728e772c1f3cc4fcebdca37ef50a6528c8a69ab",
+    "NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs": "0d9b7bad173c713669585fbefdf2280929a90a1a31980752205cb9f0692749ea",
+    "NBShaders2/Editor/ShaderGUIItems/Features/NoiseAndDistortFeatureItem.cs": "997bdb442eec0d429d901d56c8a845fce8a11712a3ec0108775cba6be1f04416",
+    "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs": "1220576a61cc3c926bf26a3191e4512153cb682bc6521c12fcc46955c458d0aa",
+    "NBShaders2/Runtime/NBShaderPassFeatureCatalog.cs": "8aea5b2d15d18057eaff13a4fda01cc3802ac35e65cdb603ad354060087cf37c",
+    "NBShaders2/Editor/FeatureLevel/NBShaderVariantStripper.cs": "9ed87bc570a7cf5009dd28ed8a98f357bdac07ce6f44e711be73fb7e700fe19f",
+    "NBShaders2/Editor/FeatureLevel/NBShaderVariantCollectionBuilder.cs": "5e84cd59bd865a226c788d8c0ec7f0193ffd34d0fb72eb875bab0a692fa28a0f"
+  },
+  "officialURPDefaultDraw": {
+    "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Library\\PackageCache\\com.unity.render-pipelines.universal@a0dd9d2bd983\\Runtime\\Passes\\DrawObjectsPass.cs",
+    "sha256": "04aadafb7e66341ff6d0362e9f954c34ff8bad4ec8ad08b01a4e3e4836cbc093",
+    "line": 91,
+    "tags": [
+      "SRPDefaultUnlit",
+      "UniversalForward",
+      "UniversalForwardOnly"
+    ],
+    "notGPUConclusion": true
+  },
+  "BackFirstLegacy": {
+    "passNameAndTag": "SRPDefaultUnlit",
+    "Cull": "Front, opposite-facing geometry",
+    "Offset": "[_offsetFactor],[_offsetUnits]",
+    "Blend": "Inherits SubShader [_SrcBlend][_DstBlend]",
+    "ZWriteZTestColorMask": "Inherits SubShader _ZWrite/_ZTest/_ColorMask",
+    "Stencil": "Inherits full SubShader ref/comp/pass/fail/zfail/read/write masks",
+    "queue": "SubShader Transparent; extra Pass Queue=Opaque tag is not a separate renderer scheduling contract; material resolver sets actual queue",
+    "enabled": "nonUI transparent mode + _BackFirstPassToggle>0.5 + tier pass allowance",
+    "GUI": "visible only3DTransparent; enable sets main _Cull RenderFace.Front; warning dynamic batching break; disabled callback does not reset _Cull",
+    "mainCullOnEnable": {
+      "RenderFace.Front": 2,
+      "shaderCullMeaning": "Back cull on main, while extra pass Cull Front captures opposite side"
+    }
+  },
+  "DisableMainLegacy": {
+    "enabled": "main included unless active effective screen mode and _DisableMainPassToggle; screen feature depends on Noise and nonUI",
+    "mode0": "GUI sync zeroes DisableMain toggle when screen mode switched0",
+    "independentBackFirst": "backfirst pass intent is separate; disableMain does not automatically disable it",
+    "TierFiltering": "screen keyword filtered/dependency missing ¡ú main stays enabled; pass budget separately filters NB screen passes"
+  },
+  "GraphGap": {
+    "mainForward": "Actual delegated main has no LightMode, rendered as default SRPDefaultUnlit; currently shares future BackFirst tag",
+    "GraphGUI": "general Sync/Apply guarded; no BackFirst/DisableMain controls or full intent/read/apply mapping",
+    "RuntimeSvcStripper": "exact legacy shader-name guard. BackFirst identified by existing pass catalogue/name or ScriptableRenderPipelineDefaultUnlit PassType; not active Graph contract"
+  },
+  "proposalOnly": {
+    "preferredAfterProbe": "If actual default draw supports both tags, package SubTarget assign main UniversalForward + clone existing core as SRPDefaultUnlit/CullFront with matching blend/zwrite/ztest/stencil/offset; preserve existing native URP editor route and explicit capability/migration review. No central edit now.",
+    "collision": "Adding new SRPDefaultUnlit backface while keeping current main empty/default tag cannot independently enable/disable both using tag API; route must be explicit before implementation.",
+    "fallbackIfProbeDoesNotDrawBoth": "Investigate package-owned draw arrangement and user decision for changed pipeline contract; do not modify NBPostprocess/official packages or fake BackFirst support.",
+    "requiredFutureEvidence": "Actual geometry front/back ordering, all material state combinations, disableMain+screen paths and filtered tiers, native Graph Material pass state, SVC/stripping, Player/perf; this diagnostic does not satisfy these."
+  }
+}

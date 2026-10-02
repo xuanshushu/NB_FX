@@ -1,0 +1,28 @@
+{
+  "blockingFixtureCompile": {
+    "status": "Prepared, not installed/compiled",
+    "before": "typeof(G4GraphVATTests) survives compile even when152plan excludes VAT",
+    "resolution": "fixture-adaptation-preview only; runtime lookup and explicit realimplementation failure, no dummyfield"
+  },
+  "recommendedBuilderGuards": [
+    {
+      "fix": "If vat_source_present, require expectedSHA for NBGraphVATSoftBody.hlsl before graph/HLSL mutation; require node/source presence consistency",
+      "risk": "Existing builder requires SHA only7 while optional VAT source may be patched too",
+      "case": "optional realVAT source branch"
+    },
+    {
+      "fix": "Prelock build_customdata_preview.py SHA7ec1b648 for actual rootrun, then assert package/output substitutions each occur exactlyonce",
+      "risk": "originalBuilderSHA is only recorded afterexecution",
+      "case": "external inherited delta script"
+    },
+    {
+      "fix": "invoke python-Xutf8 (same as successful review), or explicitencodingutf8 throughout in nextownerrevision",
+      "risk": "Existing read_text defaults platformgbk may fail Chinese content",
+      "case": "Windows UTF8"
+    }
+  ],
+  "currentProductionScope": "No-VAT freshRootF0 seven-source branch puregenerated successfully; optionalVAT guard isfuturecondition, not justification to addfakefields",
+  "noGUIAgentChanges": true,
+  "noRootWrites": true,
+  "noUnity": true
+}

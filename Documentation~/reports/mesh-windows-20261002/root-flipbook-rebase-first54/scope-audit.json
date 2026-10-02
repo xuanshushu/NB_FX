@@ -1,0 +1,66 @@
+{
+  "scope": "Static complete existing F0 slice math/helper/SRP review, no Unity run by subagent",
+  "sourceCommit": "4fe3fdbc332504a6f6abdd1de3ba56cf05815a1c",
+  "builder": "builder.py",
+  "builderSHA256": "cd13586dc2a9ca09424ad61f456efaa4e39ae5f02acc0cb8465f93605b900039",
+  "generateEntry": "python .utmp/nbfx-resume-20261002/root-flipbook-rebase/builder.py --generate --out generated-2",
+  "readyCandidate": "generated/manifest.json",
+  "sourceFileCount": 10,
+  "validationFiles": 6,
+  "graph1132to1156": true,
+  "staticABI": {
+    "CFs": {
+      "NBGraphBaseUV": {
+        "inputs": 38,
+        "outputs": 16,
+        "ABIExact": true
+      },
+      "NBGraphUVVertex": {
+        "inputs": 29,
+        "outputs": 3,
+        "ABIExact": true
+      },
+      "NBGraphVertexOffset": {
+        "inputs": 45,
+        "outputs": 4,
+        "ABIExact": true
+      },
+      "NBGraphBaseColor": {
+        "inputs": 203,
+        "outputs": 3,
+        "ABIExact": true
+      }
+    },
+    "oldNonOwnedObjectsExact": true,
+    "oldEdgesAndSlotsExact": true,
+    "oldBlocksTargetsConditionsExact": true,
+    "validEdgesSingleFanIn": true,
+    "noCyclesIncludingCI": true,
+    "OVZAndUVPMatrixVisibilityExact": true
+  },
+  "mathReview": [
+    "Shared exact original secondary UV helperST vs meshUV0.zw and half stream/helper weight selection.",
+    "Old ShaderLab UV resolver keeps keyword scope; shared parameter uint flipbookBlending only allows Graph dynamic toggle equivalent.",
+    "Graph vertex UV and VertexOffset both receive actual UV3.yz and FlipbookToggle so particle specialUV stream matches the original.",
+    "Graph first/second BaseMap samples share original wrap/HDRdecode/forceLOD0 path; primary noise added to secondaryUV equally. CA branch stays owned by existing CA; no blanket CA-combination equivalence claim.",
+    "No old CI/UVP/OVZ object, Target conditions/keyword/packed default/edge is replaced. Existing eight CI unchanged.",
+    "Two new rendered helper Graph properties visible=true/exposed=true to avoid previously proven legacyVFX autoimport missing-slot ABI. Original GUI29+3 hidden objects exact.",
+    "Helper is root-derived Graph bit15 transport plus exact reviewed F1 lifecycle preview; serialized public fields/oldInt IDs/bits unchanged.",
+    "Shader Properties adds only twohidden same-name/defaultzero fields; no CBUFFER order/type change. Keeps current0+Graph0 requirements."
+  ],
+  "sourceBoundaries": [
+    "Root-only F0 owns 10 listed source files; SubTarget9ed17f09, existing OVZ adapter/depth helpers and GUI entry bytes locked readonly.",
+    "No VAT/CustomLocal/GUI2/Controller/ZOffset Target changes copied from current isolation.",
+    "Full helper-driven GPU animation cycle not proved by first36 manually-fed inputs or storage/lifecycle16."
+  ],
+  "necessaryAfterFirst": [
+    "RootUVP376 once for sharedUV/vertex positional source regressions, compare against exact root105 strict failures, preserve any new strict failures.",
+    "Root VertexOffset/Depth/Shadow/SixWay/Fog68 + OVZ24 and source2 + sharedGUI110; inputs changed justify targeted checks, no repeat pursuit of weak differences.",
+    "Next separate GPU preview: actual Helper-driven animation blend on two NBPasses with real NBPost/directed chain plus UVP position/source-stage combinations.",
+    "Player/variants/SVC/performance only after final combined source; no evidence claim here."
+  ],
+  "rootWritten": false,
+  "installed": false,
+  "ranUnity": false,
+  "G3G4Passed": false
+}

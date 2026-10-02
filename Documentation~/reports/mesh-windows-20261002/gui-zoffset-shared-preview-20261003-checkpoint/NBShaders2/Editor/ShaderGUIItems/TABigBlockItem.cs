@@ -1,0 +1,245 @@
+using System;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+namespace NBShaderEditor
+{
+    public class TABigBlockItem : BigBlockItem
+    {
+        private const string StencilConfigAssetPath = "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/StencilConfig.asset";
+
+        private readonly NBShaderRootItem _nbRootItem;
+        private readonly PropertyToggleBlockItem _zOffsetBlock;
+        private readonly PropertyToggleBlockItem _overrideZBlock;
+        private readonly RenderQueueItem _renderQueueItem;
+        private readonly ShaderGUIBitMaskItem _rgbaMaskItem;
+        private readonly PropertyToggleBlockItem _customStencilBlock;
+        private readonly BlockItem _keywordBlock;
+        private StencilValuesConfig _stencilValuesConfig;
+
+        private static readonly string[] RgbaMaskOptions = { "R", "G", "B", "A" };
+
+        public TABigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+            : base(
+                rootItem,
+                parentItem,
+                "_TABigBlockItemFoldOut",
+                () => Content("block.ta", "TA Debug", "Technical artist debug and helper controls"))
+        {
+            _nbRootItem = rootItem;
+
+            _zOffsetBlock = CreateZOffsetBlock(rootItem, this);
+
+            _overrideZBlock = new PropertyToggleBlockItem(
+                rootItem,
+                this,
+                "_OverrideZBlockFoldOut",
+                "_OverrideZ_Toggle",
+                () => Content("ta.overrideZ", "Override Z"),
+                keyword: "_OVERRIDE_Z",
+                isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True,
+                bold: true);
+            AddFloat(rootItem, _overrideZBlock, "_OverrideZValue", "Override Z Value");
+
+            _renderQueueItem = new RenderQueueItem(
+                rootItem,
+                this,
+                "_QueueBias",
+                () => Content("ta.renderQueue", "Queue Bias >> Current"),
+                GetBaseRenderQueue);
+
+            _rgbaMaskItem = new ShaderGUIBitMaskItem(
+                rootItem,
+                this,
+                "_ColorMask",
+                () => Content("ta.property._ColorMask", "RGBA Mask"),
+                () => NBShaderInspectorLocalization.GetInspectorOptions("ta.colorMask", RgbaMaskOptions))
+            {
+                ValidMask = 0xF
+            };
+
+            _customStencilBlock = new PropertyToggleBlockItem(
+                rootItem,
+                this,
+                "_CustomStencilTestFoldOut",
+                "_CustomStencilTest",
+                () => Content("ta.customStencil", "Custom Stencil Test"),
+                onValueChanged: OnCustomStencilChanged,
+                bold: true);
+            new StencilConfigKeyItem(rootItem, _customStencilBlock, this);
+            AddFloat(rootItem, _customStencilBlock, "_StencilKeyIndex", "Stencil Config Index");
+            AddFloat(rootItem, _customStencilBlock, "_Stencil", "Stencil Value");
+            AddPopup(rootItem, _customStencilBlock, "_StencilComp", "Stencil Compare", Enum.GetNames(typeof(CompareFunction)));
+            AddPopup(rootItem, _customStencilBlock, "_StencilOp", "Stencil Operation", Enum.GetNames(typeof(StencilOp)));
+            AddPopup(rootItem, _customStencilBlock, "_StencilFail", "Stencil Fail", Enum.GetNames(typeof(StencilOp)));
+            AddPopup(rootItem, _customStencilBlock, "_StencilZFail", "Stencil ZFail", Enum.GetNames(typeof(StencilOp)));
+            AddFloat(rootItem, _customStencilBlock, "_StencilReadMask", "Stencil Read Mask");
+            AddFloat(rootItem, _customStencilBlock, "_StencilWriteMask", "Stencil Write Mask");
+
+            _keywordBlock = new BlockItem(
+                rootItem,
+                this,
+                "_ShaderKeywordFoldOut",
+                () => Content("ta.keywords", "Enabled Keywords"));
+            new KeywordListItem(rootItem, _keywordBlock, () => Content("ta.keywords.list", "Enabled Keywords"));
+
+            InitTriggerByChild();
+        }
+
+        public override void DrawBlock()
+        {
+            _zOffsetBlock.OnGUI();
+            _overrideZBlock.OnGUI();
+            _renderQueueItem.OnGUI();
+            _rgbaMaskItem.OnGUI();
+            _customStencilBlock.OnGUI();
+            if (_nbRootItem.Mats.Count == 1)
+            {
+                _keywordBlock.OnGUI();
+            }
+        }
+
+        internal static PropertyToggleBlockItem CreateZOffsetBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        {
+            var block = new PropertyToggleBlockItem(rootItem, parentItem,
+                "_ZOffsetBlockFoldOut", "_ZOffset_Toggle",
+                () => Content("ta.zoffset", "Z Offset"),
+                onValueChanged: enabled => ApplyZOffsetChanged(rootItem, enabled),
+                isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True,
+                bold: true,
+                onBeforeValueChanged: () =>
+                {
+                    if (rootItem.Context.IsGraphMaterialHost)
+                        rootItem.MatEditor.RegisterPropertyChangeUndo("Z Offset");
+                });
+            AddFloat(rootItem, block, "_offsetFactor", "Offset Factor");
+            AddFloat(rootItem, block, "_offsetUnits", "Offset Units");
+            return block;
+        }
+
+        internal static void ApplyZOffsetChanged(NBShaderRootItem rootItem, bool enabled)
+        {
+            if (enabled || rootItem.Context.HasMixedMaterialHosts) return;
+            foreach (Material material in rootItem.Mats)
+                if (material != null && material.HasProperty("_offsetFactor") && material.HasProperty("_offsetUnits"))
+                {
+                    material.SetFloat("_offsetFactor", 0f);
+                    material.SetFloat("_offsetUnits", 0f);
+                }
+        }
+
+        private void OnCustomStencilChanged(bool enabled)
+        {
+            if (enabled)
+            {
+                return;
+            }
+
+            _nbRootItem.SyncService.ApplyStencilPreset("ParticleBaseDefault");
+        }
+
+        private void SetFloat(string propertyName, float value)
+        {
+            for (int i = 0; i < _nbRootItem.Mats.Count; i++)
+            {
+                Material mat = _nbRootItem.Mats[i];
+                if (mat != null && mat.HasProperty(propertyName))
+                {
+                    mat.SetFloat(propertyName, value);
+                }
+            }
+        }
+
+        private static int GetBaseRenderQueue(Material mat)
+        {
+            if (mat == null || !mat.HasProperty("_TransparentMode"))
+            {
+                return mat != null && mat.shader != null
+                    ? mat.shader.renderQueue
+                    : (int)RenderQueue.Transparent;
+            }
+
+            switch ((TransparentMode)Mathf.RoundToInt(mat.GetFloat("_TransparentMode")))
+            {
+                case TransparentMode.Opaque:
+                    return (int)RenderQueue.Geometry;
+                case TransparentMode.CutOff:
+                    return (int)RenderQueue.AlphaTest;
+                default:
+                    return (int)RenderQueue.Transparent;
+            }
+        }
+
+        private string GetStencilKey(int index)
+        {
+            _stencilValuesConfig ??= AssetDatabase.LoadAssetAtPath<StencilValuesConfig>(StencilConfigAssetPath);
+            return _stencilValuesConfig != null ? _stencilValuesConfig.GetKeyByIndex(index) : string.Empty;
+        }
+
+        private static void AddFloat(NBShaderRootItem rootItem, ShaderGUIItem parentItem, string propertyName, string label)
+        {
+            ShaderGUIFloatItem item = new ShaderGUIFloatItem(rootItem, parentItem)
+            {
+                PropertyName = propertyName,
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("ta.property." + propertyName, label)
+            };
+            item.InitTriggerByChild();
+        }
+
+        private static void AddPopup(NBShaderRootItem rootItem, ShaderGUIItem parentItem, string propertyName, string label, string[] options)
+        {
+            ShaderGUIPopUpItem item = new ShaderGUIPopUpItem(rootItem, parentItem)
+            {
+                PropertyName = propertyName,
+                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("ta.property." + propertyName, label),
+                PopUpNames = options
+            };
+            item.InitTriggerByChild();
+        }
+
+        private static GUIContent Content(string key, string fallback, string tip = "")
+        {
+            return NBShaderInspectorLocalization.MakeInspectorContent(key, fallback, tip);
+        }
+
+        private sealed class StencilConfigKeyItem : ShaderGUIItem
+        {
+            private readonly NBShaderRootItem _nbRootItem;
+            private readonly TABigBlockItem _owner;
+
+            public StencilConfigKeyItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, TABigBlockItem owner)
+                : base(rootItem, parentItem)
+            {
+                _nbRootItem = rootItem;
+                _owner = owner;
+            }
+
+            public override void OnGUI()
+            {
+                if (!_nbRootItem.PropertyInfoDic.TryGetValue("_StencilKeyIndex", out ShaderPropertyInfo info))
+                {
+                    return;
+                }
+
+                string key = string.Empty;
+                bool hasMixedValue = info.Property.hasMixedValue;
+                if (!hasMixedValue)
+                {
+                    key = _owner.GetStencilKey(Mathf.RoundToInt(info.Property.floatValue));
+                }
+
+                EditorGUI.showMixedValue = hasMixedValue;
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUI.TextField(
+                        ApplyGlobalRectCompensation(LayoutRect()),
+                        NBShaderInspectorLocalization.GetInspectorText("ta.stencil.currentConfig", "当前Config:"),
+                        key);
+                }
+
+                EditorGUI.showMixedValue = false;
+            }
+        }
+    }
+}

@@ -1,0 +1,128 @@
+{
+  "scope": "Small static half ABI audit only, no HLSL compilation/Unity execution",
+  "baseUV": {
+    "floatCounts": [
+      38,
+      16
+    ],
+    "halfCounts": [
+      38,
+      16
+    ],
+    "allNamesDirectionsOrderExact": true,
+    "halfToFloatAll38InputsOrderExact": true,
+    "all16OutputCastBacksExact": true,
+    "newFields": [
+      {
+        "float": {
+          "name": "UV3",
+          "type": "float4",
+          "out": false
+        },
+        "half": {
+          "name": "UV3",
+          "type": "half4",
+          "out": false
+        }
+      },
+      {
+        "float": {
+          "name": "FlipbookToggle",
+          "type": "float",
+          "out": false
+        },
+        "half": {
+          "name": "FlipbookToggle",
+          "type": "half",
+          "out": false
+        }
+      },
+      {
+        "float": {
+          "name": "AnimationSheetBlendST",
+          "type": "float4",
+          "out": false
+        },
+        "half": {
+          "name": "AnimationSheetBlendST",
+          "type": "half4",
+          "out": false
+        }
+      },
+      {
+        "float": {
+          "name": "AnimationSheetBlendIntensity",
+          "type": "float",
+          "out": false
+        },
+        "half": {
+          "name": "AnimationSheetBlendIntensity",
+          "type": "half",
+          "out": false
+        }
+      },
+      {
+        "float": {
+          "name": "BlendUV",
+          "type": "float2",
+          "out": true
+        },
+        "half": {
+          "name": "BlendUV",
+          "type": "half2",
+          "out": true
+        }
+      },
+      {
+        "float": {
+          "name": "BlendWeight",
+          "type": "float",
+          "out": true
+        },
+        "half": {
+          "name": "BlendWeight",
+          "type": "half",
+          "out": true
+        }
+      }
+    ],
+    "mixedFloatGeometryInputsPreserved": true
+  },
+  "colour": {
+    "floatCounts": [
+      203,
+      3
+    ],
+    "halfCounts": [
+      203,
+      3
+    ],
+    "allNamesDirectionsOrderExact": true,
+    "implementation": "Existing separate half body, not a float wrapper; original half math retained",
+    "newThreeBlendFieldsFloatInBoth": true,
+    "blendSampleCallArgumentsExactInBoth": true
+  },
+  "floatOnly": [
+    {
+      "function": "NBGraphUVVertex",
+      "counts": [
+        29,
+        3
+      ],
+      "precision": "Single",
+      "halfVersionExists": false
+    },
+    {
+      "function": "NBGraphVertexOffset",
+      "counts": [
+        45,
+        4
+      ],
+      "precision": "Single",
+      "halfVersionExists": false
+    }
+  ],
+  "errors": [],
+  "sourceChanged": false,
+  "ranUnity": false
+}

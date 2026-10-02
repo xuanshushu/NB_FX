@@ -1,0 +1,40 @@
+--- 
++++ 
+@@ -44,7 +44,16 @@
+         specialUVChannel = input.specialUVInTexcoord3;
+     }
+ #else
+-    if ((parameters.flags1 & FLAG_BIT_PARTICLE_1_UV_FROM_MESH) != 0u)
++    // Graph has no Flipbook variant. Keep the particle TEXCOORD3.yz
++    // exception and preserve the old non-Flipbook path when zero.
++    if (parameters.flipbookBlending != 0u &&
++        (parameters.flags1 & FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM) != 0u &&
++        (parameters.flags1 & FLAG_BIT_PARTICLE_1_USE_TEXCOORD2) != 0u)
++    {
++        specialUVChannel = input.specialUVInTexcoord3;
++    }
++    else if (parameters.flipbookBlending == 0u &&
++        (parameters.flags1 & FLAG_BIT_PARTICLE_1_UV_FROM_MESH) != 0u)
+     {
+         if ((parameters.flags1 & FLAG_BIT_PARTICLE_1_USE_TEXCOORD1) != 0u)
+         {
+@@ -142,4 +151,19 @@
+     return baseUVs;
+ }
+ 
++// Pure original animation-sheet secondary UV and blend-weight selection.
++// These do not advance frames; UV0.zw/TEXCOORD3.x or AnimationSheetHelper
++// already supply the next frame and fractional blend.
++float2 NBFX_ResolveFlipbookUVV1(float4 meshTexcoord0,
++    float4 animationSheetBlendST, bool helper)
++{
++    return helper ? meshTexcoord0.xy * animationSheetBlendST.xy +
++        animationSheetBlendST.zw : meshTexcoord0.zw;
++}
++float NBFX_ResolveFlipbookWeightV1(float streamWeight,
++    half helperWeight, bool helper)
++{
++    return helper ? (float)helperWeight : (float)(half)streamWeight;
++}
++
+ #endif
