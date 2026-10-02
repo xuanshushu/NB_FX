@@ -1,0 +1,111 @@
+{
+    "caseId": "mask-intensity-fraction",
+    "unityVersion": "6000.3.25f1",
+    "api": "Direct3D11",
+    "target": "128x128 linear RGBAHalf; lossless float32 RGBA; strict safe ROI x/y=32..95",
+    "note": "N1 ordinary Mesh ShaderLab B / Graph C; four warm-up renders, no first-frame/screen RT/CustomData/PNoise/Refraction/chroma/VFX claim. Default UV0 or explicitly selected independent Noise/NoiseMask modes 0/1/2/8; zero speeds. Fixed strict RGBA zero, repeat zero and >.01 positive controls; no tolerance relaxation. Mask2/3/ColorRamp are intentional nonconsumers.",
+    "input": {
+        "noiseEnabled": true,
+        "normalizeRG": false,
+        "maskEnabled": false,
+        "noise": {
+            "r": 0.75,
+            "g": 0.25,
+            "b": 0.0,
+            "a": 1.0
+        },
+        "mask": {
+            "r": 0.125,
+            "g": 0.375,
+            "b": 0.625,
+            "a": 0.875
+        },
+        "direction": {
+            "x": 1.0,
+            "y": 0.5
+        },
+        "intensity": 0.125,
+        "maskChannel": 0,
+        "noiseWrap": 0,
+        "maskWrap": 0,
+        "forceNoiseLod0": true,
+        "forceMaskLod0": true,
+        "noiseST": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 0.0,
+            "w": 0.0
+        },
+        "maskST": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 0.0,
+            "w": 0.0
+        },
+        "noiseRotation": 0.0,
+        "noiseRoute": "default-uv0",
+        "maskRoute": "default-uv0"
+    },
+    "control": {
+        "noiseEnabled": true,
+        "normalizeRG": false,
+        "maskEnabled": false,
+        "noise": {
+            "r": 0.75,
+            "g": 0.25,
+            "b": 0.0,
+            "a": 1.0
+        },
+        "mask": {
+            "r": 0.125,
+            "g": 0.375,
+            "b": 0.625,
+            "a": 0.875
+        },
+        "direction": {
+            "x": 1.0,
+            "y": 0.5
+        },
+        "intensity": 0.75,
+        "maskChannel": 0,
+        "noiseWrap": 0,
+        "maskWrap": 0,
+        "forceNoiseLod0": true,
+        "forceMaskLod0": true,
+        "noiseST": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 0.0,
+            "w": 0.0
+        },
+        "maskST": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 0.0,
+            "w": 0.0
+        },
+        "noiseRotation": 0.0,
+        "noiseRoute": "default-uv0",
+        "maskRoute": "default-uv0"
+    },
+    "roiPixels": 4096,
+    "differingRGB": 0,
+    "differingAlpha": 0,
+    "controlDifferingRGB": 0,
+    "controlDifferingAlpha": 0,
+    "legacyVisible": 4096,
+    "graphVisible": 4096,
+    "legacyControlPixels": 4096,
+    "graphControlPixels": 4096,
+    "finite": true,
+    "maxRGB": 0.0,
+    "maxAlpha": 0.0,
+    "controlMaxRGB": 0.0,
+    "controlMaxAlpha": 0.0,
+    "legacyRepeat": 0.0,
+    "graphRepeat": 0.0,
+    "legacyControlDelta": 0.306640625,
+    "graphControlDelta": 0.306640625,
+    "legacyExcludedFeatureControl": 0.0,
+    "graphExcludedFeatureControl": 0.0
+}

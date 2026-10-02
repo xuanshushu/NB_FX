@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="32" result="Failed(Child)" total="32" passed="16" failed="16" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-02 02:04:00Z" end-time="2026-10-02 02:05:05Z" duration="65.0359329">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="1850" result="Failed" site="Child" start-time="2026-10-02 02:04:00Z" end-time="2026-10-02 02:05:05Z" duration="65.035933" total="32" passed="16" failed="16" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2977" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="1831" result="Failed" site="Child" start-time="2026-10-02 02:04:00Z" end-time="2026-10-02 02:05:05Z" duration="64.988139" total="32" passed="16" failed="16" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="86352" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2978" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="1831" result="Failed" site="Child" start-time="2026-10-02 02:04:00Z" end-time="2026-10-02 02:05:05Z" duration="64.980643" total="32" passed="16" failed="16" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2979" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="1831" result="Failed" site="Child" start-time="2026-10-02 02:04:00Z" end-time="2026-10-02 02:05:05Z" duration="64.973585" total="32" passed="16" failed="16" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2980" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="1831" result="Failed" site="Child" start-time="2026-10-02 02:04:00Z" end-time="2026-10-02 02:05:05Z" duration="64.966584" total="32" passed="16" failed="16" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1286" name="G4GraphCustomDataTests" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" testcasecount="156" result="Failed" site="Child" start-time="2026-10-02 02:04:00Z" end-time="2026-10-02 02:05:05Z" duration="64.513074" total="32" passed="16" failed="16" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+]]></output>
+              <test-suite type="ParameterizedMethod" id="1444" name="CustomDataFunctionalConsumerABC" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" testcasecount="124" result="Failed" site="Child" start-time="2026-10-02 02:04:04Z" end-time="2026-10-02 02:05:05Z" duration="60.200065" total="32" passed="16" failed="16" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1380" name="G4CustomData_GPU_simple-x_ortho_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-x_ortho_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="675383352" result="Failed" start-time="2026-10-02 02:04:05Z" end-time="2026-10-02 02:04:09Z" duration="4.641444" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"simple-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1381" name="G4CustomData_GPU_simple-x_ortho_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-x_ortho_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="2010217019" result="Failed" start-time="2026-10-02 02:04:09Z" end-time="2026-10-02 02:04:11Z" duration="1.531692" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"simple-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1382" name="G4CustomData_GPU_simple-x_perspective_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-x_perspective_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1416571511" result="Failed" start-time="2026-10-02 02:04:11Z" end-time="2026-10-02 02:04:12Z" duration="1.684729" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"simple-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1383" name="G4CustomData_GPU_simple-x_perspective_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-x_perspective_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1711833649" result="Failed" start-time="2026-10-02 02:04:12Z" end-time="2026-10-02 02:04:14Z" duration="1.717172" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"simple-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1384" name="G4CustomData_GPU_simple-y_ortho_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-y_ortho_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1111410337" result="Failed" start-time="2026-10-02 02:04:14Z" end-time="2026-10-02 02:04:16Z" duration="1.509350" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"simple-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1385" name="G4CustomData_GPU_simple-y_ortho_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-y_ortho_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="945273796" result="Failed" start-time="2026-10-02 02:04:16Z" end-time="2026-10-02 02:04:17Z" duration="1.570875" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"simple-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1386" name="G4CustomData_GPU_simple-y_perspective_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-y_perspective_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1956864257" result="Failed" start-time="2026-10-02 02:04:17Z" end-time="2026-10-02 02:04:19Z" duration="1.687586" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"simple-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1387" name="G4CustomData_GPU_simple-y_perspective_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_simple-y_perspective_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1842819271" result="Failed" start-time="2026-10-02 02:04:19Z" end-time="2026-10-02 02:04:21Z" duration="1.714979" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"simple-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1388" name="G4CustomData_GPU_voronoi-x_ortho_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-x_ortho_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="981424403" result="Failed" start-time="2026-10-02 02:04:21Z" end-time="2026-10-02 02:04:25Z" duration="4.140091" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"voronoi-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1389" name="G4CustomData_GPU_voronoi-x_ortho_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-x_ortho_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1315209888" result="Failed" start-time="2026-10-02 02:04:25Z" end-time="2026-10-02 02:04:26Z" duration="1.507129" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"voronoi-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1390" name="G4CustomData_GPU_voronoi-x_perspective_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-x_perspective_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1427628017" result="Failed" start-time="2026-10-02 02:04:26Z" end-time="2026-10-02 02:04:28Z" duration="1.727865" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"voronoi-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1391" name="G4CustomData_GPU_voronoi-x_perspective_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-x_perspective_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="643118718" result="Failed" start-time="2026-10-02 02:04:28Z" end-time="2026-10-02 02:04:30Z" duration="1.656331" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"voronoi-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1392" name="G4CustomData_GPU_voronoi-y_ortho_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-y_ortho_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="14218131" result="Failed" start-time="2026-10-02 02:04:30Z" end-time="2026-10-02 02:04:31Z" duration="1.583631" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"voronoi-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1393" name="G4CustomData_GPU_voronoi-y_ortho_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-y_ortho_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="167871973" result="Failed" start-time="2026-10-02 02:04:31Z" end-time="2026-10-02 02:04:33Z" duration="1.504907" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"voronoi-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1394" name="G4CustomData_GPU_voronoi-y_perspective_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-y_perspective_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1439489435" result="Failed" start-time="2026-10-02 02:04:33Z" end-time="2026-10-02 02:04:35Z" duration="1.725025" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"voronoi-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1395" name="G4CustomData_GPU_voronoi-y_perspective_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_voronoi-y_perspective_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1086297371" result="Failed" start-time="2026-10-02 02:04:35Z" end-time="2026-10-02 02:04:36Z" duration="1.668103" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: greater than 0.00100000005f
+  But was:  0.0f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphCustomDataTests.CustomDataFunctionalConsumerABC (System.Int32 word, System.Int32 nibble, System.String name, System.Boolean ortho, System.Boolean varying) [0x00a65] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphCustomDataTests.cs:263
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"voronoi-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1396" name="G4CustomData_GPU_noise-direction-x_ortho_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-x_ortho_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1367082760" result="Passed" start-time="2026-10-02 02:04:36Z" end-time="2026-10-02 02:04:38Z" duration="1.513625" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"noise-direction-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.6087646484375,"bResponse":0.6087646484375,"cResponse":0.6087646484375,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1397" name="G4CustomData_GPU_noise-direction-x_ortho_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-x_ortho_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1997814841" result="Passed" start-time="2026-10-02 02:04:38Z" end-time="2026-10-02 02:04:39Z" duration="1.538545" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"noise-direction-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.6080322265625,"bResponse":0.6080322265625,"cResponse":0.6080322265625,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1398" name="G4CustomData_GPU_noise-direction-x_perspective_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-x_perspective_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="634020569" result="Passed" start-time="2026-10-02 02:04:39Z" end-time="2026-10-02 02:04:41Z" duration="1.692884" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"noise-direction-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.6473388671875,"bResponse":0.6473388671875,"cResponse":0.6473388671875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1399" name="G4CustomData_GPU_noise-direction-x_perspective_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-x_perspective_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="615724665" result="Passed" start-time="2026-10-02 02:04:41Z" end-time="2026-10-02 02:04:43Z" duration="1.733485" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"noise-direction-x","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.6402587890625,"bResponse":0.6402587890625,"cResponse":0.6402587890625,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1400" name="G4CustomData_GPU_noise-direction-y_ortho_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-y_ortho_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="960845938" result="Passed" start-time="2026-10-02 02:04:43Z" end-time="2026-10-02 02:04:44Z" duration="1.499075" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"noise-direction-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.3935546875,"bResponse":0.3935546875,"cResponse":0.3935546875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1401" name="G4CustomData_GPU_noise-direction-y_ortho_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-y_ortho_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="399592286" result="Passed" start-time="2026-10-02 02:04:44Z" end-time="2026-10-02 02:04:46Z" duration="1.537938" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"noise-direction-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.365478515625,"bResponse":0.365478515625,"cResponse":0.365478515625,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1402" name="G4CustomData_GPU_noise-direction-y_perspective_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-y_perspective_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1246230346" result="Passed" start-time="2026-10-02 02:04:46Z" end-time="2026-10-02 02:04:47Z" duration="1.668733" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"noise-direction-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.3936767578125,"bResponse":0.3936767578125,"cResponse":0.3936767578125,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1403" name="G4CustomData_GPU_noise-direction-y_perspective_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-y_perspective_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="2012134309" result="Passed" start-time="2026-10-02 02:04:47Z" end-time="2026-10-02 02:04:49Z" duration="1.657212" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"noise-direction-y","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.3656005859375,"bResponse":0.3656005859375,"cResponse":0.3656005859375,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1404" name="G4CustomData_GPU_contrast_ortho_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_contrast_ortho_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1425028941" result="Passed" start-time="2026-10-02 02:04:49Z" end-time="2026-10-02 02:04:51Z" duration="1.563180" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"contrast","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.363037109375,"bResponse":0.363037109375,"cResponse":0.363037109375,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1405" name="G4CustomData_GPU_contrast_ortho_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_contrast_ortho_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="842673530" result="Passed" start-time="2026-10-02 02:04:51Z" end-time="2026-10-02 02:04:52Z" duration="1.577370" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"contrast","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.344482421875,"bResponse":0.344482421875,"cResponse":0.344482421875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":4096,"bVisible":4096,"cVisible":4096}
+]]></output>
+                </test-case>
+                <test-case id="1406" name="G4CustomData_GPU_contrast_perspective_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_contrast_perspective_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1135417636" result="Passed" start-time="2026-10-02 02:04:52Z" end-time="2026-10-02 02:04:54Z" duration="1.705794" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"contrast","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.361083984375,"bResponse":0.361083984375,"cResponse":0.361083984375,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1407" name="G4CustomData_GPU_contrast_perspective_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_contrast_perspective_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1964676036" result="Passed" start-time="2026-10-02 02:04:54Z" end-time="2026-10-02 02:04:56Z" duration="1.778324" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"contrast","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":0.34326171875,"bResponse":0.34326171875,"cResponse":0.34326171875,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":6084,"bVisible":6084,"cVisible":6084}
+]]></output>
+                </test-case>
+                <test-case id="1408" name="G4CustomData_GPU_vat-frame_ortho_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_vat-frame_ortho_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="300947055" result="Passed" start-time="2026-10-02 02:04:56Z" end-time="2026-10-02 02:04:59Z" duration="3.311557" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"vat-frame","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":5607,"bVisible":5607,"cVisible":5607}
+]]></output>
+                </test-case>
+                <test-case id="1409" name="G4CustomData_GPU_vat-frame_ortho_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_vat-frame_ortho_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1776972000" result="Passed" start-time="2026-10-02 02:04:59Z" end-time="2026-10-02 02:05:01Z" duration="1.779327" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"vat-frame","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":true,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":5757,"bVisible":5757,"cVisible":5757}
+]]></output>
+                </test-case>
+                <test-case id="1410" name="G4CustomData_GPU_vat-frame_perspective_constant" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_vat-frame_perspective_constant" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="1600848105" result="Passed" start-time="2026-10-02 02:05:01Z" end-time="2026-10-02 02:05:03Z" duration="1.877314" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"vat-frame","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":false,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":7384,"bVisible":7384,"cVisible":7384}
+]]></output>
+                </test-case>
+                <test-case id="1411" name="G4CustomData_GPU_vat-frame_perspective_varying" fullname="NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_vat-frame_perspective_varying" methodname="CustomDataFunctionalConsumerABC" classname="NBFX.Baseline.Tests.G4GraphCustomDataTests" runstate="Runnable" seed="194330426" result="Passed" start-time="2026-10-02 02:05:03Z" end-time="2026-10-02 02:05:05Z" duration="1.969090" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_CD_GPU {"consumer":"vat-frame","api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"Controlled existing custom-data nibble consumer, Mesh TEXCOORD1/2; all9 normal selector codes; no complete combinations/VFX/Player claim","orthographic":false,"varying":true,"finite":true,"abMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"bcMax":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aVisible":7729,"bVisible":7729,"cVisible":7729}
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
