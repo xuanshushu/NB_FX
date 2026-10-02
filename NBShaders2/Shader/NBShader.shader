@@ -406,6 +406,8 @@ Shader "Effects/NBShader"
         // -------------------------------------
         // Particle specific   属于粒子特殊的属性
         [ToggleOff] _CustomData ("__CustomData_Toggle", Float) = 0.0   //Toggleoff 和 Toggle 的区别
+        [HideInInspector] _BaseMap_AnimationSheetBlend_ST ("AnimationSheetHelper next frame ST", Vector) = (0, 0, 0, 0)
+        [HideInInspector] _AnimationSheetHelperBlendIntensity ("AnimationSheetHelper blend weight", Float) = 0
         [ToggleOff] _FlipbookBlending ("__flipbookblending_Toggle", Float) = 0.0   //Toggleoff 和 Toggle 的区别
 //        _SoftParticlesNearFadeDistance ("Soft Particles Near Fade", Float) = 0.0
 //        _SoftParticlesFarFadeDistance ("Soft Particles Far Fade", Float) = 1.0

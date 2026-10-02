@@ -20,6 +20,7 @@ struct NBFX_BaseUVParamsV1
 {
     uint flags0;
     uint flags1;
+    uint flipbookBlending;
     uint customDataFlag0;
     uint customDataFlag3;
     uint uvModeFlag0;

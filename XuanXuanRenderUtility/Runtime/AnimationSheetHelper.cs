@@ -23,6 +23,10 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
     private static readonly int ParticleShaderFlags1Id = Shader.PropertyToID("_W9ParticleShaderFlags1");
     private static readonly int NBShaderFlagsId = Shader.PropertyToID("_NBShaderFlags");
     private static readonly int NBShaderFlags1Id = Shader.PropertyToID("_NBShaderFlags1");
+    private static readonly int GraphFlags0LoId = Shader.PropertyToID("_NB_Flags0Lo16");
+    private static readonly int GraphFlags0HiId = Shader.PropertyToID("_NB_Flags0Hi16");
+    private static readonly int GraphFlags1LoId = Shader.PropertyToID("_NB_Flags1Lo16");
+    private static readonly int GraphFlags1HiId = Shader.PropertyToID("_NB_Flags1Hi16");
     private const int FlagBitUIEffectOn = 1 << 14;
     private const int FlagBitAnimationSheetHelper = 1 << 15;
     private const int FlagBitUIEffectBaseMapMode = 1 << 22;
@@ -65,6 +69,7 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
     private float _yScale;
 
     private static List<Material> usedMaterialList = new List<Material>();
+    private Material _rendererFlagMaterial;
     
     
     // // Start is called before the first frame update
@@ -78,23 +83,26 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         // Debug.Log( "ASUpadate_OnEnable");
         Init();
         #if UNITY_EDITOR
+            lastEditorTime = 0;
+            editorDeltaTime = 0;
             EditorApplication.update += EditorUpdate;
         #endif
     }
 
     private void OnDisable()
     {
-        Init();
-
-        //清掉，避免参数保留。
-        if (isParticleBaseShader)
+        // Preserve the existing Graphic material/clone path. Ordinary Renderer
+        // cleanup must use its acquired material without rebinding or resetting ST.
+        if (gameObject.TryGetComponent(out Graphic graphic))
         {
-            if (mat)
+            Init();
+            if (isParticleBaseShader && mat)
             {
                 GetShaderFlagIds(mat, out _, out int flags1Id);
                 ClearFlagBits(mat, flags1Id, FlagBitAnimationSheetHelper);
             }
         }
+        else ReleaseRendererFlagMaterial();
 
         if (usedMaterialList.Contains(mat))
         {
@@ -122,6 +130,10 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
 
         _xScale = 1 / (float)xSize;
         _yScale = 1 / (float)ySize;
+        frameIndex = 0;
+        _lastIndex = -1;
+        _nextIndex = frameCount > 1 ? 1 : 0;
+        _blendLerp = 0;
         // if (frameCount <= 0)
         // {
         //     frameCount = 1;
@@ -165,6 +177,11 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         if (mat != null)
         {
             mat.SetVector(_propertyID,CalSt(0));
+            if (isParticleBaseShader)
+            {
+                mat.SetVector(_particleBaseAniBlendStPropertyID,CalSt(_nextIndex));
+                mat.SetFloat(_particleBaseAniBlendIntensityPropertyID,0);
+            }
         }
 
     }
@@ -173,6 +190,11 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
 
     public void InitParticleBaseShaderToggle()
     {
+        if (_rendererFlagMaterial && (_rendererFlagMaterial != mat ||
+            !isParticleBaseShader || !isActiveAndEnabled))
+            ReleaseRendererFlagMaterial();
+        bool rendererHost = !gameObject.TryGetComponent(out Graphic graphic) &&
+            gameObject.TryGetComponent(out Renderer renderer);
         if (isParticleBaseShader)
         {
             GetShaderFlagIds(mat, out int flagsId, out int flags1Id);
@@ -185,9 +207,10 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
             {
                 propertyName = "_BaseMap_ST";
             }
-            if (mat)
+            if (mat && (!rendererHost || isActiveAndEnabled))
             {
                 SetFlagBits(mat, flags1Id, FlagBitAnimationSheetHelper);
+                if (rendererHost) _rendererFlagMaterial = mat;
             }
         }
         // else
@@ -222,6 +245,13 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
     private float _blendLerp;
     private void Update()
     {
+        if (!isActiveAndEnabled) return;
+        if (!gameObject.TryGetComponent(out Graphic graphic))
+        {
+            Material current = gameObject.TryGetComponent(out Renderer renderer) ? renderer.sharedMaterial : null;
+            if (current != mat) Init();
+        }
+        if (!mat || _propertyID == 0 || frameCount <= 0) return;
         // if (!isPostProcessShader)//后处理控制不通过才知。
         // {
         //     if(!mat || _propertyID==0) return;
@@ -267,7 +297,7 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
                 mat.SetVector(_propertyID,CalSt(frameIndex));
             // }
             _lastIndex = frameIndex;
-            _nextIndex = frameIndex + 1;
+            _nextIndex = (frameIndex + 1) % frameCount;
             if (isParticleBaseShader)
             {
                 mat.SetVector(_particleBaseAniBlendStPropertyID,CalSt(_nextIndex));
@@ -310,6 +340,36 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
         return new Vector4(_xScale, _yScale, xOffset, yOffset);
     }
 
+    private void ReleaseRendererFlagMaterial()
+    {
+        if (_rendererFlagMaterial)
+        {
+            GetShaderFlagIds(_rendererFlagMaterial, out _, out int flags1Id);
+            ClearFlagBits(_rendererFlagMaterial, flags1Id, FlagBitAnimationSheetHelper);
+        }
+        _rendererFlagMaterial = null;
+    }
+
+    private static bool IsGraphFlagWord(Material material, int propertyId)
+    {
+        return material && (propertyId == GraphFlags0LoId || propertyId == GraphFlags1LoId) &&
+            material.HasProperty(GraphFlags0LoId) && material.HasProperty(GraphFlags0HiId) &&
+            material.HasProperty(GraphFlags1LoId) && material.HasProperty(GraphFlags1HiId);
+    }
+
+    private static uint ReadGraphFlagWord(Material material, int lowId, int highId)
+    {
+        uint lo = (uint)Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(lowId),0,65535));
+        uint hi = (uint)Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(highId),0,65535));
+        return lo | (hi << 16);
+    }
+
+    private static void WriteGraphFlagWord(Material material, int lowId, int highId, uint value)
+    {
+        material.SetFloat(lowId, value & 65535u);
+        material.SetFloat(highId, (value >> 16) & 65535u);
+    }
+
     private static void SetFlagBits(Material material, int propertyId, int bits)
     {
         if (!material)
@@ -317,6 +377,13 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
             return;
         }
 
+        if (IsGraphFlagWord(material, propertyId))
+        {
+            int highId = propertyId == GraphFlags0LoId ? GraphFlags0HiId : GraphFlags1HiId;
+            WriteGraphFlagWord(material, propertyId, highId,
+                ReadGraphFlagWord(material, propertyId, highId) | (uint)bits);
+            return;
+        }
         material.SetInteger(propertyId, material.GetInteger(propertyId) | bits);
     }
 
@@ -327,16 +394,36 @@ public class AnimationSheetHelper : MonoBehaviour,IMaterialModifier
             return;
         }
 
+        if (IsGraphFlagWord(material, propertyId))
+        {
+            int highId = propertyId == GraphFlags0LoId ? GraphFlags0HiId : GraphFlags1HiId;
+            WriteGraphFlagWord(material, propertyId, highId,
+                ReadGraphFlagWord(material, propertyId, highId) & ~(uint)bits);
+            return;
+        }
         material.SetInteger(propertyId, material.GetInteger(propertyId) & ~bits);
     }
 
     private static bool CheckFlagBits(Material material, int propertyId, int bits)
     {
+        if (IsGraphFlagWord(material, propertyId))
+        {
+            int highId = propertyId == GraphFlags0LoId ? GraphFlags0HiId : GraphFlags1HiId;
+            return (ReadGraphFlagWord(material, propertyId, highId) & (uint)bits) != 0u;
+        }
         return material && (material.GetInteger(propertyId) & bits) != 0;
     }
 
     private static void GetShaderFlagIds(Material material, out int flagsId, out int flags1Id)
     {
+        if (material && material.HasProperty(GraphFlags0LoId) &&
+            material.HasProperty(GraphFlags0HiId) && material.HasProperty(GraphFlags1LoId) &&
+            material.HasProperty(GraphFlags1HiId))
+        {
+            flagsId = GraphFlags0LoId;
+            flags1Id = GraphFlags1LoId;
+            return;
+        }
         if (material && (material.HasProperty(NBShaderFlagsId) || material.HasProperty(NBShaderFlags1Id)))
         {
             flagsId = NBShaderFlagsId;

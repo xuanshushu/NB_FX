@@ -668,6 +668,20 @@ void NBGraphApplyFogV1(inout half3 rgb, float interpolatedFogFactor,
     }
 }
 
+// The two samples share the exact BaseMap wrap, HDR decode and force-LOD0
+// path. Alpha selection/masks/lighting consume the already-blended half4.
+half4 NBGraphSampleFlipbookBaseV1(UnityTexture2D map,
+    float2 primaryUV, float2 blendUV, float blendWeight,
+    float flipbookToggle, uint wrapFlags, uint noMipFlags)
+{
+    uint wrap = NBGraphBaseMapWrapMode(wrapFlags);
+    bool lod0 = (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u;
+    half4 first = NBGraphSampleMap(map, primaryUV, wrap, lod0);
+    if (flipbookToggle <= 0.5) return first;
+    half4 second = NBGraphSampleMap(map, blendUV, wrap, lod0);
+    return lerp(first, second, blendWeight);
+}
+
 void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 EffectiveBaseColor,
     float NB_Flags0Lo16, float NB_Flags0Hi16,
@@ -757,6 +771,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float ChromaticToggle, float CustomDataFlag0Lo16,
     float CustomDataFlag0Hi16, float4 Custom1, float4 Custom2,
     float FogFactor, float FogIntensity,
+    float FlipbookToggle, float2 BlendUV, float BlendWeight,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
@@ -842,9 +857,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     }
     else
 #endif
-        baseSample = NBGraphSampleMap(BaseMap, baseUV,
-            NBGraphBaseMapWrapMode(wrapFlags),
-            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
+        baseSample = NBGraphSampleFlipbookBaseV1(BaseMap, baseUV,
+            BlendUV + mainTexNoise, BlendWeight, FlipbookToggle,
+            wrapFlags, noMipFlags);
     input.sampledAlbedo = baseSample;
     // Historical sampled-color/A ports remain serialized but are disconnected.
     // The packed channel word selects alpha from this one protocol-owned sample.
@@ -1195,6 +1210,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float ChromaticToggle, float CustomDataFlag0Lo16,
     float CustomDataFlag0Hi16, float4 Custom1, float4 Custom2,
     float FogFactor, float FogIntensity,
+    float FlipbookToggle, float2 BlendUV, float BlendWeight,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
@@ -1278,9 +1294,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     }
     else
 #endif
-        baseSample = NBGraphSampleMap(BaseMap, baseUV,
-            NBGraphBaseMapWrapMode(wrapFlags),
-            (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BASEMAP) != 0u);
+        baseSample = NBGraphSampleFlipbookBaseV1(BaseMap, baseUV,
+            BlendUV + mainTexNoise, BlendWeight, FlipbookToggle,
+            wrapFlags, noMipFlags);
     input.sampledAlbedo = baseSample;
     input.selectedAlpha = NBGraphSelectBaseAlpha(baseSample,
         NB_ColorChannelLo16);

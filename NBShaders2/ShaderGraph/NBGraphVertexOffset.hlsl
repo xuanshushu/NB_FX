@@ -52,6 +52,7 @@ void NBGraphVertexOffset_float(
     float4 CylinderMatrix1,
     float4 CylinderMatrix2,
     float4 CylinderMatrix3,
+    float4 UV3, float FlipbookToggle,
     out float3 OutPositionOS, out float3 OutNormalOS,
     out float3 OutTangentOS, out float Supported)
 {
@@ -87,6 +88,7 @@ void NBGraphVertexOffset_float(
     uvInput.meshTexcoord0 = UV0;
     uvInput.custom1 = UV1;
     uvInput.custom2 = UV2;
+    uvInput.specialUVInTexcoord3 = UV3.yz;
     uvInput.positionOS = PositionOS;
     uvInput.positionWS = TransformObjectToWorld(PositionOS);
     float4 clipPosition = TransformObjectToHClip(PositionOS);
@@ -97,7 +99,7 @@ void NBGraphVertexOffset_float(
         (FLAG_BIT_PARTICLE_UTWIRL_ON | FLAG_BIT_PARTICLE_POLARCOORDINATES_ON);
     uvParams.flags1 = flags1 &
         (FLAG_BIT_PARTICLE_1_UV_FROM_MESH | FLAG_BIT_PARTICLE_1_USE_TEXCOORD1 |
-            FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 | FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE);
+            FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 | FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE | FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM);
     uvParams.uvModeFlag0 = modes;
     uvParams.uvModeFlagType0 = types;
     uvParams.baseMapST = BaseMapST;
@@ -114,6 +116,7 @@ void NBGraphVertexOffset_float(
     uvParams.twirlParameter = TWParameter;
     uvParams.twirlStrength = TWStrength;
     uvParams.polarCenter = PCCenter;
+    uvParams.flipbookBlending = FlipbookToggle > 0.5 ? 1u : 0u;
     uvParams.timeY = _Time.y;
     BaseUVs baseUVs = NBFX_BuildBaseUVsV1(uvInput, uvParams);
     half2 mapUV = (half2)GetUVByUVMode(modes, types,

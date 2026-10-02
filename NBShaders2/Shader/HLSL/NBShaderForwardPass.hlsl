@@ -356,14 +356,10 @@
         float2 MainTex_UV;
         float3 blendUv;
         blendUv.xy = input.texcoord2AndSpecialUV.xy;
-        if (CheckLocalFlags1(FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER))
-        {
-            blendUv.z = _AnimationSheetHelperBlendIntensity;
-        }
-        else
-        {
-            blendUv.z = input.normalWSAndAnimBlend.w;
-        }
+        blendUv.z = NBFX_ResolveFlipbookWeightV1(
+            input.normalWSAndAnimBlend.w,
+            _AnimationSheetHelperBlendIntensity,
+            CheckLocalFlags1(FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER));
         float2 MaskMapuv;
         float2 MaskMapuv2;
         float2 MaskMapuv3;
