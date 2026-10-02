@@ -1,0 +1,6 @@
+{
+  "sourcePath": "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.25f1\\Editor\\Data\\Resources\\CGIncludes\\UnityCG.cginc",
+  "sourceFileSHA256": "b3eaeccf5d1ead844abb5c1023367ed06a000882089bb46c38e87e385bd28f5e",
+  "exactFunction": "inline float LinearToGammaSpaceExact (float value)\n{\n    if (value <= 0.0F)\n        return 0.0F;\n    else if (value <= 0.0031308F)\n        return 12.92F * value;\n    else if (value < 1.0F)\n        return 1.055F * pow(value, 0.4166667F) - 0.055F;\n    else\n        return pow(value, 0.45454545F);\n}",
+  "scope": "Original scalar dependency extracted with unique shared name; official installed code unchanged"
+}
