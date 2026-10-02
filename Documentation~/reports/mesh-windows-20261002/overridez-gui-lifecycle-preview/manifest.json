@@ -1,0 +1,51 @@
+{
+  "scope": "Preview only, GUI assignment lifecycle. Parent owns installation and serial Unity verification. No central Graph/HLSL/render-state/Resolver/protocol changes.",
+  "task": "OVZ-R",
+  "baseProductHEAD": "8a29a5e68ceb7965af66450599af9c24c7ece0b0",
+  "inputGuiSHA256": "125c8c37553072d45ce97a996285936d53c293139a8113ff17f2024c7d03a6fc",
+  "records": [
+    {
+      "path": "NBShaders2/Editor/NBShaderGraphGUI.cs",
+      "beforeSHA256": "125c8c37553072d45ce97a996285936d53c293139a8113ff17f2024c7d03a6fc",
+      "afterSHA256": "946aae39b15747b68a1ff8e0ecd7e6f207d5cd843b5431035bd12ac23da28812"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphOverrideDepthLifecycleTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "b8c660f571694bc58976ad5a60adca0e64f0b0ec4a3adfa2c1d73becaaf10517"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphOverrideDepthLifecycleTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "d486b7108eb8a9da243e92c38057253ac416cbcbb5bb2af83b1f5365e0d4f853"
+    }
+  ],
+  "interface": "Existing public ShaderGUI AssignNewShaderToMaterial/ValidateMaterial; URP delegate owns Surface; existing same NB keyword sync owns OverrideZ/SixWay.",
+  "newPackedBits": 0,
+  "newKeywordNames": 0,
+  "newAssemblyReferences": 0,
+  "installed": false,
+  "unityVerification": "NOT RUN",
+  "expectedCases": 17,
+  "testFilter": "G4OverrideZGUI_",
+  "exactCaseNames": [
+    "G4OverrideZGUI_assign_off_unlit_absorptionoff",
+    "G4OverrideZGUI_assign_off_unlit_absorptionon",
+    "G4OverrideZGUI_assign_off_sixway_absorptionoff",
+    "G4OverrideZGUI_assign_off_sixway_absorptionon",
+    "G4OverrideZGUI_assign_on_unlit_absorptionoff",
+    "G4OverrideZGUI_assign_on_unlit_absorptionon",
+    "G4OverrideZGUI_assign_on_sixway_absorptionoff",
+    "G4OverrideZGUI_assign_on_sixway_absorptionon",
+    "G4OverrideZGUI_validate_off_unlit_transitions",
+    "G4OverrideZGUI_validate_off_sixway_transitions",
+    "G4OverrideZGUI_validate_on_unlit_transitions",
+    "G4OverrideZGUI_validate_on_sixway_transitions",
+    "G4OverrideZGUI_validate_noop_off_serialized",
+    "G4OverrideZGUI_validate_noop_on_serialized",
+    "G4OverrideZGUI_urp_surface_opaque",
+    "G4OverrideZGUI_urp_surface_transparent",
+    "G4OverrideZGUI_multi_material_independent"
+  ],
+  "risk": "Only assignment lifecycle changes. URP first clears/restores its keywords; then existing idempotent NB sync restores three current keywords. GPU source unchanged."
+}

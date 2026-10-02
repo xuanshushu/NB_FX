@@ -1,0 +1,92 @@
+{
+  "task": "GUI-NORMALIZED-READER-1",
+  "status": "preview-only; not installed; Unity compilation and all NUnit execution unrun",
+  "capability": "NBGraph.Mesh.KeywordIntent.v1",
+  "api": "TryResolveGraphSupportedKeywordIntent(Material, NBShaderFeatureTier, IEnumerable<string>, out NBShaderMaterialIntentResult, out string[] unavailableFeatureKeywords)",
+  "inputPackage": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Packages\\NB_FX",
+  "inputGraphSHA256": "ab81db7259959ae3975efac30ab4a472340547133d99a5b911ec9d7524c7c611",
+  "inputResolverSHA256": "a437ff950635e9ce8afd4d03c58b375ca925814c75c38d857e7aee0fd91febd8",
+  "toggleBindings": 37,
+  "supportedToggleBindings": 28,
+  "unavailableToggleBindings": 9,
+  "graphAssetChanged": false,
+  "gatesChanged": false,
+  "PassProjection": false,
+  "passesResult": "empty by design; no Pass/Tier/renderer acceptance claim",
+  "intentAuthority": "Feature keyword toggles read from existing real Float fields; raw packed halfwords only validated as finite Float storage; no raw/mirror synchronization or authority guessing. Existing marker-2 GUI seed/notification contract is preserved.",
+  "URPNativeBlendAuthority": "Installed URP17.3 BaseShaderGUI.UpdateMaterialSurfaceOptions: Clip>=0.5; transparent Multiply -> _ALPHAMODULATE_ON; optional _BlendModePreserveSpecular>0 on Alpha/Additive -> _ALPHAPREMULTIPLY_ON. No legacy _TransparentMode projection.",
+  "compileCheck": "C# managed syntax with minimal non-Unity stubs passed; not Unity compilation",
+  "testsAuthoredCasesStatic": 113,
+  "testsExecuted": 0,
+  "files": [
+    {
+      "path": "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs",
+      "beforeSHA256": "a437ff950635e9ce8afd4d03c58b375ca925814c75c38d857e7aee0fd91febd8",
+      "afterSHA256": "df566cb684ef40b293cf2ab8a8ed369f8218bab8279e3fda59c1452f6de036ce",
+      "bytes": 32813
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs.meta",
+      "beforeSHA256": "8ab1c79e6c1249d8787a8c5eb59c80047e93c8390e138859d10d620935a2690c",
+      "afterSHA256": "8ab1c79e6c1249d8787a8c5eb59c80047e93c8390e138859d10d620935a2690c",
+      "bytes": 240
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphNormalizedIntentReaderTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "5d7259bfeec0ff53d79fdb65ab93ee94246990a7bb2ddfa377f3e3c9f49290bf",
+      "bytes": 30574
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphNormalizedIntentReaderTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "a230e7f9f4693494b83cef4e2e87d1638c74bdc17608238b8164b064071fe9c2",
+      "bytes": 62
+    }
+  ],
+  "sourceProtection": {
+    "isolatedResolverUnchanged": "Source was only read/copied, never rewritten; exact installed-source SHA listed above. All product writes remain preview-only.",
+    "otherSourceWrites": "none; only preview and assigned audit notes were written",
+    "sourceSHAStillMatchesManifest": true
+  },
+  "staticProtectionChecks": {
+    "TryResolveGraphNoisePair": true,
+    "ResolveVatKeywords": true,
+    "FilterAllowedKeywords": true,
+    "ApplyKeywordDependencies": true,
+    "ResolvePassIntents": true,
+    "HasFloatShaderProperty": true
+  },
+  "testIdentityPlan": "plan.json",
+  "testIdentitySource": "source; no live discovery",
+  "testCaseNamesExplicit": true,
+  "defaultFieldRangeAudit": "default-field-range-audit.json",
+  "records": [
+    {
+      "path": "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs",
+      "beforeSHA256": "a437ff950635e9ce8afd4d03c58b375ca925814c75c38d857e7aee0fd91febd8",
+      "afterSHA256": "df566cb684ef40b293cf2ab8a8ed369f8218bab8279e3fda59c1452f6de036ce",
+      "bytes": 32813
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs.meta",
+      "beforeSHA256": "8ab1c79e6c1249d8787a8c5eb59c80047e93c8390e138859d10d620935a2690c",
+      "afterSHA256": "8ab1c79e6c1249d8787a8c5eb59c80047e93c8390e138859d10d620935a2690c",
+      "bytes": 240
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphNormalizedIntentReaderTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "5d7259bfeec0ff53d79fdb65ab93ee94246990a7bb2ddfa377f3e3c9f49290bf",
+      "bytes": 30574
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphNormalizedIntentReaderTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "a230e7f9f4693494b83cef4e2e87d1638c74bdc17608238b8164b064071fe9c2",
+      "bytes": 62
+    }
+  ],
+  "canonicalFileListField": "files",
+  "recordsAliasPurpose": "Installer compatibility: records is an identical alias of files; source/test bytes unchanged by alias."
+}

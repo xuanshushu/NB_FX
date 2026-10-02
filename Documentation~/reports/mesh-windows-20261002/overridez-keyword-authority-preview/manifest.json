@@ -1,0 +1,33 @@
+{
+  "task": "OVZ keyword authority",
+  "scope": "Preview only, shared Graph adapter original keyword contract repair. Parent applies to latest combined/root previews and verifies serially. No original candidate/package/isolation/Graph edits.",
+  "records": [
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphOverrideDepth.hlsl",
+      "beforeSHA256": "1d87f44a6451495a7083284221cb3627e30e1bea7bcae5be3804eb05f826e76f",
+      "afterSHA256": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphOverrideDepthTests.cs",
+      "beforeSHA256": "4a6ee11ef5ad498b55aa71ba9910b475a461e6ad04117465943aed804a0db145",
+      "afterSHA256": "2c392661a9a9b3027206da95101684af3df4623592c7765500db18143c6e7d36"
+    }
+  ],
+  "interface": "Unchanged 3 input + 1 output float ABI and existing adapter GUID. _OVERRIDE_Z compile state alone owns device depth; disabled variant placeholder is never emitted because Forward SV_Depth is conditional.",
+  "sourceReason": "Official SG Screen Position Pixel z is zero; original NB Shader ignores Toggle once keyword enabled. Removed runtime Toggle branch and PixelPosition.z fallback.",
+  "original16CaseSourceExact": true,
+  "originalAssertionExpressionsExact": true,
+  "originalAssertionCalls": 12,
+  "newAssertionCalls": 12,
+  "originalSelfContainedFixtureSHA256": "4a6ee11ef5ad498b55aa71ba9910b475a461e6ad04117465943aed804a0db145",
+  "newPackedBits": 0,
+  "newKeywordNames": 0,
+  "installed": false,
+  "unityVerification": "NOT RUN",
+  "uniqueTotalIdentities": 24,
+  "newKeywordMismatchIdentities": 8,
+  "legacyIdentitiesRetained": 16,
+  "captureFoldersDistinct": true,
+  "newCapturePrefix": "keyword-on-toggle-off or keyword-off-toggle-on",
+  "fixtureInterface": "Original normal case uses Validate unchanged. Mismatch case Validate first then explicit identical _OVERRIDE_Z keyword for A/B/C; same strict finite/zero-delta/repeat/visible/strong-response render body."
+}

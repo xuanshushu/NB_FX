@@ -1,0 +1,50 @@
+{
+  "task": "F1 existing AnimationSheetHelper lifecycle",
+  "sourceScopeMapping": [
+    {
+      "source": "Main product Helper",
+      "sha": "6da96dc11754c111a8b28383bb0ef3ad132e18d395c73c87001a737198c39aaa",
+      "state": "Integer Material flags only. Root temporary source must not substitute for combined F0."
+    },
+    {
+      "source": "Preserved combined Helper",
+      "sha": "ff1f2f3329ff195cee11570306e1b284c6d3183b6230904d075931c96c948109",
+      "state": "Already supports flags0/1 float16 halves with same uint words; lifecycle defects remained."
+    },
+    {
+      "source": "F1 preview",
+      "sha": "a41b6d2caa635f24277f276eeecae4a98e9e2d0d677335e7cfa16b4937cc794a",
+      "state": "Adds Renderer lifecycle repairs only; flags backend and public serialized fields remain exact."
+    }
+  ],
+  "originalLifecycle": {
+    "OnEnable": "Init + subscribe EditorUpdate; old editor timestamp persisted.",
+    "Init": "Clamps grid, binds Graphic.material/materialForRendering or Renderer.sharedMaterial/material, sets flag15 and only first currentST. Does not reset _lastIndex, initialize nextST or zero blend.",
+    "Update": "Manual normalized frame or elapsed-time frames, writes only when _lastIndex changes; nextIndex had no end wrap; no null guard/binding refresh.",
+    "OnDisable": "Called Init again: reread possibly replaced material and reset its ST, then clear helper bit on that new material, leaving previous acquired material flagged.",
+    "GetModifiedMaterial": "Uses static usedMaterialList: first base reuse, subsequent duplicate clones. Same-caller repeated requests can clone; no explicit clone destruction. Not changed by this Mesh slice.",
+    "multipleRenderer": "EditMode sharedMaterial is one global ST/flag target; cannot represent independent frames. Distinct material targets can be independent.",
+    "destroy": "OnDisable does cleanup on normal enabled Component destruction. No original ST snapshot/restore contract; first-frame reset was an Init side effect."
+  },
+  "previewLifecycle": {
+    "Init": "Reset frameIndex/lastIndex/next/blend, material first/nextST and intensity. Single frame next0.",
+    "RendererBinding": "Capture existing flag material; Update detects changed/removed Renderer.sharedMaterial and reuses Init, releases old helper bit.",
+    "RendererDisable": "Release only captured old binding; no material reacquisition and no ST reset. Disabled manual Init does not reacquire Renderer helper flag.",
+    "Graphics": "Old Graphic material resolution/OnDisable and GetModifiedMaterial path kept. Common Init nextST/reset fix applies, but full UI clone/lifecycle regression not verified.",
+    "EditorTime": "OnEnable resets private delta/time bookkeeping. Automatic elapsed-time behavior still pending actual test.",
+    "wrap": "Next index wraps modulo frameCount. Manual negative/multi-loop positions and single/invalid grid cases specified."
+  },
+  "existing36Evidence": "G4GraphFlipbookTests.SetState manually writes helper ST/blend and sets helperbit; 36 render cases prove limited input consumer behavior, not actual Component OnEnable/Disable/frame loop.",
+  "new16Evidence": "Real Component factory and lifecycle callbacks, with actual existing Init/Update. No fixture writes helperbit15, currentST, nextST or blend intensity; seeds only unrelated flag words with helperbit off. All tests currently NOT RUN.",
+  "remaining": [
+    "Actual Helper-driven rendered ABC across complete frame cycle, elapsed-time playback and negative speed.",
+    "Full special UV/CustomData/Normal/POM/SixWay/lighting combinations and Shader GUI/Tier integration.",
+    "DepthOnly/ShadowCaster/default DepthNormals/SSAO and all screen/Pass combinations.",
+    "Shared EditMode material independent helpers require explicit lease/instance/MPB contract decision; not implemented.",
+    "Original Graphic/UIParticle clone reentry/lifetime/disposal and serialized/domain reload restoration.",
+    "Player/SVC/stripping/variants and performance."
+  ],
+  "GraphAssetEdits": 0,
+  "UnityRuns": 0,
+  "G3G4Passed": false
+}

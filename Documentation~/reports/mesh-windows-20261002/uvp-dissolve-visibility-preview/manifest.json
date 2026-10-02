@@ -1,0 +1,47 @@
+{
+  "task": "UVP-DISSOLVE-VISIBILITY-DIAGNOSTIC",
+  "installed": false,
+  "UnityRun": false,
+  "rootUnchanged": true,
+  "reason": "Prior batch-7 all 520 raw f32 captures equal -23.203125 (=half0xCDCD), including pre-Dissolve Graph warm; unity.log:588 shows staging texture failure887a0005 and later resource/shader failures. Classified GPU/invalid readback; Dissolve40 remains unverified.",
+  "input": {
+    "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphPositionUVTests.cs",
+    "sha256": "d42f0a815c4c6826f36f924e4dd4784a1771a7442c670646e20f7933b8b1c856"
+  },
+  "records": [
+    {
+      "path": "Tests/URP/Editor/G4GraphPositionUVTests.cs",
+      "beforeSHA256": "d42f0a815c4c6826f36f924e4dd4784a1771a7442c670646e20f7933b8b1c856",
+      "afterSHA256": "92ba685895f4964dd7a7e637a3e6027219090c383aae0285ca23dd22633b86a0",
+      "newFile": false
+    }
+  ],
+  "changes": [
+    "Add real empty-target/background repeat capture with ordering/positive alpha checks before feature math.",
+    "Require Graph pre-Dissolve warm visible>100 using the existing visibility criterion.",
+    "Preserve raw+PNG before per-capture full-frame finite/half0xCDCD guard and health JSON.",
+    "No rendering parameters, product source, existing finite/visible/repeat/response/parity thresholds or old XML changed."
+  ],
+  "firstRun": {
+    "freshEditor": true,
+    "api": "Direct3D11",
+    "unity": "6000.3.25f1",
+    "isolationProject": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002",
+    "filter": [
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_vertex_perspective"
+    ],
+    "cases": 2,
+    "claim": "Diagnostic minimum, not old40 override"
+  },
+  "ifHostHealthy": "Run all40 original case identities in fresh serial short batches with same source/hash; keep original40 Failed. Microdiff remains strict failed/manual. Any false strong-response or real missing function gets separate diagnosis.",
+  "ifHostUnhealthy": "No feature math conclusion; keep GPU/invalid readback status and diagnose first failing API/log/health. Do not retry entire40 blindly.",
+  "acceptance": "Original finite, visible>100, repeat0, response>.03 and responsePixels>48, A/B0 and B/C0 preserved verbatim.",
+  "staticReview": {
+    "originalAssertLinesPreserved": 25,
+    "originalSourceBytesUnchanged": true,
+    "freshUnityCompileUnverified": true,
+    "runtimeResultsUnverified": true,
+    "syntaxNotes": "Uses existing namespace imports and NUnit APIs; new types are private nested serializable classes; no external dependency."
+  }
+}

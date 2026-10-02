@@ -1,0 +1,76 @@
+{
+  "scope": "F1 preview only: existing AnimationSheetHelper normal Mesh Renderer lifecycle + original integer/Graph float-halfword hosts. Root/main/runtime/Graph/isolation unchanged by this Agent. Parent applies after restoring combined candidate, not current temporary root Graph.",
+  "records": [
+    {
+      "path": "XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs",
+      "beforeSHA256": "ff1f2f3329ff195cee11570306e1b284c6d3183b6230904d075931c96c948109",
+      "afterSHA256": "a41b6d2caa635f24277f276eeecae4a98e9e2d0d677335e7cfa16b4937cc794a"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphFlipbookHelperLifecycleTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "6f7228ed2bba166d1551dabe7ecbcb4457b26068682694a8202353da6f507483"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphFlipbookHelperLifecycleTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "e1b5983bb11b8bcd0ece5f6c668977ca70280870ec7ca21152519d04ff915cf9"
+    }
+  ],
+  "inputCombinedHelperSHA256": "ff1f2f3329ff195cee11570306e1b284c6d3183b6230904d075931c96c948109",
+  "mainProductHelperSHA256": "6da96dc11754c111a8b28383bb0ef3ad132e18d395c73c87001a737198c39aaa",
+  "mainProductGraphHelperSupport": false,
+  "combinedGraphHelperSupport": true,
+  "inputBackup": ".utmp/nbfx-resume-20261002/overridez-combined-before-root-slice/XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs",
+  "backupMapping": ".utmp/nbfx-resume-20261002/overridez-root-slice-isolation-installation.json",
+  "existingRuntimeMetaSHA256": "3c0ee6d0176843883c47bc1fed87a65ab9d61b697fdd60040fc6eff5544e283b",
+  "existingRuntimeGuidPreserved": true,
+  "serializedPublicFieldsUnchanged": true,
+  "flagsBackendUnchanged": true,
+  "protocol": "Existing flags word1 bit15, old integer IDs or four exact float16 halves; no new bits/word locations/mirror authority/GUI/Resolver.",
+  "newKeywords": 0,
+  "newPackedBits": 0,
+  "changes": [
+    "Init reset frameIndex/lastIndex/nextIndex/blend and initialize current/next ST plus intensity.",
+    "Wrap next frame modulo frameCount; single frame stays in atlas.",
+    "Null/disabled update guard; Renderer binding changed/removed reuses Init.",
+    "Renderer captures original flag material; switches/releases or Disable clear only that binding and do not re-Init/reset ST.",
+    "OnEnable resets Editor delta bookkeeping; Graphic material/clone disable route and GetModifiedMaterial source preserved."
+  ],
+  "componentVerification": "Real AddComponent, OnEnable/OnDisable through enabled/active state, DestroyImmediate, actual existing Init/Update invoked; no fixture writes helperbit15/frameST/nextST/intensity.",
+  "fixtureRoles": [
+    "frozen/current existing integer shader hosts",
+    "installed combined Graph float-halfword host"
+  ],
+  "expectedCases": 16,
+  "testFilter": "G4FlipbookHelper_",
+  "exactCaseNames": [
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_init_frozen",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_init_current",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_init_graph",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_wrap_frozen",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_wrap_current",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_wrap_graph",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_disable_destroy_frozen",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_disable_destroy_current",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_disable_destroy_graph",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_binding_frozen",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_binding_current",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_binding_graph",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_multirenderer_frozen",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_multirenderer_current",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_multirenderer_graph",
+    "NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_no_renderer_null_lifecycle"
+  ],
+  "installed": false,
+  "unityVerification": "NOT RUN",
+  "unvalidated": [
+    "Shared EditMode material multiple helpers: same ST/latest writer, independent Disable clears sharedbit; no lease/instances/MPB change.",
+    "Automatic playback elapsed-time/negative-speed and long-running domain/scene reload.",
+    "Graphic/UIParticle clone lifetime/disposal and full old-host UI regression; Graph UI excluded.",
+    "Helper-driven rendered ABC and full specialUV/CustomData/lighting/SixWay combinations.",
+    "DepthOnly/ShadowCaster/default Pass behavior with actual Component.",
+    "Player, variants/SVC/stripping, performance."
+  ],
+  "fullMeshGatePassed": false
+}

@@ -1,0 +1,143 @@
+{
+  "revision": 2,
+  "scope": "static ABI review only: no Graph builder execution, no candidate Graph asset write, no Unity/HLSL compiler execution",
+  "sourceGraph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\overridez-combined-before-root-slice\\NBShaders2\\ShaderGraph\\NBShaderGraph.shadergraph",
+  "sourceGraphSHA256": "ab81db7259959ae3975efac30ab4a472340547133d99a5b911ec9d7524c7c611",
+  "candidateHLSLSHA256": "87b89d9d970dbecdcdaf3eae96ac0daf36345795c6eac815317bccfed4b276ba",
+  "officialCustomFunctionNode": {
+    "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Library\\PackageCache\\com.unity.shadergraph@2fa139ee8b62\\Editor\\Data\\Nodes\\Utility\\CustomFunctionNode.cs",
+    "sha256": "5f215dd875e8560c0a0f806433607ffd8c8383dd7e29a0fd9cae77b11b10e790",
+    "packageVersion": "17.3.0",
+    "lineAnchors": {
+      "method": 151,
+      "getInputs": 156,
+      "getOutputs": 157,
+      "inputForeach": 190,
+      "outputForeach": 208,
+      "outputDeclarationForeach": 174
+    },
+    "behavior": "GenerateNodeCode obtains inputSlots and outputSlots separately, then foreach inputs followed by foreach outputs. Raw m_Slots output positions do not define interleaved call order."
+  },
+  "rawOriginalSlotsCount": 223,
+  "rawOriginalOutputPositions": [
+    {
+      "index0": 3,
+      "id": 3,
+      "label": "Out"
+    },
+    {
+      "index0": 145,
+      "id": 145,
+      "label": "NBDistortionSignedRG"
+    },
+    {
+      "index0": 146,
+      "id": 146,
+      "label": "NBDistortionNoiseMask"
+    }
+  ],
+  "rawSlotPolicy": "Append three new input refs; remove(newRefs) equals exact old raw refs. Do NOT insert before first raw Out.",
+  "filteredArgumentCount": 226,
+  "floatAllArgumentsMatch": true,
+  "halfAllArgumentsMatch": true,
+  "halfShape": "Independent full implementation; no internal NBGraphBaseColor_float call. One gate multiplication per precision entry.",
+  "futureWrapperPolicy": "Builder refuses half-to-float wrapper until a separately reviewed forwarding ABI is implemented.",
+  "last12Correspondence": [
+    {
+      "callArgumentIndex0": 214,
+      "slotId": 217,
+      "slotLabel": "LocalToWorld2",
+      "slotType": "input",
+      "floatParameter": "LocalToWorld2",
+      "halfParameter": "LocalToWorld2"
+    },
+    {
+      "callArgumentIndex0": 215,
+      "slotId": 218,
+      "slotLabel": "LocalToWorld3",
+      "slotType": "input",
+      "floatParameter": "LocalToWorld3",
+      "halfParameter": "LocalToWorld3"
+    },
+    {
+      "callArgumentIndex0": 216,
+      "slotId": 219,
+      "slotLabel": "WorldToLocal0",
+      "slotType": "input",
+      "floatParameter": "WorldToLocal0",
+      "halfParameter": "WorldToLocal0"
+    },
+    {
+      "callArgumentIndex0": 217,
+      "slotId": 220,
+      "slotLabel": "WorldToLocal1",
+      "slotType": "input",
+      "floatParameter": "WorldToLocal1",
+      "halfParameter": "WorldToLocal1"
+    },
+    {
+      "callArgumentIndex0": 218,
+      "slotId": 221,
+      "slotLabel": "WorldToLocal2",
+      "slotType": "input",
+      "floatParameter": "WorldToLocal2",
+      "halfParameter": "WorldToLocal2"
+    },
+    {
+      "callArgumentIndex0": 219,
+      "slotId": 222,
+      "slotLabel": "WorldToLocal3",
+      "slotType": "input",
+      "floatParameter": "WorldToLocal3",
+      "halfParameter": "WorldToLocal3"
+    },
+    {
+      "callArgumentIndex0": 220,
+      "slotId": 223,
+      "slotLabel": "NBGraphTierAllowMask",
+      "slotType": "input",
+      "floatParameter": "NBGraphTierAllowMask",
+      "halfParameter": "NBGraphTierAllowMask"
+    },
+    {
+      "callArgumentIndex0": 221,
+      "slotId": 224,
+      "slotLabel": "NBGraphTierAllowMask2",
+      "slotType": "input",
+      "floatParameter": "NBGraphTierAllowMask2",
+      "halfParameter": "NBGraphTierAllowMask2"
+    },
+    {
+      "callArgumentIndex0": 222,
+      "slotId": 225,
+      "slotLabel": "NBGraphTierAllowMask3",
+      "slotType": "input",
+      "floatParameter": "NBGraphTierAllowMask3",
+      "halfParameter": "NBGraphTierAllowMask3"
+    },
+    {
+      "callArgumentIndex0": 223,
+      "slotId": 3,
+      "slotLabel": "Out",
+      "slotType": "output",
+      "floatParameter": "Out",
+      "halfParameter": "Out"
+    },
+    {
+      "callArgumentIndex0": 224,
+      "slotId": 145,
+      "slotLabel": "NBDistortionSignedRG",
+      "slotType": "output",
+      "floatParameter": "NBDistortionSignedRG",
+      "halfParameter": "NBDistortionSignedRG"
+    },
+    {
+      "callArgumentIndex0": 225,
+      "slotId": 146,
+      "slotLabel": "NBDistortionNoiseMask",
+      "slotType": "output",
+      "floatParameter": "NBDistortionNoiseMask",
+      "halfParameter": "NBDistortionNoiseMask"
+    }
+  ]
+}

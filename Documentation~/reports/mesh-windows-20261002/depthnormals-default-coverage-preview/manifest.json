@@ -1,0 +1,63 @@
+{
+  "task": "DN0-COVERAGE16",
+  "scope": "Preview tests/hooks only; no shader/HLSL/Graph/SubTarget/product change. Current installed DN0 corea1b1c7be captured before modification.",
+  "installed": false,
+  "UnityRun": false,
+  "records": [
+    {
+      "path": "Tests/URP/Editor/G4GraphVATTests.cs",
+      "beforeSHA256": "a1b1c7be45f96c20739ffdd1958097d25f338b525ed5bf73b8c3bd43e5fb78bb",
+      "afterSHA256": "399175927b0a5287097621a2a8837fbb024fd000ae638721c65d8508249db7ae"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphVATTests.cs.meta",
+      "beforeSHA256": "69ef3d33e992f0a04646c978b597ff3e9b9ffcc0441a457d2367bad15419fc13",
+      "afterSHA256": "69ef3d33e992f0a04646c978b597ff3e9b9ffcc0441a457d2367bad15419fc13"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphDN0DefaultCoverageTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "13a8cc9e5a0838fac97a66658fbdb24716ba8b6c55f05417c919e73173e24ef2"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphDN0DefaultCoverageTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "feb9dca477560474cbe56aa4484adef8a83197d32436962c864ec80d614fa1eb"
+    }
+  ],
+  "sourceSnapshotBeforeSHA256": "a1b1c7be45f96c20739ffdd1958097d25f338b525ed5bf73b8c3bd43e5fb78bb",
+  "variantDesign": [
+    "softbody-normal-bias0",
+    "softbody-clip-bias1",
+    "tyabsolute-vatnormal-bias0",
+    "tyrelative-clip-bias1",
+    "customlocal-hpositive-bias0",
+    "customlocal-tnegative-clip-bias1",
+    "stencil-softbody-fail-zfail",
+    "stencil-tyrelative-fail-zfail"
+  ],
+  "cases": 16,
+  "originalDN0CaseIdentitiesRetained": true,
+  "original80AssertionLinesPreservedVerbatimIncludingLegacy57": true,
+  "reflectionABI": "Restored unique private bool,bool,bool CaptureVATDepthAndShadowGeometry wrapper; original NonPublic Invoke3 consumers unchanged. Default2/new16 use independently named new4 Core/publicdefaultwrapper.",
+  "fullChain": "Forward/DepthOnly/Shadow true; GraphDepthNormals rawTrue; existing SSAO asserted on; no directed RendererFeature. Stencil oracles are ordinary native UniversalForward objects only in post-capture control, never replacing default chain.",
+  "stencil": "Raw material CompAlways,PassKeep,Fail/ZFailReplace,write255. Equal200 probe must be silent without writer; independent writerRef200 produces >150 changed pixels and >.1 response; writerRef0 restores baseline. Both Fail/ZFail raw risk fields set, not claiming every possible comparator branch.",
+  "featureControls": "Clip on/off; normalmap BumpScale1/0; VAT normals1/0 prove consumer activity in actual full default pipeline; repeat0,finite,0 ABC differences preserved.",
+  "limits": [
+    "Preview has no compile/runtime proof.",
+    "Two cameras and eight configurations do not close all-state/Player/performance/Gate.",
+    "Any weak response, invalid readback or tiny BC discrepancy remains strictly Failed, not masked.",
+    "Native stencil fixture requires a supported depth-stencil target; absence fails environment rather than skipped/pass."
+  ],
+  "staticCompile": {
+    "mode": "Standalone Roslyn using real Unity test assembly response references/defines and all47sources; no Editor start, import, refresh, domain or isolation-file write",
+    "exitCode": 0,
+    "output": "dn0-coverage-static.dll",
+    "response": "static-compile-fullasm.rsp",
+    "log": "static-compile-fullasm.log",
+    "UnityRuntimeVerified": false,
+    "initialPartialAssemblyAttempt": "Preserved static-compile.log; its inaccessible internal test helper errors came from cross-assembly stub reference, not real full assembly. Full same-assembly compile passed."
+  },
+  "runtimeEvidenceStillPending": true,
+  "originalInstalledCoreStillA1b1c7be": true
+}

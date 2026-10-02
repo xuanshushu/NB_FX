@@ -1,0 +1,272 @@
+{
+  "task": "GUI-MASK-VFX-INPUT-AUDIT",
+  "status": "read-only diagnosis; no child source/asset/import/Unity writes. Main Agent independently applied the minimal three-field patch during diagnosis; actual reimport verification not read here.",
+  "failureGraphPath": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\gui-tier-masks-preview\\combined-after-dn0-generated\\NBShaders2\\ShaderGraph\\NBShaderGraph.shadergraph",
+  "failureGraphSHA256": "7abf802ddc902fd8772a5112bd7e4ca1dcaf97a5090792c200615cd33b4954e0",
+  "currentGraphSHA256": "ec19d5f2426372e5e85eb481591eed6d2890e63d33ca3cfaa4e39c1e2d808a9b",
+  "currentHLSLSHA256": "87b89d9d970dbecdcdaf3eae96ac0daf36345795c6eac815317bccfed4b276ba",
+  "properties": {
+    "_NB_TierAllowNoise": {
+      "failureInput": {
+        "m_ObjectId": "e34a20767a844956a5197f7d0dd0abc2",
+        "m_Hidden": false,
+        "m_GeneratePropertyBlock": true,
+        "m_FloatType": 0,
+        "m_Value": 1.0,
+        "m_Precision": 0,
+        "overrideHLSLDeclaration": false,
+        "hlslDeclarationOverride": 0
+      },
+      "currentMainAgentState": {
+        "m_ObjectId": "e34a20767a844956a5197f7d0dd0abc2",
+        "m_Hidden": false,
+        "m_GeneratePropertyBlock": true,
+        "m_FloatType": 0,
+        "m_Value": 1.0,
+        "m_Precision": 0,
+        "overrideHLSLDeclaration": false,
+        "hlslDeclarationOverride": 0
+      }
+    },
+    "_NB_TierAllowNoiseMask": {
+      "failureInput": {
+        "m_ObjectId": "0a33b7c870d449649977cc5c58c65162",
+        "m_Hidden": false,
+        "m_GeneratePropertyBlock": true,
+        "m_FloatType": 0,
+        "m_Value": 1.0,
+        "m_Precision": 0,
+        "overrideHLSLDeclaration": false,
+        "hlslDeclarationOverride": 0
+      },
+      "currentMainAgentState": {
+        "m_ObjectId": "0a33b7c870d449649977cc5c58c65162",
+        "m_Hidden": false,
+        "m_GeneratePropertyBlock": true,
+        "m_FloatType": 0,
+        "m_Value": 1.0,
+        "m_Precision": 0,
+        "overrideHLSLDeclaration": false,
+        "hlslDeclarationOverride": 0
+      }
+    },
+    "_NB_TierAllowMask": {
+      "failureInput": {
+        "m_ObjectId": "abc8b041304f485ba4bd472b05c5d801",
+        "m_Hidden": true,
+        "m_GeneratePropertyBlock": true,
+        "m_FloatType": 0,
+        "m_Value": 1.0,
+        "m_Precision": 0,
+        "overrideHLSLDeclaration": false,
+        "hlslDeclarationOverride": 0
+      },
+      "currentMainAgentState": {
+        "m_ObjectId": "abc8b041304f485ba4bd472b05c5d801",
+        "m_Hidden": false,
+        "m_GeneratePropertyBlock": true,
+        "m_FloatType": 0,
+        "m_Value": 1.0,
+        "m_Precision": 0,
+        "overrideHLSLDeclaration": false,
+        "hlslDeclarationOverride": 0
+      }
+    },
+    "_NB_TierAllowMask2": {
+      "failureInput": {
+        "m_ObjectId": "b2dcb7a0fdf84ee6b99f40e8b955c83d",
+        "m_Hidden": true,
+        "m_GeneratePropertyBlock": true,
+        "m_FloatType": 0,
+        "m_Value": 1.0,
+        "m_Precision": 0,
+        "overrideHLSLDeclaration": false,
+        "hlslDeclarationOverride": 0
+      },
+      "currentMainAgentState": {
+        "m_ObjectId": "b2dcb7a0fdf84ee6b99f40e8b955c83d",
+        "m_Hidden": false,
+        "m_GeneratePropertyBlock": true,
+        "m_FloatType": 0,
+        "m_Value": 1.0,
+        "m_Precision": 0,
+        "overrideHLSLDeclaration": false,
+        "hlslDeclarationOverride": 0
+      }
+    },
+    "_NB_TierAllowMask3": {
+      "failureInput": {
+        "m_ObjectId": "3c3a2a6f31794b51a085ee410891b6e9",
+        "m_Hidden": true,
+        "m_GeneratePropertyBlock": true,
+        "m_FloatType": 0,
+        "m_Value": 1.0,
+        "m_Precision": 0,
+        "overrideHLSLDeclaration": false,
+        "hlslDeclarationOverride": 0
+      },
+      "currentMainAgentState": {
+        "m_ObjectId": "3c3a2a6f31794b51a085ee410891b6e9",
+        "m_Hidden": false,
+        "m_GeneratePropertyBlock": true,
+        "m_FloatType": 0,
+        "m_Value": 1.0,
+        "m_Precision": 0,
+        "overrideHLSLDeclaration": false,
+        "hlslDeclarationOverride": 0
+      }
+    }
+  },
+  "rootCause": "SG exposed+hidden properties are excluded from VFX context slots by GetProperties, but GetShaderGraphParameters still reports exposed=true. VFXSGInputs requires GPU expression for each exposed stage property and throws for the hidden Mask gate. Noise pair is already non-hidden, so its slots are generated.",
+  "primarySources": [
+    {
+      "claim": "VFX slot exclusion",
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Library\\PackageCache\\com.unity.visualeffectgraph@a963c7d0e87b\\Editor\\ShaderGraph\\VFXShaderGraphHelpers.cs",
+      "sha256": "c7671f38172d01b7c630a1fda6e3e4f181bd9cc2ffcb02acd5b60d3ff78ae6e4",
+      "line": 116
+    },
+    {
+      "claim": "VFX parameter exposure",
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Library\\PackageCache\\com.unity.visualeffectgraph@a963c7d0e87b\\Editor\\ShaderGraph\\VFXShaderGraphHelpers.cs",
+      "sha256": "c7671f38172d01b7c630a1fda6e3e4f181bd9cc2ffcb02acd5b60d3ff78ae6e4",
+      "line": 318
+    },
+    {
+      "claim": "GPU expression lookup and throw",
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Library\\PackageCache\\com.unity.visualeffectgraph@a963c7d0e87b\\Editor\\Compiler\\VFXSGInputs.cs",
+      "sha256": "fc3c22fc2e90e59f7a0f0083090388b7b4b78f910c266db1571675264a18c8d1",
+      "line": 84
+    },
+    {
+      "claim": "SG exposed field",
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Library\\PackageCache\\com.unity.shadergraph@2fa139ee8b62\\Editor\\Data\\Graphs\\ShaderInput.cs",
+      "sha256": "437f6d4f7b79ab3bd21293b55fbfa9ed8d1cea1ae1571e91287c8d3791c18585",
+      "line": 252
+    },
+    {
+      "claim": "Material declaration default",
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Library\\PackageCache\\com.unity.shadergraph@2fa139ee8b62\\Editor\\Data\\Graphs\\AbstractShaderProperty.cs",
+      "sha256": "9f9ac47e1a39cd5b201c5d471ee84bbfb66aca462525c45f60db697432b883cd",
+      "line": 52
+    }
+  ],
+  "minimumSchemaPatch": {
+    "requiredBeforeSHA256": "7abf802ddc902fd8772a5112bd7e4ca1dcaf97a5090792c200615cd33b4954e0",
+    "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Packages\\NB_FX\\NBShaders2\\ShaderGraph\\NBShaderGraph.shadergraph",
+    "changes": [
+      {
+        "objectId": "abc8b041304f485ba4bd472b05c5d801",
+        "property": "_NB_TierAllowMask",
+        "jsonField": "m_Hidden",
+        "before": true,
+        "after": false
+      },
+      {
+        "objectId": "b2dcb7a0fdf84ee6b99f40e8b955c83d",
+        "property": "_NB_TierAllowMask2",
+        "jsonField": "m_Hidden",
+        "before": true,
+        "after": false
+      },
+      {
+        "objectId": "3c3a2a6f31794b51a085ee410891b6e9",
+        "property": "_NB_TierAllowMask3",
+        "jsonField": "m_Hidden",
+        "before": true,
+        "after": false
+      }
+    ],
+    "mainAgentAlreadyApplied": true,
+    "exactObjectDiffAtObservation": [
+      {
+        "objectId": "abc8b041304f485ba4bd472b05c5d801",
+        "fields": [
+          "m_Hidden"
+        ]
+      },
+      {
+        "objectId": "b2dcb7a0fdf84ee6b99f40e8b955c83d",
+        "fields": [
+          "m_Hidden"
+        ]
+      },
+      {
+        "objectId": "3c3a2a6f31794b51a085ee410891b6e9",
+        "fields": [
+          "m_Hidden"
+        ]
+      }
+    ],
+    "newVFXOutput": false,
+    "formalVFXValidation": false,
+    "unchanged": [
+      "m_GeneratePropertyBlock=true",
+      "ordinary Float/default1",
+      "default UnityPerMaterial declaration",
+      "all IDs/nodes/edges/CF order/Target/DN0",
+      "packed protocol",
+      "derived/intention state ownership",
+      "NBPostprocess/UniversalTarget/official packages"
+    ],
+    "existingInspectorExclusion": {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Packages\\NB_FX\\NBShaders2\\Editor\\NBShaderGraphRootItem.cs",
+      "line": 322,
+      "sha256": "fd86a090cb2e8288d84c5433b320416c93bcc2e4050210f75c94e999cd0a58c6",
+      "rule": "Existing IsVisible excludes property.name.StartsWith(_NB_TierAllow), preserving derived-field omission from material custom inspector."
+    },
+    "verificationNeeded": "Actual same-version Graph and historical-sample reimport without logged importer error; then execute Helper bodies and affected Mesh gate/schema regression. Import compatibility does not equal formal T08/T09 acceptance."
+  },
+  "notRecommendedShortcuts": [
+    "Setting only m_GeneratePropertyBlock=false changes default declaration from UnityPerMaterial to Global and can remove material gate behavior/SRP Batcher compatibility.",
+    "LogAssert ignore/expected error suppression conceals importer regression.",
+    "Unexecuted16 cannot be passed or a Helper functional verdict."
+  ],
+  "temporaryQuarantineProposal": {
+    "files": [
+      {
+        "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Packages\\NB_FX\\NBShaders2\\ShaderGraph\\Samples\\NBGraphVFXMeshMinimum.vfx",
+        "temporaryTarget": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\nbfx-historical-vfx-quarantine\\NBGraphVFXMeshMinimum.vfx",
+        "sha256": "efcd8fdb01115a7a5aa294e07b1045a67734928a0079a2663769927924d6d82a",
+        "bytes": 759513,
+        "operation": "Proposed temporary move outside isolated Unity project; main Agent owns execution. Preserve/restore exact bytes and GUID."
+      },
+      {
+        "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Packages\\NB_FX\\NBShaders2\\ShaderGraph\\Samples\\NBGraphVFXMeshMinimum.vfx.meta",
+        "temporaryTarget": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\nbfx-historical-vfx-quarantine\\NBGraphVFXMeshMinimum.vfx.meta",
+        "sha256": "b82fdf07972857533041aad598a73d6c06bc10bc08dbba188109116a8623581b",
+        "bytes": 309,
+        "operation": "Proposed temporary move outside isolated Unity project; main Agent owns execution. Preserve/restore exact bytes and GUID."
+      }
+    ],
+    "reason": "Log names only NBGraphVFXMeshMinimum.vfx, referencing Graph GUID63c742d3d39d403693767ca92e94d789 at line2558. GF_VFXOutput_NBSubTarget does not reference that Graph; leave it alone.",
+    "referenceSearch": "No sample GUID e0607961b7904f65861f7fc192b6bf03 references found in isolated Assets/package .unity/.prefab/.asset source files. Main Agent still owns loaded-scene checks.",
+    "scope": "Optional workaround if importer remains blocked; ordinary Mesh Helper continuation only. Retain real VFX schema compatibility backlog until corrected importer runs successfully.",
+    "restore": "Move .vfx and .meta together back to original paths; verify exact SHA/GUID. Keep initial failed XML/log."
+  },
+  "actualInitialFailureEvidence": {
+    "xml": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\flipbook-helper-lifecycle16-plan-fixed-isolated-1\\batch-1\\results.xml",
+    "xmlSHA256": "b12240d314211b760625b92a25168fd629ef5c686aa6deb1705d525c69076c7f",
+    "log": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\flipbook-helper-lifecycle16-plan-fixed-isolated-1\\batch-1\\unity.log",
+    "logSHA256": "f1da1fd94eb6a16361b9a221bab657a1a01918164617ee3f8d23e121aa6f9ec1",
+    "total": 16,
+    "failed": 16,
+    "passed": 0,
+    "nunitStatus": "16 Failed, site=Parent; OneTimeSetUp unhandled VFX importer Error",
+    "classification": "Blocked by historical VFX sample importer/schema regression. Helper bodies not executed; no functional assertions ran."
+  },
+  "sourceProtection": {
+    "childWrites": [
+      "gui-mask-vfx-input-audit.json",
+      "gui-mask-vfx-input-audit.md"
+    ],
+    "graphSHA256AtEnd": "ec19d5f2426372e5e85eb481591eed6d2890e63d33ca3cfaa4e39c1e2d808a9b",
+    "hlslSHA256AtEnd": "87b89d9d970dbecdcdaf3eae96ac0daf36345795c6eac815317bccfed4b276ba",
+    "productOrUnityWrites": []
+  },
+  "sampleSourceDriftDuringMainImport": {
+    "firstReadVfxSHA256": "fe1c4d92428023dd0c5c7a32ddcdd1fd3c815f709497dc825bb059b39dc1742f",
+    "laterReadVfxSHA256": "efcd8fdb01115a7a5aa294e07b1045a67734928a0079a2663769927924d6d82a",
+    "reason": "Main Agent imported/rebuilt schema during diagnosis; child only read source. Exact diff cause has not been inspected here. Verify fresh SHA before any quarantine/restore.",
+    "metaSHA256": "b82fdf07972857533041aad598a73d6c06bc10bc08dbba188109116a8623581b"
+  }
+}

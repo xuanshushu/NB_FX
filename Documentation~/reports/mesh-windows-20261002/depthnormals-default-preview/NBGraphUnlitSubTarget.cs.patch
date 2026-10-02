@@ -1,0 +1,47 @@
+--- a/NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs
++++ b/NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs
+@@ -50,6 +50,11 @@
+                     pass = WithNBDistortionBlocks(pass);
+                 if (forward || UsesNBStencil(pass.lightMode))
+                     pass.renderStates = WithNBRenderStates(pass.renderStates, forward);
++                // The legacy NB shader has no DepthNormals pass. Retain the
++                // delegated descriptor and generated code, but make this extra
++                // pass inert even for a raw runtime Material without a GUI call.
++                if (pass.lightMode == "DepthNormalsOnly")
++                    pass.renderStates = WithNBLegacyDepthNormalsNoOutput(pass.renderStates);
+                 passes.Add(forward ? WithNBPassDefine(WithNBLightingKeywords(WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl")), "NB_GRAPH_MAIN_FORWARD") :
+                     pass.lightMode == "ShadowCaster" ? WithNBFragmentInclude(pass, "NBGraphShadowCasterPass.hlsl", kURPShadowPass) :
+                     pass, item.fieldConditions);
+@@ -237,6 +242,32 @@
+             return states;
+         }
+ 
++        static RenderStateCollection WithNBLegacyDepthNormalsNoOutput(RenderStateCollection original)
++        {
++            var states = new RenderStateCollection();
++            if (original != null)
++                foreach (var item in original)
++                {
++                    RenderStateType type = item.descriptor.type;
++                    if (type != RenderStateType.ZTest && type != RenderStateType.ZWrite &&
++                        type != RenderStateType.ColorMask && type != RenderStateType.Stencil)
++                        states.Add(item.descriptor, item.fieldConditions);
++                }
++            // SG's ZTest enum has no Never member; the actual string overload
++            // emits the ShaderLab value. No keyword, property or Tier is added.
++            states.Add(RenderState.ZTest("Never"));
++            states.Add(RenderState.ZWrite(ZWrite.Off));
++            states.Add(RenderState.ColorMask("ColorMask 0"));
++            // A material's Fail/ZFail op must not turn the depth rejection into
++            // a stencil writer. This extra pass contributes nothing in legacy NB.
++            states.Add(RenderState.Stencil(new StencilDescriptor
++            {
++                Ref = "0", Comp = "Always", Pass = "Keep", Fail = "Keep", ZFail = "Keep",
++                ReadMask = "255", WriteMask = "0"
++            }));
++            return states;
++        }
++
+         static RenderStateDescriptor NBStencilState() => RenderState.Stencil(
+             new StencilDescriptor
+             {

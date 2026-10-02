@@ -1,0 +1,41 @@
+{
+  "scope": "Preview only: 2 source/native-SRP inspection cases, not rendering/runtime/variant stripping/Player/performance evidence. Parent owns serial Unity installation/execution.",
+  "records": [
+    {
+      "path": "Tests/URP/Editor/G4GraphOverrideDepthSourceTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "8a1db7cbb7601cb820b9d8e792148eab59fb58ba3d1acad52f0e714ed9d6c0ca"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphOverrideDepthSourceTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "6d39787f0b75b0b465896e29344228ec7d1273f1ed599f52606076297782c96b"
+    }
+  ],
+  "installed": false,
+  "unityVerification": "NOT RUN",
+  "expectedCases": 2,
+  "testFilter": "G4OverrideZSource_",
+  "exactCaseNames": [
+    "NBFX.Baseline.Tests.G4GraphOverrideDepthSourceTests.G4OverrideZSource_generated_pass_scope",
+    "NBFX.Baseline.Tests.G4GraphOverrideDepthSourceTests.G4OverrideZSource_srp_batcher_codes"
+  ],
+  "GetShaderTextAPI": "Current SG17.3 four-parameter internal static string GetShaderText(...,out GraphData), same reflection already exercised by G4GraphChromaticTests.",
+  "ShaderUtilAPIProof": {
+    "inspection": "Read-only PE metadata of installed Editor core module, no Unity API execution",
+    "path": "C:/Program Files/Unity/Hub/Editor/6000.3.25f1/Editor/Data/Managed/UnityEngine/UnityEditor.CoreModule.dll",
+    "sha256": "e539c23b5ea545f41677a2c925747a5e39bbdaee5c4e84e5c4e698ff2cb9641d",
+    "compatibilityCode": "internal static int GetSRPBatcherCompatibilityCode(Shader s,int subShaderIdx)",
+    "codeSigBlob": "0002081285CD08",
+    "reason": "internal static string GetSRPBatcherCompatibilityIssueReason(Shader s,int subShaderIdx,int err)",
+    "reasonSigBlob": "00030E1285CD0808",
+    "zeroMeaning": "ShaderInspector.OnInspectorGUI IL call offset341 then brfalse.s chooses compatible string; nonzero chooses not compatible"
+  },
+  "compatibilityPolicy": "Missing API/signature/row/unknown reason fails. Report native Frozen/current/Graph subShader0 codes/reasons first. Graph requires code0. Current may improve to0 or preserve exact existing Frozen code+reason; baseline incompatibility remains explicit and does not license Graph incompatibility.",
+  "generatedSourcePolicy": "Actual installed Graph source emitted as file. All old/current passes inspected: local fragment shader_feature axis exactly once on normal Forward and nowhere else; DepthOnly/ShadowCaster/two NB passes required. Installed wrapper conditionalSV_Depth declaration/write and adapter keyword authority/shared math path asserted.",
+  "evidence": "overridez-source/generated-installed-overridez.shader + generated-source.json + srp-batcher-subshader0.json",
+  "newKeywordNames": 0,
+  "newPackedBits": 0,
+  "sourceGraphMutation": false,
+  "assetImportRefresh": false
+}

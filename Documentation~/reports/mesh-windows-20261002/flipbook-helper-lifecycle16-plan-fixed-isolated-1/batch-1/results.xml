@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Failed(Child)" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-02 15:48:23Z" end-time="2026-10-02 15:48:36Z" duration="12.6188711">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2258" result="Failed" site="Child" start-time="2026-10-02 15:48:23Z" end-time="2026-10-02 15:48:36Z" duration="12.618871" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3432" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2239" result="Failed" site="Child" start-time="2026-10-02 15:48:23Z" end-time="2026-10-02 15:48:36Z" duration="12.593278" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="70444" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="3433" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2239" result="Failed" site="Child" start-time="2026-10-02 15:48:23Z" end-time="2026-10-02 15:48:36Z" duration="12.580858" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="3434" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2239" result="Failed" site="Child" start-time="2026-10-02 15:48:23Z" end-time="2026-10-02 15:48:36Z" duration="12.558986" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="3435" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2239" result="Failed" site="Child" start-time="2026-10-02 15:48:23Z" end-time="2026-10-02 15:48:36Z" duration="12.535497" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1649" name="G4GraphFlipbookHelperLifecycleTests" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" testcasecount="16" result="Failed" site="SetUp" start-time="2026-10-02 15:48:23Z" end-time="2026-10-02 15:48:36Z" duration="12.481930" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                <stack-trace><![CDATA[UnityEditor.AssetDatabase:ImportAsset (string,UnityEditor.ImportAssetOptions)
+NBFX.Baseline.Tests.G4GraphGuiFeatureIntentTests:WarmImportedGraphInRealUrpCamera () (at ./Packages/NB_FX/Tests/URP/Editor/G4GraphGuiFeatureIntentTests.cs:49)
+NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests:WarmInstalledCombinedGraph () (at ./Packages/NB_FX/Tests/URP/Editor/G4GraphFlipbookHelperLifecycleTests.cs:41)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object)
+NUnit.Framework.Internal.Commands.SetUpTearDownItem:RunNonAsyncMethod (System.Reflection.MethodInfo,NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.SetUpTearDownItem:RunSetUpOrTearDownMethod (NUnit.Framework.Internal.ITestExecutionContext,System.Reflection.MethodInfo)
+NUnit.Framework.Internal.Commands.SetUpTearDownItem:RunSetUp (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.OneTimeSetUpCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+]]></stack-trace>
+              </failure>
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+              <test-suite type="ParameterizedMethod" id="1661" name="DisableReenableAndDestroyClearOnlyHelperBit" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.DisableReenableAndDestroyClearOnlyHelperBit" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" testcasecount="3" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" total="0" passed="0" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-suite>
+              <test-case id="1658" name="G4FlipbookHelper_disable_destroy_frozen" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_disable_destroy_frozen" methodname="DisableReenableAndDestroyClearOnlyHelperBit" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="49916740" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1659" name="G4FlipbookHelper_disable_destroy_current" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_disable_destroy_current" methodname="DisableReenableAndDestroyClearOnlyHelperBit" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="1206282463" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1660" name="G4FlipbookHelper_disable_destroy_graph" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_disable_destroy_graph" methodname="DisableReenableAndDestroyClearOnlyHelperBit" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="1313480175" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1669" name="DistinctMaterialRenderersKeepIndependentFramesAndFlags" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.DistinctMaterialRenderersKeepIndependentFramesAndFlags" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" testcasecount="3" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" total="0" passed="0" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-suite>
+              <test-case id="1666" name="G4FlipbookHelper_multirenderer_frozen" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_multirenderer_frozen" methodname="DistinctMaterialRenderersKeepIndependentFramesAndFlags" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="304750926" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1667" name="G4FlipbookHelper_multirenderer_current" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_multirenderer_current" methodname="DistinctMaterialRenderersKeepIndependentFramesAndFlags" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="1979445452" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1668" name="G4FlipbookHelper_multirenderer_graph" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_multirenderer_graph" methodname="DistinctMaterialRenderersKeepIndependentFramesAndFlags" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="910336132" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1670" name="G4FlipbookHelper_no_renderer_null_lifecycle" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_no_renderer_null_lifecycle" methodname="G4FlipbookHelper_no_renderer_null_lifecycle" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="641137064" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1653" name="InitAndReinitProvideFirstAndNextFrames" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.InitAndReinitProvideFirstAndNextFrames" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" testcasecount="3" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" total="0" passed="0" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-suite>
+              <test-case id="1650" name="G4FlipbookHelper_init_frozen" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_init_frozen" methodname="InitAndReinitProvideFirstAndNextFrames" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="788785040" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1651" name="G4FlipbookHelper_init_current" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_init_current" methodname="InitAndReinitProvideFirstAndNextFrames" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="621006645" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1652" name="G4FlipbookHelper_init_graph" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_init_graph" methodname="InitAndReinitProvideFirstAndNextFrames" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="511958890" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1657" name="LastFrameWrapAndSingleFrameRemainFinite" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.LastFrameWrapAndSingleFrameRemainFinite" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" testcasecount="3" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" total="0" passed="0" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-suite>
+              <test-case id="1654" name="G4FlipbookHelper_wrap_frozen" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_wrap_frozen" methodname="LastFrameWrapAndSingleFrameRemainFinite" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="1886299371" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1655" name="G4FlipbookHelper_wrap_current" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_wrap_current" methodname="LastFrameWrapAndSingleFrameRemainFinite" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="261572166" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1656" name="G4FlipbookHelper_wrap_graph" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_wrap_graph" methodname="LastFrameWrapAndSingleFrameRemainFinite" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="140531641" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1665" name="MaterialSwitchNullAndDisableUseOriginalBinding" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.MaterialSwitchNullAndDisableUseOriginalBinding" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" testcasecount="3" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" total="0" passed="0" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-suite>
+              <test-case id="1662" name="G4FlipbookHelper_binding_frozen" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_binding_frozen" methodname="MaterialSwitchNullAndDisableUseOriginalBinding" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="530312097" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1663" name="G4FlipbookHelper_binding_current" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_binding_current" methodname="MaterialSwitchNullAndDisableUseOriginalBinding" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="1177955778" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+              <test-case id="1664" name="G4FlipbookHelper_binding_graph" fullname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests.G4FlipbookHelper_binding_graph" methodname="MaterialSwitchNullAndDisableUseOriginalBinding" classname="NBFX.Baseline.Tests.G4GraphFlipbookHelperLifecycleTests" runstate="Runnable" seed="1296332658" result="Failed" site="Parent" start-time="0001-01-01 00:00:00Z" end-time="0001-01-01 00:00:00Z" duration="0.000000" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[OneTimeSetUp: Unhandled log message: '[Error] Unity cannot compile the VisualEffectAsset at path "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx" because of the following exception:
+System.ArgumentException: Cannot find an expression matching the input: _NB_TierAllowMask
+  at UnityEditor.VFX.VFXSGInputs..ctor (UnityEditor.VFX.VFXExpressionMapper cpuMapper, UnityEditor.VFX.VFXExpressionMapper gpuMapper, UnityEditor.VFX.VFXUniformMapper uniforms, UnityEditor.ShaderGraph.Internal.ShaderGraphVfxAsset shaderGraph) [0x000ab] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXSGInputs.cs:88 
+  at UnityEditor.VFX.VFXDataParticle.GenerateSystemUniformMapper (UnityEditor.VFX.VFXExpressionGraph graph, UnityEditor.VFX.VFXCompiledData compiledData, System.Collections.Generic.Dictionary`2[UnityEditor.VFX.VFXContext,UnityEditor.VFX.VFXExpressionMapper]& gpuMappers) [0x00087] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Data\VFXDataParticle.cs:1772 
+  at UnityEditor.VFX.VFXGraphCompiledData.Compile (UnityEngine.VFX.VFXCompilationMode compilationMode, System.Boolean enableShaderDebugSymbols, UnityEditor.VFX.VFXAnalytics analytics) [0x0072b] in .\Library\PackageCache\com.unity.visualeffectgraph@a963c7d0e87b\Editor\Compiler\VFXGraphCompiledData.cs:1257 '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                </failure>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

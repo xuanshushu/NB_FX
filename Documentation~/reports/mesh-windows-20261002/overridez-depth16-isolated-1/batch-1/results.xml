@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-02 08:07:49Z" end-time="2026-10-02 08:08:20Z" duration="30.6776025">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2057" result="Passed" start-time="2026-10-02 08:07:49Z" end-time="2026-10-02 08:08:20Z" duration="30.677603" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3198" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2038" result="Passed" start-time="2026-10-02 08:07:49Z" end-time="2026-10-02 08:08:20Z" duration="30.641315" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="44128" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="3199" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2038" result="Passed" start-time="2026-10-02 08:07:49Z" end-time="2026-10-02 08:08:20Z" duration="30.598163" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="3200" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2038" result="Passed" start-time="2026-10-02 08:07:50Z" end-time="2026-10-02 08:08:20Z" duration="30.578211" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="3201" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2038" result="Passed" start-time="2026-10-02 08:07:50Z" end-time="2026-10-02 08:08:20Z" duration="30.557549" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="2116" name="G4GraphOverrideDepthTests" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-10-02 08:07:50Z" end-time="2026-10-02 08:08:20Z" duration="30.491833" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+]]></output>
+              <test-suite type="ParameterizedMethod" id="2133" name="OverrideZ_RealDepthOcclusionABC" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-10-02 08:07:58Z" end-time="2026-10-02 08:08:20Z" duration="22.390381" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="2117" name="G4OverrideZABC_off_d0.05_ortho" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d0.05_ortho" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="139873714" result="Passed" start-time="2026-10-02 08:07:58Z" end-time="2026-10-02 08:08:05Z" duration="7.347220" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":true,"enabled":false,"depth":0.05000000074505806,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"probeVisible":3840,"actorVisible":4624}
+]]></output>
+                </test-case>
+                <test-case id="2118" name="G4OverrideZABC_off_d0.05_perspective" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d0.05_perspective" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="2112972589" result="Passed" start-time="2026-10-02 08:08:05Z" end-time="2026-10-02 08:08:06Z" duration="0.899748" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":false,"enabled":false,"depth":0.05000000074505806,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"probeVisible":636,"actorVisible":2500}
+]]></output>
+                </test-case>
+                <test-case id="2119" name="G4OverrideZABC_off_d3_ortho" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d3_ortho" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="479216562" result="Passed" start-time="2026-10-02 08:08:06Z" end-time="2026-10-02 08:08:06Z" duration="0.442675" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":true,"enabled":false,"depth":3.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"probeVisible":3840,"actorVisible":4624}
+]]></output>
+                </test-case>
+                <test-case id="2120" name="G4OverrideZABC_off_d3_perspective" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d3_perspective" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1680432987" result="Passed" start-time="2026-10-02 08:08:06Z" end-time="2026-10-02 08:08:07Z" duration="0.408245" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":false,"enabled":false,"depth":3.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"probeVisible":636,"actorVisible":2500}
+]]></output>
+                </test-case>
+                <test-case id="2121" name="G4OverrideZABC_off_d7_ortho" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d7_ortho" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1381622075" result="Passed" start-time="2026-10-02 08:08:07Z" end-time="2026-10-02 08:08:07Z" duration="0.429837" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":true,"enabled":false,"depth":7.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"probeVisible":3840,"actorVisible":4624}
+]]></output>
+                </test-case>
+                <test-case id="2122" name="G4OverrideZABC_off_d7_perspective" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d7_perspective" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1267957945" result="Passed" start-time="2026-10-02 08:08:07Z" end-time="2026-10-02 08:08:08Z" duration="0.478567" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":false,"enabled":false,"depth":7.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"probeVisible":636,"actorVisible":2500}
+]]></output>
+                </test-case>
+                <test-case id="2123" name="G4OverrideZABC_off_d50_ortho" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d50_ortho" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1355423789" result="Passed" start-time="2026-10-02 08:08:08Z" end-time="2026-10-02 08:08:08Z" duration="0.475759" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":true,"enabled":false,"depth":50.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"probeVisible":3840,"actorVisible":4624}
+]]></output>
+                </test-case>
+                <test-case id="2124" name="G4OverrideZABC_off_d50_perspective" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_off_d50_perspective" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1058224932" result="Passed" start-time="2026-10-02 08:08:08Z" end-time="2026-10-02 08:08:09Z" duration="0.456182" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":false,"enabled":false,"depth":50.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0,"bResponse":0.0,"cResponse":0.0,"probeVisible":636,"actorVisible":2500}
+]]></output>
+                </test-case>
+                <test-case id="2125" name="G4OverrideZABC_on_d0.05_ortho" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_on_d0.05_ortho" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1843315135" result="Passed" start-time="2026-10-02 08:08:09Z" end-time="2026-10-02 08:08:17Z" duration="8.210202" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":true,"enabled":true,"depth":0.05000000074505806,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"probeVisible":3840,"actorVisible":4624}
+]]></output>
+                </test-case>
+                <test-case id="2126" name="G4OverrideZABC_on_d0.05_perspective" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_on_d0.05_perspective" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1465371370" result="Passed" start-time="2026-10-02 08:08:17Z" end-time="2026-10-02 08:08:17Z" duration="0.436685" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":false,"enabled":true,"depth":0.05000000074505806,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"probeVisible":636,"actorVisible":2500}
+]]></output>
+                </test-case>
+                <test-case id="2127" name="G4OverrideZABC_on_d3_ortho" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_on_d3_ortho" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="531051455" result="Passed" start-time="2026-10-02 08:08:17Z" end-time="2026-10-02 08:08:18Z" duration="0.488244" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":true,"enabled":true,"depth":3.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"probeVisible":3840,"actorVisible":4624}
+]]></output>
+                </test-case>
+                <test-case id="2128" name="G4OverrideZABC_on_d3_perspective" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_on_d3_perspective" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1298238839" result="Passed" start-time="2026-10-02 08:08:18Z" end-time="2026-10-02 08:08:18Z" duration="0.478453" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":false,"enabled":true,"depth":3.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"probeVisible":636,"actorVisible":2500}
+]]></output>
+                </test-case>
+                <test-case id="2129" name="G4OverrideZABC_on_d7_ortho" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_on_d7_ortho" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1272308675" result="Passed" start-time="2026-10-02 08:08:18Z" end-time="2026-10-02 08:08:19Z" duration="0.445393" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":true,"enabled":true,"depth":7.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"probeVisible":8464,"actorVisible":0}
+]]></output>
+                </test-case>
+                <test-case id="2130" name="G4OverrideZABC_on_d7_perspective" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_on_d7_perspective" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="499803965" result="Passed" start-time="2026-10-02 08:08:19Z" end-time="2026-10-02 08:08:19Z" duration="0.435846" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":false,"enabled":true,"depth":7.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"probeVisible":3136,"actorVisible":0}
+]]></output>
+                </test-case>
+                <test-case id="2131" name="G4OverrideZABC_on_d50_ortho" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_on_d50_ortho" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="149598175" result="Passed" start-time="2026-10-02 08:08:19Z" end-time="2026-10-02 08:08:20Z" duration="0.432799" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":true,"enabled":true,"depth":50.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"probeVisible":8464,"actorVisible":0}
+]]></output>
+                </test-case>
+                <test-case id="2132" name="G4OverrideZABC_on_d50_perspective" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_on_d50_perspective" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1020408954" result="Passed" start-time="2026-10-02 08:08:20Z" end-time="2026-10-02 08:08:20Z" duration="0.490646" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":false,"enabled":true,"depth":50.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"probeVisible":3136,"actorVisible":0}
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

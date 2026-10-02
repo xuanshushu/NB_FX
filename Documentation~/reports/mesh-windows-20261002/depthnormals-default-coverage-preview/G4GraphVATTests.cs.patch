@@ -1,0 +1,81 @@
+--- a/Tests/URP/Editor/G4GraphVATTests.cs
++++ b/Tests/URP/Editor/G4GraphVATTests.cs
+@@ -32,6 +32,15 @@
+         public Action<Mesh> GeometryMeshSetup;
+         public Action<Material,bool,float> GeometryFrameState;
+         public string GeometryCaseId;
++        // Optional DN0 default-pipeline coverage hooks. Old three-argument
++        // reflection entry and limited tests retain their original behavior.
++        public Action<Material, bool> DefaultFullChainMaterialSetup;
++        public Action<Light> DefaultFullChainLightSetup;
++        public Action<Camera, GameObject, GameObject, RenderTexture> DefaultFullChainSceneSetup;
++        public Action<Material[], MeshRenderer, MeshRenderer, Camera, RenderTexture, Texture2D, string> DefaultFullChainVerify;
++        public void CaptureDefaultForwardDepthShadow(bool ortho)
++            => CaptureVATDepthAndShadowGeometryCore(true, ortho, false, true);
++
+ 
+         [Serializable]
+         sealed class Record
+@@ -311,10 +320,15 @@
+         [TestCase(true, TestName = "DN0SoftBodyDefaultSSAOABC_ortho")]
+         [TestCase(false, TestName = "DN0SoftBodyDefaultSSAOABC_perspective")]
+         public void VATSoftBody_DefaultForwardDepthShadowWithSSAO(bool ortho)
+-            => CaptureVATDepthAndShadowGeometry(true, ortho, false, true);
+-
+-        void CaptureVATDepthAndShadowGeometry(bool shadow, bool ortho, bool isolateExtraNormals,
+-            bool defaultFullChain = false)
++            => CaptureVATDepthAndShadowGeometryCore(true, ortho, false, true);
++
++        // Exact original private ABI: consumers use GetMethod with NonPublic
++        // and Invoke three arguments. There is one method of this name.
++        void CaptureVATDepthAndShadowGeometry(bool shadow, bool ortho, bool isolateExtraNormals)
++            => CaptureVATDepthAndShadowGeometryCore(shadow, ortho, isolateExtraNormals, false);
++
++        void CaptureVATDepthAndShadowGeometryCore(bool shadow, bool ortho, bool isolateExtraNormals,
++            bool defaultFullChain)
+         {
+             var pipeline = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+             Assert.That(pipeline, Is.Not.Null);
+@@ -382,6 +396,7 @@
+                         // Explicit True proves the shader-level default. No GUI
+                         // pass hiding and no SSAO or extra normals pass suppression.
+                         if (m == c) m.SetShaderPassEnabled("DepthNormalsOnly", true);
++                        DefaultFullChainMaterialSetup?.Invoke(m, m == c);
+                     }
+                     else
+                     {
+@@ -407,6 +422,7 @@
+                     writer.shadowCastingMode=ShadowCastingMode.On;
+                     light.type=LightType.Directional;light.shadows=LightShadows.Hard;light.shadowStrength=1;light.intensity=2;light.cullingMask=1<<2;
+                     if (_disableNormalBiasForDiagnostic) light.shadowNormalBias = 0;
++                    if (defaultFullChain) DefaultFullChainLightSetup?.Invoke(light);
+                     light.transform.rotation=Quaternion.Euler(50,-30,0);
+                     RenderSettings.sun=light;RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=Color.black;RenderSettings.fog=false;
+                     camera.transform.position=new Vector3(0,4.5f,-5.5f);camera.transform.LookAt(Vector3.zero);
+@@ -426,6 +442,7 @@
+                 if(nb)nb.SetActive(false);
+                 camera.orthographic=ortho;camera.fieldOfView=45;camera.nearClipPlane=.1f;camera.farClipPlane=25;
+                 camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.125f,.25f,.375f,1);camera.allowHDR=false;camera.allowMSAA=false;camera.targetTexture=rt;rt.Create();Assert.That(rt.IsCreated() && !rt.sRGB,Is.True);
++                if (defaultFullChain) DefaultFullChainSceneSetup?.Invoke(camera, actor, receiver, rt);
+                 Color[] empty = null, emptyRepeat = null;
+                 if (defaultFullChain)
+                 {
+@@ -495,6 +512,8 @@
+                     ssaoActive=data.rendererFeatures.Any(f=>f&&f.isActive&&f.GetType().Name.Contains("AmbientOcclusion")),
+                     finite=Finite(ao,bo,co,aa,ba,ca,ar,br,cr,af,bf,cf),abOff=Delta(ao,bo),bcOff=Delta(bo,co),abOn=Delta(aa,ba),bcOn=Delta(ba,ca),abFrame=Delta(af,bf),bcFrame=Delta(bf,cf),aRepeat=Delta(aa,ar),bRepeat=Delta(ba,br),cRepeat=Delta(ca,cr),aResponse=Delta(ao,aa),bResponse=Delta(bo,ba),cResponse=Delta(co,ca),bFrameResponse=Delta(ba,bf),cFrameResponse=Delta(ca,cf)};
+                 File.WriteAllText(Path.Combine(folder,"metrics.json"),JsonUtility.ToJson(record,true));Debug.Log("NBFX_G4_VAT_GEOMETRY "+JsonUtility.ToJson(record));
++                if (defaultFullChain) DefaultFullChainVerify?.Invoke(new[] {a,b,c}, writer,
++                    receiver.GetComponent<MeshRenderer>(), camera, rt, readback, folder);
+                 Assert.That(record.finite,Is.True);Assert.That(record.abOff+record.bcOff+record.abOn+record.bcOn+record.abFrame+record.bcFrame,Is.Zero);
+                 Assert.That(record.aRepeat+record.bRepeat+record.cRepeat,Is.Zero);Assert.That(record.aResponse,Is.GreaterThan(.01f));Assert.That(record.bResponse,Is.GreaterThan(.01f));Assert.That(record.cResponse,Is.GreaterThan(.01f));Assert.That(record.bFrameResponse,Is.GreaterThan(.01f));Assert.That(record.cFrameResponse,Is.GreaterThan(.01f));
+                 if(directed!=null)Assert.That(directed.validDepthFrames,Is.EqualTo(directed.recordedFrames).And.GreaterThan(0));
+@@ -830,7 +849,8 @@
+                 "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+                 "NBShaders2/Shader/NBShader.shader",
+                 "Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+-                "Tests/URP/Editor/G4GraphVATTests.cs" })
++                "Tests/URP/Editor/G4GraphVATTests.cs",
++                "Tests/URP/Editor/G4GraphDN0DefaultCoverageTests.cs" })
+                 paths.Add(Path.Combine(package.resolvedPath, relative));
+             paths.Add(Path.Combine(project, AssetDatabase.GetAssetPath(rendererData)));
+             paths.Add(Path.Combine(project, AssetDatabase.GetAssetPath(pipeline)));

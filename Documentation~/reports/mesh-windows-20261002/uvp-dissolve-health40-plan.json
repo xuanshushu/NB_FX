@@ -1,0 +1,117 @@
+{
+  "scope": "Original40 Dissolve positional consumer identities in 4 serial fresh10 batches; prior GPU/invalid-readback40 and fresh diagnostic2 remain archived. Followup replaces latest verdict per original identity, never42 summed as distinct cases.",
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "cases": 40,
+  "editorArgs": [],
+  "inputFixtureSHA256": "92ba685895f4964dd7a7e637a3e6027219090c383aae0285ca23dd22633b86a0",
+  "strictAssertionsUnchanged": true,
+  "healthGate": {
+    "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\uvp-dissolve-health2-isolated-1",
+    "actualCases": 2,
+    "passed": 1,
+    "strictFailed": 1,
+    "classification": "ortho BC small strict pixel difference; both host health/visible/repeat/strong-response valid",
+    "healthFiles": 30,
+    "rawFiles": 30,
+    "badReadbacks": 0,
+    "rawAudit": [
+      {
+        "case": "dissolve-direct3-axis1-vertex-ortho",
+        "roiDifferentPixels": 1,
+        "maxRGBA": 6.103515625e-05,
+        "perChannelMax": [
+          0.0,
+          0.0,
+          0.0,
+          6.103515625e-05
+        ]
+      },
+      {
+        "case": "dissolve-direct3-axis1-vertex-perspective",
+        "roiDifferentPixels": 0,
+        "maxRGBA": 0,
+        "perChannelMax": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "batches": [
+    {
+      "batch": 1,
+      "label": "dissolve-original40-health-1",
+      "filter": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_vertex_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_vertex_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_fragment_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_fragment_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_vertex_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_vertex_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_fragment_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_fragment_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct4_axis1_vertex_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct4_axis1_vertex_perspective",
+      "expectedCasesFromActualDiscovery": 10,
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_vertex_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_vertex_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_fragment_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_fragment_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_vertex_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_vertex_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_fragment_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_fragment_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct4_axis1_vertex_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct4_axis1_vertex_perspective"
+      ]
+    },
+    {
+      "batch": 2,
+      "label": "dissolve-original40-health-2",
+      "filter": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct4_axis1_fragment_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct4_axis1_fragment_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared4_axis1_vertex_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared4_axis1_vertex_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared4_axis1_fragment_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared4_axis1_fragment_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct5_axis1_vertex_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct5_axis1_vertex_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct5_axis1_fragment_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct5_axis1_fragment_perspective",
+      "expectedCasesFromActualDiscovery": 10,
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct4_axis1_fragment_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct4_axis1_fragment_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared4_axis1_vertex_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared4_axis1_vertex_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared4_axis1_fragment_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared4_axis1_fragment_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct5_axis1_vertex_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct5_axis1_vertex_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct5_axis1_fragment_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct5_axis1_fragment_perspective"
+      ]
+    },
+    {
+      "batch": 3,
+      "label": "dissolve-original40-health-3",
+      "filter": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared5_axis1_vertex_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared5_axis1_vertex_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared5_axis1_fragment_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared5_axis1_fragment_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct6_axis1_vertex_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct6_axis1_vertex_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct6_axis1_fragment_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct6_axis1_fragment_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared6_axis1_vertex_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared6_axis1_vertex_perspective",
+      "expectedCasesFromActualDiscovery": 10,
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared5_axis1_vertex_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared5_axis1_vertex_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared5_axis1_fragment_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared5_axis1_fragment_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct6_axis1_vertex_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct6_axis1_vertex_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct6_axis1_fragment_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct6_axis1_fragment_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared6_axis1_vertex_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared6_axis1_vertex_perspective"
+      ]
+    },
+    {
+      "batch": 4,
+      "label": "dissolve-original40-health-4",
+      "filter": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared6_axis1_fragment_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared6_axis1_fragment_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct7_axis1_vertex_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct7_axis1_vertex_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct7_axis1_fragment_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct7_axis1_fragment_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared7_axis1_vertex_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared7_axis1_vertex_perspective;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared7_axis1_fragment_ortho;NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared7_axis1_fragment_perspective",
+      "expectedCasesFromActualDiscovery": 10,
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared6_axis1_fragment_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared6_axis1_fragment_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct7_axis1_vertex_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct7_axis1_vertex_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct7_axis1_fragment_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct7_axis1_fragment_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared7_axis1_vertex_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared7_axis1_vertex_perspective",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared7_axis1_fragment_ortho",
+        "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared7_axis1_fragment_perspective"
+      ]
+    }
+  ]
+}

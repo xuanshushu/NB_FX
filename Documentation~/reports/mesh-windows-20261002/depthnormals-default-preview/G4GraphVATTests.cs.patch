@@ -1,0 +1,229 @@
+--- a/Tests/URP/Editor/G4GraphVATTests.cs
++++ b/Tests/URP/Editor/G4GraphVATTests.cs
+@@ -39,6 +39,7 @@
+             public string caseId, api, unityVersion, scope;
+             public bool orthographic, finite;
+             public bool graphExtraDepthNormalsExcluded, ssaoActive;
++            public bool defaultFullForwardDepthShadow, graphDepthNormalsRawEnabled;
+             public float abOn, bcOn, abOff, bcOff, aRepeat, bRepeat, cRepeat;
+             public float aResponse, bResponse, cResponse, bFrameResponse, cFrameResponse;
+             public float abFrame, bcFrame, aFrameRepeat, bFrameRepeat, cFrameRepeat;
+@@ -307,7 +308,13 @@
+         public void VATSoftBody_ActualDepthAndShadowGeometry(bool shadow, bool ortho)
+             => CaptureVATDepthAndShadowGeometry(shadow,ortho,true);
+ 
+-        void CaptureVATDepthAndShadowGeometry(bool shadow, bool ortho, bool isolateExtraNormals)
++        [TestCase(true, TestName = "DN0SoftBodyDefaultSSAOABC_ortho")]
++        [TestCase(false, TestName = "DN0SoftBodyDefaultSSAOABC_perspective")]
++        public void VATSoftBody_DefaultForwardDepthShadowWithSSAO(bool ortho)
++            => CaptureVATDepthAndShadowGeometry(true, ortho, false, true);
++
++        void CaptureVATDepthAndShadowGeometry(bool shadow, bool ortho, bool isolateExtraNormals,
++            bool defaultFullChain = false)
+         {
+             var pipeline = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+             Assert.That(pipeline, Is.Not.Null);
+@@ -316,7 +323,7 @@
+             string rendererFile = Path.Combine(project, AssetDatabase.GetAssetPath(data));
+             byte[] rendererBytes = File.ReadAllBytes(rendererFile);
+             string folder = Path.Combine(Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR") ??
+-                Path.Combine(project, "Temp/NBFXVATGeometry"), (string.IsNullOrEmpty(GeometryCaseId)?"":GeometryCaseId+"-") + (shadow ? "shadow" : "depth") + (ortho ? "-ortho" : "-perspective"));
++                Path.Combine(project, "Temp/NBFXVATGeometry"), (defaultFullChain ? "dn0-default-fullchain-" : "") + (string.IsNullOrEmpty(GeometryCaseId)?"":GeometryCaseId+"-") + (shadow ? "shadow" : "depth") + (ortho ? "-ortho" : "-perspective"));
+             Directory.CreateDirectory(folder);
+             Material a = new Material(AssetDatabase.LoadAssetAtPath<Shader>(FrozenPath));
+             Material b = new Material(AssetDatabase.LoadAssetAtPath<Shader>(CurrentPath));
+@@ -357,13 +364,35 @@
+                     m.DisableKeyword("_ALPHATEST_ON"); m.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                     m.renderQueue = shadow ? 2100 : 3000;
+                     m.SetFloat("_CastShadows",1); m.SetFloat("_AffectsShadows",1);
+-                    foreach (string pass in new[] {"SRPDefaultUnlit","SRPDEFAULTUNLIT","UniversalForward","DepthOnly","ShadowCaster"}) m.SetShaderPassEnabled(pass,false);
+-                    m.SetShaderPassEnabled(shadow ? "ShadowCaster" : "DepthOnly",true);
+-                    // This fixture compares only the selected legacy pass.
+-                    // SSAO remains active on the receiver; Graph's additional
+-                    // depth-normal writer is covered separately, not folded
+-                    // into this ShadowCaster geometry result.
+-                    if(m==c && isolateExtraNormals)m.SetShaderPassEnabled("DepthNormalsOnly",false);
++                    if (defaultFullChain)
++                    {
++                        // Matching opaque material state with all corresponding
++                        // legacy passes available to the actual URP renderer.
++                        // The Graph main has no tag and is selected as SRPDefaultUnlit.
++                        if (m.HasProperty("_TransparentMode")) m.SetFloat("_TransparentMode", 0);
++                        if (m.HasProperty("_ForceZWriteToggle")) m.SetFloat("_ForceZWriteToggle", 0);
++                        m.SetFloat("_ZWrite", 1);
++                        if (m.HasProperty("_ZWriteControl")) m.SetFloat("_ZWriteControl", 0);
++                        if (m.HasProperty("_BackFirstPassToggle")) m.SetFloat("_BackFirstPassToggle", 0);
++                        m.SetShaderPassEnabled("SRPDefaultUnlit", m == c);
++                        m.SetShaderPassEnabled("SRPDEFAULTUNLIT", m == c);
++                        m.SetShaderPassEnabled("UniversalForward", true);
++                        m.SetShaderPassEnabled("DepthOnly", true);
++                        m.SetShaderPassEnabled("ShadowCaster", true);
++                        // Explicit True proves the shader-level default. No GUI
++                        // pass hiding and no SSAO or extra normals pass suppression.
++                        if (m == c) m.SetShaderPassEnabled("DepthNormalsOnly", true);
++                    }
++                    else
++                    {
++                        foreach (string pass in new[] {"SRPDefaultUnlit","SRPDEFAULTUNLIT","UniversalForward","DepthOnly","ShadowCaster"}) m.SetShaderPassEnabled(pass,false);
++                        m.SetShaderPassEnabled(shadow ? "ShadowCaster" : "DepthOnly",true);
++                        // This fixture compares only the selected legacy pass.
++                        // SSAO remains active on the receiver; Graph's additional
++                        // depth-normal writer is covered separately, not folded
++                        // into this ShadowCaster geometry result.
++                        if(m==c && isolateExtraNormals)m.SetShaderPassEnabled("DepthNormalsOnly",false);
++                    }
+                 }
+                 receiver.GetComponent<MeshRenderer>().sharedMaterial = receiverMaterial;
+                 receiver.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
+@@ -397,16 +426,71 @@
+                 if(nb)nb.SetActive(false);
+                 camera.orthographic=ortho;camera.fieldOfView=45;camera.nearClipPlane=.1f;camera.farClipPlane=25;
+                 camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.125f,.25f,.375f,1);camera.allowHDR=false;camera.allowMSAA=false;camera.targetTexture=rt;rt.Create();Assert.That(rt.IsCreated() && !rt.sRGB,Is.True);
++                Color[] empty = null, emptyRepeat = null;
++                if (defaultFullChain)
++                {
++                    Assert.That(shadow && !isolateExtraNormals, Is.True);
++                    Assert.That(directed, Is.Null, "Default pipeline must not use a directed test RendererFeature.");
++                    Assert.That(data.rendererFeatures.Any(f => f && f.isActive && f.GetType().Name.Contains("AmbientOcclusion")), Is.True, "SSAO must stay active in the existing Renderer.");
++                    Assert.That(c.GetShaderPassEnabled("DepthNormalsOnly"), Is.True);
++                    writer.enabled = false; receiver.GetComponent<MeshRenderer>().enabled = false;
++                    for (int i = 0; i < 4; ++i) camera.Render();
++                    empty = Draw(writer, b, camera, rt, readback, folder, "empty-background");
++                    emptyRepeat = Draw(writer, b, camera, rt, readback, folder, "empty-background-repeat");
++                    Assert.That(Finite(empty, emptyRepeat), Is.True);
++                    Assert.That(Delta(empty, emptyRepeat), Is.Zero);
++                    Assert.That(empty[0].r, Is.LessThan(empty[0].g));
++                    Assert.That(empty[0].g, Is.LessThan(empty[0].b));
++                    Assert.That(empty[0].r, Is.GreaterThan(0f));
++                    Assert.That(empty[0].a, Is.GreaterThan(0f));
++                    writer.enabled = true; receiver.GetComponent<MeshRenderer>().enabled = true;
++                }
+                 foreach (var m in new[] {a,b,c})
+                 { if(GeometryFrameState!=null)GeometryFrameState(m,m==c,0);else SetVAT(m,false);writer.sharedMaterial=m;for(int i=0;i<4;i++)camera.Render(); }
+                 Color[] Snap(Material m,string label,bool enabled,float frame)
+                 { if(GeometryFrameState!=null)GeometryFrameState(m,m==c,enabled?frame:0);else {SetVAT(m,enabled);m.SetFloat("_displayFrame",frame);}writer.sharedMaterial=m;for(int i=0;i<3;i++)camera.Render();return Draw(writer,m,camera,rt,readback,folder,label); }
++                Color[] actorA = null, actorB = null, actorC = null;
++                Color[] actorAR = null, actorBR = null, actorCR = null;
++                if (defaultFullChain)
++                {
++                    Assert.That(c.FindPass("Universal Forward"), Is.GreaterThanOrEqualTo(0));
++                    Assert.That(c.FindPass("DepthNormalsOnly"), Is.GreaterThanOrEqualTo(0));
++                    foreach (var m in new[] {a,b,c})
++                    {
++                        Assert.That(m.GetShaderPassEnabled(m == c ? "SRPDefaultUnlit" : "UniversalForward"), Is.True);
++                        Assert.That(m.GetShaderPassEnabled("DepthOnly"), Is.True);
++                        Assert.That(m.GetShaderPassEnabled("ShadowCaster"), Is.True);
++                    }
++                    File.WriteAllText(Path.Combine(folder, "fullchain-inputs-and-state.json"),
++                        JsonUtility.ToJson(DN0InputsAndState(project, data, pipeline, new[] {a,b,c}), true));
++                    // Independent main-color visibility: the floor cannot hide
++                    // a missing Forward behind a shadow-only response.
++                    receiver.GetComponent<MeshRenderer>().enabled = false;
++                    actorA = Snap(a, "A-forward-visible", true, 1);
++                    actorB = Snap(b, "B-forward-visible", true, 1);
++                    actorC = Snap(c, "C-forward-visible", true, 1);
++                    actorAR = Snap(a, "A-forward-visible-repeat", true, 1);
++                    actorBR = Snap(b, "B-forward-visible-repeat", true, 1);
++                    actorCR = Snap(c, "C-forward-visible-repeat", true, 1);
++                    receiver.GetComponent<MeshRenderer>().enabled = true;
++                    Assert.That(Finite(actorA, actorB, actorC, actorAR, actorBR, actorCR), Is.True);
++                    Assert.That(Visible(actorA, empty), Is.GreaterThan(150));
++                    Assert.That(Visible(actorB, empty), Is.GreaterThan(150));
++                    Assert.That(Visible(actorC, empty), Is.GreaterThan(150));
++                    Assert.That(Delta(actorA, actorB) + Delta(actorB, actorC), Is.Zero);
++                    Assert.That(Delta(actorA, actorAR) + Delta(actorB, actorBR) + Delta(actorC, actorCR), Is.Zero);
++                }
+                 var ao=Snap(a,"A-off",false,1);var bo=Snap(b,"B-off",false,1);var co=Snap(c,"C-off",false,1);
+                 var aa=Snap(a,"A-on",true,1);var ba=Snap(b,"B-on",true,1);var ca=Snap(c,"C-on",true,1);
+                 var ar=Snap(a,"A-repeat",true,1);var br=Snap(b,"B-repeat",true,1);var cr=Snap(c,"C-repeat",true,1);
+                 var af=Snap(a,"A-frame2",true,2);var bf=Snap(b,"B-frame2",true,2);var cf=Snap(c,"C-frame2",true,2);
+                 var record=new Record{caseId=(string.IsNullOrEmpty(GeometryCaseId)?"":GeometryCaseId+"-")+(shadow?"actual-shadow-geometry":"actual-depth-geometry"),orthographic=ortho,api=SystemInfo.graphicsDeviceType.ToString(),unityVersion=Application.unityVersion,
+-                    scope="Selected VAT DepthOnly/ShadowCaster only; extra Graph DepthNormalsOnly excluded where recorded; no default SSAO pipeline/allVAT/VFX/Player claim",
++                    scope=defaultFullChain ? "DN0 raw Graph DepthNormalsOnly enabled True; actual URP Forward+DepthOnly+ShadowCaster opaque material chain, existing SSAO active; no directed renderer or GUI suppression; SoftBody two cameras only, no all-state/Player/VFX/perf claim" : "Selected VAT DepthOnly/ShadowCaster only; extra Graph DepthNormalsOnly excluded where recorded; no default SSAO pipeline/allVAT/VFX/Player claim",
++                    defaultFullForwardDepthShadow=defaultFullChain,
++                    graphDepthNormalsRawEnabled=defaultFullChain && c.GetShaderPassEnabled("DepthNormalsOnly"),
++                    aVisible=defaultFullChain ? Visible(actorA,empty) : 0,
++                    bVisible=defaultFullChain ? Visible(actorB,empty) : 0,
++                    cVisible=defaultFullChain ? Visible(actorC,empty) : 0,
+                     graphExtraDepthNormalsExcluded=isolateExtraNormals,
+                     ssaoActive=data.rendererFeatures.Any(f=>f&&f.isActive&&f.GetType().Name.Contains("AmbientOcclusion")),
+                     finite=Finite(ao,bo,co,aa,ba,ca,ar,br,cr,af,bf,cf),abOff=Delta(ao,bo),bcOff=Delta(bo,co),abOn=Delta(aa,ba),bcOn=Delta(ba,ca),abFrame=Delta(af,bf),bcFrame=Delta(bf,cf),aRepeat=Delta(aa,ar),bRepeat=Delta(ba,br),cRepeat=Delta(ca,cr),aResponse=Delta(ao,aa),bResponse=Delta(bo,ba),cResponse=Delta(co,ca),bFrameResponse=Delta(ba,bf),cFrameResponse=Delta(ca,cf)};
+@@ -707,6 +791,78 @@
+                 foreach(Color px in frame) { writer.Write(px.r);writer.Write(px.g);writer.Write(px.b);writer.Write(px.a); }
+             return frame;
+         }
++        [Serializable] sealed class DN0SourceHash { public string path, sha256; }
++        [Serializable] sealed class DN0PassInfo { public int index; public string name, lightMode; }
++        [Serializable] sealed class DN0MaterialState
++        {
++            public string shader;
++            public int renderQueue;
++            public float surface, zWrite, zWriteControl, zTest, cull;
++            public string[] rawQueryKeys;
++            public bool[] rawQueryEnabled;
++            public DN0PassInfo[] actualPasses;
++        }
++        [Serializable] sealed class DN0Inputs
++        {
++            public string unity, api, gpu, resolvedPackage, generatedShaderSHA256;
++            public bool ssaoActive, graphNormalsRawEnabled;
++            public DN0SourceHash[] inputFiles;
++            public DN0MaterialState[] materialStates;
++        }
++        static string DN0SHA256(string path)
++        {
++            using (var algorithm = System.Security.Cryptography.SHA256.Create())
++                return BitConverter.ToString(algorithm.ComputeHash(File.ReadAllBytes(path))).Replace("-", "").ToLowerInvariant();
++        }
++        static DN0Inputs DN0InputsAndState(string project, ScriptableRendererData rendererData,
++            UniversalRenderPipelineAsset pipeline, Material[] materials)
++        {
++            var package = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(GraphPath);
++            Assert.That(package, Is.Not.Null);
++            var paths = new List<string>();
++            foreach (string relative in new[] {
++                "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
++                "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs",
++                "NBShaders2/ShaderGraph/Passes/NBGraphForwardPass.hlsl",
++                "NBShaders2/ShaderGraph/Passes/NBGraphShadowCasterPass.hlsl",
++                "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
++                "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
++                "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
++                "NBShaders2/Shader/NBShader.shader",
++                "Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
++                "Tests/URP/Editor/G4GraphVATTests.cs" })
++                paths.Add(Path.Combine(package.resolvedPath, relative));
++            paths.Add(Path.Combine(project, AssetDatabase.GetAssetPath(rendererData)));
++            paths.Add(Path.Combine(project, AssetDatabase.GetAssetPath(pipeline)));
++            paths.Add(Path.Combine(project, "ProjectSettings/GraphicsSettings.asset"));
++            paths.Add(Path.Combine(project, "ProjectSettings/QualitySettings.asset"));
++            var hashes = paths.Select(path => new DN0SourceHash { path=path, sha256=DN0SHA256(path) }).ToArray();
++            var states = new List<DN0MaterialState>();
++            string[] keys = { "SRPDefaultUnlit", "SRPDEFAULTUNLIT", "UniversalForward", "Universal Forward", "DepthOnly",
++                "DepthNormalsOnly", "ShadowCaster", "SHADOWCASTER", "NBCameraOpaqueDistortPass", "NBDeferredDistortPass",
++                "MotionVectors", "MOTIONVECTORS", "UniversalGBuffer", "SceneSelectionPass", "Picking", "Universal2D" };
++            foreach (Material m in materials)
++            {
++                var passes = new List<DN0PassInfo>();
++                for (int i = 0; i < m.passCount; ++i)
++                    passes.Add(new DN0PassInfo { index=i, name=m.GetPassName(i),
++                        lightMode=m.shader.FindPassTagValue(0, i, new ShaderTagId("LightMode")).name });
++                states.Add(new DN0MaterialState { shader=m.shader.name, renderQueue=m.renderQueue,
++                    surface=m.HasProperty("_Surface")?m.GetFloat("_Surface"):-1,
++                    zWrite=m.GetFloat("_ZWrite"), zWriteControl=m.HasProperty("_ZWriteControl")?m.GetFloat("_ZWriteControl"):-1,
++                    zTest=m.GetFloat("_ZTest"), cull=m.GetFloat("_Cull"), rawQueryKeys=keys,
++                    rawQueryEnabled=keys.Select(key => m.GetShaderPassEnabled(key)).ToArray(), actualPasses=passes.ToArray() });
++            }
++            string folder = Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR");
++            string generated = Path.Combine(folder, "generated-vat-candidate.shader");
++            Assert.That(File.Exists(generated), Is.True);
++            return new DN0Inputs { unity=Application.unityVersion, api=SystemInfo.graphicsDeviceType.ToString(),
++                gpu=SystemInfo.graphicsDeviceName, resolvedPackage=package.resolvedPath,
++                generatedShaderSHA256=DN0SHA256(generated), inputFiles=hashes, materialStates=states.ToArray(),
++                graphNormalsRawEnabled=materials[2].GetShaderPassEnabled("DepthNormalsOnly"),
++                ssaoActive=rendererData.rendererFeatures.Any(f => f && f.isActive && f.GetType().Name.Contains("AmbientOcclusion")) };
++        }
++
+         static bool Finite(params Color[][] frames)
+         {
+             foreach(Color[] frame in frames)foreach(Color p in frame)

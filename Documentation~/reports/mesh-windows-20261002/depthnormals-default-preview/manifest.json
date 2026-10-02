@@ -1,0 +1,60 @@
+{
+  "task": "DN0",
+  "scope": "Preview only package-owned DepthNormalsOnly descriptor no-output default; retain generated Pass identity/template/include/block/keyword, no extra property/keyword. Default SoftBody Forward+Depth+Shadow actual URP SSAO evidence candidates only.",
+  "installed": false,
+  "UnityRun": false,
+  "mainUnchanged": true,
+  "isolatedUnchanged": true,
+  "sourceSnapshotBeforeCoordinatorSwitch": true,
+  "inputSubTargetSHA256": "81c1b9ad0549b9aa6f23c51bc88c7655b73128a76a8787478efd288224cdf5ca",
+  "records": [
+    {
+      "path": "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs",
+      "beforeSHA256": "81c1b9ad0549b9aa6f23c51bc88c7655b73128a76a8787478efd288224cdf5ca",
+      "afterSHA256": "7888c90cab2a58f903e539c0d60ed8f423cb2a0f3e1e1c7e865f682ae3adad54"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphVATTests.cs",
+      "beforeSHA256": "5ffe3fcd21f8db2042e139e7cd0e1817ca76bca5dbec81abff58b9d3e215f35a",
+      "afterSHA256": "a1b1c7be45f96c20739ffdd1958097d25f338b525ed5bf73b8c3bd43e5fb78bb"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs.meta",
+      "beforeSHA256": "b4997f8030db991b6243bfffa1687880957a49f3bd49e6f790634b369ae33584",
+      "afterSHA256": "b4997f8030db991b6243bfffa1687880957a49f3bd49e6f790634b369ae33584"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphVATTests.cs.meta",
+      "beforeSHA256": "69ef3d33e992f0a04646c978b597ff3e9b9ffcc0441a457d2367bad15419fc13",
+      "afterSHA256": "69ef3d33e992f0a04646c978b597ff3e9b9ffcc0441a457d2367bad15419fc13"
+    }
+  ],
+  "generatedPassExpected": "DepthNormalsOnly present, same LightMode/include/blocks/keywords, ZTest Never, ZWrite Off, ColorMask0, Stencil Always/Keep/WriteMask0; no material-specific Fail/ZFail writes",
+  "testCases": [
+    "NBFX.Baseline.Tests.G4GraphVATTests.DN0SoftBodyDefaultSSAOABC_ortho",
+    "NBFX.Baseline.Tests.G4GraphVATTests.DN0SoftBodyDefaultSSAOABC_perspective"
+  ],
+  "testBehavior": [
+    "New optional fullchain core mode, old limited mode unchanged and assertions preserved.",
+    "Opaque effective states matched; ordinary main plus DepthOnly/ShadowCaster true; Graph raw DepthNormalsOnly true with no GUI invocation.",
+    "Current SSAO remains active and is asserted; no directed RendererFeature.",
+    "Real empty background/repeat and independent Forward-only visibility controls with floor removed; fullchain floor captures retain allpasses and original strict ABC/repeat/strong response.",
+    "State receipt includes all raw pass query keys, actual compiled pass names/LightModes, generated Shader SHA, actual input SHA/GPU/API."
+  ],
+  "legacyAssertionLinesPreservedVerbatim": 57,
+  "noOldVerdictChanged": true,
+  "limits": [
+    "Two SoftBody cameras only. No complete allstates/Player/perf/VFX or Gate claim.",
+    "Raw API pass enableTrue is intentional adversarial proof; no optional product normals enable feature claimed.",
+    "No runtime result or compilation claim until main serially installs/reviews/runs."
+  ],
+  "unchangedInstalledInputsCheckedNow": {
+    "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs": true,
+    "Tests/URP/Editor/G4GraphVATTests.cs": true
+  },
+  "reviewPatchFiles": [
+    "NBGraphUnlitSubTarget.cs.patch",
+    "G4GraphVATTests.cs.patch"
+  ],
+  "centralRebaseInstruction": "Apply the small DN0 call/helper diff onto latest root or owned combined SubTarget after review; never copy full isolated SubTarget to root. Preserve all current Forward/OverrideZ/SM4.5/VAT closures as present at target version. Graph asset unchanged."
+}

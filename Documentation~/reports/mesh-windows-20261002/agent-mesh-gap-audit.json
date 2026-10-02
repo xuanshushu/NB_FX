@@ -1,0 +1,305 @@
+{
+  "task": "MESH-GAP",
+  "readOnlyProductAudit": true,
+  "auditEnvironment": "6000.3.25f1 / URP+SG+VFX 17.3.0 / Direct3D11",
+  "scopeAuthority": "User 2026-10-02; D23/D24; tasks/main-agent.html; T06/T07; gates/validation. No Unity operations performed by this agent.",
+  "baselineProvidedByCoordinator": {
+    "packageHEAD": "8a29a5e68ceb7965af66450599af9c24c7ece0b0",
+    "rootProductIntegrated": "GUI1B/GUI1C only after 07fb0d9 product freeze; later render slices remain isolated",
+    "noFormalVFX": true,
+    "G3": "not released",
+    "G4": "not released"
+  },
+  "multiAgentRules": {
+    "source": "Packages/NB_FX/Documentation~/tasks/main-agent.html#dependency,#ownership,#workflow",
+    "capacity": "main+3 workers maximum",
+    "singleWriters": [
+      "central Graph",
+      "Forward/Input/ShaderLab",
+      "GUI/Sync",
+      "total Gate/report/index"
+    ],
+    "serialUnity": true,
+    "review": "SubAgent conclusion alone cannot release Gate; input hash and raw evidence required"
+  },
+  "uvpActualMetrics320": [
+    {
+      "consumer": "mask1",
+      "rows": 40,
+      "failedBC": 4,
+      "invisible": 0,
+      "weakResponse": 0,
+      "maxBC": 0.00048828125,
+      "maxControlBC": 0.0,
+      "nonfinite": 0,
+      "unstable": 0
+    },
+    {
+      "consumer": "mask2",
+      "rows": 40,
+      "failedBC": 4,
+      "invisible": 0,
+      "weakResponse": 0,
+      "maxBC": 0.00048828125,
+      "maxControlBC": 0.0,
+      "nonfinite": 0,
+      "unstable": 0
+    },
+    {
+      "consumer": "mask3",
+      "rows": 40,
+      "failedBC": 4,
+      "invisible": 0,
+      "weakResponse": 0,
+      "maxBC": 0.00048828125,
+      "maxControlBC": 0.0,
+      "nonfinite": 0,
+      "unstable": 0
+    },
+    {
+      "consumer": "overlay1",
+      "rows": 40,
+      "failedBC": 17,
+      "invisible": 0,
+      "weakResponse": 0,
+      "maxBC": 0.00390625,
+      "maxControlBC": 0.0009765625,
+      "nonfinite": 0,
+      "unstable": 0
+    },
+    {
+      "consumer": "overlay2",
+      "rows": 40,
+      "failedBC": 17,
+      "invisible": 0,
+      "weakResponse": 0,
+      "maxBC": 0.00244140625,
+      "maxControlBC": 0.00146484375,
+      "nonfinite": 0,
+      "unstable": 0
+    },
+    {
+      "consumer": "color-ramp",
+      "rows": 40,
+      "failedBC": 6,
+      "invisible": 0,
+      "weakResponse": 0,
+      "maxBC": 0.00048828125,
+      "maxControlBC": 0.0,
+      "nonfinite": 0,
+      "unstable": 0
+    },
+    {
+      "consumer": "dissolve",
+      "rows": 40,
+      "failedBC": 0,
+      "invisible": 40,
+      "weakResponse": 40,
+      "maxBC": 0.0,
+      "maxControlBC": 0.0,
+      "nonfinite": 0,
+      "unstable": 0
+    },
+    {
+      "consumer": "dissolve-mask",
+      "rows": 40,
+      "failedBC": 1,
+      "invisible": 0,
+      "weakResponse": 0,
+      "maxBC": 0.000244140625,
+      "maxControlBC": 0.0,
+      "nonfinite": 0,
+      "unstable": 0
+    }
+  ],
+  "newCriticalFinding": {
+    "id": "UVP-DISSOLVE-DEVICE-REMOVED",
+    "previousClassification": "40 invisible/zero response strict failures",
+    "classification": "GPU fault and invalid readback; Dissolve positional consumer remains unverified, not proven product feature absence",
+    "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\uvp-consumers-isolated-1\\batch-7\\unity.log",
+    "firstFailureLine": 588,
+    "log": "d3d11 failed staging texture creation 887a0005; follows with shader/resource creation failures",
+    "payloadAudit": "All 520 .rgba-f32.gz capture payloads have every float equal to -23.203125, including C-import-warm before configuring Dissolve. Value equals half 0xCDCD. These are finite uninitialized-pattern readbacks; finite/repeat/parity alone do not validate them.",
+    "oldXML": "Keep all original 40 Failed; no retrospective pass or deletion.",
+    "previewManifest": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\uvp-dissolve-visibility-preview\\manifest.json",
+    "diagnosticCasesPrepared": 2,
+    "runtimeRun": false
+  },
+  "matrix": [
+    {
+      "id": "UVP",
+      "product": "not integrated",
+      "isolated": "Main56/56; 320 consumers227/93; total376=283/93",
+      "remaining": "Dissolve40 invalid GPU batch to rerun in new process with strict warm/readback guards. Remaining53 finite/visible/repeat0/strong-response BC differences held for manual review. Position/stage consumer followups Noise/NoiseMask/Bump/PNoise/VertexMap/VertexMask; each feature own ST/rotation/scroll stage; pairs and risk combinations.",
+      "evidence": [
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/uvp-main56-final/batch-1/results.xml",
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/uvp-consumers-isolated-1/batch-summary.json"
+      ],
+      "source": "isolated Tests/URP/Editor/G4GraphPositionUVTests.cs:20,148; NBGraphBaseUV.hlsl"
+    },
+    {
+      "id": "GUI1B/C",
+      "product": "integrated root Graph997->1026; seed29 Float mirror; native packed notifications",
+      "isolated": "root-rebased110/110 and mesh45/45",
+      "remaining": "Real visible Inspector for all shared blocks beyond MainTexture; multiselect/Undo/save/reimport/reload/animation hints; preserve URP _Surface/_AlphaClip authority.",
+      "source": "NBShaders2/Editor/NBShaderGUI.cs:148 Graph branch draws only MainTexture and returns; NBShaderGraphRootItem fallback native groups are not complete shared controls"
+    },
+    {
+      "id": "GUI2-TIER",
+      "product": "not integrated",
+      "isolated": "Noise/NoiseMask pair CPU20/20 + GPU6/6; regression360=356/4 existing TextureNoise diffs",
+      "remaining": "General normalized Graph intent reader from same binding tables; all feature allow inputs, effective enums, pass projections, toolbar/Validate/general Apply/runtime tier and build stripping. Graph Context IsKeywordAllowed still always true; VatEnabled/FlipbookEnabled false.",
+      "source": [
+        "NBShaderMaterialIntentResolver.cs",
+        "NBShaderFeatureLevelMaterialApplier.cs",
+        "NBShaderGUIContext.cs"
+      ],
+      "evidence": [
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/isolated-gui2-noise-source/manifest.json"
+      ]
+    },
+    {
+      "id": "FLIPBOOK",
+      "product": "not integrated",
+      "isolated": "first36/36 Forward+two exact NB screen passes",
+      "remaining": "AnimationSheetHelper lifecycle, all passes Depth/Shadow, wrap/LOD and CA precedence, special UV+SixWay+VAT pairs, Player/performance.",
+      "evidence": [
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/flipbook36-texture-fix-isolated-1/batch-1/results.xml"
+      ]
+    },
+    {
+      "id": "CUSTOMDATA-TIME",
+      "product": "render consumers not integrated",
+      "isolated": "four-word storage32/32; render124 latest112/12; targeted360/360",
+      "remaining": "12 strict microdiffs manual; complete live time/animation lifecycle, CustomData+Twirl/Polar/shared combinations, MPB Player proof where included in Mesh contract.",
+      "evidence": [
+        ".utmp/nbfx-resume-20261002/customdata-verdict-ledger.json"
+      ]
+    },
+    {
+      "id": "VAT10",
+      "product": "not integrated",
+      "isolated": "Houdini remaining32/32, Tyflow52/52, Gamma16/16; limited Depth/Shadow40 identities via32+8 rerun, regression233/233",
+      "remaining": "All normal/tangent, mirrored/nonuniform transform, complete frame sequence/bounds and pair combinations; full default pipeline and Player/performance.",
+      "evidence": [
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/isolated-vat10-geometry-source/manifest.json"
+      ]
+    },
+    {
+      "id": "CUSTOMLOCAL",
+      "product": "archive only, not integrated",
+      "isolated": "Forward20/20; UV/SixWay11/12; helper3/3 after authority fix; limitedGeometry16 latest all pass;233/233",
+      "remaining": "1 strict microdiff manual; combined VAT+VertexOffset+CustomLocal, default pipeline/Player/lifecycle.",
+      "evidence": [
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/candidate-append-provenance-11.json",
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/isolated-customlocal-combined-source/manifest.json"
+      ]
+    },
+    {
+      "id": "OVERRIDEZ",
+      "product": "root unchanged",
+      "isolated": "10-file actual install; realdepth16/16; keyword Validate path included",
+      "remaining": "GUI on-edit/assign and no-op/stale keyword states, blend/ZWrite/ZTest interactions, exact NB pass exclusion, required regressions/archive. Back-first extra pass not claimed.",
+      "evidence": [
+        ".utmp/nbfx-resume-20261002/overridez-isolation-installation.json",
+        ".utmp/nbfx-mesh-current-6000.3.25f1-d3d11-20261002/overridez-depth16-isolated-1/batch-summary.json"
+      ],
+      "note": "Earlier same-named preflight ran old CustomLocal, excluded from OverrideZ evidence"
+    },
+    {
+      "id": "ADVANCED-STATES",
+      "product": "ColorMask/Stencil30 and blend/clip portions integrated before GUI slice",
+      "isolated": "OverrideZ firstslice as above",
+      "remaining": "BackFirst SRPDefaultUnlit extra pass missing in Graph SubTarget; Portal/Stencil helpers; seven original pass equivalents plus URP internal extras audited; transparent shadows/dither; main pass disabled screen drawing; all supported state combinations.",
+      "source": "NBShader.shader:593 back-first Cull Front vs Graph main uses SRPDefaultUnlit. NBGraphUnlitSubTarget delegates Builtin then adds exactly two screen clones; cannot blindly reuse legacy backFirst pass-name mapping."
+    },
+    {
+      "id": "DEPTHNORMALS-SSAO",
+      "product": "unresolved default behavior",
+      "isolated": "limitedDepth/Shadow pass tests disable Graph DepthNormalsOnly",
+      "remaining": "Default Graph additional DepthNormalsOnly alters SSAO; true two original failures660/1015 pixels max0.2285/0.209 and repeat0, too large to label microdiff. Audit opaque/transparent/default material pass state, SSAO normals/depth source and actual default draw. Do not remove pass/global-disable SSAO without reviewed contract.",
+      "evidence": [
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/vat-shadow-fullframe-analysis.json",
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/vat-shadow-depthnormals-diagnostic-1/batch-1/results.xml"
+      ]
+    },
+    {
+      "id": "NBPOSTPROCESS",
+      "product": "pipeline unchanged",
+      "isolated": "two exact LightMode screen RT tests only",
+      "remaining": "Full PostProcessingController/Manager->NBPostProcess->actual _DisturbanceMaskTex/_ScreenColorCopy1/final composite; source alpha/clear/signedRG/extremes/downsampling/overlap; main pass disabled; multiple cameras/Scene/Game/renderScale/MSAA; RG and Compatibility; other NBPost effects. No Graph Controller/Manager tests currently located in Tests.",
+      "source": [
+        "NBPostProcessing/Runtime/PostProcessingController.cs",
+        "NBPostProcessing/Runtime/PostProcessingManager.cs",
+        "Tests/URP/Editor/G4GraphScreenNoiseTests.cs exact-tag test renderer is not full manager"
+      ]
+    },
+    {
+      "id": "CA",
+      "product": "CA effect preexisting",
+      "isolated": "no complete valid Windows CA XML; Frozen A first draw native ShaderLab/SRPBatcher/GPU failures",
+      "remaining": "Separate native failure status; no missingXML or not reached case counted as pass. Prior Metal47/58 is different API/version evidence only.",
+      "evidence": [
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/ca-crash-native-stack.txt",
+        "Packages/NB_FX/Documentation~/reports/mesh-windows-20261002/crash-analysis_status.json"
+      ]
+    },
+    {
+      "id": "G3-AUDIT",
+      "product": "no release",
+      "isolated": "minimal visible/sharedCF/pass evidence",
+      "remaining": "Actual final Graph SupportVFX still enabled; representative parameters/flags/precision/preview; save/reimport/regenerate and Player preserve exact Passes; official package hash and internal extension risk review; RG+Compatibility NBPostprocess actual chain. GF cannot substitute."
+    },
+    {
+      "id": "PLAYER-VARIANTS-PERF",
+      "product": "not complete",
+      "isolated": "historic prototype Player evidence only",
+      "remaining": "Final combined Graph build/run with stripping/SVC/Tiers/AssetBundle path; SRPBatcher, generated sample/interpolator/Pass/variant counts, CPU submission/GPU timings/draws/buildsize/importtime and stability; request user performance budget after initial measured baseline, do not invent threshold.",
+      "source": "Documentation~/validation.html#acceptance"
+    },
+    {
+      "id": "COMBINATIONS",
+      "product": "not complete",
+      "isolated": "targeted regressions overlap and differing sourceversions",
+      "remaining": "Risk pairs: Twirl/Polar+SharedUV+CD; Flipbook+specialUV; Noise+CA+Dissolve+Mask; 2Overlay+adjustment+premultiply; POM+Normal+lighting; SixWay+Flipbook+Shadow; VAT+VO+CustomLocal; transparentShadow+Dissolve+Mask; Distort+AlphaRefine+disabledMain; Portal+depth; same-screen legacy/Graph+multicamera. Final source targeted rerun then Gate review; never sum overlapping batches."
+    }
+  ],
+  "executionSequence": [
+    {
+      "step": 1,
+      "action": "Finish existing OverrideZ diagnostics/regression/archive before regeneration elsewhere",
+      "owner": "main/OverrideZ worker"
+    },
+    {
+      "step": 2,
+      "action": "Fresh-process UVP Dissolve2 guard preview; confirm host before any product math edit; then original40 split batches",
+      "owner": "Mesh gap worker preview, main Unity serial"
+    },
+    {
+      "step": 3,
+      "action": "UVP missing six consumers + own transforms; complete Flipbook pass/lifecycle; retain microdiff queue",
+      "owner": "disjoint preview workers, main central Graph"
+    },
+    {
+      "step": 4,
+      "action": "Rebase reviewed isolated slices onto realtime root Graph individually: UVP -> Flipbook -> GUI2 Noise gates -> CD -> Houdini/TyflowVAT -> CustomLocal -> OverrideZ; validate each input and preserve all previous Graph edges",
+      "owner": "main single writer",
+      "note": "GUI1B/C already root; never copy stale wholeGraph. Existing full manifests restore isolation, not directly root install."
+    },
+    {
+      "step": 5,
+      "action": "BackFirst/defaultDepthNormals/Portal states, all GUI/Tier projection and full NBPostprocess tests; combinations",
+      "owner": "main sequencing"
+    },
+    {
+      "step": 6,
+      "action": "Final combined-source regeneration/reimport/preview/build/run/variant+perf+necessary regressions, manual exception bundle, G3/G4 evidence review",
+      "owner": "main"
+    },
+    {
+      "step": 7,
+      "action": "Only after G3/G4 reviewed formal T08/G5 and T09/G6; HDRP/low versions last",
+      "owner": "main"
+    }
+  ]
+}

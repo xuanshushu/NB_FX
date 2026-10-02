@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Failed(Child)" total="10" passed="8" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-02 14:36:59Z" end-time="2026-10-02 14:37:19Z" duration="20.0648928">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2074" result="Failed" site="Child" start-time="2026-10-02 14:36:59Z" end-time="2026-10-02 14:37:19Z" duration="20.064893" total="10" passed="8" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3220" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2055" result="Failed" site="Child" start-time="2026-10-02 14:36:59Z" end-time="2026-10-02 14:37:19Z" duration="19.948638" total="10" passed="8" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="16196" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="3221" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2055" result="Failed" site="Child" start-time="2026-10-02 14:36:59Z" end-time="2026-10-02 14:37:19Z" duration="19.865248" total="10" passed="8" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="3222" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2055" result="Failed" site="Child" start-time="2026-10-02 14:36:59Z" end-time="2026-10-02 14:37:19Z" duration="19.781347" total="10" passed="8" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="3223" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2055" result="Failed" site="Child" start-time="2026-10-02 14:36:59Z" end-time="2026-10-02 14:37:19Z" duration="19.697637" total="10" passed="8" failed="2" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="2350" name="G4GraphPositionUVTests" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" testcasecount="376" result="Failed" site="Child" start-time="2026-10-02 14:37:00Z" end-time="2026-10-02 14:37:19Z" duration="18.690712" total="10" passed="8" failed="2" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+]]></output>
+              <test-suite type="ParameterizedMethod" id="2727" name="PositionalSourceMatchesOriginalMesh" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" testcasecount="376" result="Failed" site="Child" start-time="2026-10-02 14:37:07Z" end-time="2026-10-02 14:37:19Z" duration="11.665314" total="10" passed="8" failed="2" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="2631" name="G4PositionUVABC_dissolve_direct3_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="830637650" result="Failed" start-time="2026-10-02 14:37:09Z" end-time="2026-10-02 14:37:11Z" duration="2.496570" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Position UV Graph mismatch; raw retained, no threshold relaxation.
+  Expected: 0
+  But was:  6.10351563E-05f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphPositionUVTests.PositionalSourceMatchesOriginalMesh (System.String consumer, System.Int32 source, System.Boolean shared, System.Boolean fragment, System.Boolean ortho, System.Int32 selector) [0x00d8a] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphPositionUVTests.cs:179
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_POSITION_UV_ABC {"consumer":"dissolve","sourcePath":"A Frozen/B current/C actual product Graph; no shader probe substituted","target":"128 RGBAHalf, raw f32 full frame; strict ROI40..87, finite full frame, repeat strict0","note":"UVP review candidate. Cylinder/NDC/Shared/Main source evaluated at original stage; Twirl flag with strength0 forces legacy fragment path. Feature-owned ST/rotation/scroll stage strict parity remains follow-up. No VertexOffset/VAT/CustomLocal/UI/Particle/VFX/Player claim. Matrix rows installed explicitly with the original T*Quaternion.Euler formula, not GUI evidence.","mode":3,"selector":1,"shared":false,"fragment":false,"ortho":true,"finite":true,"ab":0.0,"bc":0.00006103515625,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.926849365234375,"bResponse":0.926849365234375,"cResponse":0.926849365234375,"aVisible":2304,"bVisible":2304,"cVisible":2304,"aResponsePixels":2304,"bResponsePixels":2304,"cResponsePixels":2304,"mainSelfFourEquivalent":false}
+]]></output>
+                </test-case>
+                <test-case id="2632" name="G4PositionUVABC_dissolve_direct3_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="619608832" result="Passed" start-time="2026-10-02 14:37:11Z" end-time="2026-10-02 14:37:12Z" duration="0.851662" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_POSITION_UV_ABC {"consumer":"dissolve","sourcePath":"A Frozen/B current/C actual product Graph; no shader probe substituted","target":"128 RGBAHalf, raw f32 full frame; strict ROI40..87, finite full frame, repeat strict0","note":"UVP review candidate. Cylinder/NDC/Shared/Main source evaluated at original stage; Twirl flag with strength0 forces legacy fragment path. Feature-owned ST/rotation/scroll stage strict parity remains follow-up. No VertexOffset/VAT/CustomLocal/UI/Particle/VFX/Player claim. Matrix rows installed explicitly with the original T*Quaternion.Euler formula, not GUI evidence.","mode":3,"selector":1,"shared":false,"fragment":false,"ortho":false,"finite":true,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.94183349609375,"bResponse":0.94183349609375,"cResponse":0.94183349609375,"aVisible":2242,"bVisible":2242,"cVisible":2242,"aResponsePixels":2241,"bResponsePixels":2241,"cResponsePixels":2241,"mainSelfFourEquivalent":false}
+]]></output>
+                </test-case>
+                <test-case id="2633" name="G4PositionUVABC_dissolve_direct3_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="39393767" result="Passed" start-time="2026-10-02 14:37:12Z" end-time="2026-10-02 14:37:13Z" duration="0.845434" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_POSITION_UV_ABC {"consumer":"dissolve","sourcePath":"A Frozen/B current/C actual product Graph; no shader probe substituted","target":"128 RGBAHalf, raw f32 full frame; strict ROI40..87, finite full frame, repeat strict0","note":"UVP review candidate. Cylinder/NDC/Shared/Main source evaluated at original stage; Twirl flag with strength0 forces legacy fragment path. Feature-owned ST/rotation/scroll stage strict parity remains follow-up. No VertexOffset/VAT/CustomLocal/UI/Particle/VFX/Player claim. Matrix rows installed explicitly with the original T*Quaternion.Euler formula, not GUI evidence.","mode":3,"selector":1,"shared":false,"fragment":true,"ortho":true,"finite":true,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.916961669921875,"bResponse":0.916961669921875,"cResponse":0.916961669921875,"aVisible":2304,"bVisible":2304,"cVisible":2304,"aResponsePixels":2303,"bResponsePixels":2303,"cResponsePixels":2303,"mainSelfFourEquivalent":false}
+]]></output>
+                </test-case>
+                <test-case id="2634" name="G4PositionUVABC_dissolve_direct3_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct3_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1697426146" result="Passed" start-time="2026-10-02 14:37:13Z" end-time="2026-10-02 14:37:14Z" duration="0.838684" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_POSITION_UV_ABC {"consumer":"dissolve","sourcePath":"A Frozen/B current/C actual product Graph; no shader probe substituted","target":"128 RGBAHalf, raw f32 full frame; strict ROI40..87, finite full frame, repeat strict0","note":"UVP review candidate. Cylinder/NDC/Shared/Main source evaluated at original stage; Twirl flag with strength0 forces legacy fragment path. Feature-owned ST/rotation/scroll stage strict parity remains follow-up. No VertexOffset/VAT/CustomLocal/UI/Particle/VFX/Player claim. Matrix rows installed explicitly with the original T*Quaternion.Euler formula, not GUI evidence.","mode":3,"selector":1,"shared":false,"fragment":true,"ortho":false,"finite":true,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.916351318359375,"bResponse":0.916351318359375,"cResponse":0.916351318359375,"aVisible":2242,"bVisible":2242,"cVisible":2242,"aResponsePixels":2242,"bResponsePixels":2242,"cResponsePixels":2242,"mainSelfFourEquivalent":false}
+]]></output>
+                </test-case>
+                <test-case id="2635" name="G4PositionUVABC_dissolve_shared3_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="911647603" result="Passed" start-time="2026-10-02 14:37:14Z" end-time="2026-10-02 14:37:15Z" duration="0.885543" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_POSITION_UV_ABC {"consumer":"dissolve","sourcePath":"A Frozen/B current/C actual product Graph; no shader probe substituted","target":"128 RGBAHalf, raw f32 full frame; strict ROI40..87, finite full frame, repeat strict0","note":"UVP review candidate. Cylinder/NDC/Shared/Main source evaluated at original stage; Twirl flag with strength0 forces legacy fragment path. Feature-owned ST/rotation/scroll stage strict parity remains follow-up. No VertexOffset/VAT/CustomLocal/UI/Particle/VFX/Player claim. Matrix rows installed explicitly with the original T*Quaternion.Euler formula, not GUI evidence.","mode":3,"selector":1,"shared":true,"fragment":false,"ortho":true,"finite":true,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.9017333984375,"bResponse":0.9017333984375,"cResponse":0.9017333984375,"aVisible":2304,"bVisible":2304,"cVisible":2304,"aResponsePixels":2304,"bResponsePixels":2304,"cResponsePixels":2304,"mainSelfFourEquivalent":false}
+]]></output>
+                </test-case>
+                <test-case id="2636" name="G4PositionUVABC_dissolve_shared3_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="2041192111" result="Passed" start-time="2026-10-02 14:37:15Z" end-time="2026-10-02 14:37:16Z" duration="0.843195" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_POSITION_UV_ABC {"consumer":"dissolve","sourcePath":"A Frozen/B current/C actual product Graph; no shader probe substituted","target":"128 RGBAHalf, raw f32 full frame; strict ROI40..87, finite full frame, repeat strict0","note":"UVP review candidate. Cylinder/NDC/Shared/Main source evaluated at original stage; Twirl flag with strength0 forces legacy fragment path. Feature-owned ST/rotation/scroll stage strict parity remains follow-up. No VertexOffset/VAT/CustomLocal/UI/Particle/VFX/Player claim. Matrix rows installed explicitly with the original T*Quaternion.Euler formula, not GUI evidence.","mode":3,"selector":1,"shared":true,"fragment":false,"ortho":false,"finite":true,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.912109375,"bResponse":0.912109375,"cResponse":0.912109375,"aVisible":2242,"bVisible":2242,"cVisible":2242,"aResponsePixels":2242,"bResponsePixels":2242,"cResponsePixels":2242,"mainSelfFourEquivalent":false}
+]]></output>
+                </test-case>
+                <test-case id="2637" name="G4PositionUVABC_dissolve_shared3_axis1_fragment_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_fragment_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1748240177" result="Passed" start-time="2026-10-02 14:37:16Z" end-time="2026-10-02 14:37:16Z" duration="0.854503" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_POSITION_UV_ABC {"consumer":"dissolve","sourcePath":"A Frozen/B current/C actual product Graph; no shader probe substituted","target":"128 RGBAHalf, raw f32 full frame; strict ROI40..87, finite full frame, repeat strict0","note":"UVP review candidate. Cylinder/NDC/Shared/Main source evaluated at original stage; Twirl flag with strength0 forces legacy fragment path. Feature-owned ST/rotation/scroll stage strict parity remains follow-up. No VertexOffset/VAT/CustomLocal/UI/Particle/VFX/Player claim. Matrix rows installed explicitly with the original T*Quaternion.Euler formula, not GUI evidence.","mode":3,"selector":1,"shared":true,"fragment":true,"ortho":true,"finite":true,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.90753173828125,"bResponse":0.90753173828125,"cResponse":0.90753173828125,"aVisible":2304,"bVisible":2304,"cVisible":2304,"aResponsePixels":2304,"bResponsePixels":2304,"cResponsePixels":2304,"mainSelfFourEquivalent":false}
+]]></output>
+                </test-case>
+                <test-case id="2638" name="G4PositionUVABC_dissolve_shared3_axis1_fragment_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_shared3_axis1_fragment_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="1866753175" result="Passed" start-time="2026-10-02 14:37:16Z" end-time="2026-10-02 14:37:17Z" duration="0.849091" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_POSITION_UV_ABC {"consumer":"dissolve","sourcePath":"A Frozen/B current/C actual product Graph; no shader probe substituted","target":"128 RGBAHalf, raw f32 full frame; strict ROI40..87, finite full frame, repeat strict0","note":"UVP review candidate. Cylinder/NDC/Shared/Main source evaluated at original stage; Twirl flag with strength0 forces legacy fragment path. Feature-owned ST/rotation/scroll stage strict parity remains follow-up. No VertexOffset/VAT/CustomLocal/UI/Particle/VFX/Player claim. Matrix rows installed explicitly with the original T*Quaternion.Euler formula, not GUI evidence.","mode":3,"selector":1,"shared":true,"fragment":true,"ortho":false,"finite":true,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.925140380859375,"bResponse":0.925140380859375,"cResponse":0.925140380859375,"aVisible":2242,"bVisible":2242,"cVisible":2242,"aResponsePixels":2241,"bResponsePixels":2241,"cResponsePixels":2241,"mainSelfFourEquivalent":false}
+]]></output>
+                </test-case>
+                <test-case id="2639" name="G4PositionUVABC_dissolve_direct4_axis1_vertex_ortho" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct4_axis1_vertex_ortho" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="904602084" result="Passed" start-time="2026-10-02 14:37:17Z" end-time="2026-10-02 14:37:18Z" duration="0.898379" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_POSITION_UV_ABC {"consumer":"dissolve","sourcePath":"A Frozen/B current/C actual product Graph; no shader probe substituted","target":"128 RGBAHalf, raw f32 full frame; strict ROI40..87, finite full frame, repeat strict0","note":"UVP review candidate. Cylinder/NDC/Shared/Main source evaluated at original stage; Twirl flag with strength0 forces legacy fragment path. Feature-owned ST/rotation/scroll stage strict parity remains follow-up. No VertexOffset/VAT/CustomLocal/UI/Particle/VFX/Player claim. Matrix rows installed explicitly with the original T*Quaternion.Euler formula, not GUI evidence.","mode":4,"selector":1,"shared":false,"fragment":false,"ortho":true,"finite":true,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.91864013671875,"bResponse":0.91864013671875,"cResponse":0.91864013671875,"aVisible":2304,"bVisible":2304,"cVisible":2304,"aResponsePixels":2302,"bResponsePixels":2302,"cResponsePixels":2302,"mainSelfFourEquivalent":false}
+]]></output>
+                </test-case>
+                <test-case id="2640" name="G4PositionUVABC_dissolve_direct4_axis1_vertex_perspective" fullname="NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_dissolve_direct4_axis1_vertex_perspective" methodname="PositionalSourceMatchesOriginalMesh" classname="NBFX.Baseline.Tests.G4GraphPositionUVTests" runstate="Runnable" seed="757274201" result="Failed" start-time="2026-10-02 14:37:18Z" end-time="2026-10-02 14:37:19Z" duration="0.844868" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Position UV Graph mismatch; raw retained, no threshold relaxation.
+  Expected: 0
+  But was:  6.10351563E-05f
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphPositionUVTests.PositionalSourceMatchesOriginalMesh (System.String consumer, System.Int32 source, System.Boolean shared, System.Boolean fragment, System.Boolean ortho, System.Int32 selector) [0x00d8a] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphPositionUVTests.cs:179
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_POSITION_UV_ABC {"consumer":"dissolve","sourcePath":"A Frozen/B current/C actual product Graph; no shader probe substituted","target":"128 RGBAHalf, raw f32 full frame; strict ROI40..87, finite full frame, repeat strict0","note":"UVP review candidate. Cylinder/NDC/Shared/Main source evaluated at original stage; Twirl flag with strength0 forces legacy fragment path. Feature-owned ST/rotation/scroll stage strict parity remains follow-up. No VertexOffset/VAT/CustomLocal/UI/Particle/VFX/Player claim. Matrix rows installed explicitly with the original T*Quaternion.Euler formula, not GUI evidence.","mode":4,"selector":1,"shared":false,"fragment":false,"ortho":false,"finite":true,"ab":0.0,"bc":0.00006103515625,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aControlRepeat":0.0,"bControlRepeat":0.0,"cControlRepeat":0.0,"aResponse":0.91839599609375,"bResponse":0.91839599609375,"cResponse":0.91839599609375,"aVisible":2242,"bVisible":2242,"cVisible":2242,"aResponsePixels":2240,"bResponsePixels":2240,"cResponsePixels":2240,"mainSelfFourEquivalent":false}
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
