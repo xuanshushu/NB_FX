@@ -10,6 +10,10 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
         [GenerateBlocks("Universal Render Pipeline/NB FX")]
         public struct SurfaceDescription
         {
+            public static BlockFieldDescriptor OverrideDeviceDepth = new BlockFieldDescriptor(
+                "SurfaceDescription", "NBOverrideDeviceDepth", "NB Override Device Depth",
+                "SURFACEDESCRIPTION_NB_OVERRIDE_DEVICE_DEPTH",
+                new FloatControl(0.0f), ShaderStage.Fragment);
             public static BlockFieldDescriptor SignedRG = new BlockFieldDescriptor(
                 "SurfaceDescription", "NBDistortionSignedRG", "NB Distortion Signed RG",
                 "SURFACEDESCRIPTION_NB_DISTORTION_SIGNED_RG",

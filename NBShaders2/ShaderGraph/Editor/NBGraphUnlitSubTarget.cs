@@ -87,6 +87,13 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 scope = KeywordScope.Local,
                 stages = KeywordShaderStage.Fragment,
             });
+            // Original NB fragment axis, only on normal Forward.
+            keywords.Add(new KeywordDescriptor
+            {
+                displayName = "NB Override Z", referenceName = "_OVERRIDE_Z",
+                type = KeywordType.Boolean, definition = KeywordDefinition.ShaderFeature,
+                scope = KeywordScope.Local, stages = KeywordShaderStage.Fragment,
+            });
             pass.keywords = keywords;
             return pass;
         }
@@ -113,10 +120,11 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             if (pass.validPixelBlocks == null)
                 throw new InvalidOperationException("NB FX Graph: URP Unlit pixel blocks not found.");
             var existing = pass.validPixelBlocks;
-            var blocks = new BlockFieldDescriptor[existing.Length + 2];
+            var blocks = new BlockFieldDescriptor[existing.Length + 3];
             Array.Copy(existing, blocks, existing.Length);
             blocks[existing.Length] = NBGraphDistortionBlocks.SurfaceDescription.SignedRG;
             blocks[existing.Length + 1] = NBGraphDistortionBlocks.SurfaceDescription.NoiseMask;
+            blocks[existing.Length + 2] = NBGraphDistortionBlocks.SurfaceDescription.OverrideDeviceDepth;
             pass.validPixelBlocks = blocks;
             return pass;
         }
@@ -212,6 +220,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             // context must keep the serialized NB blocks and their CF edges.
             context.AddBlock(NBGraphDistortionBlocks.SurfaceDescription.SignedRG);
             context.AddBlock(NBGraphDistortionBlocks.SurfaceDescription.NoiseMask);
+            context.AddBlock(NBGraphDistortionBlocks.SurfaceDescription.OverrideDeviceDepth);
         }
         public override void GetFields(ref TargetFieldContext context) => base.GetFields(ref context);
         public override void CollectShaderProperties(PropertyCollector collector, GenerationMode mode)

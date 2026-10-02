@@ -28,6 +28,8 @@ namespace NBShaderEditor
         static void SyncSixWayKeywords(Material material)
         {
             if (material == null) return;
+            if (material.HasProperty("_OverrideZ_Toggle"))
+                SetExistingKeyword(material, "_OVERRIDE_Z", material.GetFloat("_OverrideZ_Toggle") > 0.5f);
             bool sixWay = material.HasProperty("_FxLightMode") &&
                 Mathf.RoundToInt(material.GetFloat("_FxLightMode")) == 4;
             SetExistingKeyword(material, "EVALUATE_SH_VERTEX", sixWay);
@@ -44,6 +46,9 @@ namespace NBShaderEditor
         }
 
         public override void AssignNewShaderToMaterial(Material material, Shader oldShader, Shader newShader)
-            => _urpGUI.AssignNewShaderToMaterial(material, oldShader, newShader);
+        {
+            _urpGUI.AssignNewShaderToMaterial(material, oldShader, newShader);
+            SyncSixWayKeywords(material);
+        }
     }
 }

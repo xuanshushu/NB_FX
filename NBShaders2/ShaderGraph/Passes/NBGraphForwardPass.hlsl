@@ -8,6 +8,9 @@
 
 void frag(PackedVaryings packedInput,
     out half4 outColor : SV_Target0
+#if defined(_OVERRIDE_Z)
+    , out float outDepth : SV_Depth
+#endif
 #ifdef _WRITE_RENDERING_LAYERS
     , out uint outRenderingLayers : SV_Target1
 #endif
@@ -41,6 +44,9 @@ void frag(PackedVaryings packedInput,
     clip(outColor.a - surface.AlphaClipThreshold);
 #endif
     outColor = min(outColor, 1000);
+#if defined(_OVERRIDE_Z)
+    outDepth=surface.NBOverrideDeviceDepth;
+#endif
 #ifdef _WRITE_RENDERING_LAYERS
     outRenderingLayers = EncodeMeshRenderingLayer();
 #endif

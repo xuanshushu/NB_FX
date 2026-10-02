@@ -2,6 +2,7 @@
     #define NBSHADER_FORWARD_PASS
     #include "NBShaderInput.hlsl"
     #include "NBShaderSurfaceV1.hlsl"
+    #include "NBShaderOverrideDepthV1.hlsl"
     #include "NBShaderDistortionV1.hlsl"
     #include "NBShaderEnvironmentV2.hlsl"
     #include "NBShaderMaskV3.hlsl"
@@ -35,22 +36,7 @@
     #if defined(_OVERRIDE_Z)
         float OverrideZToDeviceDepth()
         {
-            float nearClip = _ProjectionParams.y;
-            float farClip = _ProjectionParams.z;
-            float eyeDepth = clamp(_OverrideZValue, nearClip, farClip);
-
-            if (unity_OrthoParams.w == 0)
-            {
-                float reciprocalEyeDepth = rcp(max(eyeDepth, 1e-6));
-                return saturate((reciprocalEyeDepth - _ZBufferParams.w) / _ZBufferParams.z);
-            }
-
-            float linearDepth = saturate((eyeDepth - nearClip) / max(farClip - nearClip, 1e-6));
-            #if UNITY_REVERSED_Z
-                return 1.0 - linearDepth;
-            #else
-                return linearDepth;
-            #endif
+            return NBFX_OverrideZDeviceDepthV1(_OverrideZValue,_ProjectionParams,_ZBufferParams,unity_OrthoParams.w);
         }
     #endif
 
