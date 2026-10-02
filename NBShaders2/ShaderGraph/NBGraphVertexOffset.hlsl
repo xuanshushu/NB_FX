@@ -20,9 +20,9 @@ uint NBGraphVertexOffsetUVMode(uint modes, uint types, uint shift)
 
 bool NBGraphVertexOffsetSourceSupported(uint source)
 {
-    // Positional, screen, cylinder and MainTex UV sources need their own host
-    // inputs. Do not silently replace them by UV0 in this Mesh-only slice.
-    return source == 0u || source == 1u || source == 2u || source == 8u;
+    // All original modes now have Mesh-host inputs. Packed 9..15 retain
+    // GetUVByUVMode's original default-UV0 fallback, not a new meaning.
+    return source <= 15u;
 }
 
 // Vertex-only host. The shared GeometryV1 function owns all four direction
@@ -42,6 +42,16 @@ void NBGraphVertexOffset_float(
     float UVModeLo16, float UVModeHi16, float UVTypeLo16, float UVTypeHi16,
     float4 SharedUVST, float4 SharedUVVec,
     float4 TWParameter, float TWStrength, float4 PCCenter,
+    float4 BaseMapST,
+    float BaseMapUVRotation,
+    float BaseMapUVRotationSpeed,
+    float4 BaseMapMaskMapOffset,
+    float WorldSelector,
+    float ObjectSelector,
+    float4 CylinderMatrix0,
+    float4 CylinderMatrix1,
+    float4 CylinderMatrix2,
+    float4 CylinderMatrix3,
     out float3 OutPositionOS, out float3 OutNormalOS,
     out float3 OutTangentOS, out float Supported)
 {
@@ -78,15 +88,26 @@ void NBGraphVertexOffset_float(
     uvInput.custom1 = UV1;
     uvInput.custom2 = UV2;
     uvInput.positionOS = PositionOS;
+    uvInput.positionWS = TransformObjectToWorld(PositionOS);
+    float4 clipPosition = TransformObjectToHClip(PositionOS);
+    uvInput.screenUV = clipPosition.xy / clipPosition.w;
+    uvInput.screenUV = uvInput.screenUV * 0.5 + 0.5;
     NBFX_BaseUVParamsV1 uvParams = (NBFX_BaseUVParamsV1)0;
     uvParams.flags0 = flags0 &
         (FLAG_BIT_PARTICLE_UTWIRL_ON | FLAG_BIT_PARTICLE_POLARCOORDINATES_ON);
     uvParams.flags1 = flags1 &
         (FLAG_BIT_PARTICLE_1_UV_FROM_MESH | FLAG_BIT_PARTICLE_1_USE_TEXCOORD1 |
-            FLAG_BIT_PARTICLE_1_USE_TEXCOORD2);
+            FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 | FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE);
     uvParams.uvModeFlag0 = modes;
     uvParams.uvModeFlagType0 = types;
-    uvParams.baseMapST = float4(1, 1, 0, 0);
+    uvParams.baseMapST = BaseMapST;
+    uvParams.baseMapUVRotation = (half)BaseMapUVRotation;
+    uvParams.baseMapUVRotationSpeed = (half)BaseMapUVRotationSpeed;
+    uvParams.baseMapMaskMapOffset = (half4)BaseMapMaskMapOffset;
+    uvParams.worldSpaceUVModeSelector = (half)WorldSelector;
+    uvParams.objectSpaceUVModeSelector = (half)ObjectSelector;
+    uvParams.cylinderUVMatrix = float4x4(CylinderMatrix0, CylinderMatrix1,
+        CylinderMatrix2, CylinderMatrix3);
     uvParams.uiMainTexST = float4(1, 1, 0, 0);
     uvParams.sharedUVST = (half4)SharedUVST;
     uvParams.sharedUVVec = (half4)SharedUVVec;
@@ -101,8 +122,8 @@ void NBGraphVertexOffset_float(
         FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP, baseUVs);
 
     // Texture scaleTranslate is the Graph counterpart of _Map_ST. Apply it
-    // once, then the ShaderLab time scroll; never use an already transformed
-    // MainTex UV or Graph's implicit transformed texture UV here.
+    // once, then ShaderLab time scroll. mode4 intentionally consumes already
+    // transformed MainTexUV before this map's own ST, as the original does.
     half4 mapST = (half4)VertexOffsetMap.scaleTranslate;
     half4 maskST = (half4)VertexOffsetMaskMap.scaleTranslate;
     int directionMode = (int)round(VertexOffsetDirectionMode);

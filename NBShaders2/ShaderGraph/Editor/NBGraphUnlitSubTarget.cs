@@ -44,6 +44,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             foreach (var item in subShader.passes)
             {
                 var pass = item.descriptor;
+                pass = WithNBInterpolatorShaderModel(pass);
                 bool forward = pass.referenceName == "SHADERPASS_UNLIT";
                 if (forward)
                     pass = WithNBDistortionBlocks(pass);
@@ -64,6 +65,34 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             // SubTarget. Convert this instance only after its NB passes exist.
             context.subShaders[index] = PostProcessSubShader(subShader);
         }
+
+        // UVP requires the previously validated SM4.5 interpolator budget.
+        static PassDescriptor WithNBInterpolatorShaderModel(PassDescriptor pass)
+        {
+            var pragmas = new PragmaCollection();
+            bool hasSufficientTarget = false;
+            if (pass.pragmas != null)
+                foreach (var item in pass.pragmas)
+                {
+                    string value = item.descriptor.value;
+                    if (value.StartsWith("target ", StringComparison.Ordinal))
+                    {
+                        float targetValue;
+                        if (float.TryParse(value.Substring(7),
+                            System.Globalization.NumberStyles.Float,
+                            System.Globalization.CultureInfo.InvariantCulture, out targetValue) && targetValue >= 4.5f)
+                        {
+                            hasSufficientTarget = true;
+                            pragmas.Add(item.descriptor, item.fieldConditions);
+                        }
+                    }
+                    else pragmas.Add(item.descriptor, item.fieldConditions);
+                }
+            if (!hasSufficientTarget) pragmas.Add(Pragma.Target(ShaderModel.Target45));
+            pass.pragmas = pragmas;
+            return pass;
+        }
+
 
         // Copy URP's collection; never mutate the delegated built-in Unlit pass.
         // L0 uses runtime _FxLightMode, not new local mode keywords. The URP
@@ -153,6 +182,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             // mode. GraphDefines precedes CF code; PostGraph includes do not.
             if (lightMode == "NBCameraOpaqueDistortPass")
                 pass = WithNBPassDefine(pass, "NB_GRAPH_CAMERA_OPAQUE_PASS");
+            else if (lightMode == "NBDeferredDistortPass")
+                pass = WithNBPassDefine(pass, "NB_GRAPH_DEFERRED_DISTORT_PASS");
             passes.Add(WithNBFragmentInclude(pass, fragmentInclude));
         }
 

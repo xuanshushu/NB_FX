@@ -22,11 +22,141 @@ float2 NBGraphDecalRasterUV(float4 pixelPosition)
 }
 
 // The BaseMap Graph sample owns no implicit ST. This host adapter supplies the
-// Mesh TEXCOORD0/1/2 streams and the original packed UV mode words enter
-// ShaderLab's shared contract. This first slice supplies the inputs needed
-// for MainTex modes 0/1/2/8 and SharedUV sources 0/1/2/8. Other modes retain
-// their original packed values but still need position/screen/cylinder host
-// inputs before they may be claimed as supported.
+// Mesh TEXCOORD0/1/2 streams, original packed UV words and stage-specific
+// position/screen/cylinder inputs enter ShaderLab's one shared contract.
+// Feature-specific ST/rotation/scroll remain owned by their current consumers;
+// full CustomData, CustomLocalTransform, VAT and VFX are separate host slices.
+// Material/stream binding only: the existing NBFX_BuildBaseUVsV1
+// remains the one UV arithmetic implementation shared with ShaderLab.
+NBFX_BaseUVParamsV1 NBGraphUVParameters(
+    float4 BaseMapST,
+    float BaseMapUVRotation,
+    float BaseMapUVRotationSpeed,
+    float4 BaseMapMaskMapOffset,
+    float NB_Flags0Lo16,
+    float NB_Flags0Hi16,
+    float NB_Flags1Lo16,
+    float NB_Flags1Hi16,
+    float UVModeFlag0Lo16,
+    float UVModeFlag0Hi16,
+    float UVModeFlagType0Lo16,
+    float UVModeFlagType0Hi16,
+    float4 SharedUVST,
+    float4 SharedUVVec,
+    float4 TWParameter,
+    float TWStrength,
+    float4 PCCenter,
+    float WorldSelector,
+    float ObjectSelector,
+    float4 CylinderMatrix0,
+    float4 CylinderMatrix1,
+    float4 CylinderMatrix2,
+    float4 CylinderMatrix3)
+{
+    NBFX_BaseUVParamsV1 parameters = (NBFX_BaseUVParamsV1)0;
+    uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
+    uint flags1 = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
+    parameters.flags0 = flags0 &
+        (FLAG_BIT_PARTICLE_UTWIRL_ON | FLAG_BIT_PARTICLE_POLARCOORDINATES_ON);
+    parameters.flags1 = flags1 &
+        (FLAG_BIT_PARTICLE_1_UV_FROM_MESH | FLAG_BIT_PARTICLE_1_USE_TEXCOORD1 |
+         FLAG_BIT_PARTICLE_1_USE_TEXCOORD2 | FLAG_BIT_PARTICLE_1_CYLINDER_CORDINATE);
+    parameters.uvModeFlag0 = NBGraphDecodeUInt32(UVModeFlag0Lo16,
+        UVModeFlag0Hi16);
+    parameters.uvModeFlagType0 = NBGraphDecodeUInt32(UVModeFlagType0Lo16,
+        UVModeFlagType0Hi16);
+    parameters.baseMapST = BaseMapST;
+    parameters.sharedUVST = (half4)SharedUVST;
+    parameters.sharedUVVec = (half4)SharedUVVec;
+    parameters.baseMapMaskMapOffset = (half4)BaseMapMaskMapOffset;
+    parameters.twirlParameter = TWParameter;
+    parameters.twirlStrength = TWStrength;
+    parameters.polarCenter = PCCenter;
+    parameters.baseMapUVRotation = (half)BaseMapUVRotation;
+    parameters.baseMapUVRotationSpeed = (half)BaseMapUVRotationSpeed;
+    parameters.worldSpaceUVModeSelector = (half)WorldSelector;
+    parameters.objectSpaceUVModeSelector = (half)ObjectSelector;
+    parameters.cylinderUVMatrix = float4x4(CylinderMatrix0, CylinderMatrix1,
+        CylinderMatrix2, CylinderMatrix3);
+    parameters.timeY = _Time.y;
+    return parameters;
+}
+
+// Keep the old stage decision independent of the material's DistortMode.
+// Static pass defines are emitted before Custom Functions by our package
+// SubTarget; POM is only a main-Forward path, not inherited by NB clones.
+bool NBGraphUVInFragment(uint flags0, float depthDecalToggle,
+    float parallaxToggle)
+{
+#if defined(SHADERGRAPH_PREVIEW)
+    // Preview has no interpolated Mesh vertex blocks. Preserve the previous
+    // Graph preview's fragment evaluation instead of reading zero CI values.
+    return true;
+#else
+    if ((flags0 & (FLAG_BIT_PARTICLE_UTWIRL_ON |
+        FLAG_BIT_PARTICLE_POLARCOORDINATES_ON)) != 0u)
+        return true;
+    #if defined(NB_GRAPH_CAMERA_OPAQUE_PASS) || defined(NB_GRAPH_DEFERRED_DISTORT_PASS)
+        return true;
+    #elif defined(NB_GRAPH_MAIN_FORWARD)
+        return depthDecalToggle > 0.5 || parallaxToggle > 0.5;
+    #else
+        // DepthOnly/Shadow/ordinary 2D have no original POM/Decal variant.
+        return false;
+    #endif
+#endif
+}
+
+// Runs from the same pre-VertexOffset input as Fog and geometry preparation.
+// Future VAT/CustomLocal hosts must feed their post-VAT/pre-offset PositionOS
+// upstream here AND to Fog/VertexOffset, not replace this with final positions.
+void NBGraphUVVertex_float(float3 PositionOS,
+    float4 UV,
+    float4 BaseMapST,
+    float BaseMapUVRotation,
+    float BaseMapUVRotationSpeed,
+    float4 BaseMapMaskMapOffset,
+    float4 UV1,
+    float4 UV2,
+    float NB_Flags0Lo16,
+    float NB_Flags0Hi16,
+    float NB_Flags1Lo16,
+    float NB_Flags1Hi16,
+    float UVModeFlag0Lo16,
+    float UVModeFlag0Hi16,
+    float UVModeFlagType0Lo16,
+    float UVModeFlagType0Hi16,
+    float4 SharedUVST,
+    float4 SharedUVVec,
+    float4 TWParameter,
+    float TWStrength,
+    float4 PCCenter,
+    float WorldSelector,
+    float ObjectSelector,
+    float4 CylinderMatrix0,
+    float4 CylinderMatrix1,
+    float4 CylinderMatrix2,
+    float4 CylinderMatrix3,
+    out float4 PreCylinderScreen, out float4 PreWorldObject,
+    out float4 PreSharedMain)
+{
+    NBFX_BaseUVInputV1 input = (NBFX_BaseUVInputV1)0;
+    input.meshTexcoord0 = UV;
+    input.custom1 = UV1;
+    input.custom2 = UV2;
+    input.positionOS = PositionOS;
+    input.positionWS = TransformObjectToWorld(PositionOS);
+    float4 clipPosition = TransformObjectToHClip(PositionOS);
+    input.screenUV = clipPosition.xy / clipPosition.w;
+    input.screenUV = input.screenUV * 0.5 + 0.5;
+    NBFX_BaseUVParamsV1 parameters = NBGraphUVParameters(
+        BaseMapST, BaseMapUVRotation, BaseMapUVRotationSpeed, BaseMapMaskMapOffset, NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16, UVModeFlag0Lo16, UVModeFlag0Hi16, UVModeFlagType0Lo16, UVModeFlagType0Hi16, SharedUVST, SharedUVVec, TWParameter, TWStrength, PCCenter, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3);
+    BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);
+    PreCylinderScreen = float4(resolved.cylinderUV, resolved.screenUV);
+    PreWorldObject = float4(resolved.worldPosUV, resolved.objectPosUV);
+    PreSharedMain = float4(resolved.sharedUV, resolved.mainTexUV);
+}
+
 void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     float BaseMapUVRotation, float BaseMapUVRotationSpeed,
     float4 BaseMapMaskMapOffset,
@@ -38,6 +168,18 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     float4 SharedUVST, float4 SharedUVVec,
     float4 TWParameter, float TWStrength, float4 PCCenter,
     float4 PixelPosition, float DepthDecalToggle,
+    float3 PostPositionOS,
+    float3 PositionWS,
+    float4 PreCylinderScreen,
+    float4 PreWorldObject,
+    float4 PreSharedMain,
+    float WorldSelector,
+    float ObjectSelector,
+    float4 CylinderMatrix0,
+    float4 CylinderMatrix1,
+    float4 CylinderMatrix2,
+    float4 CylinderMatrix3,
+    float ParallaxToggle,
     out float2 Out, out float2 MaskUV, out float2 Mask2UV,
     out float2 Mask3UV, out float2 EmissionUV, out float2 DissolveUV,
     out float2 DissolveMaskUV, out float2 ColorBlendUV,
@@ -47,6 +189,12 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
 {
     NBFX_BaseUVInputV1 input = (NBFX_BaseUVInputV1)0;
     input.meshTexcoord0 = UV;
+    input.positionOS = PostPositionOS;
+    input.positionWS = PositionWS;
+    input.screenUV = NBGraphDecalRasterUV(PixelPosition);
+#if defined(SHADERGRAPH_PREVIEW)
+    input.positionOS = TransformWorldToObject(PositionWS);
+#endif
     DecalAlpha = 1.0;
     // Only the delegated URP Unlit Forward and its two exact NB distortion
     // clones have the old _DEPTH_DECAL variant. Exclude DepthOnly,
@@ -74,29 +222,21 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     input.custom1 = UV1;
     input.custom2 = UV2;
 
-    NBFX_BaseUVParamsV1 parameters = (NBFX_BaseUVParamsV1)0;
-    uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
-    uint flags1 = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
-    parameters.flags0 = flags0 &
-        (FLAG_BIT_PARTICLE_UTWIRL_ON | FLAG_BIT_PARTICLE_POLARCOORDINATES_ON);
-    parameters.flags1 = flags1 &
-        (FLAG_BIT_PARTICLE_1_UV_FROM_MESH | FLAG_BIT_PARTICLE_1_USE_TEXCOORD1 |
-         FLAG_BIT_PARTICLE_1_USE_TEXCOORD2);
-    parameters.uvModeFlag0 = NBGraphDecodeUInt32(UVModeFlag0Lo16,
-        UVModeFlag0Hi16);
-    parameters.uvModeFlagType0 = NBGraphDecodeUInt32(UVModeFlagType0Lo16,
-        UVModeFlagType0Hi16);
-    parameters.baseMapST = BaseMapST;
-    parameters.sharedUVST = (half4)SharedUVST;
-    parameters.sharedUVVec = (half4)SharedUVVec;
-    parameters.baseMapMaskMapOffset = (half4)BaseMapMaskMapOffset;
-    parameters.twirlParameter = TWParameter;
-    parameters.twirlStrength = TWStrength;
-    parameters.polarCenter = PCCenter;
-    parameters.baseMapUVRotation = (half)BaseMapUVRotation;
-    parameters.baseMapUVRotationSpeed = (half)BaseMapUVRotationSpeed;
-    parameters.timeY = _Time.y;
+    NBFX_BaseUVParamsV1 parameters = NBGraphUVParameters(
+        BaseMapST, BaseMapUVRotation, BaseMapUVRotationSpeed, BaseMapMaskMapOffset, NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16, UVModeFlag0Lo16, UVModeFlag0Hi16, UVModeFlagType0Lo16, UVModeFlagType0Hi16, SharedUVST, SharedUVVec, TWParameter, TWStrength, PCCenter, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3);
     BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);
+    if (!NBGraphUVInFragment(parameters.flags0, DepthDecalToggle, ParallaxToggle))
+    {
+        // The old vertex path calculates spatial sources and Shared/Main
+        // before VertexOffset, then interpolates them. In particular NDC and
+        // atan2 must not be recalculated per pixel, nor MainST re-applied.
+        resolved.cylinderUV = PreCylinderScreen.xy;
+        resolved.screenUV = PreCylinderScreen.zw;
+        resolved.worldPosUV = PreWorldObject.xy;
+        resolved.objectPosUV = PreWorldObject.zw;
+        resolved.sharedUV = PreSharedMain.xy;
+        resolved.mainTexUV = PreSharedMain.zw;
+    }
     Out = resolved.mainTexUV;
     // These are source coordinates only. NBGraphBaseColor owns each feature's
     // rotation, ST, animated offset and sampling, as ShaderLab does after
@@ -138,6 +278,18 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
     half4 SharedUVST, half4 SharedUVVec,
     half4 TWParameter, half TWStrength, half4 PCCenter,
     half4 PixelPosition, half DepthDecalToggle,
+    float3 PostPositionOS,
+    float3 PositionWS,
+    float4 PreCylinderScreen,
+    float4 PreWorldObject,
+    float4 PreSharedMain,
+    float WorldSelector,
+    float ObjectSelector,
+    float4 CylinderMatrix0,
+    float4 CylinderMatrix1,
+    float4 CylinderMatrix2,
+    float4 CylinderMatrix3,
+    float ParallaxToggle,
     out half2 Out, out half2 MaskUV, out half2 Mask2UV,
     out half2 Mask3UV, out half2 EmissionUV, out half2 DissolveUV,
     out half2 DissolveMaskUV, out half2 ColorBlendUV,
@@ -160,6 +312,7 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
         (float4)SharedUVST, (float4)SharedUVVec,
         (float4)TWParameter, (float)TWStrength, (float4)PCCenter,
         (float4)PixelPosition, (float)DepthDecalToggle,
+        PostPositionOS, PositionWS, PreCylinderScreen, PreWorldObject, PreSharedMain, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3, ParallaxToggle,
         resolved, maskResolved, mask2Resolved, mask3Resolved,
         emissionResolved, dissolveResolved, dissolveMaskResolved,
         colorBlendResolved, rampColorResolved, noiseResolved, noiseMaskResolved, bumpResolved, programNoiseResolved, decalAlphaResolved);
