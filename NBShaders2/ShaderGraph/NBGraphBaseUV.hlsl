@@ -51,7 +51,8 @@ NBFX_BaseUVParamsV1 NBGraphUVParameters(
     float4 CylinderMatrix0,
     float4 CylinderMatrix1,
     float4 CylinderMatrix2,
-    float4 CylinderMatrix3, float FlipbookToggle)
+    float4 CylinderMatrix3, float FlipbookToggle,
+float CustomDataFlag0Lo16, float CustomDataFlag0Hi16, float CustomDataFlag1Lo16, float CustomDataFlag1Hi16, float CustomDataFlag2Lo16, float CustomDataFlag2Hi16, float CustomDataFlag3Lo16, float CustomDataFlag3Hi16)
 {
     NBFX_BaseUVParamsV1 parameters = (NBFX_BaseUVParamsV1)0;
     uint flags0 = NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16);
@@ -79,6 +80,8 @@ NBFX_BaseUVParamsV1 NBGraphUVParameters(
     parameters.cylinderUVMatrix = float4x4(CylinderMatrix0, CylinderMatrix1,
         CylinderMatrix2, CylinderMatrix3);
     parameters.flipbookBlending = FlipbookToggle > 0.5 ? 1u : 0u;
+    parameters.customDataFlag0 = NBGraphDecodeUInt32(CustomDataFlag0Lo16, CustomDataFlag0Hi16);
+    parameters.customDataFlag3 = NBGraphDecodeUInt32(CustomDataFlag3Lo16, CustomDataFlag3Hi16);
     parameters.timeY = _Time.y;
     return parameters;
 }
@@ -139,6 +142,14 @@ void NBGraphUVVertex_float(float3 PositionOS,
     float4 CylinderMatrix2,
     float4 CylinderMatrix3,
     float4 UV3, float FlipbookToggle,
+    float CustomDataFlag0Lo16,
+    float CustomDataFlag0Hi16,
+    float CustomDataFlag1Lo16,
+    float CustomDataFlag1Hi16,
+    float CustomDataFlag2Lo16,
+    float CustomDataFlag2Hi16,
+    float CustomDataFlag3Lo16,
+    float CustomDataFlag3Hi16,
     out float4 PreCylinderScreen, out float4 PreWorldObject,
     out float4 PreSharedMain)
 {
@@ -153,7 +164,7 @@ void NBGraphUVVertex_float(float3 PositionOS,
     input.screenUV = clipPosition.xy / clipPosition.w;
     input.screenUV = input.screenUV * 0.5 + 0.5;
     NBFX_BaseUVParamsV1 parameters = NBGraphUVParameters(
-        BaseMapST, BaseMapUVRotation, BaseMapUVRotationSpeed, BaseMapMaskMapOffset, NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16, UVModeFlag0Lo16, UVModeFlag0Hi16, UVModeFlagType0Lo16, UVModeFlagType0Hi16, SharedUVST, SharedUVVec, TWParameter, TWStrength, PCCenter, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3, FlipbookToggle);
+        BaseMapST, BaseMapUVRotation, BaseMapUVRotationSpeed, BaseMapMaskMapOffset, NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16, UVModeFlag0Lo16, UVModeFlag0Hi16, UVModeFlagType0Lo16, UVModeFlagType0Hi16, SharedUVST, SharedUVVec, TWParameter, TWStrength, PCCenter, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3, FlipbookToggle, CustomDataFlag0Lo16, CustomDataFlag0Hi16, CustomDataFlag1Lo16, CustomDataFlag1Hi16, CustomDataFlag2Lo16, CustomDataFlag2Hi16, CustomDataFlag3Lo16, CustomDataFlag3Hi16);
     BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);
     PreCylinderScreen = float4(resolved.cylinderUV, resolved.screenUV);
     PreWorldObject = float4(resolved.worldPosUV, resolved.objectPosUV);
@@ -185,6 +196,14 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     float ParallaxToggle,
     float4 UV3, float FlipbookToggle,
     float4 AnimationSheetBlendST, float AnimationSheetBlendIntensity,
+    float CustomDataFlag0Lo16,
+    float CustomDataFlag0Hi16,
+    float CustomDataFlag1Lo16,
+    float CustomDataFlag1Hi16,
+    float CustomDataFlag2Lo16,
+    float CustomDataFlag2Hi16,
+    float CustomDataFlag3Lo16,
+    float CustomDataFlag3Hi16,
     out float2 Out, out float2 MaskUV, out float2 Mask2UV,
     out float2 Mask3UV, out float2 EmissionUV, out float2 DissolveUV,
     out float2 DissolveMaskUV, out float2 ColorBlendUV,
@@ -229,7 +248,7 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     input.specialUVInTexcoord3 = UV3.yz;
 
     NBFX_BaseUVParamsV1 parameters = NBGraphUVParameters(
-        BaseMapST, BaseMapUVRotation, BaseMapUVRotationSpeed, BaseMapMaskMapOffset, NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16, UVModeFlag0Lo16, UVModeFlag0Hi16, UVModeFlagType0Lo16, UVModeFlagType0Hi16, SharedUVST, SharedUVVec, TWParameter, TWStrength, PCCenter, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3, FlipbookToggle);
+        BaseMapST, BaseMapUVRotation, BaseMapUVRotationSpeed, BaseMapMaskMapOffset, NB_Flags0Lo16, NB_Flags0Hi16, NB_Flags1Lo16, NB_Flags1Hi16, UVModeFlag0Lo16, UVModeFlag0Hi16, UVModeFlagType0Lo16, UVModeFlagType0Hi16, SharedUVST, SharedUVVec, TWParameter, TWStrength, PCCenter, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3, FlipbookToggle, CustomDataFlag0Lo16, CustomDataFlag0Hi16, CustomDataFlag1Lo16, CustomDataFlag1Hi16, CustomDataFlag2Lo16, CustomDataFlag2Hi16, CustomDataFlag3Lo16, CustomDataFlag3Hi16);
     BaseUVs resolved = NBFX_BuildBaseUVsV1(input, parameters);
     uint animationFlags1 = NBGraphDecodeUInt32(NB_Flags1Lo16, NB_Flags1Hi16);
     bool animationHelper = (animationFlags1 & FLAG_BIT_PARTICLE_1_ANIMATION_SHEET_HELPER) != 0u;
@@ -302,6 +321,14 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
     float ParallaxToggle,
     half4 UV3, half FlipbookToggle,
     half4 AnimationSheetBlendST, half AnimationSheetBlendIntensity,
+    float CustomDataFlag0Lo16,
+    float CustomDataFlag0Hi16,
+    float CustomDataFlag1Lo16,
+    float CustomDataFlag1Hi16,
+    float CustomDataFlag2Lo16,
+    float CustomDataFlag2Hi16,
+    float CustomDataFlag3Lo16,
+    float CustomDataFlag3Hi16,
     out half2 Out, out half2 MaskUV, out half2 Mask2UV,
     out half2 Mask3UV, out half2 EmissionUV, out half2 DissolveUV,
     out half2 DissolveMaskUV, out half2 ColorBlendUV,
@@ -327,6 +354,7 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
         (float4)PixelPosition, (float)DepthDecalToggle,
         PostPositionOS, PositionWS, PreCylinderScreen, PreWorldObject, PreSharedMain, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3, ParallaxToggle,
         (float4)UV3, (float)FlipbookToggle, (float4)AnimationSheetBlendST, (float)AnimationSheetBlendIntensity,
+        CustomDataFlag0Lo16, CustomDataFlag0Hi16, CustomDataFlag1Lo16, CustomDataFlag1Hi16, CustomDataFlag2Lo16, CustomDataFlag2Hi16, CustomDataFlag3Lo16, CustomDataFlag3Hi16,
         resolved, maskResolved, mask2Resolved, mask3Resolved,
         emissionResolved, dissolveResolved, dissolveMaskResolved,
         colorBlendResolved, rampColorResolved, noiseResolved, noiseMaskResolved, bumpResolved, programNoiseResolved, decalAlphaResolved, blendUVResolved, blendWeightResolved);

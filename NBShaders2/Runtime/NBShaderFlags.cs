@@ -129,6 +129,14 @@ namespace NBShader
         private static readonly int GraphUVHi = Shader.PropertyToID("_NB_UVModeFlag0Hi16");
         private static readonly int GraphUVTypeLo = Shader.PropertyToID("_NB_UVModeFlagType0Lo16");
         private static readonly int GraphUVTypeHi = Shader.PropertyToID("_NB_UVModeFlagType0Hi16");
+        private static readonly int GraphCustom0Lo = Shader.PropertyToID("_NB_CustomDataFlag0Lo16");
+        private static readonly int GraphCustom0Hi = Shader.PropertyToID("_NB_CustomDataFlag0Hi16");
+        private static readonly int GraphCustom1Lo = Shader.PropertyToID("_NB_CustomDataFlag1Lo16");
+        private static readonly int GraphCustom1Hi = Shader.PropertyToID("_NB_CustomDataFlag1Hi16");
+        private static readonly int GraphCustom2Lo = Shader.PropertyToID("_NB_CustomDataFlag2Lo16");
+        private static readonly int GraphCustom2Hi = Shader.PropertyToID("_NB_CustomDataFlag2Hi16");
+        private static readonly int GraphCustom3Lo = Shader.PropertyToID("_NB_CustomDataFlag3Lo16");
+        private static readonly int GraphCustom3Hi = Shader.PropertyToID("_NB_CustomDataFlag3Hi16");
         private static readonly int GraphDistortionMode = Shader.PropertyToID("_NB_DistortionMode");
 
         private bool TryGetGraphWordProperties(int propertyId, out int loId, out int hiId)
@@ -150,6 +158,10 @@ namespace NBShader
             else if (propertyId == ForceNoMipFlagsId) { loId = GraphNoMipLo; hiId = GraphNoMipHi; }
             else if (propertyId == UVModeFlag0PropID) { loId = GraphUVLo; hiId = GraphUVHi; }
             else if (propertyId == UVModeFlagType0PropID) { loId = GraphUVTypeLo; hiId = GraphUVTypeHi; }
+            else if (propertyId == CustomDataFlag0Id) { loId = GraphCustom0Lo; hiId = GraphCustom0Hi; }
+            else if (propertyId == CustomDataFlag1Id) { loId = GraphCustom1Lo; hiId = GraphCustom1Hi; }
+            else if (propertyId == CustomDataFlag2Id) { loId = GraphCustom2Lo; hiId = GraphCustom2Hi; }
+            else if (propertyId == CustomDataFlag3Id) { loId = GraphCustom3Lo; hiId = GraphCustom3Hi; }
             else { return false; }
 
             return material.HasProperty(loId) && material.HasProperty(hiId);
@@ -483,7 +495,7 @@ namespace NBShader
 
         public CutomDataComponent GetCustomDataFlag(int dataBitPos, int dataIndex)
         {
-            int bit = material.GetInteger(GetCustomDataFlagID(dataIndex));
+            int bit = ReadWord(GetCustomDataFlagID(dataIndex));
 
             bit = bit >> dataBitPos;
             bit &= 15; // binary 1111
@@ -570,18 +582,18 @@ namespace NBShader
             bit = bit << dataBitPos;
             int clearBit = ~(15 << dataBitPos); //~ (1111 << dataBitPos)
 
-            int materialBit = material.GetInteger(GetCustomDataFlagID(dataIndex));
+            int materialBit = ReadWord(GetCustomDataFlagID(dataIndex));
             materialBit = materialBit & clearBit;
             materialBit = materialBit | bit;
-            material.SetInteger(GetCustomDataFlagID(dataIndex), materialBit);
+            WriteWord(GetCustomDataFlagID(dataIndex), materialBit);
         }
 
         public bool IsCustomDataOn()
         {
-            int prop0Flag = material.GetInteger(CustomDataFlag0Id);
-            int prop1Flag = material.GetInteger(CustomDataFlag1Id);
-            int prop2Flag = material.GetInteger(CustomDataFlag2Id);
-            int prop3Flag = material.GetInteger(CustomDataFlag3Id);
+            int prop0Flag = ReadWord(CustomDataFlag0Id);
+            int prop1Flag = ReadWord(CustomDataFlag1Id);
+            int prop2Flag = ReadWord(CustomDataFlag2Id);
+            int prop3Flag = ReadWord(CustomDataFlag3Id);
             uint dataOnBit = 0b_1000_1000_1000_1000_1000_1000_1000_1000; //10001000100010001000100010001000;
 
             return ((prop0Flag & dataOnBit) > 0) || ((prop1Flag & dataOnBit) > 0) || ((prop2Flag & dataOnBit) > 0) ||
@@ -607,7 +619,7 @@ namespace NBShader
                     break;
             }
 
-            int flag = material.GetInteger(flagID);
+            int flag = ReadWord(flagID);
             int i = 0;
             while (i < 8)
             {

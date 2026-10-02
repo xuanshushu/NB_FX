@@ -12,6 +12,7 @@ float2 NBFX_TransformFeatureUVV2(NBFX_FeatureUVTransformInputV2 input)
     float2 uv = input.originUV;
     uv = Rotate_Radians_float(uv, input.rotationCenter, input.rotationDegrees);
     uv = uv * input.scaleOffset.xy + input.scaleOffset.zw;
+    if (any(input.customOffsetAfterST != 0.0)) uv += input.customOffsetAfterST;
     uv = UVOffsetAnimaiton(uv, (half2)input.offsetSpeed, input.timeY);
     return uv;
 }

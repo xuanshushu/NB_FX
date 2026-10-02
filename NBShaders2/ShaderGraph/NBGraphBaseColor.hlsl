@@ -48,11 +48,11 @@ float NBGraphSceneEyeDepth(float2 screenUV)
 // Transform it exactly once, before sampling, rather than asking the sampler
 // to apply GetTransformedUV to an already transformed coordinate.
 float2 NBGraphFeatureUV(UnityTexture2D map, float2 uv, float rotationDegrees,
-    float2 offsetSpeed)
+    float2 offsetSpeed, float2 customAfterST = float2(0,0))
 {
     // Keep the previous Graph sampling expression for the zero-control case;
     // in particular non-identity texture ST retains its original arithmetic.
-    if (rotationDegrees == 0.0 && offsetSpeed.x == 0.0 && offsetSpeed.y == 0.0)
+    if (rotationDegrees == 0.0 && offsetSpeed.x == 0.0 && offsetSpeed.y == 0.0 && all(customAfterST == 0.0))
         return map.GetTransformedUV(uv);
 
     NBFX_FeatureUVTransformInputV2 input = (NBFX_FeatureUVTransformInputV2)0;
@@ -61,6 +61,7 @@ float2 NBGraphFeatureUV(UnityTexture2D map, float2 uv, float rotationDegrees,
     input.offsetSpeed = offsetSpeed;
     input.rotationDegrees = rotationDegrees;
     input.rotationCenter = float2(0.5, 0.5);
+    input.customOffsetAfterST=customAfterST;
     input.timeY = _Time.y;
     return NBFX_TransformFeatureUVV2(input);
 }
@@ -772,9 +773,40 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float CustomDataFlag0Hi16, float4 Custom1, float4 Custom2,
     float FogFactor, float FogIntensity,
     float FlipbookToggle, float2 BlendUV, float BlendWeight,
+    float CustomDataFlag1Lo16,
+    float CustomDataFlag1Hi16,
+    float CustomDataFlag2Lo16,
+    float CustomDataFlag2Hi16,
+    float CustomDataFlag3Lo16,
+    float CustomDataFlag3Hi16,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    uint cd0=NBGraphDecodeUInt32(CustomDataFlag0Lo16,CustomDataFlag0Hi16);
+    uint cd1=NBGraphDecodeUInt32(CustomDataFlag1Lo16,CustomDataFlag1Hi16);
+    uint cd2=NBGraphDecodeUInt32(CustomDataFlag2Lo16,CustomDataFlag2Hi16);
+    uint cd3=NBGraphDecodeUInt32(CustomDataFlag3Lo16,CustomDataFlag3Hi16);
+    HueShift=(half)GetCustomData(cd0,FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,(half)HueShift,Custom1,Custom2);
+    Contrast=(half)GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,(half)Contrast,Custom1,Custom2);
+    Saturability=(half)GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_SATURATE,(half)Saturability,Custom1,Custom2);
+    Dissolve.x=(half)((half)Dissolve.x+GetCustomData(cd0,FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY,0,Custom1,Custom2));
+    Dissolve.z=(half)((half)Dissolve.z+GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY,0,Custom1,Custom2));
+    FresnelUnit.x=(half)((half)FresnelUnit.x+GetCustomData(cd0,FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET,0,Custom1,Custom2));
+    PNoiseVec4.x+=GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X,0,Custom1,Custom2);
+    PNoiseVec4.y+=GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y,0,Custom1,Custom2);
+    PNoiseVec4.z+=GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X,0,Custom1,Custom2);
+    PNoiseVec4.w+=GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y,0,Custom1,Custom2);
+    EmissionUV+=float2(GetCustomData(cd3,FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X,0,Custom1,Custom2),GetCustomData(cd3,FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y,0,Custom1,Custom2));
+    ColorBlendUV+=float2(GetCustomData(cd3,FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X,0,Custom1,Custom2),GetCustomData(cd3,FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y,0,Custom1,Custom2));
+    float2 maskCustomOffset=float2(GetCustomData(cd0,FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X,0,Custom1,Custom2),GetCustomData(cd0,FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y,0,Custom1,Custom2));
+    if (((cd1>>FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X)&8u)!=0u || ((cd1>>FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y)&8u)!=0u)
+    {
+        half4 dissolveST=(half4)DissolveMap.scaleTranslate;
+        dissolveST.z+=GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X,0,Custom1,Custom2);
+        dissolveST.w+=GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y,0,Custom1,Custom2);
+        DissolveMap.scaleTranslate=dissolveST;
+    }
+
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
@@ -804,6 +836,16 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     half2 signedRG = (half2)NB_DistortionNoise;
     half noiseMask = 1;
     half2 textureNoise = 0;
+
+    if (NoiseEnabled>0.5)
+    {
+        if (NB_GRAPH_DEPTH_SHADOW_PASS || round(DistortMode)!=1.0)
+        {
+            DistortionDirection.x=(half)((half)DistortionDirection.x+GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X,0,Custom1,Custom2));
+            DistortionDirection.y=(half)((half)DistortionDirection.y+GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y,0,Custom1,Custom2));
+        }
+        NoiseIntensity=(half)GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY,(half)NoiseIntensity,Custom1,Custom2);
+    }
     if (NoiseEnabled > 0.5)
     {
         NBGraphTextureNoise(NoiseMap, NoiseUV,
@@ -1007,7 +1049,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON) != 0u)
             maskRotation += _Time.y * MaskMapRotationSpeed;
         float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
-            maskRotation, MaskMapOffsetAnition.xy);
+            maskRotation, MaskMapOffsetAnition.xy, maskCustomOffset);
         if (NoiseEnabled > 0.5)
             maskUV += textureNoise * (half)MaskDistortionIntensity;
         uint packedChannels = NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0);
@@ -1211,9 +1253,40 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float CustomDataFlag0Hi16, float4 Custom1, float4 Custom2,
     float FogFactor, float FogIntensity,
     float FlipbookToggle, float2 BlendUV, float BlendWeight,
+    float CustomDataFlag1Lo16,
+    float CustomDataFlag1Hi16,
+    float CustomDataFlag2Lo16,
+    float CustomDataFlag2Hi16,
+    float CustomDataFlag3Lo16,
+    float CustomDataFlag3Hi16,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    uint cd0=NBGraphDecodeUInt32(CustomDataFlag0Lo16,CustomDataFlag0Hi16);
+    uint cd1=NBGraphDecodeUInt32(CustomDataFlag1Lo16,CustomDataFlag1Hi16);
+    uint cd2=NBGraphDecodeUInt32(CustomDataFlag2Lo16,CustomDataFlag2Hi16);
+    uint cd3=NBGraphDecodeUInt32(CustomDataFlag3Lo16,CustomDataFlag3Hi16);
+    HueShift=(half)GetCustomData(cd0,FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,(half)HueShift,Custom1,Custom2);
+    Contrast=(half)GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,(half)Contrast,Custom1,Custom2);
+    Saturability=(half)GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_SATURATE,(half)Saturability,Custom1,Custom2);
+    Dissolve.x=(half)((half)Dissolve.x+GetCustomData(cd0,FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY,0,Custom1,Custom2));
+    Dissolve.z=(half)((half)Dissolve.z+GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_MASK_INTENSITY,0,Custom1,Custom2));
+    FresnelUnit.x=(half)((half)FresnelUnit.x+GetCustomData(cd0,FLAGBIT_POS_0_CUSTOMDATA_FRESNEL_OFFSET,0,Custom1,Custom2));
+    PNoiseVec4.x+=GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_X,0,Custom1,Custom2);
+    PNoiseVec4.y+=GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y,0,Custom1,Custom2);
+    PNoiseVec4.z+=GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_X,0,Custom1,Custom2);
+    PNoiseVec4.w+=GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE2_OFFSET_Y,0,Custom1,Custom2);
+    EmissionUV+=float2(GetCustomData(cd3,FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_X,0,Custom1,Custom2),GetCustomData(cd3,FLAGBIT_POS_3_CUSTOMDATA_EMISSION_OFFSET_Y,0,Custom1,Custom2));
+    ColorBlendUV+=float2(GetCustomData(cd3,FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_X,0,Custom1,Custom2),GetCustomData(cd3,FLAGBIT_POS_3_CUSTOMDATA_COLOR_BLEND_OFFSET_Y,0,Custom1,Custom2));
+    float2 maskCustomOffset=float2(GetCustomData(cd0,FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_X,0,Custom1,Custom2),GetCustomData(cd0,FLAGBIT_POS_0_CUSTOMDATA_MASK_OFFSET_Y,0,Custom1,Custom2));
+    if (((cd1>>FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X)&8u)!=0u || ((cd1>>FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y)&8u)!=0u)
+    {
+        half4 dissolveST=(half4)DissolveMap.scaleTranslate;
+        dissolveST.z+=GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X,0,Custom1,Custom2);
+        dissolveST.w+=GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y,0,Custom1,Custom2);
+        DissolveMap.scaleTranslate=dissolveST;
+    }
+
     NBFX_BaseColorInputV1 input = (NBFX_BaseColorInputV1)0;
     uint wrapFlags = NBGraphDecodeUInt32(NB_WrapFlagsLo16, NB_WrapFlagsHi16);
     uint noMipFlags = NBGraphDecodeUInt32(NB_ForceNoMipFlagsLo16, NB_ForceNoMipFlagsHi16);
@@ -1241,6 +1314,16 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     half2 signedRG = (half2)NB_DistortionNoise;
     half noiseMask = 1;
     half2 textureNoise = 0;
+
+    if (NoiseEnabled>0.5)
+    {
+        if (NB_GRAPH_DEPTH_SHADOW_PASS || round(DistortMode)!=1.0)
+        {
+            DistortionDirection.x=(half)((half)DistortionDirection.x+GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X,0,Custom1,Custom2));
+            DistortionDirection.y=(half)((half)DistortionDirection.y+GetCustomData(cd2,FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y,0,Custom1,Custom2));
+        }
+        NoiseIntensity=(half)GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY,(half)NoiseIntensity,Custom1,Custom2);
+    }
     if (NoiseEnabled > 0.5)
     {
         NBGraphTextureNoise(NoiseMap, NoiseUV,
@@ -1432,7 +1515,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON) != 0u)
             maskRotation += _Time.y * MaskMapRotationSpeed;
         float2 maskUV = NBGraphFeatureUV(MaskMap, MaskUV,
-            maskRotation, MaskMapOffsetAnition.xy);
+            maskRotation, MaskMapOffsetAnition.xy, maskCustomOffset);
         if (NoiseEnabled > 0.5)
             maskUV += textureNoise * (half)MaskDistortionIntensity;
         uint packedChannels = NBGraphDecodeUInt32(NB_ColorChannelLo16, 0.0);

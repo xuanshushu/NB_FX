@@ -53,6 +53,14 @@ void NBGraphVertexOffset_float(
     float4 CylinderMatrix2,
     float4 CylinderMatrix3,
     float4 UV3, float FlipbookToggle,
+    float CustomDataFlag0Lo16,
+    float CustomDataFlag0Hi16,
+    float CustomDataFlag1Lo16,
+    float CustomDataFlag1Hi16,
+    float CustomDataFlag2Lo16,
+    float CustomDataFlag2Hi16,
+    float CustomDataFlag3Lo16,
+    float CustomDataFlag3Hi16,
     out float3 OutPositionOS, out float3 OutNormalOS,
     out float3 OutTangentOS, out float Supported)
 {
@@ -117,6 +125,8 @@ void NBGraphVertexOffset_float(
     uvParams.twirlStrength = TWStrength;
     uvParams.polarCenter = PCCenter;
     uvParams.flipbookBlending = FlipbookToggle > 0.5 ? 1u : 0u;
+    uvParams.customDataFlag0 = NBGraphDecodeUInt32(CustomDataFlag0Lo16, CustomDataFlag0Hi16);
+    uvParams.customDataFlag3 = NBGraphDecodeUInt32(CustomDataFlag3Lo16, CustomDataFlag3Hi16);
     uvParams.timeY = _Time.y;
     BaseUVs baseUVs = NBFX_BuildBaseUVsV1(uvInput, uvParams);
     half2 mapUV = (half2)GetUVByUVMode(modes, types,
@@ -129,6 +139,13 @@ void NBGraphVertexOffset_float(
     // transformed MainTexUV before this map's own ST, as the original does.
     half4 mapST = (half4)VertexOffsetMap.scaleTranslate;
     half4 maskST = (half4)VertexOffsetMaskMap.scaleTranslate;
+    uint cd1=NBGraphDecodeUInt32(CustomDataFlag1Lo16,CustomDataFlag1Hi16);
+    uint cd3=NBGraphDecodeUInt32(CustomDataFlag3Lo16,CustomDataFlag3Hi16);
+    mapST.z += GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X,0,UV1,UV2);
+    mapST.w += GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_Y,0,UV1,UV2);
+    maskST.z += GetCustomData(cd3,FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X,0,UV1,UV2);
+    maskST.w += GetCustomData(cd3,FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y,0,UV1,UV2);
+    VertexOffsetVec.z=(half)GetCustomData(cd1,FLAGBIT_POS_1_CUSTOMDATA_VERTEXOFFSET_INTENSITY,(half)VertexOffsetVec.z,UV1,UV2);
     int directionMode = (int)round(VertexOffsetDirectionMode);
     half scalar = 1.0h;
     half3 direction = (half3)VertexColorRGB;

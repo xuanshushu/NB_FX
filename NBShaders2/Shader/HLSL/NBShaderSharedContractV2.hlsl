@@ -15,6 +15,7 @@ struct NBFX_FeatureUVTransformInputV2
     float rotationDegrees;
     float2 rotationCenter;
     float timeY;
+    float2 customOffsetAfterST; // Additive host input, zero preserves every existing caller.
 };
 
 float2 NBFX_TransformFeatureUVV2(NBFX_FeatureUVTransformInputV2 input);
