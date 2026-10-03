@@ -1,0 +1,138 @@
+{
+  "scope": "Read-only precise current Input versus archived generated F0 candidate. This candidate source is not proved as the exact legacy input in old native receipt, which hashes only Graph input files.",
+  "hunks": [
+    {
+      "oldLines1Based": [
+        269,
+        268
+      ],
+      "newLines1Based": [
+        269,
+        270
+      ],
+      "old": [],
+      "new": [
+        "    #include \"Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderCoordinateSpaceV1.hlsl\"",
+        ""
+      ]
+    },
+    {
+      "oldLines1Based": [
+        282,
+        282
+      ],
+      "newLines1Based": [
+        284,
+        284
+      ],
+      "old": [
+        "            return mul(_CustomLocalTransformWorldToLocal, float4(positionWS, 1.0)).xyz;"
+      ],
+      "new": [
+        "            return NBFX_MatrixWorldToLocalPositionV1(positionWS,_CustomLocalTransformWorldToLocal);"
+      ]
+    },
+    {
+      "oldLines1Based": [
+        291,
+        291
+      ],
+      "newLines1Based": [
+        293,
+        293
+      ],
+      "old": [
+        "            return mul(_CustomLocalTransformLocalToWorld, float4(positionOS, 1.0)).xyz;"
+      ],
+      "new": [
+        "            return NBFX_MatrixLocalToWorldPositionV1(positionOS,_CustomLocalTransformLocalToWorld);"
+      ]
+    },
+    {
+      "oldLines1Based": [
+        309,
+        310
+      ],
+      "newLines1Based": [
+        311,
+        311
+      ],
+      "old": [
+        "            float3 dirOS = mul(GetCustomWorldToLocal3x3(), dirWS);",
+        "            return doNormalize ? SafeNormalize(dirOS) : dirOS;"
+      ],
+      "new": [
+        "            return NBFX_MatrixWorldToLocalDirV1(dirWS,_CustomLocalTransformWorldToLocal,doNormalize);"
+      ]
+    },
+    {
+      "oldLines1Based": [
+        320,
+        320
+      ],
+      "newLines1Based": [
+        321,
+        321
+      ],
+      "old": [
+        "            return SafeNormalize(mul(normalWS, GetCustomLocalToWorld3x3()));"
+      ],
+      "new": [
+        "            return NBFX_MatrixWorldToLocalNormalV1(normalWS,_CustomLocalTransformLocalToWorld);"
+      ]
+    },
+    {
+      "oldLines1Based": [
+        329,
+        330
+      ],
+      "newLines1Based": [
+        330,
+        330
+      ],
+      "old": [
+        "            float3 dirWS = mul(GetCustomLocalToWorld3x3(), dirOS);",
+        "            return doNormalize ? SafeNormalize(dirWS) : dirWS;"
+      ],
+      "new": [
+        "            return NBFX_MatrixLocalToWorldDirV1(dirOS,_CustomLocalTransformLocalToWorld,doNormalize);"
+      ]
+    },
+    {
+      "oldLines1Based": [
+        339,
+        339
+      ],
+      "newLines1Based": [
+        339,
+        339
+      ],
+      "old": [
+        "            return SafeNormalize(mul(normalOS, GetCustomWorldToLocal3x3()));"
+      ],
+      "new": [
+        "            return NBFX_MatrixLocalToWorldNormalV1(normalOS,_CustomLocalTransformWorldToLocal);"
+      ]
+    },
+    {
+      "oldLines1Based": [
+        365,
+        365
+      ],
+      "newLines1Based": [
+        365,
+        365
+      ],
+      "old": [
+        "            return determinant(GetCustomLocalToWorld3x3()) < 0.0 ? -1.0 : 1.0;"
+      ],
+      "new": [
+        "            return NBFX_MatrixOddNegativeScaleV1(_CustomLocalTransformLocalToWorld);"
+      ]
+    }
+  ],
+  "semanticInputTextEqual": false,
+  "legacyShaderByteEqual": true,
+  "CBTexelSizeDeclarationContextUnchanged": true,
+  "inputDifferenceRootEpoch": "Inspect actual hunks; cannot determine selected compiled Shader program/variant solely from this text difference."
+}

@@ -1,0 +1,401 @@
+{
+  "scope": "Read-onlyactual113originalXML+tail37CPU/6GPU strictunique156view; orchestrationKeyError retained, nomergedXML/source mutation",
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "counts": {
+    "Passed": 156,
+    "Failed": 0,
+    "Skipped": 0,
+    "Inconclusive": 0,
+    "uniqueActualCases": 156,
+    "readerCPU": 113,
+    "maskCPU": 37,
+    "maskGPU": 6,
+    "rawPayloads": 114
+  },
+  "originalXMLs": [
+    {
+      "run": "root-reader-mask156-isolated-1",
+      "batch": 1,
+      "cases": 113,
+      "Passed": 113,
+      "xmlSHA256": "ca44c898293964b8888172c757e5fa55f00763f5d5bdeb20b8748cbe74084288",
+      "logSHA256": "e1e45bbb526af09d21a07ba89c1bea221fd98324fd95c1e649f63e350ffa8281",
+      "faultTokens": []
+    },
+    {
+      "run": "root-reader-mask-tail43-isolated-1",
+      "batch": 1,
+      "cases": 37,
+      "Passed": 37,
+      "xmlSHA256": "6df4526c5bf39b1fe7e79746cdca3da5c496ffe2c0a91e4efd17511fb8872925",
+      "logSHA256": "d291ef4a6e939695673dde7f678d1cd5916bf5aa1fcc7e9bd0d7b7e4d1623a57",
+      "faultTokens": []
+    },
+    {
+      "run": "root-reader-mask-tail43-isolated-1",
+      "batch": 2,
+      "cases": 6,
+      "Passed": 6,
+      "xmlSHA256": "a60401e50f8bffa6b65ea644286b107a55859e48e1a77b8912a289ae72587e45",
+      "logSHA256": "d3c68f69a78658b429b91ac2272df1ae1816c41b45be5ec2932a6a7d19af9ff5",
+      "faultTokens": []
+    }
+  ],
+  "source9SHA256": {
+    "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs": "a6562c2b0c42b4d0afc8e16545631cd741aa7bc5d0452517fba85dfb89e47aa3",
+    "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs": "c167f2968a9465acc9866f5ec2f8287bc314aa3430d2a68cbd5fcb2b205ac4c6",
+    "NBShaders2/Editor/NBShaderGraphRootItem.cs": "e36d5cb270cd54e50651c89422e233662e221af6306c887a3b86151ac263cfb5",
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "ac67f939a9a34c7c03345ca76a562be6c2fc5700d1237f5750234117ad515bf0",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "14e4495d7122af60ff822ddd34c8bca25ead7e6b6ab0326496c3a1aa8b41e6fe",
+    "Tests/URP/Editor/G4GraphNormalizedIntentReaderTests.cs": "5d7259bfeec0ff53d79fdb65ab93ee94246990a7bb2ddfa377f3e3c9f49290bf",
+    "Tests/URP/Editor/G4GraphNormalizedIntentReaderTests.cs.meta": "a230e7f9f4693494b83cef4e2e87d1638c74bdc17608238b8164b064071fe9c2",
+    "Tests/URP/Editor/G4GraphMaskTierTests.cs": "5d5da5ab53f0f50f3bdb61ded7c38be3edbc55bbfa83045fd03938f42ffec7cb",
+    "Tests/URP/Editor/G4GraphMaskTierTests.cs.meta": "54eb2a4d5104bf3bd38218c2fbba07f13b6af4b8e382d6d0c62646d240154abf"
+  },
+  "installationSHA256": "e6be5262b154d78b66e502c899b8b32587215a4a2a159dacc8ce2e0f2214acf6",
+  "readyManifestSHA256": "655f352473a54eaf718402c3375262aa6079c2fe87fc05b83a87c12a0045eb17",
+  "rootUnchanged5SHA256": {
+    "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs": "1220576a61cc3c926bf26a3191e4512153cb682bc6521c12fcc46955c458d0aa",
+    "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs": "7ac5374d7195fb3570225d1350f87c37b09a33ac7fa92cbe210170856b328af6",
+    "NBShaders2/Editor/NBShaderGraphRootItem.cs": "fb24392dad2765b0c5bc983a7e886a599fdae8d33e3e3b0e00464054b7008df3",
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "87b0494ece2eb3e1c2aa78ea272a770799f82b5d5e635bf9335502db4099796c",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "5e28d9d63d7e4b7819918a72a406c81538fbe42e414b8b3dc5950a342d380638"
+  },
+  "GPUmetrics": [
+    {
+      "stage": "Forward",
+      "orthographic": true,
+      "metricSHA256": "3fc1c583d2f496cd1443cff70b617ed818163294e44e85918bd5470b1b02fca1",
+      "raw": 19,
+      "finite": true,
+      "allCDCD": false,
+      "ABBCRepeatRestoreZero": true,
+      "response": {
+        "A": 0.8125,
+        "B": 0.8125,
+        "C": 0.8125
+      },
+      "visible": {
+        "A": 7396,
+        "B": 7396,
+        "C": 7396
+      },
+      "scope": "Explicit Mask1/2/3 derived gates; three states preserve intent/strip/restore; actual Forward or exact NB RT pass; full-frame strict zero/finite/visible/repeat/response; no complete Tier/Pass/Controller/Player claim"
+    },
+    {
+      "stage": "Forward",
+      "orthographic": false,
+      "metricSHA256": "343ab9dbcdd77943e7fb346277dc41addee8d38443bd02a80b5494e4ec88a12f",
+      "raw": 19,
+      "finite": true,
+      "allCDCD": false,
+      "ABBCRepeatRestoreZero": true,
+      "response": {
+        "A": 0.8125,
+        "B": 0.8125,
+        "C": 0.8125
+      },
+      "visible": {
+        "A": 10816,
+        "B": 10816,
+        "C": 10816
+      },
+      "scope": "Explicit Mask1/2/3 derived gates; three states preserve intent/strip/restore; actual Forward or exact NB RT pass; full-frame strict zero/finite/visible/repeat/response; no complete Tier/Pass/Controller/Player claim"
+    },
+    {
+      "stage": "NBCameraOpaqueDistortPass",
+      "orthographic": true,
+      "metricSHA256": "bab4866fd9e549ed8c19079946f390ce31797596b430b5c51e5d9367ecd24fcd",
+      "raw": 19,
+      "finite": true,
+      "allCDCD": false,
+      "ABBCRepeatRestoreZero": true,
+      "response": {
+        "A": 0.01171875,
+        "B": 0.01171875,
+        "C": 0.01171875
+      },
+      "visible": {
+        "A": 7396,
+        "B": 7396,
+        "C": 7396
+      },
+      "scope": "Explicit Mask1/2/3 derived gates; three states preserve intent/strip/restore; actual Forward or exact NB RT pass; full-frame strict zero/finite/visible/repeat/response; no complete Tier/Pass/Controller/Player claim"
+    },
+    {
+      "stage": "NBCameraOpaqueDistortPass",
+      "orthographic": false,
+      "metricSHA256": "79349dccac3e3011fe69ebd41a0db68d6c342e84e99c6860e8bac6d01e493a02",
+      "raw": 19,
+      "finite": true,
+      "allCDCD": false,
+      "ABBCRepeatRestoreZero": true,
+      "response": {
+        "A": 0.01318359375,
+        "B": 0.01318359375,
+        "C": 0.01318359375
+      },
+      "visible": {
+        "A": 10816,
+        "B": 10816,
+        "C": 10816
+      },
+      "scope": "Explicit Mask1/2/3 derived gates; three states preserve intent/strip/restore; actual Forward or exact NB RT pass; full-frame strict zero/finite/visible/repeat/response; no complete Tier/Pass/Controller/Player claim"
+    },
+    {
+      "stage": "NBDeferredDistortPass",
+      "orthographic": true,
+      "metricSHA256": "31b7eb6abdb62815f427d6ae4d4f83f3a8ffde85db0571ffe8e8df8a2fa6acf4",
+      "raw": 19,
+      "finite": true,
+      "allCDCD": false,
+      "ABBCRepeatRestoreZero": true,
+      "response": {
+        "A": 0.1015625,
+        "B": 0.1015625,
+        "C": 0.1015625
+      },
+      "visible": {
+        "A": 7396,
+        "B": 7396,
+        "C": 7396
+      },
+      "scope": "Explicit Mask1/2/3 derived gates; three states preserve intent/strip/restore; actual Forward or exact NB RT pass; full-frame strict zero/finite/visible/repeat/response; no complete Tier/Pass/Controller/Player claim"
+    },
+    {
+      "stage": "NBDeferredDistortPass",
+      "orthographic": false,
+      "metricSHA256": "acfe3740aa8e77bdaae68da8fb02ac3045e94795ef0b1edb7d04252b8f55ea2e",
+      "raw": 19,
+      "finite": true,
+      "allCDCD": false,
+      "ABBCRepeatRestoreZero": true,
+      "response": {
+        "A": 0.1015625,
+        "B": 0.1015625,
+        "C": 0.1015625
+      },
+      "visible": {
+        "A": 10816,
+        "B": 10816,
+        "C": 10816
+      },
+      "scope": "Explicit Mask1/2/3 derived gates; three states preserve intent/strip/restore; actual Forward or exact NB RT pass; full-frame strict zero/finite/visible/repeat/response; no complete Tier/Pass/Controller/Player claim"
+    }
+  ],
+  "allRawFiniteNonCDCD": true,
+  "minimumMaskResponse": 0.01171875,
+  "minimumVisible": 7396,
+  "CPUAssertionEvidence": {
+    "actual113IdentitySet": [
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.AllowedSetFiltering_DoesNotEraseIntentOrEnableUnavailableFeatures",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_VAT_m0_s0",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_VAT_m0_s1",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_VAT_m0_s2",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_VAT_m0_s3",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_VAT_m1_s0",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_VAT_m1_s1",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_VAT_m1_s2",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_VAT_m1_s3",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_VAT_m1_s4",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_VAT_m1_s5",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_DependentEnumModes_UseSharedDependencyCore_01",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_DependentEnumModes_UseSharedDependencyCore_02",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_DependentEnumModes_UseSharedDependencyCore_03",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_01",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_02",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_03",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_04",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_05",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_06",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_07",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_08",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_09",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_10",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_11",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_12",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_13",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_14",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_15",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_16",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_17",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_18",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_19",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_20",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_21",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_22",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_23",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_24",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_25",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_26",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_27",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_28",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.ExistingNoisePairAndGeneralTierApplyRemainProtected",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsNineUnavailable_01",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsNineUnavailable_02",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsNineUnavailable_03",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsNineUnavailable_04",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_01",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_02",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_03",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_04",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_05",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_LightModes_UseExistingEnumContract_01",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_LightModes_UseExistingEnumContract_02",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_LightModes_UseExistingEnumContract_03",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_LightModes_UseExistingEnumContract_04",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_LightModes_UseExistingEnumContract_05",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_01",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_02",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_03",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_04",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_05",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_06",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_07",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_08",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_09",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_10",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_11",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_12",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_13",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_14",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_15",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_16",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_MissingRequiredRealSchema_IsRejected_17",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_NonFiniteOwnedInput_IsRejected_01",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_NonFiniteOwnedInput_IsRejected_02",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_NonFiniteOwnedInput_IsRejected_03",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_NonFiniteOwnedInput_IsRejected_04",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.NullMaterial_IsRejected_AndLegacyIdentityRemainsGuarded",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s0_c0_b0",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s0_c0_b1",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s0_c0_b2",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s0_c0_b3",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s0_c1_b0",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s0_c1_b1",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s0_c1_b2",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s0_c1_b3",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s1_c0_b0",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s1_c0_b1",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s1_c0_b2",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s1_c0_b3",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s1_c1_b0",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s1_c1_b1",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s1_c1_b2",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_Surface_s1_c1_b3",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_01",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_02",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_03",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_04",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_05",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_06",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_07",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_08",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_09",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_10",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrFractionalEnum_IsRejectedWithoutRounding_11",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrUnseededMarker_IsRejectedWithoutMutation_01",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrUnseededMarker_IsRejectedWithoutMutation_02",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrUnseededMarker_IsRejectedWithoutMutation_03",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrUnseededMarker_IsRejectedWithoutMutation_04",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownOrUnseededMarker_IsRejectedWithoutMutation_05",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownTier_IsRejectedWithoutMutation_01",
+      "NBFX.Baseline.Tests.G4GraphNormalizedIntentReaderTests.G4NormalizedReader_UnknownTier_IsRejectedWithoutMutation_02"
+    ],
+    "actual37CPUIdentities": [
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_RejectMissingGate",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_RejectIntegerGate",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_Restore",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_full_i0",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_full_i1",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_full_i2",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_full_i3",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_full_i4",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_full_i5",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_full_i6",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_full_i7",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_parent_i0",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_parent_i1",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_parent_i2",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_parent_i3",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_parent_i4",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_parent_i5",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_parent_i6",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_parent_i7",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_children_i0",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_children_i1",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_children_i2",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_children_i3",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_children_i4",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_children_i5",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_children_i6",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_children_i7",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_none_i0",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_none_i1",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_none_i2",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_none_i3",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_none_i4",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_none_i5",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_none_i6",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_none_i7",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_RejectMarker1",
+      "NBFX.Baseline.Tests.G4GraphMaskTierTests.G4TierMasks_CPU_RejectMarker3"
+    ],
+    "lockedSource113NotFuture117": true,
+    "actualSchemaAndFloatRejections": true,
+    "finiteMalformed/Marker/EnumRejectsActualXML": true,
+    "readerSnapshotNoMutationAndRawProtocolMirrorAuthority": true,
+    "generalApplyProtected": true,
+    "passesNotOwnedEmpty": true,
+    "unsupportedNineExplicit": [
+      "_STENCIL_WITHOUT_PLAYER",
+      "_SHARED_UV",
+      "_SPECULAR_COLOR",
+      "NB_DEBUG_DISSOLVE",
+      "NB_DEBUG_DISTORT",
+      "NB_DEBUG_FRESNEL",
+      "NB_DEBUG_MASK",
+      "NB_DEBUG_PNOISE",
+      "NB_DEBUG_VERTEX_OFFSET"
+    ]
+  },
+  "orchestrationIncident": {
+    "classification": "runnerpost-verdictmetadataKeyError, notUnitytest/GPUfailure",
+    "original113ActualBodiesPassed": 113,
+    "evidence": "Originalplanmissingunity/api; runneraccessesplanunityapisummary afterXMLidentitychecks; originalsummary absent. ParentreportedKeyErrorunity; no trace invented.",
+    "originalPlanSHA256": "cd91b49e2c0d68dc6e08be03f69c94f1cd876b2f5c1ced58f6afaa5829402b1b",
+    "remainingTailPlanSHA256": "6e40dab742b13b862e050b1b52b1e967ff27772bf10d231566fe5b70d45b53e6",
+    "originalBatch1XMLPreserved": true,
+    "noMergedXMLCreated": true
+  },
+  "necessaryImpactRegression": [
+    {
+      "scope": "GUI110",
+      "reason": "GraphRootUIhideprefix/schema3newFloat,Resolver37metadatachanged; rerunexistingtrueUI/rawflags/noMutation/directrenderidentitiesfromcurrentcandidate."
+    },
+    {
+      "scope": "CustomDataStorage32",
+      "reason": "Existing12packedprefixschemaandreaderfiniteguard; confirmfourwordSetter/Reader/unknownnibbles and materialstateunchanged."
+    },
+    {
+      "scope": "Maskrenderedconsumers",
+      "reason": "NBGraphBaseColorfloat/half3gates default1 appendsABI; exact mask1/2/3 mainUVroutes and combinations needfreshconsumerABC. ReusePositionUV mask120 plan withstrictmanualmicroretained; no full376rerun unlessimpactrequires."
+    },
+    {
+      "scope": "TextureNoiseMaskshared consumers",
+      "reason": "Mask1parentdependencywithMask2/3andProgramNoise blendedmask affectscompoundalpha; selectexistingmaskfeature/channel andnoise consumers, retainactualpipelinepasses."
+    },
+    {
+      "scope": "CL/VAT/F0representatives and SixWay2 sourceimpact",
+      "reason": "CentralBaseColorCFsignaturechanged; preservepreviousnewmicrostrictfailclassification. Reviewfinite/visible/repeat plusABI risks; do notblindly rerunallhistoricalpools."
+    }
+  ],
+  "limits": [
+    "ExplicitMaskAPIonly; generalTier/Toolbar/nativeValidatecontractsnotunlocked or complete.",
+    "ExactNBPassfeatureis directed fixture, nofullController/Managerproof.",
+    "9unavailablefeaturesremain scope obligations; futureReader117 sourceandtests needtheir ownmanifest, noold113overwrite.",
+    "No formalVFX/Player/perf/finalGate approval."
+  ],
+  "fullMeshGatePassed": false
+}

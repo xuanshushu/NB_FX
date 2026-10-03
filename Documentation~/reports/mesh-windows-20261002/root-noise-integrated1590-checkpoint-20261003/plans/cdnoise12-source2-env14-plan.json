@@ -1,0 +1,87 @@
+{
+  "scope": "Necessary current Noise1590 source/native2 initialized SRP/keyword scope plus original real CDNoise12 CF-consumer regressions; no wholeTier/Gate",
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "editorArgs": [
+    "-force-d3d11"
+  ],
+  "stopOnReadbackHealthFailure": true,
+  "cases": 14,
+  "source7SHA256": {
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "de6781d7880ab0634aa5005569f66e62969230acf846c73f8311588f36fbb2cd",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "1d7fe0b81f43ec501ec07951f79fd1d35fe7e4b89f9439b51f5b613b39b81b2c",
+    "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs": "03a73dd15224dbe7c45cfbcd9cdf9178f70815dd149084374918d549d6687c28",
+    "Tests/URP/Editor/G4RootNoiseTierTests.cs": "1d7272501315f4fe60dd155784f35edcf750de72a966835c64f5733893412f73",
+    "Tests/URP/Editor/G4RootNoiseTierTests.cs.meta": "d9ccbb9409a3d41709ac9f9ab34da083f7cba371491a4c3a1a8ec2e43b343da7",
+    "Tests/URP/Editor/G4RootNoiseBoundaryTests.cs": "69f1412cb7cd07fab918974bc9bb0c6e4a3acab9655aacdac99cf0d21992d019",
+    "Tests/URP/Editor/G4RootNoiseBoundaryTests.cs.meta": "b8044a267cd9e56df5230ab4a455fae647fa8bf99648f6ffa7989b3ef62533ca"
+  },
+  "unchangedCustomDataFixtureSHA256": "f4ccb1ee1af10fb85029672ea7033b36995323384dbbdc84b040baa253afdc21",
+  "originalThresholdsPreserved": {
+    "fullFrameABBC": 0,
+    "repeat": 0,
+    "finite": true,
+    "visibleStrictGreaterThan": 128,
+    "independentStrongResponseStrictGreaterThan": 0.001,
+    "selectorCodes": [
+      0,
+      15,
+      14,
+      13,
+      12,
+      11,
+      10,
+      9,
+      8
+    ]
+  },
+  "batches": [
+    {
+      "batch": 1,
+      "filter": "^NBFX\\.Baseline\\.Tests\\.G4GraphOverrideDepthSourceTests\\.G4OverrideZSource_generated_pass_scope$;^NBFX\\.Baseline\\.Tests\\.G4GraphOverrideDepthSourceTests\\.G4OverrideZSource_srp_batcher_codes$",
+      "expectedCasesFromActualDiscovery": 2,
+      "expectedCasesFromSource": 2,
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphOverrideDepthSourceTests.G4OverrideZSource_generated_pass_scope",
+        "NBFX.Baseline.Tests.G4GraphOverrideDepthSourceTests.G4OverrideZSource_srp_batcher_codes"
+      ],
+      "identitySource": "Existing explicit [Test] source methods confirmed; new actual XML must match",
+      "limits": "Real native SRP result after warm is required. Unknown/Not initialized and missing API cannot pass; source/code is not runtime/performance proof."
+    },
+    {
+      "batch": 2,
+      "filter": "^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-intensity_ortho_constant$;^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-intensity_ortho_varying$;^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-intensity_perspective_constant$;^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-intensity_perspective_varying$;^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-direction\\-x_ortho_constant$;^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-direction\\-x_ortho_varying$",
+      "expectedCasesFromActualDiscovery": 6,
+      "expectedCasesFromSource": 6,
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-intensity_ortho_constant",
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-intensity_ortho_varying",
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-intensity_perspective_constant",
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-intensity_perspective_varying",
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-x_ortho_constant",
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-x_ortho_varying"
+      ],
+      "identitySource": "Completed original RootCD152 exact XML identities; current fresh execution pending"
+    },
+    {
+      "batch": 3,
+      "filter": "^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-direction\\-x_perspective_constant$;^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-direction\\-x_perspective_varying$;^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-direction\\-y_ortho_constant$;^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-direction\\-y_ortho_varying$;^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-direction\\-y_perspective_constant$;^NBFX\\.Baseline\\.Tests\\.G4GraphCustomDataTests\\.G4CustomData_GPU_noise\\-direction\\-y_perspective_varying$",
+      "expectedCasesFromActualDiscovery": 6,
+      "expectedCasesFromSource": 6,
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-x_perspective_constant",
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-x_perspective_varying",
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-y_ortho_constant",
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-y_ortho_varying",
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-y_perspective_constant",
+        "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_noise-direction-y_perspective_varying"
+      ],
+      "identitySource": "Completed original RootCD152 exact XML identities; current fresh execution pending"
+    }
+  ],
+  "baselineProvenance": "cdnoise12-rootCD152-baseline.json",
+  "fullMeshGatePassed": false,
+  "nativeSourceFixtureSHA256": "8429fa5b6ac18037384342b015f906bc0f98ebb943eeff331e9e8b2e71db9931",
+  "nativeSourceFixtureMetaSHA256": "6d39787f0b75b0b465896e29344228ec7d1273f1ed599f52606076297782c96b",
+  "nativeExpectation": "Keep existing strict initialized Graph code0 assertion and original conditional current/frozen compatibility assertions unchanged. Independently verify actual unchanged current code0 as previously observed; never reinterpret frozen baseline10 as allowable Graph incompatibility. Missing/unknown/native uninitialized is failure."
+}

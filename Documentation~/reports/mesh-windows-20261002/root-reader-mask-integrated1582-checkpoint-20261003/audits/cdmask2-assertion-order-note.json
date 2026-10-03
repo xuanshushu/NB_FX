@@ -1,0 +1,14 @@
+{
+  "scope": "Clarify Unity assertion execution versus independent raw evidence for the two existing CDMask strict failures",
+  "audit": "impact276-complete-verdict-audit.json",
+  "source": "Tests/URP/Editor/G4GraphCustomDataTests.cs",
+  "identities": [
+    "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-x_perspective_varying",
+    "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_perspective_varying"
+  ],
+  "observedUnityExecution": "All captures and metrics were written before assertions. finite assertion executes before the failing Full-frame strict ABC assertion. The subsequent repeat, visible and strong-response assertions do not execute after that failure.",
+  "independentRawEvidence": "The completed audit recomputed all thirty f32 frames per identity. Each payload is finite and non-all-CDCD; AB is zero, repeats are zero, visible is greater than 128 and the independent response exceeds 0.001. All metric fields and verdicts equal the old completed RootCD152 same identities.",
+  "classification": "Two original RootCD152 twelve-micro subset identities. They remain Failed; the independent numeric evidence is not a claim that the later Unity assertions executed or passed.",
+  "noAssertionToleranceOrSourceChanged": true,
+  "gateClosed": false
+}

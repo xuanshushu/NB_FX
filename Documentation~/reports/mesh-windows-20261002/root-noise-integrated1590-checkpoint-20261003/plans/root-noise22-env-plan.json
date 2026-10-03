@@ -1,0 +1,58 @@
+{
+  "scope": "New normalized Noise2 explicit capability:16 CPU+6 real Forward/NB-pass GPU; whole Tier/Pass contract not claimed",
+  "identitySource": "source, no actual discovery/execution",
+  "cases": 22,
+  "batches": [
+    {
+      "batch": 1,
+      "filter": "G4RootNoise_CPU_",
+      "expectedCasesFromActualDiscovery": 16,
+      "identitySource": "source (legacy runner field retained)",
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_full_i0",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_full_i1",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_full_i2",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_full_i3",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_parent_i0",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_parent_i1",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_parent_i2",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_parent_i3",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_children_i0",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_children_i1",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_children_i2",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_children_i3",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_none_i0",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_none_i1",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_none_i2",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_CPU_none_i3"
+      ]
+    },
+    {
+      "batch": 2,
+      "filter": "G4RootNoise_GPU_",
+      "expectedCasesFromActualDiscovery": 6,
+      "identitySource": "source (legacy runner field retained)",
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_Forward_ortho",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_Forward_perspective",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_NBCameraOpaqueDistortPass_ortho",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_NBCameraOpaqueDistortPass_perspective",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_NBDeferredDistortPass_ortho",
+        "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_NBDeferredDistortPass_perspective"
+      ]
+    }
+  ],
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "editorArgs": [
+    "-force-d3d11"
+  ],
+  "stopOnReadbackHealthFailure": true,
+  "source5SHA256": {
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "de6781d7880ab0634aa5005569f66e62969230acf846c73f8311588f36fbb2cd",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "1d7fe0b81f43ec501ec07951f79fd1d35fe7e4b89f9439b51f5b613b39b81b2c",
+    "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs": "03a73dd15224dbe7c45cfbcd9cdf9178f70815dd149084374918d549d6687c28",
+    "Tests/URP/Editor/G4RootNoiseTierTests.cs": "1d7272501315f4fe60dd155784f35edcf750de72a966835c64f5733893412f73",
+    "Tests/URP/Editor/G4RootNoiseTierTests.cs.meta": "d9ccbb9409a3d41709ac9f9ab34da083f7cba371491a4c3a1a8ec2e43b343da7"
+  }
+}

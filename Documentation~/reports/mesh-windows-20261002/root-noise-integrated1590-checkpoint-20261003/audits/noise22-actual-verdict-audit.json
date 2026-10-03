@@ -1,0 +1,228 @@
+{
+  "scope": "Independent actual current Noise1590/source5 CPU16 +Forward2 +directed NBPass4 identity/raw audit, no source/test/Unity/Git changes",
+  "counts": {
+    "Passed": 22,
+    "Failed": 0,
+    "Skipped": 0,
+    "uniqueActualCases": 22,
+    "CPU": 16,
+    "ForwardGPU": 2,
+    "directedNBPassGPU": 4,
+    "rawPayloads": 150
+  },
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "batchEvidence": [
+    {
+      "batch": 1,
+      "Passed": 16,
+      "xmlSHA256": "61076f18fe057ec4ef526a1a9a23c8e5575d14929212d368fbde8c205a18489e",
+      "logSHA256": "59f5bbcc6bae3a3cc06fa9f5b3f384938ae6861da3f71fc6b89b766927822961",
+      "faultTokens": []
+    },
+    {
+      "batch": 2,
+      "Passed": 6,
+      "xmlSHA256": "edfc07ac58c1352690b41781db0662241ee21ff2905738ed1fec18099bb33bbe",
+      "logSHA256": "d5de769ca04d5d470a694027e381d84586da4ed36689a0608b1720c07aa128a1",
+      "faultTokens": []
+    }
+  ],
+  "source5SHA256": {
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "de6781d7880ab0634aa5005569f66e62969230acf846c73f8311588f36fbb2cd",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "1d7fe0b81f43ec501ec07951f79fd1d35fe7e4b89f9439b51f5b613b39b81b2c",
+    "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs": "03a73dd15224dbe7c45cfbcd9cdf9178f70815dd149084374918d549d6687c28",
+    "Tests/URP/Editor/G4RootNoiseTierTests.cs": "1d7272501315f4fe60dd155784f35edcf750de72a966835c64f5733893412f73",
+    "Tests/URP/Editor/G4RootNoiseTierTests.cs.meta": "d9ccbb9409a3d41709ac9f9ab34da083f7cba371491a4c3a1a8ec2e43b343da7"
+  },
+  "root3UnchangedBeforeSHA256": {
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "ac67f939a9a34c7c03345ca76a562be6c2fc5700d1237f5750234117ad515bf0",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "14e4495d7122af60ff822ddd34c8bca25ead7e6b6ab0326496c3a1aa8b41e6fe",
+    "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs": "c167f2968a9465acc9866f5ec2f8287bc314aa3430d2a68cbd5fcb2b205ac4c6"
+  },
+  "installationSHA256": "77dae0ed693a7b3ff10faa620c2c97c0eb46024cbad60c65e35b5ce663569619",
+  "planSHA256": "89c3d59ec89164bbd561db4667de8bb2c25e6ae15ea4cd15878dac30bcaf798e",
+  "summarySHA256": "bd7d890ce9f95c9024c5eeef7f9400f263d3d028d35ce81bf939d9ecb149a226",
+  "metrics": [
+    {
+      "identity": "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_Forward_ortho",
+      "stage": "Forward",
+      "orthographic": true,
+      "raw25FiniteNonCDCD": true,
+      "ABBCRepeatRestoreZero": true,
+      "independentResponses": {
+        "A": {
+          "Noise": 1.18963623046875,
+          "NoiseMask": 1.18963623046875
+        },
+        "B": {
+          "Noise": 1.18963623046875,
+          "NoiseMask": 1.18963623046875
+        },
+        "C": {
+          "Noise": 1.18963623046875,
+          "NoiseMask": 1.18963623046875
+        }
+      },
+      "visible": {
+        "A": 7396,
+        "B": 7396,
+        "C": 7396
+      },
+      "metricSHA256": "79d40e351d1f835353379fa2e72d0308163104631e6f4c711621913dd6bfe5a5",
+      "scope": "Explicit two-feature effective input only; actual Forward or exact NB RT pass; Noise-off fallback fixed zero; no full Tier/Controller/Player claim"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_Forward_perspective",
+      "stage": "Forward",
+      "orthographic": false,
+      "raw25FiniteNonCDCD": true,
+      "ABBCRepeatRestoreZero": true,
+      "independentResponses": {
+        "A": {
+          "Noise": 1.18975830078125,
+          "NoiseMask": 1.18988037109375
+        },
+        "B": {
+          "Noise": 1.18975830078125,
+          "NoiseMask": 1.18988037109375
+        },
+        "C": {
+          "Noise": 1.18975830078125,
+          "NoiseMask": 1.18988037109375
+        }
+      },
+      "visible": {
+        "A": 10816,
+        "B": 10816,
+        "C": 10816
+      },
+      "metricSHA256": "5840e613576bd880bea75af1ad94779a192d9a18477a3ffe2e4d0715042fa8ec",
+      "scope": "Explicit two-feature effective input only; actual Forward or exact NB RT pass; Noise-off fallback fixed zero; no full Tier/Controller/Player claim"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_NBCameraOpaqueDistortPass_ortho",
+      "stage": "NBCameraOpaqueDistortPass",
+      "orthographic": true,
+      "raw25FiniteNonCDCD": true,
+      "ABBCRepeatRestoreZero": true,
+      "independentResponses": {
+        "A": {
+          "Noise": 0.0146484375,
+          "NoiseMask": 0.0146484375
+        },
+        "B": {
+          "Noise": 0.0146484375,
+          "NoiseMask": 0.0146484375
+        },
+        "C": {
+          "Noise": 0.0146484375,
+          "NoiseMask": 0.0146484375
+        }
+      },
+      "visible": {
+        "A": 7396,
+        "B": 7396,
+        "C": 7396
+      },
+      "metricSHA256": "fa32b63fe0ec7daebb849f761751bff059c06304de5c6e187250192dd6bfd6a6",
+      "scope": "Explicit two-feature effective input only; actual Forward or exact NB RT pass; Noise-off fallback fixed zero; no full Tier/Controller/Player claim"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_NBCameraOpaqueDistortPass_perspective",
+      "stage": "NBCameraOpaqueDistortPass",
+      "orthographic": false,
+      "raw25FiniteNonCDCD": true,
+      "ABBCRepeatRestoreZero": true,
+      "independentResponses": {
+        "A": {
+          "Noise": 0.01611328125,
+          "NoiseMask": 0.01611328125
+        },
+        "B": {
+          "Noise": 0.01611328125,
+          "NoiseMask": 0.01611328125
+        },
+        "C": {
+          "Noise": 0.01611328125,
+          "NoiseMask": 0.01611328125
+        }
+      },
+      "visible": {
+        "A": 10816,
+        "B": 10816,
+        "C": 10816
+      },
+      "metricSHA256": "bfdb0475b78c987588dadb2d8d51dcc9ba50de8cf72d8bbd3fa4775ebf1fa142",
+      "scope": "Explicit two-feature effective input only; actual Forward or exact NB RT pass; Noise-off fallback fixed zero; no full Tier/Controller/Player claim"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_NBDeferredDistortPass_ortho",
+      "stage": "NBDeferredDistortPass",
+      "orthographic": true,
+      "raw25FiniteNonCDCD": true,
+      "ABBCRepeatRestoreZero": true,
+      "independentResponses": {
+        "A": {
+          "Noise": 0.375,
+          "NoiseMask": 0.125
+        },
+        "B": {
+          "Noise": 0.375,
+          "NoiseMask": 0.125
+        },
+        "C": {
+          "Noise": 0.375,
+          "NoiseMask": 0.125
+        }
+      },
+      "visible": {
+        "A": 7396,
+        "B": 7396,
+        "C": 7396
+      },
+      "metricSHA256": "81fcc9625c5cc7736d0b784a4ab1d4070ec9190a538a181b10b2bf99852ee4d9",
+      "scope": "Explicit two-feature effective input only; actual Forward or exact NB RT pass; Noise-off fallback fixed zero; no full Tier/Controller/Player claim"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4RootNoiseTierTests.G4RootNoise_GPU_NBDeferredDistortPass_perspective",
+      "stage": "NBDeferredDistortPass",
+      "orthographic": false,
+      "raw25FiniteNonCDCD": true,
+      "ABBCRepeatRestoreZero": true,
+      "independentResponses": {
+        "A": {
+          "Noise": 0.375,
+          "NoiseMask": 0.125
+        },
+        "B": {
+          "Noise": 0.375,
+          "NoiseMask": 0.125
+        },
+        "C": {
+          "Noise": 0.375,
+          "NoiseMask": 0.125
+        }
+      },
+      "visible": {
+        "A": 10816,
+        "B": 10816,
+        "C": 10816
+      },
+      "metricSHA256": "8fd390c727c2f6cadfa6a9c7867fa0616bafc79741f79da88b6a73ef61c65c16",
+      "scope": "Explicit two-feature effective input only; actual Forward or exact NB RT pass; Noise-off fallback fixed zero; no full Tier/Controller/Player claim"
+    }
+  ],
+  "allRawFiniteNonCDCD": true,
+  "rawCompressedSourceManifestDigest": "406fa101f3214d88d51e7d9fd25108afed33baa5cb6c8f58a7f075761442133b",
+  "minimumVisible": 7396,
+  "minimumNoiseResponse": 0.0146484375,
+  "minimumNoiseMaskResponse": 0.0146484375,
+  "limits": [
+    "Four screen cases explicitly directed exact NB Pass with production NBPostProcess temporarily disabled; no full Controller/Manager or effective automatic Pass/Tier proof.",
+    "Noise-off _NB_DistortionNoise explicitly fixed zero in original fixture; arbitrary prototype/default fallback policy not proved.",
+    "Boundary4 is separate new pending source and cannot be counted in actual22.",
+    "Input ABI source audit and actual22 are not full179 TextureNoise/Player/perf/GraphTier/Gate/VFX pass."
+  ],
+  "fullMeshGatePassed": false
+}

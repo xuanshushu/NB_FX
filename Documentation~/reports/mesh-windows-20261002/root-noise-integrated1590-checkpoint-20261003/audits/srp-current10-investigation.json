@@ -1,0 +1,372 @@
+{
+  "scope": "Independent read-only Root/Frozen native SRP10 investigation after exact14 actual; no Unity/compiler/Bee/Git/source/report mutation",
+  "observation": "Graph before warm1 Not initialized ->after warm0; current/Frozen both known/supported10 same VATTex texel-size outside UnityPerMaterial issue. Original Source2 conditional native contract passed, but current0 cannot be claimed.",
+  "sourceDecl": {
+    "rootInputSHA256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+    "frozenInputSHA256": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9",
+    "rootCBEndLine": 256,
+    "rootDeclarationLine": 563,
+    "frozenCBEndLine": 251,
+    "frozenDeclarationLine": 556,
+    "declarationPreexistingInBoth": true,
+    "f0CandidateInputSHA256": "7877b4846b0715b4bf231a8f312f3d665586b8cce395f95294ee049e1fea735a",
+    "rootEqualsF0CandidateAfterCRLFNormalization": false,
+    "f0CandidateDeclarationLine": [
+      563
+    ],
+    "rootShaderSHA256": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b",
+    "f0CandidateShaderSHA256": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b",
+    "rootShaderByteEqualsF0Candidate": true
+  },
+  "includeChain": {
+    "root": [
+      "NBShader.shader Passes -> HLSL/NBShaderForwardPass.hlsl",
+      "NBShaderForwardPass.hlsl line3 -> NBShaderInput.hlsl, line11 -> XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl",
+      "VAT.hlsl lines4/5 -> HoudiniVAT.hlsl/TyflowVAT.hlsl; ApplyVAT body is #if _VAT and runtime _VAT_Toggle >=0.5; selects _VAT_HOUDINI/_VAT_TYFLOW",
+      "TyflowVAT.hlsl line70 copies external _VATTex_TexelSize into shared kernel config."
+    ],
+    "sourceSHA256": {
+      "NBShaders2/Shader/NBShader.shader": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b",
+      "NBShaders2/Shader/HLSL/NBShaderInput.hlsl": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+      "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl": "17322f26b644db92d0b0419cbac46bc88ac1c0635a767cdac6a1f35d7ea6a227",
+      "XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016",
+      "XuanXuanRenderUtility/Shader/HLSL/HoudiniVAT.hlsl": "b5bb7d94cd4086413f6d7437db1846f7043765fee62bc414d3a86209c97d7fca",
+      "XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl": "99e063184f6fe274e66c7d084c25948c960031d6a225a999bc93615cfe4f7167"
+    },
+    "inputDeclarationOutsideCB": true
+  },
+  "scopeAndInitialization": {
+    "nativeAPI": "GetSRPBatcherCompatibilityCode(Shader,subShaderIndex0); not a passIndex or material/keyword-specific API",
+    "warm": "Only Graph real URP Mesh new Material is warmed. Current/Frozen rows merely load Shader and query native status; no directed Native off/on draw or concrete keyword/pass receipt is saved.",
+    "actualKeywordEvidence": "Native rows contain shader name/code/reason/support; no selected Material keywords, compiled variant identity or pass-specific code. Do not infer an active VAT keyword from code10 alone.",
+    "legacyPassAxes": [
+      "SRPDefaultUnlit",
+      "UniversalForward",
+      "DepthOnly",
+      "ShadowCaster",
+      "NBCameraOpaqueDistortPass",
+      "NBDeferredDistortPass"
+    ],
+    "legacyVATKeywords": [
+      "_VAT",
+      "_VAT_HOUDINI",
+      "_VAT_TYFLOW",
+      "_TYFLOW_VAT_ABSOLUTE",
+      "_TYFLOW_VAT_RELATIVE",
+      "_TYFLOW_VAT_SKIN_R",
+      "_TYFLOW_VAT_SKIN_PR",
+      "_TYFLOW_VAT_SKIN_PRSAVE",
+      "_TYFLOW_VAT_SKIN_PRSXYZ"
+    ],
+    "sourceTestSHA256": "8429fa5b6ac18037384342b015f906bc0f98ebb943eeff331e9e8b2e71db9931",
+    "graphWarmFixtureSHA256": "1645335fa40cfde3c6b8d236e48ff167e6d0d15b32b0f5014d4090223c83e370"
+  },
+  "archivedReceipts": [
+    {
+      "run": "overridez-root-source2-warmed-isolated-1",
+      "nativeReportSHA256": "84ae137256b2216e088592030192b1e6fb9bb903d4f5710bea222d6f9be58977",
+      "generatedSourceReportSHA256": "9f4066ed898fcb2a944ae36c0af26b0c73632f8063c4d9de8e79f67d36d1a01d",
+      "graphInputs": [
+        {
+          "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+          "sha256": "6c10a11c66c5a98ba58e7a772ad74d058cd4d061bb5082b9a008ff8c01a46dcf"
+        },
+        {
+          "path": "NBShaders2/ShaderGraph/Passes/NBGraphForwardPass.hlsl",
+          "sha256": "60bf8db7900991468c8c3abf94eaa8b5ea5737ef4cae2327351deee9ac1aa35d"
+        },
+        {
+          "path": "NBShaders2/ShaderGraph/NBGraphOverrideDepth.hlsl",
+          "sha256": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1"
+        },
+        {
+          "path": "NBShaders2/Shader/HLSL/NBShaderOverrideDepthV1.hlsl",
+          "sha256": "d9cf15436acc394cb1ad8eb8de5a6c795942c117a6feb5f4bc8e5b94dea4ee6b"
+        }
+      ],
+      "unity": "6000.3.25f1",
+      "api": "Direct3D11",
+      "warmPerformed": true,
+      "graphBeforeWarm": {
+        "role": "graph-before-warm",
+        "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+        "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+        "reason": "Not initialized ()",
+        "error": "",
+        "subShader": 0,
+        "code": 1,
+        "known": true,
+        "supported": true
+      },
+      "nativeRows": [
+        {
+          "role": "frozen",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+          "shaderName": "Effects/NBShader_T00_Frozen",
+          "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+          "error": "",
+          "subShader": 0,
+          "code": 10,
+          "known": true,
+          "supported": true
+        },
+        {
+          "role": "current",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+          "shaderName": "Effects/NBShader",
+          "reason": "",
+          "error": "",
+          "subShader": 0,
+          "code": 0,
+          "known": true,
+          "supported": true
+        },
+        {
+          "role": "graph",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+          "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+          "reason": "",
+          "error": "",
+          "subShader": 0,
+          "code": 0,
+          "known": true,
+          "supported": true
+        }
+      ]
+    },
+    {
+      "run": "root-flipbook-source2-after-incident-isolated-1",
+      "nativeReportSHA256": "84ae137256b2216e088592030192b1e6fb9bb903d4f5710bea222d6f9be58977",
+      "generatedSourceReportSHA256": "ffa887f9ba7638fba5b85aeaf9d35546ab3df911313ff43f4a7426d0e79d3036",
+      "graphInputs": [
+        {
+          "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+          "sha256": "216061d118a630a1f07945b1191589fe3712db22b546e15f42d99133ba64a7e5"
+        },
+        {
+          "path": "NBShaders2/ShaderGraph/Passes/NBGraphForwardPass.hlsl",
+          "sha256": "60bf8db7900991468c8c3abf94eaa8b5ea5737ef4cae2327351deee9ac1aa35d"
+        },
+        {
+          "path": "NBShaders2/ShaderGraph/NBGraphOverrideDepth.hlsl",
+          "sha256": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1"
+        },
+        {
+          "path": "NBShaders2/Shader/HLSL/NBShaderOverrideDepthV1.hlsl",
+          "sha256": "d21685e999ee9aeddf80c3cfcc2b6cab76be35644fad3eb6283233ea7e1e35d4"
+        }
+      ],
+      "unity": "6000.3.25f1",
+      "api": "Direct3D11",
+      "warmPerformed": true,
+      "graphBeforeWarm": {
+        "role": "graph-before-warm",
+        "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+        "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+        "reason": "Not initialized ()",
+        "error": "",
+        "subShader": 0,
+        "code": 1,
+        "known": true,
+        "supported": true
+      },
+      "nativeRows": [
+        {
+          "role": "frozen",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+          "shaderName": "Effects/NBShader_T00_Frozen",
+          "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+          "error": "",
+          "subShader": 0,
+          "code": 10,
+          "known": true,
+          "supported": true
+        },
+        {
+          "role": "current",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+          "shaderName": "Effects/NBShader",
+          "reason": "",
+          "error": "",
+          "subShader": 0,
+          "code": 0,
+          "known": true,
+          "supported": true
+        },
+        {
+          "role": "graph",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+          "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+          "reason": "",
+          "error": "",
+          "subShader": 0,
+          "code": 0,
+          "known": true,
+          "supported": true
+        }
+      ]
+    },
+    {
+      "run": "root-customdata-source2-isolated-1",
+      "nativeReportSHA256": "84ae137256b2216e088592030192b1e6fb9bb903d4f5710bea222d6f9be58977",
+      "generatedSourceReportSHA256": "93bd4c7d4c15ed687156c03730d1625fb5e6b07e51cfcc247e07841dbaba5c27",
+      "graphInputs": [
+        {
+          "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+          "sha256": "5c65d4215451aed92176c59f483a3b3eddfc3418b3bed749e71bac3bb21e46b7"
+        },
+        {
+          "path": "NBShaders2/ShaderGraph/Passes/NBGraphForwardPass.hlsl",
+          "sha256": "60bf8db7900991468c8c3abf94eaa8b5ea5737ef4cae2327351deee9ac1aa35d"
+        },
+        {
+          "path": "NBShaders2/ShaderGraph/NBGraphOverrideDepth.hlsl",
+          "sha256": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1"
+        },
+        {
+          "path": "NBShaders2/Shader/HLSL/NBShaderOverrideDepthV1.hlsl",
+          "sha256": "d21685e999ee9aeddf80c3cfcc2b6cab76be35644fad3eb6283233ea7e1e35d4"
+        }
+      ],
+      "unity": "6000.3.25f1",
+      "api": "Direct3D11",
+      "warmPerformed": true,
+      "graphBeforeWarm": {
+        "role": "graph-before-warm",
+        "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+        "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+        "reason": "Not initialized ()",
+        "error": "",
+        "subShader": 0,
+        "code": 1,
+        "known": true,
+        "supported": true
+      },
+      "nativeRows": [
+        {
+          "role": "frozen",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+          "shaderName": "Effects/NBShader_T00_Frozen",
+          "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+          "error": "",
+          "subShader": 0,
+          "code": 10,
+          "known": true,
+          "supported": true
+        },
+        {
+          "role": "current",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+          "shaderName": "Effects/NBShader",
+          "reason": "",
+          "error": "",
+          "subShader": 0,
+          "code": 0,
+          "known": true,
+          "supported": true
+        },
+        {
+          "role": "graph",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+          "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+          "reason": "",
+          "error": "",
+          "subShader": 0,
+          "code": 0,
+          "known": true,
+          "supported": true
+        }
+      ]
+    },
+    {
+      "run": "root-noise-cd12-source2-isolated-1",
+      "nativeReportSHA256": "f797aa21a64587e86cd30fb294dfc891c85439c20f583e6966b7dda3ddd5e8ce",
+      "generatedSourceReportSHA256": "98b8c47d04a9307b560e2357e08e606e323bfa26cb56344822fd2bbf34dc5dc6",
+      "graphInputs": [
+        {
+          "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+          "sha256": "de6781d7880ab0634aa5005569f66e62969230acf846c73f8311588f36fbb2cd"
+        },
+        {
+          "path": "NBShaders2/ShaderGraph/Passes/NBGraphForwardPass.hlsl",
+          "sha256": "60bf8db7900991468c8c3abf94eaa8b5ea5737ef4cae2327351deee9ac1aa35d"
+        },
+        {
+          "path": "NBShaders2/ShaderGraph/NBGraphOverrideDepth.hlsl",
+          "sha256": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1"
+        },
+        {
+          "path": "NBShaders2/Shader/HLSL/NBShaderOverrideDepthV1.hlsl",
+          "sha256": "d21685e999ee9aeddf80c3cfcc2b6cab76be35644fad3eb6283233ea7e1e35d4"
+        }
+      ],
+      "unity": "6000.3.25f1",
+      "api": "Direct3D11",
+      "warmPerformed": true,
+      "graphBeforeWarm": {
+        "role": "graph-before-warm",
+        "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+        "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+        "reason": "Not initialized ()",
+        "error": "",
+        "subShader": 0,
+        "code": 1,
+        "known": true,
+        "supported": true
+      },
+      "nativeRows": [
+        {
+          "role": "frozen",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+          "shaderName": "Effects/NBShader_T00_Frozen",
+          "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+          "error": "",
+          "subShader": 0,
+          "code": 10,
+          "known": true,
+          "supported": true
+        },
+        {
+          "role": "current",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+          "shaderName": "Effects/NBShader",
+          "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+          "error": "",
+          "subShader": 0,
+          "code": 10,
+          "known": true,
+          "supported": true
+        },
+        {
+          "role": "graph",
+          "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+          "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+          "reason": "",
+          "error": "",
+          "subShader": 0,
+          "code": 0,
+          "known": true,
+          "supported": true
+        }
+      ]
+    }
+  ],
+  "RootVATCLSource2ReceiptAvailability": "Direct completed run directories contain no named RootVAT/CL source2 receipt; existing F0/CD/native reports compared, no absent report manufactured.",
+  "observedSource2RunDirectories": [
+    "overridez-root-source2-warmed-isolated-1",
+    "root-customdata-source2-isolated-1",
+    "root-flipbook-source2-after-incident-isolated-1",
+    "root-noise-cd12-source2-isolated-1"
+  ],
+  "classification": "Preexisting outside-CB declaration and same known Frozen fault category. Current0 was observed at F0/CD receipts; current10 now is a real changed native observation whose causal source/compiled-variant/init context is not established by the original Graph-only warm fixture. Not a new Noise3 legacy source mutation, not a GPU/weak-color failure and not silently waived batching/G3 completion.",
+  "limitedNoiseIntegrationConclusion": {
+    "support": true,
+    "conditions": "Seven manifested product/test files only under exact Root before/missing-add and tested clone after guards; independent Noise22/Boundary4/Noise72/CDNoise12 results and Graph native0 support this bounded slice. Preserve current/Frozen10 report in SRP/G3 pending; no whole Mesh/Tier/Gate/performance claim."
+  },
+  "minimalNextExperiment": "A separate fixture/plan in the same owned isolation, current and Frozen material real native draws with VAT off then one known Tyflow absolute on using existing valid VAT texture/mesh configuration. Record native code/reason before/after each real draw, shader/pass/keyword/material inputs and finite/visible/repeat/raw response; query remains subShader0 and must not be labeled per-pass. Preserve the original Source2 assertions/results. Start with two camera-stable states, only expand to modes/passes if state changes isolate a risk. No source fix or global tolerance change required to collect this diagnostic.",
+  "pending": [
+    "Material/pass/variant-resolved native performance/compatibility causal audit; possibly move texel-size uniform to correct CB only after actual contract and affected variants confirmed.",
+    "Do not attribute a first code10 log or historical current0 solely to Noise or a named variant without captured state."
+  ],
+  "fullMeshGatePassed": false
+}

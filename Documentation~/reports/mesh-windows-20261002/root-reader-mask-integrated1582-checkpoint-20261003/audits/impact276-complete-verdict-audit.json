@@ -1,0 +1,4969 @@
+{
+  "scope": "Read-only actual source-locked Reader/Mask impact; summary-confirmed completed batches only; no rerun, mergedXML or assertion/source mutation",
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "completedBatches": 8,
+  "expectedBatches": 8,
+  "counts": {
+    "Passed": 238,
+    "Failed": 38
+  },
+  "uniqueActualIdentities": 276,
+  "full276Complete": true,
+  "batchEvidence": [
+    {
+      "batch": 1,
+      "cases": 84,
+      "Passed": 84,
+      "Failed": 0,
+      "xmlSHA256": "ba5ffe2a9bb9a1b3d0656588fa26d8121393dccb5be9d0e813195b7a3ae6a12a",
+      "logSHA256": "ced7b37c96e85cbdc14264fc46e7cf8b5844080aa5cbba8eaac123bb194cb0a3",
+      "faultTokens": []
+    },
+    {
+      "batch": 2,
+      "cases": 26,
+      "Passed": 26,
+      "Failed": 0,
+      "xmlSHA256": "5c16679890fbf1f9966ceaf3bcb6c86b946d581f23a2774108db2dd1f2aa1159",
+      "logSHA256": "89019d940b1952e7a177cdd4e3f69565d3a4e1fdc55f19f958eb40f254eee893",
+      "faultTokens": []
+    },
+    {
+      "batch": 3,
+      "cases": 32,
+      "Passed": 32,
+      "Failed": 0,
+      "xmlSHA256": "2ae46474b3de6a45d940da501add884340351ca368cbb5187bfd3af28a69d87b",
+      "logSHA256": "5010f52063d0dd7f2f51adb074c26f480e378ee092ad72d258dd17fad7d02323",
+      "faultTokens": []
+    },
+    {
+      "batch": 4,
+      "cases": 40,
+      "Passed": 28,
+      "Failed": 12,
+      "xmlSHA256": "522fb2d16e48d378f7b86376ae0072be666acdef8ca6d0177f343a41d2624e1d",
+      "logSHA256": "a0921af542b95fcadb71bdf2ab5ff39d6913792e1d23f0615053ac8390a1e281",
+      "faultTokens": []
+    },
+    {
+      "batch": 5,
+      "cases": 40,
+      "Passed": 28,
+      "Failed": 12,
+      "xmlSHA256": "a35ba5ca29a5dce9a5e02649bbc9956d81868c5f0ea9a96eb5a8af62b2ef22b4",
+      "logSHA256": "7a7557656aea9118ca8692275392c53bae1bb105436bd1195643124e5bdb23de",
+      "faultTokens": []
+    },
+    {
+      "batch": 6,
+      "cases": 40,
+      "Passed": 28,
+      "Failed": 12,
+      "xmlSHA256": "a9bdabc0644261e36e788a9ccc83faa280de46931667e3fa77c399c22b109f6c",
+      "logSHA256": "fa1ab4e49c0c946260c1b5d8f6a753246ff4c68c7508340706bbf9e70f503280",
+      "faultTokens": []
+    },
+    {
+      "batch": 7,
+      "cases": 6,
+      "Passed": 6,
+      "Failed": 0,
+      "xmlSHA256": "b843ccdc230af9a27f5b67b55412f2d40e693151132e1aa553c3f26a7616d7e6",
+      "logSHA256": "648e05d4dcb3091de42c7fc49d38f86a0bdc37e9e6a63b10e490c7b8bad460d9",
+      "faultTokens": []
+    },
+    {
+      "batch": 8,
+      "cases": 8,
+      "Passed": 6,
+      "Failed": 2,
+      "xmlSHA256": "0da8ce0d534d39d4ebdfced0d34c8d3edbd0794fc0f17517de7632daa676b037",
+      "logSHA256": "47928b0c7613d5566f4ffa88bb9c99f11180fbc6f2ca58c57272d7ed23228654",
+      "faultTokens": []
+    }
+  ],
+  "source9SHA256": {
+    "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs": "a6562c2b0c42b4d0afc8e16545631cd741aa7bc5d0452517fba85dfb89e47aa3",
+    "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs": "c167f2968a9465acc9866f5ec2f8287bc314aa3430d2a68cbd5fcb2b205ac4c6",
+    "NBShaders2/Editor/NBShaderGraphRootItem.cs": "e36d5cb270cd54e50651c89422e233662e221af6306c887a3b86151ac263cfb5",
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "ac67f939a9a34c7c03345ca76a562be6c2fc5700d1237f5750234117ad515bf0",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "14e4495d7122af60ff822ddd34c8bca25ead7e6b6ab0326496c3a1aa8b41e6fe",
+    "Tests/URP/Editor/G4GraphNormalizedIntentReaderTests.cs": "5d7259bfeec0ff53d79fdb65ab93ee94246990a7bb2ddfa377f3e3c9f49290bf",
+    "Tests/URP/Editor/G4GraphNormalizedIntentReaderTests.cs.meta": "a230e7f9f4693494b83cef4e2e87d1638c74bdc17608238b8164b064071fe9c2",
+    "Tests/URP/Editor/G4GraphMaskTierTests.cs": "5d5da5ab53f0f50f3bdb61ded7c38be3edbc55bbfa83045fd03938f42ffec7cb",
+    "Tests/URP/Editor/G4GraphMaskTierTests.cs.meta": "54eb2a4d5104bf3bd38218c2fbba07f13b6af4b8e382d6d0c62646d240154abf"
+  },
+  "fixture12SHA256SameAsRoot": {
+    "Tests/URP/Editor/G4GraphGuiStorageTests.cs": "7834c8d1cd47765c1bf2ae50c3862af0a488aeaf11956a5473da484993ccbff8",
+    "Tests/URP/Editor/G4GraphGuiStorageTests.cs.meta": "099b0f5d89bd64dcf8e8532bb288e08740a1ad4a65a5e166e677d8f1f92eba55",
+    "Tests/URP/Editor/G4GraphGuiMainTextureTests.cs": "8954c7e963def1baf9f1ac6c5a3e3c10577ecd4ab939f94f95d93a9ff119f3ec",
+    "Tests/URP/Editor/G4GraphGuiMainTextureTests.cs.meta": "d90f2d426f7be880ce694ddc9a6e169afa77490ccdb9027169e8123a84510c04",
+    "Tests/URP/Editor/G4GraphGuiFeatureIntentTests.cs": "1645335fa40cfde3c6b8d236e48ff167e6d0d15b32b0f5014d4090223c83e370",
+    "Tests/URP/Editor/G4GraphGuiFeatureIntentTests.cs.meta": "95f5c630b669c4bfd028e1cd031bb9d2f23068c8a04ea22df94cf3858b653682",
+    "Tests/URP/Editor/G4GraphCustomDataTests.cs": "f4ccb1ee1af10fb85029672ea7033b36995323384dbbdc84b040baa253afdc21",
+    "Tests/URP/Editor/G4GraphCustomDataTests.cs.meta": "77827643c672e63defc035a8ec585e6579e952c823c77863117ba5a39f588094",
+    "Tests/URP/Editor/G4GraphPositionUVTests.cs": "92ba685895f4964dd7a7e637a3e6027219090c383aae0285ca23dd22633b86a0",
+    "Tests/URP/Editor/G4GraphPositionUVTests.cs.meta": "89674a013e69cfacf712d27ae02bb03b75a312f8a9b8d583263c0f6ea634d148",
+    "Tests/URP/Editor/G4GraphDepthShadowTests.cs": "570eced5effe7ad5828604fd163ebbc221585ab5908f4a82b152ef09f59073dd",
+    "Tests/URP/Editor/G4GraphDepthShadowTests.cs.meta": "cc85d113bd6328e4b46775e71675d1bb65e47fa6da66dd1507199e0779bfe00e"
+  },
+  "root5SHA256": {
+    "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs": "1220576a61cc3c926bf26a3191e4512153cb682bc6521c12fcc46955c458d0aa",
+    "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs": "7ac5374d7195fb3570225d1350f87c37b09a33ac7fa92cbe210170856b328af6",
+    "NBShaders2/Editor/NBShaderGraphRootItem.cs": "fb24392dad2765b0c5bc983a7e886a599fdae8d33e3e3b0e00464054b7008df3",
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "87b0494ece2eb3e1c2aa78ea272a770799f82b5d5e635bf9335502db4099796c",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "5e28d9d63d7e4b7819918a72a406c81538fbe42e414b8b3dc5950a342d380638"
+  },
+  "rootStateObserved": "before-integration",
+  "planSHA256": "27f20a5a4a90db244289bf7b7e42cb09fb1b9881db7ccea024b3a380c95de61f",
+  "summarySHA256": "08146b1acb6ef65f01797d234f5eeec834dc77ee23f6fe0d6db0f28fcc998b9d",
+  "rawPayloads": 2100,
+  "miscRawPayloadsFinite": 0,
+  "allRawFiniteNonCDCD": true,
+  "rawCompressedSourceManifestDigest": "114e6445147bcb7afaa4f4021704eef806ef59629c5559ad69c92e2e11eab421",
+  "metrics": [
+    {
+      "batch": 4,
+      "metricSHA256": "2362003fdc530ea16428505351db2584cf640f237882b4dd0014413bcc730b5c",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct3-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct3_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.916961669921875,
+        "B": 0.916961669921875,
+        "C": 0.916961669921875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "2362003fdc530ea16428505351db2584cf640f237882b4dd0014413bcc730b5c",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "29f776dfa0dce27c8167112da25348a13f997873acca74ac7a38f140a1c9bed5",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct3-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct3_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.916351318359375,
+        "B": 0.916351318359375,
+        "C": 0.916351318359375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "29f776dfa0dce27c8167112da25348a13f997873acca74ac7a38f140a1c9bed5",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "621d1fde1249070263db98b09b494b6d5389dd4e5f1525c019bc5baded57ec9a",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct3-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct3_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.926849365234375,
+        "B": 0.926849365234375,
+        "C": 0.926849365234375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "621d1fde1249070263db98b09b494b6d5389dd4e5f1525c019bc5baded57ec9a",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "fed4ae8a23ae90d910b225c1b42e647715fb6c8deabd3479b61695aee9a8a1da",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct3-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct3_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.94183349609375,
+        "B": 0.94183349609375,
+        "C": 0.94183349609375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "fed4ae8a23ae90d910b225c1b42e647715fb6c8deabd3479b61695aee9a8a1da",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "3e353f99104529bf2b4b204a5166eabb2fd28b75e1ecd72704a0c5fbdbaadafb",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct4-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct4_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.91864013671875,
+        "B": 0.91864013671875,
+        "C": 0.91864013671875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "3e353f99104529bf2b4b204a5166eabb2fd28b75e1ecd72704a0c5fbdbaadafb",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "4efd0b811aa6d4170fd2eca72f0fffe49bc45e13e43f2c6ae7b17761fde3a8b1",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct4-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct4_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.91839599609375,
+        "B": 0.91839599609375,
+        "C": 0.91839599609375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "4efd0b811aa6d4170fd2eca72f0fffe49bc45e13e43f2c6ae7b17761fde3a8b1",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "baa322c0498157fbb0d7c2761ad402b643b346088db588b29d624f4d9ded4d9b",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct4-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct4_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.91864013671875,
+        "B": 0.91864013671875,
+        "C": 0.91864013671875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "baa322c0498157fbb0d7c2761ad402b643b346088db588b29d624f4d9ded4d9b",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "9b8478737cc4d0cb78ed637cebebbf9eb5e7bdb3375df8bad859607ceb8124f1",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct4-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct4_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.91839599609375,
+        "B": 0.91839599609375,
+        "C": 0.91839599609375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "9b8478737cc4d0cb78ed637cebebbf9eb5e7bdb3375df8bad859607ceb8124f1",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "d89a5a2318526d512756d8a6900fb0cf5e8642530cb35d1c0d5c9c515f04ff6c",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct5-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct5_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.6435546875,
+        "B": 0.6435546875,
+        "C": 0.6435546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "d89a5a2318526d512756d8a6900fb0cf5e8642530cb35d1c0d5c9c515f04ff6c",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "acfd8bd439731691c68bf41fc384f3af85ce559de07922b5ebaa90f0e70284a7",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct5-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct5_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.665740966796875,
+        "B": 0.665740966796875,
+        "C": 0.665740966796875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "acfd8bd439731691c68bf41fc384f3af85ce559de07922b5ebaa90f0e70284a7",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "85aa33e9f9154b54d7827e0c4f9375b3f48358a21393d03edda9f39e43b83a45",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct5-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct5_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.6435546875,
+        "B": 0.6435546875,
+        "C": 0.6435546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "85aa33e9f9154b54d7827e0c4f9375b3f48358a21393d03edda9f39e43b83a45",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "f1bd23d764b011906a96e2ea17e5e2bf7349e2da70f49c381681c2dde1e407af",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct5-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct5_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.668670654296875,
+        "B": 0.668670654296875,
+        "C": 0.668670654296875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "f1bd23d764b011906a96e2ea17e5e2bf7349e2da70f49c381681c2dde1e407af",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "52a2ca5b3e67866a5206c138e82954d8f4ea044dbbc1ab50d4c2bb0791376183",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct6-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct6_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.643310546875,
+        "B": 0.643310546875,
+        "C": 0.643310546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "52a2ca5b3e67866a5206c138e82954d8f4ea044dbbc1ab50d4c2bb0791376183",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "c19e01846b4cb4fa1e7eed4f12db33d3a38762f3258ad6fca0c92ad8f9e02c67",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct6-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct6_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.629150390625,
+        "B": 0.629150390625,
+        "C": 0.629150390625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "c19e01846b4cb4fa1e7eed4f12db33d3a38762f3258ad6fca0c92ad8f9e02c67",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "b132034ce3c9d437d08731eec7bd3ca370ac05b77edbaeb6b1420f21edd6083a",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct6-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct6_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.643310546875,
+        "B": 0.643310546875,
+        "C": 0.643310546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "b132034ce3c9d437d08731eec7bd3ca370ac05b77edbaeb6b1420f21edd6083a",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "18b45f588de3f9de16f104cb01456184d1ffb69ae417e342603d5b8e99b0400e",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct6-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct6_axis1_vertex_perspective",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.629150390625,
+        "B": 0.629150390625,
+        "C": 0.629150390625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "18b45f588de3f9de16f104cb01456184d1ffb69ae417e342603d5b8e99b0400e",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "70af2d8363b82dd899ebf0b777aba3f8ec65e20062a4ffa97182d6a6661b67be",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct7-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct7_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.87286376953125,
+        "B": 0.87286376953125,
+        "C": 0.87286376953125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "70af2d8363b82dd899ebf0b777aba3f8ec65e20062a4ffa97182d6a6661b67be",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "b1a9e20202dc769ff45cb8052af63b6e646fe6ec26e3cde917df554055659ae1",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct7-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct7_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.872802734375,
+        "B": 0.872802734375,
+        "C": 0.872802734375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "b1a9e20202dc769ff45cb8052af63b6e646fe6ec26e3cde917df554055659ae1",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "5e8fff6cb13d533b599fb338f797e058150a9e3f3edaa6b502a192a3df5d6494",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct7-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct7_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.87286376953125,
+        "B": 0.87286376953125,
+        "C": 0.87286376953125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "5e8fff6cb13d533b599fb338f797e058150a9e3f3edaa6b502a192a3df5d6494",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "0ed968b054fd7e7c779068619ff1649446c9f28548cee932f8cde060757752a4",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-direct7-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct7_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.872802734375,
+        "B": 0.872802734375,
+        "C": 0.872802734375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "0ed968b054fd7e7c779068619ff1649446c9f28548cee932f8cde060757752a4",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "bb3e941f762688d6be8c39f88021e5ec3723760c4cc97e7f3945bcc6682eb437",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared3-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared3_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.90753173828125,
+        "B": 0.90753173828125,
+        "C": 0.90753173828125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "bb3e941f762688d6be8c39f88021e5ec3723760c4cc97e7f3945bcc6682eb437",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "1be5f9c7264dca0c39c1f217891ff57ac9c0da61b3525f34622259fa7b42f52d",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared3-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared3_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.925140380859375,
+        "B": 0.925140380859375,
+        "C": 0.925140380859375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "1be5f9c7264dca0c39c1f217891ff57ac9c0da61b3525f34622259fa7b42f52d",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "c9c68216143b3ca52e225c04e256b7ac8dec47fb6c15bafde397ab8583e46e27",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared3-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared3_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.9017333984375,
+        "B": 0.9017333984375,
+        "C": 0.9017333984375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "c9c68216143b3ca52e225c04e256b7ac8dec47fb6c15bafde397ab8583e46e27",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "f1bb4537882e448b03b7dc6df6446a0c8eafef2fd092ebf5389549cf7caf5a61",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared3-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared3_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.912109375,
+        "B": 0.912109375,
+        "C": 0.912109375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "f1bb4537882e448b03b7dc6df6446a0c8eafef2fd092ebf5389549cf7caf5a61",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "db3dd4fcfd50de4c9f7399b938b8a890f5a2c9adbfd0c54bc519f480af8e55cd",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared4-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared4_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.53955078125,
+        "B": 0.53955078125,
+        "C": 0.53955078125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "db3dd4fcfd50de4c9f7399b938b8a890f5a2c9adbfd0c54bc519f480af8e55cd",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "13fba6e2ae7730ab9dd9fcc8f6f2e7a7074bfc6c4745c452a17fb88ebdbd6a2e",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared4-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared4_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.73193359375,
+        "B": 0.73193359375,
+        "C": 0.73193359375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "13fba6e2ae7730ab9dd9fcc8f6f2e7a7074bfc6c4745c452a17fb88ebdbd6a2e",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "7a1a434b05d0c6724dc922998a8eddcf7048a17f03ba9d9f1f574e1245096daf",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared4-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared4_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.53955078125,
+        "B": 0.53955078125,
+        "C": 0.53955078125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "7a1a434b05d0c6724dc922998a8eddcf7048a17f03ba9d9f1f574e1245096daf",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "981df75dbfe107e8d44ed21bf7c4cee98f15c39363b48640fa74cedd4d105ac5",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared4-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared4_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.73193359375,
+        "B": 0.73193359375,
+        "C": 0.73193359375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "981df75dbfe107e8d44ed21bf7c4cee98f15c39363b48640fa74cedd4d105ac5",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "ebb9eacb02b135699d19d2135e4e30c73137528c65a5ebad87c9fad0a3ae8ccf",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared5-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared5_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.71923828125,
+        "B": 0.71923828125,
+        "C": 0.71923828125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "ebb9eacb02b135699d19d2135e4e30c73137528c65a5ebad87c9fad0a3ae8ccf",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "0f7fbade0eb8f629321dd2f5693a6ffd4569879c7d768857c60bf87db207bea2",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared5-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared5_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.741424560546875,
+        "B": 0.741424560546875,
+        "C": 0.741424560546875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "0f7fbade0eb8f629321dd2f5693a6ffd4569879c7d768857c60bf87db207bea2",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "e19c3ad46aa89e40c469b43d48716668c6b7e208e5ad93f9d70b6889bd7a424a",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared5-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared5_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.00048828125,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.71923828125,
+        "B": 0.71923828125,
+        "C": 0.71923828125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "e19c3ad46aa89e40c469b43d48716668c6b7e208e5ad93f9d70b6889bd7a424a",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "1b468a0bd84703d1d3a0043022583cc4d3b2e9ecd00f759e6bd2d36a97c28348",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared5-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared5_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.743865966796875,
+        "B": 0.743865966796875,
+        "C": 0.743865966796875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "1b468a0bd84703d1d3a0043022583cc4d3b2e9ecd00f759e6bd2d36a97c28348",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "206c4c7ebd1b89f77a6601d384b7bc746a8288ef1abf507814e2aa84f337c4c9",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared6-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared6_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.7298583984375,
+        "B": 0.7298583984375,
+        "C": 0.7298583984375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "206c4c7ebd1b89f77a6601d384b7bc746a8288ef1abf507814e2aa84f337c4c9",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "6ceaaca77b1216973f214f81248648f7235e804c976caaf102370c7c67144db1",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared6-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared6_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.7369384765625,
+        "B": 0.7369384765625,
+        "C": 0.7369384765625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "6ceaaca77b1216973f214f81248648f7235e804c976caaf102370c7c67144db1",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "78721188d98cad619d98607495d6701aeeafc0d4d22395a8a53658bef9ea4a45",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared6-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared6_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.7298583984375,
+        "B": 0.7298583984375,
+        "C": 0.7298583984375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "78721188d98cad619d98607495d6701aeeafc0d4d22395a8a53658bef9ea4a45",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "c389b8aabd9ade44e1fe2f1e075d7acb11f0992f15e6a2433a4d5957c30ae9d4",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared6-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared6_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.7369384765625,
+        "B": 0.7369384765625,
+        "C": 0.7369384765625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "c389b8aabd9ade44e1fe2f1e075d7acb11f0992f15e6a2433a4d5957c30ae9d4",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "96a6b71fd4c0369de24a6cf4d463bb1c1f66ed2f3a9566523cb900fd80c805b6",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared7-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared7_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "96a6b71fd4c0369de24a6cf4d463bb1c1f66ed2f3a9566523cb900fd80c805b6",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "b2804a92cb7004e8f127d1b8aaeb9133f12b07cd68172f723003594e84d16b40",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared7-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared7_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "b2804a92cb7004e8f127d1b8aaeb9133f12b07cd68172f723003594e84d16b40",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "a20777754710c43a7bbc003c9c7b917d9c85730897b440abbb9a81620679f549",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared7-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared7_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "a20777754710c43a7bbc003c9c7b917d9c85730897b440abbb9a81620679f549",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 4,
+      "metricSHA256": "39f4b4949b105de9008f348723d0aaae2d8fed0aa661477e896c5d75bfa51cb3",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask1-shared7-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared7_axis1_vertex_perspective",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.00048828125,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "39f4b4949b105de9008f348723d0aaae2d8fed0aa661477e896c5d75bfa51cb3",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "37a792ce4c9325858e0522496c34ceae9176aac8a42297f9339da206370d0bc2",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct3-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct3_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.916961669921875,
+        "B": 0.916961669921875,
+        "C": 0.916961669921875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "37a792ce4c9325858e0522496c34ceae9176aac8a42297f9339da206370d0bc2",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "8aef94dcc4d07804ecee5412b98e760b8cc06834d5fb7504a9ba5406a0eedfdb",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct3-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct3_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.916351318359375,
+        "B": 0.916351318359375,
+        "C": 0.916351318359375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "8aef94dcc4d07804ecee5412b98e760b8cc06834d5fb7504a9ba5406a0eedfdb",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "5b7a9f80ad778970032a65fb23525278663ba28a4f9e26673e14afe6dcaa5537",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct3-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct3_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.926849365234375,
+        "B": 0.926849365234375,
+        "C": 0.926849365234375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "5b7a9f80ad778970032a65fb23525278663ba28a4f9e26673e14afe6dcaa5537",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "343a62ef9edf0933510ca20f462d317e85d51e9346a3c083e2c0518ff6e46932",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct3-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct3_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.94183349609375,
+        "B": 0.94183349609375,
+        "C": 0.94183349609375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "343a62ef9edf0933510ca20f462d317e85d51e9346a3c083e2c0518ff6e46932",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "2d8e11e5cb5b131cafd3b6b147dd5613b5e38bee2d3f8480365a1f5c9879532d",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct4-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct4_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.91864013671875,
+        "B": 0.91864013671875,
+        "C": 0.91864013671875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "2d8e11e5cb5b131cafd3b6b147dd5613b5e38bee2d3f8480365a1f5c9879532d",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "6fa6f1396fc14a4e08a93d6dffbd65d292aea2eb999c1aa242ae37d7068393d8",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct4-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct4_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.91839599609375,
+        "B": 0.91839599609375,
+        "C": 0.91839599609375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "6fa6f1396fc14a4e08a93d6dffbd65d292aea2eb999c1aa242ae37d7068393d8",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "8ca0b40071eebd5ed209719b9568e0a4a1f58559c28ea5d81f3ac566ca39aceb",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct4-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct4_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.91864013671875,
+        "B": 0.91864013671875,
+        "C": 0.91864013671875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "8ca0b40071eebd5ed209719b9568e0a4a1f58559c28ea5d81f3ac566ca39aceb",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "f8a1b1e3ef8829945e640c8dfc75d81e1f414f459b434e07610fb877ff7964a7",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct4-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct4_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.91839599609375,
+        "B": 0.91839599609375,
+        "C": 0.91839599609375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "f8a1b1e3ef8829945e640c8dfc75d81e1f414f459b434e07610fb877ff7964a7",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "efab934a2267588256131bfb353078c5a55d60258a924322b6a12d00fb3237af",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct5-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct5_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.6435546875,
+        "B": 0.6435546875,
+        "C": 0.6435546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "efab934a2267588256131bfb353078c5a55d60258a924322b6a12d00fb3237af",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "017496d3b6a0d0e61fc1c82b6df18c82cbaf5cc34c62536880a947ef9d7330e7",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct5-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct5_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.665740966796875,
+        "B": 0.665740966796875,
+        "C": 0.665740966796875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "017496d3b6a0d0e61fc1c82b6df18c82cbaf5cc34c62536880a947ef9d7330e7",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "5e7b9e16b969166d4e3bd25e66af4f02829ea76fd161acd593f7f71afe5a67ba",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct5-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct5_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.6435546875,
+        "B": 0.6435546875,
+        "C": 0.6435546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "5e7b9e16b969166d4e3bd25e66af4f02829ea76fd161acd593f7f71afe5a67ba",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "647cc37930ccfe3c9960ece622415263f0e5f613fa1b1d5ee345aee0b53f9aa2",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct5-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct5_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.668670654296875,
+        "B": 0.668670654296875,
+        "C": 0.668670654296875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "647cc37930ccfe3c9960ece622415263f0e5f613fa1b1d5ee345aee0b53f9aa2",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "d5dec92e8b88a4e5248afc86d0a43b2a3c9f1d3239e12d4a52028bd959109287",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct6-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct6_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.643310546875,
+        "B": 0.643310546875,
+        "C": 0.643310546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "d5dec92e8b88a4e5248afc86d0a43b2a3c9f1d3239e12d4a52028bd959109287",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "ffef20c4f4ab0ee3ea27f043fa7ea1b05cadde68e88ae5e91597e0a888b6bb35",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct6-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct6_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.629150390625,
+        "B": 0.629150390625,
+        "C": 0.629150390625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "ffef20c4f4ab0ee3ea27f043fa7ea1b05cadde68e88ae5e91597e0a888b6bb35",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "8e5a17a3494a3cd7af0fdfd8ca81755a42d4b8f15acb7a8e85fda17dff24bf6d",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct6-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct6_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.643310546875,
+        "B": 0.643310546875,
+        "C": 0.643310546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "8e5a17a3494a3cd7af0fdfd8ca81755a42d4b8f15acb7a8e85fda17dff24bf6d",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "e98d1ddc90699d86773c314ac4e948c02616f249f69936984b4c7c07b0c9cb1e",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct6-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct6_axis1_vertex_perspective",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.629150390625,
+        "B": 0.629150390625,
+        "C": 0.629150390625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "e98d1ddc90699d86773c314ac4e948c02616f249f69936984b4c7c07b0c9cb1e",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "db8ffe8dbe7d47f1b6e850c4c352d9558ee0cff3b4742d02ece86dfb26cad2a6",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct7-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct7_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.87286376953125,
+        "B": 0.87286376953125,
+        "C": 0.87286376953125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "db8ffe8dbe7d47f1b6e850c4c352d9558ee0cff3b4742d02ece86dfb26cad2a6",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "3589983835e7567f736da71480b841b866497a99fdf768884019b60577143bef",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct7-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct7_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.872802734375,
+        "B": 0.872802734375,
+        "C": 0.872802734375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "3589983835e7567f736da71480b841b866497a99fdf768884019b60577143bef",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "c0f93acc72a521f7557214d7771ab4895ca75860e169ce8154717f41e31a47a9",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct7-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct7_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.87286376953125,
+        "B": 0.87286376953125,
+        "C": 0.87286376953125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "c0f93acc72a521f7557214d7771ab4895ca75860e169ce8154717f41e31a47a9",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "10c2c9469feebea18c5a5f359cdebfa50ef037d60c167d369194a4796821f405",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-direct7-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct7_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.872802734375,
+        "B": 0.872802734375,
+        "C": 0.872802734375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "10c2c9469feebea18c5a5f359cdebfa50ef037d60c167d369194a4796821f405",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "80f66f961e7e79b23d9b6a42a02b31d45a4c523af647e1af9fd483c8ee6b1f83",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared3-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared3_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.90753173828125,
+        "B": 0.90753173828125,
+        "C": 0.90753173828125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "80f66f961e7e79b23d9b6a42a02b31d45a4c523af647e1af9fd483c8ee6b1f83",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "d98880f7ee732c2543703c29c56a2f3a0f620b53780e00c3cc831573e091ed48",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared3-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared3_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.925140380859375,
+        "B": 0.925140380859375,
+        "C": 0.925140380859375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "d98880f7ee732c2543703c29c56a2f3a0f620b53780e00c3cc831573e091ed48",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "a60e641e3fb95eb46635f813db8e46c445216a0f3433e592106ea892aa89ae04",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared3-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared3_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.9017333984375,
+        "B": 0.9017333984375,
+        "C": 0.9017333984375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "a60e641e3fb95eb46635f813db8e46c445216a0f3433e592106ea892aa89ae04",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "52ed827381da9d892cfb24bd3718b36d924976d35f3842f7fd62a99ff7f66c9b",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared3-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared3_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.912109375,
+        "B": 0.912109375,
+        "C": 0.912109375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "52ed827381da9d892cfb24bd3718b36d924976d35f3842f7fd62a99ff7f66c9b",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "b2c542854407bbe0117d620baed97ae2adf3b2c0bb6f426e5c4ae646c53e5515",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared4-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared4_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.53955078125,
+        "B": 0.53955078125,
+        "C": 0.53955078125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "b2c542854407bbe0117d620baed97ae2adf3b2c0bb6f426e5c4ae646c53e5515",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "2f03e9d1184f12a37c7c1f24d43c4271244da6700c5385d77161a0ae7d0d4f61",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared4-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared4_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.73193359375,
+        "B": 0.73193359375,
+        "C": 0.73193359375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "2f03e9d1184f12a37c7c1f24d43c4271244da6700c5385d77161a0ae7d0d4f61",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "fddde05b932a9976aa6233df556c05a4ec3518e0286ca47ffd78525805d57751",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared4-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared4_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.53955078125,
+        "B": 0.53955078125,
+        "C": 0.53955078125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "fddde05b932a9976aa6233df556c05a4ec3518e0286ca47ffd78525805d57751",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "87f244abc22813b505cd4f7906a3c5ac6f53ca8d13624f1ad086225d2684bc84",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared4-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared4_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.73193359375,
+        "B": 0.73193359375,
+        "C": 0.73193359375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "87f244abc22813b505cd4f7906a3c5ac6f53ca8d13624f1ad086225d2684bc84",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "b875ebff19c1b54b863d6b4cdc13107ba9f9a016208a885a7e66cf90e7396e6a",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared5-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared5_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.71923828125,
+        "B": 0.71923828125,
+        "C": 0.71923828125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "b875ebff19c1b54b863d6b4cdc13107ba9f9a016208a885a7e66cf90e7396e6a",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "274b8d7925ae7ef138eacf44ca14a3eb1e013c871cf8e2142f6fcd0657d9ad4c",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared5-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared5_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.741424560546875,
+        "B": 0.741424560546875,
+        "C": 0.741424560546875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "274b8d7925ae7ef138eacf44ca14a3eb1e013c871cf8e2142f6fcd0657d9ad4c",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "25e9915b361c128e03ebdd730b3a51fb787f1626040b63a56dcde88e93b1c055",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared5-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared5_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.00048828125,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.71923828125,
+        "B": 0.71923828125,
+        "C": 0.71923828125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "25e9915b361c128e03ebdd730b3a51fb787f1626040b63a56dcde88e93b1c055",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "ea368401a4934fbdd425adbf7ee4995f2d88daf1a37738ce4514b7f3f80d9b24",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared5-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared5_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.743865966796875,
+        "B": 0.743865966796875,
+        "C": 0.743865966796875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "ea368401a4934fbdd425adbf7ee4995f2d88daf1a37738ce4514b7f3f80d9b24",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "a732bbf79091d428e93dd22f4cd804d48c4050049d090c9486431a9f8e35df9c",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared6-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared6_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.7298583984375,
+        "B": 0.7298583984375,
+        "C": 0.7298583984375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "a732bbf79091d428e93dd22f4cd804d48c4050049d090c9486431a9f8e35df9c",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "ada62ef8174b2f930c5de8b98c6b5e00f88e1310182ef9365b3b67d84fbc8cf6",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared6-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared6_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.7369384765625,
+        "B": 0.7369384765625,
+        "C": 0.7369384765625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "ada62ef8174b2f930c5de8b98c6b5e00f88e1310182ef9365b3b67d84fbc8cf6",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "2b083bd8bbdaacce4f5ccb1f393d1f523287afcbca00a2fc674c1b00f0c6d2f6",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared6-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared6_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.7298583984375,
+        "B": 0.7298583984375,
+        "C": 0.7298583984375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "2b083bd8bbdaacce4f5ccb1f393d1f523287afcbca00a2fc674c1b00f0c6d2f6",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "cdc75f9768bd5afb2fa3fa95a1ae45eaff2bddc61ce5d34bef32dfc190f66939",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared6-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared6_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.7369384765625,
+        "B": 0.7369384765625,
+        "C": 0.7369384765625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "cdc75f9768bd5afb2fa3fa95a1ae45eaff2bddc61ce5d34bef32dfc190f66939",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "541079f90b4475025ea5484157845954c379aaa3ccece2ef6e48790f0dc4b8ad",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared7-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared7_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "541079f90b4475025ea5484157845954c379aaa3ccece2ef6e48790f0dc4b8ad",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "8419aba82ea958e3ca98b270611e7936a6b376e3bdd25c7ee6796314e74f76dc",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared7-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared7_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "8419aba82ea958e3ca98b270611e7936a6b376e3bdd25c7ee6796314e74f76dc",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "fe9c849bf4e2df3a4122d15a1f4b9fdb631e6a077050b54bba3f2774740b050d",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared7-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared7_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "fe9c849bf4e2df3a4122d15a1f4b9fdb631e6a077050b54bba3f2774740b050d",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 5,
+      "metricSHA256": "674bfddaba436483029c0834902a380dfa09204c0433dfbd0889bed19b7d1db7",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask2-shared7-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared7_axis1_vertex_perspective",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.00048828125,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "674bfddaba436483029c0834902a380dfa09204c0433dfbd0889bed19b7d1db7",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "47a6fc65b2fea02a4adf666a091afa6cad8f67cb1ea06f95139a96e449e594c4",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct3-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct3_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.916961669921875,
+        "B": 0.916961669921875,
+        "C": 0.916961669921875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "47a6fc65b2fea02a4adf666a091afa6cad8f67cb1ea06f95139a96e449e594c4",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "1b46894ccc1b577771300e40ac9ceeb7eaec8d23f1be608da10a77838f860d20",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct3-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct3_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.916351318359375,
+        "B": 0.916351318359375,
+        "C": 0.916351318359375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "1b46894ccc1b577771300e40ac9ceeb7eaec8d23f1be608da10a77838f860d20",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "a992a5d84bddc9f4e56083dc5181852afcc5360d8584c5179ef4cdb1b71b9a87",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct3-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct3_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.926849365234375,
+        "B": 0.926849365234375,
+        "C": 0.926849365234375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "a992a5d84bddc9f4e56083dc5181852afcc5360d8584c5179ef4cdb1b71b9a87",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "d29148e5199ecc125d34fda13249ce7ca325d7f1e36978d96ca5f4cad5e6c0dd",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct3-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct3_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.94183349609375,
+        "B": 0.94183349609375,
+        "C": 0.94183349609375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "d29148e5199ecc125d34fda13249ce7ca325d7f1e36978d96ca5f4cad5e6c0dd",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "739d027a51f4dbd0676b003483c2db47ed5249718674125afae8f241eb3da551",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct4-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct4_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.91864013671875,
+        "B": 0.91864013671875,
+        "C": 0.91864013671875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "739d027a51f4dbd0676b003483c2db47ed5249718674125afae8f241eb3da551",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "38f94dd50d43ea892daed6daafebf414afa3612ce9e1885e39126c722e91d909",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct4-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct4_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.91839599609375,
+        "B": 0.91839599609375,
+        "C": 0.91839599609375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "38f94dd50d43ea892daed6daafebf414afa3612ce9e1885e39126c722e91d909",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "261ef79ad6b2a6dceef2b7d402a6df91d6910bbc5a6fa4fcb977b491e76c4f1a",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct4-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct4_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.91864013671875,
+        "B": 0.91864013671875,
+        "C": 0.91864013671875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "261ef79ad6b2a6dceef2b7d402a6df91d6910bbc5a6fa4fcb977b491e76c4f1a",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "6cef3529373c9861e2ed71ba65a6bb967136d835d98bf0a722ac3ae581349c6e",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct4-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct4_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.91839599609375,
+        "B": 0.91839599609375,
+        "C": 0.91839599609375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "6cef3529373c9861e2ed71ba65a6bb967136d835d98bf0a722ac3ae581349c6e",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "7b7abca13a8142c8de1f885730422f3c0a631d171018b3b65d377e3a06ebff7a",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct5-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct5_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.6435546875,
+        "B": 0.6435546875,
+        "C": 0.6435546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "7b7abca13a8142c8de1f885730422f3c0a631d171018b3b65d377e3a06ebff7a",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "bd2146d0741f0e4a7b2b7fea6fb95a40b37f8b7410d30b6cc125886df8f3ddfd",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct5-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct5_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.665740966796875,
+        "B": 0.665740966796875,
+        "C": 0.665740966796875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "bd2146d0741f0e4a7b2b7fea6fb95a40b37f8b7410d30b6cc125886df8f3ddfd",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "e2ad324e52d8e68da8ed41e13e45d7c2b837c0bf303a6e0775002a7ac9b720fc",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct5-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct5_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.6435546875,
+        "B": 0.6435546875,
+        "C": 0.6435546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "e2ad324e52d8e68da8ed41e13e45d7c2b837c0bf303a6e0775002a7ac9b720fc",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "a77f2a2c00663bbca3d5bd552a81fdeb130857eb510338f9fc2aa1b05947da9a",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct5-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct5_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.668670654296875,
+        "B": 0.668670654296875,
+        "C": 0.668670654296875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "a77f2a2c00663bbca3d5bd552a81fdeb130857eb510338f9fc2aa1b05947da9a",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "caa7855313634cbfc6e4c74f0e70ac191c0d47c24a2658b6395684785316ade7",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct6-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct6_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.643310546875,
+        "B": 0.643310546875,
+        "C": 0.643310546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "caa7855313634cbfc6e4c74f0e70ac191c0d47c24a2658b6395684785316ade7",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "de55c8c130a235d555b463800b7dd5e6ab908895fc029f39319536f315f513bb",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct6-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct6_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.629150390625,
+        "B": 0.629150390625,
+        "C": 0.629150390625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "de55c8c130a235d555b463800b7dd5e6ab908895fc029f39319536f315f513bb",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "e03500cce9d8ef1b9f171db532535276b6845bdde497ffc8f3481b0284173b26",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct6-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct6_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.643310546875,
+        "B": 0.643310546875,
+        "C": 0.643310546875
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "e03500cce9d8ef1b9f171db532535276b6845bdde497ffc8f3481b0284173b26",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "91ae5ddfa744db1286c05c5b38a1dd6768274d17f76f64a841bce18212cc8e00",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct6-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct6_axis1_vertex_perspective",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.629150390625,
+        "B": 0.629150390625,
+        "C": 0.629150390625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "91ae5ddfa744db1286c05c5b38a1dd6768274d17f76f64a841bce18212cc8e00",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "af55f722750eb442b0cdfcd78cda3a6c6995b1af86af8080396dfa3f632ecc19",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct7-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct7_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.87286376953125,
+        "B": 0.87286376953125,
+        "C": 0.87286376953125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "af55f722750eb442b0cdfcd78cda3a6c6995b1af86af8080396dfa3f632ecc19",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "8758036c3728390cd23f883a30b4d25abae42598468c4b3c59fdcf3199725a83",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct7-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct7_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.872802734375,
+        "B": 0.872802734375,
+        "C": 0.872802734375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "8758036c3728390cd23f883a30b4d25abae42598468c4b3c59fdcf3199725a83",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "d4304a46cd2bbfd6a5e7fb06d09ac0d49c991e2ae379b45b60553a1ddeacef10",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct7-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct7_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.87286376953125,
+        "B": 0.87286376953125,
+        "C": 0.87286376953125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "d4304a46cd2bbfd6a5e7fb06d09ac0d49c991e2ae379b45b60553a1ddeacef10",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "0cd06a88889539c1fbf98da9e7dc0285c5a49e574c2dafabec0bd25374850437",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-direct7-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct7_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.872802734375,
+        "B": 0.872802734375,
+        "C": 0.872802734375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "0cd06a88889539c1fbf98da9e7dc0285c5a49e574c2dafabec0bd25374850437",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "245db7a8b4060956d9864be0f527421b2bebdadcbc6cc025851fc76be9faf82c",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared3-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared3_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.90753173828125,
+        "B": 0.90753173828125,
+        "C": 0.90753173828125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "245db7a8b4060956d9864be0f527421b2bebdadcbc6cc025851fc76be9faf82c",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "d2e5827df0b891083bd5959ab78bbba7ee2ef09fbcf6780e927a292680d8afa9",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared3-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared3_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.925140380859375,
+        "B": 0.925140380859375,
+        "C": 0.925140380859375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "d2e5827df0b891083bd5959ab78bbba7ee2ef09fbcf6780e927a292680d8afa9",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "356b0590239c1f2784720fd1a4f76a20b3edfc1a8ac586a09a679968c8975443",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared3-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared3_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.9017333984375,
+        "B": 0.9017333984375,
+        "C": 0.9017333984375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "356b0590239c1f2784720fd1a4f76a20b3edfc1a8ac586a09a679968c8975443",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "6fc7c227910d10410be26604f8c868b104c11771b7eef9f3df6be516c6bac19a",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared3-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared3_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.912109375,
+        "B": 0.912109375,
+        "C": 0.912109375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "6fc7c227910d10410be26604f8c868b104c11771b7eef9f3df6be516c6bac19a",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "2d2a0f48cb7a0439135d505789314db1da38c174f0d9c77dc4f1577f80ad8973",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared4-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared4_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.53955078125,
+        "B": 0.53955078125,
+        "C": 0.53955078125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "2d2a0f48cb7a0439135d505789314db1da38c174f0d9c77dc4f1577f80ad8973",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "092dedc7387ad7f832e5939fb95019027ba12843668bf15ed0ad00e35a5fc778",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared4-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared4_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.73193359375,
+        "B": 0.73193359375,
+        "C": 0.73193359375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "092dedc7387ad7f832e5939fb95019027ba12843668bf15ed0ad00e35a5fc778",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "d92212ceb44db3f0490e00c59d6ec7f4d8a84740ea0ad7300e7a40579afc4e28",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared4-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared4_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.53955078125,
+        "B": 0.53955078125,
+        "C": 0.53955078125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "d92212ceb44db3f0490e00c59d6ec7f4d8a84740ea0ad7300e7a40579afc4e28",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "9b1dd4cff08192686ea544fd1d6baf0ef7c6e04c3b41873ba1baa7301e122343",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared4-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared4_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.73193359375,
+        "B": 0.73193359375,
+        "C": 0.73193359375
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "9b1dd4cff08192686ea544fd1d6baf0ef7c6e04c3b41873ba1baa7301e122343",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "24823c77deb8df8f875f79edd1e7f221c48a7d1e67f6f3c6c247920f487ee730",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared5-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared5_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.71923828125,
+        "B": 0.71923828125,
+        "C": 0.71923828125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "24823c77deb8df8f875f79edd1e7f221c48a7d1e67f6f3c6c247920f487ee730",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "1b6a1fc36d7c7d497d5d4d62bc85cf3b1e381315d46eff2042ad5c123d2948d8",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared5-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared5_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.741424560546875,
+        "B": 0.741424560546875,
+        "C": 0.741424560546875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "1b6a1fc36d7c7d497d5d4d62bc85cf3b1e381315d46eff2042ad5c123d2948d8",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "d8169f10298126a71897f479e401e5d3a715d3207ebb5709108f3f84f3f31f13",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared5-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared5_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.00048828125,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.71923828125,
+        "B": 0.71923828125,
+        "C": 0.71923828125
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "d8169f10298126a71897f479e401e5d3a715d3207ebb5709108f3f84f3f31f13",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "1a2243f72980bbc618d45075d98fe5cd552675bd977e4c96c9247838af633650",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared5-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared5_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.743865966796875,
+        "B": 0.743865966796875,
+        "C": 0.743865966796875
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "1a2243f72980bbc618d45075d98fe5cd552675bd977e4c96c9247838af633650",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "83a37acda4599024a2f3419942e42bc5ba780ff54eba768bbb347987e000964f",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared6-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared6_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.7298583984375,
+        "B": 0.7298583984375,
+        "C": 0.7298583984375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "83a37acda4599024a2f3419942e42bc5ba780ff54eba768bbb347987e000964f",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "a99556a94f4de7b1f5c0fef5f00840d05a845687af6ed13e564dd75bf6f2ed54",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared6-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared6_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.7369384765625,
+        "B": 0.7369384765625,
+        "C": 0.7369384765625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "a99556a94f4de7b1f5c0fef5f00840d05a845687af6ed13e564dd75bf6f2ed54",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "158fe8e7e0b41e26f37fa6d536735e064e2fa9ac9ea92909c074a674da083e0d",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared6-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared6_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.7298583984375,
+        "B": 0.7298583984375,
+        "C": 0.7298583984375
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "158fe8e7e0b41e26f37fa6d536735e064e2fa9ac9ea92909c074a674da083e0d",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "1ced2623a7b3e1b287a058268f54deb16e67f2d1eaf81dbf73b538ca52a41588",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared6-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared6_axis1_vertex_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.7369384765625,
+        "B": 0.7369384765625,
+        "C": 0.7369384765625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "1ced2623a7b3e1b287a058268f54deb16e67f2d1eaf81dbf73b538ca52a41588",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "1231049d9b5afa43a169880f04ee101e73279072509b2feaf8ff4d8d21864b97",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared7-axis1-fragment-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared7_axis1_fragment_ortho",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "1231049d9b5afa43a169880f04ee101e73279072509b2feaf8ff4d8d21864b97",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "2b2423cff37ae5b67e5ade114c7f1b359808d60b1b649533ca875df57f5fdb18",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared7-axis1-fragment-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared7_axis1_fragment_perspective",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Passed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "2b2423cff37ae5b67e5ade114c7f1b359808d60b1b649533ca875df57f5fdb18",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "feb1234fb9b37efabde47b21da96a07d5a88510c5fb9b0de45a9875a394a67bf",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared7-axis1-vertex-ortho\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared7_axis1_vertex_ortho",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "feb1234fb9b37efabde47b21da96a07d5a88510c5fb9b0de45a9875a394a67bf",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 6,
+      "metricSHA256": "b2236c651704b8e2641e1a0aac5d93ee420ec1bfde80f05748251327795807b0",
+      "raw": 15,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "g4-position-uv\\mask3-shared7-axis1-vertex-perspective\\metrics.json",
+      "kind": "PositionUVMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared7_axis1_vertex_perspective",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.00048828125,
+      "BCControl": 0.0,
+      "response": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "oldResult": "Failed",
+      "allMetricFieldsEqualBaseline": true,
+      "baselineMetricSHA256": "b2236c651704b8e2641e1a0aac5d93ee420ec1bfde80f05748251327795807b0",
+      "verdictEqualBaseline": true,
+      "differentMetricFields": []
+    },
+    {
+      "batch": 7,
+      "metricSHA256": "a12280415f2ca3c144b23ab265042b4b4efab1366ff1404b43a05bb4a6cba43e",
+      "raw": 9,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "depth-mask-0.25-ortho\\metrics.json",
+      "kind": "DirectedMaskDepthOnly",
+      "identity": "NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.25_ortho",
+      "caseId": "depth-mask-0.25-ortho",
+      "ABBCRepeatOffZero": true,
+      "strongResponses": [
+        0.949127197265625,
+        0.949127197265625
+      ],
+      "validDepthFrames": 27,
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "baselineMetricSHA256": "a12280415f2ca3c144b23ab265042b4b4efab1366ff1404b43a05bb4a6cba43e",
+      "limits": "Directed DepthOnly only; this six-case plan has no ShadowCaster identity or default DepthNormals/SSAO claim."
+    },
+    {
+      "batch": 7,
+      "metricSHA256": "8be37ffe886c20a8dc309a91c52ffb8272dff24c5435caab8a2807b799181006",
+      "raw": 9,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "depth-mask-0.25-perspective\\metrics.json",
+      "kind": "DirectedMaskDepthOnly",
+      "identity": "NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.25_perspective",
+      "caseId": "depth-mask-0.25-perspective",
+      "ABBCRepeatOffZero": true,
+      "strongResponses": [
+        0.949127197265625,
+        0.949127197265625
+      ],
+      "validDepthFrames": 27,
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "baselineMetricSHA256": "8be37ffe886c20a8dc309a91c52ffb8272dff24c5435caab8a2807b799181006",
+      "limits": "Directed DepthOnly only; this six-case plan has no ShadowCaster identity or default DepthNormals/SSAO claim."
+    },
+    {
+      "batch": 7,
+      "metricSHA256": "0a9e93f5501124951f47fdf0819ca81fbda0ddece298a57cecc24b3ccfb1cfb6",
+      "raw": 9,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "depth-mask-0.5-ortho\\metrics.json",
+      "kind": "DirectedMaskDepthOnly",
+      "identity": "NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.5_ortho",
+      "caseId": "depth-mask-0.5-ortho",
+      "ABBCRepeatOffZero": true,
+      "strongResponses": [
+        0.949127197265625,
+        0.949127197265625
+      ],
+      "validDepthFrames": 27,
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "baselineMetricSHA256": "0a9e93f5501124951f47fdf0819ca81fbda0ddece298a57cecc24b3ccfb1cfb6",
+      "limits": "Directed DepthOnly only; this six-case plan has no ShadowCaster identity or default DepthNormals/SSAO claim."
+    },
+    {
+      "batch": 7,
+      "metricSHA256": "a09557b5f8d8f1853cd51f5b54821ab44cb19109ee8b6d2c789c72da1c8d1bbe",
+      "raw": 9,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "depth-mask-0.5-perspective\\metrics.json",
+      "kind": "DirectedMaskDepthOnly",
+      "identity": "NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.5_perspective",
+      "caseId": "depth-mask-0.5-perspective",
+      "ABBCRepeatOffZero": true,
+      "strongResponses": [
+        0.949127197265625,
+        0.949127197265625
+      ],
+      "validDepthFrames": 27,
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "baselineMetricSHA256": "a09557b5f8d8f1853cd51f5b54821ab44cb19109ee8b6d2c789c72da1c8d1bbe",
+      "limits": "Directed DepthOnly only; this six-case plan has no ShadowCaster identity or default DepthNormals/SSAO claim."
+    },
+    {
+      "batch": 7,
+      "metricSHA256": "ae78c959f8641402f35afac0f7b7e7c6c8923cea622f757de8b0790f848ea3ca",
+      "raw": 12,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "depth-mask-0.8-ortho\\metrics.json",
+      "kind": "DirectedMaskDepthOnly",
+      "identity": "NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.8_ortho",
+      "caseId": "depth-mask-0.8-ortho",
+      "ABBCRepeatOffZero": true,
+      "strongResponses": [
+        0.949127197265625
+      ],
+      "validDepthFrames": 27,
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "baselineMetricSHA256": "ae78c959f8641402f35afac0f7b7e7c6c8923cea622f757de8b0790f848ea3ca",
+      "limits": "Directed DepthOnly only; this six-case plan has no ShadowCaster identity or default DepthNormals/SSAO claim."
+    },
+    {
+      "batch": 7,
+      "metricSHA256": "bd9cccee82b766cba4cb7625e9e43e3e9df5f8a04fda4a93913c7d975f4884ff",
+      "raw": 12,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "depth-mask-0.8-perspective\\metrics.json",
+      "kind": "DirectedMaskDepthOnly",
+      "identity": "NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_mask_0.8_perspective",
+      "caseId": "depth-mask-0.8-perspective",
+      "ABBCRepeatOffZero": true,
+      "strongResponses": [
+        0.949127197265625
+      ],
+      "validDepthFrames": 27,
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "baselineMetricSHA256": "bd9cccee82b766cba4cb7625e9e43e3e9df5f8a04fda4a93913c7d975f4884ff",
+      "limits": "Directed DepthOnly only; this six-case plan has no ShadowCaster identity or default DepthNormals/SSAO claim."
+    },
+    {
+      "batch": 8,
+      "metricSHA256": "65dee4b6426eb7974afb07f4178b69a20c67d26f2b17c7e271b0a51f6b229678",
+      "raw": 30,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "mask-x-ortho-constant\\metrics.json",
+      "kind": "CustomDataMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-x_ortho_constant",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.587158203125,
+        "B": 0.587158203125,
+        "C": 0.587158203125
+      },
+      "visible": {
+        "A": 4096,
+        "B": 4096,
+        "C": 4096
+      },
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "oldResult": "Passed",
+      "baselineMetricSHA256": "65dee4b6426eb7974afb07f4178b69a20c67d26f2b17c7e271b0a51f6b229678",
+      "differentMetricFields": []
+    },
+    {
+      "batch": 8,
+      "metricSHA256": "963ac2f8b996a1e8632b39464d23667bcec75bdefe3c04d6217bbb3cdeae436e",
+      "raw": 30,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "mask-x-ortho-varying\\metrics.json",
+      "kind": "CustomDataMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-x_ortho_varying",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.58642578125,
+        "B": 0.58642578125,
+        "C": 0.58642578125
+      },
+      "visible": {
+        "A": 4096,
+        "B": 4096,
+        "C": 4096
+      },
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "oldResult": "Passed",
+      "baselineMetricSHA256": "963ac2f8b996a1e8632b39464d23667bcec75bdefe3c04d6217bbb3cdeae436e",
+      "differentMetricFields": []
+    },
+    {
+      "batch": 8,
+      "metricSHA256": "4930e38cfb4c4b1bfecdcb35212889f6af5f0ed1d2f2530bb7c248bf304d5dcc",
+      "raw": 30,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "mask-x-perspective-constant\\metrics.json",
+      "kind": "CustomDataMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-x_perspective_constant",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.587158203125,
+        "B": 0.587158203125,
+        "C": 0.587158203125
+      },
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "oldResult": "Passed",
+      "baselineMetricSHA256": "4930e38cfb4c4b1bfecdcb35212889f6af5f0ed1d2f2530bb7c248bf304d5dcc",
+      "differentMetricFields": []
+    },
+    {
+      "batch": 8,
+      "metricSHA256": "0229e5abbd0057bee6f347457ce83b9b8a0eb7542ae87bf950038d9cfe77c7b1",
+      "raw": 30,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "mask-x-perspective-varying\\metrics.json",
+      "kind": "CustomDataMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-x_perspective_varying",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.00048828125,
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.586669921875,
+        "B": 0.586669921875,
+        "C": 0.586669921875
+      },
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "oldResult": "Failed",
+      "baselineMetricSHA256": "0229e5abbd0057bee6f347457ce83b9b8a0eb7542ae87bf950038d9cfe77c7b1",
+      "differentMetricFields": []
+    },
+    {
+      "batch": 8,
+      "metricSHA256": "ad3a1adba4904420f7f51cb5331ba37203cc637825d2f535eac282a7bbde3a37",
+      "raw": 30,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "mask-y-ortho-constant\\metrics.json",
+      "kind": "CustomDataMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_ortho_constant",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.31640625,
+        "B": 0.31640625,
+        "C": 0.31640625
+      },
+      "visible": {
+        "A": 4096,
+        "B": 4096,
+        "C": 4096
+      },
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "oldResult": "Passed",
+      "baselineMetricSHA256": "ad3a1adba4904420f7f51cb5331ba37203cc637825d2f535eac282a7bbde3a37",
+      "differentMetricFields": []
+    },
+    {
+      "batch": 8,
+      "metricSHA256": "667041d424a183b4d51e4e6863d1cd952351e59127b7e3a081210c1a1dc718d2",
+      "raw": 30,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "mask-y-ortho-varying\\metrics.json",
+      "kind": "CustomDataMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_ortho_varying",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.3153076171875,
+        "B": 0.3153076171875,
+        "C": 0.3153076171875
+      },
+      "visible": {
+        "A": 4096,
+        "B": 4096,
+        "C": 4096
+      },
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "oldResult": "Passed",
+      "baselineMetricSHA256": "667041d424a183b4d51e4e6863d1cd952351e59127b7e3a081210c1a1dc718d2",
+      "differentMetricFields": []
+    },
+    {
+      "batch": 8,
+      "metricSHA256": "1f72b911d3d6b6c0b84e8508e83a88f2985bb0f90c8bd3b0b5a34c8dadca4f99",
+      "raw": 30,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "mask-y-perspective-constant\\metrics.json",
+      "kind": "CustomDataMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_perspective_constant",
+      "result": "Passed",
+      "ABZero": true,
+      "BCMax": 0.0,
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.31640625,
+        "B": 0.31640625,
+        "C": 0.31640625
+      },
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "oldResult": "Passed",
+      "baselineMetricSHA256": "1f72b911d3d6b6c0b84e8508e83a88f2985bb0f90c8bd3b0b5a34c8dadca4f99",
+      "differentMetricFields": []
+    },
+    {
+      "batch": 8,
+      "metricSHA256": "afc18c4a86fbdcea395cc640348828165ae47bf48454865487868406c86eff40",
+      "raw": 30,
+      "finite": true,
+      "nonCDCD": true,
+      "metricRelativePath": "mask-y-perspective-varying\\metrics.json",
+      "kind": "CustomDataMask",
+      "identity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_perspective_varying",
+      "result": "Failed",
+      "ABZero": true,
+      "BCMax": 0.00048828125,
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.3153076171875,
+        "B": 0.3153076171875,
+        "C": 0.3153076171875
+      },
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "allMetricFieldsEqualBaseline": true,
+      "verdictEqualBaseline": true,
+      "oldResult": "Failed",
+      "baselineMetricSHA256": "afc18c4a86fbdcea395cc640348828165ae47bf48454865487868406c86eff40",
+      "differentMetricFields": []
+    }
+  ],
+  "strictFailures": [
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct3_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.926849365234375,
+        "B": 0.926849365234375,
+        "C": 0.926849365234375
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.000549316406f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct4_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.91864013671875,
+        "B": 0.91864013671875,
+        "C": 0.91864013671875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.000732421875f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct5_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.6435546875,
+        "B": 0.6435546875,
+        "C": 0.6435546875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct6_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.643310546875,
+        "B": 0.643310546875,
+        "C": 0.643310546875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.000732421875f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct6_axis1_vertex_perspective",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.0,
+      "finite": true,
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.629150390625,
+        "B": 0.629150390625,
+        "C": 0.629150390625
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  6.10351563E-05f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct7_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.87286376953125,
+        "B": 0.87286376953125,
+        "C": 0.87286376953125
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared3_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.9017333984375,
+        "B": 0.9017333984375,
+        "C": 0.9017333984375
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared4_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.53955078125,
+        "B": 0.53955078125,
+        "C": 0.53955078125
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared5_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.00048828125,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.71923828125,
+        "B": 0.71923828125,
+        "C": 0.71923828125
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.0009765625f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared6_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.7298583984375,
+        "B": 0.7298583984375,
+        "C": 0.7298583984375
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared7_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared7_axis1_vertex_perspective",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.00048828125,
+      "BCControl": 0.0,
+      "finite": true,
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct3_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.926849365234375,
+        "B": 0.926849365234375,
+        "C": 0.926849365234375
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.000549316406f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct4_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.91864013671875,
+        "B": 0.91864013671875,
+        "C": 0.91864013671875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.000732421875f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct5_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.6435546875,
+        "B": 0.6435546875,
+        "C": 0.6435546875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct6_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.643310546875,
+        "B": 0.643310546875,
+        "C": 0.643310546875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.000732421875f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct6_axis1_vertex_perspective",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.0,
+      "finite": true,
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.629150390625,
+        "B": 0.629150390625,
+        "C": 0.629150390625
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  6.10351563E-05f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct7_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.87286376953125,
+        "B": 0.87286376953125,
+        "C": 0.87286376953125
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared3_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.9017333984375,
+        "B": 0.9017333984375,
+        "C": 0.9017333984375
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared4_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.53955078125,
+        "B": 0.53955078125,
+        "C": 0.53955078125
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared5_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.00048828125,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.71923828125,
+        "B": 0.71923828125,
+        "C": 0.71923828125
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.0009765625f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared6_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.7298583984375,
+        "B": 0.7298583984375,
+        "C": 0.7298583984375
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared7_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared7_axis1_vertex_perspective",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.00048828125,
+      "BCControl": 0.0,
+      "finite": true,
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct3_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.926849365234375,
+        "B": 0.926849365234375,
+        "C": 0.926849365234375
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.000549316406f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct4_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.91864013671875,
+        "B": 0.91864013671875,
+        "C": 0.91864013671875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.000732421875f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct5_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.6435546875,
+        "B": 0.6435546875,
+        "C": 0.6435546875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct6_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.000244140625,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.643310546875,
+        "B": 0.643310546875,
+        "C": 0.643310546875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.000732421875f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct6_axis1_vertex_perspective",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 6.103515625e-05,
+      "BCControl": 0.0,
+      "finite": true,
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.629150390625,
+        "B": 0.629150390625,
+        "C": 0.629150390625
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  6.10351563E-05f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct7_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.87286376953125,
+        "B": 0.87286376953125,
+        "C": 0.87286376953125
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared3_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.9017333984375,
+        "B": 0.9017333984375,
+        "C": 0.9017333984375
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared4_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.53955078125,
+        "B": 0.53955078125,
+        "C": 0.53955078125
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared5_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.00048828125,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.71923828125,
+        "B": 0.71923828125,
+        "C": 0.71923828125
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.0009765625f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared6_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.7298583984375,
+        "B": 0.7298583984375,
+        "C": 0.7298583984375
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared7_axis1_vertex_ortho",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.0,
+      "BCControl": 0.00048828125,
+      "finite": true,
+      "visible": {
+        "A": 2304,
+        "B": 2304,
+        "C": 2304
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared7_axis1_vertex_perspective",
+      "classification": "same historical strict BC microdiff",
+      "BCMax": 0.00048828125,
+      "BCControl": 0.0,
+      "finite": true,
+      "visible": {
+        "A": 2242,
+        "B": 2242,
+        "C": 2242
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.593994140625,
+        "B": 0.593994140625,
+        "C": 0.593994140625
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "message": "  Position UV Graph mismatch; raw retained, no threshold relaxation.\n  Expected: 0\n  But was:  0.00048828125f\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-x_perspective_varying",
+      "classification": "same historical CustomData strict BC microdiff",
+      "BCMax": 0.00048828125,
+      "BCNonzeroSelectors": {
+        "14": 0.00048828125,
+        "12": 0.00048828125
+      },
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.586669921875,
+        "B": 0.586669921875,
+        "C": 0.586669921875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "oldResult": "Failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n"
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_perspective_varying",
+      "classification": "same historical CustomData strict BC microdiff",
+      "BCMax": 0.00048828125,
+      "BCNonzeroSelectors": {
+        "14": 0.00048828125,
+        "13": 0.000244140625
+      },
+      "finite": true,
+      "visible": {
+        "A": 6084,
+        "B": 6084,
+        "C": 6084
+      },
+      "repeatZero": true,
+      "strongResponse": {
+        "A": 0.3153076171875,
+        "B": 0.3153076171875,
+        "C": 0.3153076171875
+      },
+      "ABZero": true,
+      "allMetricFieldsEqualBaseline": true,
+      "oldResult": "Failed",
+      "message": "  Full-frame strict ABC\n  Expected: True\n  But was:  False\n"
+    }
+  ],
+  "oldRootUVPIdentityComparison": {
+    "casesCompared": 120,
+    "allMetricFieldsEqualBaseline": true,
+    "allVerdictsEqualBaseline": true,
+    "failedExactIdsCurrent": [
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct3_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct4_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct5_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct6_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct6_axis1_vertex_perspective",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_direct7_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared3_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared4_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared5_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared6_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared7_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask1_shared7_axis1_vertex_perspective",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct3_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct4_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct5_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct6_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct6_axis1_vertex_perspective",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_direct7_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared3_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared4_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared5_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared6_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared7_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask2_shared7_axis1_vertex_perspective",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct3_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct4_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct5_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct6_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct6_axis1_vertex_perspective",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_direct7_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared3_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared4_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared5_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared6_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared7_axis1_vertex_ortho",
+      "NBFX.Baseline.Tests.G4GraphPositionUVTests.G4PositionUVABC_mask3_shared7_axis1_vertex_perspective"
+    ],
+    "newFailureCount": 0
+  },
+  "limits": [
+    "Partial future batches are not read/countable; source drift fails guard.",
+    "Six depth identities are directed DepthOnly; do not call them six Shadow/default pipeline tests.",
+    "Retain strict micro failures and earlier metadata KeyError; neither constitutes Gate pass."
+  ],
+  "fullMeshGatePassed": false,
+  "oldRootCD152Mask8Comparison": {
+    "casesCompared": 8,
+    "allMetricFieldsEqualBaseline": true,
+    "allVerdictsEqualBaseline": true,
+    "failedExactIdsCurrent": [
+      "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-x_perspective_varying",
+      "NBFX.Baseline.Tests.G4GraphCustomDataTests.G4CustomData_GPU_mask-y_perspective_varying"
+    ],
+    "newFailureCount": 0
+  },
+  "scopeCounts": {
+    "PositionUVMask": 120,
+    "DirectedMaskDepthOnly": 6,
+    "CustomDataMask": 8
+  },
+  "maskSummary": {
+    "minimumVisible": 2242,
+    "minimumStrongResponse": 0.53955078125,
+    "maximumBC": 0.00048828125,
+    "minimumNonzeroBC": 6.103515625e-05
+  },
+  "strictAssertionsPreserved": {
+    "GUI110ActualBodiesPassed": 110,
+    "CDStorage32ActualBodiesPassed": 32,
+    "UVPFiniteVisibleRepeatStrongResponseABPassedWithBCFailsRetained": true,
+    "sourceFixturesEqualRootNoThresholdMutation": true
+  }
+}
