@@ -2,6 +2,8 @@
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NB_FX 多 Agent 续接 · 2026-10-03</title></head><body>
 <p><a href="index.html">报告索引</a> · <a href="mesh-windows-20261002.html">原 Windows 证据</a> · <a href="../tasks/main-agent.html">主 Agent 分工</a></p>
 <h1>普通 Mesh 续接：OverrideZ、UVP、F0、CustomData、VAT 已集成，CustomLocal 与完整链路继续验证</h1>
+<p id="root-native-cbuf-checkpoint-summary"><strong>2026-10-03 当前产品检查点：</strong><a href="#root-native-cbuf-integrated">Native texel-size CBUF三路径已集成</a>，源1ca755dc / 主仓9ce441a3；原Native2严格失败、修复2通过/rawexact及Spec1591 VAT162全部通过分别保留。Main仍有Houdini材质_B_autoPlayback码10待处理，F0两属性已CBUF且没有AnimationFrame；不同Frozen观测时点不偷换，完整G3/G4未放行。</p>
+
 <p id="root-spec-checkpoint-summary"><strong>2026-10-03 当前产品检查点：</strong><a href="#root-spec-integrated">Specular 已集成到根 Graph1591</a>，包7e4d4e68 / 主仓1d68f38e；此前历史状态完整保留。最新137为134通过/3严格失败，影响84为36通过/48分类失败。Native CBUF仍只在clone，候选VAT162回归未完成；完整G3/G4未放行。</p>
 
 <p id="root-noise-checkpoint-summary"><strong>2026-10-03 当前产品检查点：</strong><a href="#root-noise-integrated">Noise 已集成到根 Graph1590</a>，包90c37f4c / 主仓a745a544；此前等待状态完整保留。实际22、计划72、CD12＋Source2的14分别通过；Native current/Frozen均10，兼容码因果与实际VAT绘制诊断仍属G3待验证。后续Specular137仅在clone运行，尚未进入根产品；完整G3/G4未放行。</p>
@@ -122,6 +124,20 @@
 <h3>Native CBUF候选仍只在clone</h3>
 <p>84中Source/SRP2原实录为Frozen10、current0、Graph0；此前Noise查询和后续Native真实绘制诊断的current10属于其它观测时点，全部原收据保留，不能因此宣称CBUF修改已进入根产品。Native真实VAT关闭/开启诊断原2项严格失败，current/Frozen均10；clone单文件候选 <code>a00398d6</code> 将声明移入CBUF后同两项通过、current为0，Frozen仍10，28份raw与原结果字节完全相同。该候选尚未合入根源，批处理、完整变体及性能仍未放行。<a href="mesh-windows-20261002/root-spec-integrated1591-checkpoint-20261003/audits/native-srp-draw2-actual-verdict-audit.json">原Native2严格失败</a> · <a href="mesh-windows-20261002/root-spec-integrated1591-checkpoint-20261003/audits/native-cbuf-fixed2-actual-verdict-audit.json">clone候选两项补证</a>。</p>
 <p>本检查点记录时，基于已接受Spec1591、375源/12fixture保护的候选VAT162回归仍在运行，仅已见40通过，不算162完成。主任务继续Debug、GUI与其余Mesh链；完整GUI/Tier、状态/Pass、默认DepthNormals/SSAO、动画组合、Post52、Player/变体/性能及G3/G4仍待闭合。正式VFX未启动，URP常规Mesh仍走NBShader。<a href="mesh-windows-20261002/root-spec-integrated1591-checkpoint-20261003/receipts/checkpoint-snapshot.json">根产品、历史失败及clone候选固定快照</a>。</p>
+</section>
+<section id="root-native-cbuf-integrated">
+<h2>最新产品检查点：Native texel-size CBUF三路径已集成</h2>
+<p>本节更新前文“Native CBUF仅clone、VAT162未完成”的历史状态。此前报告检查点已保存为 <code>6f323340dbc6bc149177d6abd872f1e8cd89ea29</code>；随后Native三路径产品源保存为 <code>1ca755dcd94c10bb8b69d32278653f8cb42570b1</code>，主仓提交 <code>9ce441a365e85b080cd35ebaebe8037d7d182770</code>。实际根Input为 <code>a00398d6</code>，三条根源与验证/安装SHA一致；只将 <code>_VATTex_TexelSize</code> 放入既有UnityPerMaterial，并加入原真实Native绘制诊断fixture及元数据。Spec1591 Graph、Frozen、数学、Flags、keyword及NBPost合同保留。<a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/receipts/native-cbuf-product-installation.json">实际三路径安装</a> · <a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/sources/NBShaderInput.hlsl">实际根Input快照</a>。</p>
+<table border="1"><thead><tr><th>真实证据</th><th>结果</th><th>限定范围</th></tr></thead><tbody>
+<tr><td>原Native真实绘制2</td><td>0通过 / 2严格失败；28份raw有效</td><td>两投影的实际VAT关闭/开启状态中，current与Frozen均报告texel-size SRP码10；原失败保留。<a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/audits/native-srp-draw2-actual-verdict-audit.json">原严格失败审核</a>。</td></tr>
+<tr><td>相同两项texel-size修复补证</td><td>2通过；current为0、Frozen仍10</td><td>28份raw与原字节完全相同，原绘制/材质/keyword状态和语义指标不变；这是所取状态的修复证据，不替代全变体与性能验证。<a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/audits/native-cbuf-fixed2-actual-verdict-audit.json">修复两项与原raw精确比较</a>。</td></tr>
+<tr><td>当前Spec1591源VAT162</td><td>162通过；2190份raw健康，所有对应旧指标一致</td><td>实际完整批次及身份审核，375源/12fixture保护。覆盖限定Forward、选定Depth/Shadow、SoftBody、NB几何排除与CD frame；限定Geometry44不覆盖默认Graph DepthNormals或完整SSAO可见性链。<a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/audits/native-cbuf-vat162-current-Spec1591-complete-audit.json">当前源162独立审核</a>。</td></tr>
+</tbody></table>
+<p>第一次主产品安装因场景收据超过120秒而在写入前停止，三路径仍为原源；随后成功的exact import导入的是旧38068 Input，必须排除出候选证据。原编排事件与导入收据留档。重新取得fresh场景收据后才实际安装三路径，后续导入与主Editor状态读回对应实际a003根源、无Shader Error；未把无XML、未执行或导入成功本身算作测试通过。<a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/incidents/native-cbuf-install-scene-expiry-incident.json">过期场景保护事件</a> · <a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/receipts/main-native-cbuf-exact-import.json">排除的旧源导入</a> · <a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/receipts/main-scenes-before-native-cbuf-integration-fresh2.json">重新取得的场景保护</a> · <a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/receipts/main-native-cbuf-installed-status-readback.json">真实安装后的主读回</a>。</p>
+<h3>主Editor仍有Houdini材质uniform待处理</h3>
+<p>真实主读回是source-status查询、未新增定向绘制：current仍为SRP码10，但原因已是 <code>_B_autoPlayback</code>；同一读回Frozen为0、Graph为0。它与clone修复2中的Frozen10属于不同观测时点，不能偷换、覆盖或据此宣称全部Native SRP兼容。原warning分别留档，不能由无Shader Error推成G3通过。</p>
+<p><code>_B_autoPlayback</code>属于Houdini VAT的30项既有材质uniform，不是F0 helper字段。F0的 <code>_BaseMap_AnimationSheetBlend_ST</code> 与 <code>_AnimationSheetHelperBlendIntensity</code> 已在UnityPerMaterial内；当前没有 <code>_AnimationFrame</code>，不新增假字段或改写其历史合同。Houdini30项的后续源审核属于待处理范围，没有新的Unity执行结果，不能计通过。<a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/audits/native-houdini-cbuf-source-audit.json">材质所有者与F0纠正审核</a>。</p>
+<p>既有Spec微差、Normal/PBR HDR/SixWay结果及旧GPU/工具失败均保留。完整GUI/Tier、Debug、状态/Pass、默认DepthNormals/SSAO、动画组合、Post52、Player/变体/性能与G3/G4仍待完成，正式VFX未启动，普通URP Mesh仍走NBShader。<a href="mesh-windows-20261002/root-native-cbuf3-checkpoint-20261003/receipts/checkpoint-snapshot.json">根源、排除项及观测时点固定快照</a>。</p>
 </section>
 <h2>失败分类与下一入口</h2>
 <p>真实功能/生命周期错误、不可见或无效输出、GPU崩溃/设备移除、微弱色差、首帧与工具/安装/导入阻塞分别记录，不降阈值、不删除失败。当前Dissolve旧40属于GPU/无效读回；新4属于微差。CA仍无完整有效结果。BackFirst、ZOffset、Portal、完整共享GUI/Tier、UVP剩余消费点/变换组合、完整Controller/Manager、最终组合Player/变体/性能仍待闭合。</p>

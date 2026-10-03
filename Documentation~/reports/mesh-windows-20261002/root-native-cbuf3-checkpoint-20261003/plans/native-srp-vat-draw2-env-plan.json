@@ -1,0 +1,53 @@
+{
+  "scope": "Native current/Frozen VAT off/on/frame0 actual-draw causal diagnostic2; after nonzero current is strict batcherFailed, not function/color verdict or originalSource2 rewrite",
+  "unity": "6000.3.25f1",
+  "api": "Direct3D11",
+  "editorArgs": [
+    "-force-d3d11"
+  ],
+  "stopOnReadbackHealthFailure": true,
+  "cases": 2,
+  "identitySource": "Explicit TestName source, fresh actual discovery pending",
+  "requiredNativeAndHelperInputsSHA256": {
+    "NBShaders2/Shader/NBShader.shader": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b",
+    "NBShaders2/Shader/HLSL/NBShaderInput.hlsl": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+    "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl": "17322f26b644db92d0b0419cbac46bc88ac1c0635a767cdac6a1f35d7ea6a227",
+    "XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016",
+    "XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl": "99e063184f6fe274e66c7d084c25948c960031d6a225a999bc93615cfe4f7167",
+    "XuanXuanRenderUtility/Shader/HLSL/TyflowVATKernelV1.hlsl": "42d3ddb0fe9830b24b788beb0917956cbc1dd618c0ddf0448cc007f5146990a9",
+    "XuanXuanRenderUtility/Shader/HLSL/HoudiniVAT.hlsl": "b5bb7d94cd4086413f6d7437db1846f7043765fee62bc414d3a86209c97d7fca",
+    "Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader": "a27e705c3ac3a83d932a8745a48f4ac45f31a5fb1b945fa5a66f38c99c742a8d",
+    "Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderInput.hlsl": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9",
+    "Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl": "dbf0315495ec9dd333025e0d02a853a4acc13cd6cc012cba9050541d3073462b",
+    "Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016",
+    "Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl": "5091f80d00b150c8af7f7b71022162720474181fae37b41c587fdc74effa22d7",
+    "Tests/URP/Editor/G4GraphVATTests.cs": "399175927b0a5287097621a2a8837fbb024fd000ae638721c65d8508249db7ae",
+    "Tests/URP/Editor/G4GraphTyflowVATTests.cs": "9695dde882012f2a3ac17332d6fcf7e59d81859e1623413f16877b5213a03b39"
+  },
+  "newFixture2SHA256": {
+    "Tests/URP/Editor/G4NativeSrpVatDrawDiagnostics.cs": "8006fecde93a2e07e0bcd935ac0225c973a94d9b48ac5d4bea6287982eacbb9c",
+    "Tests/URP/Editor/G4NativeSrpVatDrawDiagnostics.cs.meta": "6a01cbb9ff96e48bce2e39fb77bc671458e638453a45352ef0f2bccd69f65195"
+  },
+  "batches": [
+    {
+      "batch": 1,
+      "filter": "^NBFX\\.Baseline\\.Tests\\.G4NativeSrpVatDrawDiagnostics\\.G4NativeSRP_VATDraw_current_frozen_off_on_ortho$",
+      "expectedCasesFromActualDiscovery": 1,
+      "expectedCasesFromSource": 1,
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4NativeSrpVatDrawDiagnostics.G4NativeSRP_VATDraw_current_frozen_off_on_ortho"
+      ]
+    },
+    {
+      "batch": 2,
+      "filter": "^NBFX\\.Baseline\\.Tests\\.G4NativeSrpVatDrawDiagnostics\\.G4NativeSRP_VATDraw_current_frozen_off_on_perspective$",
+      "expectedCasesFromActualDiscovery": 1,
+      "expectedCasesFromSource": 1,
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4NativeSrpVatDrawDiagnostics.G4NativeSRP_VATDraw_current_frozen_off_on_perspective"
+      ]
+    }
+  ],
+  "expectedFailurePolicy": "Do not treat Frozen known10 as code0, or current postDraw10 as pass. Semantic invalid/invisible/nonfinite/weak response and native batcher failure are recorded separately; preserve all raw and original Source2 verdicts.",
+  "fullMeshGatePassed": false
+}
