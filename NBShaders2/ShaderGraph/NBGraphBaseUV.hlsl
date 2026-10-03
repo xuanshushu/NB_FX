@@ -1,5 +1,6 @@
 #ifndef NB_GRAPH_BASE_UV_INCLUDED
 #define NB_GRAPH_BASE_UV_INCLUDED
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl"
 
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderUVV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
@@ -150,6 +151,15 @@ void NBGraphUVVertex_float(float3 PositionOS,
     float CustomDataFlag2Hi16,
     float CustomDataFlag3Lo16,
     float CustomDataFlag3Hi16,
+    float CustomLocalToggle,
+    float4 LocalToWorld0,
+    float4 LocalToWorld1,
+    float4 LocalToWorld2,
+    float4 LocalToWorld3,
+    float4 WorldToLocal0,
+    float4 WorldToLocal1,
+    float4 WorldToLocal2,
+    float4 WorldToLocal3,
     out float4 PreCylinderScreen, out float4 PreWorldObject,
     out float4 PreSharedMain)
 {
@@ -159,8 +169,8 @@ void NBGraphUVVertex_float(float3 PositionOS,
     input.custom2 = UV2;
     input.specialUVInTexcoord3 = UV3.yz;
     input.positionOS = PositionOS;
-    input.positionWS = TransformObjectToWorld(PositionOS);
-    float4 clipPosition = TransformObjectToHClip(PositionOS);
+    input.positionWS = NBGraphLocalToWorldPositionV1(PositionOS,CustomLocalToggle,LocalToWorld0,LocalToWorld1,LocalToWorld2,LocalToWorld3);
+    float4 clipPosition = NBGraphLocalToHClipV1(PositionOS,CustomLocalToggle,LocalToWorld0,LocalToWorld1,LocalToWorld2,LocalToWorld3);
     input.screenUV = clipPosition.xy / clipPosition.w;
     input.screenUV = input.screenUV * 0.5 + 0.5;
     NBFX_BaseUVParamsV1 parameters = NBGraphUVParameters(
@@ -204,6 +214,15 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     float CustomDataFlag2Hi16,
     float CustomDataFlag3Lo16,
     float CustomDataFlag3Hi16,
+    float CustomLocalToggle,
+    float4 LocalToWorld0,
+    float4 LocalToWorld1,
+    float4 LocalToWorld2,
+    float4 LocalToWorld3,
+    float4 WorldToLocal0,
+    float4 WorldToLocal1,
+    float4 WorldToLocal2,
+    float4 WorldToLocal3,
     out float2 Out, out float2 MaskUV, out float2 Mask2UV,
     out float2 Mask3UV, out float2 EmissionUV, out float2 DissolveUV,
     out float2 DissolveMaskUV, out float2 ColorBlendUV,
@@ -217,7 +236,7 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     input.positionWS = PositionWS;
     input.screenUV = NBGraphDecalRasterUV(PixelPosition);
 #if defined(SHADERGRAPH_PREVIEW)
-    input.positionOS = TransformWorldToObject(PositionWS);
+    input.positionOS = NBGraphWorldToLocalPositionV1(PositionWS,CustomLocalToggle,WorldToLocal0,WorldToLocal1,WorldToLocal2,WorldToLocal3);
 #endif
     DecalAlpha = 1.0;
     // Only the delegated URP Unlit Forward and its two exact NB distortion
@@ -235,7 +254,7 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
             sceneZBufferDepth, UNITY_MATRIX_I_VP);
         // ShaderLab's _CUSTOM_LOCAL_TRANSFORM alternative matrix is a
         // separate pending Graph-host protocol, not silently emulated.
-        float3 fragobjectPos = TransformWorldToObject(fragWorldPos);
+        float3 fragobjectPos = NBGraphWorldToLocalPositionV1(fragWorldPos,CustomLocalToggle,WorldToLocal0,WorldToLocal1,WorldToLocal2,WorldToLocal3);
         NBFX_DepthDecalProjectionV1 depthDecal = NBFX_ResolveDepthDecalV1(fragobjectPos);
         input.meshTexcoord0.xy = depthDecal.uv;
         DecalAlpha = depthDecal.alpha;
@@ -329,6 +348,15 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
     float CustomDataFlag2Hi16,
     float CustomDataFlag3Lo16,
     float CustomDataFlag3Hi16,
+    float CustomLocalToggle,
+    float4 LocalToWorld0,
+    float4 LocalToWorld1,
+    float4 LocalToWorld2,
+    float4 LocalToWorld3,
+    float4 WorldToLocal0,
+    float4 WorldToLocal1,
+    float4 WorldToLocal2,
+    float4 WorldToLocal3,
     out half2 Out, out half2 MaskUV, out half2 Mask2UV,
     out half2 Mask3UV, out half2 EmissionUV, out half2 DissolveUV,
     out half2 DissolveMaskUV, out half2 ColorBlendUV,
@@ -355,6 +383,7 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
         PostPositionOS, PositionWS, PreCylinderScreen, PreWorldObject, PreSharedMain, WorldSelector, ObjectSelector, CylinderMatrix0, CylinderMatrix1, CylinderMatrix2, CylinderMatrix3, ParallaxToggle,
         (float4)UV3, (float)FlipbookToggle, (float4)AnimationSheetBlendST, (float)AnimationSheetBlendIntensity,
         CustomDataFlag0Lo16, CustomDataFlag0Hi16, CustomDataFlag1Lo16, CustomDataFlag1Hi16, CustomDataFlag2Lo16, CustomDataFlag2Hi16, CustomDataFlag3Lo16, CustomDataFlag3Hi16,
+        CustomLocalToggle, LocalToWorld0, LocalToWorld1, LocalToWorld2, LocalToWorld3, WorldToLocal0, WorldToLocal1, WorldToLocal2, WorldToLocal3,
         resolved, maskResolved, mask2Resolved, mask3Resolved,
         emissionResolved, dissolveResolved, dissolveMaskResolved,
         colorBlendResolved, rampColorResolved, noiseResolved, noiseMaskResolved, bumpResolved, programNoiseResolved, decalAlphaResolved, blendUVResolved, blendWeightResolved);

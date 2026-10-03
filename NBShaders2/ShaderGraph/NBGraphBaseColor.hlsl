@@ -1,5 +1,6 @@
 #ifndef NB_GRAPH_BASE_COLOR_INCLUDED
 #define NB_GRAPH_BASE_COLOR_INCLUDED
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl"
 
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderEnvironmentV2.hlsl"
@@ -362,7 +363,8 @@ half4 NBGraphApplyFresnel(half4 color, float3 viewDirWS, half3 normalWS,
 // The same EVALUATE_SH_VERTEX keyword used by the old material is selected
 // by NBShaderGraphGUI when mode 4 is active. Geometry N/T/B is post-VertexOffset.
 void NBGraphSixWayBake_float(float3 NormalWS, float3 TangentWS,
-    float3 BitangentWS, out float3 Bake0, out float3 Bake1,
+    float3 BitangentWS, float CustomLocalToggle,float CustomSign,
+    out float3 Bake0, out float3 Bake1,
     out float3 Bake2, out float3 Back0, out float3 Back1,
     out float3 Back2, out float4 TangentSigned)
 {
@@ -373,6 +375,7 @@ void NBGraphSixWayBake_float(float3 NormalWS, float3 TangentWS,
     // its half-precision world tangent before SH evaluation.
     half sign = (dot(cross(NormalWS,TangentWS),BitangentWS)<0 ? -1.0h : 1.0h)
         * GetOddNegativeScale();
+    if(CustomLocalToggle>0.5)sign=(half)CustomSign;
     half3 tangentWS = (half3)TangentWS;
     float3 bitangentWS = sign * cross(NormalWS,tangentWS);
     half3 b0,b1,b2,r0,r1,r2;
@@ -383,12 +386,13 @@ void NBGraphSixWayBake_float(float3 NormalWS, float3 TangentWS,
     TangentSigned=float4(tangentWS,sign);
 }
 void NBGraphSixWayBake_half(half3 NormalWS, half3 TangentWS,
-    half3 BitangentWS, out half3 Bake0, out half3 Bake1,
+    half3 BitangentWS, float CustomLocalToggle,float CustomSign,
+    out half3 Bake0, out half3 Bake1,
     out half3 Bake2, out half3 Back0, out half3 Back1,
     out half3 Back2, out half4 TangentSigned)
 {
     float3 b0,b1,b2,r0,r1,r2;float4 ts;
-    NBGraphSixWayBake_float(NormalWS,TangentWS,BitangentWS,
+    NBGraphSixWayBake_float(NormalWS,TangentWS,BitangentWS,CustomLocalToggle,CustomSign,
         b0,b1,b2,r0,r1,r2,ts);
     Bake0=(half3)b0; Bake1=(half3)b1; Bake2=(half3)b2;
     Back0=(half3)r0; Back1=(half3)r1; Back2=(half3)r2;
@@ -615,14 +619,32 @@ half4 NBGraphChromaticSample(UnityTexture2D map,
 
 // Frozen NBShaderForwardPass computes this before _VERTEX_OFFSET, after
 // ApplyVAT. SG PositionOS feeding NBGraphVertexOffset is the pre-offset source.
-void NBGraphFogVertex_float(float3 PositionOS, out float FogFactor)
+void NBGraphFogVertex_float(float3 PositionOS, float CustomLocalToggle,
+    float4 LocalToWorld0,
+    float4 LocalToWorld1,
+    float4 LocalToWorld2,
+    float4 LocalToWorld3,
+    float4 WorldToLocal0,
+    float4 WorldToLocal1,
+    float4 WorldToLocal2,
+    float4 WorldToLocal3,
+    out float FogFactor)
 {
-    FogFactor = ComputeFogFactor(TransformObjectToHClip(PositionOS).z);
+    FogFactor = ComputeFogFactor(NBGraphLocalToHClipV1(PositionOS,CustomLocalToggle,LocalToWorld0,LocalToWorld1,LocalToWorld2,LocalToWorld3).z);
 }
-void NBGraphFogVertex_half(half3 PositionOS, out half FogFactor)
+void NBGraphFogVertex_half(half3 PositionOS, float CustomLocalToggle,
+    float4 LocalToWorld0,
+    float4 LocalToWorld1,
+    float4 LocalToWorld2,
+    float4 LocalToWorld3,
+    float4 WorldToLocal0,
+    float4 WorldToLocal1,
+    float4 WorldToLocal2,
+    float4 WorldToLocal3,
+    out half FogFactor)
 {
     float computed;
-    NBGraphFogVertex_float((float3)PositionOS, computed);
+    NBGraphFogVertex_float((float3)PositionOS,CustomLocalToggle, LocalToWorld0, LocalToWorld1, LocalToWorld2, LocalToWorld3, WorldToLocal0, WorldToLocal1, WorldToLocal2, WorldToLocal3, computed);
     FogFactor = (half)computed;
 }
 
@@ -779,9 +801,23 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float CustomDataFlag2Hi16,
     float CustomDataFlag3Lo16,
     float CustomDataFlag3Hi16,
+    float CustomLocalToggle,
+    float4 LocalToWorld0,
+    float4 LocalToWorld1,
+    float4 LocalToWorld2,
+    float4 LocalToWorld3,
+    float4 WorldToLocal0,
+    float4 WorldToLocal1,
+    float4 WorldToLocal2,
+    float4 WorldToLocal3,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    // SG's fragment basis owns renderer odd scale; replace that factor with
+    // the original custom matrix determinant for the active world-sim host.
+    if(CustomLocalToggle>0.5)
+        BitangentWS*=NBFX_MatrixOddNegativeScaleV1(float4x4(LocalToWorld0,LocalToWorld1,LocalToWorld2,LocalToWorld3))/GetOddNegativeScale();
+
     uint cd0=NBGraphDecodeUInt32(CustomDataFlag0Lo16,CustomDataFlag0Hi16);
     uint cd1=NBGraphDecodeUInt32(CustomDataFlag1Lo16,CustomDataFlag1Hi16);
     uint cd2=NBGraphDecodeUInt32(CustomDataFlag2Lo16,CustomDataFlag2Hi16);
@@ -1259,9 +1295,23 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float CustomDataFlag2Hi16,
     float CustomDataFlag3Lo16,
     float CustomDataFlag3Hi16,
+    float CustomLocalToggle,
+    float4 LocalToWorld0,
+    float4 LocalToWorld1,
+    float4 LocalToWorld2,
+    float4 LocalToWorld3,
+    float4 WorldToLocal0,
+    float4 WorldToLocal1,
+    float4 WorldToLocal2,
+    float4 WorldToLocal3,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    // SG's fragment basis owns renderer odd scale; replace that factor with
+    // the original custom matrix determinant for the active world-sim host.
+    if(CustomLocalToggle>0.5)
+        BitangentWS*=NBFX_MatrixOddNegativeScaleV1(float4x4(LocalToWorld0,LocalToWorld1,LocalToWorld2,LocalToWorld3))/GetOddNegativeScale();
+
     uint cd0=NBGraphDecodeUInt32(CustomDataFlag0Lo16,CustomDataFlag0Hi16);
     uint cd1=NBGraphDecodeUInt32(CustomDataFlag1Lo16,CustomDataFlag1Hi16);
     uint cd2=NBGraphDecodeUInt32(CustomDataFlag2Lo16,CustomDataFlag2Hi16);

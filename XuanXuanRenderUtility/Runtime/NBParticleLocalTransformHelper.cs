@@ -10,6 +10,18 @@ namespace NBShader
         private const string NBShaderName = "Effects/NBShader";
         private const string LegacyShaderName = "Effects/NBShader(Legacy)";
         private const string CustomLocalTransformKeyword = "_CUSTOM_LOCAL_TRANSFORM";
+        private const string GraphShaderName = "NB FX/Shader Graph/NBShaderGraph";
+        private static readonly int GraphCustomLocalToggleId = Shader.PropertyToID("_NB_CustomLocalTransform");
+        private static readonly int[] GraphLocalToWorldRowIds =
+        {
+            Shader.PropertyToID("_NB_CustomLocalToWorld0"),Shader.PropertyToID("_NB_CustomLocalToWorld1"),
+            Shader.PropertyToID("_NB_CustomLocalToWorld2"),Shader.PropertyToID("_NB_CustomLocalToWorld3")
+        };
+        private static readonly int[] GraphWorldToLocalRowIds =
+        {
+            Shader.PropertyToID("_NB_CustomWorldToLocal0"),Shader.PropertyToID("_NB_CustomWorldToLocal1"),
+            Shader.PropertyToID("_NB_CustomWorldToLocal2"),Shader.PropertyToID("_NB_CustomWorldToLocal3")
+        };
 
         private static readonly int CustomLocalTransformLocalToWorldId =
             Shader.PropertyToID("_CustomLocalTransformLocalToWorld");
@@ -67,15 +79,27 @@ namespace NBShader
 
             if (_lastAppliedMaterial != null && _lastAppliedMaterial != material)
             {
-                _lastAppliedMaterial.DisableKeyword(CustomLocalTransformKeyword);
+                SetMaterialMode(_lastAppliedMaterial,false);
             }
 
             Matrix4x4 localToWorld = transform.localToWorldMatrix;
             Matrix4x4 worldToLocal = transform.worldToLocalMatrix;
 
-            material.SetMatrix(CustomLocalTransformLocalToWorldId, localToWorld);
-            material.SetMatrix(CustomLocalTransformWorldToLocalId, worldToLocal);
-            material.EnableKeyword(CustomLocalTransformKeyword);
+            if(IsGraphMatrixProtocol(material))
+            {
+                for(int row=0;row<4;row++)
+                {
+                    material.SetVector(GraphLocalToWorldRowIds[row],localToWorld.GetRow(row));
+                    material.SetVector(GraphWorldToLocalRowIds[row],worldToLocal.GetRow(row));
+                }
+                SetMaterialMode(material,true);
+            }
+            else
+            {
+                material.SetMatrix(CustomLocalTransformLocalToWorldId, localToWorld);
+                material.SetMatrix(CustomLocalTransformWorldToLocalId, worldToLocal);
+                material.EnableKeyword(CustomLocalTransformKeyword);
+            }
 
             _lastAppliedMaterial = material;
             _lastWarning = null;
@@ -89,13 +113,9 @@ namespace NBShader
                 return;
             }
 
-            if (enabled)
+            SetMaterialMode(material,enabled);
+            if (!enabled)
             {
-                material.EnableKeyword(CustomLocalTransformKeyword);
-            }
-            else
-            {
-                material.DisableKeyword(CustomLocalTransformKeyword);
                 if (material == _lastAppliedMaterial)
                 {
                     _lastAppliedMaterial = null;
@@ -141,7 +161,7 @@ namespace NBShader
                 return false;
             }
 
-            if (material.shader == null || !IsSupportedShader(material.shader))
+            if (material.shader == null || (!IsSupportedShader(material.shader) && !IsGraphMatrixProtocol(material)))
             {
                 material = null;
                 LogWarningOnce("NBParticleLocalTransformHelper only supports NBShader materials using shader '" +
@@ -155,6 +175,24 @@ namespace NBShader
         private static bool IsSupportedShader(Shader shader)
         {
             return shader.name == NBShaderName || shader.name == LegacyShaderName;
+        }
+
+        // Graph stores exposed rows in UnityPerMaterial; keep the same helper
+        // and lifecycle rather than a second global matrix writer or keyword.
+        private static bool IsGraphMatrixProtocol(Material material)
+        {
+            if(material==null || material.shader==null || material.shader.name!=GraphShaderName ||
+                !material.HasProperty(GraphCustomLocalToggleId))return false;
+            for(int row=0;row<4;row++)
+                if(!material.HasProperty(GraphLocalToWorldRowIds[row]) || !material.HasProperty(GraphWorldToLocalRowIds[row]))return false;
+            return true;
+        }
+        private static void SetMaterialMode(Material material,bool enabled)
+        {
+            if(material==null)return;
+            if(IsGraphMatrixProtocol(material))material.SetFloat(GraphCustomLocalToggleId,enabled?1f:0f);
+            else if(enabled)material.EnableKeyword(CustomLocalTransformKeyword);
+            else material.DisableKeyword(CustomLocalTransformKeyword);
         }
 
         private Material GetRuntimeMaterial()
@@ -174,7 +212,7 @@ namespace NBShader
                 return;
             }
 
-            _lastAppliedMaterial.DisableKeyword(CustomLocalTransformKeyword);
+            SetMaterialMode(_lastAppliedMaterial,false);
             _lastAppliedMaterial = null;
         }
 

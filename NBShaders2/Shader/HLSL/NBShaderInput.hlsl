@@ -266,6 +266,8 @@
     #define NB_CUSTOM_DATA_FLAG_2 _W9ParticleCustomDataFlag2
     #define NB_CUSTOM_DATA_FLAG_3 _W9ParticleCustomDataFlag3
 
+    #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderCoordinateSpaceV1.hlsl"
+
     float3x3 GetCustomLocalToWorld3x3()
     {
         return (float3x3)_CustomLocalTransformLocalToWorld;
@@ -279,7 +281,7 @@
     float3 TransformWorldToObject_NB(float3 positionWS)
     {
         #ifdef _CUSTOM_LOCAL_TRANSFORM
-            return mul(_CustomLocalTransformWorldToLocal, float4(positionWS, 1.0)).xyz;
+            return NBFX_MatrixWorldToLocalPositionV1(positionWS,_CustomLocalTransformWorldToLocal);
         #else
             return mul(unity_WorldToObject, float4(positionWS, 1.0)).xyz;
         #endif
@@ -288,7 +290,7 @@
     float3 TransformObjectToWorld_NB(float3 positionOS)
     {
         #ifdef _CUSTOM_LOCAL_TRANSFORM
-            return mul(_CustomLocalTransformLocalToWorld, float4(positionOS, 1.0)).xyz;
+            return NBFX_MatrixLocalToWorldPositionV1(positionOS,_CustomLocalTransformLocalToWorld);
         #else
             return mul(unity_ObjectToWorld, float4(positionOS, 1.0)).xyz;
         #endif
@@ -306,8 +308,7 @@
     float3 TransformWorldToObjectDir_NB(float3 dirWS, bool doNormalize = true)
     {
         #ifdef _CUSTOM_LOCAL_TRANSFORM
-            float3 dirOS = mul(GetCustomWorldToLocal3x3(), dirWS);
-            return doNormalize ? SafeNormalize(dirOS) : dirOS;
+            return NBFX_MatrixWorldToLocalDirV1(dirWS,_CustomLocalTransformWorldToLocal,doNormalize);
         #else
             float3 dirOS = mul((float3x3)unity_WorldToObject, dirWS);
             return doNormalize ? SafeNormalize(dirOS) : dirOS;
@@ -317,7 +318,7 @@
     float3 TransformWorldToObjectNormal_NB(float3 normalWS)
     {
         #ifdef _CUSTOM_LOCAL_TRANSFORM
-            return SafeNormalize(mul(normalWS, GetCustomLocalToWorld3x3()));
+            return NBFX_MatrixWorldToLocalNormalV1(normalWS,_CustomLocalTransformLocalToWorld);
         #else
             return SafeNormalize(mul(normalWS, (float3x3)unity_ObjectToWorld));
         #endif
@@ -326,8 +327,7 @@
     float3 TransformObjectToWorldDir_NB(float3 dirOS, bool doNormalize = true)
     {
         #ifdef _CUSTOM_LOCAL_TRANSFORM
-            float3 dirWS = mul(GetCustomLocalToWorld3x3(), dirOS);
-            return doNormalize ? SafeNormalize(dirWS) : dirWS;
+            return NBFX_MatrixLocalToWorldDirV1(dirOS,_CustomLocalTransformLocalToWorld,doNormalize);
         #else
             return TransformObjectToWorldDir(dirOS, doNormalize);
         #endif
@@ -336,7 +336,7 @@
     float3 TransformObjectToWorldNormal_NB(float3 normalOS)
     {
         #ifdef _CUSTOM_LOCAL_TRANSFORM
-            return SafeNormalize(mul(normalOS, GetCustomWorldToLocal3x3()));
+            return NBFX_MatrixLocalToWorldNormalV1(normalOS,_CustomLocalTransformWorldToLocal);
         #else
             return TransformObjectToWorldNormal(normalOS);
         #endif
@@ -362,7 +362,7 @@
     float GetCustomLocalOddNegativeScale()
     {
         #ifdef _CUSTOM_LOCAL_TRANSFORM
-            return determinant(GetCustomLocalToWorld3x3()) < 0.0 ? -1.0 : 1.0;
+            return NBFX_MatrixOddNegativeScaleV1(_CustomLocalTransformLocalToWorld);
         #else
             return GetOddNegativeScale();
         #endif

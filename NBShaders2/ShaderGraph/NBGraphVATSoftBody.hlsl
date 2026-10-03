@@ -1,5 +1,6 @@
 #ifndef NB_GRAPH_VAT_SOFTBODY_INCLUDED
 #define NB_GRAPH_VAT_SOFTBODY_INCLUDED
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/HoudiniVATKernelV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphFlags.hlsl"
 #define NB_GRAPH_VAT_HOST 1
@@ -154,11 +155,28 @@ void NBGraphVATSoftBody_float(float3 PositionOS, float3 NormalOS, float4 UV1,
 // actual post-VAT normal to SixWay vertex SH; VAT-off is exact passthrough.
 void NBGraphVATWorldBasis_float(float3 VATNormalOS, float3 RawNormalWS,
     float3 RawTangentWS, float3 RawBitangentWS, float VATToggle,
-    float Supported, out float3 NormalWS, out float3 TangentWS,
+    float Supported, float3 CustomTangentOS,float CustomSign,
+    float CustomLocalToggle,
+    float4 LocalToWorld0,
+    float4 LocalToWorld1,
+    float4 LocalToWorld2,
+    float4 LocalToWorld3,
+    float4 WorldToLocal0,
+    float4 WorldToLocal1,
+    float4 WorldToLocal2,
+    float4 WorldToLocal3,
+    out float3 NormalWS, out float3 TangentWS,
     out float3 BitangentWS)
 {
     NormalWS=RawNormalWS; TangentWS=RawTangentWS;
     BitangentWS=RawBitangentWS;
+    if(CustomLocalToggle>0.5)
+    {
+        NormalWS=NBFX_MatrixLocalToWorldNormalV1(VATNormalOS,float4x4(WorldToLocal0,WorldToLocal1,WorldToLocal2,WorldToLocal3));
+        TangentWS=NBFX_MatrixLocalToWorldDirV1(CustomTangentOS,float4x4(LocalToWorld0,LocalToWorld1,LocalToWorld2,LocalToWorld3),true);
+        BitangentWS=CustomSign*cross(NormalWS,TangentWS);
+        return;
+    }
 #if !defined(NB_GRAPH_NO_VAT)
     if (VATToggle < 0.5 || Supported < 0.5) return;
     NormalWS=TransformObjectToWorldNormal(VATNormalOS);

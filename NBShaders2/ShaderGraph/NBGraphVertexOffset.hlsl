@@ -1,5 +1,6 @@
 #ifndef NB_GRAPH_VERTEX_OFFSET_INCLUDED
 #define NB_GRAPH_VERTEX_OFFSET_INCLUDED
+#include "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl"
 
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderUVV1.hlsl"
 #include "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/HLSL/NBShaderGeometryV1.hlsl"
@@ -61,6 +62,15 @@ void NBGraphVertexOffset_float(
     float CustomDataFlag2Hi16,
     float CustomDataFlag3Lo16,
     float CustomDataFlag3Hi16,
+    float CustomLocalToggle,
+    float4 LocalToWorld0,
+    float4 LocalToWorld1,
+    float4 LocalToWorld2,
+    float4 LocalToWorld3,
+    float4 WorldToLocal0,
+    float4 WorldToLocal1,
+    float4 WorldToLocal2,
+    float4 WorldToLocal3,
     out float3 OutPositionOS, out float3 OutNormalOS,
     out float3 OutTangentOS, out float Supported)
 {
@@ -98,8 +108,8 @@ void NBGraphVertexOffset_float(
     uvInput.custom2 = UV2;
     uvInput.specialUVInTexcoord3 = UV3.yz;
     uvInput.positionOS = PositionOS;
-    uvInput.positionWS = TransformObjectToWorld(PositionOS);
-    float4 clipPosition = TransformObjectToHClip(PositionOS);
+    uvInput.positionWS = NBGraphLocalToWorldPositionV1(PositionOS,CustomLocalToggle,LocalToWorld0,LocalToWorld1,LocalToWorld2,LocalToWorld3);
+    float4 clipPosition = NBGraphLocalToHClipV1(PositionOS,CustomLocalToggle,LocalToWorld0,LocalToWorld1,LocalToWorld2,LocalToWorld3);
     uvInput.screenUV = clipPosition.xy / clipPosition.w;
     uvInput.screenUV = uvInput.screenUV * 0.5 + 0.5;
     NBFX_BaseUVParamsV1 uvParams = (NBFX_BaseUVParamsV1)0;
@@ -177,7 +187,11 @@ void NBGraphVertexOffset_float(
         maskWeight = lerp(1.0h, maskScalar, (half)VertexOffsetMaskVec.z);
     }
     if ((directionMode == 2 || directionMode == 3) && VertexOffsetDirectionSpace > 0.5)
-        direction = mul((float3x3)unity_WorldToObject, direction);
+    {
+        if(CustomLocalToggle>0.5)
+            direction=NBFX_MatrixWorldToLocalDirV1(direction,float4x4(WorldToLocal0,WorldToLocal1,WorldToLocal2,WorldToLocal3),false);
+        else direction=mul((float3x3)unity_WorldToObject,direction);
+    }
 
     NBFX_VertexOffsetPreparedV1 prepared = (NBFX_VertexOffsetPreparedV1)0;
     prepared.normalOS = (half3)NormalOS;
