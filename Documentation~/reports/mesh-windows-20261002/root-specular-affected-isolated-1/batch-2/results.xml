@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Failed(Child)" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 06:57:47Z" end-time="2026-10-03 06:58:05Z" duration="17.6076354">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2361" result="Failed" site="Child" start-time="2026-10-03 06:57:47Z" end-time="2026-10-03 06:58:05Z" duration="17.607635" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3557" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2342" result="Failed" site="Child" start-time="2026-10-03 06:57:47Z" end-time="2026-10-03 06:58:05Z" duration="17.469801" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="13360" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="3558" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2342" result="Failed" site="Child" start-time="2026-10-03 06:57:47Z" end-time="2026-10-03 06:58:05Z" duration="17.381821" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="3559" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2342" result="Failed" site="Child" start-time="2026-10-03 06:57:48Z" end-time="2026-10-03 06:58:05Z" duration="17.291343" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="3560" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2342" result="Failed" site="Child" start-time="2026-10-03 06:57:48Z" end-time="2026-10-03 06:58:05Z" duration="17.225397" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="2163" name="G4GraphNormalMapTests" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" testcasecount="44" result="Failed" site="Child" start-time="2026-10-03 06:57:51Z" end-time="2026-10-03 06:58:05Z" duration="14.332859" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="2208" name="CurvedMeshNormalMapMatchesFrozenAndGraph" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" testcasecount="44" result="Failed" site="Child" start-time="2026-10-03 06:57:51Z" end-time="2026-10-03 06:58:05Z" duration="14.324119" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="2180" name="G4NormalMapABC_fresnel-backface_ortho" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-backface_ortho" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="1003261511" result="Failed" start-time="2026-10-03 06:57:51Z" end-time="2026-10-03 06:57:53Z" duration="1.800963" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Graph normal-map B/C mismatch.
+  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008ba] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:196
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"fresnel-backface-ortho","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":1,"abControlDifferences":0,"bcControlDifferences":2798,"frozenVisible":4096,"currentVisible":4096,"graphVisible":4096,"frozenPositivePixels":3305,"currentPositivePixels":3305,"graphPositivePixels":3310,"abMax":0.0,"bcMax":0.00048828125,"abControlMax":0.0,"bcControlMax":0.0009765625,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.2255859375,"currentControl":0.2255859375,"graphControl":0.22607421875,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2181" name="G4NormalMapABC_fresnel-backface_perspective" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-backface_perspective" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="386567680" result="Failed" start-time="2026-10-03 06:57:53Z" end-time="2026-10-03 06:57:53Z" duration="0.554534" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  2450
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008d6] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:197
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"fresnel-backface-perspective","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":0,"abControlDifferences":0,"bcControlDifferences":2450,"frozenVisible":3560,"currentVisible":3560,"graphVisible":3560,"frozenPositivePixels":2717,"currentPositivePixels":2717,"graphPositivePixels":2722,"abMax":0.0,"bcMax":0.0,"abControlMax":0.0,"bcControlMax":0.0009765625,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.21923828125,"currentControl":0.21923828125,"graphControl":0.2197265625,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2182" name="G4NormalMapABC_fresnel-negative-scale_ortho" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-negative-scale_ortho" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="184145997" result="Failed" start-time="2026-10-03 06:57:53Z" end-time="2026-10-03 06:57:54Z" duration="0.556259" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008a8] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:195
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"fresnel-negative-scale-ortho","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":1,"abControlDifferences":1,"bcControlDifferences":811,"frozenVisible":4096,"currentVisible":4096,"graphVisible":4096,"frozenPositivePixels":3770,"currentPositivePixels":3770,"graphPositivePixels":3768,"abMax":0.0,"bcMax":0.00048828125,"abControlMax":0.000244140625,"bcControlMax":0.00048828125,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.20166015625,"currentControl":0.20166015625,"graphControl":0.20166015625,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2183" name="G4NormalMapABC_fresnel-negative-scale_perspective" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-negative-scale_perspective" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="1086664243" result="Failed" start-time="2026-10-03 06:57:54Z" end-time="2026-10-03 06:57:54Z" duration="0.537653" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Pure ShaderLab extraction A/B mismatch.
+  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x0088c] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:194
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"fresnel-negative-scale-perspective","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":1,"bcDifferences":0,"abControlDifferences":1,"bcControlDifferences":1011,"frozenVisible":4031,"currentVisible":4031,"graphVisible":4031,"frozenPositivePixels":3679,"currentPositivePixels":3679,"graphPositivePixels":3676,"abMax":0.00048828125,"bcMax":0.0,"abControlMax":0.000244140625,"bcControlMax":0.00048828125,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.20556640625,"currentControl":0.20556640625,"graphControl":0.20556640625,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2184" name="G4NormalMapABC_fresnel-nonuniform_ortho" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-nonuniform_ortho" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="1992501161" result="Failed" start-time="2026-10-03 06:57:54Z" end-time="2026-10-03 06:57:55Z" duration="0.515813" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Graph normal-map B/C mismatch.
+  Expected: 0
+  But was:  2
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008ba] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:196
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"fresnel-nonuniform-ortho","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":2,"abControlDifferences":0,"bcControlDifferences":2998,"frozenVisible":3640,"currentVisible":3640,"graphVisible":3640,"frozenPositivePixels":3130,"currentPositivePixels":3130,"graphPositivePixels":3127,"abMax":0.0,"bcMax":0.00048828125,"abControlMax":0.0,"bcControlMax":0.00244140625,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.17919921875,"currentControl":0.17919921875,"graphControl":0.1796875,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2185" name="G4NormalMapABC_fresnel-nonuniform_perspective" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-nonuniform_perspective" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="1624206504" result="Failed" start-time="2026-10-03 06:57:55Z" end-time="2026-10-03 06:57:55Z" duration="0.516073" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Graph normal-map B/C mismatch.
+  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008ba] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:196
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"fresnel-nonuniform-perspective","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":1,"abControlDifferences":0,"bcControlDifferences":2202,"frozenVisible":2607,"currentVisible":2607,"graphVisible":2607,"frozenPositivePixels":2205,"currentPositivePixels":2205,"graphPositivePixels":2203,"abMax":0.0,"bcMax":0.00048828125,"abControlMax":0.0,"bcControlMax":0.00244140625,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.19873046875,"currentControl":0.19873046875,"graphControl":0.19873046875,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2186" name="G4NormalMapABC_matcap-uv0_ortho" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_matcap-uv0_ortho" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="1420217163" result="Failed" start-time="2026-10-03 06:57:55Z" end-time="2026-10-03 06:57:58Z" duration="2.993683" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Graph normal-map B/C mismatch.
+  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008ba] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:196
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"matcap-uv0-ortho","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":1,"abControlDifferences":0,"bcControlDifferences":1045,"frozenVisible":4096,"currentVisible":4096,"graphVisible":4096,"frozenPositivePixels":3988,"currentPositivePixels":3988,"graphPositivePixels":3988,"abMax":0.0,"bcMax":0.000244140625,"abControlMax":0.0,"bcControlMax":0.00048828125,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.13916015625,"currentControl":0.13916015625,"graphControl":0.13916015625,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2187" name="G4NormalMapABC_matcap-uv0_perspective" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_matcap-uv0_perspective" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="727111892" result="Failed" start-time="2026-10-03 06:57:58Z" end-time="2026-10-03 06:57:59Z" duration="0.603880" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Pure ShaderLab extraction A/B mismatch.
+  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x0088c] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:194
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"matcap-uv0-perspective","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":1,"bcDifferences":0,"abControlDifferences":0,"bcControlDifferences":860,"frozenVisible":3450,"currentVisible":3450,"graphVisible":3450,"frozenPositivePixels":3314,"currentPositivePixels":3314,"graphPositivePixels":3315,"abMax":0.00048828125,"bcMax":0.0,"abControlMax":0.0,"bcControlMax":0.00048828125,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.138671875,"currentControl":0.138671875,"graphControl":0.138671875,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2188" name="G4NormalMapABC_matcap-mask-mode_ortho" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_matcap-mask-mode_ortho" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="731461607" result="Failed" start-time="2026-10-03 06:57:59Z" end-time="2026-10-03 06:58:00Z" duration="0.681996" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008d6] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:197
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"matcap-mask-mode-ortho","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":true,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":0,"abControlDifferences":0,"bcControlDifferences":1,"frozenVisible":4096,"currentVisible":4096,"graphVisible":4096,"frozenPositivePixels":4096,"currentPositivePixels":4096,"graphPositivePixels":4096,"abMax":0.0,"bcMax":0.0,"abControlMax":0.0,"bcControlMax":0.000244140625,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.06396484375,"currentControl":0.06396484375,"graphControl":0.06396484375,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2189" name="G4NormalMapABC_matcap-mask-mode_perspective" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_matcap-mask-mode_perspective" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="1863879662" result="Failed" start-time="2026-10-03 06:58:00Z" end-time="2026-10-03 06:58:00Z" duration="0.568236" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008a8] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:195
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"matcap-mask-mode-perspective","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":true,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":0,"abControlDifferences":1,"bcControlDifferences":0,"frozenVisible":3450,"currentVisible":3450,"graphVisible":3450,"frozenPositivePixels":3450,"currentPositivePixels":3450,"graphPositivePixels":3450,"abMax":0.0,"bcMax":0.0,"abControlMax":0.00048828125,"bcControlMax":0.0,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.063720703125,"currentControl":0.063720703125,"graphControl":0.063720703125,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2190" name="G4NormalMapABC_matcap-backface_ortho" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_matcap-backface_ortho" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="865847160" result="Failed" start-time="2026-10-03 06:58:00Z" end-time="2026-10-03 06:58:01Z" duration="0.641506" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  671
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008d6] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:197
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"matcap-backface-ortho","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":0,"abControlDifferences":0,"bcControlDifferences":671,"frozenVisible":4096,"currentVisible":4096,"graphVisible":4096,"frozenPositivePixels":3992,"currentPositivePixels":3992,"graphPositivePixels":3991,"abMax":0.0,"bcMax":0.0,"abControlMax":0.0,"bcControlMax":0.00048828125,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.126953125,"currentControl":0.126953125,"graphControl":0.126953125,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2191" name="G4NormalMapABC_matcap-backface_perspective" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_matcap-backface_perspective" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="1498472953" result="Failed" start-time="2026-10-03 06:58:01Z" end-time="2026-10-03 06:58:01Z" duration="0.570860" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  599
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008d6] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:197
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"matcap-backface-perspective","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":0,"abControlDifferences":0,"bcControlDifferences":599,"frozenVisible":3560,"currentVisible":3560,"graphVisible":3560,"frozenPositivePixels":3442,"currentPositivePixels":3442,"graphPositivePixels":3442,"abMax":0.0,"bcMax":0.0,"abControlMax":0.0,"bcControlMax":0.00048828125,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.12451171875,"currentControl":0.12451171875,"graphControl":0.12451171875,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2192" name="G4NormalMapABC_both-uv2_ortho" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_both-uv2_ortho" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="1060193595" result="Failed" start-time="2026-10-03 06:58:01Z" end-time="2026-10-03 06:58:03Z" duration="1.667095" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Pure ShaderLab extraction A/B mismatch.
+  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x0088c] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:194
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"both-uv2-ortho","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":1,"sharedMode":0,"specialStream":2,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":2,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":1,"bcDifferences":1,"abControlDifferences":1,"bcControlDifferences":0,"frozenVisible":4096,"currentVisible":4096,"graphVisible":4096,"frozenPositivePixels":3899,"currentPositivePixels":3899,"graphPositivePixels":3899,"abMax":0.00048828125,"bcMax":0.00048828125,"abControlMax":0.000244140625,"bcControlMax":0.0,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.259033203125,"currentControl":0.259033203125,"graphControl":0.259033203125,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2193" name="G4NormalMapABC_both-uv2_perspective" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_both-uv2_perspective" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="157932573" result="Failed" start-time="2026-10-03 06:58:03Z" end-time="2026-10-03 06:58:04Z" duration="0.558991" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008a8] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:195
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"both-uv2-perspective","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":1,"sharedMode":0,"specialStream":2,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":2,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":1,"abControlDifferences":1,"bcControlDifferences":1,"frozenVisible":3450,"currentVisible":3450,"graphVisible":3450,"frozenPositivePixels":3159,"currentPositivePixels":3159,"graphPositivePixels":3159,"abMax":0.0,"bcMax":0.00048828125,"abControlMax":0.00048828125,"bcControlMax":0.00048828125,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.269287109375,"currentControl":0.269287109375,"graphControl":0.269287109375,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2194" name="G4NormalMapABC_both-polar_ortho" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_both-polar_ortho" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="690813407" result="Failed" start-time="2026-10-03 06:58:04Z" end-time="2026-10-03 06:58:04Z" duration="0.676416" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008a8] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:195
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"both-polar-ortho","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":2,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":true,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":true,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":1,"abControlDifferences":1,"bcControlDifferences":0,"frozenVisible":4096,"currentVisible":4096,"graphVisible":4096,"frozenPositivePixels":3986,"currentPositivePixels":3986,"graphPositivePixels":3986,"abMax":0.0,"bcMax":0.00048828125,"abControlMax":0.000244140625,"bcControlMax":0.0,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.20556640625,"currentControl":0.20556640625,"graphControl":0.20556640625,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2195" name="G4NormalMapABC_both-polar_perspective" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_both-polar_perspective" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="963027531" result="Failed" start-time="2026-10-03 06:58:04Z" end-time="2026-10-03 06:58:05Z" duration="0.573392" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008a8] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:195
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"both-polar-perspective","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":2,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":true,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":true,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":0,"abControlDifferences":1,"bcControlDifferences":1,"frozenVisible":3450,"currentVisible":3450,"graphVisible":3450,"frozenPositivePixels":3313,"currentPositivePixels":3313,"graphPositivePixels":3313,"abMax":0.0,"bcMax":0.0,"abControlMax":0.00048828125,"bcControlMax":0.00048828125,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.216796875,"currentControl":0.216796875,"graphControl":0.216796875,"finite":true}
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 07:08:36Z" end-time="2026-10-03 07:08:55Z" duration="19.5148545">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2361" result="Passed" start-time="2026-10-03 07:08:36Z" end-time="2026-10-03 07:08:55Z" duration="19.514855" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3557" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2342" result="Passed" start-time="2026-10-03 07:08:36Z" end-time="2026-10-03 07:08:55Z" duration="19.407140" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="18468" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="3558" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2342" result="Passed" start-time="2026-10-03 07:08:36Z" end-time="2026-10-03 07:08:55Z" duration="19.338658" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="3559" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2342" result="Passed" start-time="2026-10-03 07:08:36Z" end-time="2026-10-03 07:08:55Z" duration="19.255447" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="3560" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2342" result="Passed" start-time="2026-10-03 07:08:36Z" end-time="2026-10-03 07:08:55Z" duration="19.168222" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="2361" name="G4GraphOverrideDepthSourceTests" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthSourceTests" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthSourceTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-03 07:08:37Z" end-time="2026-10-03 07:08:48Z" duration="11.462738" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="2362" name="G4OverrideZSource_generated_pass_scope" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthSourceTests.G4OverrideZSource_generated_pass_scope" methodname="G4OverrideZSource_generated_pass_scope" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthSourceTests" runstate="Runnable" seed="847054745" result="Passed" start-time="2026-10-03 07:08:37Z" end-time="2026-10-03 07:08:40Z" duration="3.335635" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[NBFX_OVERRIDEZ_SOURCE {
+    "scope": "Installed Mesh Graph generated Pass/pragma/source checks only; no image/runtime/Player/performance claim.",
+    "unity": "6000.3.25f1",
+    "api": "Direct3D11",
+    "resolvedPackage": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Packages\\NB_FX",
+    "generatedSHA256": "735cffeb4b98c425047046f0ec50688a64a884a5531587b627c247b6acd2d0a4",
+    "inputFiles": [
+        {
+            "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+            "sha256": "180e86ef57d62884a46e5b0a8b61ef2e64538fc6a92c17f66d8afef84807ea32"
+        },
+        {
+            "path": "NBShaders2/ShaderGraph/Passes/NBGraphForwardPass.hlsl",
+            "sha256": "60bf8db7900991468c8c3abf94eaa8b5ea5737ef4cae2327351deee9ac1aa35d"
+        },
+        {
+            "path": "NBShaders2/ShaderGraph/NBGraphOverrideDepth.hlsl",
+            "sha256": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1"
+        },
+        {
+            "path": "NBShaders2/Shader/HLSL/NBShaderOverrideDepthV1.hlsl",
+            "sha256": "d21685e999ee9aeddf80c3cfcc2b6cab76be35644fad3eb6283233ea7e1e35d4"
+        }
+    ],
+    "passes": [
+        {
+            "name": "Universal Forward",
+            "lightMode": "<None>",
+            "overridePragmas": [
+                "#pragma shader_feature_local_fragment _ _OVERRIDE_Z"
+            ]
+        },
+        {
+            "name": "NBCameraOpaqueDistortPass",
+            "lightMode": "NBCameraOpaqueDistortPass",
+            "overridePragmas": []
+        },
+        {
+            "name": "NBDeferredDistortPass",
+            "lightMode": "NBDeferredDistortPass",
+            "overridePragmas": []
+        },
+        {
+            "name": "DepthOnly",
+            "lightMode": "DepthOnly",
+            "overridePragmas": []
+        },
+        {
+            "name": "MotionVectors",
+            "lightMode": "MotionVectors",
+            "overridePragmas": []
+        },
+        {
+            "name": "DepthNormalsOnly",
+            "lightMode": "DepthNormalsOnly",
+            "overridePragmas": []
+        },
+        {
+            "name": "ShadowCaster",
+            "lightMode": "ShadowCaster",
+            "overridePragmas": []
+        },
+        {
+            "name": "GBuffer",
+            "lightMode": "UniversalGBuffer",
+            "overridePragmas": []
+        },
+        {
+            "name": "SceneSelectionPass",
+            "lightMode": "SceneSelectionPass",
+            "overridePragmas": []
+        },
+        {
+            "name": "ScenePickingPass",
+            "lightMode": "Picking",
+            "overridePragmas": []
+        }
+    ]
+}
+]]></output>
+              </test-case>
+              <test-case id="2363" name="G4OverrideZSource_srp_batcher_codes" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthSourceTests.G4OverrideZSource_srp_batcher_codes" methodname="G4OverrideZSource_srp_batcher_codes" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthSourceTests" runstate="Runnable" seed="171224710" result="Passed" start-time="2026-10-03 07:08:40Z" end-time="2026-10-03 07:08:48Z" duration="8.101952" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+NBFX_OVERRIDEZ_SOURCE {
+    "scope": "Native ShaderUtil subShader0 SRP Batcher compatibility after real Mesh Graph warm. Code0=compatible as confirmed from this Editor's ShaderInspector IL; unknown is failure. No runtime/performance claim.",
+    "unity": "6000.3.25f1",
+    "api": "Direct3D11",
+    "codeSignature": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+    "reasonSignature": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+    "apiError": "",
+    "apiKnown": true,
+    "warmPerformed": true,
+    "warmError": "",
+    "graphBeforeWarm": {
+        "role": "graph-before-warm",
+        "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+        "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+        "reason": "Not initialized ()",
+        "error": "",
+        "subShader": 0,
+        "code": 1,
+        "known": true,
+        "supported": true
+    },
+    "shaders": [
+        {
+            "role": "frozen",
+            "assetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+            "shaderName": "Effects/NBShader_T00_Frozen",
+            "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+            "error": "",
+            "subShader": 0,
+            "code": 10,
+            "known": true,
+            "supported": true
+        },
+        {
+            "role": "current",
+            "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "shaderName": "Effects/NBShader",
+            "reason": "",
+            "error": "",
+            "subShader": 0,
+            "code": 0,
+            "known": true,
+            "supported": true
+        },
+        {
+            "role": "graph",
+            "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+            "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+            "reason": "",
+            "error": "",
+            "subShader": 0,
+            "code": 0,
+            "known": true,
+            "supported": true
+        }
+    ]
+}
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="2364" name="G4GraphOverrideDepthTests" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-10-03 07:08:48Z" end-time="2026-10-03 07:08:55Z" duration="7.056458" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+]]></output>
+              <test-suite type="ParameterizedMethod" id="2381" name="OverrideZ_RealDepthOcclusionABC" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-10-03 07:08:54Z" end-time="2026-10-03 07:08:55Z" duration="1.071651" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="2379" name="G4OverrideZABC_on_d50_ortho" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_on_d50_ortho" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="477009686" result="Passed" start-time="2026-10-03 07:08:54Z" end-time="2026-10-03 07:08:55Z" duration="0.593190" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":true,"enabled":true,"keywordAuthorityMismatch":false,"toggleEnabled":true,"depth":50.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"probeVisible":8464,"actorVisible":0}
+]]></output>
+                </test-case>
+                <test-case id="2380" name="G4OverrideZABC_on_d50_perspective" fullname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests.G4OverrideZABC_on_d50_perspective" methodname="OverrideZ_RealDepthOcclusionABC" classname="NBFX.Baseline.Tests.G4GraphOverrideDepthTests" runstate="Runnable" seed="1542672008" result="Passed" start-time="2026-10-03 07:08:55Z" end-time="2026-10-03 07:08:55Z" duration="0.447266" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_OVERRIDEZ {"api":"Direct3D11","unityVersion":"6000.3.25f1","scope":"NormalForward conditionalSVDepth andactualgreenprobe occlusion; clampednear/far, disabledkeyword propertyinvariance. NoBackfaceextraPass/VFX/Player/perfclaim","finite":true,"orthographic":false,"enabled":true,"keywordAuthorityMismatch":false,"toggleEnabled":true,"depth":50.0,"ab":0.0,"bc":0.0,"abControl":0.0,"bcControl":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":1.0,"bResponse":1.0,"cResponse":1.0,"probeVisible":3136,"actorVisible":0}
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

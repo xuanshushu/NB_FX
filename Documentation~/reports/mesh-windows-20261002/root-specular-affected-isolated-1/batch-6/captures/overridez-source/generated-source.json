@@ -1,0 +1,79 @@
+{
+    "scope": "Installed Mesh Graph generated Pass/pragma/source checks only; no image/runtime/Player/performance claim.",
+    "unity": "6000.3.25f1",
+    "api": "Direct3D11",
+    "resolvedPackage": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Packages\\NB_FX",
+    "generatedSHA256": "735cffeb4b98c425047046f0ec50688a64a884a5531587b627c247b6acd2d0a4",
+    "inputFiles": [
+        {
+            "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+            "sha256": "180e86ef57d62884a46e5b0a8b61ef2e64538fc6a92c17f66d8afef84807ea32"
+        },
+        {
+            "path": "NBShaders2/ShaderGraph/Passes/NBGraphForwardPass.hlsl",
+            "sha256": "60bf8db7900991468c8c3abf94eaa8b5ea5737ef4cae2327351deee9ac1aa35d"
+        },
+        {
+            "path": "NBShaders2/ShaderGraph/NBGraphOverrideDepth.hlsl",
+            "sha256": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1"
+        },
+        {
+            "path": "NBShaders2/Shader/HLSL/NBShaderOverrideDepthV1.hlsl",
+            "sha256": "d21685e999ee9aeddf80c3cfcc2b6cab76be35644fad3eb6283233ea7e1e35d4"
+        }
+    ],
+    "passes": [
+        {
+            "name": "Universal Forward",
+            "lightMode": "<None>",
+            "overridePragmas": [
+                "#pragma shader_feature_local_fragment _ _OVERRIDE_Z"
+            ]
+        },
+        {
+            "name": "NBCameraOpaqueDistortPass",
+            "lightMode": "NBCameraOpaqueDistortPass",
+            "overridePragmas": []
+        },
+        {
+            "name": "NBDeferredDistortPass",
+            "lightMode": "NBDeferredDistortPass",
+            "overridePragmas": []
+        },
+        {
+            "name": "DepthOnly",
+            "lightMode": "DepthOnly",
+            "overridePragmas": []
+        },
+        {
+            "name": "MotionVectors",
+            "lightMode": "MotionVectors",
+            "overridePragmas": []
+        },
+        {
+            "name": "DepthNormalsOnly",
+            "lightMode": "DepthNormalsOnly",
+            "overridePragmas": []
+        },
+        {
+            "name": "ShadowCaster",
+            "lightMode": "ShadowCaster",
+            "overridePragmas": []
+        },
+        {
+            "name": "GBuffer",
+            "lightMode": "UniversalGBuffer",
+            "overridePragmas": []
+        },
+        {
+            "name": "SceneSelectionPass",
+            "lightMode": "SceneSelectionPass",
+            "overridePragmas": []
+        },
+        {
+            "name": "ScenePickingPass",
+            "lightMode": "Picking",
+            "overridePragmas": []
+        }
+    ]
+}

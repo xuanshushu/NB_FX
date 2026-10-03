@@ -1,0 +1,45 @@
+{
+  "scope": "Independent source diagnosis of constructor/Configure/Pass Name before first real Render; no runtime conclusion",
+  "rootReportedActual137Result": {
+    "reader117Passed": 117,
+    "specCPU12Passed": 12,
+    "GPU8FailedBeforeAnyCapture": 8,
+    "failure": "Harness.ResolveForwardTag Graph FindPass(Universal Forward)=-1; one Unnamed Pass0; real Graph shader name; only SURFACE_TYPE_TRANSPARENT",
+    "originalXMLAndLogMustRemainUnchanged": true
+  },
+  "verifiedSourceChain": [
+    "URP17.3 UnlitPasses.Forward displayName Universal Forward",
+    "SG Generator PassName splice emits ShaderLab Name from pass.displayName; LightMode is a separate tag",
+    "NBSubTarget keeps Forward displayName and copies keyword collection",
+    "shared Harness Configure and Resolve occur before RT creation and any Camera.Render",
+    "old G4Lighting and existing real GUI1B/SRP warm path perform actual URP draw before FindPass readiness"
+  ],
+  "primaryInferenceNotEstablished": "The runtime pipeline/active subshader fallback may still be uninitialized before Render. Import/lazy cache or a same-name loaded Shader remain alternatives; no pass rename is justified.",
+  "diagnosticStages": [
+    "before exact import",
+    "after exact import before config",
+    "after original Configure",
+    "original Resolve boundary without render",
+    "before empty background render",
+    "after four real empty background renders same Shader/Material objects",
+    "after asset relookup without reimport",
+    "after actual generated ShaderLab query"
+  ],
+  "collectedState": [
+    "actual source9+repair SHA",
+    "Project/TAI guards before import and warm",
+    "real asset paths/GUIDs/Shader support/errors",
+    "Shader and Material pass Name plus LightMode, runtime and serialized ShaderData",
+    "Shader.globalRenderPipeline and RenderPipelineManager.currentPipeline before/after each query stage",
+    "actual shader keywords, Shader.Find identity, all loaded same-name Shader identities",
+    "generated ShaderLab Pass Name and LightMode text without constructing a fake Shader"
+  ],
+  "diagnosticDoesNotAssertLightingSuccess": true,
+  "noGPUAssertionsChanged": true,
+  "ranUnity": false,
+  "compiledCSharp": false,
+  "officialAPIReferences": [
+    "https://raw.githubusercontent.com/Unity-Technologies/UnityCsReference/6000.3/Editor/Mono/ShaderUtil.cs",
+    "https://raw.githubusercontent.com/Unity-Technologies/UnityCsReference/6000.3/Runtime/Export/Shaders/Shader.bindings.cs"
+  ]
+}

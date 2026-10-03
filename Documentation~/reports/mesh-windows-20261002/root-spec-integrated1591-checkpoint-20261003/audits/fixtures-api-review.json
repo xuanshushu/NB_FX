@@ -1,0 +1,256 @@
+{
+  "scope": "Independent Spec20 + shared fixture4 source/strict control/API and exact repair SHA review",
+  "originalFixtureFourManifestRows": [
+    {
+      "path": "Tests/URP/Editor/G4GraphSpecularDebugFixture.cs",
+      "beforeSHA256": null,
+      "expectedMissingBefore": true,
+      "afterSHA256": "ef0b64ad51e6fba32e824ce83b412334b1c8e7fbdebf0fcbb0be6ae07821c855",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-specular-debug-rebase-20261003\\tests\\Tests\\URP\\Editor\\G4GraphSpecularDebugFixture.cs"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphSpecularDebugFixture.cs.meta",
+      "beforeSHA256": null,
+      "expectedMissingBefore": true,
+      "afterSHA256": "48149320add271f05ffdc0fdd39b72f3ab541ff8e7daf961208cd7ea90975504",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-specular-debug-rebase-20261003\\tests\\Tests\\URP\\Editor\\G4GraphSpecularDebugFixture.cs.meta"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphSpecularTests.cs",
+      "beforeSHA256": null,
+      "expectedMissingBefore": true,
+      "afterSHA256": "081a16db224f22ccc5fdfa3087240f0b8f3d803bdb6be140ce895e7d2c41e5eb",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-specular-debug-rebase-20261003\\tests\\Tests\\URP\\Editor\\G4GraphSpecularTests.cs"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphSpecularTests.cs.meta",
+      "beforeSHA256": null,
+      "expectedMissingBefore": true,
+      "afterSHA256": "a716e461c69bd6471fb2dbff4f4e770cb101674ed7b938de994f3328bad68f93",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-specular-debug-rebase-20261003\\tests\\Tests\\URP\\Editor\\G4GraphSpecularTests.cs.meta"
+    }
+  ],
+  "dependencyG4GraphLightingConfigureMatchesSHA": true,
+  "spec20ExpectedIdentities": [
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_mode0_off",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_mode0_on",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_mode1_off",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_mode1_on",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_mode2_off",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_mode2_on",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_mode3_off",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_mode3_on",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_mode4_off",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_mode4_on",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_realFloatDefault0",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_CPU_declaredLocalKeyword",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode0_ortho",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode0_perspective",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode1_ortho",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode1_perspective",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode2_ortho",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode2_perspective",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode3_ortho",
+    "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode3_perspective"
+  ],
+  "sourceOnlyCPU12GPU8": true,
+  "originalSpecularSourceSHA256": "081a16db224f22ccc5fdfa3087240f0b8f3d803bdb6be140ce895e7d2c41e5eb",
+  "installedRepairedSpecularSourceSHA256": "942bba41d648b80d3172dcb6fb07a6497d4526660c51eb225b09aa5c5d54d2e1",
+  "repairOnlyTwoTestAttributesChanged": true,
+  "methodsNamesAndAllAssertionsExactRetained": true,
+  "strictGraphicsChecks": {
+    "finiteAllEmptyFramesRepeats": true,
+    "strictABBCRepeatZero": true,
+    "visibleAllStatesGreater128": true,
+    "restoreZero": true,
+    "allShadersNoError": true,
+    "realCameraRender": true,
+    "actualReadPixelsAndRawFloatGzip": true,
+    "independentToggleAndColorResponseEveryABC": true,
+    "zeroSpecColorEqualsOffABC": true,
+    "UnlitPBRInvariant": true,
+    "nativeGraphRealPassTagRead": true,
+    "restoreForwardAfterValidate": true,
+    "TAIGuardBeforeImport": true,
+    "noSkipOrErrorSuppression": true
+  },
+  "A": "Frozen NBShaders2 Shader",
+  "B": "current Native NBShaders2 Shader",
+  "C": "actual Graph Shader through existing ValidateMaterial entry",
+  "states": [
+    "off",
+    "on",
+    "zero SpecularColor",
+    "restored on"
+  ],
+  "cameras": [
+    "orthographic",
+    "perspective"
+  ],
+  "testedModeContracts": {
+    "BlinnPhongAndHalfLambert": "each A/B/C must respond independently to toggle and color by >0.001, black SpecularColor equals off exactly",
+    "UnlitAndPBR": "toggle/color responses exactly zero",
+    "SixWay": "CPU serialized keyword authority only; no GPU SixWay Spec claim"
+  },
+  "keywordDeclarationRuntimeTestLimitation": "keywordSpace names prove declaration; Local/Fragment/main-Forward scope is established statically by descriptor and pass-copy chain, not this test alone. Player/stripping/SVC/performance and full GUI remain unverified.",
+  "NUnitAPISourceReferences": [
+    "https://docs.nunit.org/articles/nunit/writing-tests/attributes/test.html",
+    "https://docs.nunit.org/articles/nunit/writing-tests/attributes/testcase.html"
+  ],
+  "futureAndSharedFixtureAPIRisks": [
+    {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-specular-debug-rebase-20261003\\tests\\Tests\\URP\\Editor\\G4GraphDebugTests.cs",
+      "sha256": "a5586a5c70a2a3c795b6b2b7a8ee4f6f7017b2cb8955cb63895ab9c4fa20f7c0",
+      "unsupportedTestNameOnTestAttributeCount": 6,
+      "matches": [
+        {
+          "line": 34,
+          "attribute": "[Test(TestName = \"G4Debug_CPU_multiIntentPreserved\")]"
+        },
+        {
+          "line": 47,
+          "attribute": "[Test(TestName = \"G4Debug_CPU_unknownMarkerRefusesNoop\")]"
+        },
+        {
+          "line": 60,
+          "attribute": "[Test(TestName = \"G4Debug_CPU_missingSchemaRefusesNoop\")]"
+        },
+        {
+          "line": 72,
+          "attribute": "[Test(TestName = \"G4Debug_CPU_supported35PassesEmpty\")]"
+        },
+        {
+          "line": 89,
+          "attribute": "[Test(TestName = \"G4Debug_CPU_sixDeclaredLocalKeywords\")]"
+        },
+        {
+          "line": 102,
+          "attribute": "[Test(TestName = \"G4Debug_CPU_repeatSyncNoop\")]"
+        }
+      ],
+      "compiledByThisReview": false
+    },
+    {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-specular-debug-rebase-20261003\\cl-compatible\\tests\\Tests\\URP\\Editor\\G4GraphDebugCustomLocalTests.cs",
+      "sha256": "49c1e4fd90820143b8cc0f596fa1d797c7c2177cfd2c221b8b834d284280fd25",
+      "unsupportedTestNameOnTestAttributeCount": 0,
+      "matches": [],
+      "compiledByThisReview": false
+    },
+    {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-shared-gui-layout-20261003\\tests\\Tests\\URP\\Editor\\G4GraphSharedLightModeGUITests.cs",
+      "sha256": "7c73ef78cac6fc0bcccee4162a1d9649b17150d001d0362f4f6e9b377881aa5c",
+      "unsupportedTestNameOnTestAttributeCount": 9,
+      "matches": [
+        {
+          "line": 83,
+          "attribute": "[Test(TestName = \"G4SharedLightModeGUI_ActualFactoryOnlyMode_ReadOnlyInit\")]"
+        },
+        {
+          "line": 97,
+          "attribute": "[Test(TestName = \"G4SharedLightModeGUI_IntegerModeRejects\")]"
+        },
+        {
+          "line": 99,
+          "attribute": "[Test(TestName = \"G4SharedLightModeGUI_UnknownMarkerRejects\")]"
+        },
+        {
+          "line": 105,
+          "attribute": "[Test(TestName = \"G4SharedLightModeGUI_MixedNativeGraphRejects\")]"
+        },
+        {
+          "line": 108,
+          "attribute": "[Test(TestName = \"G4SharedLightModeGUI_DifferentGraphShadersRejects\")]"
+        },
+        {
+          "line": 111,
+          "attribute": "[Test(TestName = \"G4SharedLightModeGUI_MixedFirstValue_MultiUndoRedo\")]"
+        },
+        {
+          "line": 126,
+          "attribute": "[Test(TestName = \"G4SharedLightModeGUI_ResetUsesDefaultAndSameSync\")]"
+        },
+        {
+          "line": 133,
+          "attribute": "[Test(TestName = \"G4SharedLightModeGUI_SaveAndExactReimport\")]"
+        },
+        {
+          "line": 142,
+          "attribute": "[Test(TestName = \"G4SharedLightModeGUI_SameValueNoop\")]"
+        }
+      ],
+      "compiledByThisReview": false
+    },
+    {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-gui-context-mode-20261003\\tests\\Tests\\URP\\Editor\\G4GraphContextFlipbookGUITests.cs",
+      "sha256": "02732c6710f36c506cecb7484cb710c5e1d00ff3b52b0a2567843bca7927167b",
+      "unsupportedTestNameOnTestAttributeCount": 11,
+      "matches": [
+        {
+          "line": 76,
+          "attribute": "[Test(TestName = \"G4ContextAnimation_MixedActualMaterials\")]"
+        },
+        {
+          "line": 81,
+          "attribute": "[Test(TestName = \"G4ContextAnimation_IntegerVAT_IsUnknown\")]"
+        },
+        {
+          "line": 83,
+          "attribute": "[Test(TestName = \"G4SharedFlipbook_ExistingItem_ReadOnlyFactory\")]"
+        },
+        {
+          "line": 86,
+          "attribute": "[Test(TestName = \"G4SharedFlipbook_EnableDisablesVAT_CompleteUndoRedo\")]"
+        },
+        {
+          "line": 94,
+          "attribute": "[Test(TestName = \"G4SharedFlipbook_MixedFirstValueUpdatesAll\")]"
+        },
+        {
+          "line": 97,
+          "attribute": "[Test(TestName = \"G4SharedFlipbook_SameValueNoop\")]"
+        },
+        {
+          "line": 99,
+          "attribute": "[Test(TestName = \"G4SharedFlipbook_UnknownMarkerRejects\")]"
+        },
+        {
+          "line": 101,
+          "attribute": "[Test(TestName = \"G4SharedFlipbook_NonFiniteBlendVectorRejects\")]"
+        },
+        {
+          "line": 103,
+          "attribute": "[Test(TestName = \"G4SharedFlipbook_GeneralGraphSyncStillProtected\")]"
+        },
+        {
+          "line": 106,
+          "attribute": "[Test(TestName = \"G4SharedFlipbook_SaveReimportActualMaterial\")]"
+        },
+        {
+          "line": 114,
+          "attribute": "[Test(TestName = \"G4SharedFlipbook_HelperLifecycleOwnsBit15AndST\")]"
+        }
+      ],
+      "compiledByThisReview": false
+    },
+    {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\shared-gui-review-20261003\\tests\\Tests\\URP\\Editor\\G4GraphSharedGUIEventTests.cs",
+      "sha256": "13a07d0271e361505c98192036b5bc8578e85e9cf88a468de0c087435c4fbac1",
+      "unsupportedTestNameOnTestAttributeCount": 0,
+      "matches": [],
+      "compiledByThisReview": false
+    }
+  ],
+  "rootReportedFirstActual137Attempt": {
+    "compileErrors": "Only Specular fixture original lines39/51 TestAttribute.TestName unsupported; root reported two compiler errors",
+    "resultXMLProduced": false,
+    "all137TestsExecuted": false,
+    "preserveOriginalRun": true,
+    "classification": "fixture compile blocker; no Graph/GPU test verdict"
+  },
+  "laterAttemptActualResultsVerifiedByThisReview": false,
+  "lexicalDelimitersCheckedOnly": true,
+  "compiledCSharpOrHLSLByThisReview": false,
+  "ranUnityByThisReview": false,
+  "gateAccepted": false
+}

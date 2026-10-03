@@ -1,0 +1,864 @@
+{
+    "scope": "Actual Native Forward Mesh draw states. ShaderUtil subShader0 code is global metadata, not pass-specific or runtime/performance timing. Current nonzero after draw is a strict batcher failure; Frozen known10 is retained.",
+    "unity": "6000.3.25f1",
+    "api": "Direct3D11",
+    "gpu": "Intel(R) UHD Graphics 770",
+    "resolvedPackage": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Packages\\NB_FX",
+    "vatTextureSHA256": "1302fe07b2d5e18c19e7305622d2c3aeabc5367b89fe498c3f1a92ca9ddce1e5",
+    "orthographic": false,
+    "srpBatcherEnabled": true,
+    "noGraphWarmOrImport": true,
+    "semanticEvidenceValid": true,
+    "currentBatcherFailed": true,
+    "currentBatcherFailure": "off code=10 Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize) ; on code=10 Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize) ; frame0 code=10 Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize) ",
+    "sourceHashes": [
+        {
+            "path": "NBShaders2/Shader/NBShader.shader",
+            "sha256": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b"
+        },
+        {
+            "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+            "sha256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada"
+        },
+        {
+            "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+            "sha256": "17322f26b644db92d0b0419cbac46bc88ac1c0635a767cdac6a1f35d7ea6a227"
+        },
+        {
+            "path": "XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl",
+            "sha256": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016"
+        },
+        {
+            "path": "XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl",
+            "sha256": "99e063184f6fe274e66c7d084c25948c960031d6a225a999bc93615cfe4f7167"
+        },
+        {
+            "path": "XuanXuanRenderUtility/Shader/HLSL/TyflowVATKernelV1.hlsl",
+            "sha256": "42d3ddb0fe9830b24b788beb0917956cbc1dd618c0ddf0448cc007f5146990a9"
+        },
+        {
+            "path": "XuanXuanRenderUtility/Shader/HLSL/HoudiniVAT.hlsl",
+            "sha256": "b5bb7d94cd4086413f6d7437db1846f7043765fee62bc414d3a86209c97d7fca"
+        },
+        {
+            "path": "Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+            "sha256": "a27e705c3ac3a83d932a8745a48f4ac45f31a5fb1b945fa5a66f38c99c742a8d"
+        },
+        {
+            "path": "Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+            "sha256": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9"
+        },
+        {
+            "path": "Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+            "sha256": "dbf0315495ec9dd333025e0d02a853a4acc13cd6cc012cba9050541d3073462b"
+        },
+        {
+            "path": "Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl",
+            "sha256": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016"
+        },
+        {
+            "path": "Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl",
+            "sha256": "5091f80d00b150c8af7f7b71022162720474181fae37b41c587fdc74effa22d7"
+        },
+        {
+            "path": "Tests/URP/Editor/G4GraphVATTests.cs",
+            "sha256": "399175927b0a5287097621a2a8837fbb024fd000ae638721c65d8508249db7ae"
+        },
+        {
+            "path": "Tests/URP/Editor/G4GraphTyflowVATTests.cs",
+            "sha256": "9695dde882012f2a3ac17332d6fcf7e59d81859e1623413f16877b5213a03b39"
+        }
+    ],
+    "draws": [
+        {
+            "role": "current",
+            "state": "off",
+            "shaderName": "Effects/NBShader",
+            "shaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "materialName": "current-native-srp",
+            "actualRendererShader": "Effects/NBShader",
+            "actualRendererShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CUSTOMDATA_OFF",
+                "_FLIPBOOKBLENDING_OFF",
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "materialInstance": -1442,
+            "rendererMaterialInstance": -1442,
+            "vatWidth": 8,
+            "vatHeight": 8,
+            "vatToggle": 0.0,
+            "vatMode": 1.0,
+            "houdiniSubMode": 0.0,
+            "tyflowSubMode": 0.0,
+            "frame": 1.0,
+            "frames": 2.0,
+            "autoplay": 0.0,
+            "frameInterpolation": 0.0,
+            "importScale": 1.0,
+            "actualRendererMaterialMatches": true,
+            "finite": true,
+            "nonCDCD": true,
+            "nativeBatcherFailed": true,
+            "repeat": 0.0,
+            "deltaFromBackground": 0.8449440002441406,
+            "visible": 4029,
+            "beforeDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "afterDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "lightMode": "SRPDEFAULTUNLIT",
+                    "index": 0,
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "lightMode": "UniversalForward",
+                    "index": 1,
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "lightMode": "DepthOnly",
+                    "index": 2,
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "lightMode": "SHADOWCASTER",
+                    "index": 3,
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "lightMode": "NBCameraOpaqueDistortPass",
+                    "index": 4,
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "lightMode": "NBDeferredDistortPass",
+                    "index": 5,
+                    "enabled": false
+                },
+                {
+                    "name": "Universal2D",
+                    "lightMode": "Universal2D",
+                    "index": 6,
+                    "enabled": false
+                }
+            ],
+            "protocolIntegers": [
+                {
+                    "name": "_W9ParticleShaderFlags",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleShaderFlags1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag0",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag2",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag3",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "role": "current",
+            "state": "on",
+            "shaderName": "Effects/NBShader",
+            "shaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "materialName": "current-native-srp",
+            "actualRendererShader": "Effects/NBShader",
+            "actualRendererShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CUSTOMDATA_OFF",
+                "_FLIPBOOKBLENDING_OFF",
+                "_FX_LIGHT_MODE_UNLIT",
+                "_TYFLOW_VAT_ABSOLUTE",
+                "_VAT",
+                "_VAT_TYFLOW"
+            ],
+            "shaderErrors": [],
+            "materialInstance": -1442,
+            "rendererMaterialInstance": -1442,
+            "vatWidth": 8,
+            "vatHeight": 8,
+            "vatToggle": 1.0,
+            "vatMode": 1.0,
+            "houdiniSubMode": 0.0,
+            "tyflowSubMode": 0.0,
+            "frame": 1.0,
+            "frames": 2.0,
+            "autoplay": 0.0,
+            "frameInterpolation": 0.0,
+            "importScale": 1.0,
+            "actualRendererMaterialMatches": true,
+            "finite": true,
+            "nonCDCD": true,
+            "nativeBatcherFailed": true,
+            "repeat": 0.0,
+            "deltaFromBackground": 0.8449440002441406,
+            "visible": 4660,
+            "beforeDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "afterDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "lightMode": "SRPDEFAULTUNLIT",
+                    "index": 0,
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "lightMode": "UniversalForward",
+                    "index": 1,
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "lightMode": "DepthOnly",
+                    "index": 2,
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "lightMode": "SHADOWCASTER",
+                    "index": 3,
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "lightMode": "NBCameraOpaqueDistortPass",
+                    "index": 4,
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "lightMode": "NBDeferredDistortPass",
+                    "index": 5,
+                    "enabled": false
+                },
+                {
+                    "name": "Universal2D",
+                    "lightMode": "Universal2D",
+                    "index": 6,
+                    "enabled": false
+                }
+            ],
+            "protocolIntegers": [
+                {
+                    "name": "_W9ParticleShaderFlags",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleShaderFlags1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag0",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag2",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag3",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "role": "current",
+            "state": "frame0",
+            "shaderName": "Effects/NBShader",
+            "shaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "materialName": "current-native-srp",
+            "actualRendererShader": "Effects/NBShader",
+            "actualRendererShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CUSTOMDATA_OFF",
+                "_FLIPBOOKBLENDING_OFF",
+                "_FX_LIGHT_MODE_UNLIT",
+                "_TYFLOW_VAT_ABSOLUTE",
+                "_VAT",
+                "_VAT_TYFLOW"
+            ],
+            "shaderErrors": [],
+            "materialInstance": -1442,
+            "rendererMaterialInstance": -1442,
+            "vatWidth": 8,
+            "vatHeight": 8,
+            "vatToggle": 1.0,
+            "vatMode": 1.0,
+            "houdiniSubMode": 0.0,
+            "tyflowSubMode": 0.0,
+            "frame": 0.0,
+            "frames": 2.0,
+            "autoplay": 0.0,
+            "frameInterpolation": 0.0,
+            "importScale": 1.0,
+            "actualRendererMaterialMatches": true,
+            "finite": true,
+            "nonCDCD": true,
+            "nativeBatcherFailed": true,
+            "repeat": 0.0,
+            "deltaFromBackground": 0.8449440002441406,
+            "visible": 4467,
+            "beforeDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "afterDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "lightMode": "SRPDEFAULTUNLIT",
+                    "index": 0,
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "lightMode": "UniversalForward",
+                    "index": 1,
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "lightMode": "DepthOnly",
+                    "index": 2,
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "lightMode": "SHADOWCASTER",
+                    "index": 3,
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "lightMode": "NBCameraOpaqueDistortPass",
+                    "index": 4,
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "lightMode": "NBDeferredDistortPass",
+                    "index": 5,
+                    "enabled": false
+                },
+                {
+                    "name": "Universal2D",
+                    "lightMode": "Universal2D",
+                    "index": 6,
+                    "enabled": false
+                }
+            ],
+            "protocolIntegers": [
+                {
+                    "name": "_W9ParticleShaderFlags",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleShaderFlags1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag0",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag2",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag3",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "role": "frozen",
+            "state": "off",
+            "shaderName": "Effects/NBShader_T00_Frozen",
+            "shaderAssetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+            "materialName": "frozen-native-srp",
+            "actualRendererShader": "Effects/NBShader_T00_Frozen",
+            "actualRendererShaderAssetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CUSTOMDATA_OFF",
+                "_FLIPBOOKBLENDING_OFF",
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "materialInstance": -1444,
+            "rendererMaterialInstance": -1444,
+            "vatWidth": 8,
+            "vatHeight": 8,
+            "vatToggle": 0.0,
+            "vatMode": 1.0,
+            "houdiniSubMode": 0.0,
+            "tyflowSubMode": 0.0,
+            "frame": 1.0,
+            "frames": 2.0,
+            "autoplay": 0.0,
+            "frameInterpolation": 0.0,
+            "importScale": 1.0,
+            "actualRendererMaterialMatches": true,
+            "finite": true,
+            "nonCDCD": true,
+            "nativeBatcherFailed": true,
+            "repeat": 0.0,
+            "deltaFromBackground": 0.8449440002441406,
+            "visible": 4029,
+            "beforeDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "afterDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "lightMode": "SRPDEFAULTUNLIT",
+                    "index": 0,
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "lightMode": "UniversalForward",
+                    "index": 1,
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "lightMode": "DepthOnly",
+                    "index": 2,
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "lightMode": "SHADOWCASTER",
+                    "index": 3,
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "lightMode": "NBCameraOpaqueDistortPass",
+                    "index": 4,
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "lightMode": "NBDeferredDistortPass",
+                    "index": 5,
+                    "enabled": false
+                },
+                {
+                    "name": "Universal2D",
+                    "lightMode": "Universal2D",
+                    "index": 6,
+                    "enabled": false
+                }
+            ],
+            "protocolIntegers": [
+                {
+                    "name": "_W9ParticleShaderFlags",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleShaderFlags1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag0",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag2",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag3",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "role": "frozen",
+            "state": "on",
+            "shaderName": "Effects/NBShader_T00_Frozen",
+            "shaderAssetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+            "materialName": "frozen-native-srp",
+            "actualRendererShader": "Effects/NBShader_T00_Frozen",
+            "actualRendererShaderAssetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CUSTOMDATA_OFF",
+                "_FLIPBOOKBLENDING_OFF",
+                "_FX_LIGHT_MODE_UNLIT",
+                "_TYFLOW_VAT_ABSOLUTE",
+                "_VAT",
+                "_VAT_TYFLOW"
+            ],
+            "shaderErrors": [],
+            "materialInstance": -1444,
+            "rendererMaterialInstance": -1444,
+            "vatWidth": 8,
+            "vatHeight": 8,
+            "vatToggle": 1.0,
+            "vatMode": 1.0,
+            "houdiniSubMode": 0.0,
+            "tyflowSubMode": 0.0,
+            "frame": 1.0,
+            "frames": 2.0,
+            "autoplay": 0.0,
+            "frameInterpolation": 0.0,
+            "importScale": 1.0,
+            "actualRendererMaterialMatches": true,
+            "finite": true,
+            "nonCDCD": true,
+            "nativeBatcherFailed": true,
+            "repeat": 0.0,
+            "deltaFromBackground": 0.8449440002441406,
+            "visible": 4660,
+            "beforeDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "afterDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "lightMode": "SRPDEFAULTUNLIT",
+                    "index": 0,
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "lightMode": "UniversalForward",
+                    "index": 1,
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "lightMode": "DepthOnly",
+                    "index": 2,
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "lightMode": "SHADOWCASTER",
+                    "index": 3,
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "lightMode": "NBCameraOpaqueDistortPass",
+                    "index": 4,
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "lightMode": "NBDeferredDistortPass",
+                    "index": 5,
+                    "enabled": false
+                },
+                {
+                    "name": "Universal2D",
+                    "lightMode": "Universal2D",
+                    "index": 6,
+                    "enabled": false
+                }
+            ],
+            "protocolIntegers": [
+                {
+                    "name": "_W9ParticleShaderFlags",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleShaderFlags1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag0",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag2",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag3",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "role": "frozen",
+            "state": "frame0",
+            "shaderName": "Effects/NBShader_T00_Frozen",
+            "shaderAssetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+            "materialName": "frozen-native-srp",
+            "actualRendererShader": "Effects/NBShader_T00_Frozen",
+            "actualRendererShaderAssetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CUSTOMDATA_OFF",
+                "_FLIPBOOKBLENDING_OFF",
+                "_FX_LIGHT_MODE_UNLIT",
+                "_TYFLOW_VAT_ABSOLUTE",
+                "_VAT",
+                "_VAT_TYFLOW"
+            ],
+            "shaderErrors": [],
+            "materialInstance": -1444,
+            "rendererMaterialInstance": -1444,
+            "vatWidth": 8,
+            "vatHeight": 8,
+            "vatToggle": 1.0,
+            "vatMode": 1.0,
+            "houdiniSubMode": 0.0,
+            "tyflowSubMode": 0.0,
+            "frame": 0.0,
+            "frames": 2.0,
+            "autoplay": 0.0,
+            "frameInterpolation": 0.0,
+            "importScale": 1.0,
+            "actualRendererMaterialMatches": true,
+            "finite": true,
+            "nonCDCD": true,
+            "nativeBatcherFailed": true,
+            "repeat": 0.0,
+            "deltaFromBackground": 0.8449440002441406,
+            "visible": 4467,
+            "beforeDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "afterDraw": {
+                "apiKnown": true,
+                "known": true,
+                "supported": true,
+                "code": 10,
+                "subShader": 0,
+                "codeAPI": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+                "reasonAPI": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+                "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+                "error": ""
+            },
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "lightMode": "SRPDEFAULTUNLIT",
+                    "index": 0,
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "lightMode": "UniversalForward",
+                    "index": 1,
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "lightMode": "DepthOnly",
+                    "index": 2,
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "lightMode": "SHADOWCASTER",
+                    "index": 3,
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "lightMode": "NBCameraOpaqueDistortPass",
+                    "index": 4,
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "lightMode": "NBDeferredDistortPass",
+                    "index": 5,
+                    "enabled": false
+                },
+                {
+                    "name": "Universal2D",
+                    "lightMode": "Universal2D",
+                    "index": 6,
+                    "enabled": false
+                }
+            ],
+            "protocolIntegers": [
+                {
+                    "name": "_W9ParticleShaderFlags",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleShaderFlags1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag0",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag1",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag2",
+                    "value": 0
+                },
+                {
+                    "name": "_W9ParticleCustomDataFlag3",
+                    "value": 0
+                }
+            ]
+        }
+    ],
+    "metrics": [
+        {
+            "role": "current",
+            "vatOnOffResponse": 0.8449440002441406,
+            "frameResponse": 0.8449440002441406,
+            "currentAllDrawStatesCode0": false,
+            "frozenKnownCompatibleOrOriginal10": true
+        },
+        {
+            "role": "frozen",
+            "vatOnOffResponse": 0.8449440002441406,
+            "frameResponse": 0.8449440002441406,
+            "currentAllDrawStatesCode0": false,
+            "frozenKnownCompatibleOrOriginal10": true
+        }
+    ]
+}

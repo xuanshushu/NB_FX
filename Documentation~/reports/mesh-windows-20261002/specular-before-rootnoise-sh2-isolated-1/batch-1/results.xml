@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Failed(Child)" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 07:26:14Z" end-time="2026-10-03 07:27:13Z" duration="58.7735987">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2357" result="Failed" site="Child" start-time="2026-10-03 07:26:14Z" end-time="2026-10-03 07:27:13Z" duration="58.773599" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3553" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2338" result="Failed" site="Child" start-time="2026-10-03 07:26:14Z" end-time="2026-10-03 07:27:13Z" duration="58.685943" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="53620" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="3554" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2338" result="Failed" site="Child" start-time="2026-10-03 07:26:15Z" end-time="2026-10-03 07:27:13Z" duration="58.637488" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="3555" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2338" result="Failed" site="Child" start-time="2026-10-03 07:26:15Z" end-time="2026-10-03 07:27:13Z" duration="58.570250" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="3556" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2338" result="Failed" site="Child" start-time="2026-10-03 07:26:15Z" end-time="2026-10-03 07:27:13Z" duration="58.523384" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1948" name="G4GraphLightingTests" fullname="NBFX.Baseline.Tests.G4GraphLightingTests" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" testcasecount="20" result="Failed" site="Child" start-time="2026-10-03 07:26:15Z" end-time="2026-10-03 07:27:13Z" duration="58.178341" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+]]></output>
+              <test-suite type="ParameterizedMethod" id="1961" name="OrdinaryMeshSHEvaluation" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshSHEvaluation" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-10-03 07:26:23Z" end-time="2026-10-03 07:27:13Z" duration="50.551665" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1959" name="G4LightingSHABC_pbr_perspective_EVALUATE_SH_VERTEX" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_pbr_perspective_EVALUATE_SH_VERTEX" methodname="OrdinaryMeshSHEvaluation" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="1177841633" result="Failed" start-time="2026-10-03 07:26:23Z" end-time="2026-10-03 07:26:49Z" duration="25.990940" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  strict raw Frozen A / current B differs; see evidence
+  Expected: 0
+  But was:  49
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphLightingTests.Replay (System.Int32 mode, System.Boolean ortho, System.String shKeyword) [0x00f4b] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphLightingTests.cs:234
+at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshSHEvaluation (System.Int32 mode, System.Boolean ortho, System.String shKeyword) [0x00000] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphLightingTests.cs:51
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1378
+]]></output>
+                </test-case>
+                <test-case id="1960" name="G4LightingSHABC_pbr_perspective_EVALUATE_SH_MIXED" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingSHABC_pbr_perspective_EVALUATE_SH_MIXED" methodname="OrdinaryMeshSHEvaluation" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="1152555427" result="Failed" start-time="2026-10-03 07:26:49Z" end-time="2026-10-03 07:27:13Z" duration="24.532022" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  strict raw Frozen A / current B differs; see evidence
+  Expected: 0
+  But was:  57
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphLightingTests.Replay (System.Int32 mode, System.Boolean ortho, System.String shKeyword) [0x00f4b] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphLightingTests.cs:234
+at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshSHEvaluation (System.Int32 mode, System.Boolean ortho, System.String shKeyword) [0x00000] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphLightingTests.cs:51
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1378
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

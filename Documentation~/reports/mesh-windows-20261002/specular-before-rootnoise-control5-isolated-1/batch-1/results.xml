@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Failed(Child)" total="5" passed="0" failed="5" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 07:17:51Z" end-time="2026-10-03 07:18:01Z" duration="9.9392145">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2357" result="Failed" site="Child" start-time="2026-10-03 07:17:51Z" end-time="2026-10-03 07:18:01Z" duration="9.939215" total="5" passed="0" failed="5" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3553" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2338" result="Failed" site="Child" start-time="2026-10-03 07:17:51Z" end-time="2026-10-03 07:18:01Z" duration="9.825699" total="5" passed="0" failed="5" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="36320" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="3554" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2338" result="Failed" site="Child" start-time="2026-10-03 07:17:51Z" end-time="2026-10-03 07:18:01Z" duration="9.737053" total="5" passed="0" failed="5" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="3555" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2338" result="Failed" site="Child" start-time="2026-10-03 07:17:51Z" end-time="2026-10-03 07:18:01Z" duration="9.670785" total="5" passed="0" failed="5" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="3556" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2338" result="Failed" site="Child" start-time="2026-10-03 07:17:51Z" end-time="2026-10-03 07:18:01Z" duration="9.582104" total="5" passed="0" failed="5" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1948" name="G4GraphLightingTests" fullname="NBFX.Baseline.Tests.G4GraphLightingTests" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" testcasecount="20" result="Failed" site="Child" start-time="2026-10-03 07:17:52Z" end-time="2026-10-03 07:17:59Z" duration="6.718212" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+]]></output>
+              <test-suite type="ParameterizedMethod" id="1970" name="OrdinaryMeshLightingL0" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-10-03 07:17:55Z" end-time="2026-10-03 07:17:59Z" duration="3.364613" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1968" name="G4LightingABC_pbr_ortho" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_pbr_ortho" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="243039649" result="Failed" start-time="2026-10-03 07:17:55Z" end-time="2026-10-03 07:17:58Z" duration="2.395031" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  strict raw B/C L0 controls differ; see metrics/raw RGBA
+  Expected: 0
+  But was:  25
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphLightingTests.Replay (System.Int32 mode, System.Boolean ortho, System.String shKeyword) [0x00fd7] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphLightingTests.cs:239
+at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00000] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphLightingTests.cs:54
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1454
+]]></output>
+                </test-case>
+                <test-case id="1969" name="G4LightingABC_pbr_perspective" fullname="NBFX.Baseline.Tests.G4GraphLightingTests.G4LightingABC_pbr_perspective" methodname="OrdinaryMeshLightingL0" classname="NBFX.Baseline.Tests.G4GraphLightingTests" runstate="Runnable" seed="2144378206" result="Failed" start-time="2026-10-03 07:17:58Z" end-time="2026-10-03 07:17:59Z" duration="0.932957" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  strict raw Frozen A / current B differs; see evidence
+  Expected: 0
+  But was:  53
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphLightingTests.Replay (System.Int32 mode, System.Boolean ortho, System.String shKeyword) [0x00f4b] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphLightingTests.cs:234
+at NBFX.Baseline.Tests.G4GraphLightingTests.OrdinaryMeshLightingL0 (System.Int32 mode, System.Boolean ortho) [0x00000] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphLightingTests.cs:54
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX L0 runner scene: name= path= loaded=True handle=-1454
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+            <test-suite type="TestFixture" id="2163" name="G4GraphNormalMapTests" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" testcasecount="44" result="Failed" site="Child" start-time="2026-10-03 07:17:59Z" end-time="2026-10-03 07:18:01Z" duration="2.030657" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="2208" name="CurvedMeshNormalMapMatchesFrozenAndGraph" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" testcasecount="44" result="Failed" site="Child" start-time="2026-10-03 07:17:59Z" end-time="2026-10-03 07:18:01Z" duration="1.974870" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="2165" name="G4NormalMapABC_fresnel-uv0_perspective" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-uv0_perspective" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="196668441" result="Failed" start-time="2026-10-03 07:17:59Z" end-time="2026-10-03 07:18:00Z" duration="0.753175" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  2274
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008d6] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:197
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"fresnel-uv0-perspective","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":0,"abControlDifferences":0,"bcControlDifferences":2274,"frozenVisible":3450,"currentVisible":3450,"graphVisible":3450,"frozenPositivePixels":2690,"currentPositivePixels":2690,"graphPositivePixels":2692,"abMax":0.0,"bcMax":0.0,"abControlMax":0.0,"bcControlMax":0.0009765625,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.16455078125,"currentControl":0.16455078125,"graphControl":0.1650390625,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2181" name="G4NormalMapABC_fresnel-backface_perspective" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-backface_perspective" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="1310023139" result="Failed" start-time="2026-10-03 07:18:00Z" end-time="2026-10-03 07:18:00Z" duration="0.547283" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 0
+  But was:  2450
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008d6] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:197
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"fresnel-backface-perspective","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":0,"abControlDifferences":0,"bcControlDifferences":2450,"frozenVisible":3560,"currentVisible":3560,"graphVisible":3560,"frozenPositivePixels":2717,"currentPositivePixels":2717,"graphPositivePixels":2722,"abMax":0.0,"bcMax":0.0,"abControlMax":0.0,"bcControlMax":0.0009765625,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.21923828125,"currentControl":0.21923828125,"graphControl":0.2197265625,"finite":true}
+]]></output>
+                </test-case>
+                <test-case id="2184" name="G4NormalMapABC_fresnel-nonuniform_ortho" fullname="NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-nonuniform_ortho" methodname="CurvedMeshNormalMapMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphNormalMapTests" runstate="Runnable" seed="964630129" result="Failed" start-time="2026-10-03 07:18:00Z" end-time="2026-10-03 07:18:01Z" duration="0.563883" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Graph normal-map B/C mismatch.
+  Expected: 0
+  But was:  2
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008ba] in .\Packages\NB_FX\Tests\URP\Editor\G4GraphNormalMapTests.cs:196
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_G4_NORMAL_MAP_ABC {"caseId":"fresnel-nonuniform-ortho","unityVersion":"6000.3.25f1","api":"Direct3D11","note":"N0 ordinary curved Mesh, 128x128 linear RGBAHalf; strict ROI x/y=32..95. A Frozen/B extracted ShaderLab/C Graph. NormalMap influences only Fresnel/MatCap; lighting/refraction/CustomLocal/VFX/Player not tested. Four warm-up renders. Raw RGBA float gzip and PNG retained; no material or scene saved.","input":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":true,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"control":{"uvMode":0,"sharedMode":0,"specialStream":0,"wrapMode":0,"maskMode":false,"twirl":false,"polar":false,"lod0":true,"enabled":false,"strength":1.0,"st":{"x":1.7000000476837159,"y":1.2999999523162842,"z":-0.3100000023841858,"w":0.17000000178813935}},"roiPixels":4096,"abDifferences":0,"bcDifferences":2,"abControlDifferences":0,"bcControlDifferences":2998,"frozenVisible":3640,"currentVisible":3640,"graphVisible":3640,"frozenPositivePixels":3130,"currentPositivePixels":3130,"graphPositivePixels":3127,"abMax":0.0,"bcMax":0.00048828125,"abControlMax":0.0,"bcControlMax":0.00244140625,"frozenRepeat":0.0,"currentRepeat":0.0,"graphRepeat":0.0,"frozenControl":0.17919921875,"currentControl":0.17919921875,"graphControl":0.1796875,"finite":true}
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

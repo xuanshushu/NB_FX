@@ -1,0 +1,508 @@
+{
+  "scope": "Conditional limited Spec9 integration review; no broad Gate acceptance, no XML merge and no tolerance changes",
+  "nineSourcePostRunExactChecks": [
+    {
+      "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+      "expectedSHA256": "180e86ef57d62884a46e5b0a8b61ef2e64538fc6a92c17f66d8afef84807ea32",
+      "actualSHA256": "180e86ef57d62884a46e5b0a8b61ef2e64538fc6a92c17f66d8afef84807ea32",
+      "matched": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs",
+      "expectedSHA256": "609d0be0f84f631e61f2ad068ab0e617c0378b917b5f1ba47b6363d86dcae02f",
+      "actualSHA256": "609d0be0f84f631e61f2ad068ab0e617c0378b917b5f1ba47b6363d86dcae02f",
+      "matched": true
+    },
+    {
+      "path": "NBShaders2/Editor/NBShaderGraphGUI.cs",
+      "expectedSHA256": "3a15b6122b530fd9f6371a5d99ddc5949c6b1e6437a9d0b37e71a3194524c5bb",
+      "actualSHA256": "3a15b6122b530fd9f6371a5d99ddc5949c6b1e6437a9d0b37e71a3194524c5bb",
+      "matched": true
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs",
+      "expectedSHA256": "b27120b0c043e997cd379e6c0f324a3aef6355f83945d3b66defc422629946f3",
+      "actualSHA256": "b27120b0c043e997cd379e6c0f324a3aef6355f83945d3b66defc422629946f3",
+      "matched": true
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphNormalizedIntentReaderTests.cs",
+      "expectedSHA256": "e16706afc27e64ed2e93af4898e1c1e2c8c7962aedfc41656130fc29f7c5541b",
+      "actualSHA256": "e16706afc27e64ed2e93af4898e1c1e2c8c7962aedfc41656130fc29f7c5541b",
+      "matched": true
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphSpecularDebugFixture.cs",
+      "expectedSHA256": "a493e25b2605b4c594a2f6b86bda5af6cc04bfa8e46aa16d58784cc9f338b277",
+      "actualSHA256": "a493e25b2605b4c594a2f6b86bda5af6cc04bfa8e46aa16d58784cc9f338b277",
+      "matched": true
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphSpecularDebugFixture.cs.meta",
+      "expectedSHA256": "801ef8bf7011250aa3191a6404df0e062a91fd2750780443dbbb0402b5922569",
+      "actualSHA256": "801ef8bf7011250aa3191a6404df0e062a91fd2750780443dbbb0402b5922569",
+      "matched": true
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphSpecularTests.cs",
+      "expectedSHA256": "942bba41d648b80d3172dcb6fb07a6497d4526660c51eb225b09aa5c5d54d2e1",
+      "actualSHA256": "942bba41d648b80d3172dcb6fb07a6497d4526660c51eb225b09aa5c5d54d2e1",
+      "matched": true
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphSpecularTests.cs.meta",
+      "expectedSHA256": "1b9b697a63e94e55f799d5f22aa031c50742ac445d1c0c4c768a0e0c1ded3847",
+      "actualSHA256": "1b9b697a63e94e55f799d5f22aa031c50742ac445d1c0c4c768a0e0c1ded3847",
+      "matched": true
+    }
+  ],
+  "fixtureInitializationReceiptAllEightMatchesSHA": "a493e25b2605b4c594a2f6b86bda5af6cc04bfa8e46aa16d58784cc9f338b277",
+  "sourceContinuityEvidenceLimit": "Current nine-source checks + owned installation manifests + per-Harness fixture SHA and asset IDs are verified. Runtime source9 full before/after is directly recorded by diagnostic1; no per-GPU9 whole-source snapshot is invented.",
+  "originalNativeInputRestoredAndNotCBUF1": {
+    "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+    "rootAndCloneExactSHA256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+    "candidateCBUF1": "Native2-only separate candidate, not a Root or Spec source change; do not combine its result or bytes with current Spec raw evidence."
+  },
+  "latest137ActualView": {
+    "Passed": 134,
+    "Failed": 3,
+    "identities": 137,
+    "source": "117reader+12CPU prior XML passed identities reused; GPU8 latest XML5/3",
+    "noXMLMerged": true,
+    "noHistoricalGPUFailuresAddedToCount": true
+  },
+  "SpecGPUMicroDifferencesRequireHumanAcceptance": [
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode1_perspective",
+      "AB_BC_stateStats": [
+        {
+          "pair": "AB",
+          "state": 1,
+          "pixelCount": 20,
+          "componentCount": 21,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.00048828125,
+            0.0
+          ],
+          "bboxXY": [
+            32,
+            24,
+            72,
+            70
+          ]
+        },
+        {
+          "pair": "BC",
+          "state": 1,
+          "pixelCount": 25,
+          "componentCount": 26,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.00048828125,
+            0.0
+          ],
+          "bboxXY": [
+            29,
+            24,
+            72,
+            70
+          ]
+        },
+        {
+          "pair": "AB",
+          "state": 3,
+          "pixelCount": 20,
+          "componentCount": 21,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.00048828125,
+            0.0
+          ],
+          "bboxXY": [
+            32,
+            24,
+            72,
+            70
+          ]
+        },
+        {
+          "pair": "BC",
+          "state": 3,
+          "pixelCount": 25,
+          "componentCount": 26,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.00048828125,
+            0.0
+          ],
+          "bboxXY": [
+            29,
+            24,
+            72,
+            70
+          ]
+        }
+      ],
+      "maxDiff": 0.0009765625,
+      "laterUnityAssertionsNotExecuted": [
+        "visible>128",
+        "restore zero",
+        "independent strong response",
+        "zero SpecularColor equals off"
+      ],
+      "rawSupplementOnly": true
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode2_perspective",
+      "AB_BC_stateStats": [
+        {
+          "pair": "AB",
+          "state": 1,
+          "pixelCount": 14,
+          "componentCount": 14,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.00048828125,
+            0.0
+          ],
+          "bboxXY": [
+            26,
+            25,
+            70,
+            69
+          ]
+        },
+        {
+          "pair": "BC",
+          "state": 1,
+          "pixelCount": 18,
+          "componentCount": 18,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.0009765625,
+            0.0
+          ],
+          "bboxXY": [
+            26,
+            25,
+            71,
+            69
+          ]
+        },
+        {
+          "pair": "AB",
+          "state": 3,
+          "pixelCount": 14,
+          "componentCount": 14,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.00048828125,
+            0.0
+          ],
+          "bboxXY": [
+            26,
+            25,
+            70,
+            69
+          ]
+        },
+        {
+          "pair": "BC",
+          "state": 3,
+          "pixelCount": 18,
+          "componentCount": 18,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.0009765625,
+            0.0
+          ],
+          "bboxXY": [
+            26,
+            25,
+            71,
+            69
+          ]
+        }
+      ],
+      "maxDiff": 0.0009765625,
+      "laterUnityAssertionsNotExecuted": [
+        "visible>128",
+        "restore zero",
+        "independent strong response",
+        "zero SpecularColor equals off"
+      ],
+      "rawSupplementOnly": true
+    },
+    {
+      "identity": "NBFX.Baseline.Tests.G4GraphSpecularTests.G4Specular_GPU_mode3_perspective",
+      "AB_BC_stateStats": [
+        {
+          "pair": "AB",
+          "state": 0,
+          "pixelCount": 19,
+          "componentCount": 19,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.0009765625,
+            0.0
+          ],
+          "bboxXY": [
+            27,
+            26,
+            71,
+            68
+          ]
+        },
+        {
+          "pair": "BC",
+          "state": 0,
+          "pixelCount": 20,
+          "componentCount": 20,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.0009765625,
+            0.0
+          ],
+          "bboxXY": [
+            27,
+            26,
+            71,
+            68
+          ]
+        },
+        {
+          "pair": "AB",
+          "state": 1,
+          "pixelCount": 19,
+          "componentCount": 19,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.0009765625,
+            0.0
+          ],
+          "bboxXY": [
+            27,
+            26,
+            71,
+            68
+          ]
+        },
+        {
+          "pair": "BC",
+          "state": 1,
+          "pixelCount": 20,
+          "componentCount": 20,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.0009765625,
+            0.0
+          ],
+          "bboxXY": [
+            27,
+            26,
+            71,
+            68
+          ]
+        },
+        {
+          "pair": "AB",
+          "state": 2,
+          "pixelCount": 19,
+          "componentCount": 19,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.0009765625,
+            0.0
+          ],
+          "bboxXY": [
+            27,
+            26,
+            71,
+            68
+          ]
+        },
+        {
+          "pair": "BC",
+          "state": 2,
+          "pixelCount": 20,
+          "componentCount": 20,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.0009765625,
+            0.0
+          ],
+          "bboxXY": [
+            27,
+            26,
+            71,
+            68
+          ]
+        },
+        {
+          "pair": "AB",
+          "state": 3,
+          "pixelCount": 19,
+          "componentCount": 19,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.0009765625,
+            0.0
+          ],
+          "bboxXY": [
+            27,
+            26,
+            71,
+            68
+          ]
+        },
+        {
+          "pair": "BC",
+          "state": 3,
+          "pixelCount": 20,
+          "componentCount": 20,
+          "maxDiff": 0.0009765625,
+          "channelMaxDiff": [
+            0.0009765625,
+            0.0009765625,
+            0.0009765625,
+            0.0
+          ],
+          "bboxXY": [
+            27,
+            26,
+            71,
+            68
+          ]
+        }
+      ],
+      "maxDiff": 0.0009765625,
+      "laterUnityAssertionsNotExecuted": [
+        "visible>128",
+        "restore zero",
+        "independent strong response",
+        "Unlit/PBR zero response"
+      ],
+      "rawSupplementOnly": true
+    }
+  ],
+  "integrationConditions": [
+    "Root central source must still match the exact RootNoise pre-Spec four-source input locks, preserving Graph nodes/slots/edges/Target and original HLSL/helper math.",
+    "Use only the reviewed four Spec product files + one reader117 fixture + four Spec/shared fixture/meta paths, with two attribute repair and one shared Harness pipeline-init fix folded into those nine exact final hashes. Diagnostic source remains evidence-only unless separately requested.",
+    "Retain original compile/noXML incident, original8preDrawFailed, latest8GPU5/3, source manifests, all raw and receipt evidence. Do not recategorize three strict Failed as Passed or lower tolerances.",
+    "Present three perspective Spec microcases for the user's centralized manual acceptance. CPU29/8 capability and actual Spec control responses can support a narrow consumer decision, but do not claim full G3/G4/shared GUI/Tier/Player/SVC/perf.",
+    "The complete affected84 selection now has actual36/48 with independent raw review. OVZ16+source/SRP2 passed under recorded conditional baseline semantics; preserve all Normal40/PBR6/Sixway2 Failed and execute only the authorized exact five immediate-beforeSpec controls before attribution.",
+    "NormalMap32 raw differences cannot be assigned to new Spec math from older same-ID history. If causal attribution is required, use five representative immediate-before-Spec RootNoise controls with exact comparable source locks and original NativeInput380; no blanket44 rerun or repeated tolerance tuning."
+  ],
+  "necessaryAffectedValidation": [
+    {
+      "area": "Lighting",
+      "requirement": "Complete root-selected existing L0/SHEvaluation cases under final main-Forward Local Fragment Spec axis. Preserve raw AB/BC/repeat/control and exact names. Root's original 10-variant declaration expectation must be checked against actual generated passes/keywords; do not infer blanket variant acceptance from Spec20."
+    },
+    {
+      "area": "SixWay",
+      "requirement": "Existing two cases: Spec serialized flag may remain enabled but SixWay math and existing Absorption/EvaluateSH keyword paths stay unchanged."
+    },
+    {
+      "area": "OverrideZ",
+      "requirement": "Existing16 depth cases and keyword enable/disable semantics with Spec mode/toggle combinations; only the original main-Forward wrapper may own both local Fragment axes."
+    },
+    {
+      "area": "SRP2",
+      "requirement": "Re-evaluate actual current Target scope after real pipeline initialization. Preserve baseline Graph0/nativeOriginal10 contract; graph must stay0, native10 baseline is not a new acceptance of CBUF1. Shader_feature addition cannot silently change Pass or material buffer scope."
+    },
+    {
+      "area": "Mask/Noise",
+      "requirement": "Short existing gate/reader/metadata boundary cases may be reused when exact source snapshots are still unchanged. No general Tier/Pass unlock or claimed complete84 from partial batches."
+    },
+    {
+      "area": "NormalMap baseline controls",
+      "requirement": "Only if attribution is needed; five named controls in the completed32 review, preserving all strict checks and raw evidence."
+    }
+  ],
+  "completedAffected32Actual": {
+    "Passed": 3,
+    "Failed": 29,
+    "rawFilesIndependentlyVerified": 288,
+    "historicalSameID44": "post-ca-fg-regression-1, source lock not proven equivalent to immediate RootNoise",
+    "sameSourceBeforeSpecProven": false,
+    "newSpecMathRegressionEstablished": false
+  },
+  "ranUnityByReviewer": false,
+  "sourceChangedByReviewer": false,
+  "gateAccepted": false,
+  "completedAffected84Actual": {
+    "total": 84,
+    "Passed": 36,
+    "Failed": 48
+  },
+  "completedAffected84ByClass": {
+    "G4GraphNormalMapTests": {
+      "total": 44,
+      "Passed": 4,
+      "Failed": 40
+    },
+    "G4GraphLightingTests": {
+      "total": 20,
+      "Passed": 14,
+      "Failed": 6
+    },
+    "G4GraphOverrideDepthTests": {
+      "total": 16,
+      "Passed": 16,
+      "Failed": 0
+    },
+    "G4GraphSixWayTests": {
+      "total": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "G4GraphOverrideDepthSourceTests": {
+      "total": 2,
+      "Passed": 2,
+      "Failed": 0
+    }
+  },
+  "completeAffected84ReviewPath": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-spec-review-20261003\\spec84-final-actual-audit.json",
+  "currentSRPActualCodes": {
+    "frozen": 10,
+    "current": 0,
+    "graph": 0
+  },
+  "immediateBeforeSpecControl5AuditInterface": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-spec-review-20261003\\before-spec-control5-audit-interface.json",
+  "finalLimitedIntegrationDecision": "No new logic blocker or sampled impact regression established; source/restoration guards satisfied. Support proceeding with only reviewed Spec9 after required live Main guards and centralized human acceptance/recording of three Spec strict microfailures. Preserve all failed XML, scope limits, original compile0 and preDraw8 incidents; do not claim full GUI/Tier/Player/variants/perf or blanketGate.",
+  "unfinishedAffectedXMLRead": false,
+  "beforeSpecSevenExactControlsAudit": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-spec-review-20261003\\before-spec7-exact-counterfactual-restoration-audit.json",
+  "controlAndRestorationRequirementSatisfied": true,
+  "unsampledSameSourceBaselineClaimed": false
+}

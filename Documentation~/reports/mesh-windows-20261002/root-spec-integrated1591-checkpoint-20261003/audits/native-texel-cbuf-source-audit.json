@@ -1,0 +1,86 @@
+{
+  "scope": "Single current Native material-owned uniform relocation proposal after2 actual strict SRP failures; in-memory static transform only, no actual source/Unity/Frozen write",
+  "rootBeforeSHA256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+  "candidateAfterSHA256": "a00398d6f15e8143ff6b37aa4876201e181731c409b8297adefe56c57027d8b2",
+  "nativeInputExplicitTexelSizeDeclarations": [
+    "_VATTex_TexelSize"
+  ],
+  "FrozenInputExplicitTexelSizeDeclarations": [
+    "_VATTex_TexelSize"
+  ],
+  "ownershipEvidence": {
+    "materialTextureProperty": {
+      "shader": "NBShaders2/Shader/NBShader.shader",
+      "line": 94,
+      "declaration": "[NoScaleOffset]_VATTex(\"VAT texture\", 2D) = \"black\" {}"
+    },
+    "actualDiagnosticBinding": "Current/Frozen Material.SetTexture(_VATTex,actual8x8RGBAFloat) and complete real-draw shader/property receipts; native code10 names this material property in another CB.",
+    "scriptsDoNotWriteGlobalVATTexelSize": "Targeted production C# search found no _VATTex_TexelSize writes; shader derives texture-size metadata from material texture."
+  },
+  "relocation": {
+    "from": "Unconditional global float4 atRoot563, CB ends256; Frozen sameglobal556/CBend251",
+    "to": "Unconditional existing UnityPerMaterial tail before CBUFFER_END, preserve full float4 precision, no initializer/name/type change",
+    "conditions": "Do not gate field by VAT keywords. Existing fullMaterialCB layout and old variable offsets retained; only append one16-byte vector, all pass include paths retain same declaration.",
+    "texelLifetime": "x/y reciprocals and z/w dimensions belong actual material-owned _VATTex. Shared Tyflow wrapper still passes identical value into config; all sampling, manual/autoplay/frame/customdata/gamma/geometry math untouched."
+  },
+  "graphSeparation": {
+    "includesNativeInput": false,
+    "includeSearchPaths": 16,
+    "GraphVATShaderAdapterUsesUnityTexture2DtexelSize": true,
+    "GraphAdapterSHA256": "c7d0206606e12f57e2216ab76da092ec6dcf74794cf8b3ce955b4654b9c9027a",
+    "doNotMoveSharedKernelStructMember": "TyflowVATKernelV1 config.float4 member is value data, not Native global uniform; it remains unchanged."
+  },
+  "doNotMove": [
+    "Texture2D _VATTex resource (mustremain resource namespace)",
+    "sampler_point_clamp and other sampler states",
+    "pipeline/global camera depth/opaque/blit/RT parameters",
+    "script- or per-renderer-owned unrelated parameters",
+    "Frozen declarations or official package/Target/NBPost/keyword math"
+  ],
+  "preciseDiff": [
+    "--- currentRootInput\n",
+    "+++ candidateInput\n",
+    "@@ -254,4 +254,5 @@\n",
+    "     half _ColorBlendColorIntensity;",
+    " ",
+    "+    float4 _VATTex_TexelSize;",
+    "     CBUFFER_END",
+    " ",
+    "@@ -561,5 +562,4 @@\n",
+    " ",
+    "     Texture2D _VATTex;",
+    "-    float4 _VATTex_TexelSize;",
+    " ",
+    "     "
+  ],
+  "protectedSourceSHA256": {
+    "NBShaders2/Shader/NBShader.shader": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b",
+    "NBShaders2/Shader/HLSL/NBShaderInput.hlsl": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+    "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl": "17322f26b644db92d0b0419cbac46bc88ac1c0635a767cdac6a1f35d7ea6a227",
+    "XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016",
+    "XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl": "99e063184f6fe274e66c7d084c25948c960031d6a225a999bc93615cfe4f7167",
+    "XuanXuanRenderUtility/Shader/HLSL/TyflowVATKernelV1.hlsl": "42d3ddb0fe9830b24b788beb0917956cbc1dd618c0ddf0448cc007f5146990a9",
+    "XuanXuanRenderUtility/Shader/HLSL/HoudiniVAT.hlsl": "b5bb7d94cd4086413f6d7437db1846f7043765fee62bc414d3a86209c97d7fca",
+    "Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader": "a27e705c3ac3a83d932a8745a48f4ac45f31a5fb1b945fa5a66f38c99c742a8d",
+    "Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderInput.hlsl": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9",
+    "Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl": "dbf0315495ec9dd333025e0d02a853a4acc13cd6cc012cba9050541d3073462b",
+    "Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016",
+    "Tests/Baseline/Frozen/XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl": "5091f80d00b150c8af7f7b71022162720474181fae37b41c587fdc74effa22d7",
+    "Tests/URP/Editor/G4GraphVATTests.cs": "399175927b0a5287097621a2a8837fbb024fd000ae638721c65d8508249db7ae",
+    "Tests/URP/Editor/G4GraphTyflowVATTests.cs": "9695dde882012f2a3ac17332d6fcf7e59d81859e1623413f16877b5213a03b39",
+    "NBShaders2/Shader/HLSL/NBShaderInput.hlsl.meta": "3c00f44c19f3dea3190a1e835e60a0de8ad9727e76525a32395101966912d050",
+    "NBShaders2/Shader/NBShader.shader.meta": "d2f6989f1b631e00521c87ea3f72bfa072be6ebac2a62c35a5ba0f544c0b065c",
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "24530f4ade44e75bafc38c4e20e37e9796b0de9ba5b3cced8d24f4d4a5589acf",
+    "NBShaders2/ShaderGraph/NBGraphVATSoftBody.hlsl": "c7d0206606e12f57e2216ab76da092ec6dcf74794cf8b3ce955b4654b9c9027a",
+    "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs": "193845bb74c8a55080a5dbc599146ee18483a9157ee8b7bd0c7349577c1bc266"
+  },
+  "noOtherInputByteChanges": true,
+  "newShaderLabProperties": 0,
+  "newKeywords": 0,
+  "newGraphObjects": 0,
+  "builderEntry": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\native-srp-draw-review-20261003\\build_native_vat_texel_cbuf.py",
+  "builderOutputExample": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\native-srp-draw-review-20261003\\generated-from-latest-root-1",
+  "builderNotExecuted": true,
+  "acceptance": "Only actual candidate compile/native real-draw/code0 and unchanged finite/visible/repeat/strong/strict original VAT162 colour/geometry/custom-frame/gamma evidence can support product decision. Current/Frozen original failures remain archived.",
+  "fullMeshGatePassed": false
+}

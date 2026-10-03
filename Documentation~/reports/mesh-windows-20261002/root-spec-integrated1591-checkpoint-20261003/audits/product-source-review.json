@@ -1,0 +1,777 @@
+{
+  "scope": "Independent Spec4 static source review against exact RootNoise locks; no Unity/compile result",
+  "inputRecords": [
+    {
+      "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+      "beforeSHA256": "24530f4ade44e75bafc38c4e20e37e9796b0de9ba5b3cced8d24f4d4a5589acf",
+      "afterSHA256": "2ed046941496c166c0f9ea49f528b728dfcf62315b6679532fe9bf3c8608966c"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs",
+      "beforeSHA256": "193845bb74c8a55080a5dbc599146ee18483a9157ee8b7bd0c7349577c1bc266",
+      "afterSHA256": "4436e48da8de5e036a14e0449b02a318ddd43e70c651192ff5f953636830476f"
+    },
+    {
+      "path": "NBShaders2/Editor/NBShaderGraphGUI.cs",
+      "beforeSHA256": "e83ea53751f23bbed359bc27775d33da5a50c2cb23bccc286e6093335226e69a",
+      "afterSHA256": "9732497deb472fe0360741d798f302fab574a69ee3fb715c76cc03ae15b8dbb9"
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderMaterialIntentResolver.cs",
+      "beforeSHA256": "a6562c2b0c42b4d0afc8e16545631cd741aa7bc5d0452517fba85dfb89e47aa3",
+      "afterSHA256": "cf56e2f8101b4d0b93c6412f4ec7b3f3c2f931218d96a8a5af8f1dadfec9d98f"
+    }
+  ],
+  "graph": {
+    "oldObjectCount": 1590,
+    "newObjectCount": 1591,
+    "oldPropertyCount": 308,
+    "newPropertyCount": 309,
+    "allOldObjectsExceptRootRegistryExactParsed": true,
+    "rootKeysExceptPropertyRegistryExact": true,
+    "nodesSlotsEdgesCategoriesTargetsKeywordsPreserved": true,
+    "addedProperty": {
+      "m_SGVersion": 1,
+      "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+      "m_ObjectId": "8850b2b6487b4d76b2c61ab547cb45e4",
+      "m_Guid": {
+        "m_GuidSerialized": "f79329eb-7d18-46af-af21-3fedecd201d5"
+      },
+      "m_Name": "Blinn/Half Specular",
+      "m_RefNameGeneratedByDisplayName": "SixWayColorAbsorptionToggle",
+      "m_DefaultReferenceName": "_BlinnPhongSpecularToggle",
+      "m_OverrideReferenceName": "_BlinnPhongSpecularToggle",
+      "m_DefaultRefNameVersion": 1,
+      "m_GeneratePropertyBlock": true,
+      "m_UseCustomSlotLabel": false,
+      "m_CustomSlotLabel": "",
+      "m_DismissedVersion": 0,
+      "m_Precision": 0,
+      "overrideHLSLDeclaration": false,
+      "hlslDeclarationOverride": 0,
+      "m_Hidden": false,
+      "m_PerRendererData": false,
+      "m_customAttributes": [],
+      "m_Value": 0.0,
+      "m_FloatType": 0,
+      "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
+      },
+      "m_SliderType": 0,
+      "m_SliderPower": 3.0,
+      "m_EnumType": 0,
+      "m_CSharpEnumString": "",
+      "m_EnumNames": [
+        "Default"
+      ],
+      "m_EnumValues": [
+        0
+      ]
+    },
+    "newCFNodes": 0,
+    "newCI": 0,
+    "newPackedBits": 0
+  },
+  "target": {
+    "onlyDelta": "            // Original NB Blinn/Half specular axis; Forward only.\n            keywords.Add(new KeywordDescriptor\n            {\n                displayName = \"NB Specular\", referenceName = \"_SPECULAR_COLOR\",\n                type = KeywordType.Boolean, definition = KeywordDefinition.ShaderFeature,\n                scope = KeywordScope.Local, stages = KeywordShaderStage.Fragment,\n            });\n",
+    "keyword": "_SPECULAR_COLOR",
+    "scope": "Local",
+    "stage": "Fragment",
+    "definition": "ShaderFeature",
+    "nominalForwardVariantMultiplier": 2,
+    "onlyWithNBLightingKeywordsMainForwardCalled": true,
+    "collectionCopiedRatherThanMutated": true,
+    "distortionClonesStillReceiveOriginalPass": true,
+    "ShadowDepthNBDistortionPassDescriptorsAndRenderStatesPreserved": true
+  },
+  "GUI": {
+    "onlyDelta": "            SetExistingKeyword(material, \"_SPECULAR_COLOR\",\n                material.HasProperty(\"_BlinnPhongSpecularToggle\") && material.GetFloat(\"_BlinnPhongSpecularToggle\") > 0.5f);\n",
+    "originalOnGUIValidateAssignAndSixWayOVZSyncUnchanged": true,
+    "independentOfFxLightMode": true,
+    "fullSharedLightGUICompleted": false
+  },
+  "reader": {
+    "same37Bindings": true,
+    "supported": 29,
+    "pending": 8,
+    "capability": "NBGraph.Mesh.KeywordIntent.v2.Specular",
+    "onlyBindingSupportAndCapabilityLiteralChanged": true,
+    "dependencyCoreAndPassEmptyAndStrictSchemaBodiesUnchanged": true,
+    "pendingKeywords": [
+      "_STENCIL_WITHOUT_PLAYER",
+      "_SHARED_UV",
+      "NB_DEBUG_DISSOLVE",
+      "NB_DEBUG_DISTORT",
+      "NB_DEBUG_FRESNEL",
+      "NB_DEBUG_MASK",
+      "NB_DEBUG_PNOISE",
+      "NB_DEBUG_VERTEX_OFFSET"
+    ],
+    "staleComment": "Reader comment still says v1/28/nine; non-blocking documentation drift, code capability and counts are v2/29/eight."
+  },
+  "HLSL": {
+    "floatAndHalfBaseColorReuseOneExistingLightingHelper": true,
+    "BlinnURPConditionalFile": "D:\\UnityProject\\NBUnityProject\\Library\\PackageCache\\com.unity.render-pipelines.universal@a0dd9d2bd983\\ShaderLibrary\\Lighting.hlsl",
+    "BlinnURPConditionalSHA256": "1132ec024298a9e3ebf527f9e48dcb2ee037be250acb89b881b8ec00320896b7",
+    "HalfLambertConditionalFile": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\XuanXuanRenderUtility\\Shader\\HLSL\\SixWaySmokeLit.hlsl",
+    "HalfLambertConditionalSHA256": "0dae183626a58e6565bcf7442c799b92cc3e3b593e5562173089a59fab6bb0da",
+    "sharedMathChanged": false,
+    "UnlitPBRSixWayConsumerBehaviorNotExpanded": true
+  },
+  "protectedCurrentRootAndCloneSourceSnapshots": [
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
+      "rootSHA256": "1d7fe0b81f43ec501ec07951f79fd1d35fe7e4b89f9439b51f5b613b39b81b2c",
+      "cloneSHA256": "1d7fe0b81f43ec501ec07951f79fd1d35fe7e4b89f9439b51f5b613b39b81b2c",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseUV.hlsl",
+      "rootSHA256": "d0cd4139fb2322101cfc69a5d08320ce575b14b7269fcc95927603730cde5e09",
+      "cloneSHA256": "d0cd4139fb2322101cfc69a5d08320ce575b14b7269fcc95927603730cde5e09",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl",
+      "rootSHA256": "12b09b06acf6031a69cb08243e0de88eec43779ccf74e9d1f6a1dfe4c46e2b0f",
+      "cloneSHA256": "12b09b06acf6031a69cb08243e0de88eec43779ccf74e9d1f6a1dfe4c46e2b0f",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphFlags.hlsl",
+      "rootSHA256": "477d7f78e3451bd84c87435f5d8a99771b1460a02c079005ff2884420db9a7e6",
+      "cloneSHA256": "477d7f78e3451bd84c87435f5d8a99771b1460a02c079005ff2884420db9a7e6",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphOverrideDepth.hlsl",
+      "rootSHA256": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1",
+      "cloneSHA256": "e32d6685ee8a19243821ce00c46a041eea2bc3a0103ebe0651e2ca574c8a3fb1",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphSampling.hlsl",
+      "rootSHA256": "f859b9b61e4cc51ce61f59d39750199f674388e92ea66371325784f35e3da758",
+      "cloneSHA256": "f859b9b61e4cc51ce61f59d39750199f674388e92ea66371325784f35e3da758",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphVATSoftBody.hlsl",
+      "rootSHA256": "c7d0206606e12f57e2216ab76da092ec6dcf74794cf8b3ce955b4654b9c9027a",
+      "cloneSHA256": "c7d0206606e12f57e2216ab76da092ec6dcf74794cf8b3ce955b4654b9c9027a",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphVertexOffset.hlsl",
+      "rootSHA256": "cffdf8e0f90006e76f30b44573428e3f8c7627a6fcaa03840ada3188bb66c5df",
+      "cloneSHA256": "cffdf8e0f90006e76f30b44573428e3f8c7627a6fcaa03840ada3188bb66c5df",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Editor/NBGraphDistortionBlocks.cs",
+      "rootSHA256": "b8df31b03ca9421e39930bc3e6bbe70caa30567722a9b7ff80311560724f646e",
+      "cloneSHA256": "b8df31b03ca9421e39930bc3e6bbe70caa30567722a9b7ff80311560724f646e",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Editor/NBGraphUnlitGUIBridge.cs",
+      "rootSHA256": "4e0305a19d7eb34a194614dee2637d17252814c47c236c76803da4c3414d9907",
+      "cloneSHA256": "4e0305a19d7eb34a194614dee2637d17252814c47c236c76803da4c3414d9907",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Passes/NBGraphCameraOpaquePass.hlsl",
+      "rootSHA256": "14b708daf8b97ef01c495328987719d89fffb2969c47c0292c213edb003a37dd",
+      "cloneSHA256": "14b708daf8b97ef01c495328987719d89fffb2969c47c0292c213edb003a37dd",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Passes/NBGraphDeferredDistortPass.hlsl",
+      "rootSHA256": "f3e67b161182dd7dac968fe3e4f0a1bba49351f5817d879e676bec35278aa74c",
+      "cloneSHA256": "f3e67b161182dd7dac968fe3e4f0a1bba49351f5817d879e676bec35278aa74c",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Passes/NBGraphDistortionPass.hlsl",
+      "rootSHA256": "14370451c6a0c628a34974b8340199058408cc8de56a00ca854e798c626cdd3e",
+      "cloneSHA256": "14370451c6a0c628a34974b8340199058408cc8de56a00ca854e798c626cdd3e",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Passes/NBGraphForwardPass.hlsl",
+      "rootSHA256": "60bf8db7900991468c8c3abf94eaa8b5ea5737ef4cae2327351deee9ac1aa35d",
+      "cloneSHA256": "60bf8db7900991468c8c3abf94eaa8b5ea5737ef4cae2327351deee9ac1aa35d",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Passes/NBGraphShadowCasterPass.hlsl",
+      "rootSHA256": "52d8c35bf34661d574529bc27d81490ad4df72033cb2729609adb884545fe546",
+      "cloneSHA256": "52d8c35bf34661d574529bc27d81490ad4df72033cb2729609adb884545fe546",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/NBShader.shader",
+      "rootSHA256": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b",
+      "cloneSHA256": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderChromaticV1.hlsl",
+      "rootSHA256": "09bdb6e490a3e1bbda7177aafd1bad7479542b1075048bda1f40883bd2f37773",
+      "cloneSHA256": "09bdb6e490a3e1bbda7177aafd1bad7479542b1075048bda1f40883bd2f37773",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderCoordinateSpaceV1.hlsl",
+      "rootSHA256": "b82f047903c5ae6f53244953e35f412236f7477fcfb5c36147add91fb55559a8",
+      "cloneSHA256": "b82f047903c5ae6f53244953e35f412236f7477fcfb5c36147add91fb55559a8",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl",
+      "rootSHA256": "71b30dc3bff96f65d09e64adee5d45a9c4bc4de18636cd03d81f78285033ea48",
+      "cloneSHA256": "71b30dc3bff96f65d09e64adee5d45a9c4bc4de18636cd03d81f78285033ea48",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderDepthDecalV1.hlsl",
+      "rootSHA256": "095d2f4f201b054051e095885c2c39224e08baf07bd73ae28ed76e69aa50a6b4",
+      "cloneSHA256": "095d2f4f201b054051e095885c2c39224e08baf07bd73ae28ed76e69aa50a6b4",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderDissolveV3.hlsl",
+      "rootSHA256": "4474cc7d6fbfa454636b9185e3cda3fe3e1c730e89c4ce3420e43b4dfa1d17a8",
+      "cloneSHA256": "4474cc7d6fbfa454636b9185e3cda3fe3e1c730e89c4ce3420e43b4dfa1d17a8",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderDistortionV1.hlsl",
+      "rootSHA256": "079b9a437f3e9215259815192aee0cae44ecd1b39542bd15b4148d351f4c9065",
+      "cloneSHA256": "079b9a437f3e9215259815192aee0cae44ecd1b39542bd15b4148d351f4c9065",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderEnvironmentV2.hlsl",
+      "rootSHA256": "6a0e6557eeb3bafacbeb082e79f0769f2944289d0e7db61f2ea49ae4e6afa4c2",
+      "cloneSHA256": "6a0e6557eeb3bafacbeb082e79f0769f2944289d0e7db61f2ea49ae4e6afa4c2",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderFlags.hlsl",
+      "rootSHA256": "ff61aa9367577fed95fb4862b52f60520ad673243b87a99a697cac3d5b014df3",
+      "cloneSHA256": "ff61aa9367577fed95fb4862b52f60520ad673243b87a99a697cac3d5b014df3",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "rootSHA256": "17322f26b644db92d0b0419cbac46bc88ac1c0635a767cdac6a1f35d7ea6a227",
+      "cloneSHA256": "17322f26b644db92d0b0419cbac46bc88ac1c0635a767cdac6a1f35d7ea6a227",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderGeometryV1.hlsl",
+      "rootSHA256": "36cd42e949ac9dd64e8804906d751e2a522e75d42eff8f3ec6c5abb603455c6b",
+      "cloneSHA256": "36cd42e949ac9dd64e8804906d751e2a522e75d42eff8f3ec6c5abb603455c6b",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "rootSHA256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+      "cloneSHA256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderMaskV3.hlsl",
+      "rootSHA256": "6d33c9c35f20f569ccf5135209f99afadcb558a4df8a313e9491c6646fcc3775",
+      "cloneSHA256": "6d33c9c35f20f569ccf5135209f99afadcb558a4df8a313e9491c6646fcc3775",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderOverrideDepthV1.hlsl",
+      "rootSHA256": "d21685e999ee9aeddf80c3cfcc2b6cab76be35644fad3eb6283233ea7e1e35d4",
+      "cloneSHA256": "d21685e999ee9aeddf80c3cfcc2b6cab76be35644fad3eb6283233ea7e1e35d4",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderPackedGradientV1.hlsl",
+      "rootSHA256": "2e7642a8849829dad354f0fe939e669d7ae62125b4569e681df313086c405c66",
+      "cloneSHA256": "2e7642a8849829dad354f0fe939e669d7ae62125b4569e681df313086c405c66",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderParallaxV1.hlsl",
+      "rootSHA256": "acbad749c27acffacb56dcd47a7cb8a694a5253f8990b7307a65a79146a1b389",
+      "cloneSHA256": "acbad749c27acffacb56dcd47a7cb8a694a5253f8990b7307a65a79146a1b389",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderSharedContractV1.hlsl",
+      "rootSHA256": "b06e62db11165d7e053a4395a1fb7df5c7bce69be1a71332ecc8ab0b4ac22640",
+      "cloneSHA256": "b06e62db11165d7e053a4395a1fb7df5c7bce69be1a71332ecc8ab0b4ac22640",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderSharedContractV2.hlsl",
+      "rootSHA256": "a88358ff2e1b3480635c6a5f4ac0857118178254645539d70ff27a9410bafeb0",
+      "cloneSHA256": "a88358ff2e1b3480635c6a5f4ac0857118178254645539d70ff27a9410bafeb0",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderSharedContractV3.hlsl",
+      "rootSHA256": "8a633ba0c7918bdf26fcf15d22adeba4a222cbdc1622030dcd239fe7c53d29b2",
+      "cloneSHA256": "8a633ba0c7918bdf26fcf15d22adeba4a222cbdc1622030dcd239fe7c53d29b2",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl",
+      "rootSHA256": "7d18d3e09c46e7b9371fddc2ce06fa57c10a60c8a154e48e6d1d6d667229ab75",
+      "cloneSHA256": "7d18d3e09c46e7b9371fddc2ce06fa57c10a60c8a154e48e6d1d6d667229ab75",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderUVV1.hlsl",
+      "rootSHA256": "8beb3f81f7058bf148f17897bcc8ef0d671d372780319932a93a68543677c43b",
+      "cloneSHA256": "8beb3f81f7058bf148f17897bcc8ef0d671d372780319932a93a68543677c43b",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderUVV2.hlsl",
+      "rootSHA256": "932387328c5718507635a030da2cb384e200a6c2b7c45037be6e88dbedb32e7c",
+      "cloneSHA256": "932387328c5718507635a030da2cb384e200a6c2b7c45037be6e88dbedb32e7c",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderFeatureCatalog.cs",
+      "rootSHA256": "f639adda9df36642756fd138fb064a2e88b4b402de168fca978494001a838870",
+      "cloneSHA256": "f639adda9df36642756fd138fb064a2e88b4b402de168fca978494001a838870",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderFeatureRuntime.cs",
+      "rootSHA256": "03882a6755f2a434e18a68901dd4550ac39e36a59a818f66cfc45db0ff4f2183",
+      "cloneSHA256": "03882a6755f2a434e18a68901dd4550ac39e36a59a818f66cfc45db0ff4f2183",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderFeatureRuntimeSettings.cs",
+      "rootSHA256": "f913281e36868df96bc458653f69d29d9a602fd33beb19f33000e26bd58f5755",
+      "cloneSHA256": "f913281e36868df96bc458653f69d29d9a602fd33beb19f33000e26bd58f5755",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderFeatureTier.cs",
+      "rootSHA256": "e2541e68be8150416fb27aad3dfafe6c0e1ff20a7ef03a2884408c59ab1611c9",
+      "cloneSHA256": "e2541e68be8150416fb27aad3dfafe6c0e1ff20a7ef03a2884408c59ab1611c9",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderFlags.cs",
+      "rootSHA256": "22a7e6545decf95cdaaee2ea909546bc72bebfe06ae87b97f0ff8a5010afd787",
+      "cloneSHA256": "22a7e6545decf95cdaaee2ea909546bc72bebfe06ae87b97f0ff8a5010afd787",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderMaterialIntentProtocol.cs",
+      "rootSHA256": "c159a803745e7e36cecd090d5cb9f0f1fb73a4386b03b02bb5edecf9788f6a4f",
+      "cloneSHA256": "c159a803745e7e36cecd090d5cb9f0f1fb73a4386b03b02bb5edecf9788f6a4f",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Runtime/NBShaderPassFeatureCatalog.cs",
+      "rootSHA256": "8aea5b2d15d18057eaff13a4fda01cc3802ac35e65cdb603ad354060087cf37c",
+      "cloneSHA256": "8aea5b2d15d18057eaff13a4fda01cc3802ac35e65cdb603ad354060087cf37c",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Runtime/Properties/AssemblyInfo.cs",
+      "rootSHA256": "fcd256df820232bf25a22ff20237472f10800bff2393c29bb370893dd13b7568",
+      "cloneSHA256": "fcd256df820232bf25a22ff20237472f10800bff2393c29bb370893dd13b7568",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/BaseOptionBigBlockItem.cs",
+      "rootSHA256": "9e0406589ee72b0278064c497728e772c1f3cc4fcebdca37ef50a6528c8a69ab",
+      "cloneSHA256": "9e0406589ee72b0278064c497728e772c1f3cc4fcebdca37ef50a6528c8a69ab",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/FeatureBigBlockItem.cs",
+      "rootSHA256": "f52b21b48c0f548851fccd3f55db7380317261a301a77568932066b39a8177a4",
+      "cloneSHA256": "f52b21b48c0f548851fccd3f55db7380317261a301a77568932066b39a8177a4",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/LightBigBlockItem.cs",
+      "rootSHA256": "ea4fc409e86e2c418f5e0836870f0813d9b04439f7099264084d490a7edee678",
+      "cloneSHA256": "ea4fc409e86e2c418f5e0836870f0813d9b04439f7099264084d490a7edee678",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/MainTexBigBlockItem.cs",
+      "rootSHA256": "c97220cd4633a269ff1c61d7e3f6025b1e21c414fe5e4cb853f9adf4a18ad4d7",
+      "cloneSHA256": "c97220cd4633a269ff1c61d7e3f6025b1e21c414fe5e4cb853f9adf4a18ad4d7",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/ModeBigBlockItem.cs",
+      "rootSHA256": "4d4962ba7afba8a03ac447f2d45d5588750ade5d2512bd6fd2683be6b6001044",
+      "cloneSHA256": "4d4962ba7afba8a03ac447f2d45d5588750ade5d2512bd6fd2683be6b6001044",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/NBShaderGUIContext.cs",
+      "rootSHA256": "3230a6aedf3ac13bb5024179caad1d37036ca7a04c336fbb94687f15ccfdb36a",
+      "cloneSHA256": "3230a6aedf3ac13bb5024179caad1d37036ca7a04c336fbb94687f15ccfdb36a",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/NBShaderGUIToolBar.cs",
+      "rootSHA256": "2040e495afcf66c330c6c318d1d679a6835005284ae3fa85fbaab809eecf8038",
+      "cloneSHA256": "2040e495afcf66c330c6c318d1d679a6835005284ae3fa85fbaab809eecf8038",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/NBShaderProtocolItems.cs",
+      "rootSHA256": "daa515fbf5084482bd33b8bafddfc9068fd3e23dc8ea9f4f1023ab97a36d9a0b",
+      "cloneSHA256": "daa515fbf5084482bd33b8bafddfc9068fd3e23dc8ea9f4f1023ab97a36d9a0b",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs",
+      "rootSHA256": "0d9b7bad173c713669585fbefdf2280929a90a1a31980752205cb9f0692749ea",
+      "cloneSHA256": "0d9b7bad173c713669585fbefdf2280929a90a1a31980752205cb9f0692749ea",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/ParticleVertexStreamsItem.cs",
+      "rootSHA256": "113b79ce5b8387a30de956eacc3e2b73a3cc21dc1554a8b00e3c9f93e83d73cb",
+      "cloneSHA256": "113b79ce5b8387a30de956eacc3e2b73a3cc21dc1554a8b00e3c9f93e83d73cb",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/TABigBlockItem.cs",
+      "rootSHA256": "4dc8fc53b80dc54e8d18541cb4666df9dbc5e84818c2170cdd120d057a5b2bf8",
+      "cloneSHA256": "4dc8fc53b80dc54e8d18541cb4666df9dbc5e84818c2170cdd120d057a5b2bf8",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/ChromaticAberrationFeatureItem.cs",
+      "rootSHA256": "8fc6d9a281dc24cd50a39bc2ef6b245a38a656c41cd657ce78ac04fe97abb598",
+      "cloneSHA256": "8fc6d9a281dc24cd50a39bc2ef6b245a38a656c41cd657ce78ac04fe97abb598",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/ColorBlendFeatureItem.cs",
+      "rootSHA256": "254928cb3b9c604ab1031d7f91db298872cd37c8ce82ee87ba21e9550d4e26a3",
+      "cloneSHA256": "254928cb3b9c604ab1031d7f91db298872cd37c8ce82ee87ba21e9550d4e26a3",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/ColorOverlayFeatureItem.cs",
+      "rootSHA256": "7cf04b063d2029367575e98a857f595da2d967096c5a749b4848867c15c17b38",
+      "cloneSHA256": "7cf04b063d2029367575e98a857f595da2d967096c5a749b4848867c15c17b38",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/DepthFeatureItem.cs",
+      "rootSHA256": "69e8cd71f69f9fc2d5d6d49217b14e5db5f30d7b1c55dad2baf25d18239c542f",
+      "cloneSHA256": "69e8cd71f69f9fc2d5d6d49217b14e5db5f30d7b1c55dad2baf25d18239c542f",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/DissolveFeatureItem.cs",
+      "rootSHA256": "f87cb1907926f2482d62730c538f4c2e02f5a042da22295af44195fd996dbc91",
+      "cloneSHA256": "f87cb1907926f2482d62730c538f4c2e02f5a042da22295af44195fd996dbc91",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/EmissionFeatureItem.cs",
+      "rootSHA256": "1f9635b8f724362767da2c90167e382a26b354372a0c2f95e8db87b6fa0446e2",
+      "cloneSHA256": "1f9635b8f724362767da2c90167e382a26b354372a0c2f95e8db87b6fa0446e2",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/FeatureSupportItems.cs",
+      "rootSHA256": "e1670d113a9cafa092a0e6ad348021b740550c6ed0a0936a692af5a3b605be06",
+      "cloneSHA256": "e1670d113a9cafa092a0e6ad348021b740550c6ed0a0936a692af5a3b605be06",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/FeatureToggleFoldOutItem.cs",
+      "rootSHA256": "74985df06b451aaab516bafd5ff9b5ee887c0c0e3d610a627700818ccfe5fe11",
+      "cloneSHA256": "74985df06b451aaab516bafd5ff9b5ee887c0c0e3d610a627700818ccfe5fe11",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/FresnelFeatureItem.cs",
+      "rootSHA256": "ddc1430d98eb4ded7bbd0d2152691f4a30597384542e21071bc2de8aae9c662a",
+      "cloneSHA256": "ddc1430d98eb4ded7bbd0d2152691f4a30597384542e21071bc2de8aae9c662a",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/MaskFeatureItem.cs",
+      "rootSHA256": "dad988e16cd4b31efd56a2bf0f07cbf95c2493f08ddff98ba19f491d5281d635",
+      "cloneSHA256": "dad988e16cd4b31efd56a2bf0f07cbf95c2493f08ddff98ba19f491d5281d635",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/NoiseAndDistortFeatureItem.cs",
+      "rootSHA256": "997bdb442eec0d429d901d56c8a845fce8a11712a3ec0108775cba6be1f04416",
+      "cloneSHA256": "997bdb442eec0d429d901d56c8a845fce8a11712a3ec0108775cba6be1f04416",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/ParallaxFeatureItem.cs",
+      "rootSHA256": "c6e608a1169848f3a35c96ff275893696c9d38db1596bf11fadfed32052db7d3",
+      "cloneSHA256": "c6e608a1169848f3a35c96ff275893696c9d38db1596bf11fadfed32052db7d3",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/PortalFeatureItem.cs",
+      "rootSHA256": "7084667702c9ecdbf3c370214d9e1f3c8b02d21962de19fc16fd93d86d2b59fc",
+      "cloneSHA256": "7084667702c9ecdbf3c370214d9e1f3c8b02d21962de19fc16fd93d86d2b59fc",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/ProgramNoiseFeatureItem.cs",
+      "rootSHA256": "6ea0c671072580070bac9c9f6210af5bff314a7f2ad63dbe37fd877b5b96fae4",
+      "cloneSHA256": "6ea0c671072580070bac9c9f6210af5bff314a7f2ad63dbe37fd877b5b96fae4",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/RampColorFeatureItem.cs",
+      "rootSHA256": "39a6483f24c49eab454ff7768d99df816b7e3c1b728b1b659348a987389aa2f1",
+      "cloneSHA256": "39a6483f24c49eab454ff7768d99df816b7e3c1b728b1b659348a987389aa2f1",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/SharedUVFeatureItem.cs",
+      "rootSHA256": "19c5daef43be847cddf054aca04d3d971622e18b19af460bf183c3a71b946452",
+      "cloneSHA256": "19c5daef43be847cddf054aca04d3d971622e18b19af460bf183c3a71b946452",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/VatFeatureItem.cs",
+      "rootSHA256": "7b1553a588493f37d71c7e0b38aaa6d90e94ed028bf3f5b6dfb477da3602fa5c",
+      "cloneSHA256": "7b1553a588493f37d71c7e0b38aaa6d90e94ed028bf3f5b6dfb477da3602fa5c",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/ShaderGUIItems/Features/VertexOffsetFeatureItem.cs",
+      "rootSHA256": "99ad2b18c76f7cd3534b9b2701d4ba6548a2af4b6114fd2ead5aa7b9044ac897",
+      "cloneSHA256": "99ad2b18c76f7cd3534b9b2701d4ba6548a2af4b6114fd2ead5aa7b9044ac897",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderEditorQualityTierWatcher.cs",
+      "rootSHA256": "472011f4a77ac54619be884e75cac1e93e46eb15833f1a2f48ad8a670f550f85",
+      "cloneSHA256": "472011f4a77ac54619be884e75cac1e93e46eb15833f1a2f48ad8a670f550f85",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelBuildInfo.cs",
+      "rootSHA256": "1a9a2fc4198912be105848a560fd99e7d28b8e1f9e6e8f577d1222b386ebf0a7",
+      "cloneSHA256": "1a9a2fc4198912be105848a560fd99e7d28b8e1f9e6e8f577d1222b386ebf0a7",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelBuildStripOverride.cs",
+      "rootSHA256": "6551b9c3944e8c7611074a567ebdc4979f00c72ecaf796a5f3259b06af23eb54",
+      "cloneSHA256": "6551b9c3944e8c7611074a567ebdc4979f00c72ecaf796a5f3259b06af23eb54",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelCatalog.cs",
+      "rootSHA256": "4968f550e5fde74c8fb3d0d1bfb5945a21c04ca5d6000f8304db15a3b8fce3fb",
+      "cloneSHA256": "4968f550e5fde74c8fb3d0d1bfb5945a21c04ca5d6000f8304db15a3b8fce3fb",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelEditorAPI.cs",
+      "rootSHA256": "809b50bb3fcafacdb21e4433ebfaf476e0266cbf9535ff0aa1e4dbfc05d88d40",
+      "cloneSHA256": "809b50bb3fcafacdb21e4433ebfaf476e0266cbf9535ff0aa1e4dbfc05d88d40",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs",
+      "rootSHA256": "7094f7addad3d883c699e71a731f9a83c6c4f7be2b5057c61197dd0726a40307",
+      "cloneSHA256": "03a73dd15224dbe7c45cfbcd9cdf9178f70815dd149084374918d549d6687c28",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelPreset.cs",
+      "rootSHA256": "6e8539c2f589a9ec826d3c2670fc1630e58f79cd2d3ec786dbe8855387ad8386",
+      "cloneSHA256": "6e8539c2f589a9ec826d3c2670fc1630e58f79cd2d3ec786dbe8855387ad8386",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelProjectSettings.cs",
+      "rootSHA256": "5c944b974e1bffd6314ce7137c454230ca120bb9a728a6b06a6074231fe9636a",
+      "cloneSHA256": "5c944b974e1bffd6314ce7137c454230ca120bb9a728a6b06a6074231fe9636a",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelRowCatalog.cs",
+      "rootSHA256": "eb8c89a02c233c88bc37a8157a98723821b1d1185c807608bc8436fab77aa8aa",
+      "cloneSHA256": "eb8c89a02c233c88bc37a8157a98723821b1d1185c807608bc8436fab77aa8aa",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelSettingsProvider.cs",
+      "rootSHA256": "cea727874f0b61f441173b213a06d71de4b790bb71d61ec3389f1a4d2daa7545",
+      "cloneSHA256": "cea727874f0b61f441173b213a06d71de4b790bb71d61ec3389f1a4d2daa7545",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelTypes.cs",
+      "rootSHA256": "077e4f87e2b0490eee0c884a753c649a0a988cfae526129ba380528feeba7e7d",
+      "cloneSHA256": "077e4f87e2b0490eee0c884a753c649a0a988cfae526129ba380528feeba7e7d",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderFeatureRuntimeSettingsEditor.cs",
+      "rootSHA256": "adc56bafce502fb836c51f78eca983bd58ef37f1194a7d9cf7b6676efebbc8f2",
+      "cloneSHA256": "adc56bafce502fb836c51f78eca983bd58ef37f1194a7d9cf7b6676efebbc8f2",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderRuntimeSettingsSynchronizer.cs",
+      "rootSHA256": "990f46066c1fade938c7862faeef518be81d34b0538279a91c56cc2392767ac4",
+      "cloneSHA256": "990f46066c1fade938c7862faeef518be81d34b0538279a91c56cc2392767ac4",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderSVCBuilderWindow.cs",
+      "rootSHA256": "08f4b580f80b6e97c32b558ab23f945997385d2c67ecca8974aafabc1efd843a",
+      "cloneSHA256": "08f4b580f80b6e97c32b558ab23f945997385d2c67ecca8974aafabc1efd843a",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderVariantCollectionBuilder.cs",
+      "rootSHA256": "5e84cd59bd865a226c788d8c0ec7f0193ffd34d0fb72eb875bab0a692fa28a0f",
+      "cloneSHA256": "5e84cd59bd865a226c788d8c0ec7f0193ffd34d0fb72eb875bab0a692fa28a0f",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "NBShaders2/Editor/FeatureLevel/NBShaderVariantStripper.cs",
+      "rootSHA256": "9ed87bc570a7cf5009dd28ed8a98f357bdac07ce6f44e711be73fb7e700fe19f",
+      "cloneSHA256": "9ed87bc570a7cf5009dd28ed8a98f357bdac07ce6f44e711be73fb7e700fe19f",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+      "rootSHA256": "a27e705c3ac3a83d932a8745a48f4ac45f31a5fb1b945fa5a66f38c99c742a8d",
+      "cloneSHA256": "a27e705c3ac3a83d932a8745a48f4ac45f31a5fb1b945fa5a66f38c99c742a8d",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderDebugPragmas.hlsl",
+      "rootSHA256": "71b30dc3bff96f65d09e64adee5d45a9c4bc4de18636cd03d81f78285033ea48",
+      "cloneSHA256": "71b30dc3bff96f65d09e64adee5d45a9c4bc4de18636cd03d81f78285033ea48",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderFlags.hlsl",
+      "rootSHA256": "ff61aa9367577fed95fb4862b52f60520ad673243b87a99a697cac3d5b014df3",
+      "cloneSHA256": "ff61aa9367577fed95fb4862b52f60520ad673243b87a99a697cac3d5b014df3",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "rootSHA256": "dbf0315495ec9dd333025e0d02a853a4acc13cd6cc012cba9050541d3073462b",
+      "cloneSHA256": "dbf0315495ec9dd333025e0d02a853a4acc13cd6cc012cba9050541d3073462b",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "rootSHA256": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9",
+      "cloneSHA256": "4dedef4aea5c5bf367afd18d6a33bc60966c07161e08d6297c2674bd9ace75a9",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/HoudiniVAT.hlsl",
+      "rootSHA256": "b5bb7d94cd4086413f6d7437db1846f7043765fee62bc414d3a86209c97d7fca",
+      "cloneSHA256": "b5bb7d94cd4086413f6d7437db1846f7043765fee62bc414d3a86209c97d7fca",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/HoudiniVATKernelV1.hlsl",
+      "rootSHA256": "89d24f15b3a48abaad2e11245976b8b23b3ad8c0b5a3e392d92332b654e1f777",
+      "cloneSHA256": "89d24f15b3a48abaad2e11245976b8b23b3ad8c0b5a3e392d92332b654e1f777",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/HoudiniVATMathV1.hlsl",
+      "rootSHA256": "79a6c489119f884592db9da4ca1dbe043f43d9601bc8e544c5956f6518f37bc0",
+      "cloneSHA256": "79a6c489119f884592db9da4ca1dbe043f43d9601bc8e544c5956f6518f37bc0",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl",
+      "rootSHA256": "0dae183626a58e6565bcf7442c799b92cc3e3b593e5562173089a59fab6bb0da",
+      "cloneSHA256": "0dae183626a58e6565bcf7442c799b92cc3e3b593e5562173089a59fab6bb0da",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/TyflowVAT.hlsl",
+      "rootSHA256": "99e063184f6fe274e66c7d084c25948c960031d6a225a999bc93615cfe4f7167",
+      "cloneSHA256": "99e063184f6fe274e66c7d084c25948c960031d6a225a999bc93615cfe4f7167",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/TyflowVATKernelV1.hlsl",
+      "rootSHA256": "42d3ddb0fe9830b24b788beb0917956cbc1dd618c0ddf0448cc007f5146990a9",
+      "cloneSHA256": "42d3ddb0fe9830b24b788beb0917956cbc1dd618c0ddf0448cc007f5146990a9",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl",
+      "rootSHA256": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016",
+      "cloneSHA256": "ee08e7653bf9fcf7472116cd2e2d59ed2f7776d8333d877539741d42a1991016",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl",
+      "rootSHA256": "194074672eaab1cdb5124f547ece7cc226cc068d69a10f05bd6f73670fe5601d",
+      "cloneSHA256": "194074672eaab1cdb5124f547ece7cc226cc068d69a10f05bd6f73670fe5601d",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/ClassicNoise2D.hlsl",
+      "rootSHA256": "853ad4e62cf1b8d260e1141c30fa46a0a44574046d5e20332ac6386d1059cbc5",
+      "cloneSHA256": "853ad4e62cf1b8d260e1141c30fa46a0a44574046d5e20332ac6386d1059cbc5",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl",
+      "rootSHA256": "133aa1bdefae5cb633852dcd82a93e1b8ec9e5259fb905a54785a867a904e861",
+      "cloneSHA256": "133aa1bdefae5cb633852dcd82a93e1b8ec9e5259fb905a54785a867a904e861",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/Common.hlsl",
+      "rootSHA256": "2d56ce991289b8d4bb59f4557a3a2aa5a86c7a2c4b5355edf94077332f03f066",
+      "cloneSHA256": "2d56ce991289b8d4bb59f4557a3a2aa5a86c7a2c4b5355edf94077332f03f066",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/SimplexNoise2D.hlsl",
+      "rootSHA256": "04fb00d4d6c0e3b0a3644793440141e999caddab1f46506726c0f65cf47213ea",
+      "cloneSHA256": "04fb00d4d6c0e3b0a3644793440141e999caddab1f46506726c0f65cf47213ea",
+      "cloneRootEqualIgnoringCR": true
+    },
+    {
+      "path": "XuanXuanRenderUtility/Shader/HLSL/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl",
+      "rootSHA256": "82fdf169ebc798ebbb16b1ae00756e190752b7e069d2451cb444f76c883270a7",
+      "cloneSHA256": "82fdf169ebc798ebbb16b1ae00756e190752b7e069d2451cb444f76c883270a7",
+      "cloneRootEqualIgnoringCR": true
+    }
+  ],
+  "unexpectedProtectedMismatches": [],
+  "productStaticBlockers": [],
+  "ranUnity": false,
+  "compiledCSharpOrHLSL": false,
+  "gateAccepted": false
+}
