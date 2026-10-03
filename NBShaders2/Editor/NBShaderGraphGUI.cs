@@ -30,6 +30,8 @@ namespace NBShaderEditor
             if (material == null) return;
             if (material.HasProperty("_OverrideZ_Toggle"))
                 SetExistingKeyword(material, "_OVERRIDE_Z", material.GetFloat("_OverrideZ_Toggle") > 0.5f);
+            SetExistingKeyword(material, "_SPECULAR_COLOR",
+                material.HasProperty("_BlinnPhongSpecularToggle") && material.GetFloat("_BlinnPhongSpecularToggle") > 0.5f);
             bool sixWay = material.HasProperty("_FxLightMode") &&
                 Mathf.RoundToInt(material.GetFloat("_FxLightMode")) == 4;
             SetExistingKeyword(material, "EVALUATE_SH_VERTEX", sixWay);

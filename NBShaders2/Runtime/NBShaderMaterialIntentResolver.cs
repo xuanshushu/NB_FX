@@ -29,7 +29,7 @@ namespace NBShader
             new KeywordToggleBinding("_FlipbookBlending", "_FLIPBOOKBLENDING_ON"),
             new KeywordToggleBinding("_BumpMapToggle", "_NORMALMAP"),
             new KeywordToggleBinding("_MatCapToggle", "_MATCAP"),
-            new KeywordToggleBinding("_BlinnPhongSpecularToggle", "_SPECULAR_COLOR", false),
+            new KeywordToggleBinding("_BlinnPhongSpecularToggle", "_SPECULAR_COLOR"),
             new KeywordToggleBinding("_SixWayColorAbsorptionToggle", "VFX_SIX_WAY_ABSORPTION"),
             new KeywordToggleBinding("_DepthDecal_Toggle", "_DEPTH_DECAL"),
             new KeywordToggleBinding("_DepthOutline_Toggle", "_DEPTH_OUTLINE"),
@@ -130,7 +130,7 @@ namespace NBShader
         // unavailable; Passes, time, screen mode and feature gates are unowned.
         // A marker-2 GUI mirror never replaces raw packed flags here. Neither
         // raw words, mirrors, nor any derived material state is written.
-        internal const string GraphSupportedKeywordIntentCapability = "NBGraph.Mesh.KeywordIntent.v1";
+        internal const string GraphSupportedKeywordIntentCapability = "NBGraph.Mesh.KeywordIntent.v2.Specular";
         private static readonly string[] GraphPackedWordPrefixes =
         {
             "_NB_Flags0", "_NB_Flags1", "_NB_WrapFlags", "_NB_ColorChannel",

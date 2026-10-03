@@ -123,6 +123,13 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 type = KeywordType.Boolean, definition = KeywordDefinition.ShaderFeature,
                 scope = KeywordScope.Local, stages = KeywordShaderStage.Fragment,
             });
+            // Original NB Blinn/Half specular axis; Forward only.
+            keywords.Add(new KeywordDescriptor
+            {
+                displayName = "NB Specular", referenceName = "_SPECULAR_COLOR",
+                type = KeywordType.Boolean, definition = KeywordDefinition.ShaderFeature,
+                scope = KeywordScope.Local, stages = KeywordShaderStage.Fragment,
+            });
             pass.keywords = keywords;
             return pass;
         }

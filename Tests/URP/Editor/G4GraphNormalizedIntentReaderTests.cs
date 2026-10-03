@@ -22,13 +22,11 @@ namespace NBFX.Baseline.Tests
         const BindingFlags Instance = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         static readonly string[] MissingKeywords =
         {
-            "NB_DEBUG_DISSOLVE", "NB_DEBUG_DISTORT", "NB_DEBUG_FRESNEL", "NB_DEBUG_MASK",
-            "NB_DEBUG_PNOISE", "NB_DEBUG_VERTEX_OFFSET", "_SHARED_UV", "_SPECULAR_COLOR", "_STENCIL_WITHOUT_PLAYER"
+            "NB_DEBUG_DISSOLVE", "NB_DEBUG_DISTORT", "NB_DEBUG_FRESNEL", "NB_DEBUG_MASK", "NB_DEBUG_PNOISE", "NB_DEBUG_VERTEX_OFFSET", "_SHARED_UV", "_STENCIL_WITHOUT_PLAYER"
         };
         static readonly string[] MissingProperties =
         {
-            "_NB_Debug_Dissolve", "_NB_Debug_Distort", "_NB_Debug_Fresnel", "_NB_Debug_Mask",
-            "_NB_Debug_PNoise", "_NB_Debug_VertexOffset", "_SharedUVToggle", "_BlinnPhongSpecularToggle", "_StencilWithoutPlayerToggle"
+            "_NB_Debug_Dissolve", "_NB_Debug_Distort", "_NB_Debug_Fresnel", "_NB_Debug_Mask", "_NB_Debug_PNoise", "_NB_Debug_VertexOffset", "_SharedUVToggle", "_StencilWithoutPlayerToggle"
         };
         static readonly string[] PassNames =
         {
@@ -98,8 +96,8 @@ namespace NBFX.Baseline.Tests
             owned.Clear();
         }
 
-        [TestCase(0, TestName = "G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsNineUnavailable_01")] [TestCase(1, TestName = "G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsNineUnavailable_02")] [TestCase(2, TestName = "G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsNineUnavailable_03")] [TestCase(3, TestName = "G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsNineUnavailable_04")]
-        public void ImportedGraph_SupportedCapabilityIsReadOnly_ReportsNineUnavailable(int tier)
+        [TestCase(0, TestName = "G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsVersionedUnavailable_01")] [TestCase(1, TestName = "G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsVersionedUnavailable_02")] [TestCase(2, TestName = "G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsVersionedUnavailable_03")] [TestCase(3, TestName = "G4NormalizedReader_ImportedGraph_SupportedCapabilityIsReadOnly_ReportsVersionedUnavailable_04")]
+        public void ImportedGraph_SupportedCapabilityIsReadOnly_ReportsVersionedUnavailable(int tier)
         {
             var material = ActualGraph();
             material.SetFloat("_NB_Flags0Lo16", -17.25f); material.SetFloat("_NB_Flags1Hi16", 70000.5f);
@@ -110,7 +108,7 @@ namespace NBFX.Baseline.Tests
             string before = Snapshot(material);
             Assert.That(Read(material, tier, null, out var result, out var missing), Is.True);
             Assert.That(missing, Is.EqualTo(MissingKeywords));
-            Assert.That(MissingProperties.All(p => !material.HasProperty(p)), Is.True, "Current v1 unavailable schema changed; review its consumers before extending capability.");
+            Assert.That(MissingProperties.All(p => !material.HasProperty(p)), Is.True, "Versioned unavailable schema must remain absent; implemented consumers are separately exercised.");
             Assert.That(Keywords(result), Does.Contain("_NOISEMAP"));
             Assert.That(Keywords(result), Does.Contain("_NOISE_MASKMAP"));
             Assert.That(Field(result, "material"), Is.SameAs(material));
@@ -142,6 +140,7 @@ namespace NBFX.Baseline.Tests
         [TestCase("_NB_CustomDataFlag3Hi16", float.PositiveInfinity, TestName = "G4NormalizedReader_NonFiniteOwnedInput_IsRejected_02")]
         [TestCase("_noisemapEnabled", float.NegativeInfinity, TestName = "G4NormalizedReader_NonFiniteOwnedInput_IsRejected_03")]
         [TestCase(Version, float.NaN, TestName = "G4NormalizedReader_NonFiniteOwnedInput_IsRejected_04")]
+        [TestCase("_BlinnPhongSpecularToggle", float.NaN, TestName = "G4NormalizedReader_NonFiniteOwnedInput_IsRejected_05")]
         public void NonFiniteOwnedInput_IsRejected(string property, float value)
         {
             var material = ActualGraph(); material.SetFloat(property, value); string before = Snapshot(material);
@@ -293,6 +292,7 @@ namespace NBFX.Baseline.Tests
         [TestCase("_ProgramNoise_Simple_Toggle", "_PROGRAM_NOISE_SIMPLE", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_26")]
         [TestCase("_ProgramNoise_Voronoi_Toggle", "_PROGRAM_NOISE_VORONOI", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_27")]
         [TestCase("_VertexOffset_Mask_Toggle", "_VERTEX_OFFSET_MASKMAP", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_28")]
+        [TestCase("_BlinnPhongSpecularToggle", "_SPECULAR_COLOR", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_29")]
         public void EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold(string property, string keyword)
         {
             var material = ActualGraph(); ClearToggles(material);
@@ -333,6 +333,7 @@ namespace NBFX.Baseline.Tests
         [TestCase("_NB_CustomDataFlag2Lo16", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_11")] [TestCase("_NB_CustomDataFlag3Hi16", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_12")]
         [TestCase("_noisemapEnabled", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_13")] [TestCase("_OverrideZ_Toggle", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_14")]
         [TestCase("_FxLightMode", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_15")] [TestCase("_Surface", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_16")] [TestCase(Version, TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_17")]
+        [TestCase("_BlinnPhongSpecularToggle", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_18")]
         public void MissingRequiredRealSchema_IsRejected(string property)
         {
             var material = SchemaProbe(property); string before = Snapshot(material);
@@ -342,6 +343,7 @@ namespace NBFX.Baseline.Tests
 
         [TestCase("_NB_Flags0Lo16", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_01")] [TestCase("_NB_CustomDataFlag3Hi16", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_02")]
         [TestCase("_noiseMaskMap_Toggle", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_03")] [TestCase("_VATMode", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_04")] [TestCase(Version, TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_05")]
+        [TestCase("_BlinnPhongSpecularToggle", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_06")]
         public void IntegerPropertyCannotMasqueradeAsGraphFloat(string property)
         {
             var material = SchemaProbe(null, property); string before = Snapshot(material);
