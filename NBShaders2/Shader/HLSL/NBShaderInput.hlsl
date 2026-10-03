@@ -253,6 +253,7 @@
     half _EmissionAlphaIntensity;
     half _ColorBlendColorIntensity;
 
+    float4 _VATTex_TexelSize;
     CBUFFER_END
 
     #define NB_SHADER_FLAGS _W9ParticleShaderFlags
@@ -560,7 +561,6 @@
     #endif
 
     Texture2D _VATTex;
-    float4 _VATTex_TexelSize;
 
     
 
