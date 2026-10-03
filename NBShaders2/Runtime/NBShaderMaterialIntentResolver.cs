@@ -14,7 +14,7 @@ namespace NBShader
         {
             new KeywordToggleBinding("_SoftParticlesEnabled", "_SOFTPARTICLES_ON"),
             new KeywordToggleBinding("_DistanceFade_Toggle", "_DISTANCE_FADE"),
-            new KeywordToggleBinding("_StencilWithoutPlayerToggle", "_STENCIL_WITHOUT_PLAYER"),
+            new KeywordToggleBinding("_StencilWithoutPlayerToggle", "_STENCIL_WITHOUT_PLAYER", false),
             new KeywordToggleBinding("_Mask_Toggle", "_MASKMAP_ON"),
             new KeywordToggleBinding("_noisemapEnabled", "_NOISEMAP"),
             new KeywordToggleBinding("_EmissionEnabled", "_EMISSION"),
@@ -22,14 +22,14 @@ namespace NBShader
             new KeywordToggleBinding("_RampColorToggle", "_COLOR_RAMP"),
             new KeywordToggleBinding("_Dissolve_Toggle", "_DISSOLVE"),
             new KeywordToggleBinding("_ProgramNoise_Toggle", "_PROGRAM_NOISE"),
-            new KeywordToggleBinding("_SharedUVToggle", "_SHARED_UV"),
+            new KeywordToggleBinding("_SharedUVToggle", "_SHARED_UV", false),
             new KeywordToggleBinding("_fresnelEnabled", "_FRESNEL"),
             new KeywordToggleBinding("_ParallaxMapping_Toggle", "_PARALLAX_MAPPING"),
             new KeywordToggleBinding("_VertexOffset_Toggle", "_VERTEX_OFFSET"),
             new KeywordToggleBinding("_FlipbookBlending", "_FLIPBOOKBLENDING_ON"),
             new KeywordToggleBinding("_BumpMapToggle", "_NORMALMAP"),
             new KeywordToggleBinding("_MatCapToggle", "_MATCAP"),
-            new KeywordToggleBinding("_BlinnPhongSpecularToggle", "_SPECULAR_COLOR"),
+            new KeywordToggleBinding("_BlinnPhongSpecularToggle", "_SPECULAR_COLOR", false),
             new KeywordToggleBinding("_SixWayColorAbsorptionToggle", "VFX_SIX_WAY_ABSORPTION"),
             new KeywordToggleBinding("_DepthDecal_Toggle", "_DEPTH_DECAL"),
             new KeywordToggleBinding("_DepthOutline_Toggle", "_DEPTH_OUTLINE"),
@@ -43,12 +43,12 @@ namespace NBShader
             new KeywordToggleBinding("_ProgramNoise_Simple_Toggle", "_PROGRAM_NOISE_SIMPLE"),
             new KeywordToggleBinding("_ProgramNoise_Voronoi_Toggle", "_PROGRAM_NOISE_VORONOI"),
             new KeywordToggleBinding("_VertexOffset_Mask_Toggle", "_VERTEX_OFFSET_MASKMAP"),
-            new KeywordToggleBinding("_NB_Debug_Dissolve", "NB_DEBUG_DISSOLVE"),
-            new KeywordToggleBinding("_NB_Debug_Distort", "NB_DEBUG_DISTORT"),
-            new KeywordToggleBinding("_NB_Debug_Fresnel", "NB_DEBUG_FRESNEL"),
-            new KeywordToggleBinding("_NB_Debug_Mask", "NB_DEBUG_MASK"),
-            new KeywordToggleBinding("_NB_Debug_PNoise", "NB_DEBUG_PNOISE"),
-            new KeywordToggleBinding("_NB_Debug_VertexOffset", "NB_DEBUG_VERTEX_OFFSET")
+            new KeywordToggleBinding("_NB_Debug_Dissolve", "NB_DEBUG_DISSOLVE", false),
+            new KeywordToggleBinding("_NB_Debug_Distort", "NB_DEBUG_DISTORT", false),
+            new KeywordToggleBinding("_NB_Debug_Fresnel", "NB_DEBUG_FRESNEL", false),
+            new KeywordToggleBinding("_NB_Debug_Mask", "NB_DEBUG_MASK", false),
+            new KeywordToggleBinding("_NB_Debug_PNoise", "NB_DEBUG_PNOISE", false),
+            new KeywordToggleBinding("_NB_Debug_VertexOffset", "NB_DEBUG_VERTEX_OFFSET", false)
         };
 
         private static readonly string[] HoudiniVatKeywords =
@@ -108,6 +108,169 @@ namespace NBShader
                 passIntents);
         }
 
+        public static bool TryResolveGraphNoisePair(Material material,
+            IEnumerable<string> allowedManagedKeywords,
+            out bool noiseEffective, out bool noiseMaskEffective)
+        {
+            noiseEffective = noiseMaskEffective = false;
+            foreach (string property in new[] {"_NB_DistortionMode", "_NB_Flags0Lo16", "_NB_Flags0Hi16",
+                "_NB_Flags1Lo16", "_NB_Flags1Hi16", "_noisemapEnabled", "_noiseMaskMap_Toggle"})
+                if (!HasFloatShaderProperty(material, property)) return false;
+            var intended = ResolveIntendedToggleKeywords(material);
+            var effective = FilterAllowedKeywords(intended, BuildAllowedKeywordSet(allowedManagedKeywords));
+            ApplyKeywordDependencies(effective);
+            noiseEffective = effective.Contains("_NOISEMAP");
+            noiseMaskEffective = effective.Contains("_NOISE_MASKMAP");
+            return true;
+        }
+
+        // Read-only Mesh capability v1: 28 existing toggle inputs plus the
+        // existing light/distort/ramp/VAT modes and URP surface controls.
+        // This is NOT full Graph Tier support: nine catalog toggle inputs are
+        // unavailable; Passes, time, screen mode and feature gates are unowned.
+        // A marker-2 GUI mirror never replaces raw packed flags here. Neither
+        // raw words, mirrors, nor any derived material state is written.
+        internal const string GraphSupportedKeywordIntentCapability = "NBGraph.Mesh.KeywordIntent.v1";
+        private static readonly string[] GraphPackedWordPrefixes =
+        {
+            "_NB_Flags0", "_NB_Flags1", "_NB_WrapFlags", "_NB_ColorChannel",
+            "_NB_PNoiseBlend", "_NB_ForceNoMipFlags", "_NB_UVModeFlag0",
+            "_NB_UVModeFlagType0", "_NB_CustomDataFlag0", "_NB_CustomDataFlag1",
+            "_NB_CustomDataFlag2", "_NB_CustomDataFlag3"
+        };
+
+        public static bool TryResolveGraphSupportedKeywordIntent(Material material,
+            NBShaderFeatureTier tier, IEnumerable<string> allowedManagedKeywords,
+            out NBShaderMaterialIntentResult result, out string[] unavailableFeatureKeywords)
+        {
+            result = null;
+            var unavailable = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var binding in ToggleKeywordBindings)
+                if (!binding.graphSupported) unavailable.Add(binding.keyword);
+            unavailableFeatureKeywords = ToCatalogOrderedArray(unavailable);
+
+            if ((int)tier < (int)NBShaderFeatureTier.Low || (int)tier > (int)NBShaderFeatureTier.Ultra ||
+                !HasFiniteFloatShaderProperty(material, "_NB_GraphGUIStateVersion") ||
+                material.GetFloat("_NB_GraphGUIStateVersion") != 2f ||
+                !HasFiniteFloatShaderProperty(material, "_NB_DistortionMode") ||
+                !HasFiniteFloatShaderProperty(material, "_AlphaClip") ||
+                !HasFiniteFloatShaderProperty(material, "_VAT_Toggle")) return false;
+            foreach (string prefix in GraphPackedWordPrefixes)
+                if (!HasFiniteFloatShaderProperty(material, prefix + "Lo16") ||
+                    !HasFiniteFloatShaderProperty(material, prefix + "Hi16")) return false;
+            foreach (var binding in ToggleKeywordBindings)
+                if (binding.graphSupported && !HasFiniteFloatShaderProperty(material, binding.propertyName)) return false;
+            if (!HasGraphEnumValue(material, "_Surface", 1) ||
+                !HasGraphEnumValue(material, "_Blend", 3) ||
+                !HasGraphEnumValue(material, "_FxLightMode", 4) ||
+                !HasGraphEnumValue(material, "_DistortMode", 1) ||
+                !HasGraphEnumValue(material, "_RampColorSourceMode", 1) ||
+                !HasGraphEnumValue(material, "_DissolveRampSourceMode", 1) ||
+                !HasGraphEnumValue(material, "_VATMode", 1) ||
+                !HasGraphEnumValue(material, "_HoudiniVATSubMode", 3) ||
+                !HasGraphEnumValue(material, "_TyFlowVATSubMode", 5)) return false;
+            if (material.HasProperty("_BlendModePreserveSpecular") &&
+                !HasFiniteFloatShaderProperty(material, "_BlendModePreserveSpecular")) return false;
+
+            var intended = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var binding in ToggleKeywordBindings)
+                if (binding.graphSupported && material.GetFloat(binding.propertyName) > 0.5f)
+                    AddManagedKeyword(intended, binding.keyword);
+            ResolveCommonModeKeywords(material, intended);
+
+            // URP 17.3 BaseShaderGUI.UpdateMaterialSurfaceOptions is the
+            // authority for these native controls, not NB's _TransparentMode.
+            if (material.GetFloat("_AlphaClip") >= 0.5f)
+                AddManagedKeyword(intended, "_ALPHATEST_ON");
+            if (material.GetFloat("_Surface") == 1f)
+            {
+                int blend = GetInt(material, "_Blend", 0);
+                if (blend == NBShaderMaterialIntentProtocol.BlendMultiply)
+                    AddManagedKeyword(intended, "_ALPHAMODULATE_ON");
+                if (GetFloat(material, "_BlendModePreserveSpecular", 0f) > 0f &&
+                    blend != NBShaderMaterialIntentProtocol.BlendMultiply &&
+                    blend != NBShaderMaterialIntentProtocol.BlendPremultiply)
+                    AddManagedKeyword(intended, "_ALPHAPREMULTIPLY_ON");
+            }
+            var effective = FilterAllowedKeywords(intended, BuildAllowedKeywordSet(allowedManagedKeywords));
+            ApplyKeywordDependencies(effective);
+            result = new NBShaderMaterialIntentResult(material, tier,
+                ToCatalogOrderedArray(intended), ToCatalogOrderedArray(effective),
+                ToCatalogOrderedArray(BuildDifference(intended, effective)),
+                new NBShaderPassIntent[0]);
+            return true;
+        }
+
+        private static bool HasFiniteFloatShaderProperty(Material material, string propertyName)
+        {
+            if (!HasFloatShaderProperty(material, propertyName)) return false;
+            float value = material.GetFloat(propertyName);
+            return !float.IsNaN(value) && !float.IsInfinity(value);
+        }
+
+        private static bool HasGraphEnumValue(Material material, string propertyName, int maximum)
+        {
+            if (!HasFiniteFloatShaderProperty(material, propertyName)) return false;
+            float value = material.GetFloat(propertyName);
+            return value >= 0f && value <= maximum && value == Mathf.Round(value);
+        }
+
+        internal static bool HasFloatShaderProperty(Material material, string name)
+        {
+            if (material == null || material.shader == null) return false;
+            int index = material.shader.FindPropertyIndex(name);
+            return index >= 0 && material.shader.GetPropertyType(index) == UnityEngine.Rendering.ShaderPropertyType.Float;
+        }
+
+
+        private static HashSet<string> ResolveIntendedToggleKeywords(Material material)
+        {
+            var keywords = new HashSet<string>(StringComparer.Ordinal);
+            for (var i = 0; i < ToggleKeywordBindings.Length; i++)
+            {
+                var binding = ToggleKeywordBindings[i];
+                if (GetFloat(material, binding.propertyName, 0f) > 0.5f)
+                    AddManagedKeyword(keywords, binding.keyword);
+            }
+            return keywords;
+        }
+
+        private static void ResolveCommonModeKeywords(Material material, HashSet<string> keywords)
+        {
+            switch (GetInt(material, "_FxLightMode", NBShaderMaterialIntentProtocol.FxLightUnlit))
+            {
+                case NBShaderMaterialIntentProtocol.FxLightUnlit:
+                    AddManagedKeyword(keywords, "_FX_LIGHT_MODE_UNLIT");
+                    break;
+                case NBShaderMaterialIntentProtocol.FxLightBlinnPhong:
+                    AddManagedKeyword(keywords, "_FX_LIGHT_MODE_BLINN_PHONG");
+                    break;
+                case NBShaderMaterialIntentProtocol.FxLightHalfLambert:
+                    AddManagedKeyword(keywords, "_FX_LIGHT_MODE_HALF_LAMBERT");
+                    break;
+                case NBShaderMaterialIntentProtocol.FxLightPbr:
+                    AddManagedKeyword(keywords, "_FX_LIGHT_MODE_PBR");
+                    break;
+                case NBShaderMaterialIntentProtocol.FxLightSixWay:
+                    AddManagedKeyword(keywords, "_FX_LIGHT_MODE_SIX_WAY");
+                    break;
+            }
+
+            if (GetInt(material, "_DistortMode", 0) == 1)
+                AddManagedKeyword(keywords, "_DISTORT_REFRACTION");
+
+            if (GetInt(material, "_RampColorSourceMode", 0) == 1)
+                AddManagedKeyword(keywords, "_COLOR_RAMP_MAP");
+
+            if (GetInt(material, "_DissolveRampSourceMode", 0) == 1 &&
+                GetFloat(material, "_Dissolve_useRampMap_Toggle", 0f) > 0.5f)
+            {
+                AddManagedKeyword(keywords, "_DISSOLVE_RAMP_MAP");
+            }
+
+            ResolveVatKeywords(material, keywords);
+        }
+
         private static HashSet<string> ResolveIntendedManagedKeywords(Material material)
         {
             var keywords = new HashSet<string>(StringComparer.Ordinal);
@@ -151,41 +314,12 @@ namespace NBShader
                     break;
             }
 
-            switch (GetInt(material, "_FxLightMode", NBShaderMaterialIntentProtocol.FxLightUnlit))
-            {
-                case NBShaderMaterialIntentProtocol.FxLightUnlit:
-                    AddManagedKeyword(keywords, "_FX_LIGHT_MODE_UNLIT");
-                    break;
-                case NBShaderMaterialIntentProtocol.FxLightBlinnPhong:
-                    AddManagedKeyword(keywords, "_FX_LIGHT_MODE_BLINN_PHONG");
-                    break;
-                case NBShaderMaterialIntentProtocol.FxLightHalfLambert:
-                    AddManagedKeyword(keywords, "_FX_LIGHT_MODE_HALF_LAMBERT");
-                    break;
-                case NBShaderMaterialIntentProtocol.FxLightPbr:
-                    AddManagedKeyword(keywords, "_FX_LIGHT_MODE_PBR");
-                    break;
-                case NBShaderMaterialIntentProtocol.FxLightSixWay:
-                    AddManagedKeyword(keywords, "_FX_LIGHT_MODE_SIX_WAY");
-                    break;
-            }
-
-            if (GetInt(material, "_DistortMode", 0) == 1)
-                AddManagedKeyword(keywords, "_DISTORT_REFRACTION");
-
-            if (GetInt(material, "_RampColorSourceMode", 0) == 1)
-                AddManagedKeyword(keywords, "_COLOR_RAMP_MAP");
-
-            if (GetInt(material, "_DissolveRampSourceMode", 0) == 1 &&
-                GetFloat(material, "_Dissolve_useRampMap_Toggle", 0f) > 0.5f)
-            {
-                AddManagedKeyword(keywords, "_DISSOLVE_RAMP_MAP");
-            }
+            ResolveCommonModeKeywords(material, keywords);
 
             if (!IsUIEffectMeshSource(meshMode) && GetInt(material, "_ScreenDistortModeToggle", 0) != 0)
                 AddManagedKeyword(keywords, "_SCREEN_DISTORT_MODE");
 
-            ResolveVatKeywords(material, keywords);
+
 
             return keywords;
         }
@@ -489,11 +623,13 @@ namespace NBShader
         {
             public readonly string propertyName;
             public readonly string keyword;
+            public readonly bool graphSupported;
 
-            public KeywordToggleBinding(string propertyName, string keyword)
+            public KeywordToggleBinding(string propertyName, string keyword, bool graphSupported = true)
             {
                 this.propertyName = propertyName;
                 this.keyword = keyword;
+                this.graphSupported = graphSupported;
             }
         }
     }

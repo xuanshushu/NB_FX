@@ -317,7 +317,7 @@ namespace NBShaderEditor
         }
 
         static bool IsVisible(MaterialProperty property)
-            => property != null && (property.propertyFlags &
+            => property != null && !property.name.StartsWith("_NB_TierAllow", StringComparison.Ordinal) && (property.propertyFlags &
                 (ShaderPropertyFlags.HideInInspector | ShaderPropertyFlags.PerRendererData)) == 0;
 
         void DrawProperty(MaterialProperty property)

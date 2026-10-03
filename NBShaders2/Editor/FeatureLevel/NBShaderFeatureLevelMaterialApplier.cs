@@ -8,6 +8,34 @@ namespace NBShaders2.Editor.FeatureLevel
     {
         private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
 
+        public static bool ApplyGraphMaskGroup(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords, out bool changed)
+        {
+            changed = false;
+            foreach (string property in new[] { "_NB_TierAllowMask", "_NB_TierAllowMask2", "_NB_TierAllowMask3" })
+                if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, property)) return false;
+            var allowed = allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            NBShaderMaterialIntentResult result;
+            string[] unavailable;
+            if (!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material, tier, allowed,
+                out result, out unavailable)) return false;
+            var effective = new HashSet<string>(result.effectiveKeywords);
+            changed |= SetGraphAllowFloat(material, "_NB_TierAllowMask", effective.Contains("_MASKMAP_ON"));
+            changed |= SetGraphAllowFloat(material, "_NB_TierAllowMask2", effective.Contains("_MASKMAP2_ON"));
+            changed |= SetGraphAllowFloat(material, "_NB_TierAllowMask3", effective.Contains("_MASKMAP3_ON"));
+            return true;
+        }
+
+        static bool SetGraphAllowFloat(Material material, string name, bool enabled)
+        {
+            float value = enabled ? 1f : 0f;
+            if (material.GetFloat(name) == value) return false;
+            material.SetFloat(name, value);
+            return true;
+        }
+
+
+
         public static bool Apply(Material material, NBShaderFeatureTier tier, bool writeTierProperty, bool applyResolvedState)
         {
             bool changed;

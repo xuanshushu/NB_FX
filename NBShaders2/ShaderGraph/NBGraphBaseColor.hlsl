@@ -810,9 +810,15 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 WorldToLocal1,
     float4 WorldToLocal2,
     float4 WorldToLocal3,
+    float NBGraphTierAllowMask, float NBGraphTierAllowMask2, float NBGraphTierAllowMask3,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    // Derived Mask capability gates; serialized feature inputs remain intent.
+    MaskToggle *= NBGraphTierAllowMask > 0.5 ? 1.0 : 0.0;
+    Mask2Toggle *= NBGraphTierAllowMask2 > 0.5 ? 1.0 : 0.0;
+    Mask3Toggle *= NBGraphTierAllowMask3 > 0.5 ? 1.0 : 0.0;
+
     // SG's fragment basis owns renderer odd scale; replace that factor with
     // the original custom matrix determinant for the active world-sim host.
     if(CustomLocalToggle>0.5)
@@ -1304,9 +1310,15 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float4 WorldToLocal1,
     float4 WorldToLocal2,
     float4 WorldToLocal3,
+    float NBGraphTierAllowMask, float NBGraphTierAllowMask2, float NBGraphTierAllowMask3,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    // Derived Mask capability gates; serialized feature inputs remain intent.
+    MaskToggle *= NBGraphTierAllowMask > 0.5 ? 1.0 : 0.0;
+    Mask2Toggle *= NBGraphTierAllowMask2 > 0.5 ? 1.0 : 0.0;
+    Mask3Toggle *= NBGraphTierAllowMask3 > 0.5 ? 1.0 : 0.0;
+
     // SG's fragment basis owns renderer odd scale; replace that factor with
     // the original custom matrix determinant for the active world-sim host.
     if(CustomLocalToggle>0.5)
