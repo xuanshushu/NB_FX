@@ -811,9 +811,13 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 WorldToLocal2,
     float4 WorldToLocal3,
     float NBGraphTierAllowMask, float NBGraphTierAllowMask2, float NBGraphTierAllowMask3,
+    float NBGraphTierAllowNoise, float NBGraphTierAllowNoiseMask,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    NoiseEnabled *= NBGraphTierAllowNoise > 0.5 ? 1.0 : 0.0;
+    NoiseMaskToggle *= NBGraphTierAllowNoiseMask > 0.5 ? 1.0 : 0.0;
+
     // Derived Mask capability gates; serialized feature inputs remain intent.
     MaskToggle *= NBGraphTierAllowMask > 0.5 ? 1.0 : 0.0;
     Mask2Toggle *= NBGraphTierAllowMask2 > 0.5 ? 1.0 : 0.0;
@@ -1311,9 +1315,13 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float4 WorldToLocal2,
     float4 WorldToLocal3,
     float NBGraphTierAllowMask, float NBGraphTierAllowMask2, float NBGraphTierAllowMask3,
+    float NBGraphTierAllowNoise, float NBGraphTierAllowNoiseMask,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    NoiseEnabled *= NBGraphTierAllowNoise > 0.5 ? 1.0 : 0.0;
+    NoiseMaskToggle *= NBGraphTierAllowNoiseMask > 0.5 ? 1.0 : 0.0;
+
     // Derived Mask capability gates; serialized feature inputs remain intent.
     MaskToggle *= NBGraphTierAllowMask > 0.5 ? 1.0 : 0.0;
     Mask2Toggle *= NBGraphTierAllowMask2 > 0.5 ? 1.0 : 0.0;

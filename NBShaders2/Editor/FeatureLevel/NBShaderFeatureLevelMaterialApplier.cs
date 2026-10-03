@@ -8,6 +8,23 @@ namespace NBShaders2.Editor.FeatureLevel
     {
         private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
 
+        // Explicit Noise pair only; normalized reader owns dependencies.
+        public static bool ApplyGraphNoisePair(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords, out bool changed)
+        {
+            changed = false;
+            if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, "_NB_TierAllowNoise") ||
+                !NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, "_NB_TierAllowNoiseMask")) return false;
+            var allowed = allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            NBShaderMaterialIntentResult result; string[] unavailable;
+            if (!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material, tier, allowed, out result, out unavailable)) return false;
+            var effective = new HashSet<string>(result.effectiveKeywords);
+            changed |= SetGraphAllowFloat(material, "_NB_TierAllowNoise", effective.Contains("_NOISEMAP"));
+            changed |= SetGraphAllowFloat(material, "_NB_TierAllowNoiseMask", effective.Contains("_NOISE_MASKMAP"));
+            return true;
+        }
+
+
         public static bool ApplyGraphMaskGroup(Material material, NBShaderFeatureTier tier,
             IEnumerable<string> allowedManagedKeywords, out bool changed)
         {
