@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 11:38:39Z" end-time="2026-10-03 11:38:49Z" duration="9.7434705">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2417" result="Passed" start-time="2026-10-03 11:38:39Z" end-time="2026-10-03 11:38:49Z" duration="9.743471" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3628" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2398" result="Passed" start-time="2026-10-03 11:38:39Z" end-time="2026-10-03 11:38:49Z" duration="9.717336" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="53760" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="3629" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2398" result="Passed" start-time="2026-10-03 11:38:39Z" end-time="2026-10-03 11:38:49Z" duration="9.709136" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="3630" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2398" result="Passed" start-time="2026-10-03 11:38:39Z" end-time="2026-10-03 11:38:49Z" duration="9.698161" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="3631" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2398" result="Passed" start-time="2026-10-03 11:38:39Z" end-time="2026-10-03 11:38:49Z" duration="9.671929" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1182" name="G4FlipbookSRPPropertiesTests" fullname="NBFX.Baseline.Tests.G4FlipbookSRPPropertiesTests" classname="NBFX.Baseline.Tests.G4FlipbookSRPPropertiesTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-03 11:38:40Z" end-time="2026-10-03 11:38:49Z" duration="9.344555" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1184" name="G4FlipbookSRP_native_current_graph_zero" fullname="NBFX.Baseline.Tests.G4FlipbookSRPPropertiesTests.G4FlipbookSRP_native_current_graph_zero" methodname="G4FlipbookSRP_native_current_graph_zero" classname="NBFX.Baseline.Tests.G4FlipbookSRPPropertiesTests" runstate="Runnable" seed="1247682352" result="Passed" start-time="2026-10-03 11:38:40Z" end-time="2026-10-03 11:38:49Z" duration="9.251027" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 2 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+NBFX_OVERRIDEZ_SOURCE {
+    "scope": "Native ShaderUtil subShader0 SRP Batcher compatibility after real Mesh Graph warm. Code0=compatible as confirmed from this Editor's ShaderInspector IL; unknown is failure. No runtime/performance claim.",
+    "unity": "6000.3.25f1",
+    "api": "Direct3D11",
+    "codeSignature": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+    "reasonSignature": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+    "apiError": "",
+    "apiKnown": true,
+    "warmPerformed": true,
+    "warmError": "",
+    "graphBeforeWarm": {
+        "role": "graph-before-warm",
+        "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+        "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+        "reason": "Not initialized ()",
+        "error": "",
+        "subShader": 0,
+        "code": 1,
+        "known": true,
+        "supported": true
+    },
+    "shaders": [
+        {
+            "role": "frozen",
+            "assetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+            "shaderName": "Effects/NBShader_T00_Frozen",
+            "reason": "UnityPerMaterial var is not declared in shader property section (_BaseMap_AnimationSheetBlend_ST)",
+            "error": "",
+            "subShader": 0,
+            "code": 19,
+            "known": true,
+            "supported": true
+        },
+        {
+            "role": "current",
+            "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "shaderName": "Effects/NBShader",
+            "reason": "",
+            "error": "",
+            "subShader": 0,
+            "code": 0,
+            "known": true,
+            "supported": true
+        },
+        {
+            "role": "graph",
+            "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+            "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+            "reason": "",
+            "error": "",
+            "subShader": 0,
+            "code": 0,
+            "known": true,
+            "supported": true
+        }
+    ]
+}
+]]></output>
+              </test-case>
+              <test-case id="1183" name="G4FlipbookSRP_source_properties" fullname="NBFX.Baseline.Tests.G4FlipbookSRPPropertiesTests.G4FlipbookSRP_source_properties" methodname="G4FlipbookSRP_source_properties" classname="NBFX.Baseline.Tests.G4FlipbookSRPPropertiesTests" runstate="Runnable" seed="645008961" result="Passed" start-time="2026-10-03 11:38:49Z" end-time="2026-10-03 11:38:49Z" duration="0.067266" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

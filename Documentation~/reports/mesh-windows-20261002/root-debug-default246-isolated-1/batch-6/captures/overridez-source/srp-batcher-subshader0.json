@@ -1,0 +1,57 @@
+{
+    "scope": "Native ShaderUtil subShader0 SRP Batcher compatibility after real Mesh Graph warm. Code0=compatible as confirmed from this Editor's ShaderInspector IL; unknown is failure. No runtime/performance claim.",
+    "unity": "6000.3.25f1",
+    "api": "Direct3D11",
+    "codeSignature": "Int32 GetSRPBatcherCompatibilityCode(UnityEngine.Shader, Int32)",
+    "reasonSignature": "System.String GetSRPBatcherCompatibilityIssueReason(UnityEngine.Shader, Int32, Int32)",
+    "apiError": "",
+    "apiKnown": true,
+    "warmPerformed": true,
+    "warmError": "",
+    "graphBeforeWarm": {
+        "role": "graph-before-warm",
+        "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+        "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+        "reason": "Not initialized ()",
+        "error": "",
+        "subShader": 0,
+        "code": 1,
+        "known": true,
+        "supported": true
+    },
+    "shaders": [
+        {
+            "role": "frozen",
+            "assetPath": "Packages/com.xuanxuan.nb.fx/Tests/Baseline/Frozen/NBShaders2/Shader/NBShader.shader",
+            "shaderName": "Effects/NBShader_T00_Frozen",
+            "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_VATTex_TexelSize)",
+            "error": "",
+            "subShader": 0,
+            "code": 10,
+            "known": true,
+            "supported": true
+        },
+        {
+            "role": "current",
+            "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "shaderName": "Effects/NBShader",
+            "reason": "Material property is found in another cbuffer than \"UnityPerMaterial\" (_B_autoPlayback)",
+            "error": "",
+            "subShader": 0,
+            "code": 10,
+            "known": true,
+            "supported": true
+        },
+        {
+            "role": "graph",
+            "assetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+            "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+            "reason": "",
+            "error": "",
+            "subShader": 0,
+            "code": 0,
+            "known": true,
+            "supported": true
+        }
+    ]
+}

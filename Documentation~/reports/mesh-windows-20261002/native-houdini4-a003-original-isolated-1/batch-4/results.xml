@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 10:51:00Z" end-time="2026-10-03 10:51:03Z" duration="3.5043656">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2417" result="Failed" site="Child" start-time="2026-10-03 10:51:00Z" end-time="2026-10-03 10:51:03Z" duration="3.504366" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3628" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2398" result="Failed" site="Child" start-time="2026-10-03 10:51:00Z" end-time="2026-10-03 10:51:03Z" duration="3.340694" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="43460" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="3629" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2398" result="Failed" site="Child" start-time="2026-10-03 10:51:00Z" end-time="2026-10-03 10:51:03Z" duration="3.173434" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="3630" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2398" result="Failed" site="Child" start-time="2026-10-03 10:51:00Z" end-time="2026-10-03 10:51:03Z" duration="3.026224" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="3631" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2398" result="Failed" site="Child" start-time="2026-10-03 10:51:00Z" end-time="2026-10-03 10:51:03Z" duration="2.878778" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="3579" name="G4NativeHoudiniSrpDrawDiagnostics" fullname="NBFX.Baseline.Tests.G4NativeHoudiniSrpDrawDiagnostics" classname="NBFX.Baseline.Tests.G4NativeHoudiniSrpDrawDiagnostics" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-10-03 10:51:01Z" end-time="2026-10-03 10:51:03Z" duration="2.684865" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="3584" name="ActualNativeHoudiniModesAfterManualDraw" fullname="NBFX.Baseline.Tests.G4NativeHoudiniSrpDrawDiagnostics.ActualNativeHoudiniModesAfterManualDraw" classname="NBFX.Baseline.Tests.G4NativeHoudiniSrpDrawDiagnostics" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-10-03 10:51:01Z" end-time="2026-10-03 10:51:03Z" duration="2.676952" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="3583" name="G4NativeHoudiniSRP_sprite_manual_off_on" fullname="NBFX.Baseline.Tests.G4NativeHoudiniSrpDrawDiagnostics.G4NativeHoudiniSRP_sprite_manual_off_on" methodname="ActualNativeHoudiniModesAfterManualDraw" classname="NBFX.Baseline.Tests.G4NativeHoudiniSrpDrawDiagnostics" runstate="Runnable" seed="393051843" result="Failed" start-time="2026-10-03 10:51:01Z" end-time="2026-10-03 10:51:03Z" duration="2.657544" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Strict initialized current Houdini compatibility must be0; actualnonzero native state retained.
+  Expected: False
+  But was:  True
+]]></message>
+                    <stack-trace><![CDATA[at NBFX.Baseline.Tests.G4NativeHoudiniSrpDrawDiagnostics.ActualNativeHoudiniModesAfterManualDraw (System.Int32 mode) [0x0125d] in .\Packages\NB_FX\Tests\URP\Editor\G4NativeHoudiniSrpDrawDiagnostics.cs:162
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[NBFX_NATIVE_HOUDINI_SRP mode=3 semantic=True currentBatcherFailed=True
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

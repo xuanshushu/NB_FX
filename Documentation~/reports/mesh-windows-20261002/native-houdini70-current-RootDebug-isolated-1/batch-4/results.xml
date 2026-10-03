@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Passed" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 11:28:34Z" end-time="2026-10-03 11:28:57Z" duration="23.5061123">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2417" result="Passed" start-time="2026-10-03 11:28:34Z" end-time="2026-10-03 11:28:57Z" duration="23.506112" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3628" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2398" result="Passed" start-time="2026-10-03 11:28:34Z" end-time="2026-10-03 11:28:57Z" duration="23.408363" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="57196" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="3629" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2398" result="Passed" start-time="2026-10-03 11:28:34Z" end-time="2026-10-03 11:28:57Z" duration="23.370618" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="3630" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2398" result="Passed" start-time="2026-10-03 11:28:34Z" end-time="2026-10-03 11:28:57Z" duration="23.313386" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="3631" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2398" result="Passed" start-time="2026-10-03 11:28:34Z" end-time="2026-10-03 11:28:57Z" duration="23.277011" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1773" name="G4GraphFlipbookTests" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-10-03 11:28:36Z" end-time="2026-10-03 11:28:57Z" duration="21.149464" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 2 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+]]></output>
+              <test-suite type="ParameterizedMethod" id="1810" name="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-10-03 11:28:46Z" end-time="2026-10-03 11:28:57Z" duration="11.010002" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1786" name="G4Flipbook_NBDeferredDistortPass_stream25_ortho" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_stream25_ortho" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="81040250" result="Passed" start-time="2026-10-03 11:28:46Z" end-time="2026-10-03 11:28:50Z" duration="3.252081" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"stream25","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":true,"finite":true,"weight":0.25,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0780029296875,"bResponse":0.0780029296875,"cResponse":0.0780029296875,"aAlternate":0.0780029296875,"bAlternate":0.0780029296875,"cAlternate":0.0780029296875,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1787" name="G4Flipbook_NBDeferredDistortPass_stream25_perspective" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_stream25_perspective" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="199453852" result="Passed" start-time="2026-10-03 11:28:50Z" end-time="2026-10-03 11:28:50Z" duration="0.700627" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"stream25","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":false,"finite":true,"weight":0.25,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0780029296875,"bResponse":0.0780029296875,"cResponse":0.0780029296875,"aAlternate":0.0780029296875,"bAlternate":0.0780029296875,"cAlternate":0.0780029296875,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1788" name="G4Flipbook_NBDeferredDistortPass_stream75_ortho" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_stream75_ortho" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="1717894312" result="Passed" start-time="2026-10-03 11:28:50Z" end-time="2026-10-03 11:28:51Z" duration="0.665023" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"stream75","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":true,"finite":true,"weight":0.75,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.2340087890625,"bResponse":0.2340087890625,"cResponse":0.2340087890625,"aAlternate":0.2340087890625,"bAlternate":0.2340087890625,"cAlternate":0.2340087890625,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1789" name="G4Flipbook_NBDeferredDistortPass_stream75_perspective" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_stream75_perspective" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="230936641" result="Passed" start-time="2026-10-03 11:28:51Z" end-time="2026-10-03 11:28:52Z" duration="0.677449" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"stream75","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":false,"finite":true,"weight":0.75,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.2340087890625,"bResponse":0.2340087890625,"cResponse":0.2340087890625,"aAlternate":0.2340087890625,"bAlternate":0.2340087890625,"cAlternate":0.2340087890625,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1790" name="G4Flipbook_NBDeferredDistortPass_helper25_ortho" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_helper25_ortho" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="1043091925" result="Passed" start-time="2026-10-03 11:28:52Z" end-time="2026-10-03 11:28:52Z" duration="0.683323" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"helper25","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":true,"finite":true,"weight":0.25,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0780029296875,"bResponse":0.0780029296875,"cResponse":0.0780029296875,"aAlternate":0.0780029296875,"bAlternate":0.0780029296875,"cAlternate":0.0780029296875,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1791" name="G4Flipbook_NBDeferredDistortPass_helper25_perspective" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_helper25_perspective" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="1602125545" result="Passed" start-time="2026-10-03 11:28:52Z" end-time="2026-10-03 11:28:53Z" duration="0.728339" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"helper25","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":false,"finite":true,"weight":0.25,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.0780029296875,"bResponse":0.0780029296875,"cResponse":0.0780029296875,"aAlternate":0.0780029296875,"bAlternate":0.0780029296875,"cAlternate":0.0780029296875,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1792" name="G4Flipbook_NBDeferredDistortPass_helper75_ortho" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_helper75_ortho" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="263953724" result="Passed" start-time="2026-10-03 11:28:53Z" end-time="2026-10-03 11:28:54Z" duration="0.662953" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"helper75","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":true,"finite":true,"weight":0.75,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.2340087890625,"bResponse":0.2340087890625,"cResponse":0.2340087890625,"aAlternate":0.2340087890625,"bAlternate":0.2340087890625,"cAlternate":0.2340087890625,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1793" name="G4Flipbook_NBDeferredDistortPass_helper75_perspective" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_helper75_perspective" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="2075819844" result="Passed" start-time="2026-10-03 11:28:54Z" end-time="2026-10-03 11:28:54Z" duration="0.685925" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"helper75","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":false,"finite":true,"weight":0.75,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.2340087890625,"bResponse":0.2340087890625,"cResponse":0.2340087890625,"aAlternate":0.2340087890625,"bAlternate":0.2340087890625,"cAlternate":0.2340087890625,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1794" name="G4Flipbook_NBDeferredDistortPass_particle25_ortho" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_particle25_ortho" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="1093375746" result="Passed" start-time="2026-10-03 11:28:54Z" end-time="2026-10-03 11:28:55Z" duration="0.678520" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"particle25","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":true,"finite":true,"weight":0.25,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.234130859375,"bResponse":0.234130859375,"cResponse":0.234130859375,"aAlternate":0.0780029296875,"bAlternate":0.0780029296875,"cAlternate":0.0780029296875,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1795" name="G4Flipbook_NBDeferredDistortPass_particle25_perspective" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_particle25_perspective" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="240437638" result="Passed" start-time="2026-10-03 11:28:55Z" end-time="2026-10-03 11:28:56Z" duration="0.725562" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"particle25","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":false,"finite":true,"weight":0.25,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.234130859375,"bResponse":0.234130859375,"cResponse":0.234130859375,"aAlternate":0.0780029296875,"bAlternate":0.0780029296875,"cAlternate":0.0780029296875,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1796" name="G4Flipbook_NBDeferredDistortPass_particle75_ortho" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_particle75_ortho" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="1760776090" result="Passed" start-time="2026-10-03 11:28:56Z" end-time="2026-10-03 11:28:57Z" duration="0.669044" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"particle75","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":true,"finite":true,"weight":0.75,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.078125,"bResponse":0.078125,"cResponse":0.078125,"aAlternate":0.2340087890625,"bAlternate":0.2340087890625,"cAlternate":0.2340087890625,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+]]></output>
+                </test-case>
+                <test-case id="1797" name="G4Flipbook_NBDeferredDistortPass_particle75_perspective" fullname="NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_particle75_perspective" methodname="OrdinaryMeshFrameBlendMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphFlipbookTests" runstate="Runnable" seed="232272017" result="Passed" start-time="2026-10-03 11:28:57Z" end-time="2026-10-03 11:28:57Z" duration="0.683593" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_FLIPBOOK_ABC {"route":"NBDeferredDistortPass","feed":"particle75","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"F0 ordinary Mesh. UV0.xy first/zw second, UV3.x stream or Flags1 bit15 helper, plus Flags1 bits23+19 particle special UV3.yz path. Forward and exact NB screen Passes only; no automatic postprocess, Depth/Shadow, component lifecycle, GUI, VFX or Player claim. A Frozen/B current/C Graph, linear RGBAHalf; strict ROI 40..87; full raw frames saved.","ortho":false,"finite":true,"weight":0.75,"abOn":0.0,"bcOn":0.0,"abOff":0.0,"bcOff":0.0,"aRepeat":0.0,"bRepeat":0.0,"cRepeat":0.0,"aResponse":0.078125,"bResponse":0.078125,"cResponse":0.078125,"aAlternate":0.2340087890625,"bAlternate":0.2340087890625,"cAlternate":0.2340087890625,"visibleA":2304,"visibleB":2304,"visibleC":2304,"responsePixelsA":2304,"responsePixelsB":2304,"responsePixelsC":2304}
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

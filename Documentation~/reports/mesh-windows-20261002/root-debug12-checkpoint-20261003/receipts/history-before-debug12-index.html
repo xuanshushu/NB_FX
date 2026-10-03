@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>验证报告与当前状态 · NB_FX 计划</title>
+</head>
+<body>
+<p><a href="../index.html">返回文档目录</a></p>
+<h1>验证报告与当前状态</h1>
+<p>这里区分用户交接记录、本次静态核对与未来工程验证；没有以计划文档冒充执行证据。</p>
+<p><strong>D24 顺序校准：</strong>先完成普通 Mesh 的 T06/G3 正式链路与 T07/G4 全功能、GUI、状态和后处理对照，审核后才进入 T08/G5 真正 VFX。下方所有既有 VFX Player/Output 报告均为<strong>提前探索的历史证据</strong>，保留原始结果，但不计作 T08 已正式启动、G5/G6 进度或对 Mesh 完整验收的替代。<a href="../decisions.html#d24">决策 D24</a>。</p>
+<p><small>更新：2026-10-01 · G0/GF/G1 已按各自范围放行，G2–G7 未放行 · 不修改官方包</small></p>
+<hr>
+<h2 id="current">现有记录</h2>
+<p>文档格式检查与 Unity 工程验证分别记录；<a href="g0-t00-baseline.html">G0 已实测并放行</a>。GF 的<a href="gf-subtarget-feasibility.html">包内 SubTarget 结构试验</a>与<a href="gf-t00a-functional-gate.html">功能 Gate 审核</a>已覆盖双 Pass、Mesh/VFX、Mask 与 StandaloneOSX Player；GF 仅在当前 URP/Metal 可行性范围放行。G1 仅设计接口限定范围放行；G2–G7 尚未放行。</p>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">编号</th><th scope="col">来源</th><th scope="col">内容</th><th scope="col">不能据此推断</th></tr>
+    </thead>
+    <tbody>
+<tr id="root-native-cbuf3-index"><td>E-ROOT-NATIVE-CBUF3</td><td><a href="mesh-resume-multiagent-20261003.html#root-native-cbuf-integrated">Native texel-size CBUF检查点</a> · 2026-10-03</td><td>源1ca755dc / 主仓9ce441a3；三路径实际安装。原Native2严格失败保留，修复2通过且28 raw字节相同；Spec1591 VAT162全通过、2190 raw与旧指标一致。</td><td>过期场景保护后的旧源导入排除。Main仍有Houdini材质_B_autoPlayback码10待处理；FrozenMain0与clone10分时点，F0属性已CBUF、无AnimationFrame。完整G3/G4未放行。</td></tr>
+
+<tr id="root-spec-integrated1591-index"><td>E-ROOT-SPEC-1591</td><td><a href="mesh-resume-multiagent-20261003.html#root-spec-integrated">Specular根产品检查点</a> · 2026-10-03</td><td>包7e4d4e68 / 主仓1d68f38e，九路径源锁一致、Main十Float及Spec声明/reader v2就绪。最新137为134/3，影响84为36/48；before7仅所取案例精确相同。</td><td>原编译零执行、预绘制8失败及3新严格微差保留，PBR HDR差异单列。Native CBUF仅clone两项通过，VAT162仍运行；不同SRP观测时点分开，完整G3/G4未放行。</td></tr>
+
+<tr id="root-noise-integrated1590-index"><td>E-ROOT-NOISE-1590</td><td><a href="mesh-resume-multiagent-20261003.html#root-noise-integrated">Noise根产品检查点</a> · 2026-10-03</td><td>Noise七路径已集成：包90c37f4c / 主仓a745a544。Main九Float、五gate默认1及Noise方法就绪；实际22、计划72、CD12＋Source2的14分别通过，extra24另列。</td><td>Graph预热后SRP码0；Native current/Frozen均10，按原条件合同通过，因果与实际VAT绘制诊断仍属G3待验证。Specular137仅clone运行；一般Tier保护和完整G3/G4边界保留。</td></tr>
+
+<tr id="root-reader-mask-integrated1582-index"><td>E-ROOT-READER-MASK-1582</td><td><a href="mesh-resume-multiagent-20261003.html#root-reader-mask-integrated">Reader/Mask根产品检查点</a> · 2026-10-03</td><td>包14e6b591 / 主仓0673acec；九根源SHA与EOL映射匹配，Main七Float/reader方法就绪。156全通过；276为238通过/38项既有严格失败。</td><td>CD两项后置健康断言未执行，独立raw证据单列。Noise1590仅clone：实际22通过，boundary4及过选49另列；43回归运行、CD12＋SRP2待跑。一般Tier保护保留，完整G3/G4未放行。</td></tr>
+
+<tr id="root-cl-integrated1570-index"><td>E-ROOT-CL-1570</td><td><a href="mesh-resume-multiagent-20261003.html#root-cl-integrated">CustomLocal 根产品检查点</a> · 2026-10-03</td><td>包15e3de4d / 主仓9df83dc8；17路径SHA一致，主Editor12字段就绪。CL51为50/1，共享177为175/2，VAT/CD162与Controller12通过。后续reader113＋Mask43实际156通过，276项影响回归正在运行。</td><td>3条健康严格微差及SoftBody反事实0/2失败保留；后续reader/Mask切片未集成。G3/G4、完整GUI/Tier、默认链、动画组合、Post52、Player/变体/性能待完成。</td></tr>
+
+      <tr><td>E-HANDOFF-01</td><td>用户交接</td><td>工具安装已授权；连接 6000.3.18f1，ready，非 Play；Console 0 错误、1 条 VFX 数据反序列化 warning，未清除。</td><td>不是当前 Editor 状态，也不是 shader 回归结果。</td></tr>
+      <tr><td>E-STATIC-01</td><td>本次终端只读</td><td>unity --version 返回 1.0.0-beta.11；读取 manifest/lock/包元数据确认 Pipeline 0.7.0-exp.1 与图形包 17.3.0。</td><td>不证明截图、测试、Reload 恢复或 Player build 可用。</td></tr>
+      <tr><td>E-STATIC-02</td><td>本次源码只读</td><td>确认原 GUI 入口、7 个 Pass、NBPostprocess Tag/RT 与 internal Target 风险。</td><td>不能替代真实 Mesh / Graph / VFX 的编译与渲染证据。</td></tr>
+    </tbody>
+  </table>
+
+<p><strong>2026-10-01 普通 Mesh 更新：</strong><a href="t07-mesh-screen-noise-checkpoint.html">屏幕纹理 Noise：8 真 B/C 完全一致 + 2 Graph 备用输入等价</a>；<a href="t07-mesh-blend-clip-checkpoint.html">Forward 混合/最终 Alpha 裁剪：48 A/B/C 与 13 屏幕检查全部通过</a>。这些只是限定切片，完整 G3/G4 仍未放行，不启动正式 VFX。</p>
+<p><a href="t07-mesh-matcap-checkpoint.html">MatCap：46 项限定对照全部通过</a>；<a href="t07-mesh-normal-map-checkpoint.html">法线贴图：已接 Fresnel/MatCap，44 项中 10 严格通过、34 低幅差失败</a>。法线贴图原 ShaderLab 抽取前后全 0；Graph 非零差按用户要求记录，后续集中人工核验，不改阈值或自动放行。</p>
+<h2 id="gates">工程验证状态</h2>
+<p>G2 状态：<a href="t05-g2-gate-audit-20260928.html">Gate 复核</a>持续记录严格失败与未测项；按用户指示不再追查 MatCap 微弱色差及 Dissolve 冷态首帧差异，转做其他功能证据。<a href="t05-g2-matcap-render-order-numeric-checkpoint.html">既有数值记录</a>保留，G2 未放行。</p>
+<p>原 ShaderGUI 状态补证：<a href="t05-g2-gui-persistence-undo-checkpoint.html">隔离双进程材质保存/重载与程序化 Undo/Redo（2026-09-29）</a>；尚非 Inspector 端到端验证。</p>
+<p>变体资产补证：<a href="t05-g2-svc-four-tier-checkpoint.html">四档 FeatureTier SVC 从样例材质生成并跨 Unity 进程重载（2026-09-29）</a>；尚非真实 Player/SVC 构建验收。</p>
+<p>原后处理双路径补证：<a href="t05-g2-compat-p4-p5-final-checkpoint.html">当前 URP Compatibility 的 P4/P5 最终颜色 A/B（2026-09-29）</a>，限定输入下与 RenderGraph 截图一致；中间 RT、Player 和完整 Controller 组合未由此通过。</p>
+<p>原后处理中间数据补证：<a href="t05-g2-compat-intermediate-checkpoint.html">Compatibility 下 P4 opaque copy 与 P5 Mask/ScreenColorCopy 读回（2026-09-29）</a>；当前/Frozen 在受控输入下相同，不代表完整 G2。</p>
+<p>原 ShaderLab 构建补证：<a href="t05-g2-player-tier-build-checkpoint.html">StandaloneOSX 的 Ultra/Low 构建与实际 Tier 剥离回调（2026-09-29）</a>；未启动 Player，不宣称运行时画面或 SVC 预载通过。</p>
+<p>产品 Graph 最小链路：<a href="t06-g3-mesh-minimum-checkpoint.html">T06/G3 Mesh、双扭曲最终画面与 Deferred Mask 检查点（2026-09-30）</a>。已有最小 Player 证据，仍需完整参数/Pass 及普通 Mesh 审核；后续 VFX 不代替 G3，G3 未放行。</p>
+<p>普通 Mesh 统一对照：<a href="t07-mesh-surface-bc-checkpoint.html">88 项 ShaderLab/Graph 全 RGBA 严格 B/C + 4 项实际生成 Master Preview（2026-09-30）</a>；只覆盖已接入的 44 个预设，高级功能和完整 G3/G4 未闭合，不运行新 VFX。</p>
+<p>普通 Mesh 采样协议：<a href="t07-mesh-sampling-protocol-checkpoint.html">10 类纹理 Wrap/ForceNoMip，63 项 B/C + 92 项回归；原周期31高频失败同夹具修复</a>。不放行完整 G3/G4。</p>
+<p>普通 Mesh 主纹理高级 UV：<a href="t07-mesh-advanced-main-uv-checkpoint.html">22 项对照：19 严格通过，3 项各一像素微差留档；已有 155 项回归通过</a>。继续其它功能 UV 与 Mesh 缺口，不新跑 VFX，不放行完整 G3/G4。</p>
+<p>普通 Mesh 八类贴图高级 UV：<a href="t07-mesh-feature-uv-checkpoint.html">96 项：77 严格通过、19 少量像素微差留档；前序 177 项结果未扩大</a>。八路独立取源与自身变换，继续 Noise 等 Mesh 缺口。</p>
+<p>Noise 共享抽取：<a href="t07-texture-noise-extraction-checkpoint.html">原 ShaderLab 的 92 项 Frozen/当前 Mesh 对照严格 RGBA 全 0，正对照有效</a>；Graph 接入另片验证，不宣称屏幕扭曲/VFX 完成。</p>
+<p>普通 Mesh 纹理 Noise：<a href="t07-mesh-texture-noise-checkpoint.html">179 项严格通过；395 项回归仅保留原 22 项 UV 微差，3376 个捕获全部与前序相同</a>。屏幕 Noise 传递另片接入，不宣称后处理完成。</p>
+<p>普通 Mesh 渲染状态：<a href="t07-mesh-render-state-checkpoint.html">颜色通道写入与 Stencil 30 项严格通过，含真实 8 位 Stencil 读写</a>；高级状态、各深度/阴影/扭曲 Pass 仍待验证。</p>
+<p>Graph 功能扩展切片：<a href="t07-graph-alpha-refine-checkpoint.html">Flags1 bit8 Alpha Refine 的 Mesh Editor/Metal Player 对照（2026-09-30）</a>；G4 未放行。</p>
+<p>Graph 单层遮罩切片：<a href="t07-graph-single-mask-checkpoint.html">共享 Mask V3 算术、Mesh 最终颜色/Deferred Mask、VFX Mesh Player 默认关闭回归（2026-09-30）</a>；完整遮罩功能及主动 VFX 遮罩未验证，G4/G5 未放行。</p>
+<p>Graph Mask2/Mask3 纹理子路径：<a href="t07-graph-mask23-checkpoint.html">三层相乘、独立通道/旋转/ST/滚动 Mesh 对照及 VFX 默认值回归（2026-09-30）</a>；Gradient/Noise/非 UV0 未验证，G4/G5 未放行。</p>
+<p>Graph Mask 三层渐变：<a href="t07-graph-mask-gradient-checkpoint.html">共享 packed-alpha evaluator、三层 Flags/wrap Mesh 对照及 VFX 默认关闭 Player 冒烟（2026-09-30）</a>；主动 VFX/完整数值 B/C 未验证，G4/G5 未放行。</p>
+<p>Graph Mask1 旋转门控：<a href="t07-graph-mask-rotation-gate-checkpoint.html">Flags0 bit7 关闭时速度无效、开启时生效的隔离 Mesh 对照（2026-09-30）</a>；完整 UV/VFX 未验证。</p>
+<p>Graph 晚期 AlphaAll：<a href="t07-graph-alpha-all-checkpoint.html">透明混合、bit29 顺序、Deferred Mask 及 VFX 默认值 Player 对照（2026-09-30）</a>；完整 Alpha/主动 VFX 未验证，G4/G5 未放行。</p>
+<p>Graph 晚期 ColorA：<a href="t07-graph-color-a-checkpoint.html">RGB/Alpha 分量及 bit29 排序的隔离 Mesh 对照（2026-09-30）</a>；主动 VFX/完整排序未验证，G4/G5 未放行。</p>
+<p>Graph 顶点色：<a href="t07-graph-vertex-color-checkpoint.html">标准 SG Vertex Color 节点、Flags1 bit9 忽略、bit29 顺序及 age→Red/Alpha VFX 回归逐字节对照（2026-09-30）</a>；非白 VFX 源 Mesh COLOR 与 Gamma 未验证，G4/G5 未放行。</p>
+<p>Graph 主纹理 Alpha 通道：<a href="t07-graph-base-alpha-channel-checkpoint.html">packed 低两位 R/G/B/A、默认 A 的 Mesh 对照与新鲜 VFX 样例导入（2026-09-30）</a>；已有 VFX 显式 slot0 不会静默迁移，后续主动 VFX 数值另见下文。</p>
+<p>Graph Timeline RGB 强度：<a href="t07-graph-timeline-intensity-checkpoint.html">共享 BaseColor 算术的 0/0.5/1/2 RGB 与 Alpha 不变量 Mesh 对照（2026-09-30）</a>；后续主动 VFX 数值另见下文，动画未验证，G4/G5 未放行。</p>
+<p>Graph 背面基础色：<a href="t07-graph-back-face-color-checkpoint.html">原 Flags0 bit28 与标准 Is Front Face 节点的 Mesh 正/背面对照、VFX 导入及默认行为 Player 回归（2026-09-30）</a>；主动 VFX 背面值另有 Player 证据，透明排序未验证，G4/G5 未放行。</p>
+<p>Graph 叠加贴图 1 切片：<a href="t07-graph-overlay-one-checkpoint.html">共享原算术、Mesh 加/乘/Alpha 数值、旧 ShaderLab 抽取前同源回归（2026-09-30）</a>；高级 UV/Noise、第二层与完整 B/C 未验证，G4/G5 未放行。</p>
+<p>Graph 叠加贴图 2 切片：<a href="t07-graph-overlay-two-checkpoint.html">共享算术、Mesh 默认乘/bit16 加法/bit25 Alpha 数值及第一层回归（2026-09-30）</a>；高级 UV/Noise 与 VFX 主动值未验证，G4/G5 未放行。</p>
+<p>Graph 颜色映射 Ramp 切片：<a href="t07-graph-color-ramp-checkpoint.html">共享 packed 颜色关键帧、Mesh 渐变/贴图源/加乘、原 ShaderLab 抽取前回归（2026-09-30）</a>；高级 UV/Noise/主动 VFX 未验证，G4/G5 未放行。</p>
+<p>Graph Fresnel 切片：<a href="t07-graph-fresnel-checkpoint.html">共享原算术、Mesh 颜色/透明/反转/方向/背面及 ShaderLab 抽取前回归（2026-09-30）</a>；NormalMap/CustomData/主动 VFX 未验证，G4/G5 未放行。</p>
+<p>Graph Distance Fade 切片：<a href="t07-graph-distance-fade-checkpoint.html">Mesh 深度响应、旧 ShaderLab 正交/透视 12 组 Alpha 严格相同，以及真正 VFX 单粒子近/远有效 Alpha Player 对照（2026-09-30）</a>；RGB/透视几何等完整深度功能未闭合，G4/G5 未放行。</p>
+<p>Graph Depth Outline 切片：<a href="t07-graph-depth-outline-checkpoint.html">普通 Mesh 正交/透视×背板×Off/On 的 8 组 Alpha 每像素 0 差、原 ShaderLab 抽取前后 RGBA 0 差；历史 VFX 单粒子 Player 另列为提前探索（2026-09-30）</a>；要求显式深度纹理、RGB 不宣称全等，G3/G4/G5 未放行。</p>
+<p>Graph Soft Particles 切片：<a href="t07-graph-soft-particles-checkpoint.html">正交/透视、有/无不透明背板的 Mesh/旧 ShaderLab 8 组 Alpha 每像素 0 差，以及真正 VFX 单粒子深度纹理主动响应（2026-09-30）</a>；须显式提供相机深度纹理，背板测量是相对 RGB 贡献，不是 GPU Alpha；G4/G5/G6 未放行。</p>
+<p>Graph 颜色调整切片：<a href="t07-graph-color-adjustment-checkpoint.html">共享 Hue/Contrast/Saturation/Refine、前后期 bit22/bit29 Mesh 对照及原 ShaderLab 抽取前回归（2026-09-30）</a>；CustomData/Fog/完整组合未验证，G4/G5 未放行。</p>
+<p>Graph 单贴图溶解切片：<a href="t07-graph-single-dissolve-checkpoint.html">共享 Dissolve V3、Mesh 最终颜色/Deferred Mask 五项参数对照、VFX Mesh Player 默认关闭回归（2026-09-30）</a>；完整溶解功能与主动 VFX 溶解未验证，G4/G5 未放行。</p>
+<p>VFX 溶解 Ramp 显式 ST：<a href="t08-vfx-dissolve-ramp-st-override.html">包内 Graph 端口让真正 VFX Output 的非 identity U 偏移/Repeat/Clamp 在 Metal Player 主动生效（2026-09-30）</a>；不是 VFX 隐藏材质 ST 或完整 G5。</p>
+<p>Graph 溶解 Ramp 切片：<a href="t07-graph-dissolve-ramp-checkpoint.html">双来源/双混合模式的 Mesh 与真正 VFX 数值、Mesh wrap/ST 及高频 ForceNoMip 失败记录（2026-09-30）</a>；G4/G5 未放行。</p>
+<p>Graph 溶解描边色切片：<a href="t07-graph-dissolve-line-checkpoint.html">原 soft-step 前数值、Mesh/ShaderLab 受控 B/C 与真正 VFX 单粒子 Player 数值（2026-09-30）</a>；Dissolve Ramp/高级 UV/CustomData/GUI 仍未验证，G4/G5 未放行。</p>
+<p>Graph Dissolve Mask 切片：<a href="t07-graph-dissolve-mask-checkpoint.html">共享 V3 前期/后期两模式、通道/ST/旋转的 Mesh 非零对照和 VFX 默认值 Player 回归（2026-09-30）</a>；完整溶解与 VFX 主动连接未验证，G4/G5 未放行。</p>
+<p>Graph BaseMap UV 切片：<a href="t07-graph-base-uv-checkpoint.html">共享 BaseUV V1 的 UV0/旋转/ST/时间滚动子集、Mesh 非零参数及 VFX Mesh 默认值回归（2026-09-30）</a>；高级 UV 和 VFX 非零参数未验证，G4/G5 未放行。</p>
+<p>Graph Mask/Dissolve 独立 UV 切片：<a href="t07-graph-feature-uv-checkpoint.html">各自 UV0 旋转/ST/滚动、Mesh 非零参数和 VFX Mesh 默认值回归（2026-09-30）</a>；特殊 UV/CustomData/主动 VFX 连线未验证，G4/G5 未放行。</p>
+<p>Graph 可选采样保护：<a href="t07-graph-sample-guard-checkpoint.html">Mask/Dissolve 关闭时条件采样、Mesh 截图逐字节回归与 VFX 默认值 Player 冒烟（2026-09-30）</a>；无 GPU 性能实测，G4/G5 未放行。</p>
+<p>Graph GUI 薄适配切片：<a href="t07-graph-gui-adapter-checkpoint.html">Mesh/VFX/原 ShaderLab 的 Custom Editor 路由及 URP 透明状态校验（2026-09-30）</a>；尚非完整 NB 功能面板，G4/G5 未放行。</p>
+<p>Graph GUI 安全分组：<a href="t07-graph-gui-groups-checkpoint.html">Mesh Graph 已实现属性借用共享标题/本地化分组，未知属性原生回退（2026-09-30）</a>；可见 Inspector 交互及 VFX Output 端口面板未验证。</p>
+<p><strong>以下真正 VFX 报告均为 D24 前提前探索：</strong>它们能说明对应隔离夹具曾运行，但普通 Mesh 的 G3/G4 尚未审核完成，因此不作为 T08/G5 正式阶段进度；既有报告标题和原始日志按历史保留。</p>
+<p>真正 VFX Mesh 粒子切片：<a href="t08-vfx-mesh-minimum-checkpoint.html">产品 Graph 的 Output Particle Shader Graph Mesh、精确 Pass 与 Deferred Mask（2026-09-30）</a>；G5 未放行。</p>
+<p>逐粒子输入调查：<a href="t08-vfx-age-binding-investigation.html">AgeOverLifetime → Output Alpha 原失败证据（已查明为测试层掩码错误，2026-09-30）</a>；旧失败不代表产品故障。</p>
+<p>逐粒子输入纠正：<a href="t08-vfx-age-followup.html">age→Red/Alpha 在允许层的 Metal Player 均可见，精确 Pass 保留（2026-09-30）</a>；仅限定的 Mesh Output/属性路径，G5 未放行。</p>
+<p>VFX 主动功能对照：<a href="t08-vfx-dissolve-output-active.html">Output 溶解/过程遮罩端口的 Metal Player 画面响应及单图透明度数值未达预测（2026-09-30）</a>；不能据此宣称 C/D 数值等价，G5/G6 未放行。</p>
+<p>VFX 显式纹理复测：<a href="t08-vfx-dissolve-explicit-textures.html">Output 绑定灰/白纹理后，Off/Single/ProcessMask 均可见且画面响应（2026-09-30）</a>；未做 GPU 采样数值与完整 B/C，G5/G6 未放行。</p>
+<p>VFX 单粒子数值切片：<a href="t08-vfx-dissolve-numeric-one-particle.html">显式纹理、单粒子、闭合 Cube 双面混合下的最终颜色数值与稳定性（2026-09-30）</a>；不是 GPU alpha、NBPostprocess RT/Uber 或 ShaderLab B/C，G5/G6 未放行。</p>
+<p>VFX/原后处理集成：<a href="t08-vfx-postprocess-player-checkpoint.html">真正 VFX Mesh 的 Deferred Mask、最终 Uber 因果对照及关闭原 RendererFeature 的负对照（2026-09-30）</a>；只覆盖受控单粒子 Mode0/1，G5/G6 未放行。</p>
+<p>VFX Mode2 CameraOpaque：<a href="t08-vfx-cameraopaque-mode2-investigation.html">真正单粒子 Player 最终画面未产生可测差异的负结果（2026-09-30）</a>；隔离根因见下一条，普通最终图零差与 RT 未放行。</p>
+<p>VFX Mode2 隔离复测：<a href="t08-vfx-cameraopaque-mode2-isolation.html">屏蔽后续普通 Forward 后，原自定义 Pass 洋红诊断 676 像素、恢复采样 130 像素（2026-09-30）</a>；普通场景最终色与 RT/组合仍未放行。</p>
+<p>VFX Mode2 强度 4 复测：<a href="t08-vfx-cameraopaque-mode2-strong-intensity.html">仅提高 Output 扰动强度后，隔离 Player 采样差异增至 676 像素、最大线性 RGB 差 0.0432（2026-09-30）</a>；未隔离最终图仍零差，原始 Mask 仍零，G5/G6 未放行。</p>
+<p>VFX 主动背面色：<a href="t08-vfx-back-face-color-active-checkpoint.html">单粒子 Mesh Output 的 bit28/红色背面值正反面 Player 对照（2026-09-30）</a>；透明排序与完整 B/C 未验证，G5 未放行。</p>
+<p>VFX 主动基础色数值：<a href="t08-vfx-basecolor-active-checkpoint.html">单粒子真实 Mesh Output 的 Timeline 0/1/2 和 BaseMap Alpha R/A 最终色数值、双 Pass 与重复稳定性（2026-09-30）</a>；不等于完整 VFX/旧 ShaderLab 等价，G5/G6 未放行。</p>
+<p>VFX 主动叠加贴图 1：<a href="t08-vfx-overlay-one-active-checkpoint.html">五种 Output 加/乘/Alpha 组合的单粒子 Player 数值（2026-09-30）</a>；完整效果与后处理组合未验证，G5/G6 未放行。</p>
+<p>VFX 主动叠加贴图 2：<a href="t08-vfx-overlay-two-active-checkpoint.html">五种 Output 默认乘/bit16 加/bit25 Alpha 组合的单粒子 Player 数值（2026-09-30）</a>；完整功能与后处理组合未验证，G5/G6 未放行。</p>
+<p>VFX 主动 Color Ramp：<a href="t08-vfx-color-ramp-active-checkpoint.html">贴图/UV0 源、加/乘四例的单粒子 Player 数值（2026-09-30）</a>；高级路径与后处理组合未验证，G5/G6 未放行。</p>
+<p>VFX 主动颜色调整：<a href="t08-vfx-color-adjustment-active-checkpoint.html">色相/对比度/饱和度/Refine 五例的单粒子 Player 数值（2026-09-30）</a>；bit22/bit29 VFX 组合与完整后处理未验证，G5/G6 未放行。</p>
+<p>VFX 主动 Fresnel：<a href="t08-vfx-fresnel-active-checkpoint.html">颜色/透明/反转/Alpha 关系/方向六例单粒子 Player 数值及旧 Output 默认回归（2026-09-30）</a>；NormalMap/CustomData/完整 B/C 未验证，G5/G6 未放行。</p>
+<p>当前产品缺口：<a href="implementation-gap-matrix-20260930.html">T01 功能组对照、G2–G7 未闭合项与最终一次性人工测试草单（2026-09-30）</a>；只读审计，不代替 Gate。</p>
+<table border="1" cellpadding="6">
+    <thead>
+      <tr><th scope="col">Gate</th><th scope="col">状态</th><th scope="col">报告</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>G0</td><td>通过（仅 G0 范围）</td><td><a href="g0-t00-baseline.html">T00 基线验证报告</a></td></tr>
+      <tr><td>GF</td><td>通过（仅当前 URP/Metal Pass 可行性）</td><td><a href="gf-t00a-functional-gate.html">最终 Gate 审核</a> · <a href="gf-functional-progress.html">中间进度</a> · <a href="gf-t00a-pass-feasibility.html">原失败报告</a></td></tr>
+      <tr><td>G1</td><td>通过（仅四入口 v1 设计接口；未编译/未验证功能）</td><td><a href="g1-t01-contract-gate.html">Gate 审核</a> · <a href="t01-inventory-progress.html">输入清单</a> · <a href="t01-contract-draft.html">语义草案</a> · <a href="t01-helper-mpb-fix.html">MPB 修复切片</a></td></tr>
+      <tr><td>G2</td><td>进行中，未放行</td><td><a href="t05-g2-gate-audit-20260928.html">2026-09-28 Gate 复核</a> · <a href="t05-g2-dissolve-setpass-player-checkpoint.html">Dissolve SetPass/可见 Player 对照</a> · <a href="t05-g2-dissolve-firstframe-scene-checkpoint.html">Dissolve 首帧/场景加载新证据</a> · <a href="g2-pending-decisions-20260928.html">Q09/Q10 严格验收、D22 已确认</a> · <a href="t05-g2-mpb-bit31-checkpoint.html">ShaderFlags1 bit31/MPB</a> · <a href="t05-g2-gui-backend-checkpoint.html">原 GUI 状态后端</a> · <a href="t05-g2-particle-host-checkpoint.html">原 ParticleSystem 宿主</a> · <a href="t05-g2-ugui-rawimage-checkpoint.html">原 UGUI RawImage 宿主</a> · <a href="t05-g2-surface-distortion-checkpoint.html">T05 Surface/Distortion</a> · <a href="t05-g2-geometry-checkpoint.html">T05 Vertex Offset</a> · <a href="t05-g2-baseuv-checkpoint.html">T05 BaseUV</a> · <a href="t05-g2-material-mesh-checkpoint.html">19 材质隔离 Mesh A/B</a> · <a href="t05-g2-featureuv-checkpoint.html">Feature UV</a> · <a href="t05-g2-matcap-checkpoint.html">MatCap</a> · <a href="t05-g2-mask-checkpoint.html">Mask</a> · <a href="t05-g2-dissolve-checkpoint.html">Dissolve</a> · <a href="t05-g2-specialuv-packedflags-checkpoint.html">Special UV/CustomData/Wrap</a> · <a href="t05-g2-forcenomip-checkpoint.html">ForceNoMip bit0</a> · <a href="t05-g2-pass-p0-checkpoint.html">七 Pass 静态 P0</a> · <a href="t05-g2-cameraopaque-p4-checkpoint.html">CameraOpaque P4</a> · <a href="t05-g2-p1-p4-direct-checkpoint.html">P1 定向 Pass / P4 采样源补证</a> · <a href="t05-g2-depth-shadow-p2-p3-checkpoint.html">DepthOnly/ShadowCaster P2/P3</a> · <a href="t05-g2-deferred-p5-checkpoint.html">Deferred P5</a> · <a href="t05-g2-universal2d-p6-checkpoint.html">Universal2D P6</a> · <a href="t05-g2-cold-variant-investigation.html">Dissolve 冷态</a> · <a href="t05-g2-matcap-identity-control.html">MatCap 同源对照</a></td></tr>
+      <tr><td>G3</td><td>进行中，未放行</td><td><a href="t06-g3-mesh-minimum-checkpoint.html">T06 Mesh 最小检查点</a></td></tr>
+      <tr><td>G4</td><td>切片进行中，未放行</td><td><a href="t07-graph-alpha-refine-checkpoint.html">Alpha Refine 切片</a> · <a href="t07-graph-single-mask-checkpoint.html">单层 Mask 切片</a> · <a href="t07-graph-mask23-checkpoint.html">Mask2/3 切片</a> · <a href="t07-graph-mask-gradient-checkpoint.html">三层 Mask Gradient 切片</a> · <a href="t07-graph-mask-rotation-gate-checkpoint.html">Mask1 旋转门控</a> · <a href="t07-graph-alpha-all-checkpoint.html">晚期 AlphaAll</a> · <a href="t07-graph-color-a-checkpoint.html">晚期 ColorA</a> · <a href="t07-graph-vertex-color-checkpoint.html">顶点色/Flags1 bit9</a> · <a href="t07-graph-base-alpha-channel-checkpoint.html">主纹理 Alpha 通道</a> · <a href="t07-graph-timeline-intensity-checkpoint.html">Timeline RGB 强度</a> · <a href="t07-graph-back-face-color-checkpoint.html">背面基础色</a> · <a href="t07-graph-overlay-one-checkpoint.html">叠加贴图 1</a> · <a href="t07-graph-overlay-two-checkpoint.html">叠加贴图 2</a> · <a href="t07-graph-color-ramp-checkpoint.html">颜色映射 Ramp</a> · <a href="t07-graph-color-adjustment-checkpoint.html">颜色调整</a> · <a href="t07-graph-fresnel-checkpoint.html">Fresnel Mesh 切片</a> · <a href="t07-graph-distance-fade-checkpoint.html">Distance Fade Mesh/旧 ShaderLab Alpha 对照</a> · <a href="t07-graph-soft-particles-checkpoint.html">Soft Particles Mesh/旧 ShaderLab Alpha 对照</a> · <a href="t07-graph-depth-outline-checkpoint.html">Depth Outline Mesh/旧 ShaderLab Alpha 对照</a> · <a href="t07-graph-single-dissolve-checkpoint.html">单贴图 Dissolve 切片</a> · <a href="t07-graph-dissolve-mask-checkpoint.html">Dissolve Mask 切片</a> · <a href="t07-graph-dissolve-line-checkpoint.html">Dissolve 描边色切片</a> · <a href="t07-graph-dissolve-ramp-checkpoint.html">Dissolve Ramp 切片</a> · <a href="t07-graph-base-uv-checkpoint.html">BaseMap UV 切片</a> · <a href="t07-graph-feature-uv-checkpoint.html">Mask/Dissolve UV 切片</a> · <a href="t07-graph-sample-guard-checkpoint.html">可选采样保护</a> · <a href="t07-graph-gui-adapter-checkpoint.html">GUI 薄适配检查点</a> · <a href="t07-graph-gui-groups-checkpoint.html">GUI 安全分组</a></td></tr>
+      <tr><td>G5</td><td>尚未按 D24 正式进入；提前探索证据已归档，未放行</td><td><a href="t08-vfx-mesh-minimum-checkpoint.html">真正 VFX Mesh 粒子检查点</a> · <a href="t08-vfx-age-binding-investigation.html">逐粒子 age 原错误层失败调查</a> · <a href="t08-vfx-age-followup.html">age→Red/Alpha 纠正复测</a> · <a href="t08-vfx-dissolve-output-active.html">主动溶解端口对照</a> · <a href="t08-vfx-dissolve-explicit-textures.html">显式纹理复测</a> · <a href="t08-vfx-dissolve-numeric-one-particle.html">单粒子最终颜色数值</a> · <a href="t08-vfx-postprocess-player-checkpoint.html">原后处理 Player 链路</a> · <a href="t08-vfx-cameraopaque-mode2-investigation.html">Mode2 CameraOpaque 负结果</a> · <a href="t08-vfx-cameraopaque-mode2-isolation.html">Mode2 隔离复测</a> · <a href="t08-vfx-cameraopaque-mode2-strong-intensity.html">Mode2 强度 4 隔离复测</a> · <a href="t08-vfx-basecolor-active-checkpoint.html">基础色主动值 Player 数值</a> · <a href="t08-vfx-back-face-color-active-checkpoint.html">背面色主动值 Player 对照</a> · <a href="t08-vfx-overlay-one-active-checkpoint.html">叠加贴图 1 主动数值</a> · <a href="t08-vfx-overlay-two-active-checkpoint.html">叠加贴图 2 主动数值</a> · <a href="t08-vfx-color-ramp-active-checkpoint.html">Color Ramp 主动数值</a> · <a href="t08-vfx-color-adjustment-active-checkpoint.html">颜色调整主动数值</a> · <a href="t08-vfx-fresnel-active-checkpoint.html">Fresnel 主动数值</a> · <a href="t07-graph-distance-fade-checkpoint.html">Distance Fade 主动 VFX Player</a> · <a href="t07-graph-soft-particles-checkpoint.html">Soft Particles 主动 VFX Player</a> · <a href="t07-graph-dissolve-line-checkpoint.html">Dissolve 描边色主动数值</a> · <a href="t07-graph-dissolve-ramp-checkpoint.html">Dissolve Ramp 主动数值</a> · <a href="t08-vfx-dissolve-ramp-st-override.html">Ramp 显式 ST 主动值</a></td></tr>
+      <tr><td>G6</td><td>尚未按 D24 正式进入；受控集成提前探索已归档，未放行</td><td><a href="t08-vfx-postprocess-player-checkpoint.html">VFX/原 NBPostprocess 单粒子 Player 因果对照</a>；完整功能和同屏回归未执行</td></tr>
+      <tr><td>G7</td><td>未开始</td><td>尚无执行报告</td></tr>
+    </tbody>
+  </table>
+<p>主 Agent 在未来完成验证后，以实际证据链接替换空项；禁止仅把“待验证”改成“已通过”而不提供记录。文档的链接/布局检查不属于这些工程 Gate。</p>
+
+<h2 id="format">报告归档</h2>
+<p>采用<a href="../templates/report.html">验证报告模板</a>。每个报告独立 HTML，附件放同级或子目录，以相对链接关联；JSON/XML/日志保留原始结构。截图、视频通过 LFS，禁止 Base64 大块内嵌。</p>
+<p>报告至少包含测试 ID、任务/Gate、代码和输入 hash、环境、步骤、原始结果、期望、diff、性能、失败项、未测项、审核与复验结论。允许失败报告，不能制造成功报告占位。</p>
+<hr>
+<p><small>NB_FX 实施报告索引：G0/GF/G1 已按各自范围放行；G2–G7 未运行项仍未运行。</small></p>
+<p>普通 Mesh 顶点位移：<a href="t07-mesh-vertex-offset-checkpoint.html">四种方向 14 项全帧严格通过；649 项回归仍保留原 22 个 UV 失败</a>。主颜色 HDR 类型错误已修正，完整几何/VAT 与 G3/G4 仍未完成。</p>
+<p>2026-10-01 深度/阴影增量：<a href="t07-mesh-depth-shadow-checkpoint.html">DepthOnly 24 项 + ShadowCaster 12 项，Frozen/current/Graph 全帧严格通过</a>。测试是真实遮挡与 URP 投影阴影；完整自动深度预通道、全部阴影配置/状态组合、Player 和 G3/G4 仍未验证。</p>
+<p>2026-10-01 光照与合并回归：<a href="t07-mesh-lighting-checkpoint.html">Unlit/Blinn/Half-Lambert/PBR 已接入；8 项 5 通过/3 严格差异留档，783 项合并回归为 724 通过/59 失败</a>。59 项为既有 UV22 + 法线34 + 光照3，均未改为通过。9,058 个旧图像 payload 与前档相同，但两项同名目录覆盖如实记录。SixWay、其余 Mesh 效果及完整共享 GUI/状态/后处理/Player/性能仍未完成。</p>
+<p>2026-10-01 程序噪波增量：<a href="t07-mesh-pnoise-checkpoint.html">Mask/Dissolve、DepthOnly 和 ShadowCaster 已接入，140 项为 47 通过/93 严格失败；完整现有自动矩阵 923 项为 771 通过/152 失败</a>。152 项恰为原 UV22、法线34、光照3 加本片93；11,970 份捕获逐份与持久旧档相同。MatCap/法线的同名目录覆盖已在本轮修正。微差保留给最后集中人工测试，不放宽标准；普通 Mesh 全功能、共享 GUI、完整状态/后处理、Player/性能仍未闭合，正式 VFX 继续等待。</p>
+<p>2026-10-01 SixWay 增量：<a href="t07-mesh-sixway-checkpoint.html">普通 Mesh 六向光照已接入，镜像负缩放的真实错误已修；30 行中 27 零差、3 行各 1 像素微差，两个 NUnit 项仍失败</a>。现有已编写矩阵 925 项为 771 通过/154 失败；旧152项失败身份不变。12,150 份捕获已实读核对，4 份跨轮次区域外单像素变化原图另存，不能宣传全图逐字节相同。完整 Mesh/共享 GUI/后处理/Player/性能仍未闭合，正式 VFX 不前移。</p>
+<p>2026-10-01 GUI 后台增量：<a href="t07-mesh-gui-storage-checkpoint.html">复用现有 Flags/渐变 Count/纹理 ST 存储后端，46 项真实测试全部通过，含 Mesh GPU 解码</a>。这不代表完整 Inspector、GUI 回调事务、保存重导入、Tier/Pass 有效投影已经完成；当前继续接同一共享 Root/Context/Sync，而不复制第二套业务界面。Graph MPB、Player、VFX 均未据此验证。</p>
+<p>2026-10-01 SH 增量：<a href="t07-mesh-sh-evaluation-checkpoint.html">沿用原顶点/混合环境光算法，新12项为8通过/4 PBR严格差异；现有983项合并矩阵为825通过/158失败</a>。其中46项是无截图的GUI存取测试，不应把总项数当作全部功能覆盖。12,450份捕获实读比对，12份PBR跨轮次阴影图差异已另存；同轮repeat稳定不等于跨轮稳定。原158项差异留给集中人工，完整GUI/状态/后处理/Player/性能继续补齐；正式VFX仍不进入。</p>
+<p>2026-10-01：<a href="t07-mesh-pnoise-screen-checkpoint.html">普通 Mesh 程序噪波扭曲 PN2：20/20 严格通过，1003 项合并回归 845/158</a>。A 为当前 ShaderLab 关程序噪波而非 Frozen；13,082 份捕获逐份核对相同，原158项失败继续留档给集中人工。</p>
+<p>2026-10-01 GUI1A增量：<a href="t07-mesh-gui-maintexture-checkpoint.html">现有主纹理控件接入普通 Mesh Graph，新增38项后台测试通过；1041项合并回归为883通过/158既有失败</a>。GUI总84项不含图像对照；13,082份原截图/解压raw实读SHA与最近证据相同。真实OnGUI只为旧控件构造准备上下文，不代表可视Inspector验收。继续完整普通Mesh，其余共享GUI/Tier/后处理/Player/性能未闭合，真正VFX不启动。</p>
+<p>2026-10-01 RF1增量：<a href="t07-mesh-refraction-checkpoint.html">普通Mesh折射已接入Graph，30项25通过/5严格失败留档；1071项合并回归为908通过/163失败</a>。原158失败身份不变。新增3项为Deferred透视微差，另2项为旧Shader与Graph同值的辅助零背景断言失败，不混作B/C失配；不追弱颜色、不放宽标准。完整Mesh/GUI/Tier/后处理/Player/性能仍未闭合，真正VFX仍等待。</p>
+<p>2026-10-01 DD1/POM1增量：<a href="t07-mesh-depth-decal-checkpoint.html">深度贴花8/8严格通过</a>；<a href="t07-mesh-parallax-checkpoint.html">视差已接入，但26项均仍有像素差、严格未通过</a>，保留给集中人工测试，不追弱色、不降标准。现有22个夹具的1105项在5个独立串行进程中完整重放，合计916通过/189严格失败/0跳过（旧163不变，新增26为视差）；这不是单进程的合成XML，也不是全部普通Mesh功能覆盖。15322份截图/解压raw实读核对，旧12份PBR阴影原始帧跨轮有1–3像素变化，前后版均留存；两次整帧空白的单进程回放另留历史，原因未证实。G3/G4仍未放行，正式VFX仍等完整Mesh。</p>
+<p><strong>2026-10-01 移交：</strong><a href="handoff-20261001/index.html">完整跨机器交接</a>（四类未集成候选、恢复指令与环境快照）。<a href="t07-mesh-chromatic-checkpoint.html">色散47/58严格通过</a>；<a href="t07-mesh-fog-gamma-checkpoint.html">雾/Gamma16/16</a>。两片后完整回归未运行，G3/G4仍未通过。</p>
+<p>2026-10-02：<a href="resume-20261002.html">新机接任核验</a>。两仓交接分支/submodule/LFS已恢复，4,741附件与38份UVP解压载荷通过SHA；四组候选重新预览及21份字节对照一致。普通Mesh新运行待6000.3和相关MCP环境；产品未集成候选，G3/G4未放行。</p>
+<p>2026-10-02：<a href="mesh-windows-20261002.html">Windows / 6000.3.25f1普通Mesh检查点</a>。CLI已实测连通；基础2/2、精确NB Pass13/13；既有五批1105为879通过/226失败，Fog/Gamma16/16。CA原生GPU故障无完整XML，UVP仍仅隔离候选；日志遗漏与全部来源如实记录，G3/G4未放行。</p>
+<p><strong>2026-10-03 多 Agent 续接：</strong><a href="mesh-resume-multiagent-20261003.html">OverrideZ 已集成；Dissolve 健康补证、限定 GUI/Tier、默认 SSAO 与真实 Helper 生命周期结果及失败分类</a>。普通 Mesh G3/G4 尚未放行，正式 VFX 继续等待。</p>
+</body>
+</html>
