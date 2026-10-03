@@ -27,6 +27,7 @@ TEXTURE2D(_lookupTable);  SAMPLER(sampler_lookupTable);
 // ── extern 材质属性（Unity 自动从材质中查找同名值） ───────────────────
 
 // Playback
+#ifndef NBSHADER_INPUT
 extern float _B_autoPlayback;
 extern float _gameTimeAtFirstFrame;
 extern float _playbackSpeed;
@@ -61,6 +62,7 @@ extern float _B_LOAD_POS_TWO_TEX;
 extern float _B_UNLOAD_ROT_TEX;
 extern float _B_LOAD_COL_TEX;
 extern float _B_LOAD_LOOKUP_TABLE;
+#endif
 
 // ─────────────────────────────────────────────────────────────────────
 // 工具函数

@@ -254,6 +254,36 @@
     half _ColorBlendColorIntensity;
 
     float4 _VATTex_TexelSize;
+    float _B_autoPlayback;
+    float _gameTimeAtFirstFrame;
+    float _playbackSpeed;
+    float _houdiniFPS;
+    float _displayFrame;
+    float _B_interpolate;
+    float _animateFirstFrame;
+    float _frameCount;
+    float _boundMinX;
+    float _boundMinY;
+    float _boundMinZ;
+    float _boundMaxX;
+    float _boundMaxY;
+    float _boundMaxZ;
+    float _globalPscaleMul;
+    float _B_pscaleAreInPosA;
+    float _widthBaseScale;
+    float _heightBaseScale;
+    float _B_hideOverlappingOrigin;
+    float _originRadius;
+    float _B_CAN_SPIN;
+    float _B_spinFromHeading;
+    float _spinPhase;
+    float _scaleByVelAmount;
+    float _particleTexUScale;
+    float _particleTexVScale;
+    float _B_LOAD_POS_TWO_TEX;
+    float _B_UNLOAD_ROT_TEX;
+    float _B_LOAD_COL_TEX;
+    float _B_LOAD_LOOKUP_TABLE;
     CBUFFER_END
 
     #define NB_SHADER_FLAGS _W9ParticleShaderFlags
