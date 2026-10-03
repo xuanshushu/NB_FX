@@ -1,0 +1,441 @@
+{
+  "scope": "Actualinstalledfixture4ec0+CL1570/VATcounterfactualinput2, notoldSoftBodyprobe orwronglylaunchedemptyrun",
+  "counts": {
+    "Passed": 0,
+    "Failed": 2,
+    "raw": 120,
+    "drawReceiptEntries": 720
+  },
+  "xmlSHA256": "52695aae6de6e6e2d673f2351571a8d83ab496258683eb7e99aec15f004836ed",
+  "logSHA256": "dd59af70b5c2793117115fd02268df7712295d61151d75fbfeae5e330d889468",
+  "faultTokens": [],
+  "fixtureInstallationSHA256": "be8f2d24779771a78e949b62266913c8662c506b0f3506cb526170b964764e4f",
+  "source17SHA256": {
+    "NBShaders2/Shader/HLSL/NBShaderInput.hlsl": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+    "NBShaders2/Shader/HLSL/NBShaderCoordinateSpaceV1.hlsl": "b82f047903c5ae6f53244953e35f412236f7477fcfb5c36147add91fb55559a8",
+    "NBShaders2/Shader/HLSL/NBShaderCoordinateSpaceV1.hlsl.meta": "b8d3c6ecc8266cc90d4283d4f4510a6f84ff3a10089ee5c5938bc59e46939578",
+    "NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl": "12b09b06acf6031a69cb08243e0de88eec43779ccf74e9d1f6a1dfe4c46e2b0f",
+    "NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl.meta": "68b0a2d4faae8dc7ba38a3d9d5c68cd554c069f96d6243bfaf713f093e083492",
+    "NBShaders2/ShaderGraph/NBGraphBaseUV.hlsl": "d0cd4139fb2322101cfc69a5d08320ce575b14b7269fcc95927603730cde5e09",
+    "NBShaders2/ShaderGraph/NBGraphVertexOffset.hlsl": "cffdf8e0f90006e76f30b44573428e3f8c7627a6fcaa03840ada3188bb66c5df",
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "5e28d9d63d7e4b7819918a72a406c81538fbe42e414b8b3dc5950a342d380638",
+    "NBShaders2/ShaderGraph/NBGraphVATSoftBody.hlsl": "c7d0206606e12f57e2216ab76da092ec6dcf74794cf8b3ce955b4654b9c9027a",
+    "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph": "87b0494ece2eb3e1c2aa78ea272a770799f82b5d5e635bf9335502db4099796c",
+    "XuanXuanRenderUtility/Runtime/NBParticleLocalTransformHelper.cs": "86248026fb92b9565639bda55fab29d2ff002f1c8d9d6697f2a2fdf169c8e3a6",
+    "Tests/URP/Editor/G4GraphCustomLocalTests.cs": "802631c08d2fa3a353a1c86a2c00912a0e8e74cec788e44a3996b0f1132d8bab",
+    "Tests/URP/Editor/G4GraphCustomLocalTests.cs.meta": "69711bff1cd5742339037283eedfc67b4593d1644f5fa1f420a277973041128e",
+    "Tests/URP/Editor/G4GraphCustomLocalHelperTests.cs": "a49e4987f50d7f65f372a2e8e70c7cdc7306c6fb71597f542a0dcd5eba38c889",
+    "Tests/URP/Editor/G4GraphCustomLocalHelperTests.cs.meta": "fef3805bc2c15e9550066fcf94d13383f8ae07fa5b1a7431cf56639dfcdd3a88",
+    "Tests/URP/Editor/G4GraphCustomLocalGeometryTests.cs": "9d4ee61389558aaa7ba50c837cad02148ebeb0263a03ce87ec2eefe807455981",
+    "Tests/URP/Editor/G4GraphCustomLocalGeometryTests.cs.meta": "6e86693786f8d9693ce8d986bd82a6b204186c6700edd1e33ce17a4beecc6a67"
+  },
+  "cases": [
+    {
+      "id": "NBFX.Baseline.Tests.G4NormalDrawTimeProbeTests.NormalDrawTimeABC_softbody_quadAlignedInput_ortho",
+      "result": "Failed",
+      "classification": "strictBCdifferencewithhealthyvisibleGPUandindependentlystrongoriginalcolourresponse",
+      "reportSHA256": "6f73626eaf3d4668fdf5367b811c86f637f6b34e489cbe806500b4a617606b57",
+      "inputSHA256": "c2efd86c5b9f961c25b3112ee4bad85b08c362fe64fac315f35dfcbcc7e2db76",
+      "inputRecord": {
+        "reason": "VAT reference+Y must map to this actual Quad intrinsic-Z; original identityrot was finite+Y but insensitive after light/view clamps. Input-only counterfactual, no product/threshold fix.",
+        "actorPosition": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "actorEuler": {
+          "x": 270.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "actorScale": {
+          "x": 1.5,
+          "y": 1.5,
+          "z": 1.0
+        },
+        "lightDirection": {
+          "x": 0.32139381766319275,
+          "y": 0.766044557094574,
+          "z": -0.5566703081130981
+        },
+        "requestedQuaternion": {
+          "x": -0.7071068286895752,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068286895752
+        },
+        "storedRotTexels": [
+          {
+            "r": 0.146484375,
+            "g": 0.5,
+            "b": 0.5,
+            "a": 0.853515625
+          },
+          {
+            "r": 0.146484375,
+            "g": 0.5,
+            "b": 0.5,
+            "a": 0.853515625
+          },
+          {
+            "r": 0.146484375,
+            "g": 0.5,
+            "b": 0.5,
+            "a": 0.853515625
+          },
+          {
+            "r": 0.146484375,
+            "g": 0.5,
+            "b": 0.5,
+            "a": 0.853515625
+          }
+        ],
+        "meshNormals": [
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.0
+          },
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.0
+          },
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.0
+          },
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.0
+          }
+        ]
+      },
+      "generatedGraphSHA256": "c3d05d29a6957188aa1eb9417242e736dcb414e2178fc8a2be0b2a62b8e7bc7e",
+      "raw": 60,
+      "receipts": 360,
+      "allRawFiniteNonCDCD": true,
+      "originalAB": 0.0,
+      "originalBCOn": 0.00048828125,
+      "originalBCOff": 0.0009765625,
+      "originalBCSum": 0.00146484375,
+      "originalABCColourResponses": [
+        0.4669189453125,
+        0.4669189453125,
+        0.4669189453125
+      ],
+      "originalRepeat": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "originalColourConditionsIndependentGreaterThan001": true,
+      "strongAssertionExecution": "Newstrongassertsat136-138 wereafterstrictABBC at133; notexecuted. Independentrawcomputationsabove satisfyunchanged>.01conditions, notUnitycasepass.",
+      "gpuProbes": [
+        {
+          "host": 0,
+          "probe": 0,
+          "roi": 660,
+          "scaleResponse": 1.0,
+          "repeat": 0
+        },
+        {
+          "host": 0,
+          "probe": 1,
+          "roi": 660,
+          "scaleResponse": 0.0,
+          "repeat": 0
+        },
+        {
+          "host": 0,
+          "probe": 2,
+          "roi": 660,
+          "scaleResponse": 0.300048828125,
+          "repeat": 0
+        },
+        {
+          "host": 0,
+          "probe": 3,
+          "roi": 660,
+          "scaleResponse": 0.300048828125,
+          "repeat": 0
+        },
+        {
+          "host": 1,
+          "probe": 0,
+          "roi": 660,
+          "scaleResponse": 1.0,
+          "repeat": 0
+        },
+        {
+          "host": 1,
+          "probe": 1,
+          "roi": 660,
+          "scaleResponse": 0.0,
+          "repeat": 0
+        },
+        {
+          "host": 1,
+          "probe": 2,
+          "roi": 660,
+          "scaleResponse": 0.300048828125,
+          "repeat": 0
+        },
+        {
+          "host": 1,
+          "probe": 3,
+          "roi": 660,
+          "scaleResponse": 0.300048828125,
+          "repeat": 0
+        },
+        {
+          "host": 2,
+          "probe": 0,
+          "roi": 660,
+          "scaleResponse": 1.0,
+          "repeat": 0
+        },
+        {
+          "host": 2,
+          "probe": 1,
+          "roi": 660,
+          "scaleResponse": 0.0,
+          "repeat": 0
+        },
+        {
+          "host": 2,
+          "probe": 2,
+          "roi": 660,
+          "scaleResponse": 0.300048828125,
+          "repeat": 0
+        },
+        {
+          "host": 2,
+          "probe": 3,
+          "roi": 660,
+          "scaleResponse": 0.2998046875,
+          "repeat": 0
+        }
+      ],
+      "failureMessage": "  Original full default chain still differs; diagnostic probe success is not a feature/Gate release.\n  Expected: 0\n  But was:  0.00146484375f\n"
+    },
+    {
+      "id": "NBFX.Baseline.Tests.G4NormalDrawTimeProbeTests.NormalDrawTimeABC_softbody_quadAlignedInput_perspective",
+      "result": "Failed",
+      "classification": "strictBCdifferencewithhealthyvisibleGPUandindependentlystrongoriginalcolourresponse",
+      "reportSHA256": "6ea330e1ef6623547e286322aaa20328689c36184c1be2bd5cb15f52226eee2e",
+      "inputSHA256": "c2efd86c5b9f961c25b3112ee4bad85b08c362fe64fac315f35dfcbcc7e2db76",
+      "inputRecord": {
+        "reason": "VAT reference+Y must map to this actual Quad intrinsic-Z; original identityrot was finite+Y but insensitive after light/view clamps. Input-only counterfactual, no product/threshold fix.",
+        "actorPosition": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        },
+        "actorEuler": {
+          "x": 270.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "actorScale": {
+          "x": 1.5,
+          "y": 1.5,
+          "z": 1.0
+        },
+        "lightDirection": {
+          "x": 0.32139381766319275,
+          "y": 0.766044557094574,
+          "z": -0.5566703081130981
+        },
+        "requestedQuaternion": {
+          "x": -0.7071068286895752,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.7071068286895752
+        },
+        "storedRotTexels": [
+          {
+            "r": 0.146484375,
+            "g": 0.5,
+            "b": 0.5,
+            "a": 0.853515625
+          },
+          {
+            "r": 0.146484375,
+            "g": 0.5,
+            "b": 0.5,
+            "a": 0.853515625
+          },
+          {
+            "r": 0.146484375,
+            "g": 0.5,
+            "b": 0.5,
+            "a": 0.853515625
+          },
+          {
+            "r": 0.146484375,
+            "g": 0.5,
+            "b": 0.5,
+            "a": 0.853515625
+          }
+        ],
+        "meshNormals": [
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.0
+          },
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.0
+          },
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.0
+          },
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.0
+          }
+        ]
+      },
+      "generatedGraphSHA256": "c3d05d29a6957188aa1eb9417242e736dcb414e2178fc8a2be0b2a62b8e7bc7e",
+      "raw": 60,
+      "receipts": 360,
+      "allRawFiniteNonCDCD": true,
+      "originalAB": 0.0,
+      "originalBCOn": 0.0001220703125,
+      "originalBCOff": 0.00048828125,
+      "originalBCSum": 0.0006103515625,
+      "originalABCColourResponses": [
+        0.4263916015625,
+        0.4263916015625,
+        0.4263916015625
+      ],
+      "originalRepeat": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "originalColourConditionsIndependentGreaterThan001": true,
+      "strongAssertionExecution": "Newstrongassertsat136-138 wereafterstrictABBC at133; notexecuted. Independentrawcomputationsabove satisfyunchanged>.01conditions, notUnitycasepass.",
+      "gpuProbes": [
+        {
+          "host": 0,
+          "probe": 0,
+          "roi": 1015,
+          "scaleResponse": 1.0,
+          "repeat": 0
+        },
+        {
+          "host": 0,
+          "probe": 1,
+          "roi": 1015,
+          "scaleResponse": 0.0,
+          "repeat": 0
+        },
+        {
+          "host": 0,
+          "probe": 2,
+          "roi": 1015,
+          "scaleResponse": 0.300048828125,
+          "repeat": 0
+        },
+        {
+          "host": 0,
+          "probe": 3,
+          "roi": 1015,
+          "scaleResponse": 0.300048828125,
+          "repeat": 0
+        },
+        {
+          "host": 1,
+          "probe": 0,
+          "roi": 1015,
+          "scaleResponse": 1.0,
+          "repeat": 0
+        },
+        {
+          "host": 1,
+          "probe": 1,
+          "roi": 1015,
+          "scaleResponse": 0.0,
+          "repeat": 0
+        },
+        {
+          "host": 1,
+          "probe": 2,
+          "roi": 1015,
+          "scaleResponse": 0.300048828125,
+          "repeat": 0
+        },
+        {
+          "host": 1,
+          "probe": 3,
+          "roi": 1015,
+          "scaleResponse": 0.300048828125,
+          "repeat": 0
+        },
+        {
+          "host": 2,
+          "probe": 0,
+          "roi": 1015,
+          "scaleResponse": 1.0,
+          "repeat": 0
+        },
+        {
+          "host": 2,
+          "probe": 1,
+          "roi": 1015,
+          "scaleResponse": 0.0,
+          "repeat": 0
+        },
+        {
+          "host": 2,
+          "probe": 2,
+          "roi": 1015,
+          "scaleResponse": 0.300048828125,
+          "repeat": 0
+        },
+        {
+          "host": 2,
+          "probe": 3,
+          "roi": 1015,
+          "scaleResponse": 0.2998046875,
+          "repeat": 0
+        }
+      ],
+      "failureMessage": "  Original full default chain still differs; diagnostic probe success is not a feature/Gate release.\n  Expected: 0\n  But was:  0.000610351563f\n"
+    }
+  ],
+  "wronglyLaunchedZeroBodiesRuns": [
+    {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\root-cl-normal-softbody-counterfactual2-isolated-1\\batch-1\\results.xml",
+      "xmlSHA256": "414f483d5d691789b3a6ab4839fd85b488a408969f18ac3489a02e4a6681963a",
+      "actualBodies": 0,
+      "validPasses": 0,
+      "classification": "failedinstall/selection orchestration; no newGPUevidence"
+    }
+  ],
+  "separation": {
+    "originalOldDN0ZeroResponseXMLKept": true,
+    "oldDiagnosticNoResponseReportKept": true,
+    "newcounterfactualInputProducesIndependentStrongColourEvidence": true,
+    "strictMicroFailuresRemainFailed": true,
+    "unreachedStrongAssertionsNotPromotedToUnityPass": true,
+    "noToleranceOrSourceChanges": true,
+    "fullGateClosed": false
+  },
+  "fullMeshGatePassed": false
+}

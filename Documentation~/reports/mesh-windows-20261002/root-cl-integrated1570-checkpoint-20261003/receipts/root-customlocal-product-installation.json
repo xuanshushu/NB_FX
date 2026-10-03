@@ -1,0 +1,501 @@
+{
+  "scope": "Reviewed current centralVAT1449->CL1570; functional51=50/1,shared177=175/2 healthy strict micro failures retained,162/12pass. No formalGate/defaultfullchain/GUI/Player/perf approval.",
+  "inputPackage": "D:/UnityProject/NBUnityProject/Packages/NB_FX",
+  "inputLockSHA256": "a66fb713b6ab9db589397aabe51b13068de8e6da84015cf85a055ffa510d5fb7",
+  "inputSourceFiles": 372,
+  "graphAudit": {
+    "objects": [
+      1449,
+      1570
+    ],
+    "newObjects": 121,
+    "rewires": [
+      {
+        "consumer": "NBGraphVertexOffset",
+        "input": "TangentOS",
+        "before": {
+          "m_Node": {
+            "m_Id": "e68b9ba63bf45dce971832400d1adc7a"
+          },
+          "m_SlotId": 0
+        },
+        "after": {
+          "m_Node": {
+            "m_Id": "ce36d617734f5119a475cfe47ce65d87"
+          },
+          "m_SlotId": 15
+        }
+      },
+      {
+        "consumer": "VertexDescription.Position",
+        "input": "Position",
+        "before": {
+          "m_Node": {
+            "m_Id": "395601997b2e51c795e7c1ec707a5553"
+          },
+          "m_SlotId": 33
+        },
+        "after": {
+          "m_Node": {
+            "m_Id": "7079885a055658d19f63f5b132366676"
+          },
+          "m_SlotId": 12
+        }
+      },
+      {
+        "consumer": "VertexDescription.Normal",
+        "input": "Normal",
+        "before": {
+          "m_Node": {
+            "m_Id": "395601997b2e51c795e7c1ec707a5553"
+          },
+          "m_SlotId": 34
+        },
+        "after": {
+          "m_Node": {
+            "m_Id": "7079885a055658d19f63f5b132366676"
+          },
+          "m_SlotId": 13
+        }
+      },
+      {
+        "consumer": "VertexDescription.Tangent",
+        "input": "Tangent",
+        "before": {
+          "m_Node": {
+            "m_Id": "395601997b2e51c795e7c1ec707a5553"
+          },
+          "m_SlotId": 35
+        },
+        "after": {
+          "m_Node": {
+            "m_Id": "7079885a055658d19f63f5b132366676"
+          },
+          "m_SlotId": 14
+        }
+      },
+      {
+        "consumer": "NBGraphVATSoftBody",
+        "input": "PositionOS",
+        "before": {
+          "m_Node": {
+            "m_Id": "9700a0e65449524a8bdfedb98ed829a6"
+          },
+          "m_SlotId": 0
+        },
+        "after": {
+          "m_Node": {
+            "m_Id": "ce36d617734f5119a475cfe47ce65d87"
+          },
+          "m_SlotId": 13
+        }
+      },
+      {
+        "consumer": "NBGraphVATSoftBody",
+        "input": "NormalOS",
+        "before": {
+          "m_Node": {
+            "m_Id": "a0c815aef7725e48901f8b91b59f7636"
+          },
+          "m_SlotId": 0
+        },
+        "after": {
+          "m_Node": {
+            "m_Id": "ce36d617734f5119a475cfe47ce65d87"
+          },
+          "m_SlotId": 14
+        }
+      }
+    ],
+    "existingCFSlotsAppendedOnly": [
+      "NBGraphBaseColor",
+      "NBGraphBaseUV",
+      "NBGraphVertexOffset",
+      "NBGraphSixWayBake",
+      "NBGraphFogVertex",
+      "NBGraphUVVertex",
+      "NBGraphVATWorldBasis"
+    ],
+    "otherExistingObjectsAndEdgesPreserved": true,
+    "actualF0CDVATInputsPreserved": true,
+    "UVVertexFogPostVATPreVOEdgesPreserved": true,
+    "newProperties": [
+      {
+        "name": "_NB_CustomLocalTransform",
+        "value": 0.0,
+        "type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty"
+      },
+      {
+        "name": "_NB_CustomLocalToWorld0",
+        "value": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.0
+        },
+        "type": "UnityEditor.ShaderGraph.Internal.Vector4ShaderProperty"
+      },
+      {
+        "name": "_NB_CustomLocalToWorld1",
+        "value": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0,
+          "w": 0.0
+        },
+        "type": "UnityEditor.ShaderGraph.Internal.Vector4ShaderProperty"
+      },
+      {
+        "name": "_NB_CustomLocalToWorld2",
+        "value": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0,
+          "w": 0.0
+        },
+        "type": "UnityEditor.ShaderGraph.Internal.Vector4ShaderProperty"
+      },
+      {
+        "name": "_NB_CustomLocalToWorld3",
+        "value": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "type": "UnityEditor.ShaderGraph.Internal.Vector4ShaderProperty"
+      },
+      {
+        "name": "_NB_CustomWorldToLocal0",
+        "value": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.0
+        },
+        "type": "UnityEditor.ShaderGraph.Internal.Vector4ShaderProperty"
+      },
+      {
+        "name": "_NB_CustomWorldToLocal1",
+        "value": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0,
+          "w": 0.0
+        },
+        "type": "UnityEditor.ShaderGraph.Internal.Vector4ShaderProperty"
+      },
+      {
+        "name": "_NB_CustomWorldToLocal2",
+        "value": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0,
+          "w": 0.0
+        },
+        "type": "UnityEditor.ShaderGraph.Internal.Vector4ShaderProperty"
+      },
+      {
+        "name": "_NB_CustomWorldToLocal3",
+        "value": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "type": "UnityEditor.ShaderGraph.Internal.Vector4ShaderProperty"
+      }
+    ]
+  },
+  "CFABIChecked": [
+    "NBGraphBaseColor",
+    "NBGraphBaseUV",
+    "NBGraphVertexOffset",
+    "NBGraphSixWayBake",
+    "NBGraphFogVertex",
+    "NBGraphOverrideDepth",
+    "NBGraphUVVertex",
+    "NBGraphVATSoftBody",
+    "NBGraphVATWorldBasis",
+    "NBGraphCustomLocalBefore",
+    "NBGraphCustomLocalAfter"
+  ],
+  "files": [
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "beforeSHA256": "7877b4846b0715b4bf231a8f312f3d665586b8cce395f95294ee049e1fea735a",
+      "afterSHA256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+      "rootBeforeSHA256": "7877b4846b0715b4bf231a8f312f3d665586b8cce395f95294ee049e1fea735a",
+      "validatedSHA256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada"
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderCoordinateSpaceV1.hlsl",
+      "beforeSHA256": null,
+      "afterSHA256": "b82f047903c5ae6f53244953e35f412236f7477fcfb5c36147add91fb55559a8",
+      "rootBeforeSHA256": null,
+      "validatedSHA256": "b82f047903c5ae6f53244953e35f412236f7477fcfb5c36147add91fb55559a8"
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderCoordinateSpaceV1.hlsl.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "309b2c0156f28b92710eaf9493978b7209d9513270759fe6682d6dc07d9d5b39",
+      "rootBeforeSHA256": null,
+      "validatedSHA256": "b8d3c6ecc8266cc90d4283d4f4510a6f84ff3a10089ee5c5938bc59e46939578"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl",
+      "beforeSHA256": null,
+      "afterSHA256": "12b09b06acf6031a69cb08243e0de88eec43779ccf74e9d1f6a1dfe4c46e2b0f",
+      "rootBeforeSHA256": null,
+      "validatedSHA256": "12b09b06acf6031a69cb08243e0de88eec43779ccf74e9d1f6a1dfe4c46e2b0f"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "f1e6a5a60d1c985c75b9997858ccd6eacb2ff672f44d96ff6f786505e4a22176",
+      "rootBeforeSHA256": null,
+      "validatedSHA256": "68b0a2d4faae8dc7ba38a3d9d5c68cd554c069f96d6243bfaf713f093e083492"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseUV.hlsl",
+      "beforeSHA256": "6129eedd4e48b8d9df28ac119b37896b2562f3244d3bbd55a5fccc2cad8ad15c",
+      "afterSHA256": "d0cd4139fb2322101cfc69a5d08320ce575b14b7269fcc95927603730cde5e09",
+      "rootBeforeSHA256": "6129eedd4e48b8d9df28ac119b37896b2562f3244d3bbd55a5fccc2cad8ad15c",
+      "validatedSHA256": "d0cd4139fb2322101cfc69a5d08320ce575b14b7269fcc95927603730cde5e09"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphVertexOffset.hlsl",
+      "beforeSHA256": "3e7c0dfd61959d04930e233ed9cff33cb105c1b1648839901e823deb69698f12",
+      "afterSHA256": "cffdf8e0f90006e76f30b44573428e3f8c7627a6fcaa03840ada3188bb66c5df",
+      "rootBeforeSHA256": "3e7c0dfd61959d04930e233ed9cff33cb105c1b1648839901e823deb69698f12",
+      "validatedSHA256": "cffdf8e0f90006e76f30b44573428e3f8c7627a6fcaa03840ada3188bb66c5df"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
+      "beforeSHA256": "8a76da7008c41c45d5b5605542fc0daff2f4f4190c52011056d597570c8cb844",
+      "afterSHA256": "5e28d9d63d7e4b7819918a72a406c81538fbe42e414b8b3dc5950a342d380638",
+      "rootBeforeSHA256": "8a76da7008c41c45d5b5605542fc0daff2f4f4190c52011056d597570c8cb844",
+      "validatedSHA256": "5e28d9d63d7e4b7819918a72a406c81538fbe42e414b8b3dc5950a342d380638"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphVATSoftBody.hlsl",
+      "beforeSHA256": "55340a2ac1e886b56e9ec4e8888f01dbf57e1d9c13733be536561c24a01f10ef",
+      "afterSHA256": "c7d0206606e12f57e2216ab76da092ec6dcf74794cf8b3ce955b4654b9c9027a",
+      "rootBeforeSHA256": "55340a2ac1e886b56e9ec4e8888f01dbf57e1d9c13733be536561c24a01f10ef",
+      "validatedSHA256": "c7d0206606e12f57e2216ab76da092ec6dcf74794cf8b3ce955b4654b9c9027a"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+      "beforeSHA256": "43152f06a6aec8372e43e04b16d254aa02879dedac2bc44366b47720bb5288be",
+      "afterSHA256": "87b0494ece2eb3e1c2aa78ea272a770799f82b5d5e635bf9335502db4099796c",
+      "rootBeforeSHA256": "43152f06a6aec8372e43e04b16d254aa02879dedac2bc44366b47720bb5288be",
+      "validatedSHA256": "87b0494ece2eb3e1c2aa78ea272a770799f82b5d5e635bf9335502db4099796c"
+    },
+    {
+      "path": "XuanXuanRenderUtility/Runtime/NBParticleLocalTransformHelper.cs",
+      "beforeSHA256": "84f019269faf5e48bfed774a44afe1005990b4c4b201eb793fbd744ceb077d98",
+      "afterSHA256": "86248026fb92b9565639bda55fab29d2ff002f1c8d9d6697f2a2fdf169c8e3a6",
+      "rootBeforeSHA256": "84f019269faf5e48bfed774a44afe1005990b4c4b201eb793fbd744ceb077d98",
+      "validatedSHA256": "86248026fb92b9565639bda55fab29d2ff002f1c8d9d6697f2a2fdf169c8e3a6"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "802631c08d2fa3a353a1c86a2c00912a0e8e74cec788e44a3996b0f1132d8bab",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "802631c08d2fa3a353a1c86a2c00912a0e8e74cec788e44a3996b0f1132d8bab"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "69711bff1cd5742339037283eedfc67b4593d1644f5fa1f420a277973041128e",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "69711bff1cd5742339037283eedfc67b4593d1644f5fa1f420a277973041128e"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalHelperTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "a49e4987f50d7f65f372a2e8e70c7cdc7306c6fb71597f542a0dcd5eba38c889",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "a49e4987f50d7f65f372a2e8e70c7cdc7306c6fb71597f542a0dcd5eba38c889"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalHelperTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "fef3805bc2c15e9550066fcf94d13383f8ae07fa5b1a7431cf56639dfcdd3a88",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "fef3805bc2c15e9550066fcf94d13383f8ae07fa5b1a7431cf56639dfcdd3a88"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalGeometryTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "9d4ee61389558aaa7ba50c837cad02148ebeb0263a03ce87ec2eefe807455981",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "9d4ee61389558aaa7ba50c837cad02148ebeb0263a03ce87ec2eefe807455981"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalGeometryTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "6e86693786f8d9693ce8d986bd82a6b204186c6700edd1e33ce17a4beecc6a67",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "6e86693786f8d9693ce8d986bd82a6b204186c6700edd1e33ce17a4beecc6a67"
+    }
+  ],
+  "applied": false,
+  "ranUnity": false,
+  "ranCompiler": false,
+  "newKeywordAxes": 0,
+  "newPackedBits": 0,
+  "SubTargetContractsAndOfficialPackagesChanged": false,
+  "fixtureOnly": false,
+  "next": "Main Agent review + serial scene-safe import/compile and original strict tests; default DN0/SSAO remains separate full-chain phase",
+  "records": [
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+      "beforeSHA256": "7877b4846b0715b4bf231a8f312f3d665586b8cce395f95294ee049e1fea735a",
+      "afterSHA256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada",
+      "rootBeforeSHA256": "7877b4846b0715b4bf231a8f312f3d665586b8cce395f95294ee049e1fea735a",
+      "validatedSHA256": "38068a9a7c1e97fa4e5ea56db0a76279cdbb5083b06f34ef35e21a1d89ab4ada"
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderCoordinateSpaceV1.hlsl",
+      "beforeSHA256": null,
+      "afterSHA256": "b82f047903c5ae6f53244953e35f412236f7477fcfb5c36147add91fb55559a8",
+      "rootBeforeSHA256": null,
+      "validatedSHA256": "b82f047903c5ae6f53244953e35f412236f7477fcfb5c36147add91fb55559a8"
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderCoordinateSpaceV1.hlsl.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "309b2c0156f28b92710eaf9493978b7209d9513270759fe6682d6dc07d9d5b39",
+      "rootBeforeSHA256": null,
+      "validatedSHA256": "b8d3c6ecc8266cc90d4283d4f4510a6f84ff3a10089ee5c5938bc59e46939578"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl",
+      "beforeSHA256": null,
+      "afterSHA256": "12b09b06acf6031a69cb08243e0de88eec43779ccf74e9d1f6a1dfe4c46e2b0f",
+      "rootBeforeSHA256": null,
+      "validatedSHA256": "12b09b06acf6031a69cb08243e0de88eec43779ccf74e9d1f6a1dfe4c46e2b0f"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphCustomLocalSpace.hlsl.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "f1e6a5a60d1c985c75b9997858ccd6eacb2ff672f44d96ff6f786505e4a22176",
+      "rootBeforeSHA256": null,
+      "validatedSHA256": "68b0a2d4faae8dc7ba38a3d9d5c68cd554c069f96d6243bfaf713f093e083492"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseUV.hlsl",
+      "beforeSHA256": "6129eedd4e48b8d9df28ac119b37896b2562f3244d3bbd55a5fccc2cad8ad15c",
+      "afterSHA256": "d0cd4139fb2322101cfc69a5d08320ce575b14b7269fcc95927603730cde5e09",
+      "rootBeforeSHA256": "6129eedd4e48b8d9df28ac119b37896b2562f3244d3bbd55a5fccc2cad8ad15c",
+      "validatedSHA256": "d0cd4139fb2322101cfc69a5d08320ce575b14b7269fcc95927603730cde5e09"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphVertexOffset.hlsl",
+      "beforeSHA256": "3e7c0dfd61959d04930e233ed9cff33cb105c1b1648839901e823deb69698f12",
+      "afterSHA256": "cffdf8e0f90006e76f30b44573428e3f8c7627a6fcaa03840ada3188bb66c5df",
+      "rootBeforeSHA256": "3e7c0dfd61959d04930e233ed9cff33cb105c1b1648839901e823deb69698f12",
+      "validatedSHA256": "cffdf8e0f90006e76f30b44573428e3f8c7627a6fcaa03840ada3188bb66c5df"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
+      "beforeSHA256": "8a76da7008c41c45d5b5605542fc0daff2f4f4190c52011056d597570c8cb844",
+      "afterSHA256": "5e28d9d63d7e4b7819918a72a406c81538fbe42e414b8b3dc5950a342d380638",
+      "rootBeforeSHA256": "8a76da7008c41c45d5b5605542fc0daff2f4f4190c52011056d597570c8cb844",
+      "validatedSHA256": "5e28d9d63d7e4b7819918a72a406c81538fbe42e414b8b3dc5950a342d380638"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphVATSoftBody.hlsl",
+      "beforeSHA256": "55340a2ac1e886b56e9ec4e8888f01dbf57e1d9c13733be536561c24a01f10ef",
+      "afterSHA256": "c7d0206606e12f57e2216ab76da092ec6dcf74794cf8b3ce955b4654b9c9027a",
+      "rootBeforeSHA256": "55340a2ac1e886b56e9ec4e8888f01dbf57e1d9c13733be536561c24a01f10ef",
+      "validatedSHA256": "c7d0206606e12f57e2216ab76da092ec6dcf74794cf8b3ce955b4654b9c9027a"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+      "beforeSHA256": "43152f06a6aec8372e43e04b16d254aa02879dedac2bc44366b47720bb5288be",
+      "afterSHA256": "87b0494ece2eb3e1c2aa78ea272a770799f82b5d5e635bf9335502db4099796c",
+      "rootBeforeSHA256": "43152f06a6aec8372e43e04b16d254aa02879dedac2bc44366b47720bb5288be",
+      "validatedSHA256": "87b0494ece2eb3e1c2aa78ea272a770799f82b5d5e635bf9335502db4099796c"
+    },
+    {
+      "path": "XuanXuanRenderUtility/Runtime/NBParticleLocalTransformHelper.cs",
+      "beforeSHA256": "84f019269faf5e48bfed774a44afe1005990b4c4b201eb793fbd744ceb077d98",
+      "afterSHA256": "86248026fb92b9565639bda55fab29d2ff002f1c8d9d6697f2a2fdf169c8e3a6",
+      "rootBeforeSHA256": "84f019269faf5e48bfed774a44afe1005990b4c4b201eb793fbd744ceb077d98",
+      "validatedSHA256": "86248026fb92b9565639bda55fab29d2ff002f1c8d9d6697f2a2fdf169c8e3a6"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "802631c08d2fa3a353a1c86a2c00912a0e8e74cec788e44a3996b0f1132d8bab",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "802631c08d2fa3a353a1c86a2c00912a0e8e74cec788e44a3996b0f1132d8bab"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "69711bff1cd5742339037283eedfc67b4593d1644f5fa1f420a277973041128e",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "69711bff1cd5742339037283eedfc67b4593d1644f5fa1f420a277973041128e"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalHelperTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "a49e4987f50d7f65f372a2e8e70c7cdc7306c6fb71597f542a0dcd5eba38c889",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "a49e4987f50d7f65f372a2e8e70c7cdc7306c6fb71597f542a0dcd5eba38c889"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalHelperTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "fef3805bc2c15e9550066fcf94d13383f8ae07fa5b1a7431cf56639dfcdd3a88",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "fef3805bc2c15e9550066fcf94d13383f8ae07fa5b1a7431cf56639dfcdd3a88"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalGeometryTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "9d4ee61389558aaa7ba50c837cad02148ebeb0263a03ce87ec2eefe807455981",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "9d4ee61389558aaa7ba50c837cad02148ebeb0263a03ce87ec2eefe807455981"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphCustomLocalGeometryTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "6e86693786f8d9693ce8d986bd82a6b204186c6700edd1e33ce17a4beecc6a67",
+      "rootBeforeSHA256": null,
+      "kind": "existing verified fixture same bytes",
+      "validatedSHA256": "6e86693786f8d9693ce8d986bd82a6b204186c6700edd1e33ce17a4beecc6a67"
+    }
+  ],
+  "rootWritten": true,
+  "installed": false,
+  "strictFailedIdentitiesRetained": [
+    "NBFX.Baseline.Tests.G4GraphCustomLocalTests.G4CustomLocalABC_sixway_negative_perspective",
+    "NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC(False)",
+    "NBFX.Baseline.Tests.G4GraphSixWayTests.SixWayOrdinaryMeshABC(True)"
+  ],
+  "protectedRootSHA256": {
+    "NBShaders2/ShaderGraph/Editor/NBGraphUnlitSubTarget.cs": "193845bb74c8a55080a5dbc599146ee18483a9157ee8b7bd0c7349577c1bc266",
+    "NBShaders2/Editor/NBShaderGraphGUI.cs": "e83ea53751f23bbed359bc27775d33da5a50c2cb23bccc286e6093335226e69a",
+    "NBShaders2/Shader/NBShader.shader": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b",
+    "NBShaders2/Shader/HLSL/NBShaderFlags.hlsl": "ff61aa9367577fed95fb4862b52f60520ad673243b87a99a697cac3d5b014df3",
+    "XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs": "a41b6d2caa635f24277f276eeecae4a98e9e2d0d677335e7cfa16b4937cc794a"
+  },
+  "noG3G4Approval": true,
+  "inputPackageHEAD": "8bac75c58a70887a2498aa0069b265abe769fe27"
+}

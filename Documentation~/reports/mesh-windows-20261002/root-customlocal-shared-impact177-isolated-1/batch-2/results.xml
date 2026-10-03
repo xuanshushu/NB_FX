@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Passed" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-03 01:32:51Z" end-time="2026-10-03 01:33:10Z" duration="18.9487972">
+  <test-suite type="TestSuite" id="1000" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="2306" result="Passed" start-time="2026-10-03 01:32:51Z" end-time="2026-10-03 01:33:10Z" duration="18.948797" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3488" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="2287" result="Passed" start-time="2026-10-03 01:32:51Z" end-time="2026-10-03 01:33:10Z" duration="18.869411" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="61000" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="3489" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="2287" result="Passed" start-time="2026-10-03 01:32:51Z" end-time="2026-10-03 01:33:10Z" duration="18.847022" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="3490" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="2287" result="Passed" start-time="2026-10-03 01:32:51Z" end-time="2026-10-03 01:33:10Z" duration="18.824735" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="3491" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="2287" result="Passed" start-time="2026-10-03 01:32:51Z" end-time="2026-10-03 01:33:10Z" duration="18.802840" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1563" name="G4GraphDepthShadowTests" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-10-03 01:32:53Z" end-time="2026-10-03 01:33:10Z" duration="17.103108" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 1 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+]]></output>
+              <test-suite type="ParameterizedMethod" id="1588" name="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-10-03 01:33:00Z" end-time="2026-10-03 01:33:10Z" duration="9.386563" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1576" name="G4DepthShadow_Depth_dissolve_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.25_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1128471137" result="Passed" start-time="2026-10-03 01:33:00Z" end-time="2026-10-03 01:33:03Z" duration="2.656832" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-dissolve-0.25-ortho","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":true,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.949127197265625,"graphResponse":0.949127197265625,"controlResponse":0.0,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1577" name="G4DepthShadow_Depth_dissolve_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.25_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="426663216" result="Passed" start-time="2026-10-03 01:33:03Z" end-time="2026-10-03 01:33:04Z" duration="0.483233" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-dissolve-0.25-perspective","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":false,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.949127197265625,"graphResponse":0.949127197265625,"controlResponse":0.0,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1578" name="G4DepthShadow_Depth_dissolve_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.5_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="69884002" result="Passed" start-time="2026-10-03 01:33:04Z" end-time="2026-10-03 01:33:04Z" duration="0.459025" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-dissolve-0.5-ortho","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":true,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.949127197265625,"graphResponse":0.949127197265625,"controlResponse":0.0,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1579" name="G4DepthShadow_Depth_dissolve_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.5_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="2091834004" result="Passed" start-time="2026-10-03 01:33:04Z" end-time="2026-10-03 01:33:04Z" duration="0.497508" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-dissolve-0.5-perspective","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":false,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.949127197265625,"graphResponse":0.949127197265625,"controlResponse":0.0,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1580" name="G4DepthShadow_Depth_dissolve_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.8_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="891508079" result="Passed" start-time="2026-10-03 01:33:04Z" end-time="2026-10-03 01:33:05Z" duration="0.652867" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-dissolve-0.8-ortho","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":true,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.0,"graphResponse":0.0,"controlResponse":0.949127197265625,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1581" name="G4DepthShadow_Depth_dissolve_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_dissolve_0.8_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="216356101" result="Passed" start-time="2026-10-03 01:33:05Z" end-time="2026-10-03 01:33:06Z" duration="0.744861" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-dissolve-0.8-perspective","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":false,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.0,"graphResponse":0.0,"controlResponse":0.949127197265625,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1582" name="G4DepthShadow_Depth_forward-only_0.25_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.25_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="113656525" result="Passed" start-time="2026-10-03 01:33:06Z" end-time="2026-10-03 01:33:06Z" duration="0.591556" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-forward-only-0.25-ortho","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":true,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.949127197265625,"graphResponse":0.949127197265625,"controlResponse":0.0,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1583" name="G4DepthShadow_Depth_forward-only_0.25_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.25_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="741926822" result="Passed" start-time="2026-10-03 01:33:06Z" end-time="2026-10-03 01:33:07Z" duration="0.565380" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-forward-only-0.25-perspective","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":false,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.949127197265625,"graphResponse":0.949127197265625,"controlResponse":0.0,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1584" name="G4DepthShadow_Depth_forward-only_0.5_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.5_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="929493278" result="Passed" start-time="2026-10-03 01:33:07Z" end-time="2026-10-03 01:33:08Z" duration="0.569802" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-forward-only-0.5-ortho","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":true,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.949127197265625,"graphResponse":0.949127197265625,"controlResponse":0.0,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1585" name="G4DepthShadow_Depth_forward-only_0.5_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.5_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="771621913" result="Passed" start-time="2026-10-03 01:33:08Z" end-time="2026-10-03 01:33:08Z" duration="0.560456" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-forward-only-0.5-perspective","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":false,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.949127197265625,"graphResponse":0.949127197265625,"controlResponse":0.0,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1586" name="G4DepthShadow_Depth_forward-only_0.8_ortho" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.8_ortho" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1735088844" result="Passed" start-time="2026-10-03 01:33:08Z" end-time="2026-10-03 01:33:09Z" duration="0.732949" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-forward-only-0.8-ortho","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":true,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.0,"graphResponse":0.0,"controlResponse":0.949127197265625,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+]]></output>
+                </test-case>
+                <test-case id="1587" name="G4DepthShadow_Depth_forward-only_0.8_perspective" fullname="NBFX.Baseline.Tests.G4GraphDepthShadowTests.G4DepthShadow_Depth_forward-only_0.8_perspective" methodname="DirectedDepthOnlyAlphaMatchesFrozenAndGraph" classname="NBFX.Baseline.Tests.G4GraphDepthShadowTests" runstate="Runnable" seed="1684599574" result="Passed" start-time="2026-10-03 01:33:09Z" end-time="2026-10-03 01:33:10Z" duration="0.711886" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_G4_DEPTH_SHADOW {"caseId":"depth-forward-only-0.8-perspective","stage":"directed DepthOnly","api":"Direct3D11","unityVersion":"6000.3.25f1","note":"Real RendererList writing active depth; alpha .25/.75; full-frame raw linear RGBAHalf; ordinary Mesh only.","orthographic":false,"finite":true,"abMax":0.0,"bcMax":0.0,"offMax":0.0,"legacyRepeat":0.0,"graphRepeat":0.0,"legacyResponse":0.0,"graphResponse":0.0,"controlResponse":0.949127197265625,"invariantLegacy":0.0,"invariantGraph":0.0,"bcDifferent":0,"abDifferent":0,"validDepthFrames":27,"recordedDepthFrames":27}
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
