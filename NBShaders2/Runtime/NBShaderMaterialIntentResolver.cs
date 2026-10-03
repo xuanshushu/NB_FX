@@ -43,12 +43,12 @@ namespace NBShader
             new KeywordToggleBinding("_ProgramNoise_Simple_Toggle", "_PROGRAM_NOISE_SIMPLE"),
             new KeywordToggleBinding("_ProgramNoise_Voronoi_Toggle", "_PROGRAM_NOISE_VORONOI"),
             new KeywordToggleBinding("_VertexOffset_Mask_Toggle", "_VERTEX_OFFSET_MASKMAP"),
-            new KeywordToggleBinding("_NB_Debug_Dissolve", "NB_DEBUG_DISSOLVE", false),
-            new KeywordToggleBinding("_NB_Debug_Distort", "NB_DEBUG_DISTORT", false),
-            new KeywordToggleBinding("_NB_Debug_Fresnel", "NB_DEBUG_FRESNEL", false),
-            new KeywordToggleBinding("_NB_Debug_Mask", "NB_DEBUG_MASK", false),
-            new KeywordToggleBinding("_NB_Debug_PNoise", "NB_DEBUG_PNOISE", false),
-            new KeywordToggleBinding("_NB_Debug_VertexOffset", "NB_DEBUG_VERTEX_OFFSET", false)
+            new KeywordToggleBinding("_NB_Debug_Dissolve", "NB_DEBUG_DISSOLVE"),
+            new KeywordToggleBinding("_NB_Debug_Distort", "NB_DEBUG_DISTORT"),
+            new KeywordToggleBinding("_NB_Debug_Fresnel", "NB_DEBUG_FRESNEL"),
+            new KeywordToggleBinding("_NB_Debug_Mask", "NB_DEBUG_MASK"),
+            new KeywordToggleBinding("_NB_Debug_PNoise", "NB_DEBUG_PNOISE"),
+            new KeywordToggleBinding("_NB_Debug_VertexOffset", "NB_DEBUG_VERTEX_OFFSET")
         };
 
         private static readonly string[] HoudiniVatKeywords =
@@ -130,7 +130,7 @@ namespace NBShader
         // unavailable; Passes, time, screen mode and feature gates are unowned.
         // A marker-2 GUI mirror never replaces raw packed flags here. Neither
         // raw words, mirrors, nor any derived material state is written.
-        internal const string GraphSupportedKeywordIntentCapability = "NBGraph.Mesh.KeywordIntent.v2.Specular";
+        internal const string GraphSupportedKeywordIntentCapability = "NBGraph.Mesh.KeywordIntent.v3.SpecularDebug";
         private static readonly string[] GraphPackedWordPrefixes =
         {
             "_NB_Flags0", "_NB_Flags1", "_NB_WrapFlags", "_NB_ColorChannel",

@@ -72,12 +72,13 @@ void NBGraphVertexOffset_float(
     float4 WorldToLocal2,
     float4 WorldToLocal3,
     out float3 OutPositionOS, out float3 OutNormalOS,
-    out float3 OutTangentOS, out float Supported)
+    out float3 OutTangentOS, out float Supported, out float3 OutDebugVertexOffset)
 {
     OutPositionOS = PositionOS;
     OutNormalOS = NormalOS;
     OutTangentOS = TangentOS;
     Supported = 1.0;
+    OutDebugVertexOffset = 0;
     if (VertexOffsetToggle <= 0.5)
         return;
 
@@ -202,6 +203,14 @@ void NBGraphVertexOffset_float(
     prepared.intensity = (half)VertexOffsetVec.z;
     prepared.directionMode = directionMode;
     half3 offsetOS = NBFX_ComputeVertexOffsetOSV1(prepared);
+#if defined(NB_DEBUG_VERTEX_OFFSET) && defined(NB_GRAPH_MAIN_FORWARD)
+    half3 debugOffsetWS;
+    if (CustomLocalToggle > 0.5)
+        debugOffsetWS = NBFX_MatrixLocalToWorldDirV1(offsetOS,
+            float4x4(LocalToWorld0, LocalToWorld1, LocalToWorld2, LocalToWorld3), false);
+    else debugOffsetWS = TransformObjectToWorldDir(offsetOS, false);
+    OutDebugVertexOffset = (float3)abs(debugOffsetWS);
+#endif
     OutPositionOS = (float3)((half3)PositionOS + offsetOS);
 }
 

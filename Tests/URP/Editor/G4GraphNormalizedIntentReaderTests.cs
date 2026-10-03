@@ -22,11 +22,11 @@ namespace NBFX.Baseline.Tests
         const BindingFlags Instance = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         static readonly string[] MissingKeywords =
         {
-            "NB_DEBUG_DISSOLVE", "NB_DEBUG_DISTORT", "NB_DEBUG_FRESNEL", "NB_DEBUG_MASK", "NB_DEBUG_PNOISE", "NB_DEBUG_VERTEX_OFFSET", "_SHARED_UV", "_STENCIL_WITHOUT_PLAYER"
+            "_SHARED_UV", "_STENCIL_WITHOUT_PLAYER"
         };
         static readonly string[] MissingProperties =
         {
-            "_NB_Debug_Dissolve", "_NB_Debug_Distort", "_NB_Debug_Fresnel", "_NB_Debug_Mask", "_NB_Debug_PNoise", "_NB_Debug_VertexOffset", "_SharedUVToggle", "_StencilWithoutPlayerToggle"
+            "_SharedUVToggle", "_StencilWithoutPlayerToggle"
         };
         static readonly string[] PassNames =
         {
@@ -141,6 +141,7 @@ namespace NBFX.Baseline.Tests
         [TestCase("_noisemapEnabled", float.NegativeInfinity, TestName = "G4NormalizedReader_NonFiniteOwnedInput_IsRejected_03")]
         [TestCase(Version, float.NaN, TestName = "G4NormalizedReader_NonFiniteOwnedInput_IsRejected_04")]
         [TestCase("_BlinnPhongSpecularToggle", float.NaN, TestName = "G4NormalizedReader_NonFiniteOwnedInput_IsRejected_05")]
+        [TestCase("_NB_Debug_Mask", float.NaN, TestName = "G4NormalizedReader_NonFiniteOwnedInput_IsRejected_06")]
         public void NonFiniteOwnedInput_IsRejected(string property, float value)
         {
             var material = ActualGraph(); material.SetFloat(property, value); string before = Snapshot(material);
@@ -293,6 +294,12 @@ namespace NBFX.Baseline.Tests
         [TestCase("_ProgramNoise_Voronoi_Toggle", "_PROGRAM_NOISE_VORONOI", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_27")]
         [TestCase("_VertexOffset_Mask_Toggle", "_VERTEX_OFFSET_MASKMAP", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_28")]
         [TestCase("_BlinnPhongSpecularToggle", "_SPECULAR_COLOR", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_29")]
+        [TestCase("_NB_Debug_Mask", "NB_DEBUG_MASK", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_30")]
+        [TestCase("_NB_Debug_PNoise", "NB_DEBUG_PNOISE", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_31")]
+        [TestCase("_NB_Debug_Dissolve", "NB_DEBUG_DISSOLVE", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_32")]
+        [TestCase("_NB_Debug_Distort", "NB_DEBUG_DISTORT", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_33")]
+        [TestCase("_NB_Debug_Fresnel", "NB_DEBUG_FRESNEL", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_34")]
+        [TestCase("_NB_Debug_VertexOffset", "NB_DEBUG_VERTEX_OFFSET", TestName = "G4NormalizedReader_EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold_35")]
         public void EverySupportedToggle_ReadsItsExistingFloatIntentAtOriginalThreshold(string property, string keyword)
         {
             var material = ActualGraph(); ClearToggles(material);
@@ -334,6 +341,12 @@ namespace NBFX.Baseline.Tests
         [TestCase("_noisemapEnabled", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_13")] [TestCase("_OverrideZ_Toggle", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_14")]
         [TestCase("_FxLightMode", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_15")] [TestCase("_Surface", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_16")] [TestCase(Version, TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_17")]
         [TestCase("_BlinnPhongSpecularToggle", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_18")]
+        [TestCase("_NB_Debug_Mask", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_19")]
+        [TestCase("_NB_Debug_PNoise", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_20")]
+        [TestCase("_NB_Debug_Dissolve", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_21")]
+        [TestCase("_NB_Debug_Distort", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_22")]
+        [TestCase("_NB_Debug_Fresnel", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_23")]
+        [TestCase("_NB_Debug_VertexOffset", TestName = "G4NormalizedReader_MissingRequiredRealSchema_IsRejected_24")]
         public void MissingRequiredRealSchema_IsRejected(string property)
         {
             var material = SchemaProbe(property); string before = Snapshot(material);
@@ -344,6 +357,7 @@ namespace NBFX.Baseline.Tests
         [TestCase("_NB_Flags0Lo16", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_01")] [TestCase("_NB_CustomDataFlag3Hi16", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_02")]
         [TestCase("_noiseMaskMap_Toggle", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_03")] [TestCase("_VATMode", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_04")] [TestCase(Version, TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_05")]
         [TestCase("_BlinnPhongSpecularToggle", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_06")]
+        [TestCase("_NB_Debug_Mask", TestName = "G4NormalizedReader_IntegerPropertyCannotMasqueradeAsGraphFloat_07")]
         public void IntegerPropertyCannotMasqueradeAsGraphFloat(string property)
         {
             var material = SchemaProbe(null, property); string before = Snapshot(material);

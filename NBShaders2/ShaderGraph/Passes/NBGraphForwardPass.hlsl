@@ -26,12 +26,54 @@ void frag(PackedVaryings packedInput,
     GetElementPixelProperties(graphInputs, graphProperties);
     SurfaceDescription surface = SurfaceDescriptionFunction(graphInputs, graphProperties);
     additiveToPremultiply = (half)graphProperties._AdditiveToPreMultiplyAlphaLerp;
+    bool NBGraphDebugOutputActive = false;
+#if defined(NB_DEBUG_VERTEX_OFFSET)
+    NBGraphDebugOutputActive = true;
+#elif defined(NB_DEBUG_PNOISE)
+    NBGraphDebugOutputActive = graphProperties._ProgramNoise_Toggle > 0.5 && (graphProperties._ProgramNoise_Simple_Toggle > 0.5 || graphProperties._ProgramNoise_Voronoi_Toggle > 0.5);
+#elif defined(NB_DEBUG_DISTORT)
+    NBGraphDebugOutputActive = graphProperties._noisemapEnabled > 0.5 && graphProperties._NB_TierAllowNoise > 0.5;
+#elif defined(NB_DEBUG_DISSOLVE)
+    NBGraphDebugOutputActive = graphProperties._Dissolve_Toggle > 0.5;
+#elif defined(NB_DEBUG_MASK)
+    NBGraphDebugOutputActive = graphProperties._Mask_Toggle > 0.5 && graphProperties._NB_TierAllowMask > 0.5;
+#elif defined(NB_DEBUG_FRESNEL)
+    NBGraphDebugOutputActive = graphProperties._fresnelEnabled > 0.5;
+#endif
+
 #else
     SurfaceDescription surface = SurfaceDescriptionFunction(graphInputs);
     additiveToPremultiply = (half)_AdditiveToPreMultiplyAlphaLerp;
+    bool NBGraphDebugOutputActive = false;
+#if defined(NB_DEBUG_VERTEX_OFFSET)
+    NBGraphDebugOutputActive = true;
+#elif defined(NB_DEBUG_PNOISE)
+    NBGraphDebugOutputActive = _ProgramNoise_Toggle > 0.5 && (_ProgramNoise_Simple_Toggle > 0.5 || _ProgramNoise_Voronoi_Toggle > 0.5);
+#elif defined(NB_DEBUG_DISTORT)
+    NBGraphDebugOutputActive = _noisemapEnabled > 0.5 && _NB_TierAllowNoise > 0.5;
+#elif defined(NB_DEBUG_DISSOLVE)
+    NBGraphDebugOutputActive = _Dissolve_Toggle > 0.5;
+#elif defined(NB_DEBUG_MASK)
+    NBGraphDebugOutputActive = _Mask_Toggle > 0.5 && _NB_TierAllowMask > 0.5;
+#elif defined(NB_DEBUG_FRESNEL)
+    NBGraphDebugOutputActive = _fresnelEnabled > 0.5;
+#endif
+
 #endif
     half3 result = (half3)surface.BaseColor;
     half alpha = (half)surface.Alpha;
+    // Native Debug returns bypass blend, clip, final clamp and still write OVZ.
+    if (NBGraphDebugOutputActive)
+    {
+        outColor = half4(result, alpha);
+#if defined(_OVERRIDE_Z)
+        outDepth = surface.NBOverrideDeviceDepth;
+#endif
+#ifdef _WRITE_RENDERING_LAYERS
+        outRenderingLayers = EncodeMeshRenderingLayer();
+#endif
+        return;
+    }
 #if defined(_ALPHAPREMULTIPLY_ON) || defined(_ALPHAMODULATE_ON)
     #ifdef _ALPHAPREMULTIPLY_ON
         NBFX_ApplyBlendOutputV1(result, alpha, true, additiveToPremultiply);

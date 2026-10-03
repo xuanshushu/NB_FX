@@ -172,7 +172,8 @@ half NBGraphSelectBaseAlpha(half4 albedo, float packedChannelsLo16)
 NBFX_DissolveResolvedV3 NBGraphResolveDissolve(half4 sampledDissolve,
     half4 sampledDissolveMask, bool hasDissolveMask, half4 dissolve,
     half dissolveMaskMode, float colorChannelLo16, bool hasPNoise,
-    half programNoise, uint pNoiseBlendFlags, half pNoiseOpacity)
+    half programNoise, uint pNoiseBlendFlags, half pNoiseOpacity,
+    out half debugPreparedValue)
 {
     uint channels = NBGraphDecodeUInt32(colorChannelLo16, 0.0);
     uint channel = (channels >>
@@ -200,6 +201,7 @@ NBFX_DissolveResolvedV3 NBGraphResolveDissolve(half4 sampledDissolve,
     prepareInput.maskStrength = dissolve.z;
     prepareInput.maskMode = dissolveMaskMode;
     NBFX_DissolvePreparedV3 prepared = NBFX_PrepareDissolveV3(prepareInput);
+    debugPreparedValue = prepared.valueForDebugAndSoftStep;
     NBFX_DissolveResolveInputV3 resolveInput = (NBFX_DissolveResolveInputV3)0;
     resolveInput.prepared = prepared;
     resolveInput.threshold = dissolve.x;
@@ -352,6 +354,9 @@ half4 NBGraphApplyFresnel(half4 color, float3 viewDirWS, half3 normalWS,
     half fresnelValue = NBFX_EvaluateFresnelV1(viewDirWS, normalWS,
         rotationOffset, unit,
         (flags0 & FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON) != 0u);
+#if defined(NB_DEBUG_FRESNEL) && defined(NB_GRAPH_MAIN_FORWARD)
+    return half4(fresnelValue.xxx * unit.z, 1.0h);
+#endif
     NBFX_ApplyFresnelV1(color.rgb, color.a, fresnelValue,
         unit.z, fresnelColor,
         (flags0 & FLAG_BIT_PARTICLE_FRESNEL_FADE_ON) != 0u,
@@ -812,9 +817,19 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float4 WorldToLocal3,
     float NBGraphTierAllowMask, float NBGraphTierAllowMask2, float NBGraphTierAllowMask3,
     float NBGraphTierAllowNoise, float NBGraphTierAllowNoiseMask,
+    float NBGraphDebugVertexOffsetToggle, float3 NBGraphDebugVertexOffsetRGB,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    // All outputs are defined before original Debug early returns.
+    NBDistortionSignedRG = 0;
+    NBDistortionNoiseMask = 1;
+#if defined(NB_DEBUG_VERTEX_OFFSET) && defined(NB_GRAPH_MAIN_FORWARD)
+    // Original raw-keyword behavior also retains vertex color when offset is off.
+    Out = NBGraphDebugVertexOffsetToggle > 0.5 ? float4(NBGraphDebugVertexOffsetRGB, 1) : VertexColor;
+    return;
+#endif
+
     NoiseEnabled *= NBGraphTierAllowNoise > 0.5 ? 1.0 : 0.0;
     NoiseMaskToggle *= NBGraphTierAllowNoiseMask > 0.5 ? 1.0 : 0.0;
 
@@ -866,6 +881,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             PNoiseVec3, PNoiseVec4, ProgramSimpleToggle > 0.5,
             ProgramVoronoiToggle > 0.5, pNoiseBlendFlags,
             (half)PNoiseBaseBlendOpacity);
+#if defined(NB_DEBUG_PNOISE) && defined(NB_GRAPH_MAIN_FORWARD)
+    if (hasPNoise) { Out = float4(programNoise.xxx, 1); return; }
+#endif
     // The original ShaderLab _NORMALMAP keyword is represented by the
     // existing material toggle; no new SG keyword/variant is introduced.
     float3 normalForFeatures = (float3)NormalWS;
@@ -911,6 +929,9 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
                 FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT, signedRG,
                 (half2)programNoise, (half)PNoiseDistortBlendOpacity);
         textureNoise = signedRG * noiseMask;
+#if defined(NB_DEBUG_DISTORT) && defined(NB_GRAPH_MAIN_FORWARD)
+        Out = float4(textureNoise, 0, 1); return;
+#endif
     }
     NBDistortionSignedRG = (float2)signedRG;
     NBDistortionNoiseMask = (float)noiseMask;
@@ -1041,10 +1062,14 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP),
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP) != 0u);
         }
+        half debugDissolvePreparedValue;
         NBFX_DissolveResolvedV3 resolved = NBGraphResolveDissolve(sampledDissolve,
             sampledDissolveMask, hasDissolveMask, (half4)Dissolve,
             (half)DissolveMaskMode, NB_ColorChannelLo16, hasPNoise,
-            programNoise, pNoiseBlendFlags, (half)PNoiseDissolveBlendOpacity);
+            programNoise, pNoiseBlendFlags, (half)PNoiseDissolveBlendOpacity, debugDissolvePreparedValue);
+#if defined(NB_DEBUG_DISSOLVE) && defined(NB_GRAPH_MAIN_FORWARD)
+        Out = float4(debugDissolvePreparedValue.xxx, 1); return;
+#endif
         Out.a *= resolved.coverage;
         if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DissolveRampToggle > 0.5))
             Out = (float4)NBGraphApplyDissolveRamp((half4)Out,
@@ -1159,13 +1184,22 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
         maskInput.refine = (maskFlags & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
         maskInput.refinePowMulAdd = (half3)MaskRefineVec.xyz;
         maskInput.overallStrength = (half)MaskMapVec.x;
-        Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
+        half resolvedMaskCoverage = NBFX_ResolveMaskCoverageV3(maskInput);
+#if defined(NB_DEBUG_MASK) && defined(NB_GRAPH_MAIN_FORWARD)
+        Out = float4(resolvedMaskCoverage.xxx, 1); return;
+#endif
+        Out.a *= resolvedMaskCoverage;
     }
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (FresnelEnabled > 0.5))
+    {
         Out = (float4)NBGraphApplyFresnel((half4)Out, ViewDirWS,
             normalForFeatures, (half)IsFrontFace, (half4)FresnelUnit,
             (half4)FresnelColor, (half3)FresnelRotation.xyz,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
+#if defined(NB_DEBUG_FRESNEL) && defined(NB_GRAPH_MAIN_FORWARD)
+        return;
+#endif
+    }
     // ShaderLab applies camera-distance alpha after Fresnel, before vertex color.
     float sceneEyeDepth = 0.0;
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DepthOutlineToggle > 0.5 || SoftParticlesEnabled > 0.5))
@@ -1316,9 +1350,19 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float4 WorldToLocal3,
     float NBGraphTierAllowMask, float NBGraphTierAllowMask2, float NBGraphTierAllowMask3,
     float NBGraphTierAllowNoise, float NBGraphTierAllowNoiseMask,
+    float NBGraphDebugVertexOffsetToggle, float3 NBGraphDebugVertexOffsetRGB,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    // All outputs are defined before original Debug early returns.
+    NBDistortionSignedRG = 0;
+    NBDistortionNoiseMask = 1;
+#if defined(NB_DEBUG_VERTEX_OFFSET) && defined(NB_GRAPH_MAIN_FORWARD)
+    // Original raw-keyword behavior also retains vertex color when offset is off.
+    Out = NBGraphDebugVertexOffsetToggle > 0.5 ? half4(NBGraphDebugVertexOffsetRGB, 1) : VertexColor;
+    return;
+#endif
+
     NoiseEnabled *= NBGraphTierAllowNoise > 0.5 ? 1.0 : 0.0;
     NoiseMaskToggle *= NBGraphTierAllowNoiseMask > 0.5 ? 1.0 : 0.0;
 
@@ -1370,6 +1414,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             PNoiseVec3, PNoiseVec4, ProgramSimpleToggle > 0.5,
             ProgramVoronoiToggle > 0.5, pNoiseBlendFlags,
             (half)PNoiseBaseBlendOpacity);
+#if defined(NB_DEBUG_PNOISE) && defined(NB_GRAPH_MAIN_FORWARD)
+    if (hasPNoise) { Out = half4(programNoise.xxx, 1); return; }
+#endif
     // The original ShaderLab _NORMALMAP keyword is represented by the
     // existing material toggle; no new SG keyword/variant is introduced.
     float3 normalForFeatures = (float3)NormalWS;
@@ -1413,6 +1460,9 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
                 FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT, signedRG,
                 (half2)programNoise, (half)PNoiseDistortBlendOpacity);
         textureNoise = signedRG * noiseMask;
+#if defined(NB_DEBUG_DISTORT) && defined(NB_GRAPH_MAIN_FORWARD)
+        Out = half4(textureNoise, 0, 1); return;
+#endif
     }
     NBDistortionSignedRG = signedRG;
     NBDistortionNoiseMask = noiseMask;
@@ -1537,10 +1587,14 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             NBGraphMaskWrapMode(wrapFlags, FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP),
             (noMipFlags & FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP) != 0u);
         }
+        half debugDissolvePreparedValue;
         NBFX_DissolveResolvedV3 resolved = NBGraphResolveDissolve(sampledDissolve,
             sampledDissolveMask, hasDissolveMask, Dissolve,
             (half)DissolveMaskMode, NB_ColorChannelLo16, hasPNoise,
-            programNoise, pNoiseBlendFlags, (half)PNoiseDissolveBlendOpacity);
+            programNoise, pNoiseBlendFlags, (half)PNoiseDissolveBlendOpacity, debugDissolvePreparedValue);
+#if defined(NB_DEBUG_DISSOLVE) && defined(NB_GRAPH_MAIN_FORWARD)
+        Out = half4(debugDissolvePreparedValue.xxx, 1); return;
+#endif
         Out.a *= resolved.coverage;
         if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DissolveRampToggle > 0.5))
             Out = NBGraphApplyDissolveRamp(Out,
@@ -1649,13 +1703,22 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
         maskInput.refine = (maskFlags & FLAG_BIT_PARTICLE_1_MASK_REFINE) != 0u;
         maskInput.refinePowMulAdd = MaskRefineVec.xyz;
         maskInput.overallStrength = MaskMapVec.x;
-        Out.a *= NBFX_ResolveMaskCoverageV3(maskInput);
+        half resolvedMaskCoverage = NBFX_ResolveMaskCoverageV3(maskInput);
+#if defined(NB_DEBUG_MASK) && defined(NB_GRAPH_MAIN_FORWARD)
+        Out = half4(resolvedMaskCoverage.xxx, 1); return;
+#endif
+        Out.a *= resolvedMaskCoverage;
     }
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (FresnelEnabled > 0.5))
+    {
         Out = NBGraphApplyFresnel(Out, ViewDirWS, normalForFeatures,
             (half)IsFrontFace, FresnelUnit, FresnelColor,
             FresnelRotation.xyz,
             NBGraphDecodeUInt32(NB_Flags0Lo16, NB_Flags0Hi16));
+#if defined(NB_DEBUG_FRESNEL) && defined(NB_GRAPH_MAIN_FORWARD)
+        return;
+#endif
+    }
     float sceneEyeDepth = 0.0;
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (DepthOutlineToggle > 0.5 || SoftParticlesEnabled > 0.5))
         sceneEyeDepth = NBGraphSceneEyeDepth(ScreenPosition.xy);

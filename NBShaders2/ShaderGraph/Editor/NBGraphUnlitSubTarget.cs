@@ -131,6 +131,12 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 scope = KeywordScope.Local, stages = KeywordShaderStage.Fragment,
             });
             pass.keywords = keywords;
+            // One original seven-state axis. Vertex Debug needs all-stage scope.
+            var debugPragmas = new PragmaCollection();
+            if (pass.pragmas != null)
+                foreach (var item in pass.pragmas) debugPragmas.Add(item.descriptor, item.fieldConditions);
+            debugPragmas.Add(new PragmaDescriptor { value = "shader_feature_local _ NB_DEBUG_MASK NB_DEBUG_PNOISE NB_DEBUG_DISSOLVE NB_DEBUG_DISTORT NB_DEBUG_FRESNEL NB_DEBUG_VERTEX_OFFSET" });
+            pass.pragmas = debugPragmas;
             return pass;
         }
 
