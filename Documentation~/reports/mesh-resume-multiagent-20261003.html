@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NB_FX 多 Agent 续接 · 2026-10-03</title></head><body>
 <p><a href="index.html">报告索引</a> · <a href="mesh-windows-20261002.html">原 Windows 证据</a> · <a href="../tasks/main-agent.html">主 Agent 分工</a></p>
-<h1>普通 Mesh 续接：OverrideZ、UVP、F0、CustomData 已集成，VAT 与状态继续验证</h1>
+<h1>普通 Mesh 续接：OverrideZ、UVP、F0、CustomData、VAT 已集成，CustomLocal 与完整链路继续验证</h1>
 <p>环境固定为 Unity6000.3.25f1、URP/ShaderGraph/VFXGraph17.3.0、Windows Direct3D11。主仓接任 HEAD <code>c0d2e0f1</code>，NB_FX 接任 HEAD <code>8a29a5e6</code>；本轮 OverrideZ 产品切片已保存为 <code>35c71eddb35aa4684c87dbefc7cfdcd1ac388fc9</code>。没有 reset/clean、worktree 或 push。现有环境修改与测试包.meta 保留。此报告不是完整 G3/G4 放行。</p>
 <p>按项目已有主＋3分工执行：主 Agent 独占 Unity、中央 Graph、集成和 Git；子 Agent 在各自预览目录审核 OverrideZ/Helper、共享 GUI/Tier、Mesh 缺口/默认 Pass。没有并行控制 Editor，也没有子 Agent切分支。</p>
 <h2>已集成：OverrideZ 普通 Forward</h2>
@@ -50,6 +50,12 @@
 <p>影响177原前60及第6批实际10通过，但SixWay参数化2漏选；原summary/XML不改。补同2＋未运行105的tail107正在串行执行，当前为120真实身份通过，仍未完整。原Controller12待新源实跑；VAT尚未进入根产品，不能把旧组合结果替换成新根。下一源片CustomLocal严格从实际中央VAT动态生成，GUI/Tier五gate与Specular/Debug原轴也分片准备。</p>
 <p>Normal draw-time basic2首轮失败：Graph uniform空图；实际绘制才出现D3D11输出参数未初始化的lazy编译错误，预绘制supported/noError不足。84raw有限、无device removal，归诊断编译/不可见，原2 Failed保留。只补诊断out初始化并增加绘制后编译检查，同身份2/2；108raw和648CPU回执独立有效，actual uniform/sample精确、三host TS/WS强响应/repeat0，original完整默认链AB/BC0，ABC Scale响应正交0.46728515625、透视0.4208984375。未改产品/正常采样解码/断言，不能替代旧DN0 SoftBody normal2零响应或完整默认链。</p>
 <p><a href="mesh-windows-20261002/root-vat-normal-drawtime-basic2-isolated-1/batch-summary.json">原诊断2失败</a> · <a href="mesh-windows-20261002/root-vat-normal-drawtime-basic2-output-fixed-isolated-1/batch-summary.json">修复2严格通过</a> · <a href="mesh-windows-20261002/root-vat-validation1449-source-20261003/independent-review/normal-output-fixed-basic2-verdict-audit.json">GPU与draw receipts独立审核</a>。</p>
+<h2 id="root-vat-integrated">最新产品检查点：VAT 已集成 d47344fe</h2>
+<p>本节覆盖前文按时间保留的“VAT未集成/impact未完成”旧状态。根包20路径已本地提交 <code>d47344feb4b610278a2e9410f48745c9eb57180a</code>，主仓仅gitlink提交 <code>e565171bcf799b931186b9f40f29e07c79cca9bd</code>。中央Graph1449、SHA <code>43152f06a6aec8372e43e04b16d254aa02879dedac2bc44366b47720bb5288be</code>；常规URP Mesh仍保持NBShader产品路径，没有push/worktree/reset。动态来源锁372，VAT片12产品与8测试路径；五metadata只规范尾空白，GUID/代码/Graph/断言不变，原验证字节另存。</p>
+<p>实际功能162全部通过、2190raw；影响177采用原70＋tail107精确身份视图全部通过、2456raw及原强控制有效，两个filter遗漏过程/XML保留，非功能/GPU错误。当前新源原真实Controller12全部通过、612raw有效，原阈值/ABC0/repeat/组件恢复与日志均审核；该片只是overlay/flash/多camera的原RenderGraph，不代表完整Post52、animated组合、Compatibility或Player。</p>
+<p>主Editor初次supported/noError却缺6VAT字段，为旧CD缓存，不能作确认。无TAI、clean/idle下精确依赖导入后只重导Graph；5秒命令超时保留，后续真实读回9字段齐备（四VAT模式Float、两Texture及F0/CD）、supported/noShaderError，16warning保持。<a href="mesh-windows-20261002/root-vat-integrated1449-checkpoint-20261003/main-root-vat-initial-readback.json">初次旧缓存</a> · <a href="mesh-windows-20261002/root-vat-integrated1449-checkpoint-20261003/main-root-vat-graph-exact-import.json">导入超时</a> · <a href="mesh-windows-20261002/root-vat-integrated1449-checkpoint-20261003/main-root-vat-final-inputs-readback.json">实际字段确认</a> · <a href="mesh-windows-20261002/root-vat-integrated1449-checkpoint-20261003/root-vat-product-installation.json">20路径SHA与保护</a>。</p>
+<p>SoftBody绘制时normal probe随后真实2/2通过、108raw有效，采用修复后的相同诊断源；不能删除旧DN0normal2 zero-response失败。当前CustomLocal由实际中央1449新锁动态生成1570，11产品/6边/11CF源审通过，17路径仅装隔离，first13通过/108raw，余38仍在运行。主包CL未集成。完整GUI/Tier、Specular/Debug、ZOffset/BackFirst/DisableMain、DN0默认链、动画组合、全后处理、Player/variants/perf与G3/G4仍待完成，正式VFX未开始。</p>
+<p>用户授权每小时独立只读总结。后台自动化已ACTIVE，飞书CLI bot向本人雨轩发送；首次人类摘要message_id <code>om_x100b6331518c00a4b1cf45a4256cc9f</code>已成功并读回。总结不操作Unity、不改源码/Git、不向主任务调度，仅在task-local摘要目录保留小回执。</p>
 <h2>失败分类与下一入口</h2>
 <p>真实功能/生命周期错误、不可见或无效输出、GPU崩溃/设备移除、微弱色差、首帧与工具/安装/导入阻塞分别记录，不降阈值、不删除失败。当前Dissolve旧40属于GPU/无效读回；新4属于微差。CA仍无完整有效结果。BackFirst、ZOffset、Portal、完整共享GUI/Tier、UVP剩余消费点/变换组合、完整Controller/Manager、最终组合Player/变体/性能仍待闭合。</p>
 <p>继续ZOffset12、默认法线绘制时控制证据和GUI/Tier；从已集成OVZ+UVP的新中央Graph动态追加F0/CustomData/VAT/CustomLocal等，禁止旧wholeGraph覆盖。普通Mesh完整G3/G4审核后才正式VFX；HDRP和低版本最后。<a href="mesh-windows-20261002/coordinator-provenance-clarification.json">范围/重叠身份说明</a> · <a href="mesh-windows-20261002/sha256.txt">归档SHA</a>。</p>
