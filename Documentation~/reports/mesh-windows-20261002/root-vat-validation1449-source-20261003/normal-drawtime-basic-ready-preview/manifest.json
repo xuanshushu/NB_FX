@@ -1,0 +1,67 @@
+{
+  "task": "NORMAL-DRAWTIME-MINIMUM",
+  "installed": false,
+  "UnityRun": false,
+  "records": [
+    {
+      "path": "Tests/URP/Editor/G4NormalDrawTimeProbeTests.cs",
+      "beforeSHA256": null,
+      "afterSHA256": "5e77894f585183ea532b9e08bce1c4d18bd963ae989437451544395f894b2f5b"
+    },
+    {
+      "path": "Tests/URP/Editor/G4NormalDrawTimeProbeTests.cs.meta",
+      "beforeSHA256": null,
+      "afterSHA256": "3fa15ab1be5573fe96447d78e649d19c007bf4f85535698840a8d8d7873e96d9"
+    }
+  ],
+  "scope": "Exact two existing in-memory drawtime diagnostic fixture bytes staged only inside task work; not installed; SourceRoot unchanged",
+  "skill": "unity-inmemory-shader-debug",
+  "cpuEvidence": [
+    "AfterSetFloat beforeCameraRender actualslot/shader/name/ID/actualLightMode/effective materialtag/mainenabled",
+    "beginCameraRendering actualscale/toggle/localkeywords plus actualTexture object/name/ID/dimensions/CPUtexels/SHA andMPB-empty",
+    "AfterReadPixels beforeRestore verifiescontrol was not reset early"
+  ],
+  "gpuEvidence": {
+    "probe0": "A/B actualcompiled_NORMALMAP flag, _BumpScale, compiledBlinn; C actualBumpMapToggle/BumpScale/FxLightMode",
+    "probe1": "Actual original wrapped sampler texel in forward normal block",
+    "probe2": "Actual existing normal decode normalTS encoded*.5+.5",
+    "probe3": "Actual existing mapped normalWS encoded*.5+.5"
+  },
+  "forwardIdentity": "FindPass displayName locatesindex only; shader.FindPassTagValue LightMode determines enable/query key; emptytag effectiveSRPDefaultUnlit. Clone disabledpassstate bytags. OfficialAPI link inREADME.",
+  "precondition": "Basic source noVAT; SoftBody only complete interface. ActualSSAO active, originalForward+DepthOnly+ShadowCaster available and GraphNormals rawTrue; no directedRenderer. Original frames full chain then diagnosticactor-only floorremoved labelledobserver scope.",
+  "strict": "Alloriginal failures retained. finite/visible/repeat0/rawtex exact/normaldecode strong, all original defaultABC0 required after collectedevidence. Probe never overrides originalfailedverdict.",
+  "staticMarkers": [
+    {
+      "path": "Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "MakeOutput": true,
+      "normalMarker": 1,
+      "sampleMarker": 1,
+      "decodedMarker": "mappedNormalWS",
+      "sha256": "6cede3b62b382986d190df6938b86aea1058092fc83ab5ba9592005d6bc38a8f"
+    },
+    {
+      "path": "Packages/NB_FX/Tests/Baseline/Frozen/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "MakeOutput": true,
+      "normalMarker": 1,
+      "sampleMarker": 1,
+      "decodedMarker": "normalize(TransformTangentToWorld(normalTS, tangentToWorld))",
+      "sha256": "dbf0315495ec9dd333025e0d02a853a4acc13cd6cc012cba9050541d3073462b"
+    },
+    {
+      "path": "Packages/NB_FX/NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
+      "helperOutSignature": 1,
+      "sampleHelperMarker": 1,
+      "helperCalls": 2,
+      "normalLocalDeclare": 2,
+      "sha256": "5bd25d0be2ece6db716095801569fa36b43c803610593e499099ea5e469d7704"
+    }
+  ],
+  "observerEffects": "In-memory compilation can warm shader/PSO cache. UniqueHiddennames/HideAndDontSave, clonedslot restores and destroyall. Captureoriginal before compile and include sourceSHA; diagnostic success is not proof originalproperty binding unaffected.",
+  "runtimeUnverified": true,
+  "staticCompile": {
+    "mode": "Standalone Roslyn actual51source references/defines, noEditor orShader operation",
+    "exitCode": 0,
+    "log": "static-compile.log",
+    "ShaderGPUVerified": false
+  }
+}

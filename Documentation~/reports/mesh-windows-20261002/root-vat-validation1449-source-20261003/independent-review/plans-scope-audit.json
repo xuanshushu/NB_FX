@@ -1,0 +1,97 @@
+{
+  "scope": "Static first16/rest146/impact177 plan review; actual verdicts forrest146/impact177 not loaded or counted here",
+  "plans": {
+    "root-vat-first16-plan.json": {
+      "sha256": "2344c5b9d5eb0c2cb28799dfdc5fe14c7fd6a1b4e180d6de406113dc9797c177",
+      "cases": 16,
+      "batchCount": 2,
+      "scope": "Root VAT first16 original identities covering Houdini4 basis/three new families, Tyflow floatGamma+seven-bone interpolated skin and CDword2 actual frame consumer; not all VAT"
+    },
+    "root-vat-rest146-plan.json": {
+      "sha256": "5edf6f90775b87506f2654c2447d9ca5897f6993dbc9b43e37145268e0cdc5fa",
+      "cases": 146,
+      "batchCount": 19,
+      "scope": "Root VAT original remaining146 identities; together first16 covers162 distinct IDs, not historical pass totals"
+    },
+    "root-vat-impact177-plan.json": {
+      "sha256": "996c9350dacbda50a1f925ae6ebd10cfde953789f740365acd1d411a65cb7b45",
+      "cases": 177,
+      "batchCount": 15,
+      "scope": "Source impact only: VO/DepthShadow/SixWay/Fog68 + F0Forward/NB screen36 + PositionUV main56 + OverrideZ16 + real Graph schema1. VAT remains off in these original controls; these do not cover animated VAT+UVP/F0 combinations. Original failures remain strict."
+    },
+    "root-vat-after-dn0-default-ssao2-plan.json": {
+      "sha256": "810d1708fe4002cde8951230c4f8a1187b53c616b550a2e841dcacbe18ec1f10",
+      "cases": 2,
+      "batchCount": 1,
+      "scope": "After real Root VAT and dynamically rebased DN0 only: original actual default Forward+Depth+Shadow+Normals rawTrue+SSAO2, not limited Pass substitute. If Root DN0 absent leave pending, do not disable Normals in fixture."
+    },
+    "root-vat-nbpost-controller12-plan.json": {
+      "sha256": "2b4334f6f6d93de9b83abd1d83fcd9cbc698835796ba2e8dd1f12e3fd2663db9",
+      "cases": 12,
+      "batchCount": 6,
+      "scope": "Original full Manager/Controller12 rerun after fresh Root VAT/NB screen guard. No inherited combined-source pass result; these inputs do not animate VAT."
+    }
+  },
+  "identityAudit": {
+    "first16Unique": 16,
+    "rest146Unique": 146,
+    "firstRestOverlap": 0,
+    "plannedUnionUnique": 162,
+    "plannedImpactUnique": 177,
+    "VATUnionImpactOverlap": 0,
+    "selectedDepthShadowExactTenModeGridMatches": true
+  },
+  "plannedVATCoverage": {
+    "HoudiniForward": {
+      "h0-softbody": 10,
+      "h1-rigid": 12,
+      "h2-remesh": 6,
+      "h3-sprite": 14
+    },
+    "TyflowForward": {
+      "t0": 14,
+      "t1": 14,
+      "t2": 10,
+      "t3": 10,
+      "t4": 10,
+      "t5": 10
+    },
+    "allTenSelectedDepthShadow": 40,
+    "SoftBodySelectedDepthShadowAdditional": 4,
+    "SoftBodyTwoNBPassGeometryExclusion": 4,
+    "actualCDFrameConstantVarying": 4
+  },
+  "sourceAssertionReferences": {
+    "HoudiniFwd": "G4GraphHoudiniModesTests.cs:32-36,138-143;rigid-rest intentionally zero on/offresponse",
+    "TyflowFwd": "G4GraphTyflowVATTests.cs:30-33,158-159",
+    "TenModeGeometry": "G4GraphVATGeometryModesTests.cs:16,58-60 invokes sharedCapture(...,true), isolating Graph extraDepthNormals",
+    "SharedGeometry": "G4GraphVATTests.cs:505,517-519 finite/zero/repeat/strong+directedDepthvalidFrames;limitedgeometry visiblecountsare0, must not present as fullForwardvisibility/defaultSSAO",
+    "RealCDFrame": "G4GraphCustomDataTests.cs:205-216 requiresactualVATtype/source/GraphSoftBodynode, actualConfigure andword2;noplaceholder"
+  },
+  "impact177Scope": {
+    "VO_DepthShadow_SixWay_Fog": 68,
+    "F0HandControlledForwardAndNBPasses": 36,
+    "PositionUVmain": 56,
+    "OverrideZNormalState": 16,
+    "actualGraphSchema": 1,
+    "VATEnabledCombinations": 0,
+    "actualHelperLifecycleAndGPUIncluded": false,
+    "OverrideZKeywordMismatch8Included": false,
+    "OverrideZGeneratedSourceNative2Included": false,
+    "fullManagerControllerIncluded": false
+  },
+  "remainingDedicatedPlans": {
+    "defaultFullForwardDepthShadowDepthNormalsSSAO": 2,
+    "NBPostManagerController": 12
+  },
+  "limits": [
+    "Planidentitycoverage is a proposed finite grid, not actual result or allfeature/combination proof.",
+    "Forward42+68 samples tenVAT modes and multiple encodings/skin/gamma/normals, not complete normalmatrix/lifecycle/autotime/instancing/Player/performance.",
+    "SelectedDepth/Shadow excludes extraGraphDepthNormals; rawenableddefaultSSAO2 requiresRootDN0rebasedinput andactualfresh execution.",
+    "Impact177 andController12 keepVAToff, so animatedVAT+UVP/F0/Manager combinations remain separate gaps.",
+    "Compile/storage1 and first16 cannot substitute for remaining146 or defaultchain. No missing/unrunXML countedPassed.",
+    "Root1449 and old1590fullcombo remain distinct sourceprovenance; no historicalpass pooling."
+  ],
+  "noBlockInExactPlanIdentityGridFound": true,
+  "fullMeshGatePassed": false
+}
