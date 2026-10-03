@@ -180,6 +180,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             };
             // CameraOpaque forces BaseMap Clamp independently of material
             // mode. GraphDefines precedes CF code; PostGraph includes do not.
+            pass = WithNBPassDefine(pass, "NB_GRAPH_NO_VAT");
             if (lightMode == "NBCameraOpaqueDistortPass")
                 pass = WithNBPassDefine(pass, "NB_GRAPH_CAMERA_OPAQUE_PASS");
             else if (lightMode == "NBDeferredDistortPass")
