@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -36,6 +36,7 @@ namespace NBShaderEditor
     
     public class ShaderGUISliderItem:ShaderGUIItem
     {
+        public bool WriteOnlyOnInteractiveChange; // Default false preserves Native behavior.
         public float Min = 0;
         public float Max = 1;
         public string RangePropertyName;
@@ -117,6 +118,7 @@ namespace NBShaderEditor
                 float min = rangeVector.x;
                 float max = rangeVector.y;
 
+                if (WriteOnlyOnInteractiveChange) EditorGUI.BeginChangeCheck();
                 EditorGUI.showMixedValue = minValueHasMixed;
                 bool minAnimatedScope = BeginAnimatedPropertyBackground(minRect, _rangePropertyInfo.Property);
                 min = EditorGUI.FloatField(minRect, min);
@@ -127,10 +129,12 @@ namespace NBShaderEditor
                 EndAnimatedPropertyBackground(maxAnimatedScope);
                 rangeVector.x = min;
                 rangeVector.y = max;
-                SetVectorIfDifferent(_rangePropertyInfo.Property, rangeVector);
+                bool rangeEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
+                if (rangeEdited) SetVectorIfDifferent(_rangePropertyInfo.Property, rangeVector);
 
                 float sliderMin = Mathf.Min(min, max);
                 float sliderMax = Mathf.Max(min, max);
+                if (WriteOnlyOnInteractiveChange) EditorGUI.BeginChangeCheck();
                 float value = DraggableLabelFloat.Handle(
                     LabelRect,
                     PropertyInfo.Property.floatValue,
@@ -142,12 +146,14 @@ namespace NBShaderEditor
                 value = SliderNoIndent(sliderRect, value, sliderMin, sliderMax);
                 EndAnimatedPropertyBackground(sliderAnimatedScope);
 
-                SetFloatIfDifferent(PropertyInfo.Property, Mathf.Clamp(value, sliderMin, sliderMax));
+                bool valueEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
+                if (valueEdited || rangeEdited) SetFloatIfDifferent(PropertyInfo.Property, Mathf.Clamp(value, sliderMin, sliderMax));
                 EditorGUI.showMixedValue = false;
 
             }
             else
             {
+                if (WriteOnlyOnInteractiveChange) EditorGUI.BeginChangeCheck();
                 float value = DraggableLabelFloat.Handle(
                     LabelRect,
                     PropertyInfo.Property.floatValue,
@@ -155,8 +161,19 @@ namespace NBShaderEditor
                     Min,
                     Max);
                 value = EditorGUI.Slider(ControlRect, value,Min,Max);
-                SetFloatIfDifferent(PropertyInfo.Property, value);
+                bool valueEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
+                if (valueEdited) SetFloatIfDifferent(PropertyInfo.Property, value);
             }
+        }
+
+
+        // Original writes remain the default. Graph opt-in keeps passive paint
+        // read-only, including out-of-range and mixed saved material values.
+        private bool EndInteractiveInputChange()
+        {
+            bool changed = EditorGUI.EndChangeCheck();
+            Event evt = Event.current;
+            return changed && evt != null && evt.rawType != EventType.Layout && evt.rawType != EventType.Repaint;
         }
 
         private static float SliderNoIndent(Rect rect, float value, float min, float max)

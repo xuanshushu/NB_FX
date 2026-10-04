@@ -296,6 +296,7 @@ namespace NBShaderEditor
 
     public class VectorComponentRangeSliderItem : ShaderGUIItem
     {
+        public bool WriteOnlyOnInteractiveChange; // Default false preserves Native behavior.
         private readonly int _componentIndex;
         private readonly Func<GUIContent> _contentProvider;
         private readonly string _rangePropertyName;
@@ -385,6 +386,7 @@ namespace NBShaderEditor
 
             RangeVecHasMixedValue(out bool minValueHasMixed, out bool maxValueHasMixed);
 
+            if (WriteOnlyOnInteractiveChange) EditorGUI.BeginChangeCheck();
             EditorGUI.showMixedValue = minValueHasMixed;
             bool minAnimatedScope = BeginAnimatedPropertyBackground(minRect, _rangePropertyInfo.Property);
             min = EditorGUI.FloatField(minRect, min);
@@ -397,10 +399,12 @@ namespace NBShaderEditor
 
             range.x = min;
             range.y = max;
-            SetVectorIfDifferent(_rangePropertyInfo.Property, range);
+            bool rangeEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
+            if (rangeEdited) SetVectorIfDifferent(_rangePropertyInfo.Property, range);
 
             sliderMin = Mathf.Min(min, max);
             sliderMax = Mathf.Max(min, max);
+            if (WriteOnlyOnInteractiveChange) EditorGUI.BeginChangeCheck();
             value = DraggableLabelFloat.Handle(
                 LabelRect,
                 value,
@@ -412,9 +416,23 @@ namespace NBShaderEditor
             value = SliderNoIndent(sliderRect, value, sliderMin, sliderMax);
             EndAnimatedPropertyBackground(sliderAnimatedScope);
 
-            SetValue(ref vector, Mathf.Clamp(value, sliderMin, sliderMax));
-            SetVectorIfDifferent(PropertyInfo.Property, vector);
+            bool valueEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
+            if (valueEdited || rangeEdited)
+            {
+                SetValue(ref vector, Mathf.Clamp(value, sliderMin, sliderMax));
+                SetVectorIfDifferent(PropertyInfo.Property, vector);
+            }
             EditorGUI.showMixedValue = false;
+        }
+
+
+        // Original writes remain the default. Graph opt-in keeps passive paint
+        // read-only, including out-of-range and mixed saved material values.
+        private bool EndInteractiveInputChange()
+        {
+            bool changed = EditorGUI.EndChangeCheck();
+            Event evt = Event.current;
+            return changed && evt != null && evt.rawType != EventType.Layout && evt.rawType != EventType.Repaint;
         }
 
         private static float SliderNoIndent(Rect rect, float value, float min, float max)
