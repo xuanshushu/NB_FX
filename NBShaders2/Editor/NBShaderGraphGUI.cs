@@ -25,7 +25,7 @@ namespace NBShaderEditor
             SyncSixWayKeywords(material);
         }
 
-        static void SyncSixWayKeywords(Material material)
+        internal static void SyncSixWayKeywords(Material material)
         {
             if (material == null) return;
             if (material.HasProperty("_OverrideZ_Toggle"))

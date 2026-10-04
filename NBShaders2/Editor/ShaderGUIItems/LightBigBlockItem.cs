@@ -36,6 +36,17 @@ namespace NBShaderEditor
         private readonly VectorComponentItem _sixWayEmissionPowItem;
         private readonly ColorItem _sixWayEmissionColorItem;
 
+        internal static FxLightModePopupItem CreateModeItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode = false)
+            => new FxLightModePopupItem(rootItem, parentItem, graphSharedMode);
+
+        internal static BigBlockItem CreateGraphModeOnlyBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        {
+            var block = new BigBlockItem(rootItem, parentItem, "_LightBigBlockItemFoldOut",
+                () => NBShaderInspectorLocalization.MakeInspectorContent("block.light", "Light", "Normal, MatCap and light mode controls"));
+            CreateModeItem(rootItem, block, true);
+            return block;
+        }
+
         public LightBigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(
                 rootItem,
@@ -44,7 +55,7 @@ namespace NBShaderEditor
                 () => Content("block.light", "Light", "Normal, MatCap and light mode controls"))
         {
             _nbRootItem = rootItem;
-            _lightModeItem = new FxLightModePopupItem(rootItem, this);
+            _lightModeItem = CreateModeItem(rootItem, this);
 
             _specularToggleItem = new NBShaderKeywordToggleItem(
                 rootItem,
@@ -356,10 +367,12 @@ namespace NBShaderEditor
         };
 
         private readonly NBShaderRootItem _nbRootItem;
+        private readonly bool _graphSharedMode;
 
-        public FxLightModePopupItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
+        public FxLightModePopupItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode = false) : base(rootItem, parentItem)
         {
             _nbRootItem = rootItem;
+            _graphSharedMode = graphSharedMode;
             PropertyName = "_FxLightMode";
             GuiContent = NBShaderInspectorLocalization.MakeContent("inspector.light.mode.label", "Light Mode");
             PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("light.mode", LightModeOptions);
@@ -371,10 +384,47 @@ namespace NBShaderEditor
             base.OnGUI();
         }
 
+        internal bool CommitSelectedMode(int value)
+        {
+            if (value < 0 || value >= LightModeOptions.Length || PropertyInfo == null) return false;
+            MaterialProperty property = PropertyInfo.Property;
+            if (!property.hasMixedValue && Mathf.Approximately(property.floatValue, value)) return false;
+            if (_graphSharedMode)
+            {
+                if (!_nbRootItem.IsGraphLightModeSchemaReady()) return false;
+                _nbRootItem.MatEditor.RegisterPropertyChangeUndo("NB Light Mode");
+            }
+            property.floatValue = value;
+            return true;
+        }
+
+        public override void DrawController()
+        {
+            if (!_graphSharedMode) { base.DrawController(); return; }
+            EditorGUI.BeginChangeCheck();
+            int selected = EditorGUI.Popup(ControlRect, (int)PropertyInfo.Property.floatValue, PopUpNames);
+            if (EditorGUI.EndChangeCheck()) CommitSelectedMode(selected);
+        }
+
+        public override void ExecuteReset(bool isCallByParent = false)
+        {
+            if (_graphSharedMode)
+            {
+                if (!_nbRootItem.IsGraphLightModeSchemaReady()) return;
+                _nbRootItem.MatEditor.RegisterPropertyChangeUndo("Reset NB Light Mode");
+            }
+            base.ExecuteReset(isCallByParent);
+        }
+
         public override void OnEndChange()
         {
             base.OnEndChange();
-            _nbRootItem.SyncService.ApplyLightMode((FxLightMode)PropertyInfo.Property.floatValue);
+            if (_graphSharedMode)
+            {
+                if (_nbRootItem.IsGraphLightModeSchemaReady())
+                    foreach (Material material in _nbRootItem.Mats) NBShaderGraphGUI.SyncSixWayKeywords(material);
+            }
+            else _nbRootItem.SyncService.ApplyLightMode((FxLightMode)PropertyInfo.Property.floatValue);
             _nbRootItem.Context.Refresh();
         }
     }

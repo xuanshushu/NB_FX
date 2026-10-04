@@ -46,16 +46,48 @@ namespace NBShaderEditor
     internal sealed class FlipbookFeatureItem : ToggleItem
     {
         private readonly NBShaderRootItem _nbRootItem;
+        private readonly bool _graphSharedMode;
 
-        public FlipbookFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        public FlipbookFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode = false)
             : base(
                 rootItem,
                 parentItem,
                 "_FlipbookBlending",
                 () => FeatureToggleFoldOutItem.Content("序列帧融帧(丝滑)"),
-                rootItem.SyncService.ApplyFlipbookEnabled)
+                graphSharedMode
+                    ? (Action<bool>)(enabled => { rootItem.SyncService.TryApplyGraphFlipbookEdit(enabled); })
+                    : rootItem.SyncService.ApplyFlipbookEnabled)
         {
             _nbRootItem = rootItem;
+            _graphSharedMode = graphSharedMode;
+        }
+
+        internal bool CommitSelectedFlipbook(bool enabled)
+        {
+            if (!_graphSharedMode || !_nbRootItem.SyncService.HasGraphFlipbookEditSchema()) return false;
+            MaterialProperty property = PropertyInfo.Property;
+            if (!property.hasMixedValue && (property.floatValue > 0.5f) == enabled) return false;
+            _nbRootItem.MatEditor.RegisterPropertyChangeUndo("NB Flipbook");
+            property.floatValue = enabled ? 1f : 0f;
+            return true;
+        }
+
+        public override void DrawController()
+        {
+            if (!_graphSharedMode) { base.DrawController(); return; }
+            EditorGUI.BeginChangeCheck();
+            bool selected = EditorGUI.Toggle(ControlRect, PropertyInfo.Property.floatValue > 0.5f);
+            if (EditorGUI.EndChangeCheck()) CommitSelectedFlipbook(selected);
+        }
+
+        public override void ExecuteReset(bool isCallByParent = false)
+        {
+            if (_graphSharedMode)
+            {
+                if (!_nbRootItem.SyncService.HasGraphFlipbookEditSchema()) return;
+                _nbRootItem.MatEditor.RegisterPropertyChangeUndo("Reset NB Flipbook");
+            }
+            base.ExecuteReset(isCallByParent);
         }
 
         public override void DrawBlock()

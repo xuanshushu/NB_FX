@@ -418,6 +418,45 @@ namespace NBShaderEditor
             }
         }
 
+        // Explicit shared Flipbook editor capability. General Graph Sync/Apply guards remain.
+        internal bool HasGraphFlipbookEditSchema()
+        {
+            if (_rootItem.Mats == null || _rootItem.Mats.Count == 0 || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                if (material == null || !NBShaderGUIContext.IsGraphMaterial(material)) return false;
+                NBShaderMaterialIntentResult intent; string[] unavailable;
+                if (!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material,
+                    NBShaderFeatureTier.Ultra, NBShaderFeatureCatalog.RawKeywords, out intent, out unavailable)) return false;
+                foreach (string name in new[] { "_FlipbookBlending", "_VAT_Toggle", "_AnimationSheetHelperBlendIntensity" })
+                {
+                    if (!NBShaderRootItem.HasFloatProperty(material, name) || !_rootItem.PropertyInfoDic.ContainsKey(name)) return false;
+                    float value = material.GetFloat(name); if (float.IsNaN(value) || float.IsInfinity(value)) return false;
+                }
+                foreach (string name in new[] { "_BaseMap_ST", "_BaseMap_AnimationSheetBlend_ST" })
+                {
+                    int index = material.shader.FindPropertyIndex(name);
+                    if (index < 0 || material.shader.GetPropertyType(index) != UnityEngine.Rendering.ShaderPropertyType.Vector || !_rootItem.PropertyInfoDic.ContainsKey(name)) return false;
+                    Vector4 value = material.GetVector(name);
+                    for (int channel = 0; channel < 4; ++channel) if (float.IsNaN(value[channel]) || float.IsInfinity(value[channel])) return false;
+                }
+            }
+            return true;
+        }
+
+        internal bool TryApplyGraphFlipbookEdit(bool enabled)
+        {
+            if (!HasGraphFlipbookEditSchema()) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                SetFloatIfExists(material, "_FlipbookBlending", enabled ? 1f : 0f);
+                if (enabled) DisableVat(material); // Reuse original enable-Flipbook mutual-exclusion contract.
+                // Graph consumes the real Float; no fictitious local Flipbook axis.
+            }
+            _rootItem.Context?.Refresh();
+            return true;
+        }
+
         public void ApplyFlipbookEnabled(bool enabled)
         {
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.

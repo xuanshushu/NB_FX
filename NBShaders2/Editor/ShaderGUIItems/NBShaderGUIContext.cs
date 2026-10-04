@@ -178,7 +178,9 @@ namespace NBShaderEditor
                 }
                 NoiseEnabled = GetToggleState("_noisemapEnabled");
                 ProgramNoiseEnabled = GetToggleState("_ProgramNoise_Toggle");
-                VatEnabled = FlipbookEnabled = MixedBool.False;
+                // Real saved Graph intent, not legacy mode/pass projection.
+                VatEnabled = GetGraphToggleState("_VAT_Toggle");
+                FlipbookEnabled = GetGraphToggleState("_FlipbookBlending");
                 return;
             }
 
@@ -227,6 +229,23 @@ namespace NBShaderEditor
             ProgramNoiseEnabled = IsKeywordAllowed("_PROGRAM_NOISE") ? GetToggleState("_ProgramNoise_Toggle") : MixedBool.False;
             VatEnabled = IsKeywordAllowed("_VAT") ? GetToggleState("_VAT_Toggle") : MixedBool.False;
             FlipbookEnabled = IsKeywordAllowed("_FLIPBOOKBLENDING_ON") ? GetToggleState("_FlipbookBlending") : MixedBool.False;
+        }
+
+        private MixedBool GetGraphToggleState(string propertyName)
+        {
+            if (_rootItem.Mats == null || _rootItem.Mats.Count == 0 || !HasProperty(propertyName)) return MixedBool.Mixed;
+            if (GetProperty(propertyName).hasMixedValue) return MixedBool.Mixed;
+            bool first = true, value = false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                if (material == null || !NBShaderRootItem.HasFloatProperty(material, propertyName)) return MixedBool.Mixed;
+                float raw = material.GetFloat(propertyName);
+                if (float.IsNaN(raw) || float.IsInfinity(raw)) return MixedBool.Mixed;
+                bool next = raw > 0.5f;
+                if (!first && next != value) return MixedBool.Mixed;
+                first = false; value = next;
+            }
+            return value ? MixedBool.True : MixedBool.False;
         }
 
         private void RefreshFeatureTier()

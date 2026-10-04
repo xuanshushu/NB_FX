@@ -64,6 +64,11 @@ namespace NBShaderEditor
         }
 
         bool _sharedGraphMainTextureReady;
+        bool _sharedGraphFlipbookReady;
+        FlipbookFeatureItem _graphFlipbookItem;
+        bool _sharedGraphLightModeReady;
+        BigBlockItem _graphLightModeBlock;
+        static readonly string[] SharedGraphLightModeProperties = { "_FxLightMode", "_LightBigBlockItemFoldOut" };
 
         public override void OnGUI(MaterialEditor editor, MaterialProperty[] properties)
         {
@@ -89,9 +94,13 @@ namespace NBShaderEditor
 
         public System.Collections.Generic.IEnumerable<string> GetSharedGraphPropertyNames()
         {
+            var names = new System.Collections.Generic.List<string>();
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphMainTextureReady)
-                return SharedGraphMainTextureProperties;
-            return System.Array.Empty<string>();
+                names.AddRange(SharedGraphMainTextureProperties);
+            if (Context != null && Context.IsGraphMaterialHost && _sharedGraphLightModeReady)
+                names.AddRange(SharedGraphLightModeProperties);
+            if (Context != null && Context.IsGraphMaterialHost && _sharedGraphFlipbookReady) names.Add("_FlipbookBlending");
+            return names;
         }
 
         internal static bool HasFloatProperty(Material material, string name)
@@ -131,6 +140,45 @@ namespace NBShaderEditor
             return true;
         }
 
+        internal bool IsGraphLightModeSchemaReady()
+        {
+            if (MatEditor == null || Mats == null || Mats.Count == 0 || NBShaderGUIContext.HasMixedHosts(Mats)) return false;
+            foreach (Material material in Mats)
+            {
+                if (material == null || !NBShaderGUIContext.IsGraphMaterial(material)) return false;
+                foreach (string name in new[] { "_FxLightMode", "_LightBigBlockItemFoldOut", "_SixWayColorAbsorptionToggle", NBShaderSyncService.GraphGUIStateVersionProperty })
+                    if (!HasFloatProperty(material, name) || !PropertyInfoDic.ContainsKey(name)) return false;
+                float mode = material.GetFloat("_FxLightMode");
+                if (float.IsNaN(mode) || float.IsInfinity(mode) || mode < 0 || mode > 4 || mode != Mathf.Round(mode) ||
+                    material.GetFloat(NBShaderSyncService.GraphGUIStateVersionProperty) != 2f) return false;
+                float absorption = material.GetFloat("_SixWayColorAbsorptionToggle");
+                if (float.IsNaN(absorption) || float.IsInfinity(absorption)) return false;
+            }
+            return true;
+        }
+
+        internal bool InitializeGraphLightModeInputs()
+        {
+            Context ??= new NBShaderGUIContext(this);
+            SyncService ??= new NBShaderSyncService(this);
+            Context.Refresh();
+            _sharedGraphLightModeReady = Context.IsGraphMaterialHost && IsGraphLightModeSchemaReady();
+            if (!_sharedGraphLightModeReady) return false;
+            _graphLightModeBlock ??= LightBigBlockItem.CreateGraphModeOnlyBlock(this, null);
+            return true;
+        }
+
+        internal bool InitializeGraphFlipbookInputs()
+        {
+            Context ??= new NBShaderGUIContext(this);
+            SyncService ??= new NBShaderSyncService(this);
+            Context.Refresh();
+            _sharedGraphFlipbookReady = Context.IsGraphMaterialHost && SyncService.HasGraphFlipbookEditSchema();
+            if (!_sharedGraphFlipbookReady) return false;
+            _graphFlipbookItem ??= new FlipbookFeatureItem(this, null, true);
+            return true;
+        }
+
         public override void OnChildOnGUI()
         {
             if (Context == null)
@@ -150,6 +198,8 @@ namespace NBShaderEditor
                 if (IsInit)
                 {
                     _mainTexBlock = null;
+                    _graphFlipbookItem = null;
+                    _graphLightModeBlock = null;
                     _toolBar = null;
                     _modeBlock = null;
                     _baseBlock = null;
@@ -162,6 +212,9 @@ namespace NBShaderEditor
                     _mainTexBlock.OnGUI();
                 else
                     EditorGUILayout.HelpBox("Shared Main Texture needs its real Float foldouts/schema. Existing Graph native inputs remain available below.", MessageType.Info);
+                if (InitializeGraphLightModeInputs())
+                    _graphLightModeBlock.OnGUI();
+                if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
                 return;
             }
 
