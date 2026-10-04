@@ -290,6 +290,154 @@ namespace NBFX.Baseline.Tests
             }
         }
 
+        [Serializable] sealed class DisabledManagerState
+        {
+            public string phase,cameraType;
+            public bool managerEnabled;
+            public int editorTicks,managerCallbacks,managerCallbackPosition,controller0Callbacks,controller1Callbacks;
+            public int controller0Position,controller1Position,activeControllers,caControllers,postFlags;
+            public float caIntensity;
+        }
+        [Serializable] sealed class DisabledManagerEvidence
+        {
+            public string scope,project,unity,api,managerSourceSHA256,controllerSourceSHA256,testSourceSHA256;
+            public DisabledManagerState[] states;
+            public int rawFrameCount;
+            public bool finite,cleanupRestored,componentReferencesDestroyed,rendererBytesUnchanged,pipelineBytesUnchanged;
+            public float disabledRegistrationResponse,reenabledResponse,reenabledRepeat,secondReenableRepeat,finalCleanupResponse;
+        }
+        static Delegate[] EditorUpdateSubscribers()
+            => EditorApplication.update==null?Array.Empty<Delegate>():EditorApplication.update.GetInvocationList();
+        static int OwnedEditorCallbackCount(object target,string method)
+            => target==null?0:EditorUpdateSubscribers().Count(d=>ReferenceEquals(d.Target,target)&&d.Method.Name==method);
+        static int OwnedEditorCallbackPosition(object target,string method)
+            => Array.FindIndex(EditorUpdateSubscribers(),d=>ReferenceEquals(d.Target,target)&&d.Method.Name==method);
+        static System.Collections.IEnumerator WaitForActualEditorTicks(Action<int> observed)
+        {
+            int count=0;EditorApplication.CallbackFunction tick=()=>count++;
+            EditorApplication.update+=tick;
+            double deadline=EditorApplication.timeSinceStartup+10;
+            try
+            {
+                while(count<4)
+                {
+                    Assert.That(EditorApplication.timeSinceStartup,Is.LessThan(deadline),"Actual EditorApplication.update did not advance; no manual lifecycle invocation is allowed.");
+                    yield return null;
+                }
+                observed(count);
+            }
+            finally {EditorApplication.update-=tick;}
+        }
+        [UnityEngine.TestTools.UnityTest]
+        public System.Collections.IEnumerator NBPostDisabledManager_NewController_EditorLifecycle()
+            => DisabledManagerControllerLifecycle(false);
+        [UnityEngine.TestTools.UnityTest]
+        public System.Collections.IEnumerator NBPostDisabledManager_ReenabledController_EditorLifecycle()
+            => DisabledManagerControllerLifecycle(true);
+
+        System.Collections.IEnumerator DisabledManagerControllerLifecycle(bool reenableExisting)
+        {
+            Assert.That(Path.GetFullPath(Application.dataPath),Is.EqualTo(Path.GetFullPath(@"D:\UnityProject\NBUnityProject\.utmp\NBFXMeshValidation-20261002\Assets")).IgnoreCase);
+            Assert.That(Application.isPlaying,Is.False);
+            for(int i=0;i<SceneManager.sceneCount;++i)
+                Assert.That((SceneManager.GetSceneAt(i).name+"/"+SceneManager.GetSceneAt(i).path).IndexOf("TAI",StringComparison.OrdinalIgnoreCase),Is.LessThan(0));
+            Assert.That(GraphicsSettings.GetRenderPipelineSettings<RenderGraphSettings>().enableRenderCompatibilityMode,Is.False);
+            var pipeline=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;Assert.That(pipeline,Is.Not.Null);
+            var data=pipeline.rendererDataList[0];var nb=data.rendererFeatures.FirstOrDefault(f=>f&&f.GetType().FullName=="NBShader.NBPostProcess");Assert.That(nb&&nb.isActive,Is.True);
+            var managerType=RuntimeType("NBShader.PostProcessingManager");var controllerType=RuntimeType("NBShader.PostProcessingController");
+            foreach(Type t in new[]{managerType,controllerType})
+                Assert.That(Resources.FindObjectsOfTypeAll(t).OfType<Component>().Any(c=>c&&c.gameObject.scene.IsValid()&&c.gameObject.scene.isLoaded),Is.False,"Do not alter user Manager/Controller components.");
+            string project=Path.GetDirectoryName(Application.dataPath);
+            string folder=Path.Combine(Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR")??Path.Combine(project,"Temp/NBFXNBPostFull"),reenableExisting?"mgr-reenable":"mgr-new");Directory.CreateDirectory(folder);
+            string rendererFile=Path.Combine(project,AssetDatabase.GetAssetPath(data)),pipelineFile=Path.Combine(project,AssetDatabase.GetAssetPath(pipeline));
+            byte[] rendererBefore=File.ReadAllBytes(rendererFile),pipelineBefore=File.ReadAllBytes(pipelineFile);string featureBefore=EditorJsonUtility.ToJson(nb);
+            var runtimePackage=UnityEditor.PackageManager.PackageInfo.FindForAssetPath(GraphPath).resolvedPath;
+            var record=new DisabledManagerEvidence{scope="Two real production Controller/Manager EditMode lifecycle cases with actual EditorApplication.update ticks and original NBPost rendering; no ABC/effect catalogue rerun, mock, synthetic callback invocation or singleton replacement.",project=project,unity=Application.unityVersion,api=SystemInfo.graphicsDeviceType.ToString(),managerSourceSHA256=SHA(Path.Combine(runtimePackage,"NBPostProcessing/Runtime/PostProcessingManager.cs")),controllerSourceSHA256=SHA(Path.Combine(runtimePackage,"NBPostProcessing/Runtime/PostProcessingController.cs")),testSourceSHA256=SHA(Path.Combine(runtimePackage,"Tests/URP/Editor/G4NBPostEffectsControllerTests.cs"))};
+            var states=new List<DisabledManagerState>();var payloads=new List<Color[]>();var previousRT=RenderTexture.active;
+            Scene scene=default;Camera camera=null;RenderTexture target=null;Material post=null,postSnapshot=null;Component manager=null;NBPostLifecyclePassObserver lifecycleObserver=null;
+            var controllers=new Component[2];var controllerGOs=new GameObject[2];Dictionary<FieldInfo,object> oldStatics=null;int ticks=0;
+            void Save(){record.states=states.ToArray();record.rawFrameCount=payloads.Count;record.finite=payloads.Count>0&&Finite(payloads);File.WriteAllText(Path.Combine(folder,"lifecycle.json"),JsonUtility.ToJson(record,true));}
+            try
+            {
+                scene=EditorSceneManager.NewPreviewScene();
+                var cameraGO=Keep(new GameObject("Owned disabled-manager camera"));SceneManager.MoveGameObjectToScene(cameraGO,scene);camera=cameraGO.AddComponent<Camera>();camera.scene=scene;
+                camera.orthographic=true;camera.orthographicSize=2;camera.nearClipPlane=.1f;camera.farClipPlane=20;camera.transform.position=new Vector3(0,0,8);camera.transform.rotation=Quaternion.Euler(0,180,0);camera.cullingMask=1<<Layer;camera.allowHDR=true;camera.allowMSAA=false;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.03f,.05f,.1f,1);
+                var cameraData=cameraGO.AddComponent<UniversalAdditionalCameraData>();cameraData.SetRenderer(0);cameraData.requiresColorTexture=true;cameraData.renderPostProcessing=false;
+                target=Keep(new RenderTexture(Size,Size,24,RenderTextureFormat.ARGBHalf,RenderTextureReadWrite.Linear));target.Create();Assert.That(target.IsCreated()&&!target.sRGB,Is.True);camera.targetTexture=target;
+                var read=Keep(new Texture2D(Size,Size,TextureFormat.RGBAHalf,false,true));
+                var gradient=Texture("Owned lifecycle gradient",64,(x,y)=>new Color(.08f+.8f*x/63,.1f+.7f*y/63,.15f+.55f*((x+2*y)%64)/63,1));
+                var bg=Keep(GameObject.CreatePrimitive(PrimitiveType.Quad));SceneManager.MoveGameObjectToScene(bg,scene);bg.layer=Layer;bg.transform.position=new Vector3(0,0,1);bg.transform.localScale=new Vector3(4,4,1);
+                var bgShader=Shader.Find("Universal Render Pipeline/Unlit");Assert.That(bgShader,Is.Not.Null);var bgMaterial=Keep(new Material(bgShader));bgMaterial.SetTexture("_BaseMap",gradient);bgMaterial.SetColor("_BaseColor",Color.white);bgMaterial.SetFloat("_Cull",0);bgMaterial.SetFloat("_ZWrite",1);bgMaterial.SetFloat("_Surface",0);bgMaterial.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");bg.GetComponent<MeshRenderer>().sharedMaterial=bgMaterial;bg.GetComponent<MeshRenderer>().shadowCastingMode=ShadowCastingMode.Off;
+                // Reuse the original catalogue's real Native deferred writer and
+                // caFromDistort input; a gradient alone is not its CA control.
+                var noise=Texture("Owned lifecycle constant noise",2,(x,y)=>new Color(.75f,.5f,0,1));
+                var mask=Texture("Owned lifecycle white mask",2,(x,y)=>Color.white);
+                var distortion=Keep(GameObject.CreatePrimitive(PrimitiveType.Quad));SceneManager.MoveGameObjectToScene(distortion,scene);distortion.layer=Layer;distortion.transform.position=new Vector3(-.25f,0,2);distortion.transform.localScale=new Vector3(2,2,1);
+                var distortionMaterial=Keep(new Material(AssetDatabase.LoadAssetAtPath<Shader>(Package+"NBShaders2/Shader/NBShader.shader")));
+                var configure=typeof(G4GraphScreenNoiseTests).GetMethod("Configure",BindingFlags.Static|BindingFlags.NonPublic);Assert.That(configure,Is.Not.Null);
+                configure.Invoke(null,new object[]{distortionMaterial,false,noise,mask,"NBDeferredDistortPass","noise-a-half"});distortionMaterial.SetFloat("_AlphaAll",.5f);distortionMaterial.SetFloat("_ScreenDistortIntensity",.35f);
+                distortion.GetComponent<MeshRenderer>().sharedMaterial=distortionMaterial;distortion.GetComponent<MeshRenderer>().shadowCastingMode=ShadowCastingMode.Off;distortion.GetComponent<MeshRenderer>().receiveShadows=false;
+                lifecycleObserver=Keep(ScriptableObject.CreateInstance<NBPostLifecyclePassObserver>());lifecycleObserver.hideFlags=HideFlags.HideAndDontSave;lifecycleObserver.targetCamera=camera;lifecycleObserver.Create();lifecycleObserver.SetActive(true);data.rendererFeatures.Add(lifecycleObserver);data.SetDirty();
+                for(int i=0;i<4;++i)camera.Render();
+                var postField=nb.GetType().GetField("NBPostProcessMaterial",PublicStatic);post=postField.GetValue(null)as Material;Assert.That(post&&!AssetDatabase.Contains(post),Is.True);postSnapshot=Keep(new Material(post));
+                oldStatics=managerType.GetFields(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Static).Where(f=>!f.IsLiteral&&!f.IsInitOnly).ToDictionary(f=>f,f=>f.GetValue(null));
+                void CreateController(int index)
+                {
+                    var go=Keep(new GameObject("Owned disabled-manager Controller "+index));go.SetActive(false);SceneManager.MoveGameObjectToScene(go,scene);controllerGOs[index]=go;controllers[index]=go.AddComponent(controllerType);
+                    foreach(string toggle in AllToggles)Field(controllers[index],toggle,false);
+                    Field(controllers[index],"chromaticAberrationToggle",true);Field(controllers[index],"caFromDistort",.7f);Field(controllers[index],"chromaticAberrationIntensity",index==0?.3f:.65f);Field(controllers[index],"chromaticAberrationPos",.08f);Field(controllers[index],"chromaticAberrationRange",1.2f);Field(controllers[index],"customScreenCenterPos",new Vector2(.37f,.61f));go.SetActive(true);
+                }
+                DisabledManagerState State(string phase)
+                {
+                    var s=new DisabledManagerState{phase=phase,cameraType=camera.cameraType.ToString(),managerEnabled=((Behaviour)manager).isActiveAndEnabled,editorTicks=ticks,managerCallbacks=OwnedEditorCallbackCount(manager,"EditorUpdate"),managerCallbackPosition=OwnedEditorCallbackPosition(manager,"EditorUpdate"),controller0Callbacks=OwnedEditorCallbackCount(controllers[0],"ControllerEditorUpdate"),controller1Callbacks=OwnedEditorCallbackCount(controllers[1],"ControllerEditorUpdate"),controller0Position=OwnedEditorCallbackPosition(controllers[0],"ControllerEditorUpdate"),controller1Position=OwnedEditorCallbackPosition(controllers[1],"ControllerEditorUpdate"),activeControllers=(int)managerType.GetField("_controllerIndexFlags",InstanceAny).GetValue(manager),caControllers=(int)Static(managerType,"chromaticAberrationToggles"),postFlags=post.GetInteger("_NBPostProcessFlags"),caIntensity=post.GetVector("_ChromaticAberrationVec").x};states.Add(s);Save();return s;
+                }
+                Color[] Snap(string label)
+                {
+                    for(int i=0;i<3;++i)camera.Render();
+                    File.WriteAllText(Path.Combine(folder,label+"-enqueue.json"),JsonUtility.ToJson(lifecycleObserver.observed,true));
+                    Assert.That(lifecycleObserver.observed.calls,Is.GreaterThan(0));
+                    foreach(string passName in new[]{"NBShader.RenderCameraOpaqueDistortObjectPass","NBShader.ScreenColorRenderPass","NBShader.DisturbanceMaskRenderPass","NBShader.NBPostProcessRenderPass"})Assert.That(lifecycleObserver.observed.passTypes,Does.Contain(passName),"Original NBPost AddRenderPasses must actually enqueue "+passName);
+                    Assert.That(postField.GetValue(null),Is.SameAs(post));
+                    var errors=ShaderUtil.GetShaderMessages(post.shader).Where(e=>e.severity.ToString()=="Error").Select(e=>e.message).ToArray();File.WriteAllLines(Path.Combine(folder,label+"-shader-errors.txt"),errors);Assert.That(errors,Is.Empty);
+                    RenderTexture.active=target;read.ReadPixels(new Rect(0,0,Size,Size),0,0,false);read.Apply(false,false);var px=read.GetPixels();RenderTexture.active=previousRT;
+                    using(var writer=new BinaryWriter(File.Create(Path.Combine(folder,label+".rgba32f"))))foreach(var p in px){writer.Write(p.r);writer.Write(p.g);writer.Write(p.b);writer.Write(p.a);}payloads.Add(px);Assert.That(Finite(new[]{px}),Is.True);Assert.That(Visible(px),Is.GreaterThan(150));Save();return px;
+                }
+                CreateController(0);manager=(Component)managerType.GetProperty("Instance",PublicStatic).GetValue(null);Assert.That(manager,Is.Not.Null);SceneManager.MoveGameObjectToScene(manager.gameObject,scene);
+                if(reenableExisting){CreateController(1);yield return WaitForActualEditorTicks(n=>ticks+=n);((Behaviour)controllers[1]).enabled=false;}
+                yield return WaitForActualEditorTicks(n=>ticks+=n);
+                int primaryIndex=Index(controllers[0]);var active=State("active primary");Assert.That(active.managerCallbacks,Is.EqualTo(1));Assert.That(active.postFlags&17,Is.EqualTo(17));Assert.That(active.caIntensity,Is.EqualTo(.3f));
+                var primaryOn=Snap("primary-on");((Behaviour)manager).enabled=false;State("manager disabled immediately before yielding");yield return WaitForActualEditorTicks(n=>ticks+=n);
+                var disabled=State("manager disabled before activation");Assert.That(disabled.managerCallbacks,Is.Zero);Assert.That(disabled.postFlags&17,Is.Zero);var off=Snap("disabled-before-activation");Assert.That(Delta(primaryOn,off),Is.GreaterThan(.01f));
+                if(reenableExisting)((Behaviour)controllers[1]).enabled=true;else CreateController(1);
+                State("Controller OnEnable while manager disabled, before real ticks");yield return WaitForActualEditorTicks(n=>ticks+=n);
+                var afterRegistration=State("Controller OnEnable while manager disabled, after real ticks");var disabledAfter=Snap("disabled-after-activation");record.disabledRegistrationResponse=Delta(off,disabledAfter);Save();
+                Assert.That(afterRegistration.managerCallbacks,Is.Zero,"Disabled Manager was re-registered by real Controller.OnEnable.");Assert.That(afterRegistration.controller0Callbacks,Is.EqualTo(1));Assert.That(afterRegistration.controller1Callbacks,Is.EqualTo(1));Assert.That(afterRegistration.postFlags&17,Is.Zero);Assert.That(record.disabledRegistrationResponse,Is.Zero);
+                int secondaryIndex=Index(controllers[1]);Assert.That(secondaryIndex,Is.InRange(0,30));Assert.That(secondaryIndex,Is.Not.EqualTo(primaryIndex));
+                ((Behaviour)manager).enabled=true;yield return WaitForActualEditorTicks(n=>ticks+=n);var resumed=State("manager reenabled with two Controllers");
+                Assert.That(resumed.managerCallbacks,Is.EqualTo(1));Assert.That(resumed.managerCallbackPosition,Is.GreaterThan(resumed.controller0Position).And.GreaterThan(resumed.controller1Position));Assert.That(resumed.activeControllers,Is.EqualTo((1<<primaryIndex)|(1<<secondaryIndex)));Assert.That(resumed.caControllers,Is.EqualTo(resumed.activeControllers));Assert.That(resumed.postFlags&17,Is.EqualTo(17));Assert.That(resumed.caIntensity,Is.EqualTo(.65f));
+                var on=Snap("manager-reenabled");record.reenabledResponse=Delta(off,on);record.reenabledRepeat=Delta(on,Snap("manager-reenabled-repeat"));Save();Assert.That(record.reenabledResponse,Is.GreaterThan(.01f));Assert.That(record.reenabledRepeat,Is.Zero);
+                ((Behaviour)manager).enabled=false;yield return WaitForActualEditorTicks(n=>ticks+=n);var stoppedAgain=State("manager disabled again");Assert.That(stoppedAgain.managerCallbacks,Is.Zero);Assert.That(stoppedAgain.postFlags&17,Is.Zero);Assert.That(Delta(off,Snap("manager-disabled-again")),Is.Zero);
+                ((Behaviour)manager).enabled=true;yield return WaitForActualEditorTicks(n=>ticks+=n);var resumedAgain=State("manager second reenable");Assert.That(resumedAgain.managerCallbacks,Is.EqualTo(1));record.secondReenableRepeat=Delta(on,Snap("manager-second-reenable"));Save();Assert.That(record.secondReenableRepeat,Is.Zero);
+                foreach(var go in controllerGOs)go.SetActive(false);yield return WaitForActualEditorTicks(n=>ticks+=n);var allOff=State("all Controllers disabled");Assert.That(allOff.activeControllers,Is.Zero);Assert.That(allOff.caControllers,Is.Zero);Assert.That(allOff.postFlags&17,Is.Zero);Assert.That(allOff.controller0Callbacks+allOff.controller1Callbacks,Is.Zero);record.finalCleanupResponse=Delta(off,Snap("all-controllers-off"));Save();Assert.That(record.finalCleanupResponse,Is.Zero);
+            }
+            finally
+            {
+                foreach(var go in controllerGOs)if(go)go.SetActive(false);
+                if(!manager&&oldStatics!=null)manager=managerType.GetField("_instance",BindingFlags.Static|BindingFlags.NonPublic).GetValue(null)as Component;
+                object managerReference=manager;object[] controllerReferences=controllers.Cast<object>().ToArray();
+                if(manager)Object.DestroyImmediate(manager.gameObject);
+                int callbacksAfterDestroy=OwnedEditorCallbackCount(managerReference,"EditorUpdate")+controllerReferences.Sum(c=>OwnedEditorCallbackCount(c,"ControllerEditorUpdate"));
+                if(oldStatics!=null)foreach(var kv in oldStatics)kv.Key.SetValue(null,kv.Value);
+                if(post&&postSnapshot)post.CopyPropertiesFromMaterial(postSnapshot);
+                if(camera)camera.targetTexture=null;RenderTexture.active=previousRT;if(target)target.Release();
+                if(lifecycleObserver){data.rendererFeatures.Remove(lifecycleObserver);data.SetDirty();}
+                for(int i=owned.Count-1;i>=0;--i)if(owned[i])Object.DestroyImmediate(owned[i]);owned.Clear();
+                if(scene.IsValid()&&scene.isLoaded)EditorSceneManager.ClosePreviewScene(scene);
+                record.componentReferencesDestroyed=!manager&&controllers.All(c=>!c);record.rendererBytesUnchanged=File.ReadAllBytes(rendererFile).SequenceEqual(rendererBefore);record.pipelineBytesUnchanged=File.ReadAllBytes(pipelineFile).SequenceEqual(pipelineBefore);record.cleanupRestored=callbacksAfterDestroy==0&&record.componentReferencesDestroyed&&record.rendererBytesUnchanged&&record.pipelineBytesUnchanged&&EditorJsonUtility.ToJson(nb)==featureBefore;Save();
+                Assert.That(record.cleanupRestored,Is.True,"Owned callbacks, components, feature settings or asset bytes were not restored.");
+            }
+        }
+
         static readonly string[] AllToggles={"chromaticAberrationToggle","distortSpeedToggle","radialBlurToggle","vignetteToggle","overlayTextureToggle","flashToggle"};
         static string[] ActiveToggles(string effect)
         {
@@ -325,5 +473,22 @@ namespace NBFX.Baseline.Tests
         }
 
         [Serializable] sealed class States {public State[] states;}
+    }
+
+    // Read-only, appended after the original features. It enqueues no pass and
+    // requests no render input; records only the original queue at AddRenderPasses.
+    public sealed class NBPostLifecyclePassObserver : ScriptableRendererFeature
+    {
+        [Serializable] public sealed class Observation {public int calls;public string cameraType;public string[] passTypes;}
+        public Camera targetCamera;public Observation observed=new Observation();
+        public override void Create(){}
+        public override void AddRenderPasses(ScriptableRenderer renderer,ref RenderingData data)
+        {
+            if(data.cameraData.camera!=targetCamera)return;
+            var field=typeof(ScriptableRenderer).GetField("m_ActiveRenderPassQueue",BindingFlags.Instance|BindingFlags.NonPublic);
+            Assert.That(field,Is.Not.Null);
+            var queue=(IEnumerable<ScriptableRenderPass>)field.GetValue(renderer);
+            observed.calls++;observed.cameraType=data.cameraData.cameraType.ToString();observed.passTypes=queue.Select(p=>p==null?"<null>":p.GetType().FullName).ToArray();
+        }
     }
 }

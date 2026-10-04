@@ -1,0 +1,77 @@
+{
+  "actualUniquePassed": 2,
+  "actualUniqueCases": 2,
+  "success": [
+    {
+      "case": "NBFX.Baseline.Tests.G4NBPostEffectsControllerTests.NBPostDisabledManager_NewController_EditorLifecycle",
+      "nativeResult": "f4-completed.json",
+      "lifecycle": "f4-lifecycle.json",
+      "rawHealth": "f4-raw-health.json",
+      "enqueueProof": "f4-enqueue.json",
+      "rawFrames": 8,
+      "reenabledResponse": 0.5501708984375,
+      "disabledRegistrationResponse": 0,
+      "repeatAndCleanupDelta": 0,
+      "cleanupRestored": true
+    },
+    {
+      "case": "NBFX.Baseline.Tests.G4NBPostEffectsControllerTests.NBPostDisabledManager_ReenabledController_EditorLifecycle",
+      "nativeResult": "f5-completed.json",
+      "lifecycle": "f5-lifecycle.json",
+      "rawHealth": "f5-raw-health.json",
+      "enqueueProof": "f5-enqueue.json",
+      "rawFrames": 8,
+      "reenabledResponse": 0.5501708984375,
+      "disabledRegistrationResponse": 0,
+      "repeatAndCleanupDelta": 0,
+      "cleanupRestored": true
+    }
+  ],
+  "baselineUniqueFailed": 2,
+  "baselineReceipts": [
+    "b2-completed.json",
+    "b3-completed.json"
+  ],
+  "fixtureFailureReceipts": [
+    "f1-completed.json",
+    "f2-completed.json",
+    "f3-completed.json"
+  ],
+  "old52Rerun": false,
+  "overlappingAttemptsAddedToPassCount": false,
+  "renderEnvironment": {
+    "unity": "6000.3.25f1",
+    "URP": "17.3.0",
+    "api": "Direct3D11",
+    "cameraDataType": "Game",
+    "originalNBPostPassesEnqueued": 4
+  },
+  "sourceCausality": [
+    "Before fix: disable immediately removes subscription and clears flags to0; after real editor ticks flags return17 while registration remains0. This is consistent with the current editor-update dispatch retaining a callback. Only Manager.LateUpdate writes the ON flag in this source.",
+    "EditorUpdate now checks isActiveAndEnabled before LateUpdate; ReRegistEditorUpdate removes any old registration and only adds when active/enabled. OnDisable ResetEffect retained.",
+    "Controller source and singleton/NBPost contracts are unchanged. Real OnEnable creates/re-enables owned Controllers; no production lifecycle callback is invoked manually."
+  ],
+  "fixtureInitialization": [
+    "Keep the original production NBPost feature, runtime Uber and Native NBDeferredDistortPass writer inputs (.7 caFromDistort), not a synthetic post effect.",
+    "Append a read-only observation feature after original features and use the existing harness data.SetDirty/warm-render initialization sequence. Observer only records actual queue; no ConfigureInput, render pass enqueue, draw or attachment writes.",
+    "In final successful renders CameraData.cameraType is Game and all four original NBPost passes are present. The exact reason the earlier simplified initialization produced zero response was not isolated independently from this restoration of the original initialization sequence.",
+    "Original >.01 strong response and all lifecycle/repeat/cleanup assertions retained; added only input-method and original-pass presence checks."
+  ],
+  "restoration": {
+    "project": true,
+    "pid": true,
+    "unity": true,
+    "api": true,
+    "scenes": true,
+    "oldEvidenceDir": true,
+    "pipelinePath": true,
+    "rendererPath": true,
+    "features": true
+  },
+  "rawFrameCount": 16,
+  "copiedLargeRawFiles": 0,
+  "scopeLimits": [
+    "Only two new editor lifecycle identities, CA representative, Manager component enabled toggling. Not the full52 effect catalogue rerun, Player, inactive GameObject variant or full Gate.",
+    "SSAO8 independent Lit control had actor disabled; actor-on nearby-Lit ABC plus extraDN0 interaction remains separately pending and was not expanded in this lease."
+  ]
+}

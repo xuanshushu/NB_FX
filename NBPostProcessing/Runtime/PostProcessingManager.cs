@@ -700,7 +700,7 @@ namespace NBShader
 #if UNITY_EDITOR
         void EditorUpdate()
         {
-            if (!Application.isPlaying)
+            if (isActiveAndEnabled && !Application.isPlaying)
             {
                 LateUpdate(); //每帧Update会导致SceneView闪
             }
@@ -709,7 +709,8 @@ namespace NBShader
         public void ReRegistEditorUpdate()
         {
             EditorApplication.update -= EditorUpdate;
-            EditorApplication.update += EditorUpdate;
+            if (isActiveAndEnabled)
+                EditorApplication.update += EditorUpdate;
         }
 #endif
 
