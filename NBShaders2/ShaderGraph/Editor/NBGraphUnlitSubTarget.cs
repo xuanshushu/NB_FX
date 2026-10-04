@@ -186,7 +186,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             {
                 RenderState.Blend(Blend.SrcAlpha, Blend.OneMinusSrcAlpha),
                 RenderState.Cull("[_Cull]"),
-                RenderState.ZTest("[_ZTest]"),
+                WithNBZOffset(RenderState.ZTest("[_ZTest]")),
                 RenderState.ZWrite("Off"),
                 NBStencilState(),
                 RenderState.ColorMask("ColorMask [_ColorMask]")
@@ -239,11 +239,25 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             var states = new RenderStateCollection();
             if (original != null)
                 foreach (var item in original)
-                    states.Add(item.descriptor, item.fieldConditions);
+                    states.Add(colorMask && item.descriptor.type == RenderStateType.ZTest
+                        ? WithNBZOffset(item.descriptor) : item.descriptor, item.fieldConditions);
             states.Add(NBStencilState());
             if (colorMask)
                 states.Add(RenderState.ColorMask("ColorMask [_ColorMask]"));
             return states;
+        }
+
+        // SG 17.3 has no Offset descriptor type. Preserve the real ZTest
+        // descriptor and its conditions; append one ShaderLab Offset command.
+        // Only existing color-pass call sites reach this helper.
+        static RenderStateDescriptor WithNBZOffset(RenderStateDescriptor descriptor)
+        {
+            if (descriptor.type != RenderStateType.ZTest ||
+                !descriptor.value.StartsWith("ZTest ", StringComparison.Ordinal) ||
+                descriptor.value.IndexOf("Offset", StringComparison.OrdinalIgnoreCase) >= 0)
+                throw new InvalidOperationException("NB FX Graph: expected one original ZTest state for color Offset.");
+            descriptor.value += "\nOffset [_offsetFactor], [_offsetUnits]";
+            return descriptor;
         }
 
         static RenderStateDescriptor NBStencilState() => RenderState.Stencil(
@@ -273,6 +287,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             Builtin().CollectShaderProperties(collector, mode);
             // ShaderLab render-state substitutions need material properties, not
             // duplicate HLSL uniforms. Match the old names/defaults exactly.
+            collector.AddFloatProperty("_offsetFactor", 0.0f);
+            collector.AddFloatProperty("_offsetUnits", 0.0f);
             collector.AddFloatProperty("_ColorMask", 15.0f);
             collector.AddFloatProperty("_Stencil", 0.0f);
             collector.AddFloatProperty("_StencilComp", 8.0f);
