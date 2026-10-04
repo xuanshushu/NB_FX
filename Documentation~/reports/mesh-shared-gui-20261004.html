@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>2026-10-04 共享 GUI 切片</title></head><body>
+<p><a href="index.html">报告索引</a></p>
+<h1>共享 Light / Flipbook / Context GUI：主包集成检查点</h1>
+<p>源码提交 <code>15dbf5bf19745b64c983bc14406c9628ffb05df4</code>。环境：Unity 6000.3.25f1，URP/ShaderGraph 17.3.0，Windows Direct3D11。完整共享 GUI/Tier 与 G3/G4 仍待完成，正式 VFX 尚未启动。</p>
+<p>本片复用原有控件、Resolver 与 VAT/Flipbook 互斥；六个 Editor 文件和当前 Graph 的一个隐藏 Light 折叠 Float 已集成。Graph 从当前中央源动态追加，属性315→316，既有对象、接线、Target、算法和关键字轴保留。另纳入六个测试源/元数据文件。<a href="mesh-shared-gui-20261004/source-installation.json">精确安装及源码记录</a>。</p>
+<table border="1" cellpadding="6"><tr><th>证据</th><th>真实结果</th><th>边界</th></tr>
+<tr><td><a href="mesh-shared-gui-20261004/gui-contract110.json">GUI 既有合同</a></td><td>110/110，54.15秒</td><td>原有存储、主纹理及标志同步；不是全部共享GUI/Tier</td></tr>
+<tr><td><a href="mesh-shared-gui-20261004/toggle-v2-2.json">实际开关点击与 Undo/Redo V2</a></td><td>2/2，8.96秒</td><td>以实际声明的keyword基线验收；旧错误夹具失败保留</td></tr>
+<tr><td><a href="mesh-shared-gui-20261004/mesh45-summary.json">Mesh副作用</a></td><td>45/45，三个串行批次约65秒</td><td>基础2、两NB Pass13、ColorMask/Stencil30；不是完整Mesh回归</td></tr>
+<tr><td><a href="mesh-shared-gui-20261004/main-actual-readback.json">实际主工程读回</a></td><td>新GUI方法/V2测试已编译；隐藏Float默认0；Shader Error0/Warning16</td><td>主工程为源/导入读回，实际绘制结果来自隔离工程</td></tr></table>
+<p>上述是各自限定范围，不与旧重叠批次相加。Pipeline返回的实际completed JSON为原生结果，未伪造XML。</p>
+<p><strong>保留失败与人工待验：</strong>原生Light弹出菜单first0/first4的真实交互仍待人工验收。旧first0在原生菜单中等待，核对PID/启动时间/工程后取消菜单，原测试返回<a href="mesh-shared-gui-20261004/popup-original-after-cancel.json">Failed</a>；取消不是通过。原timeout、断言失败、微差与首帧记录均保留。</p>
+<p>Graph导入命令曾达到Pipeline五秒超时，后续实际读回已确认成功，未通过反复导入掩盖原记录。原始日志和captures继续保存在本机隔离证据目录；本报告只归档必要小回执，见<a href="mesh-shared-gui-20261004/provenance.json">来源及SHA清单</a>。</p>
+<p>下一片：在当前Graph上继续MainTex/UV共享控件与Tier；独立验证ZOffset/BackFirst高级状态。默认DepthNormals/SSAO、完整后处理、组合、Player、变体和性能仍未闭合。人工验收节点仍为G4候选冻结，之后才审核Gate并推进正式VFX。</p>
+</body></html>
