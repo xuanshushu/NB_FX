@@ -109,6 +109,7 @@ namespace NBShader
             // 注册编辑器帧更新事件
             EditorApplication.update -= EditorUpdate;
 #endif
+            ResetEffect();
             flags.ClearFlagBits(NBPostProcessFlags.FLAG_BIT_NB_POSTPROCESS_ON);
         }
 
