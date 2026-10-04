@@ -18,6 +18,7 @@ namespace NBShaderEditor
         private readonly GUIStyle _labelStyle;
         private readonly ShaderGUIFoldOutHelper _foldOutHelper;
         private readonly bool _graphMainTexUVEdit;
+        private readonly bool _taDepthEdit;
 
         public PropertyToggleBlockItem(
             NBShaderRootItem rootItem,
@@ -31,10 +32,11 @@ namespace NBShaderEditor
             string shaderPassName = null,
             Action<bool> onValueChanged = null,
             Func<bool> isVisible = null,
-            bool bold = false, bool graphMainTexUVEdit = false) : base(rootItem, parentItem)
+            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
             _graphMainTexUVEdit = graphMainTexUVEdit;
+            _taDepthEdit = taDepthEdit;
             PropertyName = togglePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _flagBits = flagBits;
@@ -68,9 +70,13 @@ namespace NBShaderEditor
             MaterialProperty property = PropertyInfo.Property;
 
             bool enabled = property.floatValue > 0.5f;
+            bool displayMixed = property.hasMixedValue;
+            bool graphZEnabled, graphZMixed;
+            if (TryGetGraphZOffsetDisplay(out graphZEnabled, out graphZMixed))
+            { enabled = graphZEnabled; displayMixed = graphZMixed; }
             using (ParentControlDisabledScope())
             {
-                EditorGUI.showMixedValue = property.hasMixedValue;
+                EditorGUI.showMixedValue = displayMixed;
                 EditorGUI.BeginChangeCheck();
                 bool animatedScope = BeginAnimatedPropertyBackground(ControlRect, property);
                 using (new EditorGUIIndentLevelScope(0))
@@ -81,7 +87,9 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if (_graphMainTexUVEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
+                    if (_taDepthEdit && RootItem is NBShaderRootItem taRoot && taRoot.Context.IsGraphMaterialHost)
+                        taRoot.SyncService.TryApplyGraphTADepthToggle(PropertyName, enabled);
+                    else if (_graphMainTexUVEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
                         graphRoot.SyncService.TryApplyGraphMainTexUVToggle(_flagBits, enabled);
                     else
                     {
@@ -105,7 +113,9 @@ namespace NBShaderEditor
             if (_foldOutHelper.BeginFadeGroup())
             {
                 EditorGUI.indentLevel++;
-                using (new InheritedControlDisabledScope(property.hasMixedValue || property.floatValue <= 0.5f))
+                bool childrenDisabled = property.hasMixedValue || property.floatValue <= 0.5f;
+                if (TryGetGraphZOffsetDisplay(out graphZEnabled, out graphZMixed)) childrenDisabled = graphZMixed || !graphZEnabled;
+                using (new InheritedControlDisabledScope(childrenDisabled))
                 {
                     DrawBlock();
                 }
@@ -115,8 +125,34 @@ namespace NBShaderEditor
             _foldOutHelper.EndFadedGroup();
         }
 
+        // Graph's old materials have no saved UI toggle, but Offset already
+        // consumes factor/units. Present that state without migrating it.
+        // Native keeps its original toggle-only display semantics.
+        private bool TryGetGraphZOffsetDisplay(out bool enabled, out bool mixed)
+        {
+            enabled = mixed = false;
+            if (!_taDepthEdit || PropertyName != "_ZOffset_Toggle" ||
+                !(RootItem is NBShaderRootItem root) || !root.Context.IsGraphMaterialHost) return false;
+            bool first = true;
+            foreach (Material material in root.Mats)
+            {
+                bool current = material.GetFloat("_ZOffset_Toggle") > 0.5f ||
+                    material.GetFloat("_offsetFactor") != 0f || material.GetFloat("_offsetUnits") != 0f;
+                if (first) { enabled = current; first = false; }
+                else mixed |= enabled != current;
+            }
+            return true;
+        }
+
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if (_taDepthEdit && RootItem is NBShaderRootItem taRoot && taRoot.Context.IsGraphMaterialHost)
+            {
+                taRoot.SyncService.TryResetGraphTADepth(PropertyName);
+                foreach (var child in ChildrenItemList) child.CheckIsPropertyModified();
+                CheckIsPropertyModified();
+                return;
+            }
             if (_graphMainTexUVEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
             {
                 graphRoot.SyncService.TryRunGraphMainTexReset(() => base.ExecuteReset(isCallByParent), false, _flagBits);

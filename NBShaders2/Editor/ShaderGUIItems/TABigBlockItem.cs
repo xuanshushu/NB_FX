@@ -20,6 +20,47 @@ namespace NBShaderEditor
 
         private static readonly string[] RgbaMaskOptions = { "R", "G", "B", "A" };
 
+        internal static BigBlockItem CreateGraphDepthOnlyBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        {
+            var block = new BigBlockItem(rootItem, parentItem, "_TABigBlockItemFoldOut",
+                () => Content("block.ta", "TA Debug", "Technical artist debug and helper controls"));
+            CreateZOffsetBlock(rootItem, block);
+            CreateOverrideZBlock(rootItem, block);
+            return block;
+        }
+
+        private static PropertyToggleBlockItem CreateZOffsetBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        {
+            var block = new PropertyToggleBlockItem(rootItem, parentItem, "_ZOffsetBlockFoldOut", "_ZOffset_Toggle",
+                () => Content("ta.zoffset", "Z Offset"),
+                onValueChanged: enabled => { foreach (Material material in rootItem.Mats) ApplyZOffsetState(material, enabled); },
+                isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True, bold: true, taDepthEdit: true);
+            AddFloat(rootItem, block, "_offsetFactor", "Offset Factor");
+            AddFloat(rootItem, block, "_offsetUnits", "Offset Units");
+            return block;
+        }
+
+        private static PropertyToggleBlockItem CreateOverrideZBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        {
+            var block = new PropertyToggleBlockItem(rootItem, parentItem, "_OverrideZBlockFoldOut", "_OverrideZ_Toggle",
+                () => Content("ta.overrideZ", "Override Z"), keyword: "_OVERRIDE_Z",
+                isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True, bold: true, taDepthEdit: true);
+            AddFloat(rootItem, block, "_OverrideZValue", "Override Z Value");
+            return block;
+        }
+
+        // The existing UI contract: disabled clears both real Offset parameters.
+        // The UI toggle itself is not a render-state or Tier gate.
+        internal static bool ApplyZOffsetState(Material material, bool enabled)
+        {
+            if (enabled || material == null) return false;
+            bool changed = false;
+            foreach (string name in new[] { "_offsetFactor", "_offsetUnits" })
+                if (material.HasProperty(name) && material.GetFloat(name) != 0f)
+                { material.SetFloat(name, 0f); changed = true; }
+            return changed;
+        }
+
         public TABigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(
                 rootItem,
@@ -29,28 +70,8 @@ namespace NBShaderEditor
         {
             _nbRootItem = rootItem;
 
-            _zOffsetBlock = new PropertyToggleBlockItem(
-                rootItem,
-                this,
-                "_ZOffsetBlockFoldOut",
-                "_ZOffset_Toggle",
-                () => Content("ta.zoffset", "Z Offset"),
-                onValueChanged: OnZOffsetChanged,
-                isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True,
-                bold: true);
-            AddFloat(rootItem, _zOffsetBlock, "_offsetFactor", "Offset Factor");
-            AddFloat(rootItem, _zOffsetBlock, "_offsetUnits", "Offset Units");
-
-            _overrideZBlock = new PropertyToggleBlockItem(
-                rootItem,
-                this,
-                "_OverrideZBlockFoldOut",
-                "_OverrideZ_Toggle",
-                () => Content("ta.overrideZ", "Override Z"),
-                keyword: "_OVERRIDE_Z",
-                isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True,
-                bold: true);
-            AddFloat(rootItem, _overrideZBlock, "_OverrideZValue", "Override Z Value");
+            _zOffsetBlock = CreateZOffsetBlock(rootItem, this);
+            _overrideZBlock = CreateOverrideZBlock(rootItem, this);
 
             _renderQueueItem = new RenderQueueItem(
                 rootItem,
@@ -110,17 +131,6 @@ namespace NBShaderEditor
             }
         }
 
-        private void OnZOffsetChanged(bool enabled)
-        {
-            if (enabled)
-            {
-                return;
-            }
-
-            SetFloat("_offsetFactor", 0f);
-            SetFloat("_offsetUnits", 0f);
-        }
-
         private void OnCustomStencilChanged(bool enabled)
         {
             if (enabled)
@@ -129,18 +139,6 @@ namespace NBShaderEditor
             }
 
             _nbRootItem.SyncService.ApplyStencilPreset("ParticleBaseDefault");
-        }
-
-        private void SetFloat(string propertyName, float value)
-        {
-            for (int i = 0; i < _nbRootItem.Mats.Count; i++)
-            {
-                Material mat = _nbRootItem.Mats[i];
-                if (mat != null && mat.HasProperty(propertyName))
-                {
-                    mat.SetFloat(propertyName, value);
-                }
-            }
         }
 
         private static int GetBaseRenderQueue(Material mat)

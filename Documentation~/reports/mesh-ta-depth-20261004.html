@@ -1,0 +1,14 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>Mesh TA Depth：共享控件与 Tier</title><style>body{font:16px/1.65 system-ui,sans-serif;max-width:1000px;margin:40px auto;padding:0 24px;color:#233047}h1{font-size:28px}table{border-collapse:collapse;width:100%;margin:20px 0}th,td{border:1px solid #ccd5df;padding:10px;text-align:left}th{background:#eef3f8}code{background:#f2f4f7;padding:2px 5px}a{color:#175bbb}.note{border-left:4px solid #3d6dad;padding-left:16px}</style></head><body>
+<p><a href="index.html">报告索引</a></p><h1>Mesh TA Depth：共享 ZOffset / Override Z</h1>
+<p>本片把原 TABigBlock 的两项深度控件接入普通 Mesh Graph。ZOffset 沿用关闭时清零 factor/units 的行为；Graph 只读显示 <code>toggle OR 非零 Offset</code>，旧材质无需自动迁移。Override Z 通过已有 Tier 策略控制真实 <code>_OVERRIDE_Z</code> keyword，最后 Sync 不再绕过过滤重新开启 SV_Depth 变体。</p>
+<p>缺 Tier 的旧 Graph 保留原能力；raw-new marker0 仍可 Validate。非法 Tier/schema 不获本片写权限。未新增 OVZ float gate、keyword、HLSL 或 pass；保留 Fresnel 第九 gate、半字修复及 DN/BackFirst 配置。<a href="mesh-ta-depth-20261004/source-epoch.json">验证源与集成边界</a>。</p>
+<table><thead><tr><th>限定范围</th><th>实际结果</th></tr></thead><tbody>
+<tr><td>共享 GUI / 生命周期 7 项</td><td>7 Passed：实际点击、有效 mixed、多材料 Undo/Redo、原 Tier 回调、最终 Sync/Assign、非法 schema、Reset 与 Material 保存重导入。</td></tr>
+<tr><td>正交 / 透视实际深度 2 项</td><td>2 Passed：ABC/repeat/显式 keyword 参考差异均为 0；现配置 Tier0 响应 0，Tier3 响应 1；最小可见像素 4624 / 1764。</td></tr>
+<tr><td>原生结果与 raw</td><td>9 Passed / 0 Failed；58 份 96×96 RGBA-f32 gzip 全部 finite、无 CD 污染。<a href="mesh-ta-depth-20261004/summary.json">逐例 completed 引用</a> · <a href="mesh-ta-depth-20261004/raw-references.json">原 raw 位置与 SHA</a>。</td></tr>
+<tr><td>恢复</td><td>同一空场景 2 roots / dirty=false；证据环境变量恢复；源码与 Tier 配置字节未变；shader error0。<a href="mesh-ta-depth-20261004/restoration.json">只读回执</a>。</td></tr>
+</tbody></table>
+<p>环境为 Unity 6000.3.25f1 / Direct3D11。原 ZOffset12 与 OVZ24 源码、断言未改；后续在 TA12 + GraphWriter fd88 源组合已复测：ZOffset12 为12P、OVZ24 为24P，原断言未改；444份 raw 健康，AB/BC/repeat全0。该36项是原有影响回归，不加作新功能数量。详见 <a href="mesh-ta-depth-20261004/impact36/summary.json">原36项结果</a>。原 OVZ24 中 8 项是 Validate 后显式覆写 keyword 的渲染权威对照，不能充当 GUI Tier 过滤结论。</p>
+<p class="note">此结果对应 TA12 安装及 Fresnel 源 epoch，后续独立 GraphWriter 修复不能据此声称已重跑 TA9。原生 Tier popup 选择仍待手验；此轮覆盖原菜单回调，没有主动触发完整 scripting-domain reload，也没有注入意外 post-preflight 失败。其余 TA 项、非零 Offset+OVZ 组合、完整 NBPost、VFX、Player、性能及完整 Gate 均未据此放行。</p>
+<p><a href="mesh-ta-depth-20261004/failure-classification.json">旧编译/导入异常与边界分类</a>：早期离线 NUnit attribute 错误和 Root 导入的 5 秒 CLI 超时均保留，未记作产品失败或测试通过。</p>
+<p>本片已逐SHA集成主包，中央Graph只追加4个UI Float0。独立结构审核确认旧1626对象（除根属性列表附加）完整保留、节点/边/Target/keyword不变。主工程实际编译与读回完成，9个既有gate仍在、四UI字段为0、OVZ声明存在、raw-new Tier投影与实际keyword一致、默认DN pass仍缺省关闭、Shader Error0。<a href="mesh-ta-depth-20261004/main-ta12-actual-readback-v2-20261004.json">实际读回</a>。</p></body></html>

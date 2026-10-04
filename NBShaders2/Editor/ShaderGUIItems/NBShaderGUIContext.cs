@@ -63,9 +63,20 @@ namespace NBShaderEditor
 
         public bool IsKeywordAllowed(string keyword)
         {
-            // GUI1A has no effective Graph Tier projection. Do not falsely
-            // gate existing native Graph inputs via an unimplemented Tier.
-            if (IsGraphMaterialHost) return true;
+            // Only shared OVZ owns a real Graph Tier keyword here. Other
+            // feature visibility retains its existing fallback behavior.
+            if (IsGraphMaterialHost)
+            {
+                if (keyword != "_OVERRIDE_Z") return true;
+                bool anyAllowed = false;
+                foreach (Material material in _rootItem.Mats)
+                {
+                    bool effective, allowed;
+                    if (!NBShaderFeatureLevelMaterialApplier.TryReadGraphOverrideDepthState(material, out effective, out allowed)) return false;
+                    anyAllowed |= allowed;
+                }
+                return anyAllowed; // Mixed tiers edit shared intent; each target keeps its own policy.
+            }
             if (!NBShaderFeatureCatalog.IsManagedKeyword(keyword))
             {
                 return true;

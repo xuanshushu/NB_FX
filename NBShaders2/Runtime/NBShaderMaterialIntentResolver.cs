@@ -108,6 +108,28 @@ namespace NBShader
                 passIntents);
         }
 
+        // OVZ consumes a real local keyword (SV_Depth signature), not a float gate.
+        // Raw-new marker0 and legacy Graphs without a marker remain supported.
+        // Unknown markers/types/NaNs decline ownership; no seed or packed write.
+        internal static bool TryResolveGraphOverrideDepthIntent(Material material,
+            IEnumerable<string> allowedManagedKeywords, out bool effective)
+        {
+            effective = false;
+            foreach (string property in new[] { "_NB_DistortionMode", "_NB_Flags0Lo16", "_NB_Flags0Hi16",
+                "_NB_Flags1Lo16", "_NB_Flags1Hi16", "_OverrideZ_Toggle", "_OverrideZValue" })
+                if (!HasFiniteFloatShaderProperty(material, property)) return false;
+            if (material.HasProperty("_NB_GraphGUIStateVersion") &&
+                !HasGraphEnumValue(material, "_NB_GraphGUIStateVersion", 2)) return false;
+            var intended = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var binding in ToggleKeywordBindings)
+                if (binding.keyword == "_OVERRIDE_Z" && material.GetFloat(binding.propertyName) > 0.5f)
+                    AddManagedKeyword(intended, binding.keyword);
+            var filtered = FilterAllowedKeywords(intended, BuildAllowedKeywordSet(allowedManagedKeywords));
+            ApplyKeywordDependencies(filtered);
+            effective = filtered.Contains("_OVERRIDE_Z");
+            return true;
+        }
+
         public static bool TryResolveGraphNoisePair(Material material,
             IEnumerable<string> allowedManagedKeywords,
             out bool noiseEffective, out bool noiseMaskEffective)

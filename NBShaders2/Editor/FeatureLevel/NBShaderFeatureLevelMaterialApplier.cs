@@ -8,7 +8,7 @@ namespace NBShaders2.Editor.FeatureLevel
     {
         private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
 
-        // Existing persisted Tier contract, registered Graph consumers only.
+        // Existing persisted Tier contract: registered float consumers and declared OVZ keyword.
         internal static readonly string[] GraphSupportedGateProperties = {
             "_NB_TierAllowMask", "_NB_TierAllowMask2", "_NB_TierAllowMask3",
             "_NB_TierAllowNoise", "_NB_TierAllowNoiseMask",
@@ -18,6 +18,41 @@ namespace NBShaders2.Editor.FeatureLevel
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
             "_PROGRAM_NOISE", "_PROGRAM_NOISE_SIMPLE", "_PROGRAM_NOISE_VORONOI", "_FRESNEL"
         };
+
+        internal const string GraphOverrideDepthKeyword = "_OVERRIDE_Z";
+
+        internal static bool HasGraphOverrideDepthKeyword(Material material)
+            => material != null && material.shader != null &&
+                material.shader.keywordSpace.FindKeyword(GraphOverrideDepthKeyword).isValid;
+
+        // Missing Tier is the old unfiltered capability, not an invented saved Tier.
+        // A present but non-Float/noncanonical Tier grants no write permission.
+        internal static bool TryReadGraphOverrideDepthState(Material material,
+            out bool effective, out bool allowedByTier)
+        {
+            effective = allowedByTier = false;
+            if (!HasGraphOverrideDepthKeyword(material)) return false;
+            IEnumerable<string> allowed = NBShaderFeatureCatalog.RawKeywords;
+            if (material.HasProperty(FeatureTierPropertyName))
+            {
+                if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, FeatureTierPropertyName)) return false;
+                float saved = material.GetFloat(FeatureTierPropertyName);
+                if (float.IsNaN(saved) || float.IsInfinity(saved) || saved < 0 || saved > 3 || saved != Mathf.Round(saved)) return false;
+                allowed = NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave((NBShaderFeatureTier)(int)saved);
+            }
+            if (!NBShaderMaterialIntentResolver.TryResolveGraphOverrideDepthIntent(material, allowed, out effective)) return false;
+            foreach (string keyword in allowed) if (keyword == GraphOverrideDepthKeyword) { allowedByTier = true; break; }
+            return true;
+        }
+
+        internal static bool ApplyGraphSavedOverrideDepth(Material material, out bool changed)
+        {
+            changed = false;
+            bool effective, allowed;
+            if (!TryReadGraphOverrideDepthState(material, out effective, out allowed)) return false;
+            changed = SetKeyword(material, GraphOverrideDepthKeyword, effective);
+            return true;
+        }
 
         static bool TryReadGraphSupportedGateTier(Material material, NBShaderFeatureTier tier,
             IEnumerable<string> allowedManagedKeywords, out NBShaderMaterialIntentResult intent)
@@ -47,6 +82,14 @@ namespace NBShaders2.Editor.FeatureLevel
             var effective = new HashSet<string>(intent.effectiveKeywords);
             for (int i = 0; i < GraphSupportedGateProperties.Length; ++i)
                 wouldChange |= material.GetFloat(GraphSupportedGateProperties[i]) != (effective.Contains(GraphSupportedGateKeywords[i]) ? 1f : 0f);
+            // Older graphs may omit the declared keyword; never invent one.
+            if (HasGraphOverrideDepthKeyword(material))
+            {
+                bool overrideDepth;
+                var allowed = allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+                if (!NBShaderMaterialIntentResolver.TryResolveGraphOverrideDepthIntent(material, allowed, out overrideDepth)) return false;
+                wouldChange |= material.IsKeywordEnabled(GraphOverrideDepthKeyword) != overrideDepth;
+            }
             return true;
         }
 
@@ -68,6 +111,12 @@ namespace NBShaders2.Editor.FeatureLevel
             changed |= groupChanged;
             if (!ApplyGraphFresnelGroup(material, tier, allowed, out groupChanged)) return false;
             changed |= groupChanged;
+            if (HasGraphOverrideDepthKeyword(material))
+            {
+                bool effective;
+                if (!NBShaderMaterialIntentResolver.TryResolveGraphOverrideDepthIntent(material, allowed, out effective)) return false;
+                changed |= SetKeyword(material, GraphOverrideDepthKeyword, effective);
+            }
             return true;
         }
 

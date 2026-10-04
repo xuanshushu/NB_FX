@@ -125,7 +125,7 @@ namespace NBShaderEditor
         }
 
 
-        // Original Tier selection transaction; only implemented Graph gates.
+        // Original Tier transaction; registered gates and declared OVZ keyword.
 
         // Explicit first-schema initialization only. Ordinary Prepare/Sync
         // remains seed-only; a ready marker2 inspector never projects on paint.
@@ -165,15 +165,17 @@ namespace NBShaderEditor
             if (initialize == null) return true;
 
             // Exact owned float before-images: original29 mirrors + marker
-            // and newly owned8 gates. Raw words/keywords/passes are never written.
+            // and registered gates plus OVZ keyword. Raw words/other keywords/passes are never written.
             var ownedNames = new List<string> { GraphGUIStateVersionProperty };
             foreach (var binding in ToggleFlagBindings) ownedNames.Add(binding.propertyName);
             foreach (var binding in ModeFlagBindings) ownedNames.Add(binding.propertyName);
             ownedNames.AddRange(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties);
+            var originalOverrideDepth = new bool[initialize.Count];
             var originals = new float[initialize.Count][];
             var targets = new UnityEngine.Object[initialize.Count];
             for (int i = 0; i < initialize.Count; ++i)
             {
+                originalOverrideDepth[i] = initialize[i].IsKeywordEnabled("_OVERRIDE_Z");
                 targets[i] = initialize[i]; originals[i] = new float[ownedNames.Count];
                 for (int field = 0; field < ownedNames.Count; ++field) originals[i][field] = initialize[i].GetFloat(ownedNames[field]);
             }
@@ -186,7 +188,10 @@ namespace NBShaderEditor
                 // Unexpected failure after a pure probe: restore only the
                 // owned initialization fields for every new target.
                 for (int i = 0; i < initialize.Count; ++i)
+                {
                     for (int field = 0; field < ownedNames.Count; ++field) initialize[i].SetFloat(ownedNames[field], originals[i][field]);
+                    RestoreGraphOverrideDepthKeyword(initialize[i], originalOverrideDepth[i]);
+                }
                 return false;
             }
             foreach (Material material in initialize) EditorUtility.SetDirty(material);
@@ -236,9 +241,11 @@ namespace NBShaderEditor
             if (!anyChange) return true;
             var objects = new List<UnityEngine.Object>();
             foreach (Material material in _rootItem.Mats) objects.Add(material);
+            var originalOverrideDepth = new bool[_rootItem.Mats.Count];
             var originalGates = new float[_rootItem.Mats.Count][];
             for (int i = 0; i < _rootItem.Mats.Count; ++i)
             {
+                originalOverrideDepth[i] = _rootItem.Mats[i].IsKeywordEnabled("_OVERRIDE_Z");
                 originalGates[i] = new float[NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties.Length];
                 for (int gate = 0; gate < originalGates[i].Length; ++gate)
                     originalGates[i][gate] = _rootItem.Mats[i].GetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties[gate]);
@@ -249,11 +256,14 @@ namespace NBShaderEditor
             {
                 if (NBShaderFeatureLevelMaterialApplier.ApplyGraphSupportedGateTier(_rootItem.Mats[i], tier, allowed, out changedMaterials[i])) continue;
                 // Reader is pure and gates are not its inputs, so this is an
-                // unexpected post-preflight failure. Roll back the owned eight
-                // values for every target before any Tier value is committed.
+                // unexpected post-preflight failure. Roll back registered gates and
+                // the exact OVZ keyword before any Tier value is committed.
                 for (int restore = 0; restore < _rootItem.Mats.Count; ++restore)
+                {
                     for (int gate = 0; gate < originalGates[restore].Length; ++gate)
                         _rootItem.Mats[restore].SetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties[gate], originalGates[restore][gate]);
+                    RestoreGraphOverrideDepthKeyword(_rootItem.Mats[restore], originalOverrideDepth[restore]);
+                }
                 return false;
             }
             for (int i = 0; i < _rootItem.Mats.Count; ++i)
@@ -267,6 +277,76 @@ namespace NBShaderEditor
             _rootItem.Context?.Refresh();
             return true;
         }
+
+        private static void RestoreGraphOverrideDepthKeyword(Material material, bool enabled)
+        {
+            // Exact transaction rollback, deliberately not a policy projection.
+            if (material.IsKeywordEnabled("_OVERRIDE_Z") == enabled) return;
+            if (enabled) material.EnableKeyword("_OVERRIDE_Z"); else material.DisableKeyword("_OVERRIDE_Z");
+        }
+
+        internal static readonly string[] GraphTADepthProperties = {
+            "_TABigBlockItemFoldOut", "_ZOffsetBlockFoldOut", "_OverrideZBlockFoldOut",
+            "_ZOffset_Toggle", "_offsetFactor", "_offsetUnits", "_OverrideZ_Toggle", "_OverrideZValue"
+        };
+
+        internal bool HasGraphTADepthEditSchema()
+        {
+            if (_rootItem.MatEditor == null || !HasGraphMainTexFields(GraphTADepthProperties, Array.Empty<string>())) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                bool effective, allowed;
+                if (!NBShaderFeatureLevelMaterialApplier.TryReadGraphOverrideDepthState(material, out effective, out allowed)) return false;
+            }
+            return true;
+        }
+
+        private bool RunGraphTADepthEdit(string property, bool? enabled)
+        {
+            if ((property != "_ZOffset_Toggle" && property != "_OverrideZ_Toggle") || !HasGraphTADepthEditSchema()) return false;
+            string[] names = property == "_ZOffset_Toggle"
+                ? new[] { property, "_offsetFactor", "_offsetUnits" } : new[] { property, "_OverrideZValue" };
+            // Preflight actual defaults for all targets before recording/writing anything.
+            if (!enabled.HasValue)
+                foreach (Material material in _rootItem.Mats)
+                    foreach (string name in names)
+                    {
+                        float value = material.shader.GetPropertyDefaultFloatValue(material.shader.FindPropertyIndex(name));
+                        if (float.IsNaN(value) || float.IsInfinity(value)) return false;
+                    }
+            var objects = new UnityEngine.Object[_rootItem.Mats.Count];
+            for (int i = 0; i < objects.Length; ++i) objects[i] = _rootItem.Mats[i];
+            Undo.RecordObjects(objects, enabled.HasValue ? "Set TA Depth Control" : "Reset TA Depth Control");
+            foreach (Material material in _rootItem.Mats)
+            {
+                bool changed = false;
+                if (enabled.HasValue)
+                {
+                    float value = enabled.Value ? 1f : 0f;
+                    if (material.GetFloat(property) != value) { material.SetFloat(property, value); changed = true; }
+                }
+                else foreach (string name in names)
+                {
+                    float value = material.shader.GetPropertyDefaultFloatValue(material.shader.FindPropertyIndex(name));
+                    if (material.GetFloat(name) != value) { material.SetFloat(name, value); changed = true; }
+                }
+                if (property == "_ZOffset_Toggle") changed |= TABigBlockItem.ApplyZOffsetState(material, material.GetFloat(property) > 0.5f);
+                else
+                {
+                    bool keywordChanged;
+                    NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedOverrideDepth(material, out keywordChanged);
+                    changed |= keywordChanged;
+                    if (keywordChanged) NotifyKeywordsMayHaveChanged();
+                }
+                if (changed) EditorUtility.SetDirty(material);
+            }
+            RefreshGraphMainTexPropertyReferences();
+            _rootItem.Context?.Refresh();
+            return true;
+        }
+
+        internal bool TryApplyGraphTADepthToggle(string property, bool enabled) => RunGraphTADepthEdit(property, enabled);
+        internal bool TryResetGraphTADepth(string property) => RunGraphTADepthEdit(property, null);
 
         public void NotifyKeywordsMayHaveChanged()
         {

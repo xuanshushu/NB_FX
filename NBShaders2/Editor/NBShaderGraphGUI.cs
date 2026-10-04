@@ -80,8 +80,9 @@ namespace NBShaderEditor
         internal static void SyncSixWayKeywords(Material material)
         {
             if (material == null) return;
-            if (material.HasProperty("_OverrideZ_Toggle"))
-                SetExistingKeyword(material, "_OVERRIDE_Z", material.GetFloat("_OverrideZ_Toggle") > 0.5f);
+            // Same authority as Tier transactions: final sync cannot reopen a filtered SV_Depth variant.
+            bool overrideDepthChanged;
+            NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedOverrideDepth(material, out overrideDepthChanged);
             SetExistingKeyword(material, "_SPECULAR_COLOR",
                 material.HasProperty("_BlinnPhongSpecularToggle") && material.GetFloat("_BlinnPhongSpecularToggle") > 0.5f);
             NBShader.NBShaderMaterialIntentResult debugIntent;

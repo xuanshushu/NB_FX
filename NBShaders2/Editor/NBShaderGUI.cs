@@ -68,6 +68,8 @@ namespace NBShaderEditor
         FlipbookFeatureItem _graphFlipbookItem;
         bool _sharedGraphFresnelReady;
         FresnelFeatureItem _graphFresnelItem;
+        bool _sharedGraphTADepthReady;
+        BigBlockItem _graphTADepthBlock;
         bool _sharedGraphLightModeReady;
         BigBlockItem _graphLightModeBlock;
         static readonly string[] SharedGraphLightModeProperties = { "_FxLightMode", "_LightBigBlockItemFoldOut" };
@@ -97,6 +99,8 @@ namespace NBShaderEditor
         public System.Collections.Generic.IEnumerable<string> GetSharedGraphPropertyNames()
         {
             var names = new System.Collections.Generic.List<string>();
+            if (Context != null && Context.IsGraphMaterialHost && _sharedGraphTADepthReady)
+                names.AddRange(NBShaderSyncService.GraphTADepthProperties);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphMainTextureReady)
                 names.AddRange(SharedGraphMainTextureProperties);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphLightModeReady)
@@ -180,6 +184,17 @@ namespace NBShaderEditor
             return true;
         }
 
+        internal bool InitializeGraphTADepthInputs()
+        {
+            Context ??= new NBShaderGUIContext(this);
+            SyncService ??= new NBShaderSyncService(this);
+            Context.Refresh();
+            _sharedGraphTADepthReady = Context.IsGraphMaterialHost && SyncService.HasGraphTADepthEditSchema();
+            if (!_sharedGraphTADepthReady) return false;
+            _graphTADepthBlock ??= TABigBlockItem.CreateGraphDepthOnlyBlock(this, null);
+            return true;
+        }
+
         internal bool InitializeGraphFlipbookInputs()
         {
             Context ??= new NBShaderGUIContext(this);
@@ -214,6 +229,7 @@ namespace NBShaderEditor
                     _graphFresnelItem = null;
                     _sharedGraphFresnelReady = false;
                     _graphLightModeBlock = null;
+                    _graphTADepthBlock = null;
                     _toolBar = null;
                     _modeBlock = null;
                     _baseBlock = null;
@@ -229,6 +245,7 @@ namespace NBShaderEditor
                 if (InitializeGraphLightModeInputs())
                     _graphLightModeBlock.OnGUI();
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
+                if (InitializeGraphTADepthInputs()) _graphTADepthBlock.OnGUI();
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
