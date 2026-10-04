@@ -115,7 +115,7 @@ namespace NBShaderEditor
                 _baseMapRelatedFoldOutItem,
                 NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_BASEMAP);
 
-            if (!graphHost)
+            if (!graphHost || rootItem.Context.CanEditGraphMainTexUV)
             {
                 _uvModeItem = new UVModeSelectItem(
                     rootItem,
@@ -127,8 +127,11 @@ namespace NBShaderEditor
                         "inspector.maintex.uvmode.label",
                         "Main Texture UV Source"),
                     forceEnable: true,
-                    isVisible: () => rootItem.Context.MeshSourceMode != MeshSourceMode.UIEffectSprite);
-
+                    isVisible: () => rootItem.Context.MeshSourceMode != MeshSourceMode.UIEffectSprite,
+                    graphMainTexProtocolEdit: graphHost);
+            }
+            if (!graphHost || rootItem.Context.CanEditGraphMainTexCustomData)
+            {
                 _offsetXCustomDataItem = new CustomDataSelectItem(
                     rootItem,
                     _baseMapRelatedFoldOutItem,
@@ -137,7 +140,8 @@ namespace NBShaderEditor
                     () => NBShaderInspectorLocalization.MakeContent(
                         "inspector.maintex.customdata.offsetx.label",
                         "Main Texture Offset X Custom Data"),
-                    () => rootItem.Context.ParticleMode == MixedBool.True);
+                    () => graphHost ? rootItem.Context.CanEditGraphMainTexCustomData : rootItem.Context.ParticleMode == MixedBool.True,
+                    graphMainTexOffset: graphHost);
 
                 _offsetYCustomDataItem = new CustomDataSelectItem(
                     rootItem,
@@ -147,8 +151,8 @@ namespace NBShaderEditor
                     () => NBShaderInspectorLocalization.MakeContent(
                         "inspector.maintex.customdata.offsety.label",
                         "Main Texture Offset Y Custom Data"),
-                    () => rootItem.Context.ParticleMode == MixedBool.True);
-
+                    () => graphHost ? rootItem.Context.CanEditGraphMainTexCustomData : rootItem.Context.ParticleMode == MixedBool.True,
+                    graphMainTexOffset: graphHost);
             }
 
             _baseMapOffsetSpeedItem = new Vector2LineItem(
@@ -210,6 +214,16 @@ namespace NBShaderEditor
             }
 
             InitTriggerByChild();
+        }
+
+        public override void ExecuteReset(bool isCallByParent = false)
+        {
+            if (_nbRootItem.Context.IsGraphMaterialHost)
+            {
+                _nbRootItem.SyncService.TryRunGraphMainTexReset(() => base.ExecuteReset(isCallByParent), true);
+                return;
+            }
+            base.ExecuteReset(isCallByParent);
         }
 
         public override void DrawBlock()

@@ -139,6 +139,9 @@ namespace NBShaderEditor
             return NBShaderFeatureCatalog.IsManagedKeyword(keyword);
         }
 
+        public bool CanEditGraphMainTexUV => IsGraphMaterialHost && _rootItem.SyncService != null && _rootItem.SyncService.HasGraphMainTexUVEditSchema();
+        public bool CanEditGraphMainTexCustomData => IsGraphMaterialHost && _rootItem.SyncService != null && _rootItem.SyncService.HasGraphMainTexCustomDataEditSchema();
+
         public bool HasProperty(string propertyName)
         {
             return _rootItem.PropertyInfoDic.ContainsKey(propertyName);

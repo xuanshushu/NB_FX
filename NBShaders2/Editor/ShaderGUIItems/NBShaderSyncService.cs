@@ -175,6 +175,221 @@ namespace NBShaderEditor
             }
         }
 
+        // Explicit ordinary-Graph MainTex protocol edits; general projection guards stay intact.
+        private bool HasGraphMainTexTargets()
+        {
+            if (_rootItem.Mats == null || _rootItem.Mats.Count == 0 || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                if (!NBShaderGUIContext.IsGraphMaterial(material)) return false;
+                foreach (string name in new[] { "_NB_DistortionMode", "_NB_Flags0Lo16", "_NB_Flags0Hi16", "_NB_Flags1Lo16", "_NB_Flags1Hi16" })
+                {
+                    if (!NBShaderRootItem.HasFloatProperty(material, name)) return false;
+                    float value = material.GetFloat(name);
+                    if (float.IsNaN(value) || float.IsInfinity(value)) return false;
+                }
+            }
+            return true;
+        }
+
+        private bool HasGraphMainTexFields(string[] floats, string[] vectors)
+        {
+            if (!HasGraphMainTexTargets()) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                foreach (string name in floats)
+                {
+                    if (!NBShaderRootItem.HasFloatProperty(material, name) || !_rootItem.PropertyInfoDic.ContainsKey(name)) return false;
+                    float value = material.GetFloat(name);
+                    if (float.IsNaN(value) || float.IsInfinity(value)) return false;
+                }
+                foreach (string name in vectors)
+                {
+                    if (!_rootItem.PropertyInfoDic.ContainsKey(name)) return false;
+                    int index = material.shader.FindPropertyIndex(name);
+                    if (index < 0 || material.shader.GetPropertyType(index) != UnityEngine.Rendering.ShaderPropertyType.Vector) return false;
+                    Vector4 value = material.GetVector(name);
+                    for (int channel = 0; channel < 4; ++channel)
+                        if (float.IsNaN(value[channel]) || float.IsInfinity(value[channel])) return false;
+                }
+            }
+            return true;
+        }
+
+        internal bool HasGraphMainTexCustomDataEditSchema()
+            => HasGraphMainTexFields(new[] { "_NB_CustomDataFlag0Lo16", "_NB_CustomDataFlag0Hi16" }, Array.Empty<string>());
+
+        internal bool HasGraphMainTexUVEditSchema()
+            => HasGraphMainTexFields(new[] {
+                "_MainTexUVModeFoldOut", "_GlobalTwirlFoldOut", "_GlobalPolarFoldOut",
+                "_NB_UVModeFlag0Lo16", "_NB_UVModeFlag0Hi16", "_NB_UVModeFlagType0Lo16", "_NB_UVModeFlagType0Hi16",
+                "_NB_Flags0Lo16", "_NB_Flags0Hi16", "_NB_Flags1Lo16", "_NB_Flags1Hi16",
+                "_UTwirlEnabled", "_PolarCoordinatesEnabled", "_TWStrength", "_WorldSpaceUVModeSelector", "_ObjectSpaceUVModeSelector"
+            }, new[] { "_TWParameter", "_PCCenter", "_CylinderUVRotate", "_CylinderUVPosOffset",
+                "_CylinderMatrix0", "_CylinderMatrix1", "_CylinderMatrix2", "_CylinderMatrix3" });
+
+        private static int ReadGraphHalf(Material material, string name)
+            => Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(name), 0f, 65535f));
+
+        private static bool WriteGraphHalfSlice(Material material, string name, int mask, int value)
+        {
+            int before = ReadGraphHalf(material, name);
+            int after = (before & ~mask) | (value & mask);
+            if (before == after) return false; // Preserve a finite noncanonical raw half on a decoded no-op.
+            material.SetFloat(name, after);
+            NotifyGraphPackedFlagsEdited(material, name, mask);
+            return true;
+        }
+
+        private void RefreshGraphMainTexPropertyReferences()
+        {
+            if (_rootItem.MatEditor == null) return;
+            foreach (MaterialProperty property in MaterialEditor.GetMaterialProperties(_rootItem.MatEditor.targets))
+                if (_rootItem.PropertyInfoDic.TryGetValue(property.name, out ShaderPropertyInfo info)) info.Property = property;
+        }
+
+        private bool RunGraphMainTexEdit(string label, Func<Material, bool> edit)
+        {
+            if (!HasGraphMainTexTargets()) return false;
+            var objects = new List<UnityEngine.Object>();
+            foreach (Material material in _rootItem.Mats) objects.Add(material);
+            Undo.RecordObjects(objects.ToArray(), label);
+            foreach (Material material in _rootItem.Mats)
+                if (edit(material)) EditorUtility.SetDirty(material);
+            RefreshGraphMainTexPropertyReferences();
+            return true;
+        }
+
+        private static bool UpdateGraphMainTexUVDerived(Material material)
+        {
+            var flags = new NBShaderFlags(material);
+            bool changed = WriteGraphHalfSlice(material, "_NB_Flags1Hi16", 16,
+                flags.CheckIsUVModeOn(NBShaderFlags.UVMode.Cylinder) ? 16 : 0);
+            if (!flags.CheckIsUVModeOn(NBShaderFlags.UVMode.SpecialUVChannel))
+                changed |= WriteGraphHalfSlice(material, "_NB_Flags1Hi16", 12, 0);
+            return changed;
+        }
+
+        internal bool TryApplyGraphMainTexUVMode(NBShaderFlags.UVMode mode, bool setFoldFromPopup = false)
+        {
+            if (!HasGraphMainTexUVEditSchema() || (int)mode < 0 || (int)mode > 8) return false;
+            return RunGraphMainTexEdit("Main Texture UV Source", material => {
+                bool changed = WriteGraphHalfSlice(material, "_NB_UVModeFlag0Lo16", 3, (int)mode & 3);
+                changed |= WriteGraphHalfSlice(material, "_NB_UVModeFlagType0Lo16", 3, (int)mode / 4);
+                if (setFoldFromPopup)
+                {
+                    float fold = mode == NBShaderFlags.UVMode.DefaultUVChannel || mode == NBShaderFlags.UVMode.CommonUV ||
+                        mode == NBShaderFlags.UVMode.ScreenUV || mode == NBShaderFlags.UVMode.MainTex ? 0f : 1f;
+                    if (material.GetFloat("_MainTexUVModeFoldOut") != fold) { material.SetFloat("_MainTexUVModeFoldOut", fold); changed = true; }
+                }
+                return UpdateGraphMainTexUVDerived(material) | changed;
+            });
+        }
+
+        internal bool TryApplyGraphMainTexCustomData(int position, NBShaderFlags.CutomDataComponent component)
+        {
+            if (!HasGraphMainTexCustomDataEditSchema() || (position != 0 && position != 4) || (int)component < 0 || (int)component > 8) return false;
+            // Same public protocol constants/enum as NBShaderFlags.SetCustomDataFlag; no new meaning.
+            int[] values = { 0, NBShaderFlags.CustomData1XBit, NBShaderFlags.CustomData1YBit,
+                NBShaderFlags.CustomData1ZBit, NBShaderFlags.CustomData1WBit, NBShaderFlags.CustomData2XBit,
+                NBShaderFlags.CustomData2YBit, NBShaderFlags.CustomData2ZBit, NBShaderFlags.CustomData2WBit };
+            return RunGraphMainTexEdit("Main Texture Offset Custom Data", material =>
+                WriteGraphHalfSlice(material, "_NB_CustomDataFlag0Lo16", 15 << position, values[(int)component] << position));
+        }
+
+        internal bool TryApplyGraphMainTexSpecialUV(int channel)
+        {
+            if (!HasGraphMainTexUVEditSchema() || channel < 0 || channel > 1) return false;
+            return RunGraphMainTexEdit("Special UV Channel", material =>
+                WriteGraphHalfSlice(material, "_NB_Flags1Hi16", 12, channel == 0 ? 4 : 8));
+        }
+
+        internal bool TryApplyGraphMainTexUVToggle(int bit, bool enabled)
+        {
+            if (!HasGraphMainTexUVEditSchema() || (bit != NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON && bit != NBShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON)) return false;
+            string property = bit == NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON ? "_UTwirlEnabled" : "_PolarCoordinatesEnabled";
+            return RunGraphMainTexEdit("Main Texture UV Transform", material => {
+                bool changed = material.GetFloat(property) != (enabled ? 1f : 0f);
+                if (changed) material.SetFloat(property, enabled ? 1f : 0f);
+                return WriteGraphHalfSlice(material, "_NB_Flags0Lo16", bit, enabled ? bit : 0) | changed;
+            });
+        }
+
+        internal bool TryApplyGraphMainTexPlane(string property, int plane)
+        {
+            if (!HasGraphMainTexUVEditSchema() || plane < 0 || plane > 2 ||
+                (property != "_WorldSpaceUVModeSelector" && property != "_ObjectSpaceUVModeSelector")) return false;
+            return RunGraphMainTexEdit("Coordinate Plane", material => {
+                if (material.GetFloat(property) == plane) return false;
+                material.SetFloat(property, plane); return true;
+            });
+        }
+
+        internal bool TryApplyGraphMainTexCylinderComponent(string property, int component, float value)
+        {
+            if (!HasGraphMainTexUVEditSchema() || component < 0 || component > 2 || float.IsNaN(value) || float.IsInfinity(value) ||
+                (property != "_CylinderUVRotate" && property != "_CylinderUVPosOffset")) return false;
+            return RunGraphMainTexEdit("Cylinder UV", material => {
+                Vector4 vector = material.GetVector(property);
+                if (vector[component] == value) return false;
+                vector[component] = value; material.SetVector(property, vector);
+                Vector4 rotation = material.GetVector("_CylinderUVRotate"), offset = material.GetVector("_CylinderUVPosOffset");
+                Matrix4x4 matrix = Matrix4x4.Translate(new Vector3(offset.x, offset.y, offset.z)) *
+                    Matrix4x4.Rotate(Quaternion.Euler(new Vector3(rotation.x, rotation.y, rotation.z)));
+                for (int row = 0; row < 4; ++row) material.SetVector("_CylinderMatrix" + row, matrix.GetRow(row));
+                return true;
+            });
+        }
+
+        // Wrap original reset, including descendants, before any MaterialProperty setter runs.
+        // Restore unowned raw halves and unowned decoded bits rather than normalize the whole word.
+        internal bool TryRunGraphMainTexReset(Action reset, bool wholeBlock, int flags0Bits = 0)
+        {
+            if (!HasGraphMainTexTargets() || (!wholeBlock && !HasGraphMainTexUVEditSchema())) return false;
+            string[] names = { "_NB_Flags0Lo16", "_NB_Flags0Hi16", "_NB_Flags1Lo16", "_NB_Flags1Hi16",
+                "_NB_UVModeFlag0Lo16", "_NB_UVModeFlag0Hi16", "_NB_UVModeFlagType0Lo16", "_NB_UVModeFlagType0Hi16",
+                "_NB_CustomDataFlag0Lo16", "_NB_CustomDataFlag0Hi16", "_NB_WrapFlagsLo16", "_NB_WrapFlagsHi16",
+                "_NB_ColorChannelLo16", "_NB_ColorChannelHi16", "_NB_ForceNoMipFlagsLo16", "_NB_ForceNoMipFlagsHi16" };
+            var before = new List<Dictionary<string, float>>(); var snapshots = new List<string>();
+            var objects = new List<UnityEngine.Object>();
+            foreach (Material material in _rootItem.Mats)
+            {
+                var values = new Dictionary<string, float>();
+                foreach (string name in names) if (material.HasProperty(name)) values.Add(name, material.GetFloat(name));
+                before.Add(values); snapshots.Add(EditorJsonUtility.ToJson(material)); objects.Add(material);
+            }
+            Undo.RecordObjects(objects.ToArray(), "Reset Main Texture");
+            reset();
+            for (int index = 0; index < _rootItem.Mats.Count; ++index)
+            {
+                Material material = _rootItem.Mats[index];
+                if (wholeBlock && HasGraphMainTexUVEditSchema()) UpdateGraphMainTexUVDerived(material);
+                if (!wholeBlock && flags0Bits != 0)
+                {
+                    string property = flags0Bits == NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON ? "_UTwirlEnabled" : "_PolarCoordinatesEnabled";
+                    WriteGraphHalfSlice(material, "_NB_Flags0Lo16", flags0Bits, material.GetFloat(property) > .5f ? flags0Bits : 0);
+                }
+                foreach (var pair in before[index])
+                {
+                    int mask = 0;
+                    if (pair.Key == "_NB_Flags0Lo16") mask = flags0Bits;
+                    if (wholeBlock)
+                    {
+                        if (pair.Key == "_NB_Flags1Hi16") mask = 28;
+                        else if (pair.Key == "_NB_UVModeFlag0Lo16" || pair.Key == "_NB_UVModeFlagType0Lo16" || pair.Key == "_NB_ColorChannelLo16") mask = 3;
+                        else if (pair.Key == "_NB_CustomDataFlag0Lo16") mask = 255;
+                        else if (pair.Key == "_NB_WrapFlagsLo16" || pair.Key == "_NB_WrapFlagsHi16" || pair.Key == "_NB_ForceNoMipFlagsLo16") mask = 1;
+                    }
+                    int previous = Mathf.RoundToInt(Mathf.Clamp(pair.Value, 0f, 65535f));
+                    int merged = (ReadGraphHalf(material, pair.Key) & mask) | (previous & ~mask);
+                    float value = merged == previous ? pair.Value : merged;
+                    if (material.GetFloat(pair.Key) != value) material.SetFloat(pair.Key, value);
+                }
+                if (EditorJsonUtility.ToJson(material) != snapshots[index]) EditorUtility.SetDirty(material);
+            }
+            RefreshGraphMainTexPropertyReferences(); return true;
+        }
+
         internal const string GraphGUIStateVersionProperty = "_NB_GraphGUIStateVersion";
 
         // GUI1B candidate: serialized UI mirrors of the EXISTING flag protocol.

@@ -100,6 +100,7 @@ namespace NBShaderEditor
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphLightModeReady)
                 names.AddRange(SharedGraphLightModeProperties);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphFlipbookReady) names.Add("_FlipbookBlending");
+            if (Context != null && _sharedGraphMainTextureReady && Context.CanEditGraphMainTexUV) names.AddRange(new[] { "_UTwirlEnabled", "_PolarCoordinatesEnabled", "_TWParameter", "_TWStrength", "_PCCenter", "_CylinderUVRotate", "_CylinderUVPosOffset", "_WorldSpaceUVModeSelector", "_ObjectSpaceUVModeSelector" });
             return names;
         }
 

@@ -17,6 +17,7 @@ namespace NBShaderEditor
         private readonly Func<bool> _isVisible;
         private readonly GUIStyle _labelStyle;
         private readonly ShaderGUIFoldOutHelper _foldOutHelper;
+        private readonly bool _graphMainTexUVEdit;
 
         public PropertyToggleBlockItem(
             NBShaderRootItem rootItem,
@@ -30,9 +31,10 @@ namespace NBShaderEditor
             string shaderPassName = null,
             Action<bool> onValueChanged = null,
             Func<bool> isVisible = null,
-            bool bold = false) : base(rootItem, parentItem)
+            bool bold = false, bool graphMainTexUVEdit = false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
+            _graphMainTexUVEdit = graphMainTexUVEdit;
             PropertyName = togglePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _flagBits = flagBits;
@@ -79,8 +81,13 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    property.floatValue = enabled ? 1f : 0f;
-                    ApplySideEffects(enabled);
+                    if (_graphMainTexUVEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
+                        graphRoot.SyncService.TryApplyGraphMainTexUVToggle(_flagBits, enabled);
+                    else
+                    {
+                        property.floatValue = enabled ? 1f : 0f;
+                        ApplySideEffects(enabled);
+                    }
                     OnEndChange();
                 }
             }
@@ -110,6 +117,11 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if (_graphMainTexUVEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
+            {
+                graphRoot.SyncService.TryRunGraphMainTexReset(() => base.ExecuteReset(isCallByParent), false, _flagBits);
+                return;
+            }
             base.ExecuteReset(isCallByParent);
             ApplySideEffects(PropertyInfo.Property.floatValue > 0.5f);
         }
@@ -380,6 +392,7 @@ namespace NBShaderEditor
         private readonly Func<GUIContent> _contentProvider;
         private readonly int _dataBitPos;
         private readonly int _dataIndex;
+        private readonly bool _graphMainTexOffset;
         private readonly Func<bool> _isVisible;
 
         public CustomDataSelectItem(
@@ -388,10 +401,11 @@ namespace NBShaderEditor
             int dataBitPos,
             int dataIndex,
             Func<GUIContent> contentProvider,
-            Func<bool> isVisible = null) : base(rootItem, parentItem)
+            Func<bool> isVisible = null, bool graphMainTexOffset = false) : base(rootItem, parentItem)
         {
             _dataBitPos = dataBitPos;
             _dataIndex = dataIndex;
+            _graphMainTexOffset = graphMainTexOffset;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
             GuiContent = _contentProvider();
@@ -429,7 +443,7 @@ namespace NBShaderEditor
                 {
                     SetComponent((NBShaderFlags.CutomDataComponent)index);
                     CheckIsPropertyModified();
-                    if (RootItem is NBShaderRootItem nbRootItem)
+                    if (!_graphMainTexOffset && RootItem is NBShaderRootItem nbRootItem)
                     {
                         nbRootItem.SyncService.SyncMaterialState();
                     }
@@ -449,7 +463,7 @@ namespace NBShaderEditor
         public override void ExecuteReset(bool isCallByParent = false)
         {
             SetComponent(NBShaderFlags.CutomDataComponent.Off);
-            if (RootItem is NBShaderRootItem nbRootItem)
+            if (!_graphMainTexOffset && RootItem is NBShaderRootItem nbRootItem)
             {
                 nbRootItem.SyncService.SyncMaterialState();
             }
@@ -485,6 +499,11 @@ namespace NBShaderEditor
 
         private void SetComponent(NBShaderFlags.CutomDataComponent component)
         {
+            if (_graphMainTexOffset && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
+            {
+                graphRoot.SyncService.TryApplyGraphMainTexCustomData(_dataBitPos, component);
+                return;
+            }
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
             {
                 GetFlags(i)?.SetCustomDataFlag(component, _dataBitPos, _dataIndex);
@@ -916,6 +935,7 @@ namespace NBShaderEditor
         private readonly int _uvModeFlagIndex;
         private readonly string _texturePropertyName;
         private readonly bool _forceEnable;
+        private readonly bool _graphMainTexProtocolEdit;
         private readonly Func<bool> _isVisible;
         private readonly ShaderGUIFoldOutHelper _foldOutHelper;
 
@@ -940,7 +960,7 @@ namespace NBShaderEditor
             Func<GUIContent> contentProvider,
             string texturePropertyName = null,
             bool forceEnable = false,
-            Func<bool> isVisible = null) : base(rootItem, parentItem)
+            Func<bool> isVisible = null, bool graphMainTexProtocolEdit = false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
             _uvModeBitPos = uvModeBitPos;
@@ -948,6 +968,7 @@ namespace NBShaderEditor
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _texturePropertyName = texturePropertyName;
             _forceEnable = forceEnable;
+            _graphMainTexProtocolEdit = graphMainTexProtocolEdit;
             _isVisible = isVisible;
             _foldOutHelper = new ShaderGUIFoldOutHelper(rootItem, foldOutPropertyName);
             GuiContent = _contentProvider();
@@ -960,7 +981,7 @@ namespace NBShaderEditor
                 "_UTwirlEnabled",
                 () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.twirl", "Twirl"),
                 NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON,
-                0);
+                0, graphMainTexUVEdit: graphMainTexProtocolEdit);
             _twirlCenterItem = new Vector2LineItem(rootItem, _twirlBlock, "_TWParameter", true, () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.twirlCenter", "Twirl Center"));
             _twirlStrengthItem = new ShaderGUIFloatItem(rootItem, _twirlBlock)
             {
@@ -976,27 +997,27 @@ namespace NBShaderEditor
                 "_PolarCoordinatesEnabled",
                 () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.polar", "Polar Coordinates"),
                 NBShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON,
-                0);
+                0, graphMainTexUVEdit: graphMainTexProtocolEdit);
             _polarCenterItem = new Vector2LineItem(rootItem, _polarBlock, "_PCCenter", true, () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.polarCenter", "Polar Center"));
             _polarStrengthItem = new VectorComponentItem(rootItem, _polarBlock, "_PCCenter", 2, () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.polarStrength", "Polar Strength"), true, 0f, 1f);
 
-            _cylinderRotateItem = new Vector3Item(rootItem, this, "_CylinderUVRotate", () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.cylinderRotate", "Cylinder Rotation"), _ => UpdateCylinderMatrix(rootItem));
-            _cylinderOffsetItem = new Vector3Item(rootItem, this, "_CylinderUVPosOffset", () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.cylinderOffset", "Cylinder Offset"), _ => UpdateCylinderMatrix(rootItem));
+            _cylinderRotateItem = graphMainTexProtocolEdit
+                ? new GraphMainTexCylinderItem(rootItem, this, "_CylinderUVRotate", () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.cylinderRotate", "Cylinder Rotation"))
+                : new Vector3Item(rootItem, this, "_CylinderUVRotate", () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.cylinderRotate", "Cylinder Rotation"), _ => UpdateCylinderMatrix(rootItem));
+            _cylinderOffsetItem = graphMainTexProtocolEdit
+                ? new GraphMainTexCylinderItem(rootItem, this, "_CylinderUVPosOffset", () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.cylinderOffset", "Cylinder Offset"))
+                : new Vector3Item(rootItem, this, "_CylinderUVPosOffset", () => NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.cylinderOffset", "Cylinder Offset"), _ => UpdateCylinderMatrix(rootItem));
 
-            _worldSpaceItem = new ShaderGUIPopUpItem(rootItem, this)
-            {
-                PropertyName = "_WorldSpaceUVModeSelector",
-                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane"),
-                PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames)
-            };
+            _worldSpaceItem = (graphMainTexProtocolEdit ? new GraphMainTexPlaneItem(rootItem, this) : new ShaderGUIPopUpItem(rootItem, this));
+            _worldSpaceItem.PropertyName = "_WorldSpaceUVModeSelector";
+            _worldSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
+            _worldSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
             _worldSpaceItem.InitTriggerByChild();
 
-            _objectSpaceItem = new ShaderGUIPopUpItem(rootItem, this)
-            {
-                PropertyName = "_ObjectSpaceUVModeSelector",
-                GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane"),
-                PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames)
-            };
+            _objectSpaceItem = (graphMainTexProtocolEdit ? new GraphMainTexPlaneItem(rootItem, this) : new ShaderGUIPopUpItem(rootItem, this));
+            _objectSpaceItem.PropertyName = "_ObjectSpaceUVModeSelector";
+            _objectSpaceItem.GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.coordinatePlane", "Coordinate Plane");
+            _objectSpaceItem.PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.positionPlane", PosUVModeNames);
             _objectSpaceItem.InitTriggerByChild();
 
             CheckIsPropertyModified();
@@ -1033,8 +1054,7 @@ namespace NBShaderEditor
                 if (EditorGUI.EndChangeCheck())
                 {
                     mode = (NBShaderFlags.UVMode)index;
-                    SetMode(mode);
-                    _foldOutHelper.SetOpen(NeedsFoldOut(mode));
+                    if (SetMode(mode, true)) _foldOutHelper.SetOpen(NeedsFoldOut(mode));
                     CheckIsPropertyModified();
                 }
 
@@ -1181,12 +1201,15 @@ namespace NBShaderEditor
             return false;
         }
 
-        private void SetMode(NBShaderFlags.UVMode mode)
+        private bool SetMode(NBShaderFlags.UVMode mode, bool setFoldFromPopup = false)
         {
+            if (_graphMainTexProtocolEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
+                return graphRoot.SyncService.TryApplyGraphMainTexUVMode(mode, setFoldFromPopup);
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
             {
                 GetFlags(i)?.SetUVMode(mode, _uvModeBitPos, _uvModeFlagIndex);
             }
+                    return true;
         }
 
         private NBShaderFlags GetFlags(int index)
@@ -1224,26 +1247,59 @@ namespace NBShaderEditor
 
         private class SpecialUVChannelModeItem : ShaderGUIPopUpItem
         {
+            private bool GraphHost => (RootItem as NBShaderRootItem)?.Context.IsGraphMaterialHost == true;
             public SpecialUVChannelModeItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
             {
-                PropertyName = "_SpecialUVChannelMode";
                 GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("protocol.uv.specialChannel", "Special UV Channel");
                 PopUpNames = NBShaderInspectorLocalization.GetInspectorOptions("protocol.uv.specialChannel", SpecialUVChannelNames);
-                InitTriggerByChild();
+                PropertyName = GraphHost ? null : "_SpecialUVChannelMode";
+                if (GraphHost) CheckIsPropertyModified(); else InitTriggerByChild();
             }
-
+            private int Channel(Material material)
+            {
+                var flags = new NBShaderFlags(material);
+                if (flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD2, index: 1)) return 1;
+                if (flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1)) return 0;
+                return -1; // Existing TEXCOORD0.zw fallback, never auto-normalize it on paint.
+            }
             public override void OnGUI()
             {
-                base.OnGUI();
+                if (!GraphHost) { base.OnGUI(); return; }
+                GetRect();
+                using (ParentControlDisabledScope())
+                {
+                    EditorGUI.LabelField(LabelRect, GuiContent);
+                    int first = Channel(RootItem.Mats[0]); bool mixed = false;
+                    foreach (Material material in RootItem.Mats) if (Channel(material) != first) mixed = true;
+                    bool before = EditorGUI.showMixedValue; EditorGUI.showMixedValue = mixed;
+                    EditorGUI.BeginChangeCheck();
+                    int next = EditorGUI.Popup(ControlRect, first, PopUpNames);
+                    bool changed = EditorGUI.EndChangeCheck(); EditorGUI.showMixedValue = before;
+                    if (changed) (RootItem as NBShaderRootItem)?.SyncService.TryApplyGraphMainTexSpecialUV(next);
+                }
+                DrawResetButton();
             }
-
+            public override void CheckIsPropertyModified(bool isCallByChild = false)
+            {
+                if (!GraphHost) { base.CheckIsPropertyModified(isCallByChild); return; }
+                int first = Channel(RootItem.Mats[0]); bool mixed = false;
+                foreach (Material material in RootItem.Mats) if (Channel(material) != first) mixed = true;
+                PropertyIsDefaultValue = !mixed && first <= 0; HasModified = !PropertyIsDefaultValue;
+                ParentItem?.CheckIsPropertyModified(true);
+            }
+            public override void ExecuteReset(bool isCallByParent = false)
+            {
+                if (!GraphHost) { base.ExecuteReset(isCallByParent); return; }
+                (RootItem as NBShaderRootItem)?.SyncService.TryApplyGraphMainTexSpecialUV(0);
+                CheckIsPropertyModified();
+            }
             public override void OnEndChange()
             {
+                if (GraphHost) { CheckIsPropertyModified(); return; }
                 base.OnEndChange();
                 bool useTexcoord1 = Mathf.RoundToInt(PropertyInfo.Property.floatValue) == 0;
-                for (int i = 0; i < RootItem.ShaderFlags.Count; i++)
+                foreach (ShaderFlagsBase flags in RootItem.ShaderFlags)
                 {
-                    ShaderFlagsBase flags = RootItem.ShaderFlags[i];
                     if (useTexcoord1)
                     {
                         flags.SetFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_USE_TEXCOORD1, index: 1);
@@ -1257,7 +1313,70 @@ namespace NBShaderEditor
                 }
             }
         }
-    }
+
+        // Graph data adapters inside the existing UV factory; native item/controller paths remain original.
+        private class GraphMainTexPlaneItem : ShaderGUIPopUpItem
+        {
+            public GraphMainTexPlaneItem(ShaderGUIRootItem root, ShaderGUIItem parent) : base(root, parent) { }
+            public override void DrawController()
+            {
+                EditorGUI.BeginChangeCheck();
+                int next = EditorGUI.Popup(ControlRect, (int)PropertyInfo.Property.floatValue, PopUpNames);
+                if (EditorGUI.EndChangeCheck())
+                    (RootItem as NBShaderRootItem)?.SyncService.TryApplyGraphMainTexPlane(PropertyName, next);
+            }
+            public override void ExecuteReset(bool isCallByParent = false)
+            {
+                (RootItem as NBShaderRootItem)?.SyncService.TryApplyGraphMainTexPlane(PropertyName,
+                    Mathf.RoundToInt(RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index)));
+                CheckIsPropertyModified();
+            }
+        }
+
+        private class GraphMainTexCylinderItem : Vector3Item
+        {
+            public GraphMainTexCylinderItem(ShaderGUIRootItem root, ShaderGUIItem parent, string name, Func<GUIContent> content)
+                : base(root, parent, name, content) { }
+            public override void OnGUI()
+            {
+                GetRect();
+                using (ParentControlDisabledScope())
+                {
+                    EditorGUI.LabelField(LabelRect, GuiContent);
+                    float oldWidth = EditorGUIUtility.labelWidth;
+                    bool oldMixed = EditorGUI.showMixedValue;
+                    try
+                    {
+                        EditorGUIUtility.labelWidth = 12f;
+                        for (int component = 0; component < 3; ++component)
+                        {
+                            float first = RootItem.Mats[0].GetVector(PropertyName)[component];
+                            bool mixed = false;
+                            foreach (Material material in RootItem.Mats)
+                                if (material.GetVector(PropertyName)[component] != first) mixed = true;
+                            EditorGUI.showMixedValue = mixed;
+                            Rect rect = ControlRect; rect.width = (ControlRect.width - 8f) / 3f;
+                            rect.x += component * (rect.width + 4f);
+                            EditorGUI.BeginChangeCheck();
+                            float value = EditorGUI.FloatField(rect, new[] { "X", "Y", "Z" }[component], first);
+                            if (EditorGUI.EndChangeCheck())
+                                (RootItem as NBShaderRootItem)?.SyncService.TryApplyGraphMainTexCylinderComponent(PropertyName, component, value);
+                        }
+                    }
+                    finally { EditorGUIUtility.labelWidth = oldWidth; EditorGUI.showMixedValue = oldMixed; }
+                }
+                DrawResetButton();
+            }
+            public override void ExecuteReset(bool isCallByParent = false)
+            {
+                Vector4 value = RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index);
+                for (int component = 0; component < 3; ++component)
+                    (RootItem as NBShaderRootItem)?.SyncService.TryApplyGraphMainTexCylinderComponent(PropertyName, component, value[component]);
+                CheckIsPropertyModified();
+            }
+        }
+
+}
 
     public class KeywordListItem : ShaderGUIItem
     {

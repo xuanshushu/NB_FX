@@ -385,19 +385,20 @@ namespace NBFX.Baseline.Tests
         }
 
         [Test]
-        public void GUI1A_ActualOriginalMainTexConstructor_SevenOwnedProperties_NativeFeaturesRemain()
+        public void GUI1A_SharedMainTexUVV2_Initialized16OwnedProperties_NativeFeaturesRemain()
         {
             var material = NewMaterial(true); var root = NewRoot(material);
             Assert.That(Ownership(root), Is.Empty);
             Assert.That((bool)Call(root, "InitializeGraphMainTextureInputs"), Is.True);
-            Assert.That(Ownership(root), Is.EquivalentTo(SharedNames));
+            Assert.That(Ownership(root), Is.EquivalentTo(SharedNames.Concat(new[] { "_UTwirlEnabled", "_PolarCoordinatesEnabled", "_TWParameter", "_TWStrength", "_PCCenter", "_CylinderUVRotate", "_CylinderUVPosOffset", "_WorldSpaceUVModeSelector", "_ObjectSpaceUVModeSelector" })));
             var main = Field(root, "_mainTexBlock"); Assert.That(main.GetType().FullName, Is.EqualTo("NBShaderEditor.MainTexBigBlockItem"));
             var group = Field(main, "_baseMapGroupItem");
             Assert.That(ActualProperty(Field(group, "_textureItem")).name, Is.EqualTo("_BaseMap"));
             Assert.That(ActualProperty(Field(group, "_colorItem")).name, Is.EqualTo("_Color"));
             Assert.That(ActualProperty(Field(group, "_scaleOffsetItem")).name, Is.EqualTo("_BaseMap_ST"));
             Assert.That((bool)Field(Field(group, "_scaleOffsetItem"), "_isVectorProperty"), Is.True);
-            foreach (string absent in new[] { "_uvModeItem", "_offsetXCustomDataItem", "_offsetYCustomDataItem", "_uiColorItem", "_uiMainTexScaleOffsetItem", "_pNoiseBlendModeItem" }) Assert.That(Field(main, absent), Is.Null);
+            foreach (string present in new[] { "_uvModeItem", "_offsetXCustomDataItem", "_offsetYCustomDataItem" }) Assert.That(Field(main, present), Is.Not.Null, present);
+            foreach (string absent in new[] { "_uiColorItem", "_uiMainTexScaleOffsetItem", "_pNoiseBlendModeItem" }) Assert.That(Field(main, absent), Is.Null);
             foreach (string name in new[] { "_baseMapWrapModeItem", "_baseMapForceNoMipItem", "_alphaChannelItem" }) Assert.That(Field(main, name), Is.Not.Null);
             foreach (string name in new[] { "_ProgramNoise_Toggle", "_ProgramNoise_Simple_Toggle", "_ProgramNoise_Voronoi_Toggle", "_SixWayColorAbsorptionToggle", "_RigRTBk", "_FxLightMode" })
             {
