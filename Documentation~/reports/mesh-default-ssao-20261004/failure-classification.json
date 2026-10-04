@@ -1,0 +1,68 @@
+[
+  {
+    "attempt": "attempt-1-depthnormals",
+    "category": "fixture-host-identity",
+    "verdict": "Failed",
+    "reason": "Frozen 专用名称不被 Native resolver 识别，主颜色 Pass 被关闭；发生在 observer 前。",
+    "nativeArchive": "prior/attempt-1-depthnormals.completed.json",
+    "nativeSHA256": "00a17a0bd070917ffef8a8928bb5aca9a8e0240f96002addb5049bb2310e364a",
+    "message": "  Expected: True\r\n  But was:  False\r\n",
+    "originalRawDirectory": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\default-pass-ssao-execution-20261004\\attempt-1-depthnormals\\captures",
+    "notCountedAsPassed": true
+  },
+  {
+    "attempt": "attempt-2-depthnormals",
+    "category": "invalid-readback-shader",
+    "verdict": "Failed",
+    "reason": "原 actor parity 仍 Failed；回读 shader 延迟编译缺 Core 宏，此轮 buffer raw 不作有效证据。",
+    "nativeArchive": "prior/attempt-2-depthnormals.completed.json",
+    "nativeSHA256": "8aac024ca8ad30cfa1476d64b64facda32fb32452385e7d927ac6d0e7e544c07",
+    "message": "  Expected: 0\r\n  But was:  0.835754395f\r\n",
+    "originalRawDirectory": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\default-pass-ssao-execution-20261004\\attempt-2-depthnormals\\captures",
+    "notCountedAsPassed": true
+  },
+  {
+    "attempt": "attempt-3-depthnormals",
+    "category": "fixture-input-mismatch",
+    "verdict": "Failed",
+    "reason": "有效 raw：AB=0、BC=0.835754395。A/B Particle VAT 坐标输入与 C Mesh 不同。",
+    "nativeArchive": "prior/attempt-3-depthnormals.completed.json",
+    "nativeSHA256": "51dfade11415debcfb7ca459854d909c6c613848512624f9f5958d99aec7d8f5",
+    "message": "  Expected: 0\r\n  But was:  0.835754395f\r\n",
+    "originalRawDirectory": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\default-pass-ssao-execution-20261004\\attempt-3-depthnormals\\captures",
+    "notCountedAsPassed": true
+  },
+  {
+    "attempt": "attempt-4-depth",
+    "category": "fixture-input-mismatch",
+    "verdict": "Failed",
+    "reason": "有效 raw：AB=0、BC=0.835754395。同一 MeshSourceMode 输入错配。",
+    "nativeArchive": "prior/attempt-4-depth.completed.json",
+    "nativeSHA256": "b17dd0ebf3b740d23cd1d728a6ce7d51d426a8f84cd802943d69731cf09dd45b",
+    "message": "  Expected: 0\r\n  But was:  0.835754395f\r\n",
+    "originalRawDirectory": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\default-pass-ssao-execution-20261004\\attempt-4-depth\\captures",
+    "notCountedAsPassed": true
+  },
+  {
+    "attempt": "diagnostic-round2-run1",
+    "category": "causal-control-original-failure-retained",
+    "verdict": "Failed",
+    "reason": "原 case 严格 Failed 保留；B-only Mesh 意图反事实把 BC 变为 0，恢复状态后差异复现。",
+    "nativeArchive": "prior/diagnostic-round2-run1.completed.json",
+    "nativeSHA256": "6eb2b2b5c3680b9f764aa4b8a985080672ea3abf25b2bc1cd68525e8ba594da1",
+    "message": "  Expected: 0\r\n  But was:  0.835754395f\r\n",
+    "originalRawDirectory": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\default-pass-ssao-execution-20261004\\diagnostic-round2-run1\\captures",
+    "notCountedAsPassed": true
+  },
+  {
+    "attempt": "mesh-intent-first2-depthnormals",
+    "category": "output-path-infrastructure",
+    "verdict": "Failed",
+    "reason": "Windows 证据路径过长，DirectoryNotFoundException；改用短目录，相同 source 在 m2n/m2d 完成。",
+    "nativeArchive": "prior/mesh-intent-first2-depthnormals.completed.json",
+    "nativeSHA256": "e9d574209869a68cb745ed8396fa3ae091f12f2a6cd02880e81564586e2520bf",
+    "message": "System.IO.DirectoryNotFoundException : Could not find a part of the path \"D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\default-pass-ssao-execution-20261004\\mesh-intent-first2-depthnormals\\captures\\dn0-default-fullchain-ssao-source-DepthNormals-opaque-shadow-ortho\\source-C-extraDN0-off-diagnostic-readback-shader-errors.txt\"",
+    "originalRawDirectory": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\default-pass-ssao-execution-20261004\\mesh-intent-first2-depthnormals\\captures",
+    "notCountedAsPassed": true
+  }
+]

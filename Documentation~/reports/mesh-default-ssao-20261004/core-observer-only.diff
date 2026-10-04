@@ -1,0 +1,19 @@
+--- Root/G4GraphVATTests.cs
++++ Candidate/G4GraphVATTests.cs
+@@ -38,6 +38,7 @@
+         public Action<Light> DefaultFullChainLightSetup;
+         public Action<Camera, GameObject, GameObject, RenderTexture> DefaultFullChainSceneSetup;
+         public Action<Material[], MeshRenderer, MeshRenderer, Camera, RenderTexture, Texture2D, string> DefaultFullChainVerify;
++        public Action<Material[], MeshRenderer, MeshRenderer, Camera, RenderTexture, Texture2D, string> DefaultFullChainPreAssertionsObserve;
+         public void CaptureDefaultForwardDepthShadow(bool ortho)
+             => CaptureVATDepthAndShadowGeometryCore(true, ortho, false, true);
+ 
+@@ -490,6 +491,8 @@
+                     actorBR = Snap(b, "B-forward-visible-repeat", true, 1);
+                     actorCR = Snap(c, "C-forward-visible-repeat", true, 1);
+                     receiver.GetComponent<MeshRenderer>().enabled = true;
++                    DefaultFullChainPreAssertionsObserve?.Invoke(new[] {a,b,c}, writer,
++                        receiver.GetComponent<MeshRenderer>(), camera, rt, readback, folder);
+                     Assert.That(Finite(actorA, actorB, actorC, actorAR, actorBR, actorCR), Is.True);
+                     Assert.That(Visible(actorA, empty), Is.GreaterThan(150));
+                     Assert.That(Visible(actorB, empty), Is.GreaterThan(150));

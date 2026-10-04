@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "duration": 11.88,
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4DefaultSSAOSourceProbeTests.DefaultSSAO_DepthNormals_SoftbodyOpaque_ortho",
+      "Status": "Failed",
+      "Duration": 2.1052744,
+      "Message": "System.IO.DirectoryNotFoundException : Could not find a part of the path \"D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\default-pass-ssao-execution-20261004\\mesh-intent-first2-depthnormals\\captures\\dn0-default-fullchain-ssao-source-DepthNormals-opaque-shadow-ortho\\source-C-extraDN0-off-diagnostic-readback-shader-errors.txt\"",
+      "StackTrace": "  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x0019e] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) [0x00000] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)\r\n  at System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) [0x00055] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at System.IO.StreamWriter..ctor (System.String path) [0x00008] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at (wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string)\r\n  at System.IO.File.WriteAllLines (System.String path, System.Collections.Generic.IEnumerable`1[T] contents) [0x00034] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at System.IO.File.WriteAllLines (System.String path, System.String[] contents) [0x00000] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at NBFX.Baseline.Tests.G4DefaultSSAOSourceProbeTests+<>c__DisplayClass10_0.<DefaultSourceAndExtraNormalsObservedBeforeOriginalAssertions>g__Capture|5 (UnityEngine.Material m, System.String label, NBFX.Baseline.Tests.G4DefaultSSAOSourceProbeTests+<>c__DisplayClass10_1& ) [0x000b1] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4DefaultSSAOSourceProbeTests.cs:194 \r\n  at NBFX.Baseline.Tests.G4DefaultSSAOSourceProbeTests+<>c__DisplayClass10_0.<DefaultSourceAndExtraNormalsObservedBeforeOriginalAssertions>b__4 (UnityEngine.Material[] materials, UnityEngine.MeshRenderer actor, UnityEngine.MeshRenderer receiver, UnityEngine.Camera camera, UnityEngine.RenderTexture target, UnityEngine.Texture2D read, System.String folder) [0x00120] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4DefaultSSAOSourceProbeTests.cs:214 \r\n  at NBFX.Baseline.Tests.G4GraphVATTests.CaptureVATDepthAndShadowGeometryCore (System.Boolean shadow, System.Boolean ortho, System.Boolean isolateExtraNormals, System.Boolean defaultFullChain) [0x0102f] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphVATTests.cs:494 \r\n  at NBFX.Baseline.Tests.G4GraphVATTests.CaptureDefaultForwardDepthShadow (System.Boolean ortho) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphVATTests.cs:43 \r\n  at NBFX.Baseline.Tests.G4DefaultSSAOSourceProbeTests.DefaultSourceAndExtraNormalsObservedBeforeOriginalAssertions (System.String source, System.Boolean ortho, System.Boolean clip) [0x002d7] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4DefaultSSAOSourceProbeTests.cs:249 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 "
+    }
+  ]
+}
