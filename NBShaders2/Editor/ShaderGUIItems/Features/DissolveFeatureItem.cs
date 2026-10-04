@@ -7,13 +7,17 @@ namespace NBShaderEditor
 {
     internal sealed class DissolveFeatureItem : FeatureToggleFoldOutItem
     {
+        readonly NBShaderRootItem _nbRootItem;
+        readonly bool _graphSharedMode;
         private static readonly string[] RampSourceNames = { "渐变", "贴图" };
         private static readonly string[] BlendModeNames = { "叠加", "相乘" };
         private static readonly string[] DissolveMaskModeNames = { "Process Dissolve", "Dissolve Mask" };
 
-        public DissolveFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_DissolveBlockFoldOut", "_Dissolve_Toggle", "溶解", keyword: "_DISSOLVE")
+        public DissolveFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode = false)
+            : base(rootItem, parentItem, "_DissolveBlockFoldOut", "_Dissolve_Toggle", "溶解", keyword: graphSharedMode ? null : "_DISSOLVE",
+                onValueChanged: graphSharedMode ? (Action<bool>)(_ => rootItem.SyncService.TryApplyGraphDissolveIntentEdit()) : null)
         {
+            _nbRootItem=rootItem;_graphSharedMode=graphSharedMode;
             new NBShaderKeywordToggleItem(
                 rootItem,
                 this,
@@ -26,30 +30,31 @@ namespace NBShaderEditor
             new ColorChannelSelectItem(rootItem, dissolveMapRelatedFoldOut, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MAP, 0, () => Content("溶解贴图通道选择"));
             new CustomDataSelectItem(rootItem, dissolveMapRelatedFoldOut, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_X, 1, () => Content("溶解贴图X轴偏移自定义曲线"));
             new CustomDataSelectItem(rootItem, dissolveMapRelatedFoldOut, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_DISSOLVE_OFFSET_Y, 1, () => Content("溶解贴图Y轴偏移自定义曲线"));
-            new UVModeSelectItem(rootItem, dissolveMapRelatedFoldOut, "_DissolveUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP, 0, () => Content("溶解贴图UV来源"), "_DissolveMap");
+            new UVModeSelectItem(rootItem, dissolveMapRelatedFoldOut, "_DissolveUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP, 0, () => Content("溶解贴图UV来源"), "_DissolveMap", graphFeatureProtocolEdit: graphSharedMode);
             new Vector2LineItem(rootItem, dissolveMapRelatedFoldOut, "_DissolveOffsetRotateDistort", true, () => Content("溶解贴图偏移速度"));
             new VectorComponentItem(rootItem, dissolveMapRelatedFoldOut, "_DissolveOffsetRotateDistort", 2, () => Content("溶解贴图旋转"), true, 0f, 360f);
             new PNoiseBlendModeItem(rootItem, this, NBShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISSOLVE, "_DissolvePNoiseBlendOpacity", () => Content("溶解程序噪波混合"),
                 () => rootItem.Context.ProgramNoiseEnabled == MixedBool.True);
             new VectorComponentItem(rootItem, this, "_Dissolve", 1, () => Content("溶解值Pow"), true, 0.001f, 10f);
-            new VectorComponentRangeSliderItem(rootItem, this, "_Dissolve", 0, "DissolveXRangeVec", () => Content("溶解强度"));
+            new VectorComponentRangeSliderItem(rootItem, this, "_Dissolve", 0, "DissolveXRangeVec", () => Content("溶解强度")) { WriteOnlyOnInteractiveChange = graphSharedMode };
             new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_DISSOLVE_INTENSITY, 0, () => Content("溶解强度自定义曲线"));
             new VectorComponentItem(rootItem, this, "_Dissolve", 3, () => Content("溶解硬软度"), true, 0.001f, 1f);
             ShaderGUIItem dissolveNoiseAffect = new NoiseAffectItem(rootItem, this);
             new VectorComponentItem(rootItem, dissolveNoiseAffect, "_DissolveOffsetRotateDistort", 3, () => Content("溶解贴图扭曲强度"), false);
 
             PropertyToggleBlockItem lineBlock = ToggleBlock(rootItem, "_DissolveLineFoldOut", "_DissolveLineMaskToggle", "溶解描边",
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK, 1, parent: this);
+                graphSharedMode ? 0 : NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK, 1, parent: this,
+                onValueChanged: graphSharedMode ? (Action<bool>)(enabled => rootItem.SyncService.TryApplyGraphDissolveFlagEdit(NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK,enabled)) : null);
             new ColorItem(rootItem, lineBlock, "_DissolveLineColor", () => Content("溶解描边颜色"));
-            new VectorComponentRangeSliderItem(rootItem, lineBlock, "_Dissolve_Vec2", 0, "Dissolve2XRangeVec", () => Content("描边位置"));
-            new VectorComponentRangeSliderItem(rootItem, lineBlock, "_Dissolve_Vec2", 1, "Dissolve2YRangeVec", () => Content("描边软硬"));
+            new VectorComponentRangeSliderItem(rootItem, lineBlock, "_Dissolve_Vec2", 0, "Dissolve2XRangeVec", () => Content("描边位置")) { WriteOnlyOnInteractiveChange = graphSharedMode };
+            new VectorComponentRangeSliderItem(rootItem, lineBlock, "_Dissolve_Vec2", 1, "Dissolve2YRangeVec", () => Content("描边软硬")) { WriteOnlyOnInteractiveChange = graphSharedMode };
 
             PropertyToggleBlockItem rampBlock = ToggleBlock(rootItem, "_DissolveRampFoldOut", "_Dissolve_useRampMap_Toggle", "溶解Ramp图功能",
-                parent: this, keyword: "_DISSOLVE_RAMP",
-                onValueChanged: _ => rootItem.SyncService.SyncMaterialState());
+                parent: this, keyword: graphSharedMode ? null : "_DISSOLVE_RAMP",
+                onValueChanged: _ => ApplyDissolveIntent());
             Func<bool> isDissolveRampMapVisible = TierVisible(rootItem, "_DISSOLVE_RAMP_MAP", () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 1));
             new FeaturePopupItem(rootItem, rampBlock, "_DissolveRampSourceMode", () => Content("溶解Ramp模式"), RampSourceNames,
-                _ => rootItem.SyncService.SyncMaterialState(),
+                _ => ApplyDissolveIntent(),
                 keyword: "_DISSOLVE_RAMP_MAP");
             AddTextureWithWrap(rootItem, rampBlock, "_DissolveRampMap", "溶解Ramp图", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP,
                 NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_DISSOLVE_RAMPMAP, "_DissolveRampColor",
@@ -61,14 +66,15 @@ namespace NBShaderEditor
             new WrapModeItem(rootItem, rampBlock, NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_RAMPMAP, () => Content("溶解RampUV Wrap"), 2,
                 () => IsPropertyMode(rootItem, "_DissolveRampSourceMode", 0));
             new FeaturePopupItem(rootItem, rampBlock, "_DissolveRampColorBlendMode", () => Content("溶解Ramp混合模式"), BlendModeNames,
-                property => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY, property.floatValue > 0.5f, 1));
+                property => ApplyDissolveFlag(NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY, property.floatValue > 0.5f));
 
             PropertyToggleBlockItem maskBlock = ToggleBlock(rootItem, "_DissolveMaskFoldOut", "_DissolveMask_Toggle", "溶解遮罩图(过程溶解)",
-                parent: this, keyword: "_DISSOLVE_MASK");
+                parent: this, keyword: graphSharedMode ? null : "_DISSOLVE_MASK",
+                onValueChanged: graphSharedMode ? (Action<bool>)(_ => rootItem.SyncService.TryApplyGraphDissolveIntentEdit()) : null);
             new FeaturePopupItem(rootItem, maskBlock, "_DissolveMaskMode", () => Content("溶解遮罩模式"), DissolveMaskModeNames);
             AddTextureWithWrap(rootItem, maskBlock, "_DissolveMaskMap", "溶解遮罩图", NBShaderFlags.FLAG_BIT_WRAPMODE_DISSOLVE_MASKMAP,
                 NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_DISSOLVE_MASKMAP);
-            new UVModeSelectItem(rootItem, maskBlock, "_DissolveMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP, 0, () => Content("溶解遮罩图UV来源"), "_DissolveMaskMap");
+            new UVModeSelectItem(rootItem, maskBlock, "_DissolveMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP, 0, () => Content("溶解遮罩图UV来源"), "_DissolveMaskMap", graphFeatureProtocolEdit: graphSharedMode);
             new ColorChannelSelectItem(rootItem, maskBlock, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_DISSOLVE_MASK_MAP, 0, () => Content("溶解遮罩图通道选择"));
             new VectorComponentItem(rootItem, maskBlock, "_Dissolve", 2, () => Content("溶解遮罩强度"), false, isVisible: () => !IsDissolveMaskStrengthSlider(rootItem));
             new VectorComponentItem(rootItem, maskBlock, "_Dissolve", 2, () => Content("溶解遮罩强度"), true, 0f, 2f, () => IsDissolveMaskStrengthSlider(rootItem));
@@ -82,5 +88,10 @@ namespace NBShaderEditor
                    !info.Property.hasMixedValue &&
                    info.Property.floatValue > 0.5f;
         }
+
+        void ApplyDissolveIntent()
+        {if(_graphSharedMode)_nbRootItem.SyncService.TryApplyGraphDissolveIntentEdit();else _nbRootItem.SyncService.SyncMaterialState();}
+        void ApplyDissolveFlag(int bit,bool enabled)
+        {if(_graphSharedMode)_nbRootItem.SyncService.TryApplyGraphDissolveFlagEdit(bit,enabled);else _nbRootItem.SyncService.ApplyToggleFlag(bit,enabled,1);}
     }
 }

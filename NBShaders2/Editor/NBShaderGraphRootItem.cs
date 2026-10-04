@@ -147,11 +147,11 @@ namespace NBShaderEditor
             DrawGroup(DepthOutlineProperties, "feature.深度描边", "Depth Outline");
             DrawGroup(MaskProperties, "feature.遮罩", "Mask");
             DrawGroup(DissolveProperties, "feature.溶解", "Dissolve");
-            if (TryGetVisibleProperty("_DissolveLineColor", out _))
+            if (!_sharedPropertyNames.Contains("_Dissolve_Toggle") && TryGetVisibleProperty("_DissolveLineColor", out _))
                 DrawPackedFlag("feature.溶解描边", "Dissolve Line",
                     NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK, 1);
             DrawGroup(DissolveRampProperties, "feature.溶解Ramp", "Dissolve Ramp");
-            if (TryGetVisibleProperty("_DissolveRampColor", out _))
+            if (!_sharedPropertyNames.Contains("_Dissolve_useRampMap_Toggle") && TryGetVisibleProperty("_DissolveRampColor", out _))
             {
                 DrawPackedFlag("feature.溶解Ramp混合模式", "Dissolve Ramp Multiply",
                     NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY, 1);

@@ -976,6 +976,7 @@ namespace NBShaderEditor
         private readonly string _texturePropertyName;
         private readonly bool _forceEnable;
         private readonly bool _graphMainTexProtocolEdit;
+        private readonly bool _graphFeatureProtocolEdit;
         private readonly bool _graphOverlayProtocolEdit;
         private readonly Func<bool> _isVisible;
         private readonly ShaderGUIFoldOutHelper _foldOutHelper;
@@ -1001,7 +1002,7 @@ namespace NBShaderEditor
             Func<GUIContent> contentProvider,
             string texturePropertyName = null,
             bool forceEnable = false,
-            Func<bool> isVisible = null, bool graphMainTexProtocolEdit = false, bool graphOverlayProtocolEdit = false) : base(rootItem, parentItem)
+            Func<bool> isVisible = null, bool graphMainTexProtocolEdit = false, bool graphOverlayProtocolEdit = false, bool graphFeatureProtocolEdit = false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
             _uvModeBitPos = uvModeBitPos;
@@ -1010,8 +1011,9 @@ namespace NBShaderEditor
             _texturePropertyName = texturePropertyName;
             _forceEnable = forceEnable;
             _graphOverlayProtocolEdit = graphOverlayProtocolEdit;
-            graphMainTexProtocolEdit = graphMainTexProtocolEdit || graphOverlayProtocolEdit;
+            graphMainTexProtocolEdit = graphMainTexProtocolEdit || graphOverlayProtocolEdit || graphFeatureProtocolEdit;
             _graphMainTexProtocolEdit = graphMainTexProtocolEdit;
+            _graphFeatureProtocolEdit = graphFeatureProtocolEdit;
             _isVisible = isVisible;
             _foldOutHelper = new ShaderGUIFoldOutHelper(rootItem, foldOutPropertyName);
             GuiContent = _contentProvider();
@@ -1147,7 +1149,7 @@ namespace NBShaderEditor
 
                                 _cylinderRotateItem.OnGUI();
                                 _cylinderOffsetItem.OnGUI();
-                                UpdateCylinderMatrix(RootItem);
+                                if (!(RootItem is NBShaderRootItem graphHost && graphHost.Context.IsGraphMaterialHost)) UpdateCylinderMatrix(RootItem);
                                 break;
                             case NBShaderFlags.UVMode.WorldPos:
                                 _worldSpaceItem.OnGUI();
@@ -1248,6 +1250,8 @@ namespace NBShaderEditor
         {
             if(_graphOverlayProtocolEdit && RootItem is NBShaderRootItem overlayRoot && overlayRoot.Context.IsGraphMaterialHost)
                 return overlayRoot.SyncService.TryApplyGraphOverlayUVMode(_uvModeBitPos,mode,_foldOutPropertyName,setFoldFromPopup);
+            if (_graphFeatureProtocolEdit && RootItem is NBShaderRootItem featureRoot && featureRoot.Context.IsGraphMaterialHost)
+                return featureRoot.SyncService.TryApplyGraphDissolveUVMode(_uvModeBitPos,mode,setFoldFromPopup);
             if (_graphMainTexProtocolEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
                 return graphRoot.SyncService.TryApplyGraphMainTexUVMode(mode, setFoldFromPopup);
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)

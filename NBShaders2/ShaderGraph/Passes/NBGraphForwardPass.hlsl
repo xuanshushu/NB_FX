@@ -39,7 +39,7 @@ void frag(PackedVaryings packedInput,
 #elif defined(NB_DEBUG_DISTORT)
     NBGraphDebugOutputActive = graphProperties._noisemapEnabled > 0.5 && graphProperties._NB_TierAllowNoise > 0.5;
 #elif defined(NB_DEBUG_DISSOLVE)
-    NBGraphDebugOutputActive = graphProperties._Dissolve_Toggle > 0.5;
+    NBGraphDebugOutputActive = graphProperties._Dissolve_Toggle > 0.5 && graphProperties._NB_TierAllowDissolve > 0.5;
 #elif defined(NB_DEBUG_MASK)
     NBGraphDebugOutputActive = graphProperties._Mask_Toggle > 0.5 && graphProperties._NB_TierAllowMask > 0.5;
 #elif defined(NB_DEBUG_FRESNEL)
@@ -57,7 +57,7 @@ void frag(PackedVaryings packedInput,
 #elif defined(NB_DEBUG_DISTORT)
     NBGraphDebugOutputActive = _noisemapEnabled > 0.5 && _NB_TierAllowNoise > 0.5;
 #elif defined(NB_DEBUG_DISSOLVE)
-    NBGraphDebugOutputActive = _Dissolve_Toggle > 0.5;
+    NBGraphDebugOutputActive = _Dissolve_Toggle > 0.5 && _NB_TierAllowDissolve > 0.5;
 #elif defined(NB_DEBUG_MASK)
     NBGraphDebugOutputActive = _Mask_Toggle > 0.5 && _NB_TierAllowMask > 0.5;
 #elif defined(NB_DEBUG_FRESNEL)

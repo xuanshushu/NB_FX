@@ -68,6 +68,8 @@ namespace NBShaderEditor
         FlipbookFeatureItem _graphFlipbookItem;
         bool _sharedGraphFresnelReady;
         FresnelFeatureItem _graphFresnelItem;
+        bool _sharedGraphDissolveReady;
+        DissolveFeatureItem _graphDissolveItem;
         bool _sharedGraphTADepthReady;
         BigBlockItem _graphTADepthBlock;
         bool _sharedGraphLightModeReady;
@@ -109,6 +111,7 @@ namespace NBShaderEditor
             if (Context != null && _sharedGraphMainTextureReady && Context.CanEditGraphMainTexUV) names.AddRange(new[] { "_UTwirlEnabled", "_PolarCoordinatesEnabled", "_TWParameter", "_TWStrength", "_PCCenter", "_CylinderUVRotate", "_CylinderUVPosOffset", "_WorldSpaceUVModeSelector", "_ObjectSpaceUVModeSelector" });
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphFresnelReady) names.AddRange(SharedGraphFresnelProperties);
             if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphOverlayReady)names.AddRange(SharedGraphOverlayProperties);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDissolveReady)names.AddRange(NBShaderSyncService.GraphDissolveSharedPropertyNames);
             return names;
         }
 
@@ -257,6 +260,8 @@ namespace NBShaderEditor
                     _mainTexBlock = null;
                     _graphFlipbookItem = null;
                     _graphFresnelItem = null;
+                    _graphDissolveItem = null;
+                    _sharedGraphDissolveReady = false;
                     _sharedGraphFresnelReady = false;
                     _graphLightModeBlock = null;
                     _graphTADepthBlock = null;
@@ -277,6 +282,7 @@ namespace NBShaderEditor
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
                 if (InitializeGraphTADepthInputs()) _graphTADepthBlock.OnGUI();
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
+                if(InitializeGraphDissolveInputs())DrawGraphDissolveInputs();
                 DrawGraphOverlayInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
@@ -378,6 +384,21 @@ namespace NBShaderEditor
             if (!_sharedGraphFresnelReady) return false;
             _graphFresnelItem ??= new FresnelFeatureItem(this, null, true);
             return true;
+        }
+
+        internal bool InitializeGraphDissolveInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphDissolveReady=Context.IsGraphMaterialHost&&SyncService.HasGraphDissolveEditSchema();
+            if(!_sharedGraphDissolveReady)return false;_graphDissolveItem??=new DissolveFeatureItem(this,null,true);return true;
+        }
+        internal void DrawGraphDissolveInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!_sharedGraphDissolveReady)return;
+            EventType type=Event.current.type;
+            if(type!=EventType.Layout && type!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB Dissolve");
+            (selectedItem??_graphDissolveItem).OnGUI();
         }
     }
 }

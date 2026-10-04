@@ -1802,6 +1802,65 @@ namespace NBShaderEditor
             RefreshGraphMainTexPropertyReferences();
             return true;
         }
+
+        internal static readonly string[] GraphDissolveSharedPropertyNames = { "Dissolve2XRangeVec", "Dissolve2YRangeVec", "DissolveXRangeVec", "_Dissolve", "_DissolveBlockFoldOut", "_DissolveLineColor", "_DissolveLineFoldOut", "_DissolveLineMaskToggle", "_DissolveMap", "_DissolveMapFoldOut", "_DissolveMaskFoldOut", "_DissolveMaskMap", "_DissolveMaskMode", "_DissolveMaskUVModeFoldOut", "_DissolveMask_Toggle", "_DissolveOffsetRotateDistort", "_DissolvePNoiseBlendOpacity", "_DissolveRampAlpha0", "_DissolveRampAlpha1", "_DissolveRampAlpha2", "_DissolveRampColor", "_DissolveRampColor0", "_DissolveRampColor1", "_DissolveRampColor2", "_DissolveRampColor3", "_DissolveRampColor4", "_DissolveRampColor5", "_DissolveRampColorBlendMode", "_DissolveRampCount", "_DissolveRampFoldOut", "_DissolveRampMap", "_DissolveRampSourceMode", "_DissolveUVModeFoldOut", "_Dissolve_Toggle", "_Dissolve_Vec2", "_Dissolve_useRampMap_Toggle", "_NB_Debug_Dissolve" };
+
+        internal bool TryApplyGraphDissolveUVMode(int position,NBShaderFlags.UVMode mode,bool setFold)
+        {
+            if(position!=NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP && position!=NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP)return false;
+            if(!HasGraphDissolveEditSchema() || !HasGraphMainTexUVEditSchema() || (int)mode<0 || (int)mode>8)return false;
+            string fold=position==NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP?"_DissolveUVModeFoldOut":"_DissolveMaskUVModeFoldOut";
+            string suffix=position<16?"Lo16":"Hi16";int shift=position<16?position:position-16;int mask=3<<shift;
+            return RunGraphMainTexEdit("Dissolve UV Source",material=>{
+                bool changed=WriteGraphHalfSlice(material,"_NB_UVModeFlag0"+suffix,mask,((int)mode&3)<<shift);
+                changed|=WriteGraphHalfSlice(material,"_NB_UVModeFlagType0"+suffix,mask,((int)mode/4)<<shift);
+                if(setFold)
+                {
+                    float value=mode==NBShaderFlags.UVMode.DefaultUVChannel||mode==NBShaderFlags.UVMode.CommonUV||mode==NBShaderFlags.UVMode.ScreenUV||mode==NBShaderFlags.UVMode.MainTex?0:1;
+                    if(material.GetFloat(fold)!=value){material.SetFloat(fold,value);changed=true;}
+                }
+                return UpdateGraphMainTexUVDerived(material)|changed;
+            });
+        }
+
+        internal bool HasGraphDissolveEditSchema()
+        {
+            if (!HasGraphMainTexTargets() || _rootItem.MatEditor == null) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                foreach (string name in GraphDissolveSharedPropertyNames)
+                    if (!_rootItem.PropertyInfoDic.ContainsKey(name) || !material.HasProperty(name)) return false;
+                foreach (string name in new[] { "_Dissolve_Toggle", "_DissolveMask_Toggle", "_Dissolve_useRampMap_Toggle", "_DissolveMaskMode", "_DissolveRampSourceMode", "_DissolveRampColorBlendMode", "_DissolveLineMaskToggle", "_NB_GraphGUIStateVersion" })
+                {
+                    if (!NBShaderRootItem.HasFloatProperty(material,name)) return false;
+                    float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;
+                }
+                if(material.GetFloat(GraphGUIStateVersionProperty)!=2f)return false;
+                foreach(string name in new[]{"_DissolveMaskMode","_DissolveRampSourceMode","_DissolveRampColorBlendMode"})
+                {float mode=material.GetFloat(name);if(mode!=0f&&mode!=1f)return false;}
+                bool wouldChange;
+                if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out wouldChange))return false;
+            }
+            return true;
+        }
+
+        internal bool TryApplyGraphDissolveIntentEdit()
+        {
+            if(!HasGraphDissolveEditSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
+            RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
+        }
+
+        internal bool TryApplyGraphDissolveFlagEdit(int bit,bool enabled)
+        {
+            if(bit!=NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK && bit!=NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY)return false;
+            if(!HasGraphDissolveEditSchema())return false;
+            string name=(bit&65535)!=0?"_NB_Flags1Lo16":"_NB_Flags1Hi16";int mask=(bit&65535)!=0?bit&65535:(int)((uint)bit>>16);
+            foreach(Material material in _rootItem.Mats)
+                if(!WriteGraphHalfSlice(material,name,mask,enabled?mask:0))NotifyGraphPackedFlagsEdited(material,name,mask);
+            RefreshGraphMainTexPropertyReferences();return true;
+        }
     }
 
     public enum VATMode

@@ -821,9 +821,17 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NBGraphTierAllowProgramNoise, float NBGraphTierAllowProgramSimple, float NBGraphTierAllowProgramVoronoi,
     float NBGraphTierAllowFresnel,
     float NBGraphTierAllowEmission, float NBGraphTierAllowColorBlend,
+    float NBGraphTierAllowDissolve, float NBGraphTierAllowDissolveMask,
+    float NBGraphTierAllowDissolveRamp, float NBGraphTierAllowDissolveRampMap,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    DissolveToggle *= NBGraphTierAllowDissolve > 0.5 ? 1.0 : 0.0;
+    DissolveMaskToggle *= NBGraphTierAllowDissolveMask > 0.5 ? 1.0 : 0.0;
+    DissolveRampToggle *= NBGraphTierAllowDissolveRamp > 0.5 ? 1.0 : 0.0;
+    // Raw source enum remains intent; Native stripped MAP samples gradient.
+    DissolveRampSourceMode = DissolveRampSourceMode > 0.5 && NBGraphTierAllowDissolveRampMap > 0.5 ? 1.0 : 0.0;
+
     EmissionEnabled *= NBGraphTierAllowEmission > 0.5 ? 1.0 : 0.0;
     ColorBlendMapToggle *= NBGraphTierAllowColorBlend > 0.5 ? 1.0 : 0.0;
 
@@ -1366,9 +1374,17 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NBGraphTierAllowProgramNoise, float NBGraphTierAllowProgramSimple, float NBGraphTierAllowProgramVoronoi,
     float NBGraphTierAllowFresnel,
     float NBGraphTierAllowEmission, float NBGraphTierAllowColorBlend,
+    float NBGraphTierAllowDissolve, float NBGraphTierAllowDissolveMask,
+    float NBGraphTierAllowDissolveRamp, float NBGraphTierAllowDissolveRampMap,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    DissolveToggle *= NBGraphTierAllowDissolve > 0.5 ? 1.0 : 0.0;
+    DissolveMaskToggle *= NBGraphTierAllowDissolveMask > 0.5 ? 1.0 : 0.0;
+    DissolveRampToggle *= NBGraphTierAllowDissolveRamp > 0.5 ? 1.0 : 0.0;
+    // Raw source enum remains intent; Native stripped MAP samples gradient.
+    DissolveRampSourceMode = DissolveRampSourceMode > 0.5 && NBGraphTierAllowDissolveRampMap > 0.5 ? 1.0 : 0.0;
+
     EmissionEnabled *= NBGraphTierAllowEmission > 0.5 ? 1.0 : 0.0;
     ColorBlendMapToggle *= NBGraphTierAllowColorBlend > 0.5 ? 1.0 : 0.0;
 

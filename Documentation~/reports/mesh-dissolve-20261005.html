@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><title>Dissolve 共享控件与四项 Tier 消费</title><style>body{max-width:980px;margin:36px auto;font:16px/1.65 system-ui;color:#1d2939}</style><h1>Dissolve：共享控件与四项有效消费</h1>
+<p>原Dissolve/Mask/Ramp共享叶已接入Mesh Graph；四个gate覆盖父功能、Mask、Ramp及RampMap。禁止Map时沿Native合同回退梯度，raw source enum仍保留。既有11gate扩为15，CF234→238；共享HLSL float/half与Debug消费者同步，没有新增keyword/packed位或官方包改动。</p>
+<p>已修复实际GUI缺口：Dissolve两UV槽位经原半字事务并更新Cylinder派生位；Graph被动绘制不再将首材质Cylinder矩阵写给多选；Root写前Undo覆盖原控件；三处向量范围滑条启用已独立8P的交互写入保护。Native默认primitive行为保留。</p>
+<p>新增自动12个唯一身份通过：原8项非Popup GUI/Service、Forward两相机2项、追加两个UV服务/Undo身份。74份128×128 RGBA-f32原始数据独立核验finite/noCDCD；AB/BC/repeat/restore全0，可见像素7396/10816，Mask响应0.174560546875、Parent/Ramp≥1.2900390625、Map回退响应1。新增UV服务保留原数学/邻位/派生位/Undo/恢复断言，不能替代原生菜单人工操作。<a href="mesh-dissolve-20261005/review/latest12-summary.json">限定12摘要</a>。</p>
+<p>额外既有回归分列：两张重生BackFirst图2P/28健康raw；Dissolve＋PNoise both组合的DepthOnly/ShadowCaster×两相机4P/36健康raw。它们不加作新增功能数量，后者不是纯Dissolve-only或默认SSAO完整链路证明。</p>
+<p>原GUI11整批在Native Popup阻塞并超时，未生成原生完成结果，GPU未启动；保留为中断证据，不计通过。miniDump证明主线程NtUserTrackPopupMenuEx→ShowDelayedContextMenu→Internal_SendEvent。系统桌面输入不可用时，仅重启验证任务自己的隔离Editor，主工程未动；恢复后用原断言重跑非Popup身份。三个原生Popup测试保留所有正文与断言，仅加Explicit以避免无人值守误触，仍待人工。<a href="mesh-dissolve-20261005/review/manual-popup3.md">人工验收步骤</a> · <a href="mesh-dissolve-20261005/recovery/README.txt">恢复记录</a>。</p>
+<p>第一版测试变体从中央替换了12个已有Overlay对象，安装前被独立审核拒绝；第二版逐图追加，三图全部旧对象/属性/边/slot前缀、Target/DN缺省、route/path/GUID均保留。只第二版安装验证。CLI测试过滤使用literal substring，旧regex计划未执行。</p>
+<p>主包20个候选路径中16个实际写入，其余为已接受primitive/原meta；实际主编译与读回确认15gate、字段类型、三图Shader Error0和DN布局-1/5/6。最后测试仅增加Explicit元数据，所有已执行正文保持原样。<a href="mesh-dissolve-20261005/main-dissolve20-actual-readback-20261005.json">主工程读回</a> · <a href="mesh-dissolve-20261005/provenance.json">证据与源码索引</a>。</p>
+<p>环境Unity6000.3.25f1/D3D11。完整共享GUI/Tier、其余高级状态、Player、变体、性能和普通Mesh G3/G4仍待后续；VFX正式阶段未开启。原微差/首帧失败继续保留到集中人工验收。</p>

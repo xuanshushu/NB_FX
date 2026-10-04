@@ -13,12 +13,12 @@ namespace NBShaders2.Editor.FeatureLevel
             "_NB_TierAllowMask", "_NB_TierAllowMask2", "_NB_TierAllowMask3",
             "_NB_TierAllowNoise", "_NB_TierAllowNoiseMask",
             "_NB_TierAllowProgramNoise", "_NB_TierAllowProgramSimple", "_NB_TierAllowProgramVoronoi", "_NB_TierAllowFresnel",
-            "_NB_TierAllowEmission", "_NB_TierAllowColorBlend"
+            "_NB_TierAllowEmission", "_NB_TierAllowColorBlend", "_NB_TierAllowDissolve", "_NB_TierAllowDissolveMask", "_NB_TierAllowDissolveRamp", "_NB_TierAllowDissolveRampMap"
         };
         static readonly string[] GraphSupportedGateKeywords = {
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
             "_PROGRAM_NOISE", "_PROGRAM_NOISE_SIMPLE", "_PROGRAM_NOISE_VORONOI", "_FRESNEL",
-            "_EMISSION", "_COLORMAPBLEND"
+            "_EMISSION", "_COLORMAPBLEND", "_DISSOLVE", "_DISSOLVE_MASK", "_DISSOLVE_RAMP", "_DISSOLVE_RAMP_MAP"
         };
 
         internal const string GraphOverrideDepthKeyword = "_OVERRIDE_Z";
@@ -113,6 +113,8 @@ namespace NBShaders2.Editor.FeatureLevel
             changed |= groupChanged;
             if (!ApplyGraphFresnelGroup(material, tier, allowed, out groupChanged)) return false;
             changed |= groupChanged;
+            if(!ApplyGraphDissolveGroup(material,tier,allowed,out groupChanged))return false;
+            changed|=groupChanged;
             if (HasGraphOverrideDepthKeyword(material))
             {
                 bool effective;
@@ -318,6 +320,22 @@ namespace NBShaders2.Editor.FeatureLevel
             if (!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material, tier, allowed, out intent, out unavailable)) return false;
             changed = SetGraphAllowFloat(material, "_NB_TierAllowFresnel", new HashSet<string>(intent.effectiveKeywords).Contains("_FRESNEL"));
             return true;
+        }
+
+        public static bool ApplyGraphDissolveGroup(Material material,NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords,out bool changed)
+        {
+            changed=false;
+            foreach(string name in new[]{"_NB_TierAllowDissolve","_NB_TierAllowDissolveMask","_NB_TierAllowDissolveRamp","_NB_TierAllowDissolveRampMap"})
+                if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,name))return false;
+            var allowed=allowedManagedKeywords??NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            NBShaderMaterialIntentResult intent;string[] unavailable;
+            if(!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material,tier,allowed,out intent,out unavailable))return false;
+            var effective=new HashSet<string>(intent.effectiveKeywords);
+            changed|=SetGraphAllowFloat(material,"_NB_TierAllowDissolve",effective.Contains("_DISSOLVE"));
+            changed|=SetGraphAllowFloat(material,"_NB_TierAllowDissolveMask",effective.Contains("_DISSOLVE_MASK"));
+            changed|=SetGraphAllowFloat(material,"_NB_TierAllowDissolveRamp",effective.Contains("_DISSOLVE_RAMP"));
+            changed|=SetGraphAllowFloat(material,"_NB_TierAllowDissolveRampMap",effective.Contains("_DISSOLVE_RAMP_MAP"));return true;
         }
     }
 }
