@@ -818,9 +818,14 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NBGraphTierAllowMask, float NBGraphTierAllowMask2, float NBGraphTierAllowMask3,
     float NBGraphTierAllowNoise, float NBGraphTierAllowNoiseMask,
     float NBGraphDebugVertexOffsetToggle, float3 NBGraphDebugVertexOffsetRGB,
+    float NBGraphTierAllowProgramNoise, float NBGraphTierAllowProgramSimple, float NBGraphTierAllowProgramVoronoi,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    ProgramNoiseToggle *= NBGraphTierAllowProgramNoise > 0.5 ? 1.0 : 0.0;
+    ProgramSimpleToggle *= NBGraphTierAllowProgramSimple > 0.5 ? 1.0 : 0.0;
+    ProgramVoronoiToggle *= NBGraphTierAllowProgramVoronoi > 0.5 ? 1.0 : 0.0;
+
     // All outputs are defined before original Debug early returns.
     NBDistortionSignedRG = 0;
     NBDistortionNoiseMask = 1;
@@ -1351,9 +1356,14 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NBGraphTierAllowMask, float NBGraphTierAllowMask2, float NBGraphTierAllowMask3,
     float NBGraphTierAllowNoise, float NBGraphTierAllowNoiseMask,
     float NBGraphDebugVertexOffsetToggle, float3 NBGraphDebugVertexOffsetRGB,
+    float NBGraphTierAllowProgramNoise, float NBGraphTierAllowProgramSimple, float NBGraphTierAllowProgramVoronoi,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    ProgramNoiseToggle *= NBGraphTierAllowProgramNoise > 0.5 ? 1.0 : 0.0;
+    ProgramSimpleToggle *= NBGraphTierAllowProgramSimple > 0.5 ? 1.0 : 0.0;
+    ProgramVoronoiToggle *= NBGraphTierAllowProgramVoronoi > 0.5 ? 1.0 : 0.0;
+
     // All outputs are defined before original Debug early returns.
     NBDistortionSignedRG = 0;
     NBDistortionNoiseMask = 1;

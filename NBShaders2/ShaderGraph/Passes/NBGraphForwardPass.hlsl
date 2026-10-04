@@ -30,7 +30,7 @@ void frag(PackedVaryings packedInput,
 #if defined(NB_DEBUG_VERTEX_OFFSET)
     NBGraphDebugOutputActive = true;
 #elif defined(NB_DEBUG_PNOISE)
-    NBGraphDebugOutputActive = graphProperties._ProgramNoise_Toggle > 0.5 && (graphProperties._ProgramNoise_Simple_Toggle > 0.5 || graphProperties._ProgramNoise_Voronoi_Toggle > 0.5);
+    NBGraphDebugOutputActive = graphProperties._ProgramNoise_Toggle > 0.5 && graphProperties._NB_TierAllowProgramNoise > 0.5 && ((graphProperties._ProgramNoise_Simple_Toggle > 0.5 && graphProperties._NB_TierAllowProgramSimple > 0.5) || (graphProperties._ProgramNoise_Voronoi_Toggle > 0.5 && graphProperties._NB_TierAllowProgramVoronoi > 0.5));
 #elif defined(NB_DEBUG_DISTORT)
     NBGraphDebugOutputActive = graphProperties._noisemapEnabled > 0.5 && graphProperties._NB_TierAllowNoise > 0.5;
 #elif defined(NB_DEBUG_DISSOLVE)
@@ -48,7 +48,7 @@ void frag(PackedVaryings packedInput,
 #if defined(NB_DEBUG_VERTEX_OFFSET)
     NBGraphDebugOutputActive = true;
 #elif defined(NB_DEBUG_PNOISE)
-    NBGraphDebugOutputActive = _ProgramNoise_Toggle > 0.5 && (_ProgramNoise_Simple_Toggle > 0.5 || _ProgramNoise_Voronoi_Toggle > 0.5);
+    NBGraphDebugOutputActive = _ProgramNoise_Toggle > 0.5 && _NB_TierAllowProgramNoise > 0.5 && ((_ProgramNoise_Simple_Toggle > 0.5 && _NB_TierAllowProgramSimple > 0.5) || (_ProgramNoise_Voronoi_Toggle > 0.5 && _NB_TierAllowProgramVoronoi > 0.5));
 #elif defined(NB_DEBUG_DISTORT)
     NBGraphDebugOutputActive = _noisemapEnabled > 0.5 && _NB_TierAllowNoise > 0.5;
 #elif defined(NB_DEBUG_DISSOLVE)

@@ -8,6 +8,24 @@ namespace NBShaders2.Editor.FeatureLevel
     {
         private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
 
+        // Explicit ProgramNoise three-feature capability. Same saved intent/dependencies.
+        public static bool ApplyGraphProgramNoiseGroup(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords, out bool changed)
+        {
+            changed = false;
+            foreach (string name in new[] { "_NB_TierAllowProgramNoise", "_NB_TierAllowProgramSimple", "_NB_TierAllowProgramVoronoi" })
+                if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, name)) return false;
+            var allowed = allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            NBShaderMaterialIntentResult intent; string[] unavailable;
+            if (!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material, tier, allowed, out intent, out unavailable)) return false;
+            var effective = new HashSet<string>(intent.effectiveKeywords);
+            changed |= SetGraphAllowFloat(material, "_NB_TierAllowProgramNoise", effective.Contains("_PROGRAM_NOISE"));
+            changed |= SetGraphAllowFloat(material, "_NB_TierAllowProgramSimple", effective.Contains("_PROGRAM_NOISE_SIMPLE"));
+            changed |= SetGraphAllowFloat(material, "_NB_TierAllowProgramVoronoi", effective.Contains("_PROGRAM_NOISE_VORONOI"));
+            return true;
+        }
+
+
         // Explicit Noise pair only; normalized reader owns dependencies.
         public static bool ApplyGraphNoisePair(Material material, NBShaderFeatureTier tier,
             IEnumerable<string> allowedManagedKeywords, out bool changed)

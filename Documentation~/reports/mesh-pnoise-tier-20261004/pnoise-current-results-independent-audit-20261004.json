@@ -1,0 +1,3055 @@
+{
+  "scope": "Independent raw health plus original metrics and native completed outcomes; no changed verdicts",
+  "runs": [
+    {
+      "run": "pnoise-tier28-live-20261004-1",
+      "passed": 20,
+      "failed": 8,
+      "cases": 28,
+      "failures": [
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphProgramNoiseTierTests.G4PNoiseTier_GPU_simple_ortho",
+          "message": "  Strict zero AB/BC/repeat; retain all differences as failures.\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphProgramNoiseTierTests.G4PNoiseTier_GPU_simple_perspective",
+          "message": "  Strict zero AB/BC/repeat; retain all differences as failures.\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphProgramNoiseTierTests.G4PNoiseTier_GPU_voronoi_ortho",
+          "message": "System.Reflection.TargetInvocationException : Exception has been thrown by the target of an invocation.\r\n  ----> NUnit.Framework.AssertionException :   Complete restore float _NB_TierAllowProgramSimple\r\n  Expected: 1065353216\r\n  But was:  0\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphProgramNoiseTierTests.G4PNoiseTier_GPU_voronoi_perspective",
+          "message": "System.Reflection.TargetInvocationException : Exception has been thrown by the target of an invocation.\r\n  ----> NUnit.Framework.AssertionException :   Complete restore float _NB_TierAllowProgramSimple\r\n  Expected: 1065353216\r\n  But was:  0\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphProgramNoiseTierTests.G4PNoiseTier_GPU_both_ortho",
+          "message": "  Strict zero AB/BC/repeat; retain all differences as failures.\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphProgramNoiseTierTests.G4PNoiseTier_GPU_both_perspective",
+          "message": "  Strict zero AB/BC/repeat; retain all differences as failures.\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphProgramNoiseTierTests.G4PNoiseTier_GPU_StrippedDebugUsesClip_ortho",
+          "message": "  Strict zero AB/BC/repeat; retain all differences as failures.\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphProgramNoiseTierTests.G4PNoiseTier_GPU_StrippedDebugUsesClip_perspective",
+          "message": "  Strict zero AB/BC/repeat; retain all differences as failures.\r\n  Expected: True\r\n  But was:  False\r\n"
+        }
+      ],
+      "metrics": [
+        {
+          "caseId": "pnoise-tier-both-ortho",
+          "scope": "Same Debug core, three PNoise modes, full/stripped/restored; strong independent control; full-frame strict0/finite/visible/repeat. Not whole Tier/Pass/VFX/Player.",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "graphPassTag": "SRPDefaultUnlit",
+          "nativePassTag": "UniversalForward",
+          "finite": true,
+          "ab": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "bc": [
+            0.00048828125,
+            0.0,
+            0.00048828125
+          ],
+          "repeat": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "response": [
+            0.777587890625,
+            0.777587890625,
+            0.777587890625
+          ],
+          "restore": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "visible": [
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840
+          ],
+          "finalKeywords": [
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,_PROGRAM_NOISE_VORONOI,NB_DEBUG_PNOISE",
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,_PROGRAM_NOISE_VORONOI,NB_DEBUG_PNOISE",
+            "_SURFACE_TYPE_TRANSPARENT,NB_DEBUG_PNOISE"
+          ],
+          "forwardEnabled": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "caseId": "pnoise-tier-both-perspective",
+          "scope": "Same Debug core, three PNoise modes, full/stripped/restored; strong independent control; full-frame strict0/finite/visible/repeat. Not whole Tier/Pass/VFX/Player.",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "graphPassTag": "SRPDefaultUnlit",
+          "nativePassTag": "UniversalForward",
+          "finite": true,
+          "ab": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "bc": [
+            0.00048828125,
+            0.0,
+            0.00048828125
+          ],
+          "repeat": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "response": [
+            0.782470703125,
+            0.782470703125,
+            0.782470703125
+          ],
+          "restore": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "visible": [
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300
+          ],
+          "finalKeywords": [
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,_PROGRAM_NOISE_VORONOI,NB_DEBUG_PNOISE",
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,_PROGRAM_NOISE_VORONOI,NB_DEBUG_PNOISE",
+            "_SURFACE_TYPE_TRANSPARENT,NB_DEBUG_PNOISE"
+          ],
+          "forwardEnabled": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "caseId": "pnoise-tier-clip-ortho",
+          "scope": "Debug-on full/restored stays visible; stripped ProgramNoise must execute normal final clip. Zero control is explicitly required, never counted as visible equivalence.",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "graphPassTag": "SRPDefaultUnlit",
+          "nativePassTag": "UniversalForward",
+          "finite": true,
+          "ab": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "bc": [
+            0.00048828125,
+            0.0,
+            0.00048828125
+          ],
+          "repeat": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "response": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "restore": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "visible": [
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840
+          ],
+          "finalKeywords": [
+            "_ALPHATEST_ON,_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,NB_DEBUG_PNOISE",
+            "_ALPHATEST_ON,_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,NB_DEBUG_PNOISE",
+            "_ALPHATEST_ON,_SURFACE_TYPE_TRANSPARENT,NB_DEBUG_PNOISE"
+          ],
+          "forwardEnabled": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "caseId": "pnoise-tier-clip-perspective",
+          "scope": "Debug-on full/restored stays visible; stripped ProgramNoise must execute normal final clip. Zero control is explicitly required, never counted as visible equivalence.",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "graphPassTag": "SRPDefaultUnlit",
+          "nativePassTag": "UniversalForward",
+          "finite": true,
+          "ab": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "bc": [
+            0.00048828125,
+            0.0,
+            0.00048828125
+          ],
+          "repeat": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "response": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "restore": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "visible": [
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300
+          ],
+          "finalKeywords": [
+            "_ALPHATEST_ON,_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,NB_DEBUG_PNOISE",
+            "_ALPHATEST_ON,_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,NB_DEBUG_PNOISE",
+            "_ALPHATEST_ON,_SURFACE_TYPE_TRANSPARENT,NB_DEBUG_PNOISE"
+          ],
+          "forwardEnabled": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "caseId": "pnoise-tier-simple-ortho",
+          "scope": "Same Debug core, three PNoise modes, full/stripped/restored; strong independent control; full-frame strict0/finite/visible/repeat. Not whole Tier/Pass/VFX/Player.",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "graphPassTag": "SRPDefaultUnlit",
+          "nativePassTag": "UniversalForward",
+          "finite": true,
+          "ab": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "bc": [
+            0.00048828125,
+            0.0,
+            0.00048828125
+          ],
+          "repeat": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "response": [
+            0.777587890625,
+            0.777587890625,
+            0.777587890625
+          ],
+          "restore": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "visible": [
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840
+          ],
+          "finalKeywords": [
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,NB_DEBUG_PNOISE",
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,NB_DEBUG_PNOISE",
+            "_SURFACE_TYPE_TRANSPARENT,NB_DEBUG_PNOISE"
+          ],
+          "forwardEnabled": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "caseId": "pnoise-tier-simple-perspective",
+          "scope": "Same Debug core, three PNoise modes, full/stripped/restored; strong independent control; full-frame strict0/finite/visible/repeat. Not whole Tier/Pass/VFX/Player.",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "graphPassTag": "SRPDefaultUnlit",
+          "nativePassTag": "UniversalForward",
+          "finite": true,
+          "ab": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "bc": [
+            0.00048828125,
+            0.0,
+            0.00048828125
+          ],
+          "repeat": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "response": [
+            0.782470703125,
+            0.782470703125,
+            0.782470703125
+          ],
+          "restore": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "visible": [
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300
+          ],
+          "finalKeywords": [
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,NB_DEBUG_PNOISE",
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_SIMPLE,NB_DEBUG_PNOISE",
+            "_SURFACE_TYPE_TRANSPARENT,NB_DEBUG_PNOISE"
+          ],
+          "forwardEnabled": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "caseId": "pnoise-tier-voronoi-ortho",
+          "scope": "Same Debug core, three PNoise modes, full/stripped/restored; strong independent control; full-frame strict0/finite/visible/repeat. Not whole Tier/Pass/VFX/Player.",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "graphPassTag": "SRPDefaultUnlit",
+          "nativePassTag": "UniversalForward",
+          "finite": true,
+          "ab": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "bc": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "repeat": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "response": [
+            0.5819244384765625,
+            0.5819244384765625,
+            0.5819244384765625
+          ],
+          "restore": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "visible": [
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840,
+            3840
+          ],
+          "finalKeywords": [
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_VORONOI,NB_DEBUG_PNOISE",
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_VORONOI,NB_DEBUG_PNOISE",
+            "_SURFACE_TYPE_TRANSPARENT,NB_DEBUG_PNOISE"
+          ],
+          "forwardEnabled": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "caseId": "pnoise-tier-voronoi-perspective",
+          "scope": "Same Debug core, three PNoise modes, full/stripped/restored; strong independent control; full-frame strict0/finite/visible/repeat. Not whole Tier/Pass/VFX/Player.",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "graphPassTag": "SRPDefaultUnlit",
+          "nativePassTag": "UniversalForward",
+          "finite": true,
+          "ab": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "bc": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "repeat": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "response": [
+            0.5871200561523438,
+            0.5871200561523438,
+            0.5871200561523438
+          ],
+          "restore": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "visible": [
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300,
+            2300
+          ],
+          "finalKeywords": [
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_VORONOI,NB_DEBUG_PNOISE",
+            "_FX_LIGHT_MODE_UNLIT,_PROGRAM_NOISE,_PROGRAM_NOISE_VORONOI,NB_DEBUG_PNOISE",
+            "_SURFACE_TYPE_TRANSPARENT,NB_DEBUG_PNOISE"
+          ],
+          "forwardEnabled": [
+            true,
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "run": "pnoise-impact16-live-20261004-1",
+      "passed": 10,
+      "failed": 6,
+      "cases": 16,
+      "failures": [
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphPNoiseTests.G4PNoiseABC_surface_mask_simple_blend0_ortho",
+          "message": "  Expected: 0\r\n  But was:  0.000244140625f\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphPNoiseTests.G4PNoiseABC_surface_mask_both_blend0_ortho",
+          "message": "  Expected: 0\r\n  But was:  0.000244140625f\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphPNoiseTests.G4PNoiseABC_surface_dissolve_simple_blend0_ortho",
+          "message": "  Expected: 0\r\n  But was:  0.000244140625f\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphPNoiseTests.G4PNoiseABC_surface_dissolve_simple_blend0_perspective",
+          "message": "  Expected: 0\r\n  But was:  0.000244140625f\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphPNoiseTests.G4PNoiseABC_surface_dissolve_both_blend0_ortho",
+          "message": "  Expected: 0\r\n  But was:  0.000244140625f\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphPNoiseTests.G4PNoiseABC_surface_dissolve_both_blend0_perspective",
+          "message": "  Expected: 0\r\n  But was:  0.000244140625f\r\n"
+        }
+      ],
+      "metrics": [
+        {
+          "caseId": "depth-dissolve-both-ortho",
+          "stage": "directed DepthOnly",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": false,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 0,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 4020,
+          "changedB": 4020,
+          "changedC": 4020,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.0,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 0.949127197265625,
+          "responseB": 0.949127197265625,
+          "responseC": 0.949127197265625,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 36,
+          "directedValidFrames": 36
+        },
+        {
+          "caseId": "depth-dissolve-both-perspective",
+          "stage": "directed DepthOnly",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": false,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 0,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 4096,
+          "changedB": 4096,
+          "changedC": 4096,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.0,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 0.949127197265625,
+          "responseB": 0.949127197265625,
+          "responseC": 0.949127197265625,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 36,
+          "directedValidFrames": 36
+        },
+        {
+          "caseId": "depth-mask-both-ortho",
+          "stage": "directed DepthOnly",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": false,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 0,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 3864,
+          "changedB": 3864,
+          "changedC": 3864,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.0,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 0.949127197265625,
+          "responseB": 0.949127197265625,
+          "responseC": 0.949127197265625,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 36,
+          "directedValidFrames": 36
+        },
+        {
+          "caseId": "depth-mask-both-perspective",
+          "stage": "directed DepthOnly",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": false,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 0,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 4096,
+          "changedB": 4096,
+          "changedC": 4096,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.0,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 0.949127197265625,
+          "responseB": 0.949127197265625,
+          "responseC": 0.949127197265625,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 36,
+          "directedValidFrames": 36
+        },
+        {
+          "caseId": "shadow-dissolve-both-ortho",
+          "stage": "real URP main-light ShadowCaster",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": false,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 0,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 447,
+          "changedB": 447,
+          "changedC": 447,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.0,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 1.4755859375,
+          "responseB": 1.4755859375,
+          "responseC": 1.4755859375,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "shadow-dissolve-both-perspective",
+          "stage": "real URP main-light ShadowCaster",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": false,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 0,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 520,
+          "changedB": 520,
+          "changedC": 520,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.0,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 1.47607421875,
+          "responseB": 1.47607421875,
+          "responseC": 1.47607421875,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "shadow-mask-both-ortho",
+          "stage": "real URP main-light ShadowCaster",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": false,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 0,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 416,
+          "changedB": 416,
+          "changedC": 416,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.0,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 1.4755859375,
+          "responseB": 1.4755859375,
+          "responseC": 1.4755859375,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "shadow-mask-both-perspective",
+          "stage": "real URP main-light ShadowCaster",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 1,
+            "enabled": false,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 0,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 488,
+          "changedB": 488,
+          "changedC": 488,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.0,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 1.47607421875,
+          "responseB": 1.47607421875,
+          "responseC": 1.47607421875,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "surface-dissolve-both-0-uv0-ortho",
+          "stage": "Forward",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 0,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 7,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 3982,
+          "changedB": 3982,
+          "changedC": 3982,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.000244140625,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 1.0,
+          "responseB": 1.0,
+          "responseC": 1.0,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "surface-dissolve-both-0-uv0-perspective",
+          "stage": "Forward",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 0,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 9,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 3774,
+          "changedB": 3774,
+          "changedC": 3774,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.000244140625,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 1.0,
+          "responseB": 1.0,
+          "responseC": 1.0,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "surface-dissolve-simple-0-uv0-ortho",
+          "stage": "Forward",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "simple",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 0,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "simple",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 7,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 3982,
+          "changedB": 3982,
+          "changedC": 3982,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.000244140625,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 1.0,
+          "responseB": 1.0,
+          "responseC": 1.0,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "surface-dissolve-simple-0-uv0-perspective",
+          "stage": "Forward",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "simple",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 0,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "simple",
+            "consumer": "dissolve",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 9,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 3774,
+          "changedB": 3774,
+          "changedC": 3774,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.000244140625,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 1.0,
+          "responseB": 1.0,
+          "responseC": 1.0,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "surface-mask-both-0-uv0-ortho",
+          "stage": "Forward",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 0,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 3,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 4096,
+          "changedB": 4096,
+          "changedC": 4096,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.000244140625,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 0.61865234375,
+          "responseB": 0.61865234375,
+          "responseC": 0.61865234375,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "surface-mask-both-0-uv0-perspective",
+          "stage": "Forward",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 0,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": true,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "both",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 0,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 3844,
+          "changedB": 3844,
+          "changedC": 3844,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.0,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 0.70849609375,
+          "responseB": 0.70849609375,
+          "responseC": 0.70849609375,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "surface-mask-simple-0-uv0-ortho",
+          "stage": "Forward",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "simple",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 0,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "simple",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 3,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 4096,
+          "changedB": 4096,
+          "changedC": 4096,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.000244140625,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 0.61865234375,
+          "responseB": 0.61865234375,
+          "responseC": 0.61865234375,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        },
+        {
+          "caseId": "surface-mask-simple-0-uv0-perspective",
+          "stage": "Forward",
+          "unityVersion": "6000.3.25f1",
+          "api": "Direct3D11",
+          "note": "PN1 ordinary Mesh only; A Frozen/B ShaderLab/C Graph, 128x128 linear RGBAHalf, strict ROI 32..95; 4 warmups; no PN2 distortion/CustomData/procedural wrap modes/VFX/Player.",
+          "input": {
+            "kind": "simple",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 0,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "control": {
+            "kind": "simple",
+            "consumer": "mask",
+            "route": "uv0",
+            "consumerBlend": 1,
+            "baseBlend": 0,
+            "enabled": true,
+            "simple": true,
+            "voronoi": false,
+            "baseOpacity": 0.75,
+            "consumerOpacity": 0.8999999761581421
+          },
+          "finite": true,
+          "roiPixels": 4096,
+          "abDifferent": 0,
+          "bcDifferent": 0,
+          "abControlDifferent": 0,
+          "bcControlDifferent": 0,
+          "visibleA": 4096,
+          "visibleB": 4096,
+          "visibleC": 4096,
+          "changedA": 3844,
+          "changedB": 3844,
+          "changedC": 3844,
+          "abMax": 0.0,
+          "bcMax": 0.0,
+          "abControlMax": 0.0,
+          "bcControlMax": 0.0,
+          "repeatA": 0.0,
+          "repeatB": 0.0,
+          "repeatC": 0.0,
+          "responseA": 0.70849609375,
+          "responseB": 0.70849609375,
+          "responseC": 0.70849609375,
+          "baseBlendResponseA": 0.0,
+          "baseBlendResponseB": 0.0,
+          "baseBlendResponseC": 0.0,
+          "baseBlendABMax": 0.0,
+          "baseBlendBCMax": 0.0,
+          "baseBlendChangedA": 0,
+          "baseBlendChangedB": 0,
+          "baseBlendChangedC": 0,
+          "directedRecordedFrames": 0,
+          "directedValidFrames": 0
+        }
+      ]
+    }
+  ],
+  "rawFiniteNonCDCD": 296,
+  "rawPayloads": [
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\A-state0-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\A-state0.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\A-state1-repeat.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\A-state1.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\A-state2-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\A-state2.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\B-state0-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\B-state0.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\B-state1-repeat.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\B-state1.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\B-state2-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\B-state2.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\C-state0-repeat.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\C-state0.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\C-state1-repeat.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\C-state1.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\C-state2-repeat.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\C-state2.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-ortho\\empty.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\A-state0-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\A-state0.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\A-state1-repeat.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\A-state1.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\A-state2-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\A-state2.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\B-state0-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\B-state0.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\B-state1-repeat.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\B-state1.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\B-state2-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\B-state2.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\C-state0-repeat.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\C-state0.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\C-state1-repeat.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\C-state1.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\C-state2-repeat.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\C-state2.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-both-perspective\\empty.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\A-state0-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\A-state0.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\A-state1-repeat.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\A-state1.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\A-state2-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\A-state2.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\B-state0-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\B-state0.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\B-state1-repeat.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\B-state1.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\B-state2-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\B-state2.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\C-state0-repeat.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\C-state0.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\C-state1-repeat.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\C-state1.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\C-state2-repeat.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\C-state2.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-ortho\\empty.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\A-state0-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\A-state0.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\A-state1-repeat.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\A-state1.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\A-state2-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\A-state2.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\B-state0-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\B-state0.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\B-state1-repeat.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\B-state1.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\B-state2-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\B-state2.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\C-state0-repeat.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\C-state0.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\C-state1-repeat.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\C-state1.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\C-state2-repeat.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\C-state2.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-clip-perspective\\empty.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\A-state0-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\A-state0.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\A-state1-repeat.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\A-state1.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\A-state2-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\A-state2.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\B-state0-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\B-state0.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\B-state1-repeat.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\B-state1.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\B-state2-repeat.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\B-state2.rgba-f32.gz",
+      "sha256": "d449d282804aa85d3bd7ef0b615338aa3fba5f39c6d586467077920e265e8c97",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\C-state0-repeat.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\C-state0.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\C-state1-repeat.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\C-state1.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\C-state2-repeat.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\C-state2.rgba-f32.gz",
+      "sha256": "d92d35e4134aee12cda13e636beaec9de66309cb1686461da212807d6676b0d6",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-ortho\\empty.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\A-state0-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\A-state0.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\A-state1-repeat.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\A-state1.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\A-state2-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\A-state2.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\B-state0-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\B-state0.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\B-state1-repeat.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\B-state1.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\B-state2-repeat.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\B-state2.rgba-f32.gz",
+      "sha256": "54dafb490bf98b9fdac5caf6046bad919b0e1a21f43a78fd1ddc272e79775bdd",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\C-state0-repeat.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\C-state0.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\C-state1-repeat.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\C-state1.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\C-state2-repeat.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\C-state2.rgba-f32.gz",
+      "sha256": "1ec6bf1dc8b5ae510035f28c3abfdc69800e4dbffa3382b71a796038ec2f4b9a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-simple-perspective\\empty.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\A-state0-repeat.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\A-state0.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\A-state1-repeat.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\A-state1.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\A-state2-repeat.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\A-state2.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\B-state0-repeat.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\B-state0.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\B-state1-repeat.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\B-state1.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\B-state2-repeat.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\B-state2.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\C-state0-repeat.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\C-state0.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\C-state1-repeat.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\C-state1.rgba-f32.gz",
+      "sha256": "88bf840403eae57b291484571f7c99e3ee78532f401285eba5e866f0563d4262",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\C-state2-repeat.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\C-state2.rgba-f32.gz",
+      "sha256": "05e1f5afed5085fe875f141a6288a26f38d9292cde7a553bb939f731fc7ec092",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-ortho\\empty.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\A-state0-repeat.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\A-state0.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\A-state1-repeat.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\A-state1.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\A-state2-repeat.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\A-state2.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\B-state0-repeat.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\B-state0.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\B-state1-repeat.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\B-state1.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\B-state2-repeat.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\B-state2.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\C-state0-repeat.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\C-state0.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\C-state1-repeat.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\C-state1.rgba-f32.gz",
+      "sha256": "c6372dc12ee408dbe5a01ee99ac1cf5918d00a2ba3db64d874444bf6f829c9aa",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\C-state2-repeat.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\C-state2.rgba-f32.gz",
+      "sha256": "61b052890fa4ae372c1af59e21bdf758ba2229b6b27c0c178ee2f128413d137a",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-tier28-live-20261004-1\\captures\\pnoise-tier-voronoi-perspective\\empty.rgba-f32.gz",
+      "sha256": "1b7484d40afa6aaa4a7d767999f54e01aad1b40e46ba1df3c94060ea7beaae04",
+      "pixels": 9216
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-ortho\\A-control.rgba-f32.gz",
+      "sha256": "1e031a7b0e89f9fa29e5b543b876b2f7497acf7b613a84a0988229eab4153f1c",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-ortho\\A-repeat.rgba-f32.gz",
+      "sha256": "fd4c4de167b96f328bd977a12efe56313038260425baa39111257f3cf2d1de35",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-ortho\\A.rgba-f32.gz",
+      "sha256": "fd4c4de167b96f328bd977a12efe56313038260425baa39111257f3cf2d1de35",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-ortho\\B-control.rgba-f32.gz",
+      "sha256": "1e031a7b0e89f9fa29e5b543b876b2f7497acf7b613a84a0988229eab4153f1c",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-ortho\\B-repeat.rgba-f32.gz",
+      "sha256": "fd4c4de167b96f328bd977a12efe56313038260425baa39111257f3cf2d1de35",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-ortho\\B.rgba-f32.gz",
+      "sha256": "fd4c4de167b96f328bd977a12efe56313038260425baa39111257f3cf2d1de35",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-ortho\\C-control.rgba-f32.gz",
+      "sha256": "1e031a7b0e89f9fa29e5b543b876b2f7497acf7b613a84a0988229eab4153f1c",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-ortho\\C-repeat.rgba-f32.gz",
+      "sha256": "fd4c4de167b96f328bd977a12efe56313038260425baa39111257f3cf2d1de35",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-ortho\\C.rgba-f32.gz",
+      "sha256": "fd4c4de167b96f328bd977a12efe56313038260425baa39111257f3cf2d1de35",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-perspective\\A-control.rgba-f32.gz",
+      "sha256": "73dcd928161d40620a948e7cc1687ba95b53288d0442b1ac918ee09215aeb180",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-perspective\\A-repeat.rgba-f32.gz",
+      "sha256": "5f8d12e3a64cb15b0b0a5d2fa7223dafa67bc2664570c55f170778f6080942a6",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-perspective\\A.rgba-f32.gz",
+      "sha256": "5f8d12e3a64cb15b0b0a5d2fa7223dafa67bc2664570c55f170778f6080942a6",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-perspective\\B-control.rgba-f32.gz",
+      "sha256": "73dcd928161d40620a948e7cc1687ba95b53288d0442b1ac918ee09215aeb180",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-perspective\\B-repeat.rgba-f32.gz",
+      "sha256": "5f8d12e3a64cb15b0b0a5d2fa7223dafa67bc2664570c55f170778f6080942a6",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-perspective\\B.rgba-f32.gz",
+      "sha256": "5f8d12e3a64cb15b0b0a5d2fa7223dafa67bc2664570c55f170778f6080942a6",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-perspective\\C-control.rgba-f32.gz",
+      "sha256": "73dcd928161d40620a948e7cc1687ba95b53288d0442b1ac918ee09215aeb180",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-perspective\\C-repeat.rgba-f32.gz",
+      "sha256": "5f8d12e3a64cb15b0b0a5d2fa7223dafa67bc2664570c55f170778f6080942a6",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-dissolve-both-perspective\\C.rgba-f32.gz",
+      "sha256": "5f8d12e3a64cb15b0b0a5d2fa7223dafa67bc2664570c55f170778f6080942a6",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-ortho\\A-control.rgba-f32.gz",
+      "sha256": "84e681a53ca1aee4525074fea7aeb735f1775beba05594d3e8283904762b1e56",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-ortho\\A-repeat.rgba-f32.gz",
+      "sha256": "7d7244036786459df2e93c2f72eda9613785c12f3fdc4981070d712eca421022",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-ortho\\A.rgba-f32.gz",
+      "sha256": "7d7244036786459df2e93c2f72eda9613785c12f3fdc4981070d712eca421022",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-ortho\\B-control.rgba-f32.gz",
+      "sha256": "84e681a53ca1aee4525074fea7aeb735f1775beba05594d3e8283904762b1e56",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-ortho\\B-repeat.rgba-f32.gz",
+      "sha256": "7d7244036786459df2e93c2f72eda9613785c12f3fdc4981070d712eca421022",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-ortho\\B.rgba-f32.gz",
+      "sha256": "7d7244036786459df2e93c2f72eda9613785c12f3fdc4981070d712eca421022",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-ortho\\C-control.rgba-f32.gz",
+      "sha256": "84e681a53ca1aee4525074fea7aeb735f1775beba05594d3e8283904762b1e56",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-ortho\\C-repeat.rgba-f32.gz",
+      "sha256": "7d7244036786459df2e93c2f72eda9613785c12f3fdc4981070d712eca421022",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-ortho\\C.rgba-f32.gz",
+      "sha256": "7d7244036786459df2e93c2f72eda9613785c12f3fdc4981070d712eca421022",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-perspective\\A-control.rgba-f32.gz",
+      "sha256": "73dcd928161d40620a948e7cc1687ba95b53288d0442b1ac918ee09215aeb180",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-perspective\\A-repeat.rgba-f32.gz",
+      "sha256": "2b5fec08e8dcc654d7c536fdf5b442031aaece64b19825f5f6f68d4df3bab490",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-perspective\\A.rgba-f32.gz",
+      "sha256": "2b5fec08e8dcc654d7c536fdf5b442031aaece64b19825f5f6f68d4df3bab490",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-perspective\\B-control.rgba-f32.gz",
+      "sha256": "73dcd928161d40620a948e7cc1687ba95b53288d0442b1ac918ee09215aeb180",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-perspective\\B-repeat.rgba-f32.gz",
+      "sha256": "2b5fec08e8dcc654d7c536fdf5b442031aaece64b19825f5f6f68d4df3bab490",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-perspective\\B.rgba-f32.gz",
+      "sha256": "2b5fec08e8dcc654d7c536fdf5b442031aaece64b19825f5f6f68d4df3bab490",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-perspective\\C-control.rgba-f32.gz",
+      "sha256": "73dcd928161d40620a948e7cc1687ba95b53288d0442b1ac918ee09215aeb180",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-perspective\\C-repeat.rgba-f32.gz",
+      "sha256": "2b5fec08e8dcc654d7c536fdf5b442031aaece64b19825f5f6f68d4df3bab490",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\depth-mask-both-perspective\\C.rgba-f32.gz",
+      "sha256": "2b5fec08e8dcc654d7c536fdf5b442031aaece64b19825f5f6f68d4df3bab490",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-ortho\\A-control.rgba-f32.gz",
+      "sha256": "91895ec7df4f0b9f52d9e4fc210afd1730fe84f0e4c5a2d5f896d923a6d0d5e7",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-ortho\\A-repeat.rgba-f32.gz",
+      "sha256": "2d2620065b67e22d96d2e87ed15232c2344f5a8ec2a727e6eb2bb5382b17e4b8",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-ortho\\A.rgba-f32.gz",
+      "sha256": "2d2620065b67e22d96d2e87ed15232c2344f5a8ec2a727e6eb2bb5382b17e4b8",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-ortho\\B-control.rgba-f32.gz",
+      "sha256": "91895ec7df4f0b9f52d9e4fc210afd1730fe84f0e4c5a2d5f896d923a6d0d5e7",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-ortho\\B-repeat.rgba-f32.gz",
+      "sha256": "2d2620065b67e22d96d2e87ed15232c2344f5a8ec2a727e6eb2bb5382b17e4b8",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-ortho\\B.rgba-f32.gz",
+      "sha256": "2d2620065b67e22d96d2e87ed15232c2344f5a8ec2a727e6eb2bb5382b17e4b8",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-ortho\\C-control.rgba-f32.gz",
+      "sha256": "91895ec7df4f0b9f52d9e4fc210afd1730fe84f0e4c5a2d5f896d923a6d0d5e7",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-ortho\\C-repeat.rgba-f32.gz",
+      "sha256": "2d2620065b67e22d96d2e87ed15232c2344f5a8ec2a727e6eb2bb5382b17e4b8",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-ortho\\C.rgba-f32.gz",
+      "sha256": "2d2620065b67e22d96d2e87ed15232c2344f5a8ec2a727e6eb2bb5382b17e4b8",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-perspective\\A-control.rgba-f32.gz",
+      "sha256": "338dd5a11987b66f9b1fed550467e043a41aa5d55244321f1e4ded551bf21228",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-perspective\\A-repeat.rgba-f32.gz",
+      "sha256": "694e94eb0d633b520c0ec4821b4dc75cbc1a022a2cf75b070282a918fbd94474",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-perspective\\A.rgba-f32.gz",
+      "sha256": "694e94eb0d633b520c0ec4821b4dc75cbc1a022a2cf75b070282a918fbd94474",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-perspective\\B-control.rgba-f32.gz",
+      "sha256": "338dd5a11987b66f9b1fed550467e043a41aa5d55244321f1e4ded551bf21228",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-perspective\\B-repeat.rgba-f32.gz",
+      "sha256": "694e94eb0d633b520c0ec4821b4dc75cbc1a022a2cf75b070282a918fbd94474",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-perspective\\B.rgba-f32.gz",
+      "sha256": "694e94eb0d633b520c0ec4821b4dc75cbc1a022a2cf75b070282a918fbd94474",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-perspective\\C-control.rgba-f32.gz",
+      "sha256": "338dd5a11987b66f9b1fed550467e043a41aa5d55244321f1e4ded551bf21228",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-perspective\\C-repeat.rgba-f32.gz",
+      "sha256": "694e94eb0d633b520c0ec4821b4dc75cbc1a022a2cf75b070282a918fbd94474",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-dissolve-both-perspective\\C.rgba-f32.gz",
+      "sha256": "694e94eb0d633b520c0ec4821b4dc75cbc1a022a2cf75b070282a918fbd94474",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-ortho\\A-control.rgba-f32.gz",
+      "sha256": "e590a9c73081fe8a336152c62539ac3c41ddb050f8803e5b1ba55ceef7e74697",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-ortho\\A-repeat.rgba-f32.gz",
+      "sha256": "c3cc7aa15e889585cc69c9dab573cb61a1edb509642b218c4e6a27252cf85a7a",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-ortho\\A.rgba-f32.gz",
+      "sha256": "c3cc7aa15e889585cc69c9dab573cb61a1edb509642b218c4e6a27252cf85a7a",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-ortho\\B-control.rgba-f32.gz",
+      "sha256": "e590a9c73081fe8a336152c62539ac3c41ddb050f8803e5b1ba55ceef7e74697",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-ortho\\B-repeat.rgba-f32.gz",
+      "sha256": "c3cc7aa15e889585cc69c9dab573cb61a1edb509642b218c4e6a27252cf85a7a",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-ortho\\B.rgba-f32.gz",
+      "sha256": "c3cc7aa15e889585cc69c9dab573cb61a1edb509642b218c4e6a27252cf85a7a",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-ortho\\C-control.rgba-f32.gz",
+      "sha256": "e590a9c73081fe8a336152c62539ac3c41ddb050f8803e5b1ba55ceef7e74697",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-ortho\\C-repeat.rgba-f32.gz",
+      "sha256": "c3cc7aa15e889585cc69c9dab573cb61a1edb509642b218c4e6a27252cf85a7a",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-ortho\\C.rgba-f32.gz",
+      "sha256": "c3cc7aa15e889585cc69c9dab573cb61a1edb509642b218c4e6a27252cf85a7a",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-perspective\\A-control.rgba-f32.gz",
+      "sha256": "2a3d6b1b77d45f495d5d143e51a953866329cc9da7e834926f3bcb177625d0b1",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-perspective\\A-repeat.rgba-f32.gz",
+      "sha256": "79ae54c2f69c9bb0215ab7b478fedfe98096ecc43704d741aacd4daf6c2d1862",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-perspective\\A.rgba-f32.gz",
+      "sha256": "79ae54c2f69c9bb0215ab7b478fedfe98096ecc43704d741aacd4daf6c2d1862",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-perspective\\B-control.rgba-f32.gz",
+      "sha256": "2a3d6b1b77d45f495d5d143e51a953866329cc9da7e834926f3bcb177625d0b1",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-perspective\\B-repeat.rgba-f32.gz",
+      "sha256": "79ae54c2f69c9bb0215ab7b478fedfe98096ecc43704d741aacd4daf6c2d1862",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-perspective\\B.rgba-f32.gz",
+      "sha256": "79ae54c2f69c9bb0215ab7b478fedfe98096ecc43704d741aacd4daf6c2d1862",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-perspective\\C-control.rgba-f32.gz",
+      "sha256": "2a3d6b1b77d45f495d5d143e51a953866329cc9da7e834926f3bcb177625d0b1",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-perspective\\C-repeat.rgba-f32.gz",
+      "sha256": "79ae54c2f69c9bb0215ab7b478fedfe98096ecc43704d741aacd4daf6c2d1862",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\shadow-mask-both-perspective\\C.rgba-f32.gz",
+      "sha256": "79ae54c2f69c9bb0215ab7b478fedfe98096ecc43704d741aacd4daf6c2d1862",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-ortho\\A-control.rgba-f32.gz",
+      "sha256": "2f9d4d8e3e9ad52545356fe3d8bc24e4c99d3a27e7222b870fd4c0aab954f81f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-ortho\\A-repeat.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-ortho\\A.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-ortho\\B-control.rgba-f32.gz",
+      "sha256": "2f9d4d8e3e9ad52545356fe3d8bc24e4c99d3a27e7222b870fd4c0aab954f81f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-ortho\\B-repeat.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-ortho\\B.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-ortho\\C-control.rgba-f32.gz",
+      "sha256": "9d251f9452e8aa7a4c3fb189a2d0fef3d52690af22b412b51b2619da529f4303",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-ortho\\C-repeat.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-ortho\\C.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-perspective\\A-control.rgba-f32.gz",
+      "sha256": "4feedf17d149c9e3f14d69c770e3400c56c3f8cf93513b211d76ea3e5af9dafc",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-perspective\\A-repeat.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-perspective\\A.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-perspective\\B-control.rgba-f32.gz",
+      "sha256": "4feedf17d149c9e3f14d69c770e3400c56c3f8cf93513b211d76ea3e5af9dafc",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-perspective\\B-repeat.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-perspective\\B.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-perspective\\C-control.rgba-f32.gz",
+      "sha256": "0ff2baa031540ac733bc96907dbfbf83feac1eed45d28bbe1e1b15dab3156ef4",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-perspective\\C-repeat.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-both-0-uv0-perspective\\C.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-ortho\\A-control.rgba-f32.gz",
+      "sha256": "2f9d4d8e3e9ad52545356fe3d8bc24e4c99d3a27e7222b870fd4c0aab954f81f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-ortho\\A-repeat.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-ortho\\A.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-ortho\\B-control.rgba-f32.gz",
+      "sha256": "2f9d4d8e3e9ad52545356fe3d8bc24e4c99d3a27e7222b870fd4c0aab954f81f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-ortho\\B-repeat.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-ortho\\B.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-ortho\\C-control.rgba-f32.gz",
+      "sha256": "9d251f9452e8aa7a4c3fb189a2d0fef3d52690af22b412b51b2619da529f4303",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-ortho\\C-repeat.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-ortho\\C.rgba-f32.gz",
+      "sha256": "df33af4f401996fac1d78e5c0da61bd38bb43ec9b6dc512b64f7ccfcb62c0942",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-perspective\\A-control.rgba-f32.gz",
+      "sha256": "4feedf17d149c9e3f14d69c770e3400c56c3f8cf93513b211d76ea3e5af9dafc",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-perspective\\A-repeat.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-perspective\\A.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-perspective\\B-control.rgba-f32.gz",
+      "sha256": "4feedf17d149c9e3f14d69c770e3400c56c3f8cf93513b211d76ea3e5af9dafc",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-perspective\\B-repeat.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-perspective\\B.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-perspective\\C-control.rgba-f32.gz",
+      "sha256": "0ff2baa031540ac733bc96907dbfbf83feac1eed45d28bbe1e1b15dab3156ef4",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-perspective\\C-repeat.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-dissolve-simple-0-uv0-perspective\\C.rgba-f32.gz",
+      "sha256": "58155e113b76773a13a10aaa2978363682e76ea292b0eb423cea022da62b5872",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-ortho\\A-control.rgba-f32.gz",
+      "sha256": "d356b62097f89e8b7755c5685ddf3c8eb7165e1c4a1e84a62bb95e2aff6d2479",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-ortho\\A-repeat.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-ortho\\A.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-ortho\\B-control.rgba-f32.gz",
+      "sha256": "d356b62097f89e8b7755c5685ddf3c8eb7165e1c4a1e84a62bb95e2aff6d2479",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-ortho\\B-repeat.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-ortho\\B.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-ortho\\C-control.rgba-f32.gz",
+      "sha256": "8aa6c5f5daa35d173aa9a4c4d0f6f62f40bab0f3489dba56eedd443f683c0c59",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-ortho\\C-repeat.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-ortho\\C.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-perspective\\A-control.rgba-f32.gz",
+      "sha256": "7b6e2f817dbd99b9e01ea4968e653c44157e9988d1aefd8fef9eb5bf2f3d7259",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-perspective\\A-repeat.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-perspective\\A.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-perspective\\B-control.rgba-f32.gz",
+      "sha256": "7b6e2f817dbd99b9e01ea4968e653c44157e9988d1aefd8fef9eb5bf2f3d7259",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-perspective\\B-repeat.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-perspective\\B.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-perspective\\C-control.rgba-f32.gz",
+      "sha256": "7b6e2f817dbd99b9e01ea4968e653c44157e9988d1aefd8fef9eb5bf2f3d7259",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-perspective\\C-repeat.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-both-0-uv0-perspective\\C.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-ortho\\A-control.rgba-f32.gz",
+      "sha256": "d356b62097f89e8b7755c5685ddf3c8eb7165e1c4a1e84a62bb95e2aff6d2479",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-ortho\\A-repeat.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-ortho\\A.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-ortho\\B-control.rgba-f32.gz",
+      "sha256": "d356b62097f89e8b7755c5685ddf3c8eb7165e1c4a1e84a62bb95e2aff6d2479",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-ortho\\B-repeat.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-ortho\\B.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-ortho\\C-control.rgba-f32.gz",
+      "sha256": "8aa6c5f5daa35d173aa9a4c4d0f6f62f40bab0f3489dba56eedd443f683c0c59",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-ortho\\C-repeat.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-ortho\\C.rgba-f32.gz",
+      "sha256": "c986baae907619330b6f3a3aaa94b38daa393d32b7b59cc05e0a5d05598e7a8f",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-perspective\\A-control.rgba-f32.gz",
+      "sha256": "7b6e2f817dbd99b9e01ea4968e653c44157e9988d1aefd8fef9eb5bf2f3d7259",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-perspective\\A-repeat.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-perspective\\A.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-perspective\\B-control.rgba-f32.gz",
+      "sha256": "7b6e2f817dbd99b9e01ea4968e653c44157e9988d1aefd8fef9eb5bf2f3d7259",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-perspective\\B-repeat.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-perspective\\B.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-perspective\\C-control.rgba-f32.gz",
+      "sha256": "7b6e2f817dbd99b9e01ea4968e653c44157e9988d1aefd8fef9eb5bf2f3d7259",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-perspective\\C-repeat.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    },
+    {
+      "path": "pnoise-impact16-live-20261004-1\\captures\\g4-pnoise\\surface-mask-simple-0-uv0-perspective\\C.rgba-f32.gz",
+      "sha256": "bf560c1d38bc995039cdcc726228bbcc750aa8a140ab75fdcf09ddf253c17152",
+      "pixels": 16384
+    }
+  ],
+  "fullMeshGatePassed": false
+}
