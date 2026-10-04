@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>2026-10-04 Mesh ZOffset 检查点</title></head><body>
+<p><a href="index.html">报告索引</a></p><h1>Mesh Graph ZOffset：限定实现与必要回归</h1>
+<p>源码提交 <code>954c9e16f8abcb3e672c1fce7cc17e430953ea2d</code>。环境：Unity 6000.3.25f1 / URP、ShaderGraph17.3.0 / Windows Direct3D11。此片在当前共享GUI已集成的Graph d019上验证；Graph资产、接线、算法及关键字轴没有改动。</p>
+<p>包内NBGraphUnlitSubTarget为原Forward与两条NB颜色Pass添加Offset，保留原ZTest描述与条件，收集与原ShaderLab同名且默认0的两个隐藏RenderState Float。没有修改官方包、UniversalTarget或NBPostprocess合同。<a href="mesh-zoffset-20261004/source-installation.json">精确源及安装</a>。</p>
+<table border="1" cellpadding="6"><tr><th>范围</th><th>真实结果</th><th>边界</th></tr>
+<tr><td>原ZOffset12</td><td>12/12；三颜色Pass × factor/units × 正交/透视</td><td>正负偏移、重复、可见、finite及全帧零差原断言保留</td></tr>
+<tr><td>原OVZ生成/SRP2</td><td>2/2；Current和Graph code0</td><td>Frozen code10的VATTex旧问题单列；不改Frozen</td></tr>
+<tr><td>必要影响</td><td>F0三Pass36/36、OVZ24/24，七个串行批次</td><td>默认Offset=0回归；不代表非零Offset与OverrideZ组合已完成</td></tr>
+<tr><td><a href="mesh-zoffset-20261004/main-actual-readback.json">实际主工程</a></td><td>新Target已编译；两Offset Float默认0；Shader Error0/Warning16</td><td>主工程仅源/导入读回，定向绘制来自隔离工程</td></tr></table>
+<p><a href="mesh-zoffset-20261004/initial14-audit.json">独立初轮审计</a>核准228 raw全部finite、非CDCD；AB/BC/repeat全帧精确0，最小可见像素3430、最小正负响应0.375。原生completed JSON见<a href="mesh-zoffset-20261004/provenance.json">来源清单</a>，没有合成XML或与旧重叠批次累加。</p>
+<p>本次测试在原TAI/隔离保护后，用已验证的真实URP相机初始化，再精确导入Graph；补充FindPass库存诊断只改变错误消息。旧4项不可见及后续4项FindPass失败均保留。此结果不替代首帧验收，也不将先前冷启动失败改成通过。</p>
+<p>生成代码审计确认Offset仅出现在三颜色Pass，其它Pass没有添加Offset；两个属性为RenderState专用，没有复制HLSL uniform。主工程精确Graph导入曾达到Pipeline五秒超时，随后实际字段读回已就绪，原超时记录保留。</p>
+<p>仍待：高级状态共享GUI、非零Offset/OverrideZ组合、BackFirst、默认DepthNormals/SSAO，以及其余组合、后处理、Player、变体和性能。完整G3/G4尚未放行，正式VFX在Mesh审核之后。</p>
+</body></html>
