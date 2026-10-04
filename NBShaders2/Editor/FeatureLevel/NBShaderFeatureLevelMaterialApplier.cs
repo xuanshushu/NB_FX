@@ -8,6 +8,95 @@ namespace NBShaders2.Editor.FeatureLevel
     {
         private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
 
+        // Existing persisted Tier contract, currently eight Graph consumers only.
+        internal static readonly string[] GraphSupportedGateProperties = {
+            "_NB_TierAllowMask", "_NB_TierAllowMask2", "_NB_TierAllowMask3",
+            "_NB_TierAllowNoise", "_NB_TierAllowNoiseMask",
+            "_NB_TierAllowProgramNoise", "_NB_TierAllowProgramSimple", "_NB_TierAllowProgramVoronoi"
+        };
+        static readonly string[] GraphSupportedGateKeywords = {
+            "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
+            "_PROGRAM_NOISE", "_PROGRAM_NOISE_SIMPLE", "_PROGRAM_NOISE_VORONOI"
+        };
+
+        static bool TryReadGraphSupportedGateTier(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords, out NBShaderMaterialIntentResult intent)
+        {
+            intent = null;
+            if ((int)tier < 0 || (int)tier > 3 ||
+                !NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, FeatureTierPropertyName)) return false;
+            float saved = material.GetFloat(FeatureTierPropertyName);
+            if (float.IsNaN(saved) || float.IsInfinity(saved) || saved < 0 || saved > 3 || saved != Mathf.Round(saved)) return false;
+            foreach (string property in GraphSupportedGateProperties)
+            {
+                if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, property)) return false;
+                float value = material.GetFloat(property);
+                if (float.IsNaN(value) || float.IsInfinity(value)) return false;
+            }
+            var allowed = allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            string[] unavailable;
+            return NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material, tier, allowed, out intent, out unavailable);
+        }
+
+        internal static bool CanApplyGraphSupportedGateTier(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords, out bool wouldChange)
+        {
+            wouldChange = false;
+            NBShaderMaterialIntentResult intent;
+            if (!TryReadGraphSupportedGateTier(material, tier, allowedManagedKeywords, out intent)) return false;
+            var effective = new HashSet<string>(intent.effectiveKeywords);
+            for (int i = 0; i < GraphSupportedGateProperties.Length; ++i)
+                wouldChange |= material.GetFloat(GraphSupportedGateProperties[i]) != (effective.Contains(GraphSupportedGateKeywords[i]) ? 1f : 0f);
+            return true;
+        }
+
+        internal static bool ApplyGraphSupportedGateTier(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords, out bool changed)
+        {
+            changed = false;
+            var allowed = new HashSet<string>(allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier));
+            bool wouldChange;
+            if (!CanApplyGraphSupportedGateTier(material, tier, allowed, out wouldChange)) return false;
+            if (!wouldChange) return true;
+            // All three groups have been preflighted before the first write.
+            bool groupChanged;
+            if (!ApplyGraphMaskGroup(material, tier, allowed, out groupChanged)) return false;
+            changed |= groupChanged;
+            if (!ApplyGraphNoisePair(material, tier, allowed, out groupChanged)) return false;
+            changed |= groupChanged;
+            if (!ApplyGraphProgramNoiseGroup(material, tier, allowed, out groupChanged)) return false;
+            changed |= groupChanged;
+            return true;
+        }
+
+        internal static bool TryReadGraphSavedSupportedGateTier(Material material, out NBShaderMaterialIntentResult intent)
+        {
+            intent = null;
+            if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, FeatureTierPropertyName)) return false;
+            float saved = material.GetFloat(FeatureTierPropertyName);
+            if (float.IsNaN(saved) || float.IsInfinity(saved) || saved < 0 || saved > 3 || saved != Mathf.Round(saved)) return false;
+            return TryReadGraphSupportedGateTier(material, (NBShaderFeatureTier)(int)saved, null, out intent);
+        }
+
+        internal static bool CanApplyGraphSavedSupportedGateTier(Material material, out bool wouldChange)
+        {
+            wouldChange = false;
+            if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, FeatureTierPropertyName)) return false;
+            float saved = material.GetFloat(FeatureTierPropertyName);
+            if (float.IsNaN(saved) || float.IsInfinity(saved) || saved < 0 || saved > 3 || saved != Mathf.Round(saved)) return false;
+            return CanApplyGraphSupportedGateTier(material, (NBShaderFeatureTier)(int)saved, null, out wouldChange);
+        }
+
+        internal static bool ApplyGraphSavedSupportedGateTier(Material material, out bool changed)
+        {
+            changed = false;
+            if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, FeatureTierPropertyName)) return false;
+            float saved = material.GetFloat(FeatureTierPropertyName);
+            if (float.IsNaN(saved) || float.IsInfinity(saved) || saved < 0 || saved > 3 || saved != Mathf.Round(saved)) return false;
+            return ApplyGraphSupportedGateTier(material, (NBShaderFeatureTier)(int)saved, null, out changed);
+        }
+
+
         // Explicit ProgramNoise three-feature capability. Same saved intent/dependencies.
         public static bool ApplyGraphProgramNoiseGroup(Material material, NBShaderFeatureTier tier,
             IEnumerable<string> allowedManagedKeywords, out bool changed)

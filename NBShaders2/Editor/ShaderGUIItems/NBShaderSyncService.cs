@@ -124,6 +124,150 @@ namespace NBShaderEditor
             return false;
         }
 
+
+        // Original Tier selection transaction; only implemented Graph gates.
+
+        // Explicit first-schema initialization only. Ordinary Prepare/Sync
+        // remains seed-only; a ready marker2 inspector never projects on paint.
+        internal bool TryInitializeGraphSupportedGateTierState()
+        {
+            if (_rootItem.Mats == null || _rootItem.Mats.Count == 0 || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return false;
+            List<Material> initialize = null;
+            foreach (Material material in _rootItem.Mats)
+            {
+                if (!NBShaderGUIContext.IsGraphMaterial(material) ||
+                    !NBShaderRootItem.HasFloatProperty(material, GraphGUIStateVersionProperty) ||
+                    !NBShaderRootItem.HasFloatProperty(material, FeatureTierPropertyName) ||
+                    !NBShaderRootItem.HasFloatProperty(material, "_MainTexBigBlockItemFoldOut") ||
+                    !NBShaderRootItem.HasFloatProperty(material, "_BaseMapFoldOut")) return false;
+                float marker = material.GetFloat(GraphGUIStateVersionProperty);
+                if (marker != 0f && marker != 1f && marker != 2f) return false;
+                bool wouldChange;
+                if (marker == 2f)
+                {
+                    if (!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out wouldChange)) return false;
+                    continue;
+                }
+                if (!GraphFlagIntentSchemaAvailable(material)) return false;
+                // Probe the actual current material and existing seed routine,
+                // never guess missing properties or temporarily mutate a target.
+                var probe = new Material(material) { hideFlags = HideFlags.HideAndDontSave };
+                try
+                {
+                    SeedGraphFlagIntents(probe);
+                    probe.SetFloat(GraphGUIStateVersionProperty, 2f);
+                    if (!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(probe, out wouldChange)) return false;
+                }
+                finally { UnityEngine.Object.DestroyImmediate(probe); }
+                if (initialize == null) initialize = new List<Material>();
+                initialize.Add(material);
+            }
+            if (initialize == null) return true;
+
+            // Exact owned float before-images: original29 mirrors + marker
+            // and newly owned8 gates. Raw words/keywords/passes are never written.
+            var ownedNames = new List<string> { GraphGUIStateVersionProperty };
+            foreach (var binding in ToggleFlagBindings) ownedNames.Add(binding.propertyName);
+            foreach (var binding in ModeFlagBindings) ownedNames.Add(binding.propertyName);
+            ownedNames.AddRange(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties);
+            var originals = new float[initialize.Count][];
+            var targets = new UnityEngine.Object[initialize.Count];
+            for (int i = 0; i < initialize.Count; ++i)
+            {
+                targets[i] = initialize[i]; originals[i] = new float[ownedNames.Count];
+                for (int field = 0; field < ownedNames.Count; ++field) originals[i][field] = initialize[i].GetFloat(ownedNames[field]);
+            }
+            Undo.RecordObjects(targets, "Initialize NB Graph GUI state and Tier");
+            PrepareGraphGUIState(); // Original seed-only implementation, same protocol.
+            foreach (Material material in initialize)
+            {
+                bool changed;
+                if (NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material, out changed)) continue;
+                // Unexpected failure after a pure probe: restore only the
+                // owned initialization fields for every new target.
+                for (int i = 0; i < initialize.Count; ++i)
+                    for (int field = 0; field < ownedNames.Count; ++field) initialize[i].SetFloat(ownedNames[field], originals[i][field]);
+                return false;
+            }
+            foreach (Material material in initialize) EditorUtility.SetDirty(material);
+            RefreshGraphMainTexPropertyReferences();
+            _rootItem.Context?.Refresh();
+            return true;
+        }
+
+        internal static bool TryInitializeGraphSupportedGateTierOnAssign(Material material)
+        {
+            if (material == null) return false;
+            var root = new NBShaderRootItem { Mats = new List<Material> { material }, Shader = material.shader };
+            if (!new NBShaderSyncService(root).TryInitializeGraphSupportedGateTierState()) return false;
+            // Assign owns a real shader change even when the old material was
+            // already marker2; unlike a ready inspector paint, re-derive here.
+            bool changed;
+            return NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material, out changed);
+        }
+
+        internal bool HasGraphSupportedGateTierEditSchema()
+        {
+            if (_rootItem.MatEditor == null || _rootItem.Mats == null || _rootItem.Mats.Count == 0 ||
+                NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                bool wouldChange;
+                if (!NBShaderGUIContext.IsGraphMaterial(material) || !_rootItem.PropertyInfoDic.ContainsKey(FeatureTierPropertyName) ||
+                    !NBShaderFeatureLevelMaterialApplier.CanApplyGraphSupportedGateTier(material, NBShaderFeatureTier.Ultra,
+                        NBShaderFeatureCatalog.RawKeywords, out wouldChange)) return false;
+                foreach (string property in NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties)
+                    if (!_rootItem.PropertyInfoDic.ContainsKey(property)) return false;
+            }
+            return true;
+        }
+
+        internal bool TryApplyGraphSupportedGateTier(NBShaderFeatureTier tier, IEnumerable<string> allowedManagedKeywords = null)
+        {
+            if ((int)tier < 0 || (int)tier > 3 || !HasGraphSupportedGateTierEditSchema()) return false;
+            var allowed = new HashSet<string>(allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier));
+            bool anyChange = false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                bool wouldChange;
+                if (!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSupportedGateTier(material, tier, allowed, out wouldChange)) return false;
+                anyChange |= wouldChange || material.GetFloat(FeatureTierPropertyName) != (float)tier;
+            }
+            if (!anyChange) return true;
+            var objects = new List<UnityEngine.Object>();
+            foreach (Material material in _rootItem.Mats) objects.Add(material);
+            var originalGates = new float[_rootItem.Mats.Count][];
+            for (int i = 0; i < _rootItem.Mats.Count; ++i)
+            {
+                originalGates[i] = new float[NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties.Length];
+                for (int gate = 0; gate < originalGates[i].Length; ++gate)
+                    originalGates[i][gate] = _rootItem.Mats[i].GetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties[gate]);
+            }
+            Undo.RecordObjects(objects.ToArray(), "Set NBShader Feature Tier");
+            var changedMaterials = new bool[_rootItem.Mats.Count];
+            for (int i = 0; i < _rootItem.Mats.Count; ++i)
+            {
+                if (NBShaderFeatureLevelMaterialApplier.ApplyGraphSupportedGateTier(_rootItem.Mats[i], tier, allowed, out changedMaterials[i])) continue;
+                // Reader is pure and gates are not its inputs, so this is an
+                // unexpected post-preflight failure. Roll back the owned eight
+                // values for every target before any Tier value is committed.
+                for (int restore = 0; restore < _rootItem.Mats.Count; ++restore)
+                    for (int gate = 0; gate < originalGates[restore].Length; ++gate)
+                        _rootItem.Mats[restore].SetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties[gate], originalGates[restore][gate]);
+                return false;
+            }
+            for (int i = 0; i < _rootItem.Mats.Count; ++i)
+            {
+                Material material = _rootItem.Mats[i];
+                if (material.GetFloat(FeatureTierPropertyName) != (float)tier)
+                { material.SetFloat(FeatureTierPropertyName, (float)tier); changedMaterials[i] = true; }
+                if (changedMaterials[i]) EditorUtility.SetDirty(material);
+            }
+            RefreshGraphMainTexPropertyReferences();
+            _rootItem.Context?.Refresh();
+            return true;
+        }
+
         public void NotifyKeywordsMayHaveChanged()
         {
             KeywordVersion++;

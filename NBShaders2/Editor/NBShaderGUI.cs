@@ -135,7 +135,15 @@ namespace NBShaderEditor
             foreach (Material material in Mats)
                 foreach (string prefix in new[] { "_NB_WrapFlags", "_NB_ColorChannel", "_NB_ForceNoMipFlags" })
                     if (!HasFloatProperty(material, prefix + "Lo16") || !HasFloatProperty(material, prefix + "Hi16")) return false;
-            SyncService.PrepareGraphGUIState();
+            // Only the explicit first-schema transaction owns initial gates.
+            // Marker2 already ready returns without any paint projection.
+            bool hasTierContract = false;
+            foreach (Material material in Mats) if (material.HasProperty("_NBShaderFeatureTier")) hasTierContract = true;
+            if (hasTierContract)
+            {
+                if (!SyncService.TryInitializeGraphSupportedGateTierState()) return false;
+            }
+            else SyncService.PrepareGraphGUIState();
             _mainTexBlock ??= new MainTexBigBlockItem(this, null);
             _sharedGraphMainTextureReady = true;
             return true;
@@ -216,6 +224,8 @@ namespace NBShaderEditor
                 if (InitializeGraphLightModeInputs())
                     _graphLightModeBlock.OnGUI();
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
+                _toolBar ??= new NBShaderGUIToolBar(this);
+                _toolBar.DrawGraphTierSelector();
                 return;
             }
 

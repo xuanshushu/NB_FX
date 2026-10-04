@@ -595,7 +595,7 @@ namespace NBFX.Baseline.Tests
         }
 
         [Test]
-        public void GUI1B_RealAssetSaveReloadForceReimport_PreservesWordsMirrorsAndOfficialState()
+        public void GUI1B_RealAssetSaveReloadForceReimport_PersistentTierV2_PreservesWordsMirrorsAndOfficialState()
         {
             string project = Path.GetFullPath(Path.GetDirectoryName(Application.dataPath)).Replace('\\', '/');
             string explicitClone = Environment.GetEnvironmentVariable("NBFX_ISOLATED_PROJECT_DIR");
@@ -616,6 +616,7 @@ namespace NBFX.Baseline.Tests
             AssetDatabase.CreateAsset(material, path);
             var root = NewRoot(material); Call(Prop(root, "SyncService"), "PrepareGraphGUIState");
             Assert.That(material.GetFloat(Version), Is.EqualTo(2f)); AssertSeed(material, bindings);
+            Call(gui, "ValidateMaterial", material); // V2: schema/mirror seed is complete; persist the real validated Tier state.
             Snapshot before = Snapshot.Read(material); EditorUtility.SetDirty(material); AssetDatabase.SaveAssets();
             Assert.That(File.Exists(Path.Combine(project, path)), Is.True);
             string yaml = File.ReadAllText(Path.Combine(project, path));

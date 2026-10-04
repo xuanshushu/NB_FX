@@ -16,6 +16,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
         const string kPassRoot = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Passes/";
 
         [SerializeField] bool m_NBBackFirstRouting = false;
+        // Omitted legacy fields retain the existing generated normals capability.
+        [SerializeField] bool m_NBMeshDepthNormals = true;
 
         public NBGraphUnlitSubTarget() => displayName = "NB FX Unlit (URP)";
 
@@ -48,10 +50,17 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             Builtin().Setup(ref context);
             var subShader = context.subShaders[index];
             var passes = new PassCollection();
+            bool includeDepthNormals = m_NBMeshDepthNormals;
+#if HAS_VFX_GRAPH
+            // Mesh-only choice: preserve the existing VFX generation path.
+            includeDepthNormals |= TargetsVFX();
+#endif
             bool found = false;
             foreach (var item in subShader.passes)
             {
                 var pass = item.descriptor;
+                if (!includeDepthNormals && string.Equals(pass.lightMode, "DepthNormalsOnly", StringComparison.Ordinal))
+                    continue;
                 pass = WithNBInterpolatorShaderModel(pass);
                 bool forward = pass.referenceName == "SHADERPASS_UNLIT";
                 if (forward)
@@ -352,6 +361,13 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
         public override void GetPropertiesGUI(ref TargetPropertyGUIContext context, Action onChange, Action<string> registerUndo)
         {
             Builtin().GetPropertiesGUI(ref context, onChange, registerUndo);
+            context.AddProperty("Mesh DepthNormals Pass (SSAO)", new Toggle { value = m_NBMeshDepthNormals }, evt =>
+            {
+                if (m_NBMeshDepthNormals == evt.newValue) return;
+                registerUndo("Change NB Mesh DepthNormals Participation");
+                m_NBMeshDepthNormals = evt.newValue;
+                onChange();
+            });
             context.AddProperty("NB BackFirst Native Routing (explicit opt-in)", new Toggle { value = m_NBBackFirstRouting }, evt =>
             {
                 if (m_NBBackFirstRouting == evt.newValue) return;

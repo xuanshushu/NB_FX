@@ -48,6 +48,19 @@ namespace NBShaderEditor
             _tierTooltip = Tip("tier", "NBShader feature tier");
         }
 
+
+        // Same Tier content/menu/callback, scoped to real Graph consumers.
+        internal void DrawGraphTierSelector()
+        {
+            Rect rect = ShaderGUIItem.ApplyGlobalRectCompensation(_rootItem.GetControlRect(EditorGUIUtility.singleLineHeight));
+            GUI.Box(rect, GUIContent.none, EditorStyles.toolbar);
+            GUI.Label(new Rect(rect.x + 4, rect.y, Mathf.Max(0, rect.width - TierButtonWidth - 8), rect.height),
+                Label("graphTierScope", "Tier applies to Mask / Noise / Program Noise"), EditorStyles.miniLabel);
+            using (new EditorGUI.DisabledScope(_rootItem.SyncService == null || !_rootItem.SyncService.HasGraphSupportedGateTierEditSchema()))
+                if (GUI.Button(MakeToolbarButtonRect(rect, rect.xMax - TierButtonWidth, TierButtonWidth), TierContent(), EditorStyles.toolbarButton))
+                    ShowTierPopupMenu();
+        }
+
         public void DrawToolbar()
         {
             Rect toolbarRect = ShaderGUIItem.ApplyGlobalRectCompensation(
@@ -261,6 +274,15 @@ namespace NBShaderEditor
 
         private void SetFeatureTier(NBShaderFeatureTier tier)
         {
+            _rootItem.Context?.Refresh();
+            if (_rootItem.Context != null && _rootItem.Context.HasMixedMaterialHosts) return;
+            if (_rootItem.Context != null && _rootItem.Context.IsGraphMaterialHost)
+            {
+                if (_rootItem.SyncService != null && _rootItem.SyncService.TryApplyGraphSupportedGateTier(tier))
+                    UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+                return;
+            }
+
             RecordAllMaterials(UndoText("setTier", "Set NBShader Feature Tier"));
 
             if (_rootItem.PropertyInfoDic.TryGetValue(FeatureTierPropertyName, out ShaderPropertyInfo info))

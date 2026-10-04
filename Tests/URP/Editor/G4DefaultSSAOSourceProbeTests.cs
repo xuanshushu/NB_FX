@@ -22,6 +22,7 @@ namespace NBFX.Baseline.Tests
         const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
         readonly List<Object> owned = new List<Object>();
         DefaultSSAOBufferObserver observer;
+        bool expectedDepthNormalsLayout = true;
         static Type FindType(string name) => AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType(name, false)).First(t => t != null);
         static void Guard()
         {
@@ -147,7 +148,7 @@ namespace NBFX.Baseline.Tests
                 "This minimal slice observes the existing before-opaque SSAO/Lit composition only.");
             string beforeSettings = EditorJsonUtility.ToJson(ssao);
             bool originalActive = ssao.isActive;
-            var core = new G4GraphVATTests { GeometryCaseId = "ssao-source-" + source + (clip ? "-clip" : "-opaque") };
+            var core = new G4GraphVATTests { ExpectedDefaultDepthNormalsOnly = expectedDepthNormalsLayout, GeometryCaseId = (expectedDepthNormalsLayout ? "ssao-source-" : "dn2-source-") + source + (clip ? "-clip" : "-opaque") };
             Texture2D mask = null;
             if (clip)
             {
@@ -255,6 +256,169 @@ namespace NBFX.Baseline.Tests
                 Assert.That(EditorJsonUtility.ToJson(ssao),Is.EqualTo(beforeSettings),"Temporary source/on-off control changed serialized SSAO settings.");
             }
         }
+        static IEnumerable<TestCaseData> CompiledDepthNormalsOffCases()
+        {
+            foreach(string source in new[]{"DepthNormals","Depth"})foreach(bool ortho in new[]{true,false})foreach(bool clip in new[]{false,true})
+                yield return new TestCaseData(source,ortho,clip).SetName("DefaultSSAOV2_NoDN0_"+source+"_Softbody"+(clip?"Clip":"Opaque")+(ortho?"_ortho":"_perspective"));
+        }
+        [TestCaseSource(nameof(CompiledDepthNormalsOffCases))]
+        public void CompiledDepthNormalsOffDefaultPipelineV2(string source,bool ortho,bool clip)
+        {
+            bool previous=expectedDepthNormalsLayout;expectedDepthNormalsLayout=false;
+            try{DefaultSourceAndExtraNormalsObservedBeforeOriginalAssertions(source,ortho,clip);}
+            finally{expectedDepthNormalsLayout=previous;}
+        }
+        [TestCase(true,TestName="DefaultSSAONearLitV2_NoDN0_DepthNormals_SoftbodyOpaque_ortho")]
+        [TestCase(false,TestName="DefaultSSAONearLitV2_NoDN0_DepthNormals_SoftbodyOpaque_perspective")]
+        public void CompiledDepthNormalsOffNearReceiverV2(bool ortho)
+        {
+            bool previous=expectedDepthNormalsLayout;expectedDepthNormalsLayout=false;
+            try{NearLitReceiverWithActorEnabled(ortho);}
+            finally{expectedDepthNormalsLayout=previous;}
+        }
+
+        [Serializable] sealed class NearLitRow
+        {
+            public string label,shader;public bool actorEnabled,receiverEnabled,ssaoActive,extraDN0,depthOnly,shadowCaster,depthCopied,normalsCopied,aoCopied;
+            public int receiverPixels,actorPixels;public float nearReceiverResponse,controlReceiverResponse;
+        }
+        [Serializable] sealed class NearLitResult
+        {
+            public string scope,source,geometryBasis,settingsBefore,lightType,ambientMode;
+            public bool orthographic,measurementsComplete;public float radius,directLightingStrength,intensity,gap,actorMinY,actorMaxY,receiverY;
+            public Vector3[] actorWorldA,actorWorldB,actorWorldC;public Vector3 receiverPosition,cubePosition,cubeScale,cameraPosition,lightDirection;
+            public Color receiverColor,lightColor,ambientColor;public float lightIntensity,shadowStrength,shadowBias,shadowNormalBias;
+            public int nearReceiverPixels,controlReceiverPixels;public float ab,bc,abNearReceiver,bcNearReceiver,abControlReceiver,bcControlReceiver,extraDNFinal,extraDNNearReceiver,extraDNControlReceiver;
+            public float[] repeat,ssaoResponse,nearReceiverSSAOResponse,controlReceiverSSAOResponse;
+            public NearLitRow[] observations;
+        }
+        static float NearFrac(float v)=>v-Mathf.Floor(v);
+        static Vector3[] NearActorWorldVertices(Material material,MeshRenderer actor)
+        {
+            // Restricted source evaluation of the existing SoftBody kernel on the
+            // actual point-sampled RGBAHalf input. This is not a GPU vertex dump.
+            foreach(string name in new[]{"_VAT_Toggle","_frameCount","_displayFrame"})Assert.That(material.HasProperty(name),Is.True,name);
+            Assert.That(material.GetFloat("_VAT_Toggle"),Is.EqualTo(1));Assert.That(material.GetFloat("_VATMode"),Is.Zero);Assert.That(material.GetFloat("_HoudiniVATSubMode"),Is.Zero);
+            Assert.That(material.GetFloat("_B_autoPlayback"),Is.Zero);Assert.That(material.GetFloat("_displayFrame"),Is.EqualTo(1));Assert.That(material.GetFloat("_frameCount"),Is.EqualTo(2));Assert.That(material.GetFloat("_B_LOAD_POS_TWO_TEX"),Is.Zero);
+            var texture=material.GetTexture("_posTexture") as Texture2D;Assert.That(texture&&texture.isReadable,Is.True);Assert.That(texture.format,Is.EqualTo(TextureFormat.RGBAHalf));Assert.That(texture.filterMode,Is.EqualTo(FilterMode.Point));Assert.That(texture.wrapMode,Is.EqualTo(TextureWrapMode.Clamp));
+            var mesh=actor.GetComponent<MeshFilter>().sharedMesh;var vertices=mesh.vertices;var uv1=mesh.uv2;Assert.That(uv1.Length,Is.EqualTo(vertices.Length));
+            var minimum=new Vector3(material.GetFloat("_boundMinX"),material.GetFloat("_boundMinY"),material.GetFloat("_boundMinZ"));var maximum=new Vector3(material.GetFloat("_boundMaxX"),material.GetFloat("_boundMaxY"),material.GetFloat("_boundMaxZ"));
+            float oneMinusMaxR=1-NearFrac(maximum.x*-10),oneMinusMinB=1-(Mathf.Ceil(minimum.z*10)-minimum.z*10);bool raw=NearFrac(maximum.z*10)>=.5f;
+            var result=new Vector3[vertices.Length];
+            for(int i=0;i<vertices.Length;++i)
+            {
+                // selectedFrame=1, totalFrames=2: wrapped frame offset is zero.
+                var uv=new Vector2(uv1[i].x*oneMinusMinB,1-(1-uv1[i].y)*oneMinusMaxR);
+                var px=texture.GetPixel(Mathf.Clamp(Mathf.FloorToInt(uv.x*texture.width),0,texture.width-1),Mathf.Clamp(Mathf.FloorToInt(uv.y*texture.height),0,texture.height-1));
+                var rgb=new Vector3(px.r,px.g,px.b);var displacement=raw?rgb:Vector3.Scale(rgb,maximum-minimum)+minimum;
+                result[i]=actor.transform.TransformPoint(vertices[i]+displacement);
+            }
+            return result;
+        }
+        static Color[] NearReadSaved(string file,int pixels)
+        {
+            Assert.That(new FileInfo(file).Length,Is.EqualTo((long)pixels*16));var values=new Color[pixels];
+            using(var read=new BinaryReader(File.OpenRead(file)))for(int i=0;i<pixels;++i)values[i]=new Color(read.ReadSingle(),read.ReadSingle(),read.ReadSingle(),read.ReadSingle());
+            NearHealthy(values);return values;
+        }
+        static void NearHealthy(Color[] values)
+        {
+            Assert.That(values.Length,Is.GreaterThan(0));float cd=BitConverter.ToSingle(new byte[]{0xcd,0xcd,0xcd,0xcd},0);
+            Assert.That(values.All(p=>Enumerable.Range(0,4).All(i=>!float.IsNaN(p[i])&&!float.IsInfinity(p[i])&&p[i]!=cd)),Is.True,"Near interaction readback must be finite and free of CD fill values.");
+        }
+        static float NearPixelDelta(Color a,Color b)=>Mathf.Max(Mathf.Abs(a.r-b.r),Mathf.Abs(a.g-b.g),Mathf.Abs(a.b-b.b),Mathf.Abs(a.a-b.a));
+        static float NearRegionDelta(Color[] a,Color[] b,bool[] region)
+        {float d=0;for(int i=0;i<a.Length;++i)if(region[i])d=Mathf.Max(d,NearPixelDelta(a[i],b[i]));return d;}
+
+        [TestCase(true,TestName="DefaultSSAONearLit_DepthNormals_SoftbodyOpaque_ortho")]
+        [TestCase(false,TestName="DefaultSSAONearLit_DepthNormals_SoftbodyOpaque_perspective")]
+        public void NearLitReceiverWithActorEnabled(bool ortho)
+        {
+            Guard();var pipeline=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;Assert.That(pipeline,Is.Not.Null);
+            var data=pipeline.rendererDataList[0] as UniversalRendererData;Assert.That(data,Is.Not.Null);Assert.That(data.renderingMode.ToString(),Is.EqualTo("Forward"));
+            var ssao=data.rendererFeatures.Single(f=>f&&f.GetType().FullName=="UnityEngine.Rendering.Universal.ScreenSpaceAmbientOcclusion");Assert.That(ssao.isActive,Is.True);
+            object settings=ssao.GetType().GetField("m_Settings",All).GetValue(ssao);var sourceField=settings.GetType().GetField("Source",All);object oldSource=sourceField.GetValue(settings);bool oldActive=ssao.isActive;string oldSettings=EditorJsonUtility.ToJson(ssao);
+            Assert.That((bool)settings.GetType().GetField("AfterOpaque",All).GetValue(settings),Is.False);
+            float radius=(float)settings.GetType().GetField("Radius",All).GetValue(settings);Assert.That(radius,Is.GreaterThan(0));
+            var core=new G4GraphVATTests{ExpectedDefaultDepthNormalsOnly=expectedDepthNormalsLayout,GeometryCaseId=expectedDepthNormalsLayout?"nr":"nr2"};
+            core.DefaultFullChainMaterialSetup=(m,graph)=>ValidateDefaultState(m,graph,false);
+            core.DefaultFullChainLightSetup=light=>light.shadowNormalBias=0;
+            core.DefaultFullChainSceneSetup=(camera,actor,receiver,target)=>{
+                var shader=AssetDatabase.LoadAssetAtPath<Shader>("Packages/com.xuanxuan.nb.fx/Tests/URP/Shaders/DefaultSSAOReadback.shader");Assert.That(shader&&shader.isSupported,Is.True);
+                observer=Keep(ScriptableObject.CreateInstance<DefaultSSAOBufferObserver>());observer.targetCamera=camera;observer.copyMaterial=Keep(new Material(shader));observer.Initialize(target.width,target.height);observer.Create();data.rendererFeatures.Add(observer);data.SetDirty();
+            };
+            core.DefaultFullChainPreAssertionsObserve=(materials,actor,receiver,camera,target,read,folder)=>{
+                // Original core actor-only frames already exist. No actor disable
+                // occurs in this new probe; controls share the identical layout.
+                Assert.That(actor.enabled&&receiver.enabled,Is.True);
+                var actorOnly=new Color[3][];var empty=NearReadSaved(Path.Combine(folder,"empty-background.rgba32f"),target.width*target.height);
+                for(int i=0;i<3;++i){actorOnly[i]=NearReadSaved(Path.Combine(folder,"ABC"[i]+"-forward-visible.rgba32f"),empty.Length);var input=ProbeVAT(materials[i],actor,receiver);Assert.That(input.particleBit,Is.False);File.WriteAllText(Path.Combine(folder,"n-input-"+"ABC"[i]+".json"),JsonUtility.ToJson(input,true));}
+                var worlds=materials.Select(m=>NearActorWorldVertices(m,actor)).ToArray();
+                for(int i=0;i<worlds[0].Length;++i){Assert.That(worlds[1][i],Is.EqualTo(worlds[0][i]));Assert.That(worlds[2][i],Is.EqualTo(worlds[0][i]));}
+                float minY=worlds[0].Min(v=>v.y),maxY=worlds[0].Max(v=>v.y),gap=Mathf.Min(.02f,radius*.08f);Assert.That(gap,Is.GreaterThan(0).And.LessThan(radius));
+                var receiverMaterial=receiver.sharedMaterial;Assert.That(receiverMaterial.shader.name,Is.EqualTo("Universal Render Pipeline/Lit"));Assert.That(Vector3.Dot(receiver.transform.up,Vector3.up),Is.GreaterThan(.9999f));
+                var oldPosition=receiver.transform.position;var oldColor=receiverMaterial.GetColor("_BaseColor");var oldActorMaterial=actor.sharedMaterial;bool oldExtra=materials[2].GetShaderPassEnabled("DepthNormalsOnly");
+                GameObject cube=null;
+                try
+                {
+                    receiver.transform.position=new Vector3(oldPosition.x,minY-gap,oldPosition.z);receiverMaterial.SetColor("_BaseColor",new Color(.3f,.3f,.3f,1));
+                    float minX=worlds[0].Min(v=>v.x),maxX=worlds[0].Max(v=>v.x),minZ=worlds[0].Min(v=>v.z),maxZ=worlds[0].Max(v=>v.z);
+                    cube=Keep(GameObject.CreatePrimitive(PrimitiveType.Cube));SceneManager.MoveGameObjectToScene(cube,camera.scene);cube.layer=actor.gameObject.layer;cube.transform.localScale=Vector3.one*.4f;cube.transform.position=new Vector3(maxX+radius*2.5f+.2f,receiver.transform.position.y+.2f,(minZ+maxZ)*.5f);
+                    var cubeRenderer=cube.GetComponent<MeshRenderer>();cubeRenderer.sharedMaterial=receiverMaterial;cubeRenderer.shadowCastingMode=ShadowCastingMode.Off;
+                    Assert.That(cubeRenderer.bounds.max.x,Is.LessThan(receiver.bounds.max.x));Assert.That(cubeRenderer.bounds.min.x-radius,Is.GreaterThan(maxX+radius),"Independent control and NB receiver ROI must be separate.");
+                    var cubeBounds=cubeRenderer.bounds;var projected=new List<Vector3>();for(int x=0;x<2;++x)for(int y=0;y<2;++y)for(int z=0;z<2;++z)projected.Add(camera.WorldToViewportPoint(new Vector3(x==0?cubeBounds.min.x:cubeBounds.max.x,y==0?cubeBounds.min.y:cubeBounds.max.y,z==0?cubeBounds.min.z:cubeBounds.max.z)));
+                    float cubeU0=projected.Min(v=>v.x),cubeU1=projected.Max(v=>v.x),cubeV0=projected.Min(v=>v.y),cubeV1=projected.Max(v=>v.y);
+                    var nearRegion=new bool[empty.Length];var controlRegion=new bool[empty.Length];var actorMasks=new bool[3][];
+                    for(int k=0;k<3;++k)actorMasks[k]=actorOnly[k].Select((p,i)=>Mathf.Abs(p.r-empty[i].r)+Mathf.Abs(p.g-empty[i].g)+Mathf.Abs(p.b-empty[i].b)>.07f).ToArray();
+                    for(int y=0;y<target.height;++y)for(int x=0;x<target.width;++x)
+                    {
+                        int i=y*target.width+x;float u=(x+.5f)/target.width,v=(y+.5f)/target.height;var ray=camera.ViewportPointToRay(new Vector3(u,v,0));if(Mathf.Abs(ray.direction.y)<1e-6f)continue;float distance=(receiver.transform.position.y-ray.origin.y)/ray.direction.y;if(distance<=0)continue;var at=ray.GetPoint(distance);
+                        bool actorPixel=actorMasks.Any(mask=>mask[i]),cubePixel=u>=cubeU0&&u<=cubeU1&&v>=cubeV0&&v<=cubeV1;
+                        bool floor=at.x>=receiver.bounds.min.x&&at.x<=receiver.bounds.max.x&&at.z>=receiver.bounds.min.z&&at.z<=receiver.bounds.max.z;
+                        if(!floor||actorPixel||cubePixel)continue;
+                        nearRegion[i]=at.x>=minX-radius&&at.x<=maxX+radius&&at.z>=minZ-radius&&at.z<=maxZ+radius;
+                        controlRegion[i]=at.x>=cubeBounds.min.x-radius&&at.x<=cubeBounds.max.x+radius&&at.z>=cubeBounds.min.z-radius&&at.z<=cubeBounds.max.z+radius;
+                    }
+                    File.WriteAllBytes(Path.Combine(folder,"near-roi.bin"),nearRegion.Select(v=>(byte)(v?1:0)).ToArray());File.WriteAllBytes(Path.Combine(folder,"ctl-roi.bin"),controlRegion.Select(v=>(byte)(v?1:0)).ToArray());
+                    var light=RenderSettings.sun;Assert.That(light,Is.Not.Null);
+                    var result=new NearLitResult{scope="DepthNormals opaque SoftBody frame1 only; NB actor always enabled with close Lit receiver and fixed separate Lit cube. Cube receiver ROI is only an independent SSAO chain control; NB receiver interaction has its own ROI and verdict.",source="DepthNormals",geometryBasis="Source-evaluated actual point-sampled VAT inputs via HVAT_VatUV / HVAT_ApplySoftBodySamplesV1; not renderer.bounds and not an independent GPU vertex dump.",orthographic=ortho,radius=radius,directLightingStrength=(float)settings.GetType().GetField("DirectLightingStrength",All).GetValue(settings),intensity=(float)settings.GetType().GetField("Intensity",All).GetValue(settings),settingsBefore=oldSettings,gap=gap,actorMinY=minY,actorMaxY=maxY,receiverY=receiver.transform.position.y,actorWorldA=worlds[0],actorWorldB=worlds[1],actorWorldC=worlds[2],receiverPosition=receiver.transform.position,receiverColor=receiverMaterial.GetColor("_BaseColor"),cubePosition=cube.transform.position,cubeScale=cube.transform.localScale,cameraPosition=camera.transform.position,lightType=light.type.ToString(),lightDirection=light.transform.forward,lightColor=light.color,lightIntensity=light.intensity,shadowStrength=light.shadowStrength,shadowBias=light.shadowBias,shadowNormalBias=light.shadowNormalBias,ambientMode=RenderSettings.ambientMode.ToString(),ambientColor=RenderSettings.ambientLight};
+                    var rows=new List<NearLitRow>();var bufferRead=Keep(new Texture2D(target.width,target.height,TextureFormat.RGBAFloat,false,true));
+                    void Save(){result.observations=rows.ToArray();File.WriteAllText(Path.Combine(folder,"near.json"),JsonUtility.ToJson(result,true));}
+                    Color[] Capture(int which,string label)
+                    {
+                        Assert.That(actor.enabled&&receiver.enabled&&cube.activeInHierarchy,Is.True);actor.sharedMaterial=materials[which];for(int i=0;i<3;++i)camera.Render();observer.ResetFrameEvidence();camera.Render();
+                        var errors=new[]{observer.copyMaterial.shader,materials[which].shader,receiverMaterial.shader}.SelectMany(ShaderUtil.GetShaderMessages).Where(e=>e.severity.ToString()=="Error").Select(e=>e.message).ToArray();File.WriteAllLines(Path.Combine(folder,label+"-err.txt"),errors);Assert.That(errors,Is.Empty);
+                        var frame=Read(target,read,Path.Combine(folder,label+"-f.rgba32f"));NearHealthy(frame);
+                        var row=new NearLitRow{label=label,shader=materials[which].shader.name,actorEnabled=actor.enabled,receiverEnabled=receiver.enabled,ssaoActive=ssao.isActive,extraDN0=materials[which].GetShaderPassEnabled("DepthNormalsOnly"),depthOnly=materials[which].GetShaderPassEnabled("DepthOnly"),shadowCaster=materials[which].GetShaderPassEnabled("ShadowCaster"),depthCopied=observer.depthCopied,normalsCopied=observer.normalsCopied,aoCopied=observer.aoCopied};rows.Add(row);Save();
+                        if(ssao.isActive){Assert.That(row.depthCopied&&row.normalsCopied&&row.aoCopied,Is.True,"Active DepthNormals must expose current depth, normals and AO resources.");}
+                        if(row.depthCopied)NearHealthy(Read(observer.depth,bufferRead,Path.Combine(folder,label+"-d.rgba32f")));if(row.normalsCopied)NearHealthy(Read(observer.normals,bufferRead,Path.Combine(folder,label+"-n.rgba32f")));if(row.aoCopied)NearHealthy(Read(observer.ao,bufferRead,Path.Combine(folder,label+"-a.rgba32f")));
+                        row.actorPixels=Enumerable.Range(0,frame.Length).Count(i=>actorMasks[which][i]&&NearPixelDelta(frame[i],actorOnly[which][i])<.0001f);
+                        row.receiverPixels=Enumerable.Range(0,frame.Length).Count(i=>nearRegion[i]&&NearPixelDelta(frame[i],actorOnly[which][i])>.01f);Save();return frame;
+                    }
+                    var on=new Color[3][];var repeat=new Color[3][];var off=new Color[3][];
+                    for(int i=0;i<3;++i)on[i]=Capture(i,"ABC"[i]+"on");
+                    materials[2].SetShaderPassEnabled("DepthNormalsOnly",false);var noDN=Capture(2,"Cd0");materials[2].SetShaderPassEnabled("DepthNormalsOnly",oldExtra);
+                    for(int i=0;i<3;++i)repeat[i]=Capture(i,"ABC"[i]+"r");
+                    ssao.SetActive(false);for(int i=0;i<3;++i)off[i]=Capture(i,"ABC"[i]+"off");ssao.SetActive(true);var finalRepeat=Capture(2,"Cback");
+                    result.ab=Delta(on[0],on[1]);result.bc=Delta(on[1],on[2]);result.extraDNFinal=Delta(on[2],noDN);result.extraDNNearReceiver=NearRegionDelta(on[2],noDN,nearRegion);result.extraDNControlReceiver=NearRegionDelta(on[2],noDN,controlRegion);result.repeat=Enumerable.Range(0,3).Select(i=>Delta(on[i],repeat[i])).Concat(new[]{Delta(on[2],finalRepeat)}).ToArray();result.ssaoResponse=Enumerable.Range(0,3).Select(i=>Delta(on[i],off[i])).ToArray();result.nearReceiverSSAOResponse=Enumerable.Range(0,3).Select(i=>NearRegionDelta(on[i],off[i],nearRegion)).ToArray();result.controlReceiverSSAOResponse=Enumerable.Range(0,3).Select(i=>NearRegionDelta(on[i],off[i],controlRegion)).ToArray();result.nearReceiverPixels=nearRegion.Count(v=>v);result.controlReceiverPixels=controlRegion.Count(v=>v);Save();
+                    result.abNearReceiver=NearRegionDelta(on[0],on[1],nearRegion);result.bcNearReceiver=NearRegionDelta(on[1],on[2],nearRegion);result.abControlReceiver=NearRegionDelta(on[0],on[1],controlRegion);result.bcControlReceiver=NearRegionDelta(on[1],on[2],controlRegion);
+                    result.measurementsComplete=true;Save();
+                    foreach(var row in rows){Assert.That(row.actorPixels,Is.GreaterThan(150),row.label+" must retain visible NB actor");Assert.That(row.receiverPixels,Is.GreaterThan(8),row.label+" must retain visible near Lit receiver");}
+                    Assert.That(result.nearReceiverPixels,Is.GreaterThan(8));Assert.That(result.controlReceiverPixels,Is.GreaterThan(8));foreach(float response in result.controlReceiverSSAOResponse)Assert.That(response,Is.GreaterThan(.001f),"Same-layout independent cube/receiver SSAO control must respond.");foreach(float difference in result.repeat)Assert.That(difference,Is.Zero);
+                    // A/B near-receiver on/off can be zero because Native has no
+                    // DN0. Record that fact; the separate cube ROI is not its proof.
+                    Assert.That(result.ab,Is.Zero);Assert.That(result.bc,Is.Zero,"Distinct actor-on near-receiver default-pass interaction; retain raw failure, do not suppress the extra pass or relax parity.");
+                }
+                finally{ssao.SetActive(oldActive);materials[2].SetShaderPassEnabled("DepthNormalsOnly",oldExtra);actor.sharedMaterial=oldActorMaterial;receiver.transform.position=oldPosition;receiverMaterial.SetColor("_BaseColor",oldColor);if(cube)cube.SetActive(false);}
+            };
+            try{sourceField.SetValue(settings,Enum.Parse(sourceField.FieldType,"DepthNormals"));core.CaptureDefaultForwardDepthShadow(ortho);}
+            finally
+            {
+                sourceField.SetValue(settings,oldSource);ssao.SetActive(oldActive);if(observer){data.rendererFeatures.Remove(observer);data.SetDirty();observer.ReleaseTargets();}foreach(var item in owned.AsEnumerable().Reverse())if(item)Object.DestroyImmediate(item);owned.Clear();observer=null;
+                Assert.That(EditorJsonUtility.ToJson(ssao),Is.EqualTo(oldSettings),"Near probe changed serialized SSAO settings.");
+            }
+        }
+
         [Serializable] sealed class ScalarProbe { public string name;public bool present;public float value; }
         [Serializable] sealed class TextureProbe { public string name,format,pixelSHA256,filter,wrap;public int instance,width,height; }
         [Serializable] sealed class PassProbe { public string displayName,lightMode;public bool enabled; }

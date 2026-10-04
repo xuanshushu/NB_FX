@@ -12,17 +12,69 @@ namespace NBShaderEditor
 
         public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
         {
+            // EditorPrefs foldouts can set GUI.changed without a Material edit.
+            // Read the existing normalized intent before interactive events;
+            // Layout/Repaint must never normalize the saved gate values.
+            System.Collections.Generic.Dictionary<Material, NBShader.NBShaderMaterialIntentResult> before = null;
+            bool interactive = Event.current != null && Event.current.type != EventType.Layout && Event.current.type != EventType.Repaint;
+            if (interactive)
+            {
+                before = new System.Collections.Generic.Dictionary<Material, NBShader.NBShaderMaterialIntentResult>();
+                foreach (UnityEngine.Object target in materialEditor.targets)
+                    if (target is Material selected)
+                    {
+                        NBShader.NBShaderMaterialIntentResult intent;
+                        if (NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.TryReadGraphSavedSupportedGateTier(selected, out intent))
+                            before[selected] = intent;
+                    }
+            }
+            EditorGUI.BeginChangeCheck();
             _urpGUI.OnGUI(materialEditor, properties, OnGraphGUI);
+            bool graphEdited = EditorGUI.EndChangeCheck();
+            bool allProjectionReady = true;
+            bool intentChanged = false;
+            if (graphEdited && before != null)
+                foreach (UnityEngine.Object target in materialEditor.targets)
+                {
+                    NBShader.NBShaderMaterialIntentResult oldIntent, newIntent;
+                    if (!(target is Material selected) ||
+                        !before.TryGetValue(selected, out oldIntent) ||
+                        !NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.TryReadGraphSavedSupportedGateTier(selected, out newIntent))
+                        allProjectionReady = false;
+                    else
+                        intentChanged |= oldIntent.tier != newIntent.tier ||
+                            !SameIntentKeywords(oldIntent.intendedManagedKeywords, newIntent.intendedManagedKeywords) ||
+                            !SameIntentKeywords(oldIntent.effectiveKeywords, newIntent.effectiveKeywords);
+                }
             // URP's nested GUI owns surface state; this outer GUI owns only
             // the original NB SixWay keywords. Sync immediately on edits.
             foreach (UnityEngine.Object target in materialEditor.targets)
-                if (target is Material material) SyncSixWayKeywords(material);
+                if (target is Material material)
+                {
+                    SyncSixWayKeywords(material);
+                    if (graphEdited && before != null && intentChanged && allProjectionReady)
+                    {
+                        bool changed;
+                        NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material, out changed);
+                        if (changed) EditorUtility.SetDirty(material);
+                    }
+                }
+        }
+
+        static bool SameIntentKeywords(string[] before, string[] after)
+        {
+            if (before.Length != after.Length) return false;
+            for (int i = 0; i < before.Length; ++i) if (before[i] != after[i]) return false;
+            return true;
         }
 
         public override void ValidateMaterial(Material material)
         {
             _urpGUI.ValidateMaterial(material);
             SyncSixWayKeywords(material);
+            bool changed;
+            NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material, out changed);
+            if (changed) EditorUtility.SetDirty(material);
         }
 
         internal static void SyncSixWayKeywords(Material material)
@@ -63,6 +115,8 @@ namespace NBShaderEditor
         public override void AssignNewShaderToMaterial(Material material, Shader oldShader, Shader newShader)
         {
             _urpGUI.AssignNewShaderToMaterial(material, oldShader, newShader);
+            // Shader assignment is the existing authorized write transaction.
+            NBShaderSyncService.TryInitializeGraphSupportedGateTierOnAssign(material);
             SyncSixWayKeywords(material);
         }
     }
