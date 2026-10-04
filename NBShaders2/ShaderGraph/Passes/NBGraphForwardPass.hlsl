@@ -16,6 +16,11 @@ void frag(PackedVaryings packedInput,
 #endif
 )
 {
+#if defined(NB_GRAPH_BACKFIRST_PASS)
+    // The derived effective Float starts0 and is owned by the same narrow
+    // resolver/service. A new default-enabled pass cannot draw before sync.
+    clip(_NB_BackFirstEffective - 0.5f);
+#endif
     Varyings unpacked = UnpackVaryings(packedInput);
     UNITY_SETUP_INSTANCE_ID(unpacked);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(unpacked);

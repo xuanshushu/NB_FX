@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace NBShader
 {
@@ -88,6 +89,30 @@ namespace NBShader
                 result[RawPassFeatures[i].passName] = RawPassFeatures[i];
             return result;
         }
+
+        internal const string GraphRoutingVersionProperty = "_NB_GraphPassRoutingVersion";
+        internal static bool TryGetGraphColorRouting(Material material, out int version)
+        {
+            version = -1;
+            if (material == null || material.shader == null) return false;
+            int index = material.shader.FindPropertyIndex(GraphRoutingVersionProperty);
+            if (index < 0 || material.shader.GetPropertyType(index) != UnityEngine.Rendering.ShaderPropertyType.Float) return false;
+            float compiled = material.shader.GetPropertyDefaultFloatValue(index);
+            if (compiled != 0f && compiled != 1f) return false;
+            int main = material.FindPass("Universal Forward");
+            if (main < 0) return false;
+            string tag = material.shader.FindPassTagValue(0, main, new UnityEngine.Rendering.ShaderTagId("LightMode")).name;
+            if (compiled == 0f && !string.IsNullOrEmpty(tag) && !string.Equals(tag, "SRPDefaultUnlit", System.StringComparison.OrdinalIgnoreCase)) return false;
+            if (compiled == 1f)
+            {
+                int back = material.FindPass("NB Back First");
+                if (!string.Equals(tag, MainForwardPassName, System.StringComparison.OrdinalIgnoreCase) || back < 0 ||
+                    !string.Equals(material.shader.FindPassTagValue(0, back, new UnityEngine.Rendering.ShaderTagId("LightMode")).name, "SRPDefaultUnlit", System.StringComparison.OrdinalIgnoreCase)) return false;
+            }
+            version = (int)compiled; return true;
+        }
+
+        internal static string GraphMainColorPassName(int routingVersion) => routingVersion == 0 ? "SRPDefaultUnlit" : routingVersion == 1 ? MainForwardPassName : null;
     }
 
     internal sealed class NBShaderPassFeatureInfo

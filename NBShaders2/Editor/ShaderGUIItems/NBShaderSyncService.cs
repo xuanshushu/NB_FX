@@ -1411,6 +1411,38 @@ namespace NBShaderEditor
                 this.enabledMode = enabledMode;
             }
         }
+
+        // Explicit one-time migration only. Caller captures legacy main state
+        // BEFORE switching the Graph/Shader route; no automatic asset write.
+        internal static bool TryMigrateGraphColorPassState(Material material, bool capturedLegacyMainEnabled)
+        {
+            int route;
+            if (!NBShaderPassFeatureCatalog.TryGetGraphColorRouting(material, out route) || route != 1 ||
+                !NBShaderRootItem.HasFloatProperty(material, "_NB_GraphPassMigrationComplete") ||
+                !NBShaderRootItem.HasFloatProperty(material, "_NB_BackFirstEffective")) return false;
+            float migrationState = material.GetFloat("_NB_GraphPassMigrationComplete");
+            if (migrationState != 0f && migrationState != 1f) return false;
+            if (migrationState == 1f) return false;
+            material.SetShaderPassEnabled("UniversalForward", capturedLegacyMainEnabled);
+            material.SetShaderPassEnabled("SRPDefaultUnlit", false);
+            material.SetFloat("_NB_BackFirstEffective", 0f);
+            material.SetFloat("_NB_GraphPassMigrationComplete", 1f);
+            return true;
+        }
+
+        internal static bool TryApplyGraphBackFirstPassIntent(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedKeywords, IEnumerable<string> allowedPassFeatureIds)
+        {
+            NBShaderPassIntent intent;
+            if (!NBShaderMaterialIntentResolver.TryResolveGraphBackFirstPassIntent(material, tier, allowedKeywords, allowedPassFeatureIds, out intent)) return false;
+            bool changed = false;
+            if (material.GetShaderPassEnabled(intent.passName) != intent.included)
+            { material.SetShaderPassEnabled(intent.passName, intent.included); changed = true; }
+            float effective = intent.included ? 1f : 0f;
+            if (material.GetFloat("_NB_BackFirstEffective") != effective)
+            { material.SetFloat("_NB_BackFirstEffective", effective); changed = true; }
+            return changed;
+        }
     }
 
     public enum VATMode

@@ -3,6 +3,8 @@
 using System;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEditor.ShaderGraph.Internal;
 using static Unity.Rendering.Universal.ShaderUtils;
 
 namespace UnityEditor.Rendering.Universal.ShaderGraph
@@ -12,6 +14,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
         const string kURPUnlitPass = "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/UnlitPass.hlsl";
         const string kURPShadowPass = "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShadowCasterPass.hlsl";
         const string kPassRoot = "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/Passes/";
+
+        [SerializeField] bool m_NBBackFirstRouting = false;
 
         public NBGraphUnlitSubTarget() => displayName = "NB FX Unlit (URP)";
 
@@ -36,6 +40,10 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
 #endif
                     context.AddCustomEditorForRenderPipeline("NBShaderEditor.NBShaderGraphGUI", urpType);
             }
+#if HAS_VFX_GRAPH
+            if (m_NBBackFirstRouting && TargetsVFX())
+                throw new InvalidOperationException("NB BackFirst routing v1 is ordinary Mesh only; legacy VFX conversion is unchanged.");
+#endif
             int index = context.subShaders.Count;
             Builtin().Setup(ref context);
             var subShader = context.subShaders[index];
@@ -50,6 +58,14 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     pass = WithNBDistortionBlocks(pass);
                 if (forward || UsesNBStencil(pass.lightMode))
                     pass.renderStates = WithNBRenderStates(pass.renderStates, forward);
+                // Legacy0 keeps existing empty/default main tag exactly.
+                // Only an explicitly serialized modern1 graph changes route.
+                if (forward && m_NBBackFirstRouting)
+                {
+                    var main = WithNBPassDefine(WithNBLightingKeywords(WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl")), "NB_GRAPH_MAIN_FORWARD");
+                    AddNBBackFirstPass(passes, main, item.fieldConditions);
+                    pass.lightMode = "UniversalForward";
+                }
                 passes.Add(forward ? WithNBPassDefine(WithNBLightingKeywords(WithNBFragmentInclude(pass, "NBGraphForwardPass.hlsl")), "NB_GRAPH_MAIN_FORWARD") :
                     pass.lightMode == "ShadowCaster" ? WithNBFragmentInclude(pass, "NBGraphShadowCasterPass.hlsl", kURPShadowPass) :
                     pass, item.fieldConditions);
@@ -171,6 +187,28 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             return pass;
         }
 
+        static void AddNBBackFirstPass(PassCollection passes, PassDescriptor main, FieldCondition[] passConditions)
+        {
+            var back = main;
+            back.displayName = "NB Back First";
+            back.lightMode = "SRPDefaultUnlit";
+            back.useInPreview = false;
+            var states = new RenderStateCollection();
+            bool replacedCull = false;
+            foreach (var item in main.renderStates)
+            {
+                if (item.descriptor.type == RenderStateType.Cull)
+                {
+                    states.Add(RenderState.Cull("Front"), item.fieldConditions);
+                    replacedCull = true;
+                }
+                else states.Add(item.descriptor, item.fieldConditions);
+            }
+            if (!replacedCull) throw new InvalidOperationException("NB BackFirst requires original Forward Cull descriptor.");
+            back.renderStates = states;
+            passes.Add(WithNBPassDefine(back, "NB_GRAPH_BACKFIRST_PASS"), passConditions);
+        }
+
         static void AddDistortionPass(PassCollection passes, PassDescriptor forward,
             string lightMode, string fragmentInclude)
         {
@@ -285,6 +323,18 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
         public override void CollectShaderProperties(PropertyCollector collector, GenerationMode mode)
         {
             Builtin().CollectShaderProperties(collector, mode);
+            collector.AddFloatProperty("_NB_GraphPassRoutingVersion", m_NBBackFirstRouting ? 1.0f : 0.0f);
+            if (m_NBBackFirstRouting)
+            {
+                collector.AddFloatProperty("_BackFirstPassToggle", 0.0f);
+                collector.AddFloatProperty("_MeshSourceMode", 0.0f);
+                collector.AddFloatProperty("_NB_GraphPassMigrationComplete", 0.0f);
+                collector.AddShaderProperty(new Vector1ShaderProperty
+                {
+                    overrideReferenceName = "_NB_BackFirstEffective", value = 0.0f, hidden = true,
+                    overrideHLSLDeclaration = true, hlslDeclarationOverride = HLSLDeclaration.UnityPerMaterial
+                });
+            }
             // ShaderLab render-state substitutions need material properties, not
             // duplicate HLSL uniforms. Match the old names/defaults exactly.
             collector.AddFloatProperty("_offsetFactor", 0.0f);
@@ -300,6 +350,15 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
         }
         public override void ProcessPreviewMaterial(Material material) => Builtin().ProcessPreviewMaterial(material);
         public override void GetPropertiesGUI(ref TargetPropertyGUIContext context, Action onChange, Action<string> registerUndo)
-            => Builtin().GetPropertiesGUI(ref context, onChange, registerUndo);
+        {
+            Builtin().GetPropertiesGUI(ref context, onChange, registerUndo);
+            context.AddProperty("NB BackFirst Native Routing (explicit opt-in)", new Toggle { value = m_NBBackFirstRouting }, evt =>
+            {
+                if (m_NBBackFirstRouting == evt.newValue) return;
+                registerUndo("Change NB BackFirst Routing Version");
+                m_NBBackFirstRouting = evt.newValue;
+                onChange();
+            });
+        }
     }
 }

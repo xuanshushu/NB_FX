@@ -632,6 +632,29 @@ namespace NBShader
                 this.graphSupported = graphSupported;
             }
         }
+
+        // Read-only bounded modern BackFirst capability. No general Graph Tier
+        // projection or legacy raw-tag interpretation is silently changed.
+        internal static bool TryResolveGraphBackFirstPassIntent(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedKeywords, IEnumerable<string> allowedPassFeatureIds, out NBShaderPassIntent backFirst)
+        {
+            backFirst = null; int route;
+            NBShaderMaterialIntentResult keywordIntent; string[] unavailable;
+            if (!NBShaderPassFeatureCatalog.TryGetGraphColorRouting(material, out route) || route != 1 ||
+                !TryResolveGraphSupportedKeywordIntent(material, tier, allowedKeywords, out keywordIntent, out unavailable) ||
+                !HasFiniteFloatShaderProperty(material, "_BackFirstPassToggle") ||
+                !HasFiniteFloatShaderProperty(material, "_NB_BackFirstEffective") ||
+                !HasFiniteFloatShaderProperty(material, "_NB_GraphPassMigrationComplete") ||
+                material.GetFloat("_NB_GraphPassMigrationComplete") != 1f ||
+                !HasGraphEnumValue(material, "_MeshSourceMode", NBShaderMaterialIntentProtocol.MeshSourceUIParticle)) return false;
+            bool intended = !IsUIEffectMeshSource(GetInt(material, "_MeshSourceMode", 0)) &&
+                material.GetFloat("_Surface") == 1f && material.GetFloat("_AlphaClip") < .5f &&
+                material.GetFloat("_BackFirstPassToggle") > .5f;
+            var allowed = BuildAllowedPassFeatureSet(allowedPassFeatureIds ?? NBShaderPassFeatureCatalog.GetDefaultAllowedPassFeatures(tier));
+            bool allowedByTier = allowed == null || allowed.Contains(NBShaderPassFeatureCatalog.BackFirstPassId);
+            backFirst = new NBShaderPassIntent(NBShaderPassFeatureCatalog.BackFirstPassId, "SRPDefaultUnlit", intended, allowedByTier, intended && allowedByTier, "versioned modern Graph ordinary transparent BackFirst");
+            return true;
+        }
     }
 
     internal sealed class NBShaderMaterialIntentResult
