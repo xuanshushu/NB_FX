@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>2026-10-04 NBPost Manager lifecycle</title></head><body>
+<p><a href="index.html">报告索引</a></p><h1>NBPost Manager 禁用清理与52项效果目录</h1>
+<p>源码提交 <code>908a2f7c558c0d6a95c8bd69ab3f75a13b2dfbea</code>。Unity6000.3.25f1、URP17.3、Windows D3D11、实际RenderGraph；同一NBPost Controller/Manager、RendererFeature和Uber驱动Frozen/当前Native/Graph。</p>
+<p>原20项全部在Frozen A的Manager disabled与Controller effects-off零差断言处失败，尚未进入B/C。根因：原OnDisable只清总开关，残留各效果位；Uber继续按效果位运行。修复只有一行：OnDisable复用既有ResetEffect，再执行原master clear。ResetEffect同时清效果位和_lastIs状态，重新Enable可由原EffectUpdater重新Init。未修改Shader、Pass、API、flag位或NBPost合同。<a href="mesh-nbpost-manager-20261004/source-installation.json">源锁和安装</a>。</p>
+<p>原CA4修复后4/4，其余48/48，与原52身份完全对应且无重叠；严格finite/非空、ABC最终/中间RT零差、repeat0、效果/扭曲/叠加/Controller/Manager独立强响应、复制Alpha及资源恢复断言全部保留。原20失败和各原生completed结果见<a href="mesh-nbpost-manager-20261004/provenance.json">来源清单</a>。没有伪造XML或把缺结果计通过。</p>
+<p><a href="mesh-nbpost-manager-20261004/independent-review.json">独立小审计</a>：CA4共同68 raw中64份完全不变，唯一变化为4个Manager-disabled输出；旧disabled等于旧on，新disabled等于旧controller-off；reenabled精确恢复on。原20提前退出不存在旧B/C完整raw，新B/C由修复后原断言独立验证，不虚称与不存在的旧raw比较。</p>
+<p><a href="mesh-nbpost-manager-20261004/main-assembly-readback.json">主工程实际程序集读回</a>确认OnDisable直接调用既有ResetEffect，观察器及52目录测试已编译；未在用户场景创建或切换Manager/Controller。实际定向渲染来自隔离工程。</p>
+<p>限定覆盖：CA、速度扭曲两模式、径向模糊、Vignette、Overlay及mask/polar、Flash纹理及polar、复合效果；两种扭曲时点与两相机。旧full-controller12只作为观察器依赖带入源码，不在这里重新申领12项通过。</p>
+<p><strong>仍未验证：</strong>CINIMACHINE_3_0 camera-shake、Manager disabled期间新Controller注册/重新启用的EditorUpdate边界、Compatibility路径、完整多相机/保存重开/Player/性能。52目录通过不等于整个后处理或Mesh Gate完成；G3/G4未放行，正式VFX未启动。</p>
+</body></html>

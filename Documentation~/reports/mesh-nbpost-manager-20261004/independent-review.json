@@ -1,0 +1,314 @@
+{
+  "schema": "NBFX-manager-disable-small-review-v1",
+  "reviewedAt": "2026-10-04T12:39:54.882293+08:00",
+  "conclusion": "Existing lifecycle cleanup implementation fix supported by exact one-line source delta and complete original CA4 assertions; no NBPost Shader/Pass/API/flag contract change.",
+  "source": {
+    "path": "NBPostProcessing/Runtime/PostProcessingManager.cs",
+    "beforeSHA256": "923ca437b15269311392857dfd59a32689fce7d2bc3a1903c7db100836f581c4",
+    "afterSHA256": "0d390352879e11ee6665d94cc378e83e57f0136bd9a8f8d630d5f9dbb7f14d48",
+    "exactDelta": "OnDisable: ResetEffect(); before existing master clear",
+    "inverseRestoresOriginalByteExact": true,
+    "currentRootSHA256": "0d390352879e11ee6665d94cc378e83e57f0136bd9a8f8d630d5f9dbb7f14d48",
+    "cloneMatchesCandidateByteExact": true
+  },
+  "unchangedOtherProductFiles": [
+    {
+      "path": "NBPostProcessing/Runtime/PostProcessingController.cs",
+      "rootSHA256": "e814e89cf1359768c26c918182dca313b440b2dcc4c33e3c7d1f4a93c4965b79",
+      "cloneSHA256": "e814e89cf1359768c26c918182dca313b440b2dcc4c33e3c7d1f4a93c4965b79",
+      "byteExact": true
+    },
+    {
+      "path": "NBPostProcessing/Runtime/NBPostProcess.cs",
+      "rootSHA256": "3e7aaece519bd86622635021984d9f484428ef604ec819e91423c9f947be5f4a",
+      "cloneSHA256": "3e7aaece519bd86622635021984d9f484428ef604ec819e91423c9f947be5f4a",
+      "byteExact": true
+    },
+    {
+      "path": "NBPostProcessing/Runtime/NBPostProcessRenderPass.cs",
+      "rootSHA256": "143d9b450cc69d1cd1f61f1538510790b8fa9053d0ef3ef27296db99e981c7f8",
+      "cloneSHA256": "143d9b450cc69d1cd1f61f1538510790b8fa9053d0ef3ef27296db99e981c7f8",
+      "byteExact": true
+    },
+    {
+      "path": "NBPostProcessing/Runtime/DisturbanceMaskRenderPass.cs",
+      "rootSHA256": "99e78fcb5044208829d1391f7175181d98779056b3736035adaac3305ee0003a",
+      "cloneSHA256": "99e78fcb5044208829d1391f7175181d98779056b3736035adaac3305ee0003a",
+      "byteExact": true
+    },
+    {
+      "path": "NBPostProcessing/Runtime/ScreenColorRenderPass.cs",
+      "rootSHA256": "1f60b3f3d149ec0aba9457002471c069e3e6a4156a5d35bc154a1b9e7b41dcd1",
+      "cloneSHA256": "1f60b3f3d149ec0aba9457002471c069e3e6a4156a5d35bc154a1b9e7b41dcd1",
+      "byteExact": true
+    },
+    {
+      "path": "NBPostProcessing/Runtime/RenderCameraOpaqueDistortObjectPass.cs",
+      "rootSHA256": "377a842525d896063d64b1f654418628339f70ce8f9b9278b07ce8899c02ad38",
+      "cloneSHA256": "377a842525d896063d64b1f654418628339f70ce8f9b9278b07ce8899c02ad38",
+      "byteExact": true
+    },
+    {
+      "path": "NBPostProcessing/Shader/NBPostProcessUber.shader",
+      "rootSHA256": "75f352dce5d37b0d5d177bf190abf2dddc618adb3fe0cd9e416bcffcdd4094df",
+      "cloneSHA256": "75f352dce5d37b0d5d177bf190abf2dddc618adb3fe0cd9e416bcffcdd4094df",
+      "byteExact": true
+    }
+  ],
+  "old20AllFailedAt207": true,
+  "oldVerdictsRetained": true,
+  "CA4PassedNames": [
+    "NBFX.Baseline.Tests.G4NBPostEffectsControllerTests.NBPostEffectsABC_opaque_ca_ortho",
+    "NBFX.Baseline.Tests.G4NBPostEffectsControllerTests.NBPostEffectsABC_opaque_ca_perspective",
+    "NBFX.Baseline.Tests.G4NBPostEffectsControllerTests.NBPostEffectsABC_deferred_ca_ortho",
+    "NBFX.Baseline.Tests.G4NBPostEffectsControllerTests.NBPostEffectsABC_deferred_ca_perspective"
+  ],
+  "commonRawTotal": 68,
+  "unchangedCommonRawTotal": 64,
+  "onlyManagerDisabledChangedRawTotal": 4,
+  "newCompleteRawTotal": 232,
+  "cases": [
+    {
+      "case": "opaque-ca-ortho",
+      "originalRawCount": 17,
+      "fixedRawCount": 58,
+      "commonRawCount": 17,
+      "byteExactCommonCount": 16,
+      "unchangedRawNames": [
+        "A-controller-off.rgba32f",
+        "A-controller-reenabled.rgba32f",
+        "A-final.rgba32f",
+        "A-mask-one-mesh.rgba32f",
+        "A-mask-repeat.rgba32f",
+        "A-mask-strength0.rgba32f",
+        "A-mask.rgba32f",
+        "A-one-controller.rgba32f",
+        "A-one-mesh.rgba32f",
+        "A-opaque-copy-repeat.rgba32f",
+        "A-opaque-copy.rgba32f",
+        "A-repeat.rgba32f",
+        "A-screen-copy-repeat.rgba32f",
+        "A-screen-copy.rgba32f",
+        "A-strength0.rgba32f",
+        "A-without-transparent-background.rgba32f"
+      ],
+      "changedRaw": [
+        {
+          "file": "A-manager-disabled.rgba32f",
+          "originalSHA256": "acce1a296aa123705c5d1917d5005d12bfd6679047f8c2c21c07e5b7249de40c",
+          "fixedSHA256": "2fba816cc87046d0f046505cd2ccb49b755c3eed7703b104147daaa172513754",
+          "maxDelta": 0.56884765625
+        }
+      ],
+      "oldDisabledEqualsOldOnByteExact": true,
+      "newDisabledEqualsOldEffectsFalseByteExact": true,
+      "ABCDisabledEqualsControllerOffByteExact": true,
+      "ABCReenableEqualsOnByteExact": true,
+      "finite": true,
+      "finalAB": 0.0,
+      "finalBC": 0.0,
+      "repeat": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "flagsOn": [
+        17
+      ],
+      "controllerIndices": [
+        0,
+        1
+      ],
+      "fixtureSHA256": "a5ad34da1c942ac8e0cceabc6ae737cfbe85cf031dc770e0c018ec92eb38aefa",
+      "provenanceSHA256": "0ed21e9eb83f49b4e48204f550cf765b970ea6e101ee2e8ae9777939a7f7987a"
+    },
+    {
+      "case": "opaque-ca-perspective",
+      "originalRawCount": 17,
+      "fixedRawCount": 58,
+      "commonRawCount": 17,
+      "byteExactCommonCount": 16,
+      "unchangedRawNames": [
+        "A-controller-off.rgba32f",
+        "A-controller-reenabled.rgba32f",
+        "A-final.rgba32f",
+        "A-mask-one-mesh.rgba32f",
+        "A-mask-repeat.rgba32f",
+        "A-mask-strength0.rgba32f",
+        "A-mask.rgba32f",
+        "A-one-controller.rgba32f",
+        "A-one-mesh.rgba32f",
+        "A-opaque-copy-repeat.rgba32f",
+        "A-opaque-copy.rgba32f",
+        "A-repeat.rgba32f",
+        "A-screen-copy-repeat.rgba32f",
+        "A-screen-copy.rgba32f",
+        "A-strength0.rgba32f",
+        "A-without-transparent-background.rgba32f"
+      ],
+      "changedRaw": [
+        {
+          "file": "A-manager-disabled.rgba32f",
+          "originalSHA256": "fef80982c3135877b5585855d6e32cf3ea3317eb98ea87a0b67f03a8fc55c355",
+          "fixedSHA256": "632900f71e23f96e09aa29ba442d3599716fc03dd0c327b2d418b4d1e5ac3ecf",
+          "maxDelta": 0.56884765625
+        }
+      ],
+      "oldDisabledEqualsOldOnByteExact": true,
+      "newDisabledEqualsOldEffectsFalseByteExact": true,
+      "ABCDisabledEqualsControllerOffByteExact": true,
+      "ABCReenableEqualsOnByteExact": true,
+      "finite": true,
+      "finalAB": 0.0,
+      "finalBC": 0.0,
+      "repeat": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "flagsOn": [
+        17
+      ],
+      "controllerIndices": [
+        0,
+        1
+      ],
+      "fixtureSHA256": "a5ad34da1c942ac8e0cceabc6ae737cfbe85cf031dc770e0c018ec92eb38aefa",
+      "provenanceSHA256": "0ed21e9eb83f49b4e48204f550cf765b970ea6e101ee2e8ae9777939a7f7987a"
+    },
+    {
+      "case": "deferred-ca-ortho",
+      "originalRawCount": 17,
+      "fixedRawCount": 58,
+      "commonRawCount": 17,
+      "byteExactCommonCount": 16,
+      "unchangedRawNames": [
+        "A-controller-off.rgba32f",
+        "A-controller-reenabled.rgba32f",
+        "A-final.rgba32f",
+        "A-mask-one-mesh.rgba32f",
+        "A-mask-repeat.rgba32f",
+        "A-mask-strength0.rgba32f",
+        "A-mask.rgba32f",
+        "A-one-controller.rgba32f",
+        "A-one-mesh.rgba32f",
+        "A-opaque-copy-repeat.rgba32f",
+        "A-opaque-copy.rgba32f",
+        "A-repeat.rgba32f",
+        "A-screen-copy-repeat.rgba32f",
+        "A-screen-copy.rgba32f",
+        "A-strength0.rgba32f",
+        "A-without-transparent-background.rgba32f"
+      ],
+      "changedRaw": [
+        {
+          "file": "A-manager-disabled.rgba32f",
+          "originalSHA256": "ddbc7f7377194c882f628ac5847e91e3f7b2ecaaa4587882238da9770ff1f085",
+          "fixedSHA256": "d5410e1cb40175785bb9c7082b3f7a3324a2538261ccf481c472b7d917363f94",
+          "maxDelta": 0.58935546875
+        }
+      ],
+      "oldDisabledEqualsOldOnByteExact": true,
+      "newDisabledEqualsOldEffectsFalseByteExact": true,
+      "ABCDisabledEqualsControllerOffByteExact": true,
+      "ABCReenableEqualsOnByteExact": true,
+      "finite": true,
+      "finalAB": 0.0,
+      "finalBC": 0.0,
+      "repeat": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "flagsOn": [
+        17
+      ],
+      "controllerIndices": [
+        0,
+        1
+      ],
+      "fixtureSHA256": "a5ad34da1c942ac8e0cceabc6ae737cfbe85cf031dc770e0c018ec92eb38aefa",
+      "provenanceSHA256": "0ed21e9eb83f49b4e48204f550cf765b970ea6e101ee2e8ae9777939a7f7987a"
+    },
+    {
+      "case": "deferred-ca-perspective",
+      "originalRawCount": 17,
+      "fixedRawCount": 58,
+      "commonRawCount": 17,
+      "byteExactCommonCount": 16,
+      "unchangedRawNames": [
+        "A-controller-off.rgba32f",
+        "A-controller-reenabled.rgba32f",
+        "A-final.rgba32f",
+        "A-mask-one-mesh.rgba32f",
+        "A-mask-repeat.rgba32f",
+        "A-mask-strength0.rgba32f",
+        "A-mask.rgba32f",
+        "A-one-controller.rgba32f",
+        "A-one-mesh.rgba32f",
+        "A-opaque-copy-repeat.rgba32f",
+        "A-opaque-copy.rgba32f",
+        "A-repeat.rgba32f",
+        "A-screen-copy-repeat.rgba32f",
+        "A-screen-copy.rgba32f",
+        "A-strength0.rgba32f",
+        "A-without-transparent-background.rgba32f"
+      ],
+      "changedRaw": [
+        {
+          "file": "A-manager-disabled.rgba32f",
+          "originalSHA256": "fcabd6bc7ac4b3c044b0f61aa882cfbba91e06d1cd8870861105efb540e052f8",
+          "fixedSHA256": "677013a85f2a0607dc815893713a9c24b7c55353af22850e318bfa228e51b28c",
+          "maxDelta": 0.58935546875
+        }
+      ],
+      "oldDisabledEqualsOldOnByteExact": true,
+      "newDisabledEqualsOldEffectsFalseByteExact": true,
+      "ABCDisabledEqualsControllerOffByteExact": true,
+      "ABCReenableEqualsOnByteExact": true,
+      "finite": true,
+      "finalAB": 0.0,
+      "finalBC": 0.0,
+      "repeat": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "flagsOn": [
+        17
+      ],
+      "controllerIndices": [
+        0,
+        1
+      ],
+      "fixtureSHA256": "a5ad34da1c942ac8e0cceabc6ae737cfbe85cf031dc770e0c018ec92eb38aefa",
+      "provenanceSHA256": "0ed21e9eb83f49b4e48204f550cf765b970ea6e101ee2e8ae9777939a7f7987a"
+    }
+  ],
+  "lifecycle": {
+    "uber": "Master-off does not return; later per-effect branches still execute. ResetEffect invokes existing EndEffect and clears _lastIs.",
+    "onEnable": "New flags wrapper binds material; SetFlagBits(0) ORs 0, not a blanket clear. Active controller masks/indices retained; cleared _lastIs makes EffectUpdater re-Init.",
+    "controllerStillEnabledCA4": "Two enabled Controllers, Manager disable/re-enable, single Controller toggle and destroy/recreate were reached with original exact assertions.",
+    "cinemachine": "CINIMACHINE_3_0 + prior _lastIsCameraShake calls existing EndCameraShake: perlin amplitude0/SoloCamera null, references retained; no actual Cinemachine proof in CA4.",
+    "additionalBoundary": "Controller.OnEnable can re-register EditorUpdate while Manager is disabled; that separate existing Editor registration edge was not tested by CA4."
+  },
+  "remaining48": {
+    "run": "nbpost-manager-rest48-live-20261004-1",
+    "completedStrictPassed": 48,
+    "uniqueCombinedOriginalIdentities": 52,
+    "all52Passed": true,
+    "metricsChecked": 48,
+    "finiteAll": true,
+    "finalABBCZeroAll": true,
+    "repeatZeroAll": true,
+    "independentlyRawRescanned": false,
+    "nameDigestSHA256": "3fbd2263df98df6a06576371c372a9ea2341fb5d2cb7d6cace5eb48b2630eb04",
+    "source": "Only completed JSON identities and metrics; no raw re-audit."
+  },
+  "limits": [
+    "Old20 stops at first A-disabled assertion; no old B/C/later baseline exists.",
+    "CA4 is not Cinemachine/Player/Compatibility/full Mesh approval."
+  ],
+  "privateWritesOnly": true,
+  "RootCloneUnityGitActions": false
+}
