@@ -348,6 +348,80 @@ namespace NBShaderEditor
         internal bool TryApplyGraphTADepthToggle(string property, bool enabled) => RunGraphTADepthEdit(property, enabled);
         internal bool TryResetGraphTADepth(string property) => RunGraphTADepthEdit(property, null);
 
+
+        internal bool HasGraphOverlayEditSchema()
+        {
+            if (_rootItem.MatEditor == null || _rootItem.Mats == null || _rootItem.Mats.Count == 0 || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return false;
+            if (!HasGraphMainTexUVEditSchema()) return false; // Same global UV controls/schema.
+            foreach (Material material in _rootItem.Mats)
+            {
+                bool ignored;
+                if (!NBShaderGUIContext.IsGraphMaterial(material) || !NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out ignored)) return false;
+                foreach (string field in NBShaderRootItem.SharedGraphOverlayFloatProperties)
+                {
+                    // These two original Graph numeric inputs are serialized Range properties.
+                    bool numericType = NBShaderRootItem.HasFloatProperty(material, field);
+                    if (!numericType && (field == "_EmissionMapUVRotation" || field == "_EmissionAlphaIntensity"))
+                    {
+                        int index = material.shader.FindPropertyIndex(field);
+                        numericType = index >= 0 && material.shader.GetPropertyType(index) == UnityEngine.Rendering.ShaderPropertyType.Range;
+                    }
+                    if (!numericType || !_rootItem.PropertyInfoDic.ContainsKey(field)) return false;
+                    float value = material.GetFloat(field); if (float.IsNaN(value) || float.IsInfinity(value)) return false;
+                }
+                foreach (string field in NBShaderRootItem.SharedGraphOverlayVectorProperties)
+                {
+                    int index = material.shader.FindPropertyIndex(field);
+                    if (index < 0 || material.shader.GetPropertyType(index) != UnityEngine.Rendering.ShaderPropertyType.Vector || !_rootItem.PropertyInfoDic.ContainsKey(field)) return false;
+                    Vector4 value = material.GetVector(field); for (int i=0;i<4;++i) if (float.IsNaN(value[i]) || float.IsInfinity(value[i])) return false;
+                }
+                foreach (string field in new[] { "_EmissionMapColor", "_ColorBlendColor" })
+                    if (!material.HasProperty(field) || !_rootItem.PropertyInfoDic.ContainsKey(field)) return false;
+                foreach (string field in new[] { "_EmissionMap", "_ColorBlendMap" })
+                    if (!material.HasProperty(field) || !_rootItem.PropertyInfoDic.ContainsKey(field)) return false;
+            }
+            return true;
+        }
+        internal bool TryApplyGraphOverlayEdit(string field, bool enabled)
+        {
+            if ((field != "_EmissionEnabled" && field != "_ColorBlendMap_Toggle") || !HasGraphOverlayEditSchema()) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                SetFloatIfExists(material, field, enabled ? 1f : 0f);
+                bool changed; if (!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material, out changed)) return false;
+            }
+            RefreshGraphMainTexPropertyReferences(); _rootItem.Context?.Refresh(); return true;
+        }
+        internal bool TryApplyGraphOverlayFlagEdit(int bit, int word, bool enabled)
+        {
+            bool owned = word==0 && (bit==NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY || bit==NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE) ||
+                word==1 && (bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_2_ADD || bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY);
+            if (!owned || !HasGraphOverlayEditSchema()) return false;
+            string name="_NB_Flags"+word+((bit&65535)!=0?"Lo16":"Hi16");int mask=(bit&65535)!=0?bit&65535:(int)((uint)bit>>16);
+            foreach(Material material in _rootItem.Mats)
+                if(!WriteGraphHalfSlice(material,name,mask,enabled?mask:0))NotifyGraphPackedFlagsEdited(material,name,mask);
+            RefreshGraphMainTexPropertyReferences();return true;
+        }
+        internal bool TryApplyGraphOverlayUVMode(int position, NBShaderFlags.UVMode mode, string fold, bool setFold)
+        {
+            if (!HasGraphOverlayEditSchema() || (int)mode<0 || (int)mode>8 ||
+                !(position==NBShaderFlags.FLAG_BIT_UVMODE_POS_0_EMISSION_MAP && fold=="_EmissionUVModeFoldOut" || position==NBShaderFlags.FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP && fold=="_ColorBlendUVModeFoldOut")) return false;
+            int shift=position&15;int mask=3<<shift;string suffix=position<16?"Lo16":"Hi16";
+            return RunGraphMainTexEdit("Overlay UV Source",material=>{
+                bool changed=WriteGraphHalfSlice(material,"_NB_UVModeFlag0"+suffix,mask,((int)mode&3)<<shift) |
+                    WriteGraphHalfSlice(material,"_NB_UVModeFlagType0"+suffix,mask,((int)mode/4)<<shift);
+                if(setFold){float value=mode==NBShaderFlags.UVMode.DefaultUVChannel || mode==NBShaderFlags.UVMode.CommonUV || mode==NBShaderFlags.UVMode.ScreenUV || mode==NBShaderFlags.UVMode.MainTex?0f:1f;
+                    if(material.GetFloat(fold)!=value){material.SetFloat(fold,value);changed=true;}}
+                return UpdateGraphMainTexUVDerived(material)|changed;
+            });
+        }
+        internal bool TryApplyGraphOverlayCustomData(int position, int word, NBShaderFlags.CutomDataComponent component)
+        {
+            if(!HasGraphOverlayEditSchema() || word!=3 || (position!=16 && position!=20 && position!=24 && position!=28) || (int)component<0 || (int)component>8)return false;
+            int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};
+            int shift=position-16;return RunGraphMainTexEdit("Overlay Offset Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag3Hi16",15<<shift,values[(int)component]<<shift));
+        }
+
         public void NotifyKeywordsMayHaveChanged()
         {
             KeywordVersion++;

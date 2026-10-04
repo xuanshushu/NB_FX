@@ -429,6 +429,7 @@ namespace NBShaderEditor
         private readonly int _dataBitPos;
         private readonly int _dataIndex;
         private readonly bool _graphMainTexOffset;
+        private readonly bool _graphOverlayOffset;
         private readonly Func<bool> _isVisible;
 
         public CustomDataSelectItem(
@@ -437,11 +438,12 @@ namespace NBShaderEditor
             int dataBitPos,
             int dataIndex,
             Func<GUIContent> contentProvider,
-            Func<bool> isVisible = null, bool graphMainTexOffset = false) : base(rootItem, parentItem)
+            Func<bool> isVisible = null, bool graphMainTexOffset = false, bool graphOverlayOffset = false) : base(rootItem, parentItem)
         {
             _dataBitPos = dataBitPos;
             _dataIndex = dataIndex;
             _graphMainTexOffset = graphMainTexOffset;
+            _graphOverlayOffset = graphOverlayOffset;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
             GuiContent = _contentProvider();
@@ -535,6 +537,8 @@ namespace NBShaderEditor
 
         private void SetComponent(NBShaderFlags.CutomDataComponent component)
         {
+            if (_graphOverlayOffset && RootItem is NBShaderRootItem overlayRoot && overlayRoot.Context.IsGraphMaterialHost)
+            { overlayRoot.SyncService.TryApplyGraphOverlayCustomData(_dataBitPos,_dataIndex,component); return; }
             if (_graphMainTexOffset && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
             {
                 graphRoot.SyncService.TryApplyGraphMainTexCustomData(_dataBitPos, component);
@@ -972,6 +976,7 @@ namespace NBShaderEditor
         private readonly string _texturePropertyName;
         private readonly bool _forceEnable;
         private readonly bool _graphMainTexProtocolEdit;
+        private readonly bool _graphOverlayProtocolEdit;
         private readonly Func<bool> _isVisible;
         private readonly ShaderGUIFoldOutHelper _foldOutHelper;
 
@@ -996,7 +1001,7 @@ namespace NBShaderEditor
             Func<GUIContent> contentProvider,
             string texturePropertyName = null,
             bool forceEnable = false,
-            Func<bool> isVisible = null, bool graphMainTexProtocolEdit = false) : base(rootItem, parentItem)
+            Func<bool> isVisible = null, bool graphMainTexProtocolEdit = false, bool graphOverlayProtocolEdit = false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
             _uvModeBitPos = uvModeBitPos;
@@ -1004,6 +1009,8 @@ namespace NBShaderEditor
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _texturePropertyName = texturePropertyName;
             _forceEnable = forceEnable;
+            _graphOverlayProtocolEdit = graphOverlayProtocolEdit;
+            graphMainTexProtocolEdit = graphMainTexProtocolEdit || graphOverlayProtocolEdit;
             _graphMainTexProtocolEdit = graphMainTexProtocolEdit;
             _isVisible = isVisible;
             _foldOutHelper = new ShaderGUIFoldOutHelper(rootItem, foldOutPropertyName);
@@ -1239,6 +1246,8 @@ namespace NBShaderEditor
 
         private bool SetMode(NBShaderFlags.UVMode mode, bool setFoldFromPopup = false)
         {
+            if(_graphOverlayProtocolEdit && RootItem is NBShaderRootItem overlayRoot && overlayRoot.Context.IsGraphMaterialHost)
+                return overlayRoot.SyncService.TryApplyGraphOverlayUVMode(_uvModeBitPos,mode,_foldOutPropertyName,setFoldFromPopup);
             if (_graphMainTexProtocolEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
                 return graphRoot.SyncService.TryApplyGraphMainTexUVMode(mode, setFoldFromPopup);
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)

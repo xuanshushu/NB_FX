@@ -12,11 +12,13 @@ namespace NBShaders2.Editor.FeatureLevel
         internal static readonly string[] GraphSupportedGateProperties = {
             "_NB_TierAllowMask", "_NB_TierAllowMask2", "_NB_TierAllowMask3",
             "_NB_TierAllowNoise", "_NB_TierAllowNoiseMask",
-            "_NB_TierAllowProgramNoise", "_NB_TierAllowProgramSimple", "_NB_TierAllowProgramVoronoi", "_NB_TierAllowFresnel"
+            "_NB_TierAllowProgramNoise", "_NB_TierAllowProgramSimple", "_NB_TierAllowProgramVoronoi", "_NB_TierAllowFresnel",
+            "_NB_TierAllowEmission", "_NB_TierAllowColorBlend"
         };
         static readonly string[] GraphSupportedGateKeywords = {
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
-            "_PROGRAM_NOISE", "_PROGRAM_NOISE_SIMPLE", "_PROGRAM_NOISE_VORONOI", "_FRESNEL"
+            "_PROGRAM_NOISE", "_PROGRAM_NOISE_SIMPLE", "_PROGRAM_NOISE_VORONOI", "_FRESNEL",
+            "_EMISSION", "_COLORMAPBLEND"
         };
 
         internal const string GraphOverrideDepthKeyword = "_OVERRIDE_Z";
@@ -117,6 +119,8 @@ namespace NBShaders2.Editor.FeatureLevel
                 if (!NBShaderMaterialIntentResolver.TryResolveGraphOverrideDepthIntent(material, allowed, out effective)) return false;
                 changed |= SetKeyword(material, GraphOverrideDepthKeyword, effective);
             }
+            if (!ApplyGraphOverlayPair(material, tier, allowed, out groupChanged)) return false;
+            changed |= groupChanged;
             return true;
         }
 
@@ -198,6 +202,22 @@ namespace NBShaders2.Editor.FeatureLevel
             changed |= SetGraphAllowFloat(material, "_NB_TierAllowMask", effective.Contains("_MASKMAP_ON"));
             changed |= SetGraphAllowFloat(material, "_NB_TierAllowMask2", effective.Contains("_MASKMAP2_ON"));
             changed |= SetGraphAllowFloat(material, "_NB_TierAllowMask3", effective.Contains("_MASKMAP3_ON"));
+            return true;
+        }
+
+
+        internal static bool ApplyGraphOverlayPair(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords, out bool changed)
+        {
+            changed = false;
+            foreach (string name in new[] { "_NB_TierAllowEmission", "_NB_TierAllowColorBlend" })
+                if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, name)) return false;
+            var allowed = allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            NBShaderMaterialIntentResult intent; string[] unavailable;
+            if (!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material, tier, allowed, out intent, out unavailable)) return false;
+            var effective = new HashSet<string>(intent.effectiveKeywords);
+            changed |= SetGraphAllowFloat(material, "_NB_TierAllowEmission", effective.Contains("_EMISSION"));
+            changed |= SetGraphAllowFloat(material, "_NB_TierAllowColorBlend", effective.Contains("_COLORMAPBLEND"));
             return true;
         }
 

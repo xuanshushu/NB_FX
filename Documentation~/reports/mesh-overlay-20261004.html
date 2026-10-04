@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><title>Mesh Overlay 共享控件与 Tier</title><style>body{max-width:980px;margin:36px auto;font:16px/1.65 system-ui;color:#1d2939}</style><h1>Mesh Overlay：两层共享控件与 Tier</h1>
+<p>Emission／ColorBlend 原控件已接入普通 Mesh Graph，复用原 flags、UV/CD 协议及共享 HLSL。增加两项派生 gate，原9项扩为11；TA 的真实 Override Z keyword 规则保持。关闭／恢复只改变有效消费，保留原材质意图。没有新 keyword、packed bit 或官方包修改。</p>
+<p>新增16个唯一身份全部实际通过：CPU6（拒绝／恢复、原blend/alpha位、UV和word3 CD），GUI6（两层Layout/Repaint只读、真实Root切换与完整Undo/Redo），Forward GPU4（两层×正交/透视）。GPU AB/BC/repeat/restore全0，禁用响应分别0.3994140625和0.64013671875，可见像素最小2300；76份实际96×96 RGBA-f32 payload均finite且无CDCD。<a href="mesh-overlay-20261004/overlay16/raw-health-independent.json">独立GPU指标</a>。</p>
+<p>首轮CPU为2P/4F，4项均在共享GUI初始化被拒绝：原Shader中两个数值字段实际类型为Range，候选错误要求Float。仅允许这两个原Range字段的窄修后，同16断言通过；packed/schema的Float约束不变。<a href="mesh-overlay-20261004/original-CPU6-2P4F.json">原失败保留</a>。</p>
+<p>两张BackFirst测试图按新中央CF接口追加，完整保留旧Target、path、GUID、route及DN缺省语义；独立结构检查确认三图旧属性／边／slot前缀与其它对象保持。额外两项旧路由／背面顺序回归均通过，28份128×128原始payload健康、AB/BC/repeat/order误差0；不加作新增功能数量。<a href="mesh-overlay-20261004/backfirst2/raw-health-independent.json">影响回归</a>。</p>
+<p>辅助扫描器最初分别误用.raw.gz与.rgba-f32.gz匹配规则，未找到对应payload；这不作为健康证明。独立扫描按两个夹具真实扩展名读取全部76/28文件并检查大小、finite与CDCD；原生测试结果及原raw均保留。</p>
+<p>主包14路径（核心11、测试2、范围说明1）已集成；实际主工程编译与读回确认11gate、原TA/Overlay方法、三图Shader Error0和DN布局-1/5/6。范围说明是一行文本变化，未改渲染逻辑。<a href="mesh-overlay-20261004/main-overlay14-actual-readback-20261004.json">主工程读回</a> · <a href="mesh-overlay-20261004/provenance.json">来源索引</a>。</p>
+<p>独立审核确认Wrap Popup回传、NoMip和Reset均位于Root写前Undo范围；专门NoMip真实事件验证仍在补齐，原生Popup选择保留人工验收。此片不是全部Overlay UV/Pass组合或完整GUI/Tier完成；Player、变体、性能、完整Mesh G3/G4和VFX均未据此放行。环境Unity6000.3.25f1 / D3D11。</p>

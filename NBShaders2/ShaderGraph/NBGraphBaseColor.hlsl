@@ -820,9 +820,13 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NBGraphDebugVertexOffsetToggle, float3 NBGraphDebugVertexOffsetRGB,
     float NBGraphTierAllowProgramNoise, float NBGraphTierAllowProgramSimple, float NBGraphTierAllowProgramVoronoi,
     float NBGraphTierAllowFresnel,
+    float NBGraphTierAllowEmission, float NBGraphTierAllowColorBlend,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    EmissionEnabled *= NBGraphTierAllowEmission > 0.5 ? 1.0 : 0.0;
+    ColorBlendMapToggle *= NBGraphTierAllowColorBlend > 0.5 ? 1.0 : 0.0;
+
     FresnelEnabled *= NBGraphTierAllowFresnel > 0.5 ? 1.0 : 0.0;
 
     ProgramNoiseToggle *= NBGraphTierAllowProgramNoise > 0.5 ? 1.0 : 0.0;
@@ -1361,9 +1365,13 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NBGraphDebugVertexOffsetToggle, float3 NBGraphDebugVertexOffsetRGB,
     float NBGraphTierAllowProgramNoise, float NBGraphTierAllowProgramSimple, float NBGraphTierAllowProgramVoronoi,
     float NBGraphTierAllowFresnel,
+    float NBGraphTierAllowEmission, float NBGraphTierAllowColorBlend,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    EmissionEnabled *= NBGraphTierAllowEmission > 0.5 ? 1.0 : 0.0;
+    ColorBlendMapToggle *= NBGraphTierAllowColorBlend > 0.5 ? 1.0 : 0.0;
+
     FresnelEnabled *= NBGraphTierAllowFresnel > 0.5 ? 1.0 : 0.0;
 
     ProgramNoiseToggle *= NBGraphTierAllowProgramNoise > 0.5 ? 1.0 : 0.0;

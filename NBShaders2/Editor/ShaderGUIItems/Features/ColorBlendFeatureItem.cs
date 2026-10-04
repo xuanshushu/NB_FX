@@ -4,7 +4,7 @@ namespace NBShaderEditor
 {
     internal sealed class ColorBlendFeatureItem : ColorOverlayFeatureItem
     {
-        public ColorBlendFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        public ColorBlendFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode = false)
             : base(
                 rootItem,
                 parentItem,
@@ -31,7 +31,7 @@ namespace NBShaderEditor
                 alphaModePropertyName: "_ColorBlendAlphaMultiplyMode",
                 alphaModeFlag: NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE,
                 alphaModeFlagIndex: 0,
-                alphaIntensity: NumericBinding.VectorSlider("_ColorBlendVec", 2, 0f, 1f))
+                alphaIntensity: NumericBinding.VectorSlider("_ColorBlendVec", 2, 0f, 1f), graphSharedMode: graphSharedMode)
         {
         }
     }

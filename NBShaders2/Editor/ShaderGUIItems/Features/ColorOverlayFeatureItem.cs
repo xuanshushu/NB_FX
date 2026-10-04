@@ -31,14 +31,15 @@ namespace NBShaderEditor
             string alphaModePropertyName,
             int alphaModeFlag,
             int alphaModeFlagIndex,
-            NumericBinding alphaIntensity)
+            NumericBinding alphaIntensity, bool graphSharedMode = false)
             : base(
                 rootItem,
                 parentItem,
                 foldOutPropertyName,
                 togglePropertyName,
                 label,
-                keyword: keyword)
+                keyword: graphSharedMode ? null : keyword,
+                onValueChanged: graphSharedMode ? (System.Action<bool>)(enabled => rootItem.SyncService.TryApplyGraphOverlayEdit(togglePropertyName, enabled)) : null)
         {
             string textureLabel = label + " 贴图";
             string uvSourceLabel = label + " UV来源";
@@ -57,10 +58,10 @@ namespace NBShaderEditor
                 blendModePropertyName,
                 () => Content("叠加贴图混合方式"),
                 BlendModeNames,
-                property => rootItem.SyncService.ApplyToggleFlag(
-                    blendModeFlag,
-                    IsModeEnabled(property.floatValue, blendModeFlagEnabledMode),
-                    blendModeFlagIndex));
+                property => {
+                    if(graphSharedMode)rootItem.SyncService.TryApplyGraphOverlayFlagEdit(blendModeFlag,blendModeFlagIndex,IsModeEnabled(property.floatValue,blendModeFlagEnabledMode));
+                    else rootItem.SyncService.ApplyToggleFlag(blendModeFlag,IsModeEnabled(property.floatValue,blendModeFlagEnabledMode),blendModeFlagIndex);
+                });
 
             AddTextureWithWrap(
                 rootItem,
@@ -78,9 +79,9 @@ namespace NBShaderEditor
                 uvModeFlag,
                 0,
                 () => Content(uvSourceLabel),
-                texturePropertyName);
-            new CustomDataSelectItem(rootItem, this, customDataOffsetXFlag, 3, () => Content(offsetXLabel));
-            new CustomDataSelectItem(rootItem, this, customDataOffsetYFlag, 3, () => Content(offsetYLabel));
+                texturePropertyName, graphOverlayProtocolEdit: graphSharedMode);
+            new CustomDataSelectItem(rootItem, this, customDataOffsetXFlag, 3, () => Content(offsetXLabel), graphOverlayOffset: graphSharedMode);
+            new CustomDataSelectItem(rootItem, this, customDataOffsetYFlag, 3, () => Content(offsetYLabel), graphOverlayOffset: graphSharedMode);
             AddNumericItem(rootItem, this, rotation, rotationLabel);
             new Vector2LineItem(rootItem, this, offsetPropertyName, true, () => Content(offsetSpeedLabel));
 
@@ -94,10 +95,10 @@ namespace NBShaderEditor
                 alphaModePropertyName,
                 () => Content(alphaModeLabel),
                 OnOffNames,
-                property => rootItem.SyncService.ApplyToggleFlag(
-                    alphaModeFlag,
-                    property.floatValue > 0.5f,
-                    alphaModeFlagIndex));
+                property => {
+                    if(graphSharedMode)rootItem.SyncService.TryApplyGraphOverlayFlagEdit(alphaModeFlag,alphaModeFlagIndex,property.floatValue>0.5f);
+                    else rootItem.SyncService.ApplyToggleFlag(alphaModeFlag,property.floatValue>0.5f,alphaModeFlagIndex);
+                });
             AddNumericItem(rootItem, this, alphaIntensity, alphaIntensityLabel);
 
             InitTriggerByChild();

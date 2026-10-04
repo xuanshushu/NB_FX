@@ -108,6 +108,7 @@ namespace NBShaderEditor
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphFlipbookReady) names.Add("_FlipbookBlending");
             if (Context != null && _sharedGraphMainTextureReady && Context.CanEditGraphMainTexUV) names.AddRange(new[] { "_UTwirlEnabled", "_PolarCoordinatesEnabled", "_TWParameter", "_TWStrength", "_PCCenter", "_CylinderUVRotate", "_CylinderUVPosOffset", "_WorldSpaceUVModeSelector", "_ObjectSpaceUVModeSelector" });
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphFresnelReady) names.AddRange(SharedGraphFresnelProperties);
+            if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphOverlayReady)names.AddRange(SharedGraphOverlayProperties);
             return names;
         }
 
@@ -206,6 +207,35 @@ namespace NBShaderEditor
             return true;
         }
 
+
+        bool _sharedGraphOverlayReady;
+        EmissionFeatureItem _graphEmissionItem;
+        ColorBlendFeatureItem _graphColorBlendItem;
+        internal static readonly string[] SharedGraphOverlayFloatProperties = {
+            "_EmissionBlockFoldOut","_EmissionUVModeFoldOut","_ColorBlendBlockFoldOut","_ColorBlendUVModeFoldOut",
+            "_EmissionEnabled","_EmissionMapUVRotation","_EmissionMapColorIntensity","_EmissionAlphaIntensity","_Emi_Distortion_intensity",
+            "_EmissionBlendMode","_EmissionAlphaMultiplyMode","_ColorBlendMap_Toggle","_ColorBlendColorIntensity","_ColorBlendMode","_ColorBlendAlphaMultiplyMode",
+            "_NB_CustomDataFlag3Lo16","_NB_CustomDataFlag3Hi16","_NB_WrapFlagsLo16","_NB_WrapFlagsHi16","_NB_ForceNoMipFlagsLo16","_NB_ForceNoMipFlagsHi16"
+        };
+        internal static readonly string[] SharedGraphOverlayVectorProperties={"_EmissionMapUVOffset","_ColorBlendMapOffset","_ColorBlendVec"};
+        static readonly string[] SharedGraphOverlayProperties={"_EmissionEnabled","_EmissionMap","_EmissionMapColor","_EmissionMapUVRotation","_EmissionMapUVOffset","_EmissionMapColorIntensity","_EmissionAlphaIntensity","_Emi_Distortion_intensity","_EmissionBlendMode","_EmissionAlphaMultiplyMode","_ColorBlendMap_Toggle","_ColorBlendMap","_ColorBlendColor","_ColorBlendColorIntensity","_ColorBlendVec","_ColorBlendMapOffset","_ColorBlendMode","_ColorBlendAlphaMultiplyMode"};
+        internal bool InitializeGraphOverlayInputs()
+        {
+            Context ??= new NBShaderGUIContext(this); SyncService ??= new NBShaderSyncService(this); Context.Refresh();
+            _sharedGraphOverlayReady=Context.IsGraphMaterialHost && SyncService.HasGraphOverlayEditSchema();
+            if(!_sharedGraphOverlayReady)return false;
+            _graphEmissionItem ??= new EmissionFeatureItem(this,null,true); _graphColorBlendItem ??= new ColorBlendFeatureItem(this,null,true);return true;
+        }
+        void DrawGraphOverlayInputs()
+        {
+            if(!InitializeGraphOverlayInputs())return;
+            // Original widgets keep their exact business. Capture the Material
+            // before an interactive event for floats, packed choices and Reset.
+            if(Event.current!=null && Event.current.type!=EventType.Layout && Event.current.type!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB Overlay Inputs");
+            _graphEmissionItem.OnGUI();_graphColorBlendItem.OnGUI();
+        }
+
         public override void OnChildOnGUI()
         {
             if (Context == null)
@@ -247,6 +277,7 @@ namespace NBShaderEditor
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
                 if (InitializeGraphTADepthInputs()) _graphTADepthBlock.OnGUI();
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
+                DrawGraphOverlayInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
                 return;

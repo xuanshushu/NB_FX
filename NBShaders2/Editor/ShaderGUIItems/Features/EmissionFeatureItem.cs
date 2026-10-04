@@ -4,7 +4,7 @@ namespace NBShaderEditor
 {
     internal sealed class EmissionFeatureItem : ColorOverlayFeatureItem
     {
-        public EmissionFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        public EmissionFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode = false)
             : base(
                 rootItem,
                 parentItem,
@@ -31,7 +31,7 @@ namespace NBShaderEditor
                 alphaModePropertyName: "_EmissionAlphaMultiplyMode",
                 alphaModeFlag: NBShaderFlags.FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY,
                 alphaModeFlagIndex: 1,
-                alphaIntensity: NumericBinding.Slider("_EmissionAlphaIntensity", 0f, 1f))
+                alphaIntensity: NumericBinding.Slider("_EmissionAlphaIntensity", 0f, 1f), graphSharedMode: graphSharedMode)
         {
         }
     }
