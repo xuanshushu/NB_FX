@@ -1,0 +1,55 @@
+{
+  "status": "completed",
+  "duration": 19.64,
+  "summary": {
+    "total": 6,
+    "passed": 4,
+    "failed": 2,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4RootFresnelTierTests.G4FresnelTier_GPU_Forward_ortho",
+      "Status": "Passed",
+      "Duration": 4.1455156,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4RootFresnelTierTests.G4FresnelTier_GPU_Forward_perspective",
+      "Status": "Passed",
+      "Duration": 1.7605756,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4RootFresnelTierTests.G4FresnelTier_GPU_NBCameraOpaqueDistortPass_ortho",
+      "Status": "Failed",
+      "Duration": 3.3033344,
+      "Message": "  Expected: greater than 0.00999999978f\r\n  But was:  0.00537109375f\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4RootFresnelTierTests.Fresnel_GPU_ActualForwardAndScreenConsumersRestoreIntent (System.String stage, System.Boolean ortho) [0x00e9a] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4RootFresnelTierTests.cs:218\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4RootFresnelTierTests.G4FresnelTier_GPU_NBCameraOpaqueDistortPass_perspective",
+      "Status": "Failed",
+      "Duration": 1.8993735,
+      "Message": "  Expected: greater than 0.00999999978f\r\n  But was:  0.005859375f\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4RootFresnelTierTests.Fresnel_GPU_ActualForwardAndScreenConsumersRestoreIntent (System.String stage, System.Boolean ortho) [0x00e9a] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4RootFresnelTierTests.cs:218\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4RootFresnelTierTests.G4FresnelTier_GPU_NBDeferredDistortPass_ortho",
+      "Status": "Passed",
+      "Duration": 6.8266157,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4RootFresnelTierTests.G4FresnelTier_GPU_NBDeferredDistortPass_perspective",
+      "Status": "Passed",
+      "Duration": 1.2805546,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}
