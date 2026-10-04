@@ -1,0 +1,153 @@
+{
+  "status": "completed",
+  "duration": 7.74,
+  "summary": {
+    "total": 20,
+    "passed": 2,
+    "failed": 18,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_MPBIntegerBranch_DoesNotTouchGraphMaterial",
+      "Status": "Passed",
+      "Duration": 0.0656188,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_NativeIntegerBranch_RemainsOriginal",
+      "Status": "Passed",
+      "Duration": 0.0339679,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_flags_fraction_editLo",
+      "Status": "Failed",
+      "Duration": 0.0128457,
+      "Message": "  Unedited Hi exact stored bits\r\n  Expected: 1115717632\r\n  But was:  1115684864\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002db] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:59\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_flags_fraction_editHi",
+      "Status": "Failed",
+      "Duration": 0.0036919,
+      "Message": "  Unedited Lo exact stored bits\r\n  Expected: 1107361792\r\n  But was:  1107296256\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x0036d] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:65\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_flags_fraction_noop",
+      "Status": "Failed",
+      "Duration": 0.0072658,
+      "Message": "System.Reflection.TargetInvocationException : Exception has been thrown by the target of an invocation.\r\n  ----> NUnit.Framework.AssertionException :   Decoded no-op keeps every property/raw bit/keyword/pass float _NB_Flags0Lo16\r\n  Expected: 1107361792\r\n  But was:  1107296256\r\n",
+      "StackTrace": "  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00083] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests+Snapshot.AssertSame (UnityEngine.Material m, System.String label, System.String[] allowed) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:28 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002ae] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:56 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n--AssertionException\r\n  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00039] in <f577cd9686154d6ab10efd7e65e64366>:0 \r\n  at NBFX.Baseline.Tests.G4GraphGuiFeatureIntentTests+Snapshot.AssertSame (UnityEngine.Material material, System.String label, System.String[] allowed) [0x0013a] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphGuiFeatureIntentTests.cs:333 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 "
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_flags_over16_editLo",
+      "Status": "Failed",
+      "Duration": 0.0036749,
+      "Message": "  Unedited Hi exact stored bits\r\n  Expected: 1200142368\r\n  But was:  1199570688\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002db] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:59\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_flags_over16_editHi",
+      "Status": "Failed",
+      "Duration": 0.0038779,
+      "Message": "  Unedited Lo exact stored bits\r\n  Expected: -1058537472\r\n  But was:  0\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x0036d] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:65\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_flags_over16_noop",
+      "Status": "Failed",
+      "Duration": 0.0046084,
+      "Message": "System.Reflection.TargetInvocationException : Exception has been thrown by the target of an invocation.\r\n  ----> NUnit.Framework.AssertionException :   Decoded no-op keeps every property/raw bit/keyword/pass float _NB_Flags0Lo16\r\n  Expected: -1058537472\r\n  But was:  0\r\n",
+      "StackTrace": "  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00083] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests+Snapshot.AssertSame (UnityEngine.Material m, System.String label, System.String[] allowed) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:28 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002ae] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:56 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n--AssertionException\r\n  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00039] in <f577cd9686154d6ab10efd7e65e64366>:0 \r\n  at NBFX.Baseline.Tests.G4GraphGuiFeatureIntentTests+Snapshot.AssertSame (UnityEngine.Material material, System.String label, System.String[] allowed) [0x0013a] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphGuiFeatureIntentTests.cs:333 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 "
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_wrap_fraction_editLo",
+      "Status": "Failed",
+      "Duration": 0.0033703,
+      "Message": "  Unedited Hi exact stored bits\r\n  Expected: 1115717632\r\n  But was:  1115684864\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002db] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:59\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_wrap_fraction_editHi",
+      "Status": "Failed",
+      "Duration": 0.0033722,
+      "Message": "  Unedited Lo exact stored bits\r\n  Expected: 1099038720\r\n  But was:  1098907648\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x0036d] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:65\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_wrap_fraction_noop",
+      "Status": "Failed",
+      "Duration": 0.0047076,
+      "Message": "System.Reflection.TargetInvocationException : Exception has been thrown by the target of an invocation.\r\n  ----> NUnit.Framework.AssertionException :   Decoded no-op keeps every property/raw bit/keyword/pass float _NB_WrapFlagsLo16\r\n  Expected: 1099038720\r\n  But was:  1098907648\r\n",
+      "StackTrace": "  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00083] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests+Snapshot.AssertSame (UnityEngine.Material m, System.String label, System.String[] allowed) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:28 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002ae] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:56 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n--AssertionException\r\n  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00039] in <f577cd9686154d6ab10efd7e65e64366>:0 \r\n  at NBFX.Baseline.Tests.G4GraphGuiFeatureIntentTests+Snapshot.AssertSame (UnityEngine.Material material, System.String label, System.String[] allowed) [0x0013a] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphGuiFeatureIntentTests.cs:333 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 "
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_wrap_over16_editLo",
+      "Status": "Failed",
+      "Duration": 0.00333,
+      "Message": "  Unedited Hi exact stored bits\r\n  Expected: 1200142368\r\n  But was:  1199570688\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002db] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:59\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_wrap_over16_editHi",
+      "Status": "Failed",
+      "Duration": 0.0033934,
+      "Message": "  Unedited Lo exact stored bits\r\n  Expected: -1058537472\r\n  But was:  0\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x0036d] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:65\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_wrap_over16_noop",
+      "Status": "Failed",
+      "Duration": 0.0047475,
+      "Message": "System.Reflection.TargetInvocationException : Exception has been thrown by the target of an invocation.\r\n  ----> NUnit.Framework.AssertionException :   Decoded no-op keeps every property/raw bit/keyword/pass float _NB_WrapFlagsLo16\r\n  Expected: -1058537472\r\n  But was:  0\r\n",
+      "StackTrace": "  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00083] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests+Snapshot.AssertSame (UnityEngine.Material m, System.String label, System.String[] allowed) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:28 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002ae] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:56 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n--AssertionException\r\n  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00039] in <f577cd9686154d6ab10efd7e65e64366>:0 \r\n  at NBFX.Baseline.Tests.G4GraphGuiFeatureIntentTests+Snapshot.AssertSame (UnityEngine.Material material, System.String label, System.String[] allowed) [0x0013a] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphGuiFeatureIntentTests.cs:333 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 "
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_cd3_fraction_editLo",
+      "Status": "Failed",
+      "Duration": 0.0042641,
+      "Message": "  Unedited Hi exact stored bits\r\n  Expected: 1115717632\r\n  But was:  1115684864\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002db] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:59\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_cd3_fraction_editHi",
+      "Status": "Failed",
+      "Duration": 0.0036025,
+      "Message": "  Unedited Lo exact stored bits\r\n  Expected: 1098121216\r\n  But was:  1097859072\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x0036d] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:65\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_cd3_fraction_noop",
+      "Status": "Failed",
+      "Duration": 0.0057729,
+      "Message": "System.Reflection.TargetInvocationException : Exception has been thrown by the target of an invocation.\r\n  ----> NUnit.Framework.AssertionException :   Decoded no-op keeps every property/raw bit/keyword/pass float _NB_CustomDataFlag3Lo16\r\n  Expected: 1098121216\r\n  But was:  1097859072\r\n",
+      "StackTrace": "  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00083] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests+Snapshot.AssertSame (UnityEngine.Material m, System.String label, System.String[] allowed) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:28 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002ae] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:56 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n--AssertionException\r\n  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00039] in <f577cd9686154d6ab10efd7e65e64366>:0 \r\n  at NBFX.Baseline.Tests.G4GraphGuiFeatureIntentTests+Snapshot.AssertSame (UnityEngine.Material material, System.String label, System.String[] allowed) [0x0013a] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphGuiFeatureIntentTests.cs:333 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 "
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_cd3_over16_editLo",
+      "Status": "Failed",
+      "Duration": 0.0035659,
+      "Message": "  Unedited Hi exact stored bits\r\n  Expected: 1200142368\r\n  But was:  1199570688\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002db] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:59\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_cd3_over16_editHi",
+      "Status": "Failed",
+      "Duration": 0.0035315,
+      "Message": "  Unedited Lo exact stored bits\r\n  Expected: -1058537472\r\n  But was:  0\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.Same (System.Single actual, System.Single expected, System.String label) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:21\r\nat NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x0036d] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:65\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.G4Halfword_cd3_over16_noop",
+      "Status": "Failed",
+      "Duration": 0.0056656,
+      "Message": "System.Reflection.TargetInvocationException : Exception has been thrown by the target of an invocation.\r\n  ----> NUnit.Framework.AssertionException :   Decoded no-op keeps every property/raw bit/keyword/pass float _NB_CustomDataFlag3Lo16\r\n  Expected: -1058537472\r\n  But was:  0\r\n",
+      "StackTrace": "  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00083] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests+Snapshot.AssertSame (UnityEngine.Material m, System.String label, System.String[] allowed) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:28 \r\n  at NBFX.Baseline.Tests.G4GraphHalfwordWriterPreservationTests.UneditedHalfAndDecodedNoOpPreserveRaw (System.String kind, System.String raw, System.String operation) [0x002ae] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphHalfwordWriterPreservationTests.cs:56 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n--AssertionException\r\n  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00039] in <f577cd9686154d6ab10efd7e65e64366>:0 \r\n  at NBFX.Baseline.Tests.G4GraphGuiFeatureIntentTests+Snapshot.AssertSame (UnityEngine.Material material, System.String label, System.String[] allowed) [0x0013a] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphGuiFeatureIntentTests.cs:333 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 "
+    }
+  ]
+}

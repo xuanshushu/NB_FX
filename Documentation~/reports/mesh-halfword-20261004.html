@@ -1,0 +1,6 @@
+<!doctype html><meta charset="utf-8"><title>Graph packed word：未编辑半字保真</title><style>body{max-width:940px;margin:36px auto;font:16px/1.6 system-ui;color:#1d2939}</style><h1>Graph packed word：未编辑半字保真</h1>
+<p>原 Graph Material 写入器每次重写 Lo/Hi 两半，导致修改一半时，另一半已有的有限浮点值被规范化。修复沿用原 clamp/round 解码，只写逻辑值实际改变的半字；decoded no-op 保留原存储 bits。Native int 与 MPB 分支未改，没有新字段、位、keyword 或图接线。</p>
+<p>同一组20项实际验证：旧产品源为2通过、18失败，失败均为未编辑半字或 no-op 的严格存储断言；修复后20/20通过。覆盖 flags、wrap、CustomData word3，有限小数／超16位值，Lo/Hi 编辑及重复写入；另外两项确认 Native/MPB 分支。结果不相加为40项。</p>
+<p>最早一轮20项因测试反射构造调用误选 bool 重载而失败，未到产品断言；修正三处为显式 object[]，原断言不变，原失败独立保留。该轮不计产品缺陷或通过。</p>
+<p>产品单文件及测试两文件已集成主包。主工程实际编译无错误，加载后临时材质验证 Lo 从32.25变0、未编辑 Hi 保持64.25；主材质和场景资产未修改。隔离环境 Unity6000.3.25f1 / D3D11。本片不代表全部 flags 消费者、完整 GUI/Tier、Player 或 G3/G4 已完成。</p>
+<p><a href="mesh-halfword-20261004/provenance.json">源版本与原生证据</a> · <a href="mesh-halfword-20261004/old-writer20.json">旧源2P/18F</a> · <a href="mesh-halfword-20261004/fixed-writer20.json">同20项全部通过</a> · <a href="mesh-halfword-20261004/main-actual-readback.json">主工程实际读回</a></p>

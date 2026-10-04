@@ -185,8 +185,14 @@ namespace NBShader
             if (propertyBlock is null && TryGetGraphWordProperties(propertyId, out int loId, out int hiId))
             {
                 uint word = unchecked((uint)value);
-                material.SetFloat(loId, word & 0xFFFFu);
-                material.SetFloat(hiId, word >> 16);
+                uint lo = word & 0xFFFFu;
+                uint hi = word >> 16;
+                // Same existing finite clamp/round decoding. A decoded no-op
+                // must retain the original raw half, including finite sentinels.
+                uint beforeLo = (uint)Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(loId), 0f, 65535f));
+                uint beforeHi = (uint)Mathf.RoundToInt(Mathf.Clamp(material.GetFloat(hiId), 0f, 65535f));
+                if (beforeLo != lo) material.SetFloat(loId, lo);
+                if (beforeHi != hi) material.SetFloat(hiId, hi);
                 return;
             }
 
