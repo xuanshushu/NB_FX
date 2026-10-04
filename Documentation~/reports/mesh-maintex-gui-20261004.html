@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>2026-10-04 MainTex/UV 共享GUI</title></head><body>
+<p><a href="index.html">报告索引</a></p><h1>MainTex/UV/CustomData 共享控件：限定集成</h1>
+<p>源码 <code>9b846b3dafcdaf6d158713f105f74322de5ab819</code>；Unity6000.3.25f1、URP/SG17.3、Windows D3D11。五个既有Editor文件复用原工厂/控件，Graph在当前d019源上动态追加3个隐藏Fold/default0到319属性；旧对象/接线/Target/CI/keyword不变。另有新事件fixture/meta和既有GUI合同的V2版本，共9路径。</p>
+<p>协议沿用：UV/modeType word0 bits0..1；CustomData0 nibble0/4；flags1 bits18/19/20；Polar flags0 bit8、Twirl bit9。未搬位、新增关键字或改变HLSL算法，Native默认分支保留。<a href="mesh-maintex-gui-20261004/source-installation.json">安装/源锁</a>。</p>
+<table border="1" cellpadding="6"><tr><th>检查</th><th>真实结果</th><th>限制</th></tr>
+<tr><td>原21事件身份</td><td>14项自动通过；7项依赖原生Popup待人工</td><td>含间接调用Popup的保存和两项Cylinder派生；不是21全通过</td></tr>
+<tr><td><a href="mesh-maintex-gui-20261004/whole-reset1.json">新增整块Reset</a></td><td>1/1通过，真实按钮/MainUV reset/未拥有位与Twirl-Polar保留/完整UndoRedo</td><td>原UV reset override不递归其子块，无产品reset修正</td></tr>
+<tr><td>既有GUI合同</td><td><a href="mesh-maintex-gui-20261004/original-gui110-109-1.json">原110为109/1</a>；修正后<a href="mesh-maintex-gui-20261004/affected-v2-contract38.json">受影响38/38</a></td><td>一行ready guard修复初始化前提前接管字段；原7字段/UVCD空合同升级为明确V2，历史失败与源码保留。未伪称同次110全通过</td></tr>
+<tr><td>相关Mesh</td><td>45/45，原基础2、NB Pass13、ColorMask/Stencil30</td><td>一行ownership gate仅GUI字段可见性变化，后续不重复GPU矩阵</td></tr>
+<tr><td><a href="mesh-maintex-gui-20261004/main-actual-readback.json">实际主工程</a></td><td>新UV方法和V2测试已编译；三个Fold均Float/default0，Light/Offset字段仍在；Error0/Warning16</td><td>主工程源/导入读回，定向交互/渲染取隔离工程证据</td></tr></table>
+<p>主包初始化保护要求shared MainTex确实初始化后才接管9个新增UV字段；新V2验证before empty、after准确16 owned、UV/CD原工厂真实对象，以及仍未接管的Native字段保持可见。<a href="mesh-maintex-gui-20261004/v2-contract-mapping.json">版本映射</a>和<a href="mesh-maintex-gui-20261004/legacy-gui1a-before-v2.cs.txt">旧源码</a>保留；没有删除旧失败或降低阈值。</p>
+<p><strong>人工待验：</strong>7个MainTex原生Popup依赖项加上之前2个Light Popup仍待最终人工交互。保存测试因分组漏掉间接Popup调用而达到120秒截止，取消已核对隔离菜单后原断言返回<a href="mesh-maintex-gui-20261004/save-popup-original-failed.json">Failed</a>；超时/失败保留，取消不算通过。</p>
+<p>代码只有一处空行尾随空白清理，Root/clone/ready token序列相同并记录<a href="mesh-maintex-gui-20261004/whitespace-transport.json">传输SHA</a>。所有小回执及原始本机证据位置见<a href="mesh-maintex-gui-20261004/provenance.json">provenance</a>。</p>
+<p>完整共享GUI/Tier、高级状态/默认Normals与SSAO、组合、完整后处理、Player、变体与性能仍待完成；G3/G4未放行，正式VFX未启动。</p>
+</body></html>

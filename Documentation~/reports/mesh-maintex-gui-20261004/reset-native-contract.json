@@ -1,0 +1,24 @@
+{
+  "scope": "Targeted reset hierarchy audit only, no product fix",
+  "nativeUVReset": {
+    "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\NBShaders2\\Editor\\ShaderGUIItems\\NBShaderProtocolItems.cs",
+    "sha256": "daa515fbf5084482bd33b8bafddfc9068fd3e23dc8ea9f4f1023ab97a36d9a0b",
+    "line": 1114,
+    "method": "        public override void ExecuteReset(bool isCallByParent = false)\n        {\n            SetMode(NBShaderFlags.UVMode.DefaultUVChannel);\n            PropertyIsDefaultValue = true;\n            HasModified = false;\n            if (!isCallByParent)\n            {\n                ParentItem?.CheckIsPropertyModified(true);\n            }\n        }"
+  },
+  "candidateUVReset": {
+    "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\gui-maintex-review-20261003\\candidate-current-root-target676-event-v2-1\\NBShaders2\\Editor\\ShaderGUIItems\\NBShaderProtocolItems.cs",
+    "sha256": "b201439aa078751927c39f55eba31841c7b149c651a423743edb947ba1305d65",
+    "line": 1134,
+    "sameMethodTextAsNative": true
+  },
+  "hierarchy": [
+    "MainTexBigBlockItem",
+    "TextureRelatedFoldOutItem",
+    "UVModeSelectItem override (SetMode only)",
+    "Twirl/Polar descendants are not reset by that override"
+  ],
+  "conclusion": "Main whole-block does not reset Twirl/Polar mirror or bits8/9; flags0Bits0 preservation is required by native reset contract; do not widen to768",
+  "ranUnity": false,
+  "productCorrectionNeeded": false
+}
