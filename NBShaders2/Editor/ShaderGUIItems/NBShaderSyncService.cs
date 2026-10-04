@@ -422,6 +422,54 @@ namespace NBShaderEditor
             int shift=position-16;return RunGraphMainTexEdit("Overlay Offset Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag3Hi16",15<<shift,values[(int)component]<<shift));
         }
 
+
+        internal bool HasGraphParallaxEditSchema()
+        {
+            if (_rootItem.MatEditor == null || _rootItem.Mats == null || _rootItem.Mats.Count == 0 || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                bool ignored;
+                if (!NBShaderGUIContext.IsGraphMaterial(material) || !NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out ignored)) return false;
+                foreach (string field in new[] { "_ParallaxBlockFoldOut", "_ParallaxMapping_Toggle", "_ParallaxMapping_Intensity", "_NB_WrapFlagsLo16", "_NB_WrapFlagsHi16", "_NB_ForceNoMipFlagsLo16", "_NB_ForceNoMipFlagsHi16" })
+                {
+                    if (!NBShaderRootItem.HasFloatProperty(material, field) || !_rootItem.PropertyInfoDic.ContainsKey(field)) return false;
+                    float value=material.GetFloat(field); if(float.IsNaN(value)||float.IsInfinity(value))return false;
+                }
+                foreach (string field in new[] { "_ParallaxMapping_Vec", "_ParallaxMapping_IntensityRangeVec" })
+                {
+                    int index=material.shader.FindPropertyIndex(field);
+                    if(index<0 || material.shader.GetPropertyType(index)!=UnityEngine.Rendering.ShaderPropertyType.Vector || !_rootItem.PropertyInfoDic.ContainsKey(field))return false;
+                    Vector4 value=material.GetVector(field);for(int i=0;i<4;++i)if(float.IsNaN(value[i])||float.IsInfinity(value[i]))return false;
+                }
+                int map=material.shader.FindPropertyIndex("_ParallaxMapping_Map");
+                if(map<0 || material.shader.GetPropertyType(map)!=UnityEngine.Rendering.ShaderPropertyType.Texture || !_rootItem.PropertyInfoDic.ContainsKey("_ParallaxMapping_Map"))return false;
+            }
+            return true;
+        }
+        internal bool TryApplyGraphParallaxEdit(bool enabled)
+        {
+            if (!HasGraphParallaxEditSchema()) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                SetFloatIfExists(material,"_ParallaxMapping_Toggle",enabled?1f:0f);
+                bool changed; if (!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed)) return false;
+            }
+            RefreshGraphMainTexPropertyReferences(); _rootItem.Context?.Refresh(); return true;
+        }
+        internal bool TryFinalizeGraphParallaxLayerEdit(IList<Vector4> previous)
+        {
+            if (previous==null || !HasGraphParallaxEditSchema() || previous.Count!=_rootItem.Mats.Count) return false;
+            bool changed=false;
+            for(int i=0;i<previous.Count;++i)
+            {
+                Material material=_rootItem.Mats[i];Vector4 current=material.GetVector("_ParallaxMapping_Vec");
+                if(current.Equals(previous[i]))continue; // Foldout, passive paint and unrelated edits never normalize layers.
+                SyncParallaxLayerCount(material); changed=true;
+            }
+            if(changed)RefreshGraphMainTexPropertyReferences();
+            return true;
+        }
+
         public void NotifyKeywordsMayHaveChanged()
         {
             KeywordVersion++;

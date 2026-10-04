@@ -13,12 +13,14 @@ namespace NBShaders2.Editor.FeatureLevel
             "_NB_TierAllowMask", "_NB_TierAllowMask2", "_NB_TierAllowMask3",
             "_NB_TierAllowNoise", "_NB_TierAllowNoiseMask",
             "_NB_TierAllowProgramNoise", "_NB_TierAllowProgramSimple", "_NB_TierAllowProgramVoronoi", "_NB_TierAllowFresnel",
-            "_NB_TierAllowEmission", "_NB_TierAllowColorBlend", "_NB_TierAllowDissolve", "_NB_TierAllowDissolveMask", "_NB_TierAllowDissolveRamp", "_NB_TierAllowDissolveRampMap"
+            "_NB_TierAllowEmission", "_NB_TierAllowColorBlend", "_NB_TierAllowDissolve", "_NB_TierAllowDissolveMask", "_NB_TierAllowDissolveRamp", "_NB_TierAllowDissolveRampMap",
+            "_NB_TierAllowParallax"
         };
         static readonly string[] GraphSupportedGateKeywords = {
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
             "_PROGRAM_NOISE", "_PROGRAM_NOISE_SIMPLE", "_PROGRAM_NOISE_VORONOI", "_FRESNEL",
-            "_EMISSION", "_COLORMAPBLEND", "_DISSOLVE", "_DISSOLVE_MASK", "_DISSOLVE_RAMP", "_DISSOLVE_RAMP_MAP"
+            "_EMISSION", "_COLORMAPBLEND", "_DISSOLVE", "_DISSOLVE_MASK", "_DISSOLVE_RAMP", "_DISSOLVE_RAMP_MAP",
+            "_PARALLAX_MAPPING"
         };
 
         internal const string GraphOverrideDepthKeyword = "_OVERRIDE_Z";
@@ -123,6 +125,8 @@ namespace NBShaders2.Editor.FeatureLevel
             }
             if (!ApplyGraphOverlayPair(material, tier, allowed, out groupChanged)) return false;
             changed |= groupChanged;
+            if (!ApplyGraphParallaxGroup(material, tier, allowed, out groupChanged)) return false;
+            changed |= groupChanged;
             return true;
         }
 
@@ -220,6 +224,19 @@ namespace NBShaders2.Editor.FeatureLevel
             var effective = new HashSet<string>(intent.effectiveKeywords);
             changed |= SetGraphAllowFloat(material, "_NB_TierAllowEmission", effective.Contains("_EMISSION"));
             changed |= SetGraphAllowFloat(material, "_NB_TierAllowColorBlend", effective.Contains("_COLORMAPBLEND"));
+            return true;
+        }
+
+
+        internal static bool ApplyGraphParallaxGroup(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords, out bool changed)
+        {
+            changed = false;
+            if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, "_NB_TierAllowParallax")) return false;
+            var allowed = allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            NBShaderMaterialIntentResult intent; string[] unavailable;
+            if (!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material, tier, allowed, out intent, out unavailable)) return false;
+            changed = SetGraphAllowFloat(material, "_NB_TierAllowParallax", new HashSet<string>(intent.effectiveKeywords).Contains("_PARALLAX_MAPPING"));
             return true;
         }
 

@@ -823,9 +823,12 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NBGraphTierAllowEmission, float NBGraphTierAllowColorBlend,
     float NBGraphTierAllowDissolve, float NBGraphTierAllowDissolveMask,
     float NBGraphTierAllowDissolveRamp, float NBGraphTierAllowDissolveRampMap,
+    float NBGraphTierAllowParallax,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    ParallaxMappingToggle *= NBGraphTierAllowParallax > 0.5 ? 1.0 : 0.0;
+
     DissolveToggle *= NBGraphTierAllowDissolve > 0.5 ? 1.0 : 0.0;
     DissolveMaskToggle *= NBGraphTierAllowDissolveMask > 0.5 ? 1.0 : 0.0;
     DissolveRampToggle *= NBGraphTierAllowDissolveRamp > 0.5 ? 1.0 : 0.0;
@@ -1376,9 +1379,12 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NBGraphTierAllowEmission, float NBGraphTierAllowColorBlend,
     float NBGraphTierAllowDissolve, float NBGraphTierAllowDissolveMask,
     float NBGraphTierAllowDissolveRamp, float NBGraphTierAllowDissolveRampMap,
+    float NBGraphTierAllowParallax,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    ParallaxMappingToggle *= NBGraphTierAllowParallax > 0.5 ? 1.0 : 0.0;
+
     DissolveToggle *= NBGraphTierAllowDissolve > 0.5 ? 1.0 : 0.0;
     DissolveMaskToggle *= NBGraphTierAllowDissolveMask > 0.5 ? 1.0 : 0.0;
     DissolveRampToggle *= NBGraphTierAllowDissolveRamp > 0.5 ? 1.0 : 0.0;

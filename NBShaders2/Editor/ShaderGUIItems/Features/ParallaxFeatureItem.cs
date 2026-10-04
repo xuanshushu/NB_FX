@@ -7,8 +7,8 @@ namespace NBShaderEditor
 {
     internal sealed class ParallaxFeatureItem : FeatureToggleFoldOutItem
     {
-        public ParallaxFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_ParallaxBlockFoldOut", "_ParallaxMapping_Toggle", "遮蔽视差", keyword: "_PARALLAX_MAPPING", isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True)
+        public ParallaxFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode = false)
+            : base(rootItem, parentItem, "_ParallaxBlockFoldOut", "_ParallaxMapping_Toggle", "遮蔽视差", keyword: graphSharedMode ? null : "_PARALLAX_MAPPING", onValueChanged: graphSharedMode ? (Action<bool>)(enabled => rootItem.SyncService.TryApplyGraphParallaxEdit(enabled)) : null, isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True)
         {
             AddTextureWithWrap(rootItem, this, "_ParallaxMapping_Map", "视差贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_PARALLAXMAPPINGMAP,
                 NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_PARALLAXMAPPINGMAP);
@@ -16,7 +16,8 @@ namespace NBShaderEditor
             {
                 PropertyName = "_ParallaxMapping_Intensity",
                 GuiContent = Content("视差"),
-                RangePropertyName = "_ParallaxMapping_IntensityRangeVec"
+                RangePropertyName = "_ParallaxMapping_IntensityRangeVec",
+                WriteOnlyOnInteractiveChange = graphSharedMode
             };
             parallaxMappingIntensityItem.InitTriggerByChild();
             new VectorComponentItem(rootItem, this, "_ParallaxMapping_Vec", 0, () => Content("遮蔽视差最小层数"), true, 0f, 100f);

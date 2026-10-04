@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><title>Parallax 共享控件与 Tier</title><style>body{max-width:980px;margin:36px auto;font:16px/1.65 system-ui;color:#1d2939}</style><h1>Parallax：共享原控件与有效 gate</h1>
+<p>原Parallax叶接入Graph，新增一项派生gate，已有15扩为16、CF238→239；沿用原Main UV、Wrap/NoMip与POM核。使用已验证的原slider交互写入选项，Root写前Undo，只有实际层数输入变化才沿原规则规范化min/max。没有新独立UV/CD或_ST属性，没有新增keyword/官方包改动。</p>
+<p>新增9身份结果为7通过、2严格失败：CPU3与真实GUI4通过，涵盖schema、拒绝/恢复、被动超范围/多选、实际Toggle、层数编辑与完整Undo/Redo。GPU两相机保留严格零差失败，未改容差或删除断言。</p>
+<p>GPU数据38份全部finite、无CDCD，可见9216/8364像素；关闭视差BC=0，重复与恢复全0，功能响应0.5843505859375/0.5780029296875。开启时BC最大0.0029296875，分别仅21/41像素，mean absolute为4.87e-7/9.30e-7；透视AB另3像素max0.000244140625。分类为局部数值小差异，继续严格Failed并交人工，不计功能缺失、不可见输出或GPU崩溃。</p>
+<p>原NUnit先在严格零差断言失败，后置alpha断言未执行；独立原raw核对alpha响应0.52783203125/0.516357421875，大于原0.001阈值。这是独立计算证据，不把原测试改为Passed。<a href="mesh-parallax-20261005/parallax9-live-20261005-1/independent-pixel-alpha-audit.json">像素/alpha审计</a>。</p>
+<p>历史POM开启状态也有BCmax0.002685546875局部差异，关闭0、重复/恢复0，且新gate之外POM/TBN HLSL未改。旧分辨率、几何、alpha输入不同，不能逐点等同或宣称精确根因已定。<a href="mesh-parallax-20261005/historical-localized-diff-background.json">有限历史背景</a>。不围绕此微差反复重跑。</p>
+<p>两张重生BackFirst图旧路由/背面顺序另2P，28raw健康；三图所有旧ID/属性/node/edge/CFslot前缀及Target/DN缺省/route/path保持。主包11路径已集成，实际主工程读回16gate、三图Shader Error0、DN布局-1/5/6。<a href="mesh-parallax-20261005/main-parallax11-actual-readback-20261005.json">主工程读回</a> · <a href="mesh-parallax-20261005/provenance.json">来源</a>。</p>
+<p>范围沿原POM主Forward/BackFirst消费者；DepthOnly/Shadow与两NB屏幕Pass仍沿原不偏移UV合同。未据此宣称全部Pass/Debug/UV组合、Player、性能或Mesh G3/G4完成。原生Popup人工项及本两项微差留最终集中验收。环境Unity6000.3.25f1/D3D11。</p>

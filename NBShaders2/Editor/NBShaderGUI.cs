@@ -112,6 +112,7 @@ namespace NBShaderEditor
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphFresnelReady) names.AddRange(SharedGraphFresnelProperties);
             if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphOverlayReady)names.AddRange(SharedGraphOverlayProperties);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDissolveReady)names.AddRange(NBShaderSyncService.GraphDissolveSharedPropertyNames);
+            if (Context != null && Context.IsGraphMaterialHost && _sharedGraphParallaxReady) names.AddRange(SharedGraphParallaxProperties);
             return names;
         }
 
@@ -239,6 +240,35 @@ namespace NBShaderEditor
             _graphEmissionItem.OnGUI();_graphColorBlendItem.OnGUI();
         }
 
+
+        bool _sharedGraphParallaxReady;
+        ParallaxFeatureItem _graphParallaxItem;
+        internal static readonly string[] SharedGraphParallaxProperties = {
+            "_ParallaxMapping_Toggle", "_ParallaxMapping_Map", "_ParallaxMapping_Intensity", "_ParallaxMapping_Vec"
+        };
+        internal bool InitializeGraphParallaxInputs()
+        {
+            Context ??= new NBShaderGUIContext(this); SyncService ??= new NBShaderSyncService(this); Context.Refresh();
+            _sharedGraphParallaxReady = Context.IsGraphMaterialHost && SyncService.HasGraphParallaxEditSchema();
+            if (!_sharedGraphParallaxReady) return false;
+            _graphParallaxItem ??= new ParallaxFeatureItem(this, null, true);
+            return true;
+        }
+        void DrawGraphParallaxInputs()
+        {
+            if (!InitializeGraphParallaxInputs()) return;
+            bool input = Event.current != null && Event.current.rawType != EventType.Layout && Event.current.rawType != EventType.Repaint;
+            Vector4[] previous = null;
+            if (input)
+            {
+                previous = new Vector4[Mats.Count];
+                for (int i=0;i<Mats.Count;++i) previous[i] = Mats[i].GetVector("_ParallaxMapping_Vec");
+                Undo.RecordObjects(MatEditor.targets, "Edit NB Parallax Inputs");
+            }
+            _graphParallaxItem.OnGUI();
+            if (input) SyncService.TryFinalizeGraphParallaxLayerEdit(previous);
+        }
+
         public override void OnChildOnGUI()
         {
             if (Context == null)
@@ -259,6 +289,8 @@ namespace NBShaderEditor
                 {
                     _mainTexBlock = null;
                     _graphFlipbookItem = null;
+                    _graphParallaxItem = null;
+                    _sharedGraphParallaxReady = false;
                     _graphFresnelItem = null;
                     _graphDissolveItem = null;
                     _sharedGraphDissolveReady = false;
@@ -284,6 +316,7 @@ namespace NBShaderEditor
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
                 if(InitializeGraphDissolveInputs())DrawGraphDissolveInputs();
                 DrawGraphOverlayInputs();
+                DrawGraphParallaxInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
                 return;
