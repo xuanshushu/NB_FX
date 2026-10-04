@@ -115,6 +115,40 @@ namespace NBFX.Baseline.Tests
             before.AssertSame(m,"UV slice and word3 nibble only, other raw data/state untouched",layer==0?"_NB_UVModeFlag0Lo16":"_NB_UVModeFlag0Hi16",layer==0?"_NB_UVModeFlagType0Lo16":"_NB_UVModeFlagType0Hi16","_NB_CustomDataFlag3Hi16","_NB_Flags1Hi16",fold);
             var after=Snapshot.Read(m);Assert.That(Call(sync,"TryApplyGraphOverlayUVMode",pos,mode,fold,true),Is.True);Assert.That(Call(sync,"TryApplyGraphOverlayCustomData",layer==0?16:24,3,Enum.Parse(component,"CustomData1X")),Is.True);after.AssertSame(m,"Repeat UV/CD owns no extra stored data");
         }
+        [TestCase(0,TestName="G4Overlay_GUI_Emission_NoMipActualRootUndo")]
+        [TestCase(1,TestName="G4Overlay_GUI_ColorBlend_NoMipActualRootUndo")]
+        public void ActualNoMipToggleThroughRoot(int layer)
+        {
+            var m=Material();m.SetFloat(Toggles[layer],1);m.SetFloat(Toggles[1-layer],0);
+            m.SetFloat(layer==0?"_EmissionBlockFoldOut":"_ColorBlendBlockFoldOut",1);
+            m.SetFloat(layer==0?"_ColorBlendBlockFoldOut":"_EmissionBlockFoldOut",0);
+            m.SetTexture(layer==0?"_EmissionMap":"_ColorBlendMap",Texture2D.whiteTexture);
+            const string lo="_NB_ForceNoMipFlagsLo16",hi="_NB_ForceNoMipFlagsHi16";
+            Assert.That(m.HasProperty(lo)&&m.HasProperty(hi),Is.True);
+            m.SetFloat(lo,16.25f);m.SetFloat(hi,70000.25f);G4SpecDebugFixture.Validate(m);
+            var root=Root(m);var h=Host(root,layer,out var item);
+            var children=((System.Collections.IEnumerable)Field(item,"ChildrenItemList")).Cast<object>();
+            var noMipItems=children.Where(o=>o.GetType().Name=="ForceNoMipItem").ToArray();
+            Assert.That(noMipItems.Length,Is.EqualTo(1),"The actual original Overlay block owns exactly one ForceNoMip child.");
+            var noMip=noMipItems[0];int bit=1<<(layer==0?11:12);
+            Assert.That((int)Field(noMip,"_forceNoMipFlagBits"),Is.EqualTo(bit));
+            var before=Snapshot.Read(m);Send(h,new Event{type=EventType.Layout});Send(h,new Event{type=EventType.Repaint});
+            before.AssertSame(m,"Actual complete Overlay block Layout/Repaint preserves all material state.");
+            var rect=(Rect)Field(noMip,"ControlRect");Assert.That(rect.width,Is.GreaterThan(0));Assert.That(rect.height,Is.GreaterThan(0));
+            Assert.That(rect.center.y,Is.GreaterThanOrEqualTo(0).And.LessThan(h.position.height),"Actual ForceNoMip control must be visible in the native host.");
+            var click=new Vector2(rect.x+6,rect.center.y);Undo.IncrementCurrentGroup();int group=Undo.GetCurrentGroup();
+            try
+            {
+                // No test Undo.RecordObjects: the real Root.DrawGraphOverlayInputs owns the pre-event record.
+                Send(h,new Event{type=EventType.MouseDown,button=0,mousePosition=click});Send(h,new Event{type=EventType.MouseUp,button=0,mousePosition=click});
+                Assert.That(m.GetFloat(lo),Is.EqualTo(16+bit));Assert.That(m.GetFloat(hi),Is.EqualTo(70000.25f));
+                before.AssertSame(m,"Only the actual clicked NoMip half changes; other bits, raw words, intent, keywords and passes remain exact.",lo);
+                Undo.FlushUndoRecordObjects();Undo.CollapseUndoOperations(group);var after=Snapshot.Read(m);h.Draw=null;
+                Undo.PerformUndo();before.AssertSame(m,"Actual Root NoMip full Undo, including original fractional low and over16 high words.");
+                Undo.PerformRedo();after.AssertSame(m,"Actual Root NoMip full Redo.");
+            }
+            finally{h.Draw=null;Undo.RevertAllDownToGroup(group);}
+        }
         [TestCase(0,true,TestName="G4Overlay_GPU_Emission_Forward_ortho")]
         [TestCase(0,false,TestName="G4Overlay_GPU_Emission_Forward_perspective")]
         [TestCase(1,true,TestName="G4Overlay_GPU_ColorBlend_Forward_ortho")]
