@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "duration": 8.16,
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphPersistentGateTierTests.G4PersistentTier_AssignLowMask2_FirstInitialize_ValidatedCounterfactual",
+      "Status": "Failed",
+      "Duration": 0.6333638,
+      "Message": "  First real initialize must honor saved Low without requiring reimport or a second Tier selection.\nassigned shader=NB FX/Shader Graph/NBShaderGraph marker=0 savedTier=0 maskIntent=1 mask2Intent=1 gates=_NB_TierAllowMask=1,_NB_TierAllowMask2=1,_NB_TierAllowMask3=1,_NB_TierAllowNoise=1,_NB_TierAllowNoiseMask=1,_NB_TierAllowProgramNoise=1,_NB_TierAllowProgramSimple=1,_NB_TierAllowProgramVoronoi=1\ninitialized shader=NB FX/Shader Graph/NBShaderGraph marker=2 savedTier=0 maskIntent=1 mask2Intent=1 gates=_NB_TierAllowMask=1,_NB_TierAllowMask2=1,_NB_TierAllowMask3=1,_NB_TierAllowNoise=1,_NB_TierAllowNoiseMask=1,_NB_TierAllowProgramNoise=1,_NB_TierAllowProgramSimple=1,_NB_TierAllowProgramVoronoi=1\nvalidated shader=NB FX/Shader Graph/NBShaderGraph marker=2 savedTier=0 maskIntent=1 mask2Intent=1 gates=_NB_TierAllowMask=1,_NB_TierAllowMask2=0,_NB_TierAllowMask3=0,_NB_TierAllowNoise=0,_NB_TierAllowNoiseMask=0,_NB_TierAllowProgramNoise=0,_NB_TierAllowProgramSimple=0,_NB_TierAllowProgramVoronoi=0\npolicyLow=_ALPHAMODULATE_ON,_ALPHAPREMULTIPLY_ON,_ALPHATEST_ON,_COLORMAPBLEND,_DISSOLVE,_DISSOLVE_MASK,_EMISSION,_FX_LIGHT_MODE_UNLIT,_MASKMAP_ON,_PARCUSTOMDATA_ON,_SCRIPTABLETIME,_SHARED_UV,_STENCIL_WITHOUT_PLAYER,_UNSCALETIME\neffectiveAfterInit=_FX_LIGHT_MODE_UNLIT,_MASKMAP_ON\r\n  Expected: 0\r\n  But was:  1.0f\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphPersistentGateTierTests.G4PersistentTier_AssignLowMask2_FirstInitialize_ValidatedCounterfactual () [0x003c9] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphPersistentGateTierTests.cs:298\r\n"
+    }
+  ]
+}

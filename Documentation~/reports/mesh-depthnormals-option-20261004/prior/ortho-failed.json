@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "duration": 38.85,
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4DefaultSSAOSourceProbeTests.DefaultSSAONearLit_DepthNormals_SoftbodyOpaque_ortho",
+      "Status": "Failed",
+      "Duration": 29.2212429,
+      "Message": "  Distinct actor-on near-receiver default-pass interaction; retain raw failure, do not suppress the extra pass or relax parity.\r\n  Expected: 0\r\n  But was:  0.013671875f\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4DefaultSSAOSourceProbeTests+<>c__DisplayClass19_0.<NearLitReceiverWithActorEnabled>b__4 (UnityEngine.Material[] materials, UnityEngine.MeshRenderer actor, UnityEngine.MeshRenderer receiver, UnityEngine.Camera camera, UnityEngine.RenderTexture target, UnityEngine.Texture2D read, System.String folder) [0x013c3] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4DefaultSSAOSourceProbeTests.cs:388\r\nat NBFX.Baseline.Tests.G4GraphVATTests.CaptureVATDepthAndShadowGeometryCore (System.Boolean shadow, System.Boolean ortho, System.Boolean isolateExtraNormals, System.Boolean defaultFullChain) [0x0102f] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphVATTests.cs:494\r\nat NBFX.Baseline.Tests.G4GraphVATTests.CaptureDefaultForwardDepthShadow (System.Boolean ortho) [0x00000] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphVATTests.cs:43\r\nat NBFX.Baseline.Tests.G4DefaultSSAOSourceProbeTests.NearLitReceiverWithActorEnabled (System.Boolean ortho) [0x00265] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4DefaultSSAOSourceProbeTests.cs:392\r\n"
+    }
+  ]
+}

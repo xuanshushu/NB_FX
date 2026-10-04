@@ -1,0 +1,351 @@
+{
+    "scope": "DepthNormals opaque SoftBody frame1 only; NB actor always enabled with close Lit receiver and fixed separate Lit cube. Cube receiver ROI is only an independent SSAO chain control; NB receiver interaction has its own ROI and verdict.",
+    "source": "DepthNormals",
+    "geometryBasis": "Source-evaluated actual point-sampled VAT inputs via HVAT_VatUV / HVAT_ApplySoftBodySamplesV1; not renderer.bounds and not an independent GPU vertex dump.",
+    "settingsBefore": "{\"MonoBehaviour\":{\"m_Enabled\":true,\"m_EditorHideFlags\":0,\"m_Name\":\"SSAO\",\"m_EditorClassIdentifier\":\"\",\"m_Active\":true,\"m_Settings\":{\"AOMethod\":1,\"Downsample\":false,\"AfterOpaque\":false,\"Source\":1,\"NormalSamples\":1,\"Intensity\":0.5,\"DirectLightingStrength\":0.25,\"Radius\":0.25,\"Samples\":0,\"BlurQuality\":0,\"Falloff\":100.0,\"SampleCount\":-1}}}",
+    "lightType": "Directional",
+    "ambientMode": "Flat",
+    "orthographic": true,
+    "measurementsComplete": true,
+    "radius": 0.25,
+    "directLightingStrength": 0.25,
+    "intensity": 0.5,
+    "gap": 0.019999999552965165,
+    "actorMinY": 1.0498046875,
+    "actorMaxY": 1.1503905057907105,
+    "receiverY": 1.0298047065734864,
+    "actorWorldA": [
+        {
+            "x": -0.840087890625,
+            "y": 1.0498046875,
+            "z": 0.5156250596046448
+        },
+        {
+            "x": 1.33447265625,
+            "y": 1.0498046875,
+            "z": 0.6958008408546448
+        },
+        {
+            "x": -0.884765625,
+            "y": 1.1503905057907105,
+            "z": -1.0385743379592896
+        },
+        {
+            "x": 1.29052734375,
+            "y": 1.1503905057907105,
+            "z": -0.8583985567092896
+        }
+    ],
+    "actorWorldB": [
+        {
+            "x": -0.840087890625,
+            "y": 1.0498046875,
+            "z": 0.5156250596046448
+        },
+        {
+            "x": 1.33447265625,
+            "y": 1.0498046875,
+            "z": 0.6958008408546448
+        },
+        {
+            "x": -0.884765625,
+            "y": 1.1503905057907105,
+            "z": -1.0385743379592896
+        },
+        {
+            "x": 1.29052734375,
+            "y": 1.1503905057907105,
+            "z": -0.8583985567092896
+        }
+    ],
+    "actorWorldC": [
+        {
+            "x": -0.840087890625,
+            "y": 1.0498046875,
+            "z": 0.5156250596046448
+        },
+        {
+            "x": 1.33447265625,
+            "y": 1.0498046875,
+            "z": 0.6958008408546448
+        },
+        {
+            "x": -0.884765625,
+            "y": 1.1503905057907105,
+            "z": -1.0385743379592896
+        },
+        {
+            "x": 1.29052734375,
+            "y": 1.1503905057907105,
+            "z": -0.8583985567092896
+        }
+    ],
+    "receiverPosition": {
+        "x": 0.0,
+        "y": 1.0298047065734864,
+        "z": 0.0
+    },
+    "cubePosition": {
+        "x": 2.159472703933716,
+        "y": 1.2298047542572022,
+        "z": -0.1713867485523224
+    },
+    "cubeScale": {
+        "x": 0.4000000059604645,
+        "y": 0.4000000059604645,
+        "z": 0.4000000059604645
+    },
+    "cameraPosition": {
+        "x": 0.0,
+        "y": 4.5,
+        "z": -5.5
+    },
+    "lightDirection": {
+        "x": -0.32139381766319277,
+        "y": -0.766044557094574,
+        "z": 0.5566703081130981
+    },
+    "receiverColor": {
+        "r": 0.29999998211860659,
+        "g": 0.29999998211860659,
+        "b": 0.29999998211860659,
+        "a": 1.0
+    },
+    "lightColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+    },
+    "ambientColor": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 1.0
+    },
+    "lightIntensity": 2.0,
+    "shadowStrength": 1.0,
+    "shadowBias": 0.05000000074505806,
+    "shadowNormalBias": 0.0,
+    "nearReceiverPixels": 640,
+    "controlReceiverPixels": 131,
+    "ab": 0.0,
+    "bc": 0.013671875,
+    "abNearReceiver": 0.0,
+    "bcNearReceiver": 0.013671875,
+    "abControlReceiver": 0.0,
+    "bcControlReceiver": 0.000244140625,
+    "extraDNFinal": 0.013671875,
+    "extraDNNearReceiver": 0.013671875,
+    "extraDNControlReceiver": 0.000244140625,
+    "repeat": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "ssaoResponse": [
+        0.00732421875,
+        0.00732421875,
+        0.013671875
+    ],
+    "nearReceiverSSAOResponse": [
+        0.0,
+        0.0,
+        0.013671875
+    ],
+    "controlReceiverSSAOResponse": [
+        0.004638671875,
+        0.004638671875,
+        0.004638671875
+    ],
+    "observations": [
+        {
+            "label": "Aon",
+            "shader": "Effects/NBShader_T00_Frozen",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": true,
+            "extraDN0": true,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": true,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        },
+        {
+            "label": "Bon",
+            "shader": "Effects/NBShader",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": true,
+            "extraDN0": true,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": true,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        },
+        {
+            "label": "Con",
+            "shader": "NB FX/Shader Graph/NBShaderGraph",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": true,
+            "extraDN0": true,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": true,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        },
+        {
+            "label": "Cd0",
+            "shader": "NB FX/Shader Graph/NBShaderGraph",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": true,
+            "extraDN0": false,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": true,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        },
+        {
+            "label": "Ar",
+            "shader": "Effects/NBShader_T00_Frozen",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": true,
+            "extraDN0": true,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": true,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        },
+        {
+            "label": "Br",
+            "shader": "Effects/NBShader",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": true,
+            "extraDN0": true,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": true,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        },
+        {
+            "label": "Cr",
+            "shader": "NB FX/Shader Graph/NBShaderGraph",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": true,
+            "extraDN0": true,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": true,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        },
+        {
+            "label": "Aoff",
+            "shader": "Effects/NBShader_T00_Frozen",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": false,
+            "extraDN0": true,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": false,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        },
+        {
+            "label": "Boff",
+            "shader": "Effects/NBShader",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": false,
+            "extraDN0": true,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": false,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        },
+        {
+            "label": "Coff",
+            "shader": "NB FX/Shader Graph/NBShaderGraph",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": false,
+            "extraDN0": true,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": false,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        },
+        {
+            "label": "Cback",
+            "shader": "NB FX/Shader Graph/NBShaderGraph",
+            "actorEnabled": true,
+            "receiverEnabled": true,
+            "ssaoActive": true,
+            "extraDN0": true,
+            "depthOnly": true,
+            "shadowCaster": true,
+            "depthCopied": true,
+            "normalsCopied": true,
+            "aoCopied": true,
+            "receiverPixels": 640,
+            "actorPixels": 660,
+            "nearReceiverResponse": 0.0,
+            "controlReceiverResponse": 0.0
+        }
+    ]
+}

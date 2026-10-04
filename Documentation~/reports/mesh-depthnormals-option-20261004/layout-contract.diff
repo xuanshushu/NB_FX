@@ -1,0 +1,54 @@
+--- fresh/Tests/URP/Editor/G4GraphVATTests.cs
++++ candidate/Tests/URP/Editor/G4GraphVATTests.cs
+@@ -32,6 +32,8 @@
+         public Action<Mesh> GeometryMeshSetup;
+         public Action<Material,bool,float> GeometryFrameState;
+         public string GeometryCaseId;
++        // Layout V2: old callers retain required DN0 presence; explicit off callers require absence.
++        public bool ExpectedDefaultDepthNormalsOnly = true;
+         // Optional DN0 default-pipeline coverage hooks. Old three-argument
+         // reflection entry and limited tests retain their original behavior.
+         public Action<Material, bool> DefaultFullChainMaterialSetup;
+@@ -396,7 +398,7 @@
+                         m.SetShaderPassEnabled("ShadowCaster", true);
+                         // Explicit True proves the shader-level default. No GUI
+                         // pass hiding and no SSAO or extra normals pass suppression.
+-                        if (m == c) m.SetShaderPassEnabled("DepthNormalsOnly", true);
++                        if (m == c && ExpectedDefaultDepthNormalsOnly) m.SetShaderPassEnabled("DepthNormalsOnly", true);
+                         DefaultFullChainMaterialSetup?.Invoke(m, m == c);
+                     }
+                     else
+@@ -450,7 +452,8 @@
+                     Assert.That(shadow && !isolateExtraNormals, Is.True);
+                     Assert.That(directed, Is.Null, "Default pipeline must not use a directed test RendererFeature.");
+                     Assert.That(data.rendererFeatures.Any(f => f && f.isActive && f.GetType().Name.Contains("AmbientOcclusion")), Is.True, "SSAO must stay active in the existing Renderer.");
+-                    Assert.That(c.GetShaderPassEnabled("DepthNormalsOnly"), Is.True);
++                    if (ExpectedDefaultDepthNormalsOnly)
++                        Assert.That(c.GetShaderPassEnabled("DepthNormalsOnly"), Is.True);
+                     writer.enabled = false; receiver.GetComponent<MeshRenderer>().enabled = false;
+                     for (int i = 0; i < 4; ++i) camera.Render();
+                     empty = Draw(writer, b, camera, rt, readback, folder, "empty-background");
+@@ -472,7 +475,10 @@
+                 if (defaultFullChain)
+                 {
+                     Assert.That(c.FindPass("Universal Forward"), Is.GreaterThanOrEqualTo(0));
+-                    Assert.That(c.FindPass("DepthNormalsOnly"), Is.GreaterThanOrEqualTo(0));
++                    if (ExpectedDefaultDepthNormalsOnly)
++                        Assert.That(c.FindPass("DepthNormalsOnly"), Is.GreaterThanOrEqualTo(0));
++                    else
++                        Assert.That(c.FindPass("DepthNormalsOnly"), Is.EqualTo(-1), "Compiled-off layout must omit the pass, not merely disable or mask it.");
+                     foreach (var m in new[] {a,b,c})
+                     {
+                         Assert.That(m.GetShaderPassEnabled(m == c ? "SRPDefaultUnlit" : "UniversalForward"), Is.True);
+@@ -505,9 +511,9 @@
+                 var ar=Snap(a,"A-repeat",true,1);var br=Snap(b,"B-repeat",true,1);var cr=Snap(c,"C-repeat",true,1);
+                 var af=Snap(a,"A-frame2",true,2);var bf=Snap(b,"B-frame2",true,2);var cf=Snap(c,"C-frame2",true,2);
+                 var record=new Record{caseId=(string.IsNullOrEmpty(GeometryCaseId)?"":GeometryCaseId+"-")+(shadow?"actual-shadow-geometry":"actual-depth-geometry"),orthographic=ortho,api=SystemInfo.graphicsDeviceType.ToString(),unityVersion=Application.unityVersion,
+-                    scope=defaultFullChain ? "DN0 raw Graph DepthNormalsOnly enabled True; actual URP Forward+DepthOnly+ShadowCaster opaque material chain, existing SSAO active; no directed renderer or GUI suppression; SoftBody two cameras only, no all-state/Player/VFX/perf claim" : "Selected VAT DepthOnly/ShadowCaster only; extra Graph DepthNormalsOnly excluded where recorded; no default SSAO pipeline/allVAT/VFX/Player claim",
++                    scope=defaultFullChain ? (ExpectedDefaultDepthNormalsOnly ? "DN0 raw Graph DepthNormalsOnly enabled True; actual URP Forward+DepthOnly+ShadowCaster opaque material chain, existing SSAO active; no directed renderer or GUI suppression; SoftBody two cameras only, no all-state/Player/VFX/perf claim" : "DN2 explicit compiled-off DepthNormalsOnly layout; same strict ordinary Mesh Forward/DepthOnly/ShadowCaster rendering checks; no fake pass, no full Gate claim") : "Selected VAT DepthOnly/ShadowCaster only; extra Graph DepthNormalsOnly excluded where recorded; no default SSAO pipeline/allVAT/VFX/Player claim",
+                     defaultFullForwardDepthShadow=defaultFullChain,
+-                    graphDepthNormalsRawEnabled=defaultFullChain && c.GetShaderPassEnabled("DepthNormalsOnly"),
++                    graphDepthNormalsRawEnabled=defaultFullChain && c.FindPass("DepthNormalsOnly")>=0 && c.GetShaderPassEnabled("DepthNormalsOnly"),
+                     aVisible=defaultFullChain ? Visible(actorA,empty) : 0,
+                     bVisible=defaultFullChain ? Visible(actorB,empty) : 0,
+                     cVisible=defaultFullChain ? Visible(actorC,empty) : 0,
