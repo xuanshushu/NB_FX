@@ -1587,6 +1587,67 @@ namespace NBShaderEditor
             { material.SetFloat("_NB_BackFirstEffective", effective); changed = true; }
             return changed;
         }
+
+        internal bool HasGraphFresnelEditSchema()
+        {
+            if (!HasGraphMainTexTargets() || _rootItem.MatEditor == null) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                foreach (string name in new[] { GraphGUIStateVersionProperty, "_FresnelBlockFoldOut", "_fresnelEnabled",
+                    "_FresnelMode", "_InvertFresnel_Toggle", "_FresnelColorAffectByAlpha", "_NB_Debug_Fresnel",
+                    "_NB_TierAllowFresnel", "_NBShaderFeatureTier", "_NB_CustomDataFlag0Lo16", "_NB_CustomDataFlag0Hi16" })
+                {
+                    if (!NBShaderRootItem.HasFloatProperty(material, name) || !_rootItem.PropertyInfoDic.ContainsKey(name)) return false;
+                    float value = material.GetFloat(name); if (float.IsNaN(value) || float.IsInfinity(value)) return false;
+                }
+                if (material.GetFloat(GraphGUIStateVersionProperty) != 2f) return false;
+                float mode = material.GetFloat("_FresnelMode");
+                if (mode != 0f && mode != 1f) return false;
+                foreach (string name in new[] { "_FresnelUnit", "_FresnelColor", "_FresnelRotation" })
+                {
+                    int index = material.shader.FindPropertyIndex(name);
+                    if (index < 0 || !_rootItem.PropertyInfoDic.ContainsKey(name)) return false;
+                    var type = material.shader.GetPropertyType(index);
+                    if (type != UnityEngine.Rendering.ShaderPropertyType.Vector && type != UnityEngine.Rendering.ShaderPropertyType.Color) return false;
+                    Vector4 value = material.GetVector(name);
+                    for (int channel = 0; channel < 4; ++channel) if (float.IsNaN(value[channel]) || float.IsInfinity(value[channel])) return false;
+                }
+                bool wouldChange;
+                if (!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out wouldChange)) return false;
+            }
+            return true;
+        }
+
+        internal bool TryApplyGraphFresnelEdit(bool enabled)
+        {
+            if (!HasGraphFresnelEditSchema()) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                SetFloatIfExists(material, "_fresnelEnabled", enabled ? 1f : 0f);
+                bool changed;
+                if (!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material, out changed)) return false;
+            }
+            RefreshGraphMainTexPropertyReferences();
+            _rootItem.Context?.Refresh();
+            return true;
+        }
+
+        internal bool TryApplyGraphFresnelFlagEdit(int bit, bool enabled)
+        {
+            if (bit != NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON &&
+                bit != NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON &&
+                bit != NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA) return false;
+            if (!HasGraphFresnelEditSchema()) return false;
+            string halfName = (bit & 65535) != 0 ? "_NB_Flags0Lo16" : "_NB_Flags0Hi16";
+            int halfMask = (bit & 65535) != 0 ? bit & 65535 : (int)((uint)bit >> 16);
+            foreach (Material material in _rootItem.Mats)
+            {
+                if (!WriteGraphHalfSlice(material, halfName, halfMask, enabled ? halfMask : 0))
+                    NotifyGraphPackedFlagsEdited(material, halfName, halfMask);
+            }
+            RefreshGraphMainTexPropertyReferences();
+            return true;
+        }
     }
 
     public enum VATMode

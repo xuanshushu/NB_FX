@@ -133,7 +133,7 @@ namespace NBShaderEditor
             DrawGroup(RampProperties, "feature.颜色映射", "Color Ramp");
             DrawGroup(AdjustmentProperties, "feature.颜色调整", "Color Adjustment");
             DrawGroup(FresnelProperties, "feature.菲涅尔", "Fresnel");
-            if (TryGetVisibleProperty("_fresnelEnabled", out _))
+            if (!_sharedPropertyNames.Contains("_fresnelEnabled") && TryGetVisibleProperty("_fresnelEnabled", out _))
             {
                 DrawPackedFlag("feature.菲涅尔模式", "Fresnel Alpha Mode",
                     NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON, 0);

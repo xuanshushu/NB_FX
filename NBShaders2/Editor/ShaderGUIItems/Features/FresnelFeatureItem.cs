@@ -7,11 +7,15 @@ namespace NBShaderEditor
 {
     internal sealed class FresnelFeatureItem : FeatureToggleFoldOutItem
     {
+        readonly NBShaderRootItem _nbRootItem;
+        readonly bool _graphSharedMode;
         private static readonly string[] FresnelModeNames = { "颜色", "透明" };
 
-        public FresnelFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_FresnelBlockFoldOut", "_fresnelEnabled", "菲涅尔", keyword: "_FRESNEL")
+        public FresnelFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode = false)
+            : base(rootItem, parentItem, "_FresnelBlockFoldOut", "_fresnelEnabled", "菲涅尔", keyword: graphSharedMode ? null : "_FRESNEL",
+                onValueChanged: graphSharedMode ? (Action<bool>)(enabled => { rootItem.SyncService.TryApplyGraphFresnelEdit(enabled); }) : null)
         {
+            _nbRootItem = rootItem; _graphSharedMode = graphSharedMode;
             new NBShaderKeywordToggleItem(
                 rootItem,
                 this,
@@ -20,7 +24,7 @@ namespace NBShaderEditor
                 () => Content("菲涅尔测试颜色"),
                 isVisible: null);
             new FeaturePopupItem(rootItem, this, "_FresnelMode", () => Content("菲涅尔模式"), FresnelModeNames,
-                property => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON, property.floatValue > 0.5f));
+                property => ApplyFresnelFlag(NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON, property.floatValue > 0.5f));
             Func<bool> isFresnelColorMode = () => IsPropertyMode(rootItem, "_FresnelMode", 0);
             new ColorItem(rootItem, this, "_FresnelColor", () => Content("菲涅尔颜色"), isFresnelColorMode);
             new VectorComponentItem(rootItem, this, "_FresnelUnit", 2, () => Content("菲涅尔强度"), true);
@@ -33,18 +37,24 @@ namespace NBShaderEditor
                 this,
                 "_InvertFresnel_Toggle",
                 () => Content("翻转菲涅尔"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON, enabled));
+                enabled => ApplyFresnelFlag(NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON, enabled));
             new ToggleItem(
                 rootItem,
                 this,
                 "_FresnelColorAffectByAlpha",
                 () => Content("菲涅尔颜色受Alpha影响"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA, enabled),
+                enabled => ApplyFresnelFlag(NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA, enabled),
                 isFresnelColorMode);
             new VectorComponentItem(rootItem, this, "_FresnelRotation", 0, () => Content("菲涅尔方向偏移X"), false);
             new VectorComponentItem(rootItem, this, "_FresnelRotation", 1, () => Content("菲涅尔方向偏移Y"), false);
             new VectorComponentItem(rootItem, this, "_FresnelRotation", 2, () => Content("菲涅尔方向偏移Z"), false);
             InitTriggerByChild();
+        }
+
+        void ApplyFresnelFlag(int bit, bool enabled)
+        {
+            if (_graphSharedMode) _nbRootItem.SyncService.TryApplyGraphFresnelFlagEdit(bit, enabled);
+            else _nbRootItem.SyncService.ApplyToggleFlag(bit, enabled);
         }
     }
 }

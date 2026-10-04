@@ -66,6 +66,8 @@ namespace NBShaderEditor
         bool _sharedGraphMainTextureReady;
         bool _sharedGraphFlipbookReady;
         FlipbookFeatureItem _graphFlipbookItem;
+        bool _sharedGraphFresnelReady;
+        FresnelFeatureItem _graphFresnelItem;
         bool _sharedGraphLightModeReady;
         BigBlockItem _graphLightModeBlock;
         static readonly string[] SharedGraphLightModeProperties = { "_FxLightMode", "_LightBigBlockItemFoldOut" };
@@ -101,6 +103,7 @@ namespace NBShaderEditor
                 names.AddRange(SharedGraphLightModeProperties);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphFlipbookReady) names.Add("_FlipbookBlending");
             if (Context != null && _sharedGraphMainTextureReady && Context.CanEditGraphMainTexUV) names.AddRange(new[] { "_UTwirlEnabled", "_PolarCoordinatesEnabled", "_TWParameter", "_TWStrength", "_PCCenter", "_CylinderUVRotate", "_CylinderUVPosOffset", "_WorldSpaceUVModeSelector", "_ObjectSpaceUVModeSelector" });
+            if (Context != null && Context.IsGraphMaterialHost && _sharedGraphFresnelReady) names.AddRange(SharedGraphFresnelProperties);
             return names;
         }
 
@@ -208,6 +211,8 @@ namespace NBShaderEditor
                 {
                     _mainTexBlock = null;
                     _graphFlipbookItem = null;
+                    _graphFresnelItem = null;
+                    _sharedGraphFresnelReady = false;
                     _graphLightModeBlock = null;
                     _toolBar = null;
                     _modeBlock = null;
@@ -224,6 +229,7 @@ namespace NBShaderEditor
                 if (InitializeGraphLightModeInputs())
                     _graphLightModeBlock.OnGUI();
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
+                if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
                 return;
@@ -308,6 +314,22 @@ namespace NBShaderEditor
             {
                 yield return _taBlock;
             }
+        }
+
+        static readonly string[] SharedGraphFresnelProperties = {
+            "_FresnelBlockFoldOut", "_fresnelEnabled", "_FresnelMode", "_FresnelColor", "_FresnelUnit",
+            "_InvertFresnel_Toggle", "_FresnelColorAffectByAlpha", "_FresnelRotation", "_NB_Debug_Fresnel"
+        };
+
+        internal bool InitializeGraphFresnelInputs()
+        {
+            Context ??= new NBShaderGUIContext(this);
+            SyncService ??= new NBShaderSyncService(this);
+            Context.Refresh();
+            _sharedGraphFresnelReady = Context.IsGraphMaterialHost && SyncService.HasGraphFresnelEditSchema();
+            if (!_sharedGraphFresnelReady) return false;
+            _graphFresnelItem ??= new FresnelFeatureItem(this, null, true);
+            return true;
         }
     }
 }

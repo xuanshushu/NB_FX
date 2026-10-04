@@ -8,15 +8,15 @@ namespace NBShaders2.Editor.FeatureLevel
     {
         private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
 
-        // Existing persisted Tier contract, currently eight Graph consumers only.
+        // Existing persisted Tier contract, registered Graph consumers only.
         internal static readonly string[] GraphSupportedGateProperties = {
             "_NB_TierAllowMask", "_NB_TierAllowMask2", "_NB_TierAllowMask3",
             "_NB_TierAllowNoise", "_NB_TierAllowNoiseMask",
-            "_NB_TierAllowProgramNoise", "_NB_TierAllowProgramSimple", "_NB_TierAllowProgramVoronoi"
+            "_NB_TierAllowProgramNoise", "_NB_TierAllowProgramSimple", "_NB_TierAllowProgramVoronoi", "_NB_TierAllowFresnel"
         };
         static readonly string[] GraphSupportedGateKeywords = {
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
-            "_PROGRAM_NOISE", "_PROGRAM_NOISE_SIMPLE", "_PROGRAM_NOISE_VORONOI"
+            "_PROGRAM_NOISE", "_PROGRAM_NOISE_SIMPLE", "_PROGRAM_NOISE_VORONOI", "_FRESNEL"
         };
 
         static bool TryReadGraphSupportedGateTier(Material material, NBShaderFeatureTier tier,
@@ -58,13 +58,15 @@ namespace NBShaders2.Editor.FeatureLevel
             bool wouldChange;
             if (!CanApplyGraphSupportedGateTier(material, tier, allowed, out wouldChange)) return false;
             if (!wouldChange) return true;
-            // All three groups have been preflighted before the first write.
+            // All registered groups have been preflighted before the first write.
             bool groupChanged;
             if (!ApplyGraphMaskGroup(material, tier, allowed, out groupChanged)) return false;
             changed |= groupChanged;
             if (!ApplyGraphNoisePair(material, tier, allowed, out groupChanged)) return false;
             changed |= groupChanged;
             if (!ApplyGraphProgramNoiseGroup(material, tier, allowed, out groupChanged)) return false;
+            changed |= groupChanged;
+            if (!ApplyGraphFresnelGroup(material, tier, allowed, out groupChanged)) return false;
             changed |= groupChanged;
             return true;
         }
@@ -234,6 +236,18 @@ namespace NBShaders2.Editor.FeatureLevel
             else
                 material.DisableKeyword(keyword);
 
+            return true;
+        }
+
+        public static bool ApplyGraphFresnelGroup(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords, out bool changed)
+        {
+            changed = false;
+            if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, "_NB_TierAllowFresnel")) return false;
+            var allowed = allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            NBShaderMaterialIntentResult intent; string[] unavailable;
+            if (!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material, tier, allowed, out intent, out unavailable)) return false;
+            changed = SetGraphAllowFloat(material, "_NB_TierAllowFresnel", new HashSet<string>(intent.effectiveKeywords).Contains("_FRESNEL"));
             return true;
         }
     }

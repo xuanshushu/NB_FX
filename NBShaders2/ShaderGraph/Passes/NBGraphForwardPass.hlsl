@@ -43,7 +43,7 @@ void frag(PackedVaryings packedInput,
 #elif defined(NB_DEBUG_MASK)
     NBGraphDebugOutputActive = graphProperties._Mask_Toggle > 0.5 && graphProperties._NB_TierAllowMask > 0.5;
 #elif defined(NB_DEBUG_FRESNEL)
-    NBGraphDebugOutputActive = graphProperties._fresnelEnabled > 0.5;
+    NBGraphDebugOutputActive = graphProperties._fresnelEnabled > 0.5 && graphProperties._NB_TierAllowFresnel > 0.5;
 #endif
 
 #else
@@ -61,7 +61,7 @@ void frag(PackedVaryings packedInput,
 #elif defined(NB_DEBUG_MASK)
     NBGraphDebugOutputActive = _Mask_Toggle > 0.5 && _NB_TierAllowMask > 0.5;
 #elif defined(NB_DEBUG_FRESNEL)
-    NBGraphDebugOutputActive = _fresnelEnabled > 0.5;
+    NBGraphDebugOutputActive = _fresnelEnabled > 0.5 && _NB_TierAllowFresnel > 0.5;
 #endif
 
 #endif
