@@ -95,6 +95,11 @@ namespace NBFX.Baseline.Tests
         public void EffectsCatalogueThroughProductionControllerManagerABC(string mode,string effect,bool ortho)
         {
             Assert.That(GraphicsSettings.GetRenderPipelineSettings<RenderGraphSettings>().enableRenderCompatibilityMode,Is.False,"First slice measures actual RenderGraph; Compatibility is a separate matrix.");
+            RunPathCore(mode,effect,ortho,false,null);
+        }
+        internal void RunPathCore(string mode,string effect,bool ortho,bool compatibility,NBPostPathScope proof)
+        {
+            Assert.That(GraphicsSettings.GetRenderPipelineSettings<RenderGraphSettings>().enableRenderCompatibilityMode,Is.EqualTo(compatibility),"Versioned path must match the actual official URP setting.");
             var pipeline=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;Assert.That(pipeline,Is.Not.Null);
             var data=pipeline.rendererDataList[0];Assert.That(data,Is.Not.Null);
             var nb=data.rendererFeatures.FirstOrDefault(f=>f&&f.GetType().FullName=="NBShader.NBPostProcess");Assert.That(nb,Is.Not.Null);Assert.That(nb.isActive,Is.True);
@@ -104,17 +109,18 @@ namespace NBFX.Baseline.Tests
             string project=Path.GetDirectoryName(Application.dataPath),folder=Path.Combine(Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR")??Path.Combine(project,"Temp/NBFXNBPostFull"),mode+"-"+effect+(ortho?"-ortho":"-perspective"));Directory.CreateDirectory(folder);
             string rdPath=Path.Combine(project,AssetDatabase.GetAssetPath(data)),pipelinePath=Path.Combine(project,AssetDatabase.GetAssetPath(pipeline));byte[] rdBytes=File.ReadAllBytes(rdPath),pipelineBytes=File.ReadAllBytes(pipelinePath);
             cleanupRenderer=data;cleanupObserver=null;cleanupScene=default;cleanupOldRT=RenderTexture.active;
+            proof?.RegisterFallback(CleanupPathFallback);
             try
             {
             var scene=EditorSceneManager.NewPreviewScene();cleanupScene=scene;var oldRT=RenderTexture.active;
-            var observer=Keep(ScriptableObject.CreateInstance<NBPostFullRTObserver>());observer.hideFlags=HideFlags.HideAndDontSave;cleanupObserver=observer;
+            var observer=Keep(ScriptableObject.CreateInstance<NBPostFullRTObserver>());observer.hideFlags=HideFlags.HideAndDontSave;cleanupObserver=observer;proof?.Register(observer);
             var viewShader=AssetDatabase.LoadAssetAtPath<Shader>(Package+"Tests/URP/Editor/G2MaskView.shader");Assert.That(viewShader&&viewShader.isSupported,Is.True);
             observer.material=Keep(new Material(viewShader));observer.Create();observer.SetActive(false);data.rendererFeatures.Add(observer);data.SetDirty();
             var target=Keep(new RenderTexture(Size,Size,24,RenderTextureFormat.ARGBHalf,RenderTextureReadWrite.Linear));var read=Keep(new Texture2D(Size,Size,TextureFormat.RGBAHalf,false,true));
             var cameraGO=Keep(new GameObject("NBPost full primary camera"));SceneManager.MoveGameObjectToScene(cameraGO,scene);var camera=cameraGO.AddComponent<Camera>();camera.scene=scene;
             camera.orthographic=ortho;camera.orthographicSize=2;camera.fieldOfView=45;camera.nearClipPlane=.1f;camera.farClipPlane=20;camera.transform.position=new Vector3(0,0,8);camera.transform.rotation=Quaternion.Euler(0,180,0);
             camera.cullingMask=1<<Layer;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.03f,.05f,.1f,.125f);camera.allowHDR=true;camera.allowMSAA=false;camera.targetTexture=target;
-            var cameraData=cameraGO.AddComponent<UniversalAdditionalCameraData>();cameraData.SetRenderer(0);cameraData.requiresColorTexture=true;cameraData.renderPostProcessing=false;target.Create();Assert.That(target.IsCreated()&&!target.sRGB,Is.True);
+            var cameraData=cameraGO.AddComponent<UniversalAdditionalCameraData>();cameraData.SetRenderer(0);cameraData.requiresColorTexture=true;cameraData.renderPostProcessing=false;if(proof!=null)observer.EnableReadback(camera,Size);target.Create();Assert.That(target.IsCreated()&&!target.sRGB,Is.True);
             var gradient=Texture("NBPost full gradient",64,(x,y)=>new Color(.08f+.8f*x/63,.1f+.7f*y/63,.15f+.55f*((x+2*y)%64)/63,1));
             var noise=Texture("NBPost full constant noise",2,(x,y)=>new Color(.75f,.5f,0,1));var mask=Texture("NBPost full mask",2,(x,y)=>Color.white);
             var overlay=Texture("NBPost catalogue actual overlay",8,(x,y)=>new Color(.15f+.6f*x/7f,.2f+.65f*y/7f,.2f+.3f*((x+y)%3),.75f));
@@ -144,7 +150,7 @@ namespace NBFX.Baseline.Tests
                 // Warm renderer after observer list registration, before singleton
                 // snapshot. Rebuilding NB feature must not invalidate live flags.
                 writer.enabled=writer2.enabled=false;for(int i=0;i<4;i++)camera.Render();
-                post=postField.GetValue(null)as Material;Assert.That(post&&!AssetDatabase.Contains(post),Is.True,"Only modify original runtime Uber material, never an asset.");postSnapshot=Keep(new Material(post));
+                post=postField.GetValue(null)as Material;Assert.That(post&&!AssetDatabase.Contains(post),Is.True,"Only modify original runtime Uber material, never an asset.");postSnapshot=Keep(new Material(post));proof?.TrackPost(post);
                 oldStatics=managerType.GetFields(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Static).Where(f=>!f.IsLiteral&&!f.IsInitOnly).ToDictionary(f=>f,f=>f.GetValue(null));
                 void ConfigureController(Component c,int i)
                 {
@@ -166,11 +172,11 @@ namespace NBFX.Baseline.Tests
                 for(int i=0;i<2;i++)
                 {
                     controllerGOs[i]=Keep(new GameObject("Owned NB Controller "+i));controllerGOs[i].SetActive(false);SceneManager.MoveGameObjectToScene(controllerGOs[i],scene);
-                    controllers[i]=controllerGOs[i].AddComponent(controllerType);
+                    controllers[i]=controllerGOs[i].AddComponent(controllerType);proof?.Track(controllers[i]);
                     ConfigureController(controllers[i],i);
                     controllerGOs[i].SetActive(true);
                 }
-                manager=(Component)managerType.GetProperty("Instance",PublicStatic).GetValue(null);Assert.That(manager,Is.Not.Null);SceneManager.MoveGameObjectToScene(manager.gameObject,scene);
+                manager=(Component)managerType.GetProperty("Instance",PublicStatic).GetValue(null);Assert.That(manager,Is.Not.Null);SceneManager.MoveGameObjectToScene(manager.gameObject,scene);proof?.Track(manager);
                 int idx0=Index(controllers[0]),idx1=Index(controllers[1]);Assert.That(idx0!=idx1&&idx0>=0&&idx1<31,Is.True);
                 void Tick()
                 {for(int warm=0;warm<3;warm++){foreach(var c in controllers)if(c&&((Behaviour)c).isActiveAndEnabled)Invoke(c,"ControllerEditorUpdate");if(manager&&((Behaviour)manager).isActiveAndEnabled)Invoke(manager,"EditorUpdate");}}
@@ -182,11 +188,12 @@ namespace NBFX.Baseline.Tests
                 {foreach(var c in controllers)if(c)foreach(string toggle in ActiveToggles(effect))Field(c,toggle,enabled);Tick();}
                 Color[] Snap(int which,string label,int view=-1,bool two=true,Camera useCamera=null)
                 {
-                    writer.sharedMaterial=materials[which];writer2.sharedMaterial=second[which];writer.enabled=true;writer2.enabled=two;observer.view=view;observer.SetActive(view>=0);
+                    writer.sharedMaterial=materials[which];writer2.sharedMaterial=second[which];writer.enabled=true;writer2.enabled=two;observer.view=view;observer.SetActive(proof!=null||view>=0);
+                    int queueBefore=observer.queueReads,rgBefore=observer.graphReads,executeBefore=observer.executeReads;
                     var cam=useCamera?useCamera:camera;for(int n=0;n<4;n++){Tick();cam.Render();}
                     Assert.That(postField.GetValue(null),Is.SameAs(post),"Renderer rebuild replaced runtime Uber during a capture.");
-                    var old=RenderTexture.active;RenderTexture.active=target;read.ReadPixels(new Rect(0,0,Size,Size),0,0,false);read.Apply(false,false);var px=read.GetPixels();RenderTexture.active=old;
-                    using(var stream=File.Create(Path.Combine(folder,label+".rgba32f")))using(var bw=new BinaryWriter(stream))foreach(var c in px){bw.Write(c.r);bw.Write(c.g);bw.Write(c.b);bw.Write(c.a);}payloads.Add(px);return px;
+                    var old=RenderTexture.active;RenderTexture.active=proof!=null&&view>=0?observer.observationHandle.rt:target;read.ReadPixels(new Rect(0,0,Size,Size),0,0,false);read.Apply(false,false);var px=read.GetPixels();RenderTexture.active=old;
+                    using(var stream=File.Create(Path.Combine(folder,label+".rgba32f")))using(var bw=new BinaryWriter(stream))foreach(var c in px){bw.Write(c.r);bw.Write(c.g);bw.Write(c.b);bw.Write(c.a);}payloads.Add(px);proof?.Observe(label,observer,cam,view,queueBefore,rgBefore,executeBefore,materials.Concat(new[]{post}).ToArray(),px);return px;
                 }
                 Tick();ValidateModifierState(post,effect);var fullState=StateAt("two Controllers on");Assert.That(fullState.toggleMask,Is.EqualTo((1<<idx0)|(1<<idx1)));Assert.That(fullState.postFlags&1,Is.Not.Zero);Assert.That(fullState.postFlags&expectedEffect,Is.EqualTo(expectedEffect));Assert.That(fullState.effectIntensity,Is.EqualTo(ExpectedIntensity(effect,true)));Assert.That(fullState.activeEffectMasks.All(v=>v==((1<<idx0)|(1<<idx1))),Is.True);
                 var on=new Color[3][];var repeat=new Color[3][];var off=new Color[3][];var strength0=new Color[3][];var one=new Color[3][];var noTransparent=new Color[3][];var masks=new Color[3][];var maskOne=new Color[3][];var maskZero=new Color[3][];var copies=new Color[3][];var opaques=new Color[3][];var controllerSingle=new Color[3][];var managerDisabled=new Color[3][];
@@ -209,7 +216,7 @@ namespace NBFX.Baseline.Tests
                     if(i==0)
                     {
                         Object.DestroyImmediate(controllers[1]);Tick();var destroyed=StateAt("second Controller destroyed");Assert.That(destroyed.activeControllers,Is.EqualTo(1<<idx0));Assert.That(destroyed.toggleMask,Is.EqualTo(1<<idx0));
-                        controllerGOs[1].SetActive(false);controllers[1]=controllerGOs[1].AddComponent(controllerType);ConfigureController(controllers[1],1);controllerGOs[1].SetActive(true);Tick();Assert.That(Index(controllers[1]),Is.EqualTo(idx1));
+                        controllerGOs[1].SetActive(false);controllers[1]=controllerGOs[1].AddComponent(controllerType);proof?.Track(controllers[1]);ConfigureController(controllers[1],1);controllerGOs[1].SetActive(true);Tick();Assert.That(Index(controllers[1]),Is.EqualTo(idx1));
                         var rebuilt=Snap(i,"A-controller-recreated");Assert.That(Delta(rebuilt,on[i]),Is.Zero);
                     }
                 }
@@ -241,7 +248,7 @@ namespace NBFX.Baseline.Tests
                 }
                 controllerGOs[0].SetActive(false);controllerGOs[1].SetActive(false);Tick();var stopped=StateAt("all Controller components disabled");Assert.That(stopped.activeControllers,Is.Zero);Assert.That(stopped.toggleMask,Is.Zero);Assert.That(stopped.postFlags&1,Is.Zero);Assert.That(stopped.postFlags&expectedEffect,Is.Zero);Assert.That(stopped.activeEffectMasks.All(v=>v==0),Is.True);
                 for(int i=0;i<3;i++){var cleared=Snap(i,"ABC"[i]+"-all-controllers-reset");Assert.That(Delta(cleared,off[i]),Is.Zero);}
-                var r=new Record{scope="New real Controller effect catalogue + component/Manager disable, destroy/recreate and final reset through original NB renderer/RT/Uber. Existing observer reads globals only. Static motion inputs; RenderGraph/currentdownsampling; no original12 replacement or full combinations/Compatibility/Player/perf/VFX/Cinemachine claim",api=SystemInfo.graphicsDeviceType.ToString(),unity=Application.unityVersion,gpu=SystemInfo.graphicsDeviceName,mode=mode,effect=effect,downsampling=nb.GetType().GetField("downSampling").GetValue(nb).ToString(),orthographic=ortho,finite=Finite(payloads),controllerLifecycleRestored=stopped.activeControllers==0,renderGraph=true,managerDisableResponse=Enumerable.Range(0,3).Select(i=>Delta(on[i],managerDisabled[i])).ToArray(),independentBranches=branches.ToArray(),
+                var r=new Record{scope="New real Controller effect catalogue + component/Manager disable, destroy/recreate and final reset through original NB renderer/RT/Uber. Existing observer reads globals only. Static motion inputs; RenderGraph/currentdownsampling; no original12 replacement or full combinations/Compatibility/Player/perf/VFX/Cinemachine claim",api=SystemInfo.graphicsDeviceType.ToString(),unity=Application.unityVersion,gpu=SystemInfo.graphicsDeviceName,mode=mode,effect=effect,downsampling=nb.GetType().GetField("downSampling").GetValue(nb).ToString(),orthographic=ortho,finite=Finite(payloads),controllerLifecycleRestored=stopped.activeControllers==0,renderGraph=!compatibility,managerDisableResponse=Enumerable.Range(0,3).Select(i=>Delta(on[i],managerDisabled[i])).ToArray(),independentBranches=branches.ToArray(),
                     abFinal=Delta(on[0],on[1]),bcFinal=Delta(on[1],on[2]),abMask=Delta(masks[0],masks[1]),bcMask=Delta(masks[1],masks[2]),abCopy=Delta(copies[0],copies[1]),bcCopy=Delta(copies[1],copies[2]),abOpaque=Delta(opaques[0],opaques[1]),bcOpaque=Delta(opaques[1],opaques[2]),
                     repeat=Enumerable.Range(0,3).Select(i=>Delta(on[i],repeat[i])).ToArray(),distortionResponse=Enumerable.Range(0,3).Select(i=>Delta(on[i],strength0[i])).ToArray(),controllerResponse=Enumerable.Range(0,3).Select(i=>Delta(on[i],off[i])).ToArray(),controllerUnionResponse=Enumerable.Range(0,3).Select(i=>Delta(on[i],controllerSingle[i])).ToArray(),transparentResponse=Enumerable.Range(0,3).Select(i=>Delta(on[i],noTransparent[i])).ToArray(),accumulationResponse=Enumerable.Range(0,3).Select(i=>Delta(on[i],one[i])).ToArray(),finalVisible=on.Select(Visible).ToArray(),flagsOn=new[]{fullState.postFlags},controllerIndices=new[]{idx0,idx1},
                     maskAccumulationResponse=Enumerable.Range(0,3).Select(i=>Delta(masks[i],maskOne[i])).ToArray(),maskStrengthResponse=Enumerable.Range(0,3).Select(i=>Delta(masks[i],maskZero[i])).ToArray(),copyAlphaMin=copies.Select(a=>a.Min(c=>c.a)).ToArray(),copyAlphaMax=copies.Select(a=>a.Max(c=>c.a)).ToArray()};
@@ -279,6 +286,11 @@ namespace NBFX.Baseline.Tests
             }
             finally
             {
+                CleanupPathFallback();
+            }
+        }
+        void CleanupPathFallback()
+        {
                 // Guard partial setup failures as well as the successful inner
                 // integration scope. All listed objects were created by this test.
                 if(cleanupObserver&&cleanupRenderer)
@@ -288,7 +300,7 @@ namespace NBFX.Baseline.Tests
                 if(cleanupScene.IsValid()&&cleanupScene.isLoaded)EditorSceneManager.ClosePreviewScene(cleanupScene);
                 cleanupObserver=null;cleanupRenderer=null;cleanupScene=default;
             }
-        }
+
 
         [Serializable] sealed class DisabledManagerState
         {

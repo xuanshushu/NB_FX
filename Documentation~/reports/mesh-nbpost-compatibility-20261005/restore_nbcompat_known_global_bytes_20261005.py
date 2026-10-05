@@ -1,0 +1,12 @@
+from pathlib import Path
+import json,hashlib,re,time
+r=Path(__file__).resolve().parents[2];w=r/'.utmp/nbfx-resume-20261002';project=r/'.utmp/NBFXMeshValidation-20261002';jdir=r/'.utmp/nbcmp1';j=json.loads((jdir/'journal.json').read_text());sha=lambda b:hashlib.sha256(b).hexdigest()
+receipt=w/'nbcompat9-restored-defines-inspect-20261005.json';assert time.time()-receipt.stat().st_mtime<600;d=json.loads(json.loads(receipt.read_text())['data']['result']['result']);assert d['defines']==''and not d['compatibility']and not d['rawCompatibility']and d['scene']=='||True|False|True|roots=0'and d['noNBComponents']and d['noNBCallbacks']and not d['compiling']and not d['updating']
+p=project/j['globalPath'];before=(jdir/j['backups'][2]).read_bytes();current=p.read_bytes();assert sha(before)==j['SHA256'][2]=='720fdbd129c1b423a4e3e82fb5f19ee157a2bbccdc0c5ac7c9410bdcede0931d';assert sha(current)=='f888160b1f9518b18d254b8d552638b3689dc95f0df787a0ed0610dc3dd5b31c'
+# Reproduce exactly the observed two Unity serialization edits; no arbitrary field allow-list.
+a=before.decode('utf-8');b=current.decode('utf-8');pattern=r'(    m_RuntimeSettings:\r?\n)      m_List:\r?\n(?:      - rid: [0-9]+\r?\n)+';matches=list(re.finditer(pattern,a));assert len(matches)==1;oldblock=matches[0].group(0);assert oldblock.count('- rid:')==15;newline='\r\n'if'\r\n'in oldblock else'\n';expected=a[:matches[0].start()]+matches[0].group(1)+'      m_List: []'+newline+a[matches[0].end():]
+added='        m_FallOffLookup: {fileID: 2800000, guid: 5688ab254e4c0634f8d6c8e0792331ca,'+newline+'          type: 3}'+newline
+assert b.count(added)==1 and added not in a;assert b.replace(added,'')==expected
+for i in [0,1]:assert sha((project/j['paths'][i]).read_bytes())==j['SHA256'][i]
+saved=jdir/'global-auto-normalization-before-exact-restore.bytes';assert not saved.exists();saved.write_bytes(current);assert p.read_bytes()==current;p.write_bytes(before);assert sha(p.read_bytes())==j['SHA256'][2]
+(jdir/'global-known-normalization-restore.json').write_text(json.dumps({'path':str(p),'beforeSHA':sha(before),'observedAutoSerializationSHA':sha(current),'recognizedDiff':'only15 runtime settings rid list emptied and exact FallOffLookup reference added','restoredExactOriginal':True,'noUnitySettingValueChanged':True,'originAuditStillSeparate':True},indent=2)+'\n',encoding='utf-8');print('Exact original global bytes restored after strict known two-edit/hash guard.')

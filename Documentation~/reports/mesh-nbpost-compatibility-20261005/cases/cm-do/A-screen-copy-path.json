@@ -1,0 +1,43 @@
+{
+    "queueReads": 44,
+    "graphReads": 0,
+    "executeReads": 20,
+    "cameraID": -103852,
+    "view": 1,
+    "passTypes": [
+        "UnityEngine.Rendering.Universal.ScreenSpaceAmbientOcclusionPass",
+        "NBShader.RenderCameraOpaqueDistortObjectPass",
+        "NBShader.ScreenColorRenderPass",
+        "NBShader.DisturbanceMaskRenderPass",
+        "NBShader.NBPostProcessRenderPass"
+    ],
+    "nativeRTs": [
+        {
+            "source": "Mask",
+            "name": "DisturbanceMaskRT_128x128_R16G16_SFloat_Tex2D",
+            "format": "R16G16_SFloat",
+            "id": -104120,
+            "width": 128,
+            "height": 128,
+            "valid": true
+        },
+        {
+            "source": "ScreenCopy",
+            "name": "CopyColorRT_128x128_R16G16B16A16_SFloat_Tex2D",
+            "format": "R16G16B16A16_SFloat",
+            "id": -104122,
+            "width": 128,
+            "height": 128,
+            "valid": true
+        },
+        {
+            "source": "CameraColor",
+            "name": "_CameraColorAttachmentA_128x128_R16G16B16A16_SFloat_Tex2D",
+            "format": "R16G16B16A16_SFloat",
+            "id": -104106,
+            "width": 128,
+            "height": 128,
+            "valid": true
+        }
+    ]
+}
