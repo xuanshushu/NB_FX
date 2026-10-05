@@ -690,7 +690,7 @@ namespace NBFX.Baseline.Tests
             AssetDatabase.CreateAsset(material, path);
             var root = NewRoot(material); Assert.That((bool)Call(root, "InitializeGraphMainTextureInputs"), Is.True);
             Call(gui, "ValidateMaterial", material); // V2: schema/mirror seed is complete; persist the real validated Tier state.
-            var before = Snapshot.Read(material); EditorUtility.SetDirty(material); AssetDatabase.SaveAssets();
+            var before = Snapshot.Read(material); EditorUtility.SetDirty(material); AssetDatabase.SaveAssetIfDirty(material);
             Assert.That(File.Exists(Path.Combine(project, path)), Is.True, "A real serialized .mat file must exist.");
             string yaml = File.ReadAllText(Path.Combine(project, path));
             foreach (string prefix in WordPrefixes) Assert.That(yaml.Contains(prefix + "Lo16") && yaml.Contains(prefix + "Hi16"), Is.True, prefix);

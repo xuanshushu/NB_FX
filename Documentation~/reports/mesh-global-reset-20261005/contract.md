@@ -1,0 +1,9 @@
+# Graph 原全重置菜单闭合范围
+
+沿当前Root准确共享root列表，不扫描Shader全部属性。ResetAll包含Base数字/Shadow+Ignore、颜色调节、BackColor/Distance/Soft/Stencil/已ownedBack、MainTex所有原子控件、Light模式/Specular/PBR/SixWay及独立Bump/MatCap、16Feature叶、DepthDecal/Outline、TA Depth/QCM。原ResetAll另外重置Special/Twirl/Polar；disabled-child只重置明确off的PropertyToggle后代，保持toggle本身及未off叶。Native旧分支逐字维持。
+
+savedTier/marker、不属于共享leaf的URP标准字段、未owned未知哨兵不扫重置。Portal叶原Reset本身有Preset合同，故会重置原Portal stencil派生、surface/clip/Blend/ZTest/ZWrite/QueueControl等该动作原本拥有的域，同时保持Portal规定当前queue/offset。TA QCM叶Reset重置其已ownedqueue/ColorMask/stencil；这是原块Reset范围，不能谎称所有Advanced保留。新shadowDerivedCaster受同finalowner按raw/policy重投。Screen/Back迁移marker0现有保护保持；Noise Mode Reset是明确动作，沿原服务接管Screen。新Graph原unknown字段从不按名字扫全shader。
+
+读列表/paint只做schema读和已readyfactory初始化，不seed新schema；typed -1/-1未初始化先拒。Reset拥有外层Undo+完整Material before-image，任何异常/最终schema失败还原全部props/keywords/pass/queue/GI。同叶Reset递归只调用一次；disabled子树不重复递归已经拥有递归的ExecuteReset。
+
+此目录私有制作中，最终须fresh Shadow正式Root；不安装/Unity。

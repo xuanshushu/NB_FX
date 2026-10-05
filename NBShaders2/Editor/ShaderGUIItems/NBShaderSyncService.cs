@@ -3326,6 +3326,117 @@ namespace NBShaderEditor
             {material=value;owned=value.HasProperty("_TransparentShadowDitherToggle");if(owned){cast=value.GetFloat("_CastShadows");pass=value.GetShaderPassEnabled("ShadowCaster");}}
             internal void Restore(){if(owned){material.SetFloat("_CastShadows",cast);material.SetShaderPassEnabled("ShadowCaster",pass);}}
         }
+        internal bool HasGraphSharedResetSchema()
+        {
+            if(!HasGraphSupportedGateTierEditSchema()||!HasGraphBaseNumericSchema()||!HasGraphBaseShadowSchema()||
+                !HasGraphBaseBackColorEditSchema()||!HasGraphLightSubControlsSchema()||!HasGraphTADepthEditSchema()||
+                !HasGraphQCMEditSchema()||!HasGraphMainTexUVEditSchema()||!HasGraphMainTexCustomDataEditSchema()||
+                !HasGraphNormalMapEditSchema()||!HasGraphMatCapEditSchema()||!HasGraphOverlayEditSchema()||
+                !HasGraphParallaxEditSchema()||!HasGraphFresnelEditSchema()||!HasGraphDissolveEditSchema()||
+                !HasGraphMaskProgramEditSchema()||!HasGraphColorAdjustmentEditSchema()||!HasGraphColorRampEditSchema()||
+                !HasGraphDepthFeaturesEditSchema()||!HasGraphDepthDecalEditSchema()||!HasGraphNoiseEditSchema()||
+                !HasGraphSharedUVEditSchema()||!HasGraphVertexOffsetEditSchema()||!HasGraphStencilWithoutPlayerEditSchema()||
+                !HasGraphVATEditSchema()||!HasGraphFlipbookEditSchema()||!HasGraphPortalEditSchema()||!HasGraphChromaticEditSchema())return false;
+            foreach(Material value in _rootItem.Mats)
+            {
+                // List discovery must not seed/initialize a legacy capability as a side effect.
+                if(value.GetFloat(GraphGUIStateVersionProperty)!=2f||value.GetFloat("_NB_TierVATFamily")==-1f||value.GetFloat("_NB_TierVATSubMode")==-1f)return false;
+                var tier=(NBShaderFeatureTier)(int)value.GetFloat(FeatureTierPropertyName);bool change;
+                if(!NBShaderFeatureRuntime.CanApplyGraphOwnedProjection(value,tier,
+                    NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),
+                    NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier),out change))return false;
+            }
+            return true;
+        }
+        internal bool TryResetGraphSpecialUVValues(string kind)
+        {
+            if((kind!="special"&&kind!="twirl"&&kind!="polar"&&kind!="all")||!HasGraphMainTexUVEditSchema())return false;
+            return RunGraphMainTexEdit("Reset NB Special UV",value=>{
+                bool changed=false;
+                if(kind=="special"||kind=="all")
+                {
+                    int channel=value.HasProperty("_SpecialUVChannelMode")?(int)value.shader.GetPropertyDefaultFloatValue(value.shader.FindPropertyIndex("_SpecialUVChannelMode")):0;
+                    if(value.HasProperty("_SpecialUVChannelMode"))value.SetFloat("_SpecialUVChannelMode",channel);
+                    changed|=WriteGraphHalfSlice(value,"_NB_Flags1Hi16",12,channel==0?4:8);
+                }
+                if(kind=="twirl"||kind=="all")
+                {
+                    float enabled=value.shader.GetPropertyDefaultFloatValue(value.shader.FindPropertyIndex("_UTwirlEnabled"));value.SetFloat("_UTwirlEnabled",enabled);
+                    value.SetVector("_TWParameter",value.shader.GetPropertyDefaultVectorValue(value.shader.FindPropertyIndex("_TWParameter")));value.SetFloat("_TWStrength",value.shader.GetPropertyDefaultFloatValue(value.shader.FindPropertyIndex("_TWStrength")));
+                    changed|=WriteGraphHalfSlice(value,"_NB_Flags0Lo16",NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON,enabled>.5f?NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON:0);
+                }
+                if(kind=="polar"||kind=="all")
+                {
+                    float enabled=value.shader.GetPropertyDefaultFloatValue(value.shader.FindPropertyIndex("_PolarCoordinatesEnabled"));value.SetFloat("_PolarCoordinatesEnabled",enabled);
+                    value.SetVector("_PCCenter",value.shader.GetPropertyDefaultVectorValue(value.shader.FindPropertyIndex("_PCCenter")));
+                    changed|=WriteGraphHalfSlice(value,"_NB_Flags0Lo16",NBShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON,enabled>.5f?NBShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON:0);
+                }
+                return true;
+            });
+        }
+        internal bool TryRunGraphSharedReset(Action reset,bool resetSpecial)
+        {
+            if(reset==null||!HasGraphSharedResetSchema())return false;
+            var originals=new List<string>();var originalObjectReferences=new List<Dictionary<string,UnityEngine.Object>>();var objects=new List<UnityEngine.Object>();
+            var rampBefore=new List<Texture>();var passState=new List<Dictionary<string,bool>>();int group=Undo.GetCurrentGroup();bool completed=false;
+            try
+            {
+                foreach(Material value in _rootItem.Mats)
+                {
+                    originals.Add(EditorJsonUtility.ToJson(value));objects.Add(value);rampBefore.Add(value.GetTexture("_SixWayEmissionRamp"));
+                    // JSON restores structure/value state, but cannot retain builtin or
+                    // transient Object references. Hold EVERY serialized reference strongly.
+                    var refs=new Dictionary<string,UnityEngine.Object>();
+                    using(var serialized=new SerializedObject(value))
+                    {
+                        SerializedProperty iterator=serialized.GetIterator();
+                        while(iterator.Next(true))if(iterator.propertyType==SerializedPropertyType.ObjectReference)
+                            refs[iterator.propertyPath]=iterator.objectReferenceValue;
+                    }
+                    originalObjectReferences.Add(refs);
+                    var passes=new Dictionary<string,bool>();
+                    foreach(string tag in new[]{"SRPDefaultUnlit","UniversalForward","Universal Forward","DepthOnly","DepthNormalsOnly","ShadowCaster","NBCameraOpaqueDistortPass","NBDeferredDistortPass","Universal2D"})passes[tag]=value.GetShaderPassEnabled(tag);
+                    passState.Add(passes);
+                }
+                Undo.RegisterCompleteObjectUndo(objects.ToArray(),"Reset NB shared Graph controls");
+                reset();
+                if(resetSpecial&&!TryResetGraphSpecialUVValues("all"))return false;
+                // Original Native final sync derives this existing ramp bit after Light reset.
+                if(resetSpecial)foreach(Material value in _rootItem.Mats)
+                    WriteGraphHalfSlice(value,"_NB_Flags1Hi16",1<<(29-16),value.GetTexture("_SixWayEmissionRamp")?1<<(29-16):0);
+                else if(!TryFinalizeGraphLightRampEdit(rampBefore))return false;
+                foreach(Material value in _rootItem.Mats)
+                {
+                    var tier=(NBShaderFeatureTier)(int)value.GetFloat(FeatureTierPropertyName);bool changed;
+                    if(!NBShaderFeatureRuntime.TryApplyGraphOwnedProjection(value,tier,
+                        NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),
+                        NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier),out changed))return false;
+                }
+                completed=true;foreach(Material value in _rootItem.Mats)EditorUtility.SetDirty(value);Undo.CollapseUndoOperations(group);return true;
+            }
+            finally
+            {
+                if(!completed)for(int i=0;i<originals.Count;++i)
+                {
+                    Material value=_rootItem.Mats[i];EditorJsonUtility.FromJsonOverwrite(originals[i],value);
+                    using(var serialized=new SerializedObject(value))
+                    {
+                        serialized.Update();
+                        foreach(var reference in originalObjectReferences[i])
+                        {
+                            SerializedProperty property=serialized.FindProperty(reference.Key);
+                            if(property==null||property.propertyType!=SerializedPropertyType.ObjectReference)
+                                throw new InvalidOperationException("NB Graph Reset rollback lost serialized Object reference path: "+reference.Key);
+                            property.objectReferenceValue=reference.Value;
+                        }
+                        serialized.ApplyModifiedPropertiesWithoutUndo();
+                    }
+                    foreach(var pass in passState[i])value.SetShaderPassEnabled(pass.Key,pass.Value);
+                }
+                RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();
+            }
+        }
+
     }
 
     public enum VATMode

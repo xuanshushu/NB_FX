@@ -54,8 +54,11 @@ namespace NBShaderEditor
         {
             Rect rect = ShaderGUIItem.ApplyGlobalRectCompensation(_rootItem.GetControlRect(EditorGUIUtility.singleLineHeight));
             GUI.Box(rect, GUIContent.none, EditorStyles.toolbar);
-            GUI.Label(new Rect(rect.x + 4, rect.y, Mathf.Max(0, rect.width - TierButtonWidth - 8), rect.height),
+            GUI.Label(new Rect(rect.x + ButtonWidth + 4, rect.y, Mathf.Max(0, rect.width - TierButtonWidth - ButtonWidth - 8), rect.height),
                 Label("graphTierScope", "Supported Tier: Mask / Noise / Refraction / Chromatic Aberration / Program Noise / Fresnel / Overlay / Dissolve / Parallax / Normal Map / Color Ramp / MatCap / Distance Fade / Soft Particles / Depth Outline / Depth Decal / Lighting / VAT / Flipbook / Vertex Offset / Override Z"), EditorStyles.miniLabel);
+            // Same original Reset menu and callbacks, real Graph shared ownership.
+            using(new EditorGUI.DisabledScope(_rootItem.SyncService==null||!_rootItem.SyncService.HasGraphSharedResetSchema()))
+                if(GUI.Button(MakeToolbarButtonRect(rect,rect.x,ButtonWidth),TextContent("specialReset","R","特殊重置功能"),EditorStyles.toolbarButton))ShowResetPopupMenu();
             using (new EditorGUI.DisabledScope(_rootItem.SyncService == null || !_rootItem.SyncService.HasGraphSupportedGateTierEditSchema()))
                 if (GUI.Button(MakeToolbarButtonRect(rect, rect.xMax - TierButtonWidth, TierButtonWidth), TierContent(), EditorStyles.toolbarButton))
                     ShowTierPopupMenu();
@@ -354,6 +357,7 @@ namespace NBShaderEditor
 
         private void ResetSpecialUVChannel()
         {
+            if(_rootItem.Context!=null&&_rootItem.Context.IsGraphMaterialHost){if(_rootItem.SyncService.TryResetGraphSpecialUVValues("special"))FinishMaterialMutation();return;}
             RecordAllMaterials(UndoText("resetSpecialUV", "重置特殊UV通道"));
             ResetSpecialUVChannelValues();
             FinishMaterialMutation();
@@ -361,6 +365,7 @@ namespace NBShaderEditor
 
         private void ResetTwirl()
         {
+            if(_rootItem.Context!=null&&_rootItem.Context.IsGraphMaterialHost){if(_rootItem.SyncService.TryResetGraphSpecialUVValues("twirl"))FinishMaterialMutation();return;}
             RecordAllMaterials(UndoText("resetTwirl", "重置旋转扭曲"));
             ResetTwirlValues();
             FinishMaterialMutation();
@@ -368,6 +373,7 @@ namespace NBShaderEditor
 
         private void ResetPolar()
         {
+            if(_rootItem.Context!=null&&_rootItem.Context.IsGraphMaterialHost){if(_rootItem.SyncService.TryResetGraphSpecialUVValues("polar"))FinishMaterialMutation();return;}
             RecordAllMaterials(UndoText("resetPolar", "重置极坐标"));
             ResetPolarValues();
             FinishMaterialMutation();
@@ -375,6 +381,7 @@ namespace NBShaderEditor
 
         private void ResetAll()
         {
+            if(_rootItem.Context!=null&&_rootItem.Context.IsGraphMaterialHost){if(_rootItem.TryResetGraphOwnedItems())FinishMaterialMutation();return;}
             RecordAllMaterials(UndoText("resetAll", "重置所有特殊功能"));
             _rootItem.ExecuteResetAllItems();
             ResetSpecialUVChannelValues();
@@ -385,6 +392,7 @@ namespace NBShaderEditor
 
         private void ResetDisabledFeatureChildren()
         {
+            if(_rootItem.Context!=null&&_rootItem.Context.IsGraphMaterialHost){if(_rootItem.TryResetGraphOwnedItems(true))FinishMaterialMutation();return;}
             RecordAllMaterials(UndoText("resetDisabledFeatureChildren", "重置关闭功能子属性"));
             foreach (ShaderGUIItem item in _rootItem.GetToolbarResetRootItems())
             {

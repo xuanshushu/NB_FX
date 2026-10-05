@@ -1,0 +1,70 @@
+{
+  "identitySource": "Prior actual discovery backfirst8-actual-discovery-20261005.json matched current source names; fresh actual discovery required before run",
+  "cases": [
+    {
+      "exactCaseName": "NBFX.Baseline.Tests.G4GraphGuiMainTextureTests.GUI1A_MixedHostOrders_ConstructorSyncCallbacksAndResetDoNotWriteEither(False)",
+      "name": "GUI1A_MixedHostOrders_ConstructorSyncCallbacksAndResetDoNotWriteEither(False)"
+    },
+    {
+      "exactCaseName": "NBFX.Baseline.Tests.G4GraphGuiMainTextureTests.GUI1A_MixedHostOrders_ConstructorSyncCallbacksAndResetDoNotWriteEither(True)",
+      "name": "GUI1A_MixedHostOrders_ConstructorSyncCallbacksAndResetDoNotWriteEither(True)"
+    },
+    {
+      "exactCaseName": "NBFX.Baseline.Tests.G4GraphSharedMainTexUVGUIEventTests.G4MainTexWholeBlockReset_TwirlPolarNativePreserved_UndoRedo",
+      "name": "G4MainTexWholeBlockReset_TwirlPolarNativePreserved_UndoRedo"
+    },
+    {
+      "exactCaseName": "NBFX.Baseline.Tests.G4GraphPersistentGateTierTests.G4PersistentTier_FullGraphGUI_Layout_UnprojectedReadOnly",
+      "name": "G4PersistentTier_FullGraphGUI_Layout_UnprojectedReadOnly"
+    },
+    {
+      "exactCaseName": "NBFX.Baseline.Tests.G4GraphPersistentGateTierTests.G4PersistentTier_FullGraphGUI_Repaint_UnprojectedReadOnly",
+      "name": "G4PersistentTier_FullGraphGUI_Repaint_UnprojectedReadOnly"
+    }
+  ],
+  "batches": [
+    {
+      "id": "mixed2",
+      "filter": "GUI1A_MixedHostOrders_ConstructorSyncCallbacksAndResetDoNotWriteEither",
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphGuiMainTextureTests.GUI1A_MixedHostOrders_ConstructorSyncCallbacksAndResetDoNotWriteEither(False)",
+        "NBFX.Baseline.Tests.G4GraphGuiMainTextureTests.GUI1A_MixedHostOrders_ConstructorSyncCallbacksAndResetDoNotWriteEither(True)"
+      ],
+      "expectedCasesFromActualDiscovery": 2
+    },
+    {
+      "id": "MainOriginalWholeReset",
+      "filter": "G4MainTexWholeBlockReset_TwirlPolarNativePreserved_UndoRedo",
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphSharedMainTexUVGUIEventTests.G4MainTexWholeBlockReset_TwirlPolarNativePreserved_UndoRedo"
+      ],
+      "expectedCasesFromActualDiscovery": 1
+    },
+    {
+      "id": "G4PersistentTier_FullGraphGUI_Layout_UnprojectedReadOnly",
+      "filter": "G4PersistentTier_FullGraphGUI_Layout_UnprojectedReadOnly",
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphPersistentGateTierTests.G4PersistentTier_FullGraphGUI_Layout_UnprojectedReadOnly"
+      ],
+      "expectedCasesFromActualDiscovery": 1
+    },
+    {
+      "id": "G4PersistentTier_FullGraphGUI_Repaint_UnprojectedReadOnly",
+      "filter": "G4PersistentTier_FullGraphGUI_Repaint_UnprojectedReadOnly",
+      "exactCaseNames": [
+        "NBFX.Baseline.Tests.G4GraphPersistentGateTierTests.G4PersistentTier_FullGraphGUI_Repaint_UnprojectedReadOnly"
+      ],
+      "expectedCasesFromActualDiscovery": 1
+    }
+  ],
+  "expectedCaseCount": 5,
+  "fixtureSourceSHA256": {
+    "Tests/URP/Editor/G4GraphGuiMainTextureTests.cs": "9607eca4b95d225b6579ae440dd7b863d456f1da1992004aed1195d604001250",
+    "Tests/URP/Editor/G4GraphSharedMainTexUVGUIEventTests.cs": "0948e58f6a12119c0c20583cec82327107fbfe60586db0f320771f07aaaeaf00",
+    "Tests/URP/Editor/G4GraphPersistentGateTierTests.cs": "750370db131bf6d38a78a246904f521e4bf682c00be428b05fe22ef597f0d384"
+  },
+  "reason": "Only Runtime-free UI/Reset affected surface: mixed host refusal, existing narrow MainReset preserving Twirl/Polar scope, outer Layout/Repaint readonly after new R button pure preflight",
+  "rawExpected": 0,
+  "nativePopupAutomation": false,
+  "ranUnity": false
+}

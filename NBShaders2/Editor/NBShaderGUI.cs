@@ -518,6 +518,7 @@ namespace NBShaderEditor
         public void ExecuteResetAllItems()
         {
             if (Context != null && Context.HasMixedMaterialHosts) return;
+            if(Context!=null&&Context.IsGraphMaterialHost){TryResetGraphOwnedItems();return;}
             _modeBlock?.ExecuteReset(true);
             _baseBlock?.ExecuteReset(true);
             _mainTexBlock?.ExecuteReset(true);
@@ -528,6 +529,12 @@ namespace NBShaderEditor
 
         public System.Collections.Generic.IEnumerable<ShaderGUIItem> GetToolbarResetRootItems()
         {
+            if(Context!=null&&Context.IsGraphMaterialHost)
+            {
+                System.Collections.Generic.List<ShaderGUIItem> items;
+                if(TryGetGraphResetRootItems(out items))foreach(ShaderGUIItem item in items)yield return item;
+                yield break;
+            }
             if (_baseBlock != null)
             {
                 yield return _baseBlock;
@@ -842,6 +849,68 @@ namespace NBShaderEditor
             if(!InitializeGraphChromaticInputs())return;
             if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Chromatic");
             (selectedItem??_graphChromaticItem).OnGUI();
+        }
+
+        internal bool TryGetGraphResetRootItems(out System.Collections.Generic.List<ShaderGUIItem> items)
+        {
+            items=null;Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            if(!Context.IsGraphMaterialHost||!SyncService.HasGraphSharedResetSchema())return false;
+            // Every existing leaf preflight is complete before factories can initialize.
+            if(!InitializeGraphBaseShadowInputs()||!InitializeGraphBaseBackColorInputs()||!InitializeGraphDepthFeaturesInputs()||
+                !InitializeGraphStencilWithoutPlayerInputs()||!InitializeGraphMainTextureInputs()||!InitializeGraphLightModeInputs()||
+                !InitializeGraphNormalMapInputs()||!InitializeGraphMatCapInputs()||!InitializeGraphColorAdjustmentInputs()||
+                !InitializeGraphMaskProgramInputs()||!InitializeGraphNoiseInputs()||!InitializeGraphChromaticInputs()||
+                !InitializeGraphOverlayInputs()||!InitializeGraphColorRampInputs()||!InitializeGraphDissolveInputs()||
+                !InitializeGraphSharedUVInputs()||!InitializeGraphFresnelInputs()||!InitializeGraphVertexOffsetInputs()||
+                !InitializeGraphDepthDecalInputs()||!InitializeGraphParallaxInputs()||!InitializeGraphPortalInputs()||
+                !InitializeGraphFlipbookInputs()||!InitializeGraphVATInputs()||!InitializeGraphTADepthInputs())return false;
+            items=new System.Collections.Generic.List<ShaderGUIItem>{
+                _graphBaseNumericBlock,_graphColorAdjustmentBlock,_graphBaseBackColorItem,
+                _graphDistanceFadeBlock,_graphSoftParticlesBlock,_graphStencilWithoutPlayerItem,
+                _mainTexBlock,_graphLightModeBlock,_graphNormalMapBlock,_graphMatCapBlock,
+                _graphMaskItem,_graphNoiseItem,_graphChromaticItem,_graphEmissionItem,_graphColorRampItem,
+                _graphDissolveItem,_graphColorBlendItem,_graphProgramNoiseItem,_graphSharedUVItem,
+                _graphFresnelItem,_graphVertexOffsetItem,_graphDepthOutlineItem,_graphDepthDecalItem,
+                _graphParallaxItem,_graphPortalItem,_graphFlipbookItem,_graphVATItem,_graphTADepthBlock};
+            if(SyncService.HasGraphBackFirstEditSchema()&&InitializeGraphBackFirstInputs())items.Insert(2,_graphBackFirstItem);
+            foreach(ShaderGUIItem item in items)if(!GraphResetDefaultsCompatible(item))return false;
+            return true;
+        }
+        private bool GraphResetDefaultsCompatible(ShaderGUIItem item)
+        {
+            if(item.PropertyInfo?.Property!=null)
+            {
+                string name=item.PropertyInfo.Name;int first=Shader.FindPropertyIndex(name);
+                foreach(Material value in Mats)
+                {
+                    int index=value.shader.FindPropertyIndex(name);if(first<0||index<0||value.shader.GetPropertyType(index)!=Shader.GetPropertyType(first))return false;
+                    var type=Shader.GetPropertyType(first);
+                    if((type==UnityEngine.Rendering.ShaderPropertyType.Float||type==UnityEngine.Rendering.ShaderPropertyType.Range)&&!value.shader.GetPropertyDefaultFloatValue(index).Equals(Shader.GetPropertyDefaultFloatValue(first)))return false;
+                    if((type==UnityEngine.Rendering.ShaderPropertyType.Vector||type==UnityEngine.Rendering.ShaderPropertyType.Color)&&!value.shader.GetPropertyDefaultVectorValue(index).Equals(Shader.GetPropertyDefaultVectorValue(first)))return false;
+                }
+            }
+            foreach(ShaderGUIItem child in item.ChildrenItemList)if(!GraphResetDefaultsCompatible(child))return false;
+            return true;
+        }
+        internal bool TryResetGraphOwnedItems(bool disabledChildrenOnly=false)
+        {
+            System.Collections.Generic.List<ShaderGUIItem> items;
+            if(!TryGetGraphResetRootItems(out items))return false;
+            return SyncService.TryRunGraphSharedReset(()=>{
+                foreach(ShaderGUIItem item in items)
+                    if(disabledChildrenOnly)ResetGraphDisabledChildren(item);else item.ExecuteReset(true);
+            },!disabledChildrenOnly);
+        }
+        private static void ResetGraphDisabledChildren(ShaderGUIItem item)
+        {
+            if(item is PropertyToggleBlockItem&&item.PropertyInfo?.Property!=null&&
+                !item.PropertyInfo.Property.hasMixedValue&&item.PropertyInfo.Property.floatValue<=.5f)
+            {
+                // ExecuteReset already traverses its own subtree exactly once.
+                foreach(ShaderGUIItem child in item.ChildrenItemList)child.ExecuteReset(true);
+                item.CheckIsPropertyModified(true);return;
+            }
+            foreach(ShaderGUIItem child in item.ChildrenItemList)ResetGraphDisabledChildren(child);
         }
 
     }
