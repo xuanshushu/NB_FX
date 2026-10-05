@@ -23,6 +23,7 @@ namespace NBShaderEditor
         private readonly bool _graphVATToggleEdit;
         private readonly bool _graphPortalEdit;
         private readonly bool _graphRawMaskRotationDisplay;
+        private readonly bool _graphBaseBackColorEdit;
 
         public PropertyToggleBlockItem(
             NBShaderRootItem rootItem,
@@ -36,7 +37,7 @@ namespace NBShaderEditor
             string shaderPassName = null,
             Action<bool> onValueChanged = null,
             Func<bool> isVisible = null,
-            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false, bool graphQCMStencilEdit=false, bool graphVATToggleEdit=false, bool graphPortalEdit=false) : base(rootItem, parentItem)
+            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false, bool graphQCMStencilEdit=false, bool graphVATToggleEdit=false, bool graphPortalEdit=false, bool graphBaseBackColorEdit=false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
             _graphMainTexUVEdit = graphMainTexUVEdit;
@@ -45,6 +46,7 @@ namespace NBShaderEditor
             _graphVATToggleEdit=graphVATToggleEdit;
             _graphPortalEdit=graphPortalEdit;
             _graphRawMaskRotationDisplay=graphRawMaskRotationDisplay;
+            _graphBaseBackColorEdit=graphBaseBackColorEdit;
             PropertyName = togglePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _flagBits = flagBits;
@@ -79,6 +81,7 @@ namespace NBShaderEditor
 
             bool enabled = property.floatValue > 0.5f;
             bool displayMixed = property.hasMixedValue;
+            if(TryGetGraphBaseBackColorDisplay(out bool backEnabled,out bool backMixed)){enabled=backEnabled;displayMixed=backMixed;}
             bool graphZEnabled, graphZMixed;
             if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsRoot&&qsRoot.SyncService.TryGetGraphQCMStencilDisplay(out bool qsEnabled,out bool qsMixed)){enabled=qsEnabled;displayMixed=qsMixed;}
             if (TryGetGraphZOffsetDisplay(out graphZEnabled, out graphZMixed))
@@ -97,7 +100,9 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if(_graphPortalEdit&&RootItem is NBShaderRootItem portalEdit&&portalEdit.Context.IsGraphMaterialHost)
+                    if(_graphBaseBackColorEdit && RootItem is NBShaderRootItem backEdit && backEdit.Context.IsGraphMaterialHost)
+                        backEdit.SyncService.TryApplyGraphBaseBackColorToggle(enabled);
+                    else if(_graphPortalEdit&&RootItem is NBShaderRootItem portalEdit&&portalEdit.Context.IsGraphMaterialHost)
                         portalEdit.SyncService.TryApplyGraphPortalToggle(PropertyName,enabled);
                     else if(_graphVATToggleEdit&&RootItem is NBShaderRootItem vatEdit&&vatEdit.Context.IsGraphMaterialHost)
                         vatEdit.SyncService.TryApplyGraphVATToggle(enabled);
@@ -132,6 +137,7 @@ namespace NBShaderEditor
             {
                 EditorGUI.indentLevel++;
                 bool childrenDisabled = property.hasMixedValue || property.floatValue <= 0.5f;
+                if(TryGetGraphBaseBackColorDisplay(out backEnabled,out backMixed))childrenDisabled=backMixed||!backEnabled;
                 if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsChildren&&qsChildren.SyncService.TryGetGraphQCMStencilDisplay(out bool qEnabled,out bool qMixed))childrenDisabled=qMixed||!qEnabled;
                 if (TryGetGraphZOffsetDisplay(out graphZEnabled, out graphZMixed)) childrenDisabled = graphZMixed || !graphZEnabled;
                 if(TryGetGraphRawMaskRotationDisplay(out graphZEnabled,out graphZMixed))childrenDisabled=graphZMixed||!graphZEnabled;
@@ -166,6 +172,8 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if(_graphBaseBackColorEdit && RootItem is NBShaderRootItem backReset && backReset.Context.IsGraphMaterialHost)
+            {backReset.SyncService.TryRunGraphBaseBackColorReset(()=>base.ExecuteReset(isCallByParent));CheckIsPropertyModified();return;}
             if(_graphPortalEdit&&RootItem is NBShaderRootItem portalReset&&portalReset.Context.IsGraphMaterialHost)
             {
                 if(!portalReset.SyncService.TryApplyGraphPortalToggle(PropertyName,false,PropertyName=="_Portal_Toggle"))return;
@@ -202,6 +210,12 @@ namespace NBShaderEditor
         }
 
 
+        private bool TryGetGraphBaseBackColorDisplay(out bool enabled,out bool mixed)
+        {
+            enabled=mixed=false;
+            return _graphBaseBackColorEdit && RootItem is NBShaderRootItem root && root.Context.IsGraphMaterialHost &&
+                root.SyncService.TryGetGraphBaseBackColorDisplay(out enabled,out mixed);
+        }
         private bool TryGetGraphRawMaskRotationDisplay(out bool enabled,out bool mixed)
         {
             enabled=mixed=false;
@@ -212,7 +226,7 @@ namespace NBShaderEditor
         }
         public override void CheckIsPropertyModified(bool isCallByChild=false)
         {
-            bool enabled,mixed;if(!TryGetGraphRawMaskRotationDisplay(out enabled,out mixed)){base.CheckIsPropertyModified(isCallByChild);return;}
+            bool enabled,mixed;if(!(TryGetGraphBaseBackColorDisplay(out enabled,out mixed)||TryGetGraphRawMaskRotationDisplay(out enabled,out mixed))){base.CheckIsPropertyModified(isCallByChild);return;}
             PropertyIsDefaultValue=!mixed&&!enabled;HasModified=!PropertyIsDefaultValue;
             foreach(var child in ChildrenItemList)HasModified|=child.HasModified;
             ParentItem?.CheckIsPropertyModified(true);

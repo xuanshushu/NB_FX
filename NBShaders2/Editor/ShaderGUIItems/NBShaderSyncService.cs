@@ -3080,6 +3080,51 @@ namespace NBShaderEditor
             RefreshGraphMainTexPropertyReferences();return true;
         }
 
+
+        internal static readonly string[] GraphBaseBackColorProperties={"_BaseBackColorFoldOut","_BaseBackColor_Toggle","_BaseBackColor"};
+        internal bool HasGraphBaseBackColorEditSchema()
+        {
+            if(!HasGraphMainTexTargets() || _rootItem.ShaderFlags==null || _rootItem.ShaderFlags.Count!=_rootItem.Mats.Count)return false;
+            foreach(Material value in _rootItem.Mats)
+            {
+                foreach(string name in new[]{GraphGUIStateVersionProperty,"_BaseBackColorFoldOut","_BaseBackColor_Toggle"})
+                {if(!NBShaderRootItem.HasFloatProperty(value,name)||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;float x=value.GetFloat(name);if(float.IsNaN(x)||float.IsInfinity(x))return false;}
+                if(value.GetFloat(GraphGUIStateVersionProperty)!=2)return false;
+                int index=value.shader.FindPropertyIndex("_BaseBackColor");if(index<0||value.shader.GetPropertyType(index)!=UnityEngine.Rendering.ShaderPropertyType.Color||!_rootItem.PropertyInfoDic.ContainsKey("_BaseBackColor"))return false;
+                Color color=value.GetColor("_BaseBackColor");for(int channel=0;channel<4;++channel)if(float.IsNaN(color[channel])||float.IsInfinity(color[channel]))return false;
+            }
+            return true;
+        }
+        internal bool TryGetGraphBaseBackColorDisplay(out bool enabled,out bool mixed)
+        {
+            enabled=mixed=false;if(!HasGraphBaseBackColorEditSchema())return false;bool first=true;
+            foreach(ShaderFlagsBase flags in _rootItem.ShaderFlags)
+            {bool current=flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_BACKCOLOR,index:0);if(first){enabled=current;first=false;}else mixed|=enabled!=current;}
+            return true;
+        }
+        internal bool TryApplyGraphBaseBackColorToggle(bool enabled)
+        {
+            if(!HasGraphBaseBackColorEditSchema())return false;
+            const int mask=1<<(28-16);
+            return RunGraphMainTexEdit("NB Back Color",value=>{
+                float mirrorBefore=value.GetFloat("_BaseBackColor_Toggle");
+                bool changed=WriteGraphHalfSlice(value,"_NB_Flags0Hi16",mask,enabled?mask:0);
+                if(!changed)NotifyGraphPackedFlagsEdited(value,"_NB_Flags0Hi16",mask);
+                return changed||System.BitConverter.ToInt32(System.BitConverter.GetBytes(mirrorBefore),0)!=System.BitConverter.ToInt32(System.BitConverter.GetBytes(value.GetFloat("_BaseBackColor_Toggle")),0);
+            });
+        }
+        internal bool TryRunGraphBaseBackColorReset(System.Action reset)
+        {
+            if(reset==null||!HasGraphBaseBackColorEditSchema())return false;
+            bool resetApplied=false;const int mask=1<<(28-16);
+            return RunGraphMainTexEdit("Reset NB Back Color",value=>{
+                if(!resetApplied){reset();resetApplied=true;}
+                bool changed=WriteGraphHalfSlice(value,"_NB_Flags0Hi16",mask,value.GetFloat("_BaseBackColor_Toggle")>0.5f?mask:0);
+                if(!changed)NotifyGraphPackedFlagsEdited(value,"_NB_Flags0Hi16",mask);
+                return true;
+            });
+        }
+
     }
 
     public enum VATMode

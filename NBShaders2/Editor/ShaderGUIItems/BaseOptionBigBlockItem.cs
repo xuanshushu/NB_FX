@@ -87,16 +87,7 @@ namespace NBShaderEditor
                 _ => rootItem.SyncService.SyncMaterialState(),
                 ShouldDrawTransparentShadowDither);
 
-            _baseBackColorBlock = new PropertyToggleBlockItem(
-                rootItem,
-                this,
-                "_BaseBackColorFoldOut",
-                "_BaseBackColor_Toggle",
-                () => Content("base.backColor", "Back Color"),
-                NBShaderFlags.FLAG_BIT_PARTICLE_BACKCOLOR,
-                0,
-                isVisible: Is3DMode);
-            _baseBackColorItem = new ColorItem(rootItem, _baseBackColorBlock, "_BaseBackColor", () => Content("base.backColor.color", "Back Color"));
+            _baseBackColorBlock = CreateBaseBackColorBlock(rootItem, this, out _baseBackColorItem, Is3DMode);
 
             _distanceFadeBlock = CreateDistanceFadeBlock(rootItem, this);
 
@@ -122,6 +113,17 @@ namespace NBShaderEditor
             _fogIntensityItem.InitTriggerByChild();
 
             InitTriggerByChild();
+        }
+
+        internal static PropertyToggleBlockItem CreateBaseBackColorBlock(NBShaderRootItem rootItem,
+            ShaderGUIItem parentItem, out ColorItem colorItem, System.Func<bool> isVisible=null, bool graphSharedMode=false)
+        {
+            var block = new PropertyToggleBlockItem(rootItem,parentItem,
+                "_BaseBackColorFoldOut","_BaseBackColor_Toggle",() => Content("base.backColor", "Back Color"),
+                NBShaderFlags.FLAG_BIT_PARTICLE_BACKCOLOR,0,
+                isVisible:isVisible,graphBaseBackColorEdit:graphSharedMode);
+            colorItem = new ColorItem(rootItem,block,"_BaseBackColor",() => Content("base.backColor.color", "Back Color"));
+            return block;
         }
 
         internal static ToggleItem CreateStencilWithoutPlayerItem(NBShaderRootItem rootItem,ShaderGUIItem parentItem,
