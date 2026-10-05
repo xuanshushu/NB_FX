@@ -9,6 +9,8 @@ namespace NBShaderEditor
         private readonly string _label;
         private readonly Func<Material, int> _baseQueueProvider;
         private readonly Func<bool> _isVisible;
+        private readonly Action<float> _graphQueueWrite;
+        private readonly Action _graphQueueReset;
         private int _displayedRenderQueue;
         private bool _displayedMixedQueue;
         private bool _queueLabelInitialized;
@@ -19,16 +21,17 @@ namespace NBShaderEditor
             string propertyName,
             Func<GUIContent> contentProvider,
             Func<Material, int> baseQueueProvider,
-            Func<bool> isVisible = null) : base(rootItem, parentItem)
+            Func<bool> isVisible = null, Action<float> graphQueueWrite=null, Action graphQueueReset=null) : base(rootItem, parentItem)
         {
             PropertyName = propertyName;
             GUIContent content = contentProvider?.Invoke() ?? GUIContent.none;
             _label = content.text;
             _baseQueueProvider = baseQueueProvider ?? (mat => mat != null && mat.shader != null ? mat.shader.renderQueue : 0);
             _isVisible = isVisible;
+            _graphQueueWrite=graphQueueWrite;_graphQueueReset=graphQueueReset;
             GuiContent = new GUIContent(content);
             InitTriggerByChild();
-            InitializeQueueBiasFromRenderQueue();
+            if(_graphQueueWrite==null)InitializeQueueBiasFromRenderQueue();
             CheckIsPropertyModified();
         }
 
@@ -53,7 +56,7 @@ namespace NBShaderEditor
             float value = EditorGUI.FloatField(ControlRect, queueBias);
             if (EditorGUI.EndChangeCheck())
             {
-                PropertyInfo.Property.floatValue = value;
+                if(_graphQueueWrite!=null)_graphQueueWrite(value);else PropertyInfo.Property.floatValue = value;
             }
 
             EditorGUI.showMixedValue = previousMixedValue;
@@ -62,11 +65,12 @@ namespace NBShaderEditor
         public override void OnEndChange()
         {
             base.OnEndChange();
-            ApplyQueueBias();
+            if(_graphQueueWrite==null)ApplyQueueBias();
         }
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if(_graphQueueWrite!=null){_graphQueueReset?.Invoke();CheckIsPropertyModified();return;}
             base.ExecuteReset(isCallByParent);
             ApplyQueueBias();
         }

@@ -77,6 +77,7 @@ namespace NBShaderEditor
         MaskFeatureItem _graphMaskItem;
         ProgramNoiseFeatureItem _graphProgramNoiseItem;
         bool _sharedGraphTADepthReady;
+        bool _sharedGraphQCMReady;
         BigBlockItem _graphTADepthBlock;
         bool _sharedGraphLightModeReady;
         BigBlockItem _graphLightModeBlock;
@@ -109,6 +110,7 @@ namespace NBShaderEditor
             var names = new System.Collections.Generic.List<string>();
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphTADepthReady)
                 names.AddRange(NBShaderSyncService.GraphTADepthProperties);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphQCMReady)names.AddRange(NBShaderSyncService.GraphQCMProperties);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphMainTextureReady)
                 names.AddRange(SharedGraphMainTextureProperties);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphLightModeReady)
@@ -206,7 +208,8 @@ namespace NBShaderEditor
             Context.Refresh();
             _sharedGraphTADepthReady = Context.IsGraphMaterialHost && SyncService.HasGraphTADepthEditSchema();
             if (!_sharedGraphTADepthReady) return false;
-            _graphTADepthBlock ??= TABigBlockItem.CreateGraphDepthOnlyBlock(this, null);
+            bool qcm=SyncService.HasGraphQCMEditSchema();if(qcm!=_sharedGraphQCMReady){_sharedGraphQCMReady=qcm;_graphTADepthBlock=null;}
+            _graphTADepthBlock ??= TABigBlockItem.CreateGraphDepthOnlyBlock(this, null,qcm);
             return true;
         }
 
@@ -349,7 +352,7 @@ namespace NBShaderEditor
                 DrawGraphColorAdjustmentInputs();
                 DrawGraphColorRampInputs();
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
-                if (InitializeGraphTADepthInputs()) _graphTADepthBlock.OnGUI();
+                if (InitializeGraphTADepthInputs())DrawGraphTAInputs();
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
                 if(InitializeGraphDissolveInputs())DrawGraphDissolveInputs();
                 if(InitializeGraphMaskProgramInputs())DrawGraphMaskProgramInputs();
@@ -512,6 +515,13 @@ namespace NBShaderEditor
             if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Color Ramp");
             (selectedItem??_graphColorRampItem).OnGUI();
+        }
+
+        internal void DrawGraphTAInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!_sharedGraphTADepthReady)return;
+            if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB TA");
+            (selectedItem??_graphTADepthBlock).OnGUI();
         }
     }
 }

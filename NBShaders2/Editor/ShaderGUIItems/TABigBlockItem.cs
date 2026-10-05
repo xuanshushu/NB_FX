@@ -20,12 +20,13 @@ namespace NBShaderEditor
 
         private static readonly string[] RgbaMaskOptions = { "R", "G", "B", "A" };
 
-        internal static BigBlockItem CreateGraphDepthOnlyBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        internal static BigBlockItem CreateGraphDepthOnlyBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool includeQCM=false)
         {
             var block = new BigBlockItem(rootItem, parentItem, "_TABigBlockItemFoldOut",
                 () => Content("block.ta", "TA Debug", "Technical artist debug and helper controls"));
             CreateZOffsetBlock(rootItem, block);
             CreateOverrideZBlock(rootItem, block);
+            if(includeQCM)AddGraphQCMSubtree(rootItem,block);
             return block;
         }
 
@@ -87,7 +88,7 @@ namespace NBShaderEditor
                 () => Content("ta.property._ColorMask", "RGBA Mask"),
                 () => NBShaderInspectorLocalization.GetInspectorOptions("ta.colorMask", RgbaMaskOptions))
             {
-                ValidMask = 0xF
+                ValidMask = 0xF, ReverseFourChannelMaskUI=true, WriteOnlyOnInteractiveChange=true
             };
 
             _customStencilBlock = new PropertyToggleBlockItem(
@@ -177,13 +178,13 @@ namespace NBShaderEditor
             item.InitTriggerByChild();
         }
 
-        private static void AddPopup(NBShaderRootItem rootItem, ShaderGUIItem parentItem, string propertyName, string label, string[] options)
+        private static void AddPopup(NBShaderRootItem rootItem, ShaderGUIItem parentItem, string propertyName, string label, string[] options, bool interactiveOnly=false)
         {
             ShaderGUIPopUpItem item = new ShaderGUIPopUpItem(rootItem, parentItem)
             {
                 PropertyName = propertyName,
                 GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("ta.property." + propertyName, label),
-                PopUpNames = options
+                PopUpNames = options, WriteOnlyOnInteractiveChange=interactiveOnly
             };
             item.InitTriggerByChild();
         }
@@ -197,12 +198,13 @@ namespace NBShaderEditor
         {
             private readonly NBShaderRootItem _nbRootItem;
             private readonly TABigBlockItem _owner;
+            private readonly bool _graphSafe;
 
-            public StencilConfigKeyItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, TABigBlockItem owner)
+            public StencilConfigKeyItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, TABigBlockItem owner, bool graphSafe=false)
                 : base(rootItem, parentItem)
             {
                 _nbRootItem = rootItem;
-                _owner = owner;
+                _owner = owner;_graphSafe=graphSafe;
             }
 
             public override void OnGUI()
@@ -216,7 +218,12 @@ namespace NBShaderEditor
                 bool hasMixedValue = info.Property.hasMixedValue;
                 if (!hasMixedValue)
                 {
-                    key = _owner.GetStencilKey(Mathf.RoundToInt(info.Property.floatValue));
+                    if(!_graphSafe)key = _owner.GetStencilKey(Mathf.RoundToInt(info.Property.floatValue));
+                    else
+                    {
+                        var config=AssetDatabase.LoadAssetAtPath<StencilValuesConfig>(StencilConfigAssetPath);float value=info.Property.floatValue;int index=Mathf.RoundToInt(value);
+                        key=config!=null&&value==index&&index>=0&&index<config.Config.Count?config.GetKeyByIndex(index):"Manual / Unmapped";
+                    }
                 }
 
                 EditorGUI.showMixedValue = hasMixedValue;
@@ -230,6 +237,20 @@ namespace NBShaderEditor
 
                 EditorGUI.showMixedValue = false;
             }
+        }
+
+        private static void AddGraphQCMSubtree(NBShaderRootItem rootItem,ShaderGUIItem block)
+        {
+            new RenderQueueItem(rootItem,block,"_QueueOffset",()=>Content("ta.renderQueue","Queue Bias >> Current"),NBShaderSyncService.GetGraphQCMBaseQueue,
+                graphQueueWrite:v=>rootItem.SyncService.TryApplyGraphQCMQueue(v),graphQueueReset:()=>rootItem.SyncService.TryApplyGraphQCMQueue(0,true));
+            new ShaderGUIBitMaskItem(rootItem,block,"_ColorMask",()=>Content("ta.property._ColorMask","RGBA Mask"),()=>NBShaderInspectorLocalization.GetInspectorOptions("ta.colorMask",RgbaMaskOptions))
+            {ValidMask=15,ReverseFourChannelMaskUI=true,WriteOnlyOnInteractiveChange=true};
+            var stencil=new PropertyToggleBlockItem(rootItem,block,"_CustomStencilTestFoldOut","_CustomStencilTest",()=>Content("ta.customStencil","Custom Stencil Test"),bold:true,graphQCMStencilEdit:true);
+            new StencilConfigKeyItem(rootItem,stencil,null,true);
+            AddFloat(rootItem,stencil,"_StencilKeyIndex","Stencil Config Index");AddFloat(rootItem,stencil,"_Stencil","Stencil Value");
+            AddPopup(rootItem,stencil,"_StencilComp","Stencil Compare",Enum.GetNames(typeof(CompareFunction)),true);
+            foreach(string name in new[]{"_StencilOp","_StencilFail","_StencilZFail"})AddPopup(rootItem,stencil,name,name,Enum.GetNames(typeof(StencilOp)),true);
+            AddFloat(rootItem,stencil,"_StencilReadMask","Stencil Read Mask");AddFloat(rootItem,stencil,"_StencilWriteMask","Stencil Write Mask");
         }
     }
 }

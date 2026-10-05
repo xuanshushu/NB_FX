@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -37,6 +37,7 @@ namespace NBShaderEditor
         }
 
         public string[] PopUpNames;
+        public bool WriteOnlyOnInteractiveChange;
 
         public override void OnGUI()
         {
@@ -50,8 +51,10 @@ namespace NBShaderEditor
 
         public override void DrawController()
         {
+            EditorGUI.BeginChangeCheck();
             int value = EditorGUI.Popup(ControlRect, (int)PropertyInfo.Property.floatValue, PopUpNames);
-            SetFloatIfDifferent(PropertyInfo.Property, value);
+            bool changed=EditorGUI.EndChangeCheck();
+            if(!WriteOnlyOnInteractiveChange||changed)SetFloatIfDifferent(PropertyInfo.Property, value);
         }
 
         public override void OnEndChange()
@@ -123,13 +126,21 @@ namespace NBShaderEditor
             base.OnGUI();
         }
 
+        public bool WriteOnlyOnInteractiveChange;
+        public bool ReverseFourChannelMaskUI;
+        internal static int ReverseFourChannelMask(int mask) => ((mask&1)<<3)|((mask&2)<<1)|((mask&4)>>1)|((mask&8)>>3);
+
         public override void DrawController()
         {
             string[] maskNames = MaskNames ?? EmptyMaskNames;
             int validMask = GetValidMask(maskNames);
             int mask = Mathf.RoundToInt(PropertyInfo.Property.floatValue) & validMask;
-            int value = EditorGUI.MaskField(ControlRect, mask, maskNames) & validMask;
-            SetFloatIfDifferent(PropertyInfo.Property, value);
+            EditorGUI.BeginChangeCheck();
+            int display=ReverseFourChannelMaskUI?ReverseFourChannelMask(mask):mask;
+            int value = EditorGUI.MaskField(ControlRect, display, maskNames) & validMask;
+            bool changed=EditorGUI.EndChangeCheck();
+            if(ReverseFourChannelMaskUI)value=ReverseFourChannelMask(value);
+            if(!WriteOnlyOnInteractiveChange||changed)SetFloatIfDifferent(PropertyInfo.Property, value);
         }
 
         public override void OnEndChange()

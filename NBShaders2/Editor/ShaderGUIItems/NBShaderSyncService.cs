@@ -2116,6 +2116,68 @@ namespace NBShaderEditor
                 return UpdateGraphMainTexUVDerived(material)|changed;
             });
         }
+
+        internal static readonly string[] GraphQCMProperties={"_QueueOffset","_QueueControl","_ColorMask","_Stencil","_StencilComp","_StencilOp","_StencilFail","_StencilZFail","_StencilReadMask","_StencilWriteMask","_StencilKeyIndex","_CustomStencilTest","_CustomStencilTestFoldOut"};
+        internal bool HasGraphQCMEditSchema()
+        {
+            if(_rootItem.MatEditor==null||!HasGraphMainTexTargets())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                foreach(string name in GraphQCMProperties)
+                {
+                    int index=material.shader.FindPropertyIndex(name);if(index<0||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;
+                    var type=material.shader.GetPropertyType(index);if(type!=UnityEngine.Rendering.ShaderPropertyType.Float&&type!=UnityEngine.Rendering.ShaderPropertyType.Range)return false;
+                    float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;
+                }
+                foreach(string name in new[]{"_Surface","_AlphaClip"})
+                {if(!material.HasProperty(name))return false;float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;}
+            }
+            return true;
+        }
+        internal static int GetGraphQCMBaseQueue(Material material)
+            => material.GetFloat("_Surface")>.5f?3000:material.GetFloat("_AlphaClip")>.5f?2450:2000;
+        internal bool TryApplyGraphQCMQueue(float bias,bool reset=false)
+        {
+            if(!HasGraphQCMEditSchema()||float.IsNaN(bias)||float.IsInfinity(bias)||bias<-5000||bias>5000)return false;
+            int rounded=Mathf.RoundToInt(bias);
+            foreach(Material material in _rootItem.Mats)
+            {int queue=GetGraphQCMBaseQueue(material)+(reset?0:rounded);if(queue<0||queue>5000)return false;}
+            return RunGraphMainTexEdit(reset?"Reset NB Queue":"Edit NB Queue",material=>{
+                float value=reset?0:rounded,control=reset?0:1;int queue=GetGraphQCMBaseQueue(material)+(int)value;bool changed=false;
+                if(material.GetFloat("_QueueOffset")!=value){material.SetFloat("_QueueOffset",value);changed=true;}
+                if(material.GetFloat("_QueueControl")!=control){material.SetFloat("_QueueControl",control);changed=true;}
+                if(material.rawRenderQueue!=queue){material.renderQueue=queue;changed=true;}
+                return changed;
+            });
+        }
+        internal bool TryApplyGraphQCMStencilToggle(bool enabled)
+        {
+            if(!HasGraphQCMEditSchema())return false;
+            StencilValuesConfig config=null;
+            if(!enabled)
+            {
+                config=GetStencilValuesConfig();if(config==null||!config.ContainsKey("ParticleBaseDefault"))return false;
+                var values=config.GetStencilValues("ParticleBaseDefault");if(values==null)return false;
+            }
+            return RunGraphMainTexEdit(enabled?"Enable NB Stencil":"Reset NB Stencil",material=>{
+                if(!enabled)StencilTestHelper.SetMaterialStencil(material,"ParticleBaseDefault",config,out _);
+                float value=enabled?1:0;bool changed=material.GetFloat("_CustomStencilTest")!=value;
+                if(changed)material.SetFloat("_CustomStencilTest",value);return changed||!enabled;
+            });
+        }
+        internal bool TryGetGraphQCMStencilDisplay(out bool enabled,out bool mixed)
+        {
+            enabled=mixed=false;if(!HasGraphQCMEditSchema())return false;
+            var config=GetStencilValuesConfig();if(config==null||!config.ContainsKey("ParticleBaseDefault"))return false;
+            var values=config.GetStencilValues("ParticleBaseDefault");if(values==null)return false;
+            bool first=true;
+            foreach(Material material in _rootItem.Mats)
+            {
+                bool current=material.GetFloat("_CustomStencilTest")>.5f||material.GetFloat("_Stencil")!=values.Ref||material.GetFloat("_StencilComp")!=(float)values.Comp||material.GetFloat("_StencilOp")!=(float)values.Pass||material.GetFloat("_StencilFail")!=(float)values.Fail||material.GetFloat("_StencilZFail")!=(float)values.ZFail||material.GetFloat("_StencilReadMask")!=values.ReadMask||material.GetFloat("_StencilWriteMask")!=values.WriteMask;
+                if(first){enabled=current;first=false;}else mixed|=enabled!=current;
+            }
+            return true;
+        }
     }
 
     public enum VATMode

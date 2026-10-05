@@ -19,6 +19,7 @@ namespace NBShaderEditor
         private readonly ShaderGUIFoldOutHelper _foldOutHelper;
         private readonly bool _graphMainTexUVEdit;
         private readonly bool _taDepthEdit;
+        private readonly bool _graphQCMStencilEdit;
         private readonly bool _graphRawMaskRotationDisplay;
 
         public PropertyToggleBlockItem(
@@ -33,11 +34,12 @@ namespace NBShaderEditor
             string shaderPassName = null,
             Action<bool> onValueChanged = null,
             Func<bool> isVisible = null,
-            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false) : base(rootItem, parentItem)
+            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false, bool graphQCMStencilEdit=false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
             _graphMainTexUVEdit = graphMainTexUVEdit;
             _taDepthEdit = taDepthEdit;
+            _graphQCMStencilEdit=graphQCMStencilEdit;
             _graphRawMaskRotationDisplay=graphRawMaskRotationDisplay;
             PropertyName = togglePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
@@ -74,6 +76,7 @@ namespace NBShaderEditor
             bool enabled = property.floatValue > 0.5f;
             bool displayMixed = property.hasMixedValue;
             bool graphZEnabled, graphZMixed;
+            if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsRoot&&qsRoot.SyncService.TryGetGraphQCMStencilDisplay(out bool qsEnabled,out bool qsMixed)){enabled=qsEnabled;displayMixed=qsMixed;}
             if (TryGetGraphZOffsetDisplay(out graphZEnabled, out graphZMixed))
             { enabled = graphZEnabled; displayMixed = graphZMixed; }
             if(TryGetGraphRawMaskRotationDisplay(out graphZEnabled,out graphZMixed)){enabled=graphZEnabled;displayMixed=graphZMixed;}
@@ -90,7 +93,9 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if(_graphRawMaskRotationDisplay&&RootItem is NBShaderRootItem maskRoot&&maskRoot.Context.IsGraphMaterialHost)
+                    if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsRootEdit&&qsRootEdit.Context.IsGraphMaterialHost)
+                        qsRootEdit.SyncService.TryApplyGraphQCMStencilToggle(enabled);
+                    else if(_graphRawMaskRotationDisplay&&RootItem is NBShaderRootItem maskRoot&&maskRoot.Context.IsGraphMaterialHost)
                         maskRoot.SyncService.TryApplyGraphMaskProgramFlagEdit(_flagBits,enabled,_flagIndex);
                     else if (_taDepthEdit && RootItem is NBShaderRootItem taRoot && taRoot.Context.IsGraphMaterialHost)
                         taRoot.SyncService.TryApplyGraphTADepthToggle(PropertyName, enabled);
@@ -119,6 +124,7 @@ namespace NBShaderEditor
             {
                 EditorGUI.indentLevel++;
                 bool childrenDisabled = property.hasMixedValue || property.floatValue <= 0.5f;
+                if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsChildren&&qsChildren.SyncService.TryGetGraphQCMStencilDisplay(out bool qEnabled,out bool qMixed))childrenDisabled=qMixed||!qEnabled;
                 if (TryGetGraphZOffsetDisplay(out graphZEnabled, out graphZMixed)) childrenDisabled = graphZMixed || !graphZEnabled;
                 if(TryGetGraphRawMaskRotationDisplay(out graphZEnabled,out graphZMixed))childrenDisabled=graphZMixed||!graphZEnabled;
                 using (new InheritedControlDisabledScope(childrenDisabled))
@@ -152,6 +158,8 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsReset&&qsReset.Context.IsGraphMaterialHost)
+            {if(!qsReset.SyncService.TryApplyGraphQCMStencilToggle(false))return;foreach(var child in ChildrenItemList)child.CheckIsPropertyModified();CheckIsPropertyModified();return;}
             if(_graphRawMaskRotationDisplay&&RootItem is NBShaderRootItem maskRoot&&maskRoot.Context.IsGraphMaterialHost)
             {if(!maskRoot.SyncService.TryApplyGraphMaskProgramFlagEdit(_flagBits,false,_flagIndex))return;foreach(var child in ChildrenItemList)child.ExecuteReset(true);CheckIsPropertyModified();return;}
             if (_taDepthEdit && RootItem is NBShaderRootItem taRoot && taRoot.Context.IsGraphMaterialHost)
