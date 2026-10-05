@@ -1,0 +1,99 @@
+{
+    "scope": "Graph-only selected exact pass/projection/combo; not ABC parity, other passes, Player, or old CA incident closure",
+    "stage": "semantic-pass",
+    "exception": "",
+    "cleanupError": "",
+    "unity": "6000.3.25f1",
+    "api": "Direct3D11",
+    "gpu": "Intel(R) UHD Graphics 770",
+    "shaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+    "shaderName": "NB FX/Shader Graph/NBShaderGraph",
+    "actualRendererShader": "NB FX/Shader Graph/NBShaderGraph",
+    "rendererAssetPath": "Assets/Settings/URP-HighFidelity-Renderer.asset",
+    "keywords": [
+        "_SURFACE_TYPE_TRANSPARENT"
+    ],
+    "sources": [
+        {
+            "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+            "sha256": "e8eae67ad10c07217f9cfeac778ec2811eee01c95b3f418f5eae3dbd81f90713"
+        },
+        {
+            "path": "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
+            "sha256": "fa2e8550e675c16bc02df48e849f216f116a204672da15c89077476128be0559"
+        },
+        {
+            "path": "NBShaders2/Shader/HLSL/NBShaderChromaticV1.hlsl",
+            "sha256": "09bdb6e490a3e1bbda7177aafd1bad7479542b1075048bda1f40883bd2f37773"
+        },
+        {
+            "path": "Tests/URP/Editor/G4GraphChromaticTests.cs",
+            "sha256": "8c38b3e9053bad109155137d115bcc1ac6d28b3c76b4f0f8d235e2832e44ae43"
+        }
+    ],
+    "passes": [
+        {
+            "name": "SRPDefaultUnlit",
+            "enabled": false
+        },
+        {
+            "name": "SRPDEFAULTUNLIT",
+            "enabled": false
+        },
+        {
+            "name": "UniversalForward",
+            "enabled": false
+        },
+        {
+            "name": "DepthOnly",
+            "enabled": false
+        },
+        {
+            "name": "ShadowCaster",
+            "enabled": false
+        },
+        {
+            "name": "NBDeferredDistortPass",
+            "enabled": false
+        },
+        {
+            "name": "NBCameraOpaqueDistortPass",
+            "enabled": true
+        }
+    ],
+    "orthographic": false,
+    "actualRendererMaterialMatches": true,
+    "finite": true,
+    "nonCDCD": true,
+    "cleanupComplete": true,
+    "rendererDiskRestored": true,
+    "noFrozenOrNativeMaterial": true,
+    "rawCount": 13,
+    "visibleOn": 2304,
+    "visibleOff": 2304,
+    "responseChanged": 2304,
+    "withNoiseChanged": 1917,
+    "actorChanged": 2304,
+    "deniedChanged": 0,
+    "restoredChanged": 0,
+    "gateRestoreChanged": 0,
+    "marker": 2.0,
+    "savedTier": 3.0,
+    "caAllow": 1.0,
+    "caRawToggle": 1.0,
+    "flagsLo": 0.0,
+    "repeat": 0.0,
+    "response": 0.074951171875,
+    "withNoise": 0.025634765625,
+    "actorResponse": 0.2333984375,
+    "restored": 0.0,
+    "deniedError": 0.0,
+    "gateRestoreError": 0.0,
+    "packedWrapError": 0.0,
+    "wrapRestoreError": 0.0,
+    "clampShiftResponse": 0.050048828125,
+    "clampRestoreError": 0.0,
+    "clampShiftChanged": 1968,
+    "selectedWrap": 1,
+    "forceLod0": false
+}
