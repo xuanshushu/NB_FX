@@ -826,9 +826,12 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NBGraphTierAllowParallax,
     float NBGraphTierAllowNormalMap,
     float NBGraphTierAllowColorRamp, float NBGraphTierAllowColorRampMap,
+    float NBGraphTierAllowMatCap,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    MatCapToggle *= NBGraphTierAllowMatCap > 0.5 ? 1.0 : 0.0;
+
     RampColorToggle *= NBGraphTierAllowColorRamp > 0.5 ? 1.0 : 0.0;
     // Tier changes effective sampling only; the serialized source enum stays intent.
     RampColorSourceMode = RampColorSourceMode > 0.5 && NBGraphTierAllowColorRampMap > 0.5 ? 1.0 : 0.0;
@@ -1390,9 +1393,12 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NBGraphTierAllowParallax,
     float NBGraphTierAllowNormalMap,
     float NBGraphTierAllowColorRamp, float NBGraphTierAllowColorRampMap,
+    float NBGraphTierAllowMatCap,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    MatCapToggle *= NBGraphTierAllowMatCap > 0.5 ? 1.0 : 0.0;
+
     RampColorToggle *= NBGraphTierAllowColorRamp > 0.5 ? 1.0 : 0.0;
     // Tier changes effective sampling only; the serialized source enum stays intent.
     RampColorSourceMode = RampColorSourceMode > 0.5 && NBGraphTierAllowColorRampMap > 0.5 ? 1.0 : 0.0;

@@ -164,17 +164,7 @@ namespace NBShaderEditor
 
             _bumpBlock = CreateNormalMapBlock(rootItem, this);
 
-            _matCapBlock = new PropertyToggleBlockItem(
-                rootItem,
-                this,
-                "_MatCapFoldOut",
-                "_MatCapToggle",
-                () => Content("light.matcap.toggle", "MatCap"),
-                keyword: "_MATCAP",
-                isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay);
-            new TextureItem(rootItem, _matCapBlock, "_MatCapTex", () => Content("light.matcap.texture", "MatCap Texture"), "_MatCapColor", false);
-            new ForceNoMipItem(rootItem, _matCapBlock, NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_MATCAP);
-            new VectorComponentItem(rootItem, _matCapBlock, "_MatCapInfo", 0, () => Content("light.matcap.blend", "Add/Multiply Blend"), true, 0f, 1f);
+            _matCapBlock = CreateMatCapBlock(rootItem, this);
 
             _sixWayPositiveItem = new TextureItem(
                 rootItem,
@@ -366,6 +356,26 @@ namespace NBShaderEditor
         private static GUIContent Content(string key, string fallback, string tip = "")
         {
             return NBShaderInspectorLocalization.MakeInspectorContent(key, fallback, tip);
+        }
+
+        // Both hosts draw the original MatCap subtree. Its sampler has no ST/UV/Wrap controls.
+        internal static PropertyToggleBlockItem CreateMatCapBlock(NBShaderRootItem rootItem,
+            ShaderGUIItem parentItem, bool graphSharedMode=false)
+        {
+            var block = new PropertyToggleBlockItem(
+                rootItem,
+                parentItem,
+                "_MatCapFoldOut",
+                "_MatCapToggle",
+                () => Content("light.matcap.toggle", "MatCap"),
+                keyword: graphSharedMode ? null : "_MATCAP",
+                onValueChanged: graphSharedMode ? (System.Action<bool>)(enabled => rootItem.SyncService.TryApplyGraphMatCapEdit(enabled)) : null,
+                isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay);
+            new TextureItem(rootItem, block, "_MatCapTex", () => Content("light.matcap.texture", "MatCap Texture"), "_MatCapColor", false);
+            new ForceNoMipItem(rootItem, block, NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_MATCAP);
+            new VectorComponentItem(rootItem, block, "_MatCapInfo", 0, () => Content("light.matcap.blend", "Add/Multiply Blend"), true, 0f, 1f);
+
+            return block;
         }
     }
 

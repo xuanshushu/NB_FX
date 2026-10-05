@@ -55,7 +55,7 @@ namespace NBShaderEditor
             Rect rect = ShaderGUIItem.ApplyGlobalRectCompensation(_rootItem.GetControlRect(EditorGUIUtility.singleLineHeight));
             GUI.Box(rect, GUIContent.none, EditorStyles.toolbar);
             GUI.Label(new Rect(rect.x + 4, rect.y, Mathf.Max(0, rect.width - TierButtonWidth - 8), rect.height),
-                Label("graphTierScope", "Supported Tier: Mask / Noise / Program Noise / Fresnel / Overlay / Dissolve / Parallax / Normal Map / Color Ramp / Override Z"), EditorStyles.miniLabel);
+                Label("graphTierScope", "Supported Tier: Mask / Noise / Program Noise / Fresnel / Overlay / Dissolve / Parallax / Normal Map / Color Ramp / MatCap / Override Z"), EditorStyles.miniLabel);
             using (new EditorGUI.DisabledScope(_rootItem.SyncService == null || !_rootItem.SyncService.HasGraphSupportedGateTierEditSchema()))
                 if (GUI.Button(MakeToolbarButtonRect(rect, rect.xMax - TierButtonWidth, TierButtonWidth), TierContent(), EditorStyles.toolbarButton))
                     ShowTierPopupMenu();

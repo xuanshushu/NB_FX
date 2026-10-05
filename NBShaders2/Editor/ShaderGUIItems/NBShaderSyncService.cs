@@ -2178,6 +2178,40 @@ namespace NBShaderEditor
             }
             return true;
         }
+
+        internal static readonly string[] GraphMatCapSharedPropertyNames={"_MatCapToggle","_MatCapTex","_MatCapColor","_MatCapInfo","_MatCapFoldOut"};
+        internal bool HasGraphMatCapEditSchema()
+        {
+            if(!HasGraphMainTexTargets() || _rootItem.MatEditor==null)return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                foreach(string name in new[]{"_MatCapToggle","_MatCapFoldOut","_NB_ForceNoMipFlagsLo16","_NB_ForceNoMipFlagsHi16"})
+                {
+                    if(!_rootItem.PropertyInfoDic.ContainsKey(name)||!NBShaderRootItem.HasFloatProperty(material,name))return false;
+                    float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;
+                }
+                foreach(string name in new[]{"_MatCapTex","_MatCapColor","_MatCapInfo"})
+                {
+                    if(!_rootItem.PropertyInfoDic.ContainsKey(name))return false;
+                    int index=material.shader.FindPropertyIndex(name);
+                    var expected=name=="_MatCapTex"?UnityEngine.Rendering.ShaderPropertyType.Texture:
+                        name=="_MatCapColor"?UnityEngine.Rendering.ShaderPropertyType.Color:UnityEngine.Rendering.ShaderPropertyType.Vector;
+                    if(index<0||material.shader.GetPropertyType(index)!=expected)return false;
+                }
+            }
+            return true;
+        }
+        internal bool TryApplyGraphMatCapEdit(bool enabled)
+        {
+            if(!HasGraphMatCapEditSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                SetFloatIfExists(material,"_MatCapToggle",enabled?1f:0f);
+                bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;
+            }
+            RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
+        }
     }
 
     public enum VATMode

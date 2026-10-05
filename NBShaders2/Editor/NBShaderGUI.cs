@@ -125,6 +125,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphMaskProgramReady)names.AddRange(NBShaderSyncService.GraphMaskProgramSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphColorAdjustmentReady)names.AddRange(NBShaderSyncService.GraphColorAdjustmentSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphColorRampReady)names.AddRange(NBShaderSyncService.GraphColorRampSharedPropertyNames);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphMatCapReady)names.AddRange(NBShaderSyncService.GraphMatCapSharedPropertyNames);
             return names;
         }
 
@@ -283,6 +284,8 @@ namespace NBShaderEditor
         }
 
 
+        bool _sharedGraphMatCapReady;
+        PropertyToggleBlockItem _graphMatCapBlock;
         bool _sharedGraphNormalMapReady;
         PropertyToggleBlockItem _graphNormalMapBlock;
         internal static readonly string[] SharedGraphNormalMapProperties={"_BumpMapToggle","_BumpTex","_BumpMapMaskMode","_BumpScale"};
@@ -332,6 +335,7 @@ namespace NBShaderEditor
                     _sharedGraphFresnelReady = false;
                     _graphLightModeBlock = null;
                     _graphNormalMapBlock = null;
+                    _graphMatCapBlock=null;_sharedGraphMatCapReady=false;
                     _sharedGraphNormalMapReady = false;
                     _graphTADepthBlock = null;
                     _toolBar = null;
@@ -349,6 +353,7 @@ namespace NBShaderEditor
                 if (InitializeGraphLightModeInputs())
                     _graphLightModeBlock.OnGUI();
                 DrawGraphNormalMapInputs();
+                DrawGraphMatCapInputs();
                 DrawGraphColorAdjustmentInputs();
                 DrawGraphColorRampInputs();
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
@@ -522,6 +527,21 @@ namespace NBShaderEditor
             if(!_sharedGraphTADepthReady)return;
             if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB TA");
             (selectedItem??_graphTADepthBlock).OnGUI();
+        }
+
+        internal bool InitializeGraphMatCapInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphMatCapReady=Context.IsGraphMaterialHost&&SyncService.HasGraphMatCapEditSchema();
+            if(!_sharedGraphMatCapReady)return false;
+            _graphMatCapBlock??=LightBigBlockItem.CreateMatCapBlock(this,null,true);return true;
+        }
+        internal void DrawGraphMatCapInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!InitializeGraphMatCapInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB MatCap Inputs");
+            (selectedItem??_graphMatCapBlock).OnGUI();
         }
     }
 }
