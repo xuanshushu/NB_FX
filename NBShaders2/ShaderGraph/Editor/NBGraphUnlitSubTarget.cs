@@ -62,6 +62,9 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                 if (!includeDepthNormals && string.Equals(pass.lightMode, "DepthNormalsOnly", StringComparison.Ordinal))
                     continue;
                 pass = WithNBInterpolatorShaderModel(pass);
+                if(pass.lightMode=="MotionVectors"||pass.lightMode=="XRMotionVectors")
+                    pass=WithNBFragmentInclude(pass,"NBGraphMotionVectorPass.hlsl",
+                        "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/MotionVectorPass.hlsl");
                 bool forward = pass.referenceName == "SHADERPASS_UNLIT";
                 if (forward)
                     pass = WithNBDistortionBlocks(pass);

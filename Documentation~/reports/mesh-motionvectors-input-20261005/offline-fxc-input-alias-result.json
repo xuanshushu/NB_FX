@@ -1,0 +1,32 @@
+{
+  "compiler": "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\fxc.exe",
+  "target": "vs_5_0",
+  "ranUnity": false,
+  "ranGPU": false,
+  "cases": [
+    {
+      "case": "original-conflict",
+      "exitCode": 1,
+      "sourceSHA256": "cc84bed5320c583d12e6d5bc1522bd0baac4fdfe3f5847787951f7795af9fe55",
+      "outputBytes": 0,
+      "log": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\player-motionvectors-input-repair-20261005\\original-conflict.log",
+      "diagnostic": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\player-motionvectors-input-repair-20261005\\original-conflict.hlsl(1,75-84): error X3536: Duplicated input semantics can't change type, size, or layout ('TEXCOORD4').\n\ncompilation failed; no code produced\n"
+    },
+    {
+      "case": "float4-alias",
+      "exitCode": 0,
+      "sourceSHA256": "643c7b3730a87bc177da903d16711a9f55495bfdfdb83c270fa8ce4d81c3a156",
+      "outputBytes": 584,
+      "log": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\player-motionvectors-input-repair-20261005\\float4-alias.log",
+      "diagnostic": "compilation object save succeeded; see D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\player-motionvectors-input-repair-20261005\\float4-alias.bin\n"
+    },
+    {
+      "case": "float4-alias-uv5-alembic",
+      "exitCode": 0,
+      "sourceSHA256": "48633bbb56ed7207b569c1ef80ed860d482aae39a1d2ee64b8389dde4473c706",
+      "outputBytes": 608,
+      "log": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\player-motionvectors-input-repair-20261005\\float4-alias-uv5-alembic.log",
+      "diagnostic": "compilation object save succeeded; see D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\player-motionvectors-input-repair-20261005\\float4-alias-uv5-alembic.bin\n"
+    }
+  ]
+}
