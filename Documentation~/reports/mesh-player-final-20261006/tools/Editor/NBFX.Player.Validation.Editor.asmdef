@@ -1,0 +1,28 @@
+{
+  "name": "NBFX.Player.Validation.Editor",
+  "rootNamespace": "NBFX.PlayerValidation.Editor",
+  "references": [
+    "NBFX.Player.Validation.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.Universal.Runtime",
+    "com.xuanxuan.nb.postprocessing",
+    "com.xuanxuan.nb.shaders2"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "overrideReferences": true,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "NBFX_PLAYER_HAS_URP"
+  ],
+  "versionDefines": [
+    {
+      "name": "com.unity.render-pipelines.universal",
+      "expression": "17.3.0",
+      "define": "NBFX_PLAYER_HAS_URP"
+    }
+  ],
+  "noEngineReferences": false
+}

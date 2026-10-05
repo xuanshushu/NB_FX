@@ -1,0 +1,2817 @@
+{
+  "mode": "performance",
+  "status": "COLLECTED_NO_PERFORMANCE_VERDICT",
+  "startedUTC": "2026-10-05T18:08:34.214941+00:00",
+  "elapsedSeconds": 14.130538600031286,
+  "nativeExit": 0,
+  "timedOut": false,
+  "command": [
+    "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal9-build\\NBFXMeshValidation.exe",
+    "-batchmode",
+    "-force-d3d11",
+    "-screen-width",
+    "128",
+    "-screen-height",
+    "128",
+    "-logFile",
+    "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal9-performance\\Player.log",
+    "--nbfx-performance",
+    "--nbfx-perf-evidence",
+    "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal9-performance"
+  ],
+  "exeSHA256": "b9fc30bb05ca93a042831974149a681d656963e3e612ecafd9ae826759d739ad",
+  "buildReceiptSHA256": "310e648c27f14b819619b5e1b3fe78b40a2237e3f501394e04d7f78cfa6dff1b",
+  "issues": [],
+  "shaderGPUErrorLines": [],
+  "analysis": {
+    "fixedProtocol": {
+      "warmFrames": 120,
+      "sampleFrames": 240,
+      "pairs": [
+        "BC",
+        "CB",
+        "CB",
+        "BC"
+      ],
+      "resolution": [
+        128,
+        128
+      ],
+      "workloads": 3,
+      "NBMeshCount": 1
+    },
+    "blocks": [
+      {
+        "route": "Forward",
+        "role": "B",
+        "repetition": 0,
+        "sampleSeconds": 0.20866740000000006,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.8657999999999999,
+              "p95": 1.0408,
+              "min": 0.6234,
+              "max": 2.1306
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.86095,
+              "p95": 1.0348,
+              "min": 0.6191,
+              "max": 2.1256
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 860350.0,
+              "p95": 1035600,
+              "min": 619700,
+              "max": 2126300
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          }
+        }
+      },
+      {
+        "route": "Forward",
+        "role": "C",
+        "repetition": 0,
+        "sampleSeconds": 0.22671220000000014,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.94465,
+              "p95": 1.0802,
+              "min": 0.7128,
+              "max": 1.5062
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.9393,
+              "p95": 1.0747,
+              "min": 0.7079,
+              "max": 1.4999
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 938850.0,
+              "p95": 1070400,
+              "min": 708400,
+              "max": 1373600
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          }
+        }
+      },
+      {
+        "route": "Forward",
+        "role": "C",
+        "repetition": 1,
+        "sampleSeconds": 0.22751110000000008,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.927,
+              "p95": 1.2091,
+              "min": 0.7326,
+              "max": 1.4315
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.92175,
+              "p95": 1.2035,
+              "min": 0.7276,
+              "max": 1.4255
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 922450.0,
+              "p95": 1181400,
+              "min": 728200,
+              "max": 1426100
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          }
+        }
+      },
+      {
+        "route": "Forward",
+        "role": "B",
+        "repetition": 1,
+        "sampleSeconds": 0.23172199999999998,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.9336500000000001,
+              "p95": 1.2341,
+              "min": 0.6976,
+              "max": 1.6228
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.9280999999999999,
+              "p95": 1.2285,
+              "min": 0.6925,
+              "max": 1.6135
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 930500.0,
+              "p95": 1242300,
+              "min": 713300,
+              "max": 1614300
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          }
+        }
+      },
+      {
+        "route": "Forward",
+        "role": "C",
+        "repetition": 2,
+        "sampleSeconds": 0.30295859999999974,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.23115,
+              "p95": 1.7226,
+              "min": 0.8088,
+              "max": 2.0048
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.2239499999999999,
+              "p95": 1.7143,
+              "min": 0.8042,
+              "max": 1.9869
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1225000.0,
+              "p95": 1725700,
+              "min": 804700,
+              "max": 1988200
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          }
+        }
+      },
+      {
+        "route": "Forward",
+        "role": "B",
+        "repetition": 2,
+        "sampleSeconds": 0.2445801000000003,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.9606,
+              "p95": 1.4153,
+              "min": 0.6608,
+              "max": 1.6115
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.95555,
+              "p95": 1.4092,
+              "min": 0.6567,
+              "max": 1.6027
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 956100.0,
+              "p95": 1410500,
+              "min": 657100,
+              "max": 1604100
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          }
+        }
+      },
+      {
+        "route": "Forward",
+        "role": "B",
+        "repetition": 3,
+        "sampleSeconds": 0.25392550000000025,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.98245,
+              "p95": 1.4577,
+              "min": 0.7374,
+              "max": 1.68
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.9767,
+              "p95": 1.4501,
+              "min": 0.7324,
+              "max": 1.6712
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 979650.0,
+              "p95": 1437800,
+              "min": 733000,
+              "max": 1671800
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          }
+        }
+      },
+      {
+        "route": "Forward",
+        "role": "C",
+        "repetition": 3,
+        "sampleSeconds": 0.2569822999999998,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.0151,
+              "p95": 1.4771,
+              "min": 0.8357,
+              "max": 1.8107
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.00915,
+              "p95": 1.4684,
+              "min": 0.8305,
+              "max": 1.8004
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1013150.0,
+              "p95": 1469000,
+              "min": 831200,
+              "max": 1801600
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 7.0,
+              "p95": 7,
+              "min": 7,
+              "max": 7
+            }
+          }
+        }
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "role": "B",
+        "repetition": 0,
+        "sampleSeconds": 0.32512950000000007,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.2335500000000001,
+              "p95": 1.915,
+              "min": 0.8911,
+              "max": 2.1136
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.22735,
+              "p95": 1.9062,
+              "min": 0.8857,
+              "max": 2.1041
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1234400.0,
+              "p95": 1924000,
+              "min": 886400,
+              "max": 2249100
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "role": "C",
+        "repetition": 0,
+        "sampleSeconds": 0.3759176000000002,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.50675,
+              "p95": 2.1192,
+              "min": 0.9415,
+              "max": 3.242
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.49915,
+              "p95": 2.1123,
+              "min": 0.9364,
+              "max": 3.2329
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1518050.0,
+              "p95": 2113500,
+              "min": 937000,
+              "max": 3233600
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "role": "C",
+        "repetition": 1,
+        "sampleSeconds": 0.3691117000000004,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.50325,
+              "p95": 2.1681,
+              "min": 0.9446,
+              "max": 3.1969
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.49465,
+              "p95": 2.1591,
+              "min": 0.939,
+              "max": 3.1859
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1483200.0,
+              "p95": 2160500,
+              "min": 939600,
+              "max": 3186600
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "role": "B",
+        "repetition": 1,
+        "sampleSeconds": 0.33518140000000063,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.2626,
+              "p95": 2.0878,
+              "min": 0.8926,
+              "max": 3.7504
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.25625,
+              "p95": 2.0803,
+              "min": 0.8876,
+              "max": 3.7421
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1273500.0,
+              "p95": 2081700,
+              "min": 888100,
+              "max": 3743000
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "role": "C",
+        "repetition": 2,
+        "sampleSeconds": 0.3494298999999996,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.40285,
+              "p95": 2.0101,
+              "min": 0.9212,
+              "max": 2.9531
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.3953,
+              "p95": 2.0011,
+              "min": 0.9164,
+              "max": 2.9464
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1396250.0,
+              "p95": 2007400,
+              "min": 917000,
+              "max": 3041400
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "role": "B",
+        "repetition": 2,
+        "sampleSeconds": 0.3066051000000005,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.1702,
+              "p95": 1.8345,
+              "min": 0.9263,
+              "max": 1.9808
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.1644999999999999,
+              "p95": 1.8268,
+              "min": 0.9209,
+              "max": 1.9713
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1165100.0,
+              "p95": 1828000,
+              "min": 921500,
+              "max": 1972600
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "role": "B",
+        "repetition": 3,
+        "sampleSeconds": 0.3267339000000007,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.3080500000000002,
+              "p95": 1.8972,
+              "min": 0.8891,
+              "max": 2.2728
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.302,
+              "p95": 1.8886,
+              "min": 0.884,
+              "max": 2.2661
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1291800.0,
+              "p95": 1889900,
+              "min": 884600,
+              "max": 2267300
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "role": "C",
+        "repetition": 3,
+        "sampleSeconds": 0.37304849999999945,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.5237500000000002,
+              "p95": 2.0807,
+              "min": 0.9812,
+              "max": 3.0206
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.51505,
+              "p95": 2.0718,
+              "min": 0.9756,
+              "max": 3.0066
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1515800.0,
+              "p95": 2073100,
+              "min": 976400,
+              "max": 3007900
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "role": "B",
+        "repetition": 0,
+        "sampleSeconds": 0.3639176000000006,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.43575,
+              "p95": 2.114,
+              "min": 0.9107,
+              "max": 4.1675
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.4285999999999999,
+              "p95": 2.1044,
+              "min": 0.9056,
+              "max": 4.1551
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1434750.0,
+              "p95": 2105400,
+              "min": 906200,
+              "max": 4157300
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "role": "C",
+        "repetition": 0,
+        "sampleSeconds": 0.32594359999999867,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.23055,
+              "p95": 2.0376,
+              "min": 0.9001,
+              "max": 2.2728
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.22475,
+              "p95": 2.0277,
+              "min": 0.895,
+              "max": 2.2666
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1225500.0,
+              "p95": 2032600,
+              "min": 895600,
+              "max": 2755500
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "role": "C",
+        "repetition": 1,
+        "sampleSeconds": 0.3772158000000001,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.54455,
+              "p95": 2.1231,
+              "min": 0.8851,
+              "max": 3.3531
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.53755,
+              "p95": 2.1142,
+              "min": 0.88,
+              "max": 3.34
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1538200.0,
+              "p95": 2115300,
+              "min": 880600,
+              "max": 3341300
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "role": "B",
+        "repetition": 1,
+        "sampleSeconds": 0.32629030000000014,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.23545,
+              "p95": 2.012,
+              "min": 0.9064,
+              "max": 2.4955
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.22905,
+              "p95": 2.0029,
+              "min": 0.9014,
+              "max": 2.4844
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1234200.0,
+              "p95": 2003600,
+              "min": 901900,
+              "max": 2485800
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "role": "C",
+        "repetition": 2,
+        "sampleSeconds": 0.34207379999999965,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.31825,
+              "p95": 2.0915,
+              "min": 0.9435,
+              "max": 2.6846
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.31215,
+              "p95": 2.0819,
+              "min": 0.9379,
+              "max": 2.6765
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1318200.0,
+              "p95": 2082700,
+              "min": 938600,
+              "max": 2679500
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "role": "B",
+        "repetition": 2,
+        "sampleSeconds": 0.31948309999999935,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.18475,
+              "p95": 1.9893,
+              "min": 0.892,
+              "max": 2.6626
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.17865,
+              "p95": 1.9799,
+              "min": 0.8869,
+              "max": 2.653
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1180100.0,
+              "p95": 1981100,
+              "min": 887400,
+              "max": 2653800
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "role": "B",
+        "repetition": 3,
+        "sampleSeconds": 0.3271254999999993,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.2408000000000001,
+              "p95": 1.9739,
+              "min": 0.9023,
+              "max": 2.1777
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.23505,
+              "p95": 1.9648,
+              "min": 0.8976,
+              "max": 2.1656
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1247350.0,
+              "p95": 1973600,
+              "min": 898100,
+              "max": 2166800
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "role": "C",
+        "repetition": 3,
+        "sampleSeconds": 0.3420480999999995,
+        "metrics": {
+          "gpuMs": {
+            "availability": "UNAVAILABLE",
+            "distributionMs": null
+          },
+          "cpuMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.2743,
+              "p95": 2.0978,
+              "min": 0.9397,
+              "max": 2.461
+            }
+          },
+          "cpuMainMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 1.2689,
+              "p95": 2.0857,
+              "min": 0.9342,
+              "max": 2.4512
+            }
+          },
+          "cpuRenderMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "cpuPresentWaitMs": {
+            "availability": "COMPLETE",
+            "distributionMs": {
+              "n": 240,
+              "median": 0.0,
+              "p95": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          "mainThread": {
+            "availability": "COMPLETE",
+            "unit": "TimeNanoseconds",
+            "counterName": "Main Thread",
+            "rawDistribution": {
+              "n": 240,
+              "median": 1276550.0,
+              "p95": 2086900,
+              "min": 934600,
+              "max": 2453000
+            }
+          },
+          "renderThread": {
+            "availability": "UNAVAILABLE",
+            "unit": "",
+            "counterName": "",
+            "rawDistribution": null
+          },
+          "gpuCounter": {
+            "availability": "UNAVAILABLE",
+            "unit": "TimeNanoseconds",
+            "counterName": "GPU Frame Time",
+            "rawDistribution": null
+          },
+          "drawCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Draw Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "setPassCalls": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "SetPass Calls Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          },
+          "batches": {
+            "availability": "COMPLETE",
+            "unit": "Count",
+            "counterName": "Batches Count",
+            "rawDistribution": {
+              "n": 240,
+              "median": 12.0,
+              "p95": 12,
+              "min": 12,
+              "max": 12
+            }
+          }
+        }
+      }
+    ],
+    "pairedGPU": [
+      {
+        "route": "Forward",
+        "repetition": 0,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "Forward",
+        "repetition": 1,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "Forward",
+        "repetition": 2,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "Forward",
+        "repetition": 3,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "repetition": 0,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "repetition": 1,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "repetition": 2,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "NBCameraOpaqueDistortPass",
+        "repetition": 3,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "repetition": 0,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "repetition": 1,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "repetition": 2,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      },
+      {
+        "route": "NBDeferredDistortPass",
+        "repetition": 3,
+        "GPUComparableComplete": false,
+        "graphMinusNativeMedianMs": null
+      }
+    ],
+    "performanceBudget": null,
+    "performancePassed": null,
+    "boundaries": [
+      "whole-frame timing, no per-draw GPU attribution",
+      "CPU frame includes wait; render-thread metric is not pure submission",
+      "Draw/SetPass counts are not exact executed pass inventory",
+      "Sample frame count fixed; actual elapsed duration is recorded at uncapped runtime frame rate",
+      "No SVC/AssetBundle, pure import-only time or per-host build-size attribution"
+    ]
+  }
+}

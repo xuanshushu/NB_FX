@@ -1,0 +1,232 @@
+{
+  "productSource": "40a286e9013c335d3e705fffa6ba07dbd20ee39e",
+  "scope": "ordinary Mesh full feature comparison; existing NBShader product path remains",
+  "implementationIntegrated": true,
+  "G3TechnicalChainEvidenceAvailable": true,
+  "G3FormalPassed": false,
+  "G4FormalPassed": false,
+  "formalStatus": "PENDING_USER_CONCENTRATED_ACCEPTANCE_AND_ROOT_GATE_REVIEW",
+  "evidence": {
+    "Player9Original8Passed": true,
+    "PlayerRaw140Healthy": true,
+    "Runtime1Passed": true,
+    "RuntimeRaw24Healthy": true,
+    "MaskResponseBC": [
+      0.5,
+      0.5
+    ],
+    "OVZResponseBC": [
+      1,
+      1
+    ],
+    "restore0": true,
+    "centerOcclusion4489Strict": true,
+    "CPUBlocks24Samples5760Complete": true,
+    "GPUTime": "UNAVAILABLE",
+    "performanceBudget": null,
+    "performancePassed": null,
+    "bundleEditorWindowsLimitedPassed": true,
+    "bundleRaw11HealthyReportedByRoot": true,
+    "bundleResponse": 0.8798828125,
+    "bundleSourceLoadedRepeatRestoreBC0ReportedByRoot": true,
+    "actualLoadedMaterialsAndSettings": true,
+    "loadedNativeSVCCount": 4,
+    "loadedNativeSVCContainsMissing": 0,
+    "loadedNativeSVCWarmUp": true,
+    "bundleCleanup": true
+  },
+  "scopeBoundaries": [
+    "Bundle loading was in Editor for WindowsBundle; not Player dynamic AssetBundle loading.",
+    "Callback variant observations not final binary inventory.",
+    "Performance is one-Mesh128square CPU whole-frame observations; GPU未取得, no budget pass.",
+    "D01 Graph UI/Sprite/UIParticle/Universal2D exclusions retained.",
+    "TimeMode original known-no-consumer baseline retained, not newly claimed functionality.",
+    "Formal VFX/HDRP/lower-version work follows Mesh Gate order."
+  ],
+  "manualItems": [
+    {
+      "id": "healthy-render-differences",
+      "category": "strict microdifference",
+      "action": "看同输入Native/Graph叠图，确认细小边缘／色阶差异是否可接受；保留原零误差Failed。",
+      "links": [
+        "windows",
+        "normal",
+        "parallax",
+        "pnoise"
+      ],
+      "decision": null
+    },
+    {
+      "id": "first-display-and-c07",
+      "category": "first-frame and state-related large difference",
+      "action": "Motion/Houdini有直接同输入repeat证明首次Native绘制不稳定；c07仅确认原大差当前未复现。分别查看原图与后续证据，接受保留风险或指定继续定位；不归微差、不混同定因。",
+      "links": [
+        "combination",
+        "toolbar",
+        "motion"
+      ],
+      "decision": null
+    },
+    {
+      "id": "CA-response",
+      "category": "strong response below unchanged assertion",
+      "action": "看CameraOpaque / Refraction正交输入：两host WithNoise响应.002197仍未达到原>.003。明确接受该限定例外或继续处理，不改阈值。",
+      "links": [
+        "ca"
+      ],
+      "decision": null
+    },
+    {
+      "id": "native-menus",
+      "category": "actual native popup interaction unverified",
+      "action": "在隔离工程实点主贴图UV／CustomData／Cylinder与Dissolve菜单，检查选中、Undo/Redo、保存重开；自动回调证据不冒充原生菜单点击。",
+      "links": [
+        "maintex",
+        "dissolve"
+      ],
+      "decision": null
+    },
+    {
+      "id": "scope-performance-and-SVC",
+      "category": "runtime/retention evidence and performance boundary",
+      "action": "确认接受本次Player场景变体、Editor加载WindowsBundle及Native SVC4项Contains/WarmUp范围，并保留旧SVC Failed；GPU指标未取得、预算null，接受边界或提出明确预算/补测要求。",
+      "links": [
+        "player",
+        "bundle",
+        "CPUaudit"
+      ],
+      "decision": null
+    }
+  ],
+  "endNodes": [
+    {
+      "node": "User review",
+      "completion": "Each item explicitly accepted with preserved exception or requires further action; no silent waiver."
+    },
+    {
+      "node": "Root gate review",
+      "completion": "Root records accepted scope and original strict failures, then decides formalG3/G4; this private page cannot mark Passed."
+    },
+    {
+      "node": "Next stage",
+      "completion": "After formalMesh acceptance, proceed to formalVFX T08/G5 andT09/G6; keepHDRP/lower-version compatibility last."
+    }
+  ],
+  "historicalFailurePolicy": "No XML/raw or assertion changed; function missing/invisible/crash/microdifference kept separate. Current passing follow-up does not rewrite original Failed.",
+  "referenceInventory": [
+    {
+      "id": "player",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-player-final-20261006.html",
+      "exists": true,
+      "SHA256": "ecfedd9ebe5d5ab62fde349fd2b3792c8444e39f67592b646a3bda0f7871bec9"
+    },
+    {
+      "id": "bundle",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-assetbundle-20261006.html",
+      "exists": true,
+      "SHA256": "11d5f9d292b8a61af13c905c0c9b2a76341fa93e02989738df16ac7fe8f5b61f"
+    },
+    {
+      "id": "windows",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-windows-20261002.html",
+      "exists": true,
+      "SHA256": "9515b495edefe89d0d8fe187889a0a365daf8c2b4e63718579390b56c9e0953c"
+    },
+    {
+      "id": "normal",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-normalmap-20261005.html",
+      "exists": true,
+      "SHA256": "84e2a56058ece59b21ae98e9a294440e993abcd2d4955953a78d84e0cddba5e5"
+    },
+    {
+      "id": "parallax",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-parallax-20261005.html",
+      "exists": true,
+      "SHA256": "539a5501d006d51efafbf46edb217be112847b6ea8da59c47039a9f675b0ada1"
+    },
+    {
+      "id": "pnoise",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-pnoise-tier-20261004.html",
+      "exists": true,
+      "SHA256": "0f06214144eded19fe036fbf2c98f9889bd9fe4df3b6a6ddfd402458f4910b8b"
+    },
+    {
+      "id": "ca",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-ca-nb-required-20261005.html",
+      "exists": true,
+      "SHA256": "58b891e958ecf55cac305f5b24400a6cd052b5a6c9dc20f9321bc4a7fd896e0d"
+    },
+    {
+      "id": "combination",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-final-combination-20261005.html",
+      "exists": true,
+      "SHA256": "8044bdc5c0d8657f578cbb5090c6577719f53463a8ddbda786dd5f3e26839de2"
+    },
+    {
+      "id": "maintex",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-maintex-gui-20261004.html",
+      "exists": true,
+      "SHA256": "429b2f4bf5f8a710ff88ba61a46b4bb7d49d0f3d303348986aa573ff6ed1d262"
+    },
+    {
+      "id": "dissolve",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-dissolve-20261005.html",
+      "exists": true,
+      "SHA256": "cb429d76663e0f70da9cc499969c5c53b5f17ca35baec75a9805ba0dbbc3ae66"
+    },
+    {
+      "id": "toolbar",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-mode-ta-toolbar-20261005.html",
+      "exists": true,
+      "SHA256": "cc5d6967452314da3f62d282c46298da8996024d3671b49bd4979fb1aa79570c"
+    },
+    {
+      "id": "playerFirst",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-player-first-20261006.html",
+      "exists": true,
+      "SHA256": "ae96b8c20b631ca102579bff052e23fc74a4cbcdcea236c77d7be83affe0ee13"
+    },
+    {
+      "id": "bundleReceipt",
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\bundle7-live-20261006-1\\captures\\receipt.json",
+      "exists": true,
+      "SHA256": "eb39a89eb0e64ecee97461a5e9b5cffe3dc63b2dbc6adaba25cab0686623401d"
+    },
+    {
+      "id": "bundleXML",
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\bundle7-original-20261006.xml",
+      "exists": true,
+      "SHA256": "b9a3a9148d56be979786850540a1c01c835a31951c3dcf8a6f6b9dd538439274"
+    },
+    {
+      "id": "CPUaudit",
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\meshfinal7-private-summary-20261006\\summary9.html",
+      "exists": true,
+      "SHA256": "03a985e3a8f9583fc057726e997204e98d8f9ed45f66e76305edb7a2747d16ba"
+    },
+    {
+      "id": "motion",
+      "path": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\mesh-motionvectors-input-20261005.html",
+      "exists": true,
+      "SHA256": "6b0afae9efc48623466cdf4dfc0ab63634aae9b9391e26136f50df50c88af175"
+    }
+  ],
+  "bundleReceiptOriginal": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\bundle7-live-20261006-1\\captures\\receipt.json",
+  "bundleOriginalXML": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\bundle7-original-20261006.xml",
+  "rootReportOrGateWritten": true,
+  "ranUnity": true,
+  "notAUserDecision": true,
+  "formalVFXStarted": false,
+  "currentStopNode": "User-requested concentrated manual acceptance; no Gate state mutation or automatic VFX start",
+  "rootReviewed": true,
+  "candidateFrozen": true,
+  "formalGatePass": false,
+  "rootReviewNotes": [
+    "Core product source40a286 is frozen; final reports/test-only commit will not change shader implementation.",
+    "Motion/Houdini first Native draw is directly proven unstable; c07 remains initial large failure not reproduced, not the same claim.",
+    "Resolved first Player Alpha/input/RT-capture failures remain historical evidence and are not unresolved manual exceptions.",
+    "GPU timing unavailable and no budget pass; limited Editor Bundle does not imply Player dynamic loading."
+  ],
+  "draftAuthorRanUnity": false,
+  "rootGateStatusChangedToPassed": false
+}

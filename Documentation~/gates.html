@@ -8,6 +8,7 @@
 <body>
 <p><a href="index.html">返回文档目录</a></p>
 <h1>Gate 与放行标准</h1>
+<p><strong>2026-10-06 当前节点：</strong>普通Mesh产品与限定机器验证已整理为<a href="reports/mesh-acceptance-20261006.html">集中人工验收候选</a>。最终Player8、Runtime1、Editor WindowsBundle1通过，CPU采样完成；保留严格差异/首帧/旧SVC记录，GPU耗时未取得、预算未确认。G3技术链路有证据，但G3/G4未正式放行；人工签收及主Agent正式审核后才进入VFX。</p>
 <p><strong>D23 已知异常例外（2026-09-30）：</strong>MatCap 微差和 Dissolve Editor 首帧异常保留原始失败记录，不再反复调查；可在 G2 保留这些记录时继续普通 Mesh / Graph 对照。最终集中提供未解决项与人工验收清单，不把 G2 或后续 Gate 标为通过，也不豁免其它必测功能或改变官方包、Target、NBPostprocess、功能范围限制。<a href="decisions.html#d23">D23</a>。</p>
 <p><strong>D24 阶段顺序校准：</strong>当前先完成 T06/G3 与 T07/G4 的普通 Mesh / Graph 实现、完整对照和审核，再启动 T08/G5 与 T09/G6 真正 VFX。已有 VFX 结果仅作提前探索证据；单功能 Mesh + VFX 成功不能代替完整 Mesh Gate。<code>Support VFX Graph</code> 保留不等于启动真正 VFX 验证。<a href="decisions.html#d24">D24</a>。</p>
 <p>G0、当前 URP/Metal 范围的 GF 与设计接口 G1 已按各自范围放行；G2–G7 尚未放行。最小可用、功能等价、VFX 可用与最终回归是不同结论。</p>

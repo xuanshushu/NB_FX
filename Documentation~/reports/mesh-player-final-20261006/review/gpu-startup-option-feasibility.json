@@ -1,0 +1,73 @@
+{
+  "scope": "bounded read-only6000.3 official startup feasibility; no Unity/Player launch or settings writes",
+  "currentActualEvidence": {
+    "FTMFeatureEnabled": true,
+    "DevelopmentBuild": true,
+    "gpuTimerFrequency": 1000000000,
+    "gpuTimerFrequencyIsFixedCurrentAPIValueNotSupportProof": true,
+    "FTMGPUUsableSamples": 0,
+    "totalSamples": 5760,
+    "ProfilerGPUValidHandle": true,
+    "ProfilerGPUAllValuesZero": true,
+    "GPUUsageModuleEnabledState": "unrecorded",
+    "GraphicsJobsEnabledState": "unrecorded"
+  },
+  "officialPublicArguments": [
+    {
+      "argument": "-profiler-enable",
+      "sourceURL": "https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-command-line-arguments.html",
+      "sourceLines": [
+        143,
+        144
+      ],
+      "meaning": "Starts startup profiling; for Player equivalent to Autoconnect Profiler. Documentation does not state this enables GPU Usage module or repairs FTM GPU."
+    },
+    {
+      "arguments": [
+        "-profiler-log-file",
+        "-profiler-capture-frame-count",
+        "-profiler-maxusedmemory"
+      ],
+      "sourceURL": "https://docs.unity3d.com/6000.3/Documentation/Manual/profiler-command-line-arguments.html",
+      "sourceLines": [
+        147,
+        148,
+        151,
+        152,
+        155,
+        156
+      ],
+      "meaning": "Profiler stream/capture settings, not documented GPU module switches."
+    }
+  ],
+  "officialModuleEvidence": {
+    "sourceURL": "https://docs.unity3d.com/6000.3/Documentation/Manual/ProfilerGPU.html",
+    "sourceLines": [
+      126,
+      127,
+      130,
+      199,
+      200,
+      201
+    ],
+    "meaning": "GPU Usage module disabled by default and enabled as a Profiler module; GraphicsJobs precludes GPU profiling; Windows D3D11 generally supported. Actual module/Jobs state absent in receipts, so cause not established."
+  },
+  "FTMEvidence": {
+    "sourceURL": "https://docs.unity3d.com/6000.3/Documentation/Manual/frame-timing-manager-enable.html",
+    "sourceLines": [
+      131,
+      138,
+      142,
+      143
+    ],
+    "meaning": "FTM active in Development/Editor; GPU OpenGL option relates to OpenGL, not thisD3D11."
+  },
+  "gpuFrequencyEvidence": {
+    "sourceURL": "https://docs.unity3d.com/6000.3/Documentation/ScriptReference/FrameTimingManager.GetGpuTimerFrequency.html",
+    "sourceLines": [
+      247
+    ],
+    "meaning": "Current API documents always1e9. Prior-version conditional frequency text must not override6000.3."
+  },
+  "conclusion": "No explicitly documented same-exe Player startup option proved to enable GPU Usage module/FTM GPU on this background run. Generic-profiler-enable is real but cannot be equated with enabling GPU profiling. Keep GPU UNAVAILABLE; do not guess switch/relaunch, renderer/API/device changes, unlock desktop, or new framework. CPU/main observations complete; budgetnull/no performance pass."
+}

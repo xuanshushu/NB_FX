@@ -1,0 +1,54 @@
+{
+  "mode": "runtime",
+  "status": "FAILED_OR_UNVERIFIED",
+  "startedUTC": "2026-10-05T17:20:38.847973+00:00",
+  "elapsedSeconds": 9.21634709998034,
+  "nativeExit": 1,
+  "timedOut": false,
+  "command": [
+    "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal7-build\\NBFXMeshValidation.exe",
+    "-batchmode",
+    "-force-d3d11",
+    "-screen-width",
+    "128",
+    "-screen-height",
+    "128",
+    "-logFile",
+    "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal7-runtime\\Player.log",
+    "--nbfx-runtime-proof",
+    "--nbfx-runtime-proof-evidence",
+    "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal7-runtime"
+  ],
+  "exeSHA256": "b9fc30bb05ca93a042831974149a681d656963e3e612ecafd9ae826759d739ad",
+  "buildReceiptSHA256": "6d17715eafe77fc51209432a872898e8cb95b7b969da5eb898103e8fdce77e99",
+  "issues": [
+    "Native process timeout/nonzero exit: 1",
+    "Independent Runtime projection did not pass",
+    "Weak/missing actual response: ovzResponseB",
+    "Weak/missing actual response: ovzResponseC"
+  ],
+  "shaderGPUErrorLines": [],
+  "analysis": {
+    "rawCount": 24,
+    "badRaw": [],
+    "compiledVariantObservation": [
+      {
+        "host": "B",
+        "OVZonObserved": 24,
+        "OVZoffObserved": 64,
+        "available": true,
+        "scope": "Observed preprocess callback counts; not proven final-binary enumeration"
+      },
+      {
+        "host": "C",
+        "OVZonObserved": 2,
+        "OVZoffObserved": 15,
+        "available": true,
+        "scope": "Observed preprocess callback counts; not proven final-binary enumeration"
+      }
+    ],
+    "retentionStrategy": "Explicit three on/off scene-referenced material states per host; no SVC or AlwaysIncluded mutation",
+    "renderVerdict": "FAILED_OR_UNVERIFIED",
+    "compiledVariantEvidenceComplete": true
+  }
+}

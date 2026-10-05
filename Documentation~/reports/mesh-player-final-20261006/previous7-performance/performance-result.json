@@ -1,0 +1,100 @@
+{
+    "status": "FAILED_OR_UNAVAILABLE",
+    "error": "System.InvalidOperationException: Performance workload invisible.\r\n  at NBFX.PlayerValidation.NBFXMeshPerformanceSampler.ValidateRenderedInput (System.String route, System.Int32 repetition, System.Char role) [0x0022b] in D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Assets\\ResTemp\\EditorTemp\\NBFXPlayerHarness-meshfinal1\\Runtime\\NBFXMeshPerformanceSampler.cs:180 \r\n  at NBFX.PlayerValidation.NBFXMeshPerformanceSampler+<Run>d__42.MoveNext () [0x003de] in D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Assets\\ResTemp\\EditorTemp\\NBFXPlayerHarness-meshfinal1\\Runtime\\NBFXMeshPerformanceSampler.cs:137 \r\n  at NBFX.PlayerValidation.NBFXMeshPerformanceSampler+<Drive>d__41.MoveNext () [0x00072] in D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002\\Assets\\ResTemp\\EditorTemp\\NBFXPlayerHarness-meshfinal1\\Runtime\\NBFXMeshPerformanceSampler.cs:108 ",
+    "scope": "Three frozen orthographic workloads; whole-frame FTM and enumerated profiler counters. Observation only, no user performance budget/pass verdict. CPU frame includes waits; render-thread metric is not pure draw submission. Material pass inventory is not executed pass count.",
+    "buildIdentity": "meshfinal7",
+    "sourceLockSHA256": "fd671f4c0308ac2ae14b87a892af09e6205ca745e279dcd5db88e175b9ca6a77",
+    "unity": "6000.3.25f1",
+    "platform": "WindowsPlayer",
+    "api": "Direct3D11",
+    "gpu": "Intel(R) UHD Graphics 770",
+    "graphicsDeviceVersion": "Direct3D 11.0 [level 11.1]",
+    "cpu": "Intel(R) Core(TM) i7-14700",
+    "arguments": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal7-build\\NBFXMeshValidation.exe -batchmode -force-d3d11 -screen-width 128 -screen-height 128 -logFile D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal7-performance\\Player.log --nbfx-performance --nbfx-perf-evidence D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal7-performance",
+    "downsampling": "None",
+    "applicationIsEditor": false,
+    "frameTimingEnabled": true,
+    "configurationRestored": true,
+    "performanceBudgetDefined": false,
+    "pointerBytes": 8,
+    "warmFrames": 120,
+    "sampleFrames": 240,
+    "repeats": 4,
+    "renderWidth": 128,
+    "renderHeight": 128,
+    "screenWidth": 2242,
+    "screenHeight": 1254,
+    "vsync": 0,
+    "targetFrameRate": -1,
+    "renderFrameInterval": 1,
+    "cpuTimerFrequency": 10000000,
+    "gpuTimerFrequency": 1000000000,
+    "pairOrder": [
+        "BC",
+        "CB",
+        "CB",
+        "BC"
+    ],
+    "counters": [
+        {
+            "requestedName": "Main Thread",
+            "name": "Main Thread",
+            "category": "Internal",
+            "unit": "TimeNanoseconds",
+            "availability": "AVAILABLE",
+            "error": "",
+            "valid": true
+        },
+        {
+            "requestedName": "Render Thread",
+            "name": "",
+            "category": "",
+            "unit": "",
+            "availability": "UNAVAILABLE",
+            "error": "",
+            "valid": false
+        },
+        {
+            "requestedName": "GPU Frame Time",
+            "name": "GPU Frame Time",
+            "category": "Render",
+            "unit": "TimeNanoseconds",
+            "availability": "AVAILABLE",
+            "error": "",
+            "valid": true
+        },
+        {
+            "requestedName": "Draw Calls Count",
+            "name": "Draw Calls Count",
+            "category": "Render",
+            "unit": "Count",
+            "availability": "AVAILABLE",
+            "error": "",
+            "valid": true
+        },
+        {
+            "requestedName": "SetPass Calls Count",
+            "name": "SetPass Calls Count",
+            "category": "Render",
+            "unit": "Count",
+            "availability": "AVAILABLE",
+            "error": "",
+            "valid": true
+        },
+        {
+            "requestedName": "Batches Count",
+            "name": "Batches Count",
+            "category": "Render",
+            "unit": "Count",
+            "availability": "AVAILABLE",
+            "error": "",
+            "valid": true
+        }
+    ],
+    "blocks": [],
+    "unavailableMetrics": [
+        "Exact executed shader/pass inventory (Draw/SetPass counters are separate metrics)",
+        "Per-draw GPU time and shader instruction/texture-sampling count",
+        "AssetBundle/SVC loaded variant retention"
+    ]
+}
