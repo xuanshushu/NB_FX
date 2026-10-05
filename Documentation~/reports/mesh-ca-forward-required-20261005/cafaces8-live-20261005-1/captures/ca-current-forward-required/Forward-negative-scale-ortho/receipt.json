@@ -1,0 +1,581 @@
+{
+    "scope": "Current-only selected exact pass/projection/combo; not ABC parity, Native SRP compatibility, other passes, Player, or old CA incident closure",
+    "stage": "semantic-pass",
+    "exception": "",
+    "cleanupError": "",
+    "unity": "6000.3.25f1",
+    "api": "Direct3D11",
+    "gpu": "Intel(R) UHD Graphics 770",
+    "shaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+    "shaderName": "Effects/NBShader",
+    "actualRendererShader": "Effects/NBShader",
+    "rendererAssetPath": "Assets/Settings/URP-HighFidelity-Renderer.asset",
+    "keywords": [
+        "_CHROMATIC_ABERRATION",
+        "_FX_LIGHT_MODE_UNLIT"
+    ],
+    "shaderErrors": [],
+    "sources": [
+        {
+            "path": "NBShaders2/Shader/NBShader.shader",
+            "sha256": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b"
+        },
+        {
+            "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+            "sha256": "0265562536b1ed060ad1f3433245cb3157f7aacec3cd0b9f11a52411c493efb7"
+        },
+        {
+            "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+            "sha256": "bba922b8d63e9fbcc693a0146e8daca5d3a8c6913753b15b074e6a9efcee0126"
+        },
+        {
+            "path": "NBShaders2/Shader/HLSL/NBShaderChromaticV1.hlsl",
+            "sha256": "09bdb6e490a3e1bbda7177aafd1bad7479542b1075048bda1f40883bd2f37773"
+        },
+        {
+            "path": "Tests/URP/Editor/G4GraphChromaticTests.cs",
+            "sha256": "8c38b3e9053bad109155137d115bcc1ac6d28b3c76b4f0f8d235e2832e44ae43"
+        }
+    ],
+    "passes": [
+        {
+            "name": "SRPDefaultUnlit",
+            "enabled": false
+        },
+        {
+            "name": "SRPDEFAULTUNLIT",
+            "enabled": false
+        },
+        {
+            "name": "UniversalForward",
+            "enabled": true
+        },
+        {
+            "name": "DepthOnly",
+            "enabled": false
+        },
+        {
+            "name": "ShadowCaster",
+            "enabled": false
+        },
+        {
+            "name": "NBDeferredDistortPass",
+            "enabled": false
+        },
+        {
+            "name": "NBCameraOpaqueDistortPass",
+            "enabled": false
+        }
+    ],
+    "orthographic": true,
+    "actualRendererMaterialMatches": true,
+    "finite": true,
+    "nonCDCD": true,
+    "cleanupComplete": true,
+    "rendererDiskRestored": true,
+    "noFrozenOrGraphMaterial": true,
+    "rawCount": 9,
+    "visibleOn": 1104,
+    "visibleOff": 2292,
+    "responseChanged": 2304,
+    "withNoiseChanged": 2304,
+    "actorChanged": 2304,
+    "deniedChanged": 0,
+    "restoredChanged": 0,
+    "keywordRestoreChanged": 0,
+    "caRawToggle": 1.0,
+    "repeat": 0.0,
+    "response": 0.444091796875,
+    "withNoise": 0.16015625,
+    "actorResponse": 0.444091796875,
+    "restored": 0.0,
+    "deniedError": 0.0,
+    "keywordRestoreError": 0.0,
+    "flagsWord0": 0,
+    "draws": [
+        {
+            "label": "background",
+            "actualShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CHROMATIC_ABERRATION",
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "shaderErrorsAfter": [],
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "enabled": false
+                },
+                {
+                    "name": "SRPDEFAULTUNLIT",
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "enabled": false
+                }
+            ],
+            "flagsWord0": 0,
+            "flagsWord1": 512,
+            "customDataWord0": 0,
+            "caRawToggle": 1.0,
+            "withNoiseRawToggle": 0.0,
+            "direction": {
+                "x": 0.800000011920929,
+                "y": 0.44999998807907107,
+                "z": 1.2000000476837159,
+                "w": 0.0
+            },
+            "rendererEnabled": false,
+            "materialMatches": true,
+            "supported": true
+        },
+        {
+            "label": "B-warm",
+            "actualShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CHROMATIC_ABERRATION",
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "shaderErrorsAfter": [],
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "enabled": false
+                },
+                {
+                    "name": "SRPDEFAULTUNLIT",
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "enabled": false
+                }
+            ],
+            "flagsWord0": 0,
+            "flagsWord1": 512,
+            "customDataWord0": 0,
+            "caRawToggle": 1.0,
+            "withNoiseRawToggle": 0.0,
+            "direction": {
+                "x": 0.800000011920929,
+                "y": 0.44999998807907107,
+                "z": 1.2000000476837159,
+                "w": 0.0
+            },
+            "rendererEnabled": true,
+            "materialMatches": true,
+            "supported": true
+        },
+        {
+            "label": "B-on",
+            "actualShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CHROMATIC_ABERRATION",
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "shaderErrorsAfter": [],
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "enabled": false
+                },
+                {
+                    "name": "SRPDEFAULTUNLIT",
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "enabled": false
+                }
+            ],
+            "flagsWord0": 0,
+            "flagsWord1": 512,
+            "customDataWord0": 0,
+            "caRawToggle": 1.0,
+            "withNoiseRawToggle": 0.0,
+            "direction": {
+                "x": 0.800000011920929,
+                "y": 0.44999998807907107,
+                "z": 1.2000000476837159,
+                "w": 0.0
+            },
+            "rendererEnabled": true,
+            "materialMatches": true,
+            "supported": true
+        },
+        {
+            "label": "B-repeat",
+            "actualShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CHROMATIC_ABERRATION",
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "shaderErrorsAfter": [],
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "enabled": false
+                },
+                {
+                    "name": "SRPDEFAULTUNLIT",
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "enabled": false
+                }
+            ],
+            "flagsWord0": 0,
+            "flagsWord1": 512,
+            "customDataWord0": 0,
+            "caRawToggle": 1.0,
+            "withNoiseRawToggle": 0.0,
+            "direction": {
+                "x": 0.800000011920929,
+                "y": 0.44999998807907107,
+                "z": 1.2000000476837159,
+                "w": 0.0
+            },
+            "rendererEnabled": true,
+            "materialMatches": true,
+            "supported": true
+        },
+        {
+            "label": "B-off",
+            "actualShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "shaderErrorsAfter": [],
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "enabled": false
+                },
+                {
+                    "name": "SRPDEFAULTUNLIT",
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "enabled": false
+                }
+            ],
+            "flagsWord0": 0,
+            "flagsWord1": 512,
+            "customDataWord0": 0,
+            "caRawToggle": 0.0,
+            "withNoiseRawToggle": 0.0,
+            "direction": {
+                "x": 0.800000011920929,
+                "y": 0.44999998807907107,
+                "z": 1.2000000476837159,
+                "w": 0.0
+            },
+            "rendererEnabled": true,
+            "materialMatches": true,
+            "supported": true
+        },
+        {
+            "label": "B-withnoise-flipped",
+            "actualShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CHROMATIC_ABERRATION",
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "shaderErrorsAfter": [],
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "enabled": false
+                },
+                {
+                    "name": "SRPDEFAULTUNLIT",
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "enabled": false
+                }
+            ],
+            "flagsWord0": 2,
+            "flagsWord1": 512,
+            "customDataWord0": 0,
+            "caRawToggle": 1.0,
+            "withNoiseRawToggle": 1.0,
+            "direction": {
+                "x": 0.800000011920929,
+                "y": 0.44999998807907107,
+                "z": 1.2000000476837159,
+                "w": 0.0
+            },
+            "rendererEnabled": true,
+            "materialMatches": true,
+            "supported": true
+        },
+        {
+            "label": "B-restored",
+            "actualShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CHROMATIC_ABERRATION",
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "shaderErrorsAfter": [],
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "enabled": false
+                },
+                {
+                    "name": "SRPDEFAULTUNLIT",
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "enabled": false
+                }
+            ],
+            "flagsWord0": 0,
+            "flagsWord1": 512,
+            "customDataWord0": 0,
+            "caRawToggle": 1.0,
+            "withNoiseRawToggle": 0.0,
+            "direction": {
+                "x": 0.800000011920929,
+                "y": 0.44999998807907107,
+                "z": 1.2000000476837159,
+                "w": 0.0
+            },
+            "rendererEnabled": true,
+            "materialMatches": true,
+            "supported": true
+        },
+        {
+            "label": "B-keyword-denied",
+            "actualShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "shaderErrorsAfter": [],
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "enabled": false
+                },
+                {
+                    "name": "SRPDEFAULTUNLIT",
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "enabled": false
+                }
+            ],
+            "flagsWord0": 0,
+            "flagsWord1": 512,
+            "customDataWord0": 0,
+            "caRawToggle": 1.0,
+            "withNoiseRawToggle": 0.0,
+            "direction": {
+                "x": 0.800000011920929,
+                "y": 0.44999998807907107,
+                "z": 1.2000000476837159,
+                "w": 0.0
+            },
+            "rendererEnabled": true,
+            "materialMatches": true,
+            "supported": true
+        },
+        {
+            "label": "B-keyword-restored",
+            "actualShaderAssetPath": "Packages/com.xuanxuan.nb.fx/NBShaders2/Shader/NBShader.shader",
+            "keywords": [
+                "_CHROMATIC_ABERRATION",
+                "_FX_LIGHT_MODE_UNLIT"
+            ],
+            "shaderErrors": [],
+            "shaderErrorsAfter": [],
+            "passes": [
+                {
+                    "name": "SRPDefaultUnlit",
+                    "enabled": false
+                },
+                {
+                    "name": "SRPDEFAULTUNLIT",
+                    "enabled": false
+                },
+                {
+                    "name": "UniversalForward",
+                    "enabled": true
+                },
+                {
+                    "name": "DepthOnly",
+                    "enabled": false
+                },
+                {
+                    "name": "ShadowCaster",
+                    "enabled": false
+                },
+                {
+                    "name": "NBDeferredDistortPass",
+                    "enabled": false
+                },
+                {
+                    "name": "NBCameraOpaqueDistortPass",
+                    "enabled": false
+                }
+            ],
+            "flagsWord0": 0,
+            "flagsWord1": 512,
+            "customDataWord0": 0,
+            "caRawToggle": 1.0,
+            "withNoiseRawToggle": 0.0,
+            "direction": {
+                "x": 0.800000011920929,
+                "y": 0.44999998807907107,
+                "z": 1.2000000476837159,
+                "w": 0.0
+            },
+            "rendererEnabled": true,
+            "materialMatches": true,
+            "supported": true
+        }
+    ]
+}
