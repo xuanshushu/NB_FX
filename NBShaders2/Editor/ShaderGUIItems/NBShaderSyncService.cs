@@ -571,7 +571,7 @@ namespace NBShaderEditor
             internal void Restore(){foreach(var state in states)material.SetShaderPassEnabled(state.Key,state.Value);}
         }
 
-        internal const string GraphScreenMigration="_NB_GraphScreenPassMigrationComplete";
+        internal const string GraphScreenMigration=NBShaderFeatureRuntime.GraphScreenMigration;
         internal static readonly string[] GraphNoiseSharedPropertyNames={"_NoiseBlockFoldOut","_NoiseMapFoldOut","_NoiseUVModeFoldOut","_NoiseMaskBlockFoldOut","_NoiseMaskUVModeFoldOut","_ScreenDistortAlphaFoldOut","_NoiseIntensityRangeVec","_ScreenDistortIntensityRangeVec","_DisableMainPassToggle",GraphScreenMigration,"_noisemapEnabled","_NoiseIntensity","_NoiseMap","_NoiseMapUVRotation","_NoiseOffset","_DistortionDirection","_DistortionBothDirection_Toggle","_noiseMaskMap_Toggle","_NoiseMaskMap","_DistortMode","_RefractionIOR","_DistortPNoiseBlendOpacity","_NB_Debug_Distort","_ScreenDistortAlphaRefineToggle","_NB_DistortionMode","_NB_DistortionIntensity","_NB_DistortionAlphaPow","_NB_DistortionAlphaMultiplier","_NB_DistortionAlphaAdd"};
         internal bool HasGraphNoiseEditSchema()
         {
@@ -600,19 +600,11 @@ namespace NBShaderEditor
         }
         internal static bool CanApplyGraphOwnedScreenPassState(Material material,NBShaderFeatureTier tier,IEnumerable<string> allowedKeywords,IEnumerable<string> allowedPassFeatures,out NBShaderPassIntent[] intent)
         {
-            intent=null;
-            if(!material.HasProperty(GraphScreenMigration))return true; // Old capabilities own no screen pass.
-            if(!NBShaderRootItem.HasFloatProperty(material,GraphScreenMigration))return false;
-            float state=material.GetFloat(GraphScreenMigration);if(state==0)return true;if(state!=1)return false;
-            return NBShaderMaterialIntentResolver.TryResolveGraphScreenPassIntent(material,tier,allowedKeywords,allowedPassFeatures,out intent);
+            return NBShaderFeatureRuntime.CanApplyGraphOwnedScreenPassState(material, tier, allowedKeywords, allowedPassFeatures, out intent);
         }
         internal static bool ApplyGraphOwnedScreenPassState(Material material,NBShaderFeatureTier tier,IEnumerable<string> allowedKeywords,IEnumerable<string> allowedPassFeatures,out bool changed)
         {
-            changed=false;NBShaderPassIntent[] intent;
-            if(!CanApplyGraphOwnedScreenPassState(material,tier,allowedKeywords,allowedPassFeatures,out intent))return false;
-            if(intent==null)return true;
-            foreach(var pass in intent)if(material.GetShaderPassEnabled(pass.passName)!=pass.included){material.SetShaderPassEnabled(pass.passName,pass.included);changed=true;}
-            return true;
+            return NBShaderFeatureRuntime.ApplyGraphOwnedScreenPassState(material, tier, allowedKeywords, allowedPassFeatures, out changed);
         }
         internal bool TryReadGraphScreenDisableMainDisplay(out bool disabled,out bool mixed)
         {
@@ -1990,15 +1982,7 @@ namespace NBShaderEditor
         internal static bool TryApplyGraphBackFirstPassIntent(Material material, NBShaderFeatureTier tier,
             IEnumerable<string> allowedKeywords, IEnumerable<string> allowedPassFeatureIds)
         {
-            NBShaderPassIntent intent;
-            if (!NBShaderMaterialIntentResolver.TryResolveGraphBackFirstPassIntent(material, tier, allowedKeywords, allowedPassFeatureIds, out intent)) return false;
-            bool changed = false;
-            if (material.GetShaderPassEnabled(intent.passName) != intent.included)
-            { material.SetShaderPassEnabled(intent.passName, intent.included); changed = true; }
-            float effective = intent.included ? 1f : 0f;
-            if (material.GetFloat("_NB_BackFirstEffective") != effective)
-            { material.SetFloat("_NB_BackFirstEffective", effective); changed = true; }
-            return changed;
+            return NBShaderFeatureRuntime.TryApplyGraphBackFirstPassIntent(material, tier, allowedKeywords, allowedPassFeatureIds);
         }
 
         internal bool HasGraphFresnelEditSchema()
@@ -2588,28 +2572,13 @@ namespace NBShaderEditor
         internal static bool CanApplyGraphOwnedBackFirstPassState(Material material, NBShaderFeatureTier tier,
             IEnumerable<string> allowedKeywords, IEnumerable<string> allowedPasses, out NBShaderPassIntent intent)
         {
-            intent = null;
-            int route;
-            if (!NBShaderPassFeatureCatalog.TryGetGraphColorRouting(material, out route)) return false;
-            if (route == 0) return true;
-            if (!NBShaderRootItem.HasFloatProperty(material, "_NB_GraphPassMigrationComplete")) return false;
-            float migration = material.GetFloat("_NB_GraphPassMigrationComplete");
-            if (migration == 0f) return true;
-            if (migration != 1f) return false;
-            return NBShaderMaterialIntentResolver.TryResolveGraphBackFirstPassIntent(material, tier,
-                allowedKeywords, allowedPasses, out intent);
+            return NBShaderFeatureRuntime.CanApplyGraphOwnedBackFirstPassState(material, tier, allowedKeywords, allowedPasses, out intent);
         }
 
         internal static bool ApplyGraphOwnedBackFirstPassState(Material material, NBShaderFeatureTier tier,
             IEnumerable<string> allowedKeywords, IEnumerable<string> allowedPasses, out bool changed)
         {
-            changed = false;
-            NBShaderPassIntent intent;
-            if (!CanApplyGraphOwnedBackFirstPassState(material, tier, allowedKeywords, allowedPasses, out intent)) return false;
-            if (intent == null) return true;
-            // The existing method returns changed, rather than accepted.
-            changed = TryApplyGraphBackFirstPassIntent(material, tier, allowedKeywords, allowedPasses);
-            return true;
+            return NBShaderFeatureRuntime.ApplyGraphOwnedBackFirstPassState(material, tier, allowedKeywords, allowedPasses, out changed);
         }
 
         internal static bool TryReadGraphSavedOwnedBackFirstPassIntent(Material material, out NBShaderPassIntent intent)
