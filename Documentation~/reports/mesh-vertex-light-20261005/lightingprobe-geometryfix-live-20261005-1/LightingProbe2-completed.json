@@ -1,0 +1,27 @@
+{
+  "status": "completed",
+  "duration": 3.13,
+  "summary": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4LightingDeniedSemanticsProbeTests.G4LightingDeniedProbe_BlinnPhong_PerPixel_ortho",
+      "Status": "Passed",
+      "Duration": 1.3669396,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4LightingDeniedSemanticsProbeTests.G4LightingDeniedProbe_BlinnPhong_PerVertex_ortho",
+      "Status": "Failed",
+      "Duration": 1.2465278,
+      "Message": "  Same strong point-light control in B and current C; a failure is evidence, not a relaxed threshold.\r\n  Expected: True\r\n  But was:  False\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4LightingDeniedSemanticsProbeTests.BlinnDenied (System.Boolean perVertex) [0x00b2c] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4LightingDeniedSemanticsProbeTests.cs:245\r\n"
+    }
+  ]
+}

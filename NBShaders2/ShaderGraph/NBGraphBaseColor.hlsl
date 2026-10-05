@@ -452,13 +452,43 @@ half4 NBGraphApplySixWay(half4 preAdjustAlbedo, UnityTexture2D rigPositive,
     return UniversalFragmentSixWay(inputData,bsdfData);
 }
 
+// Native computes additional vertex lighting after VAT and before vertex offset.
+// The Graph node is vertex-only; its result crosses a real custom interpolator.
+void NBGraphVertexLighting_float(float3 PositionOS, float3 NormalWS,
+    float FxLightMode, float CustomLocalToggle,
+    float4 LocalToWorld0, float4 LocalToWorld1,
+    float4 LocalToWorld2, float4 LocalToWorld3, out float3 VertexLight)
+{
+    VertexLight = 0;
+#if !defined(SHADERGRAPH_PREVIEW) && defined(NB_GRAPH_MAIN_FORWARD) && defined(_ADDITIONAL_LIGHTS_VERTEX)
+    if (FxLightMode > 0.5 && FxLightMode < 3.5)
+    {
+        float3 positionWS = NBGraphLocalToWorldPositionV1(PositionOS,
+            CustomLocalToggle, LocalToWorld0, LocalToWorld1, LocalToWorld2, LocalToWorld3);
+        VertexLight = (float3)VertexLighting(positionWS, (half3)NormalWS);
+    }
+#endif
+}
+
+void NBGraphVertexLighting_half(float3 PositionOS, float3 NormalWS,
+    float FxLightMode, float CustomLocalToggle,
+    float4 LocalToWorld0, float4 LocalToWorld1,
+    float4 LocalToWorld2, float4 LocalToWorld3, out half3 VertexLight)
+{
+    float3 result;
+    NBGraphVertexLighting_float(PositionOS, NormalWS, FxLightMode,
+        CustomLocalToggle, LocalToWorld0, LocalToWorld1, LocalToWorld2, LocalToWorld3, result);
+    VertexLight = (half3)result;
+}
+
 // Ordinary Mesh lighting consumes the existing post-vertex geometry SH
 // interpolator. SampleSHPixel preserves original pixel/mixed/vertex keywords;
-// this does not add lightmap/APV/vertex-additional-light support.
+// Additional vertex lighting uses a separate pre-offset interpolator; no lightmap/APV support is added.
 half4 NBGraphApplyLighting(half4 color, float mode, float3 positionWS,
     float3 unfacedNormalWS, float3 viewDirWS, float2 normalizedScreenUV,
     half isFrontFace, half3 normalTS, half metallicWeight,
-    half smoothnessWeight, half4 materialInfo, half4 specularColor, half3 vertexSH)
+    half smoothnessWeight, half4 materialInfo, half4 specularColor, half3 vertexSH,
+    half3 vertexLighting)
 {
     if (mode < 0.5 || mode >= 3.5) return color;
     InputData inputData = (InputData)0;
@@ -472,6 +502,9 @@ half4 NBGraphApplyLighting(half4 color, float mode, float3 positionWS,
     #endif
     inputData.normalizedScreenSpaceUV = normalizedScreenUV;
     inputData.bakedGI = SampleSHPixel(vertexSH, inputData.normalWS);
+    #if defined(_ADDITIONAL_LIGHTS_VERTEX)
+        inputData.vertexLighting = vertexLighting;
+    #endif
     inputData.shadowMask = SAMPLE_SHADOWMASK(float2(0, 0));
     half metallic = metallicWeight * materialInfo.x;
     half smoothness = smoothnessWeight * materialInfo.y;
@@ -485,6 +518,10 @@ half4 NBGraphApplyLighting(half4 color, float mode, float3 positionWS,
     else
         lit = UniversalFragmentPBR(inputData, color.rgb, metallic,
             0, smoothness, 1, 0, color.a);
+    #if defined(_ADDITIONAL_LIGHTS_VERTEX)
+        // Preserve the Native Forward pass's post-lighting multiplication.
+        lit.rgb *= vertexLighting;
+    #endif
     return lit;
 }
 
@@ -830,6 +867,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NBGraphTierAllowDistanceFade, float NBGraphTierAllowSoftParticles,
     float NBGraphTierAllowDepthOutline,
     float NBGraphTierAllowRefraction,
+    float3 NBVertexLighting,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
@@ -1049,7 +1087,7 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
             normalForFeatures, (float3)ViewDirWS, ScreenPosition.xy,
             (half)IsFrontFace, lightingNormalTS, lightingMetallicWeight,
             lightingSmoothnessWeight, (half4)MaterialInfo, (half4)SpecularColor,
-            (half3)SixBack2);
+            (half3)SixBack2, (half3)NBVertexLighting);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (MatCapToggle > 0.5))
         Out = (float4)NBGraphApplyMatCap((half4)Out, MatCapTex, (float3)normalForFeatures,
             (half3)PositionVS, (half)IsFrontFace, (half4)MatCapColor,
@@ -1407,6 +1445,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NBGraphTierAllowDistanceFade, float NBGraphTierAllowSoftParticles,
     float NBGraphTierAllowDepthOutline,
     float NBGraphTierAllowRefraction,
+    half3 NBVertexLighting,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
@@ -1622,7 +1661,7 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
             normalForFeatures, (float3)ViewDirWS, ScreenPosition.xy,
             (half)IsFrontFace, lightingNormalTS, lightingMetallicWeight,
             lightingSmoothnessWeight, (half4)MaterialInfo, (half4)SpecularColor,
-            (half3)SixBack2);
+            (half3)SixBack2, (half3)NBVertexLighting);
     if (!NB_GRAPH_DEPTH_SHADOW_PASS && (MatCapToggle > 0.5))
         Out = NBGraphApplyMatCap(Out, MatCapTex, (float3)normalForFeatures,
             (half3)PositionVS, (half)IsFrontFace, MatCapColor,
