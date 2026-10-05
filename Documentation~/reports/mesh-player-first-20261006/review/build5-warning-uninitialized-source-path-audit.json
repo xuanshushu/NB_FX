@@ -1,0 +1,48 @@
+{
+  "readOnly": true,
+  "ranUnity": false,
+  "shaderModified": false,
+  "sourceSHA256": {
+    "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl": "fa2e8550e675c16bc02df48e849f216f116a204672da15c89077476128be0559",
+    "NBShaders2/ShaderGraph/NBGraphVATSoftBody.hlsl": "ce5bd27b71cf98732a20f1e9ea93c6dacdf7f1091741eb3b10c5773500cbcdb7",
+    "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl": "bba922b8d63e9fbcc693a0146e8daca5d3a8c6913753b15b074e6a9efcee0126",
+    "NBShaders2/Shader/HLSL/NBShaderInput.hlsl": "0265562536b1ed060ad1f3433245cb3157f7aacec3cd0b9f11a52411c493efb7",
+    "NBShaders2/Shader/HLSL/NBShaderUVV1.hlsl": "8beb3f81f7058bf148f17897bcc8ef0d671d372780319932a93a68543677c43b",
+    "NBShaders2/Shader/HLSL/NBShaderFlags.hlsl": "ff61aa9367577fed95fb4862b52f60520ad673243b87a99a697cac3d5b014df3",
+    "XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl": "0dae183626a58e6565bcf7442c799b92cc3e3b593e5562173089a59fab6bb0da",
+    "XuanXuanRenderUtility/Shader/HLSL/XuanXuan_Utility.hlsl": "194074672eaab1cdb5124f547ece7cc226cc068d69a10f05bd6f73670fe5601d",
+    "XuanXuanRenderUtility/Shader/HLSL/TyflowVATKernelV1.hlsl": "42d3ddb0fe9830b24b788beb0917956cbc1dd618c0ddf0448cc007f5146990a9"
+  },
+  "SixWay": {
+    "warning": "NBGraphBaseColor.hlsl391 Bake0/1/2 Back0/1/2 TangentSigned",
+    "tierDeny": "386-390 every output explicitly assigned before return",
+    "tierAllowed": "392-397 locals sent to GetSixWayBakeDiffuseLight then all seven outputs assigned",
+    "sharedCallee": "SixWaySmokeLit.hlsl135-145 params inout but lines139-144 overwrite all six unconditionally before reading any old value",
+    "SHValuePaths": "URP GlobalIllumination.hlsl45-55 vertex/mixed branches return values and else returns0",
+    "halfWrapper": "NBGraphBaseColor.hlsl405-410 obtains float outputs then assigns all half outputs",
+    "conclusion": "No missing output assignment path found; uninitialized locals formally passed inout can cause conservative copy-in warning. Source proof, not finite-frame waiver."
+  },
+  "ProgramNoise": {
+    "warning": "NBGraphBaseColor.hlsl617",
+    "initializedCaller": "601-602 simple/voronoi initial0; simple path605-606 writes; all final BlendPNoise switch branches have returns in NBShaderFlags281-299",
+    "conditionalCallee": "XuanXuan_Utility.hlsl227-249 Unity_Voronoi outputs Out/Cells assigned only244-245 inside d<res.x241; no unconditional initial output or final assignment",
+    "boundedDomainProof": "With finite nonoverflowing random-vector intermediates, f and offset in[0,1], zero lattice candidate distance<=sqrt2<8 so at least one update assigns outputs",
+    "remainingRealPath": "All comparisons false if d becomesNaN (e.g very large finite UV causes random-vector matrix multiply overflow222-224 ->sin nonfinite). Out/Cells then unassigned; caller reads voronoiFloat613. Cannot certify every input branch initialized. Not proof ordinary bounded cases failed."
+  },
+  "Tyflow": {
+    "warnings": "one Graph and two Native clone/main paths atTyflowVATKernelV1.hlsl174",
+    "assignments": "161-169 arr/index/width/x/y/bytes/byteInts assigned; sample helper111-135 assigns fullsample and optional gamma writesRGB; return173 in condition171 or fallthrough176",
+    "unpack": "75-109 initialized sign/exponent/mantissa; zero return84, special branch91/94, normal99/100, subnormal103/104 all return initialized value",
+    "GraphVATOutputs": "NBGraphVATSoftBody62 initializes Pos/Normal/Supported/EffectiveToggle before any early-return;config fields77-102 fully assigned; TVAT461 earlyreturns466/492 preserve inout initialized caller Pos/Normal",
+    "conclusion": "No missing return/output write in this warning path. Zero texture width/invalid indexing potential numeric domain is distinct, not proven uninitialized-variable cause."
+  },
+  "NativeBaseUV": {
+    "warning": "NBShaderForwardPass215 baseUVs",
+    "assignmentAndUse": "154 declaration; predicate155 false-frag branch writes170; VO predicate224 false-frag uses226; else writes232 and doesnotreadbaseUVs",
+    "predicateProof": "NBShaderInput1326-1335 pure uniform flag checks/compiletime macros, same flags not modified between calls; mathematically correlated repeated conditions",
+    "returnedStruct": "NBShaderInput870-903 returns NBFX_BuildBaseUVsV1; NBShaderUVV1 94 zero-initializes struct then assigns fields95-119",
+    "conclusion": "Correlated flow has no read of uninitialized baseUVs under same input flags; compiler may fail correlation proof."
+  },
+  "scopeConclusion": "SixWay/VAT/baseUV assignment proof holds as described. Voronoi conditional Out/Cells is the only discovered genuine potential unassigned branch, depending on nonfinite intermediate; warning not erased automatically. No new test matrix or shader edits.",
+  "RuntimePipelineConfig": "CLI/Pipeline runtime feature disabled notice, not URP pipeline/rendering disabled"
+}

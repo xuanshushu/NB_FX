@@ -1,0 +1,283 @@
+{
+  "readOnly": true,
+  "ranUnity": false,
+  "exeExecuted": false,
+  "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal5-build\\build-observation.json",
+  "sourceSHA256": "27fbcbf691be53def0b937163ce429bbb2c4577ce2ef0691881c92c7ae7fe3a0",
+  "build": {
+    "result": "Succeeded",
+    "totalSeconds": 22.63983,
+    "warnings": 105,
+    "shaderCompileErrorsInMessages": 0,
+    "contractFailure": "UniversalRenderPipelineGlobalSettings source drift; parent envrestore alltrue; executable remains prohibited"
+  },
+  "warningCategories": {
+    "environment_RuntimePipelineConfig_absent": 1,
+    "vector_truncation": 60,
+    "negative_pow_base": 17,
+    "varying_loop_derivatives": 9,
+    "potential_uninitialized": 6,
+    "signed_unsigned": 3,
+    "forced_array_unroll": 8,
+    "Native_strip_tier_default_Ultra": 1
+  },
+  "shaderGroupCounts": {
+    "nonShader": 2,
+    "XuanXuan/ColorBufferBlit": 4,
+    "XuanXuan/ColorBlit": 8,
+    "XuanXuan/Postprocess/NBPostProcessUber": 14,
+    "NB FX/Shader Graph/NBShaderGraph": 24,
+    "Effects/NBShader": 53
+  },
+  "normalizedShaderCategoryBasenameLocationUnique": 72,
+  "sameNormalizedSiteExtraOccurrences": 33,
+  "samples": {
+    "environment_RuntimePipelineConfig_absent": "Preprocess Player: Warning: Pipeline: No RuntimePipelineConfig asset found (Project Settings > Pipeline > Runtime). Pipeline will be disabled in Player builds.",
+    "vector_truncation": "Packaging assets - globalgamemanagers.assets: Warning: Shader warning in 'XuanXuan/ColorBufferBlit': implicit truncation of vector type at line 4461 (on d3d11)",
+    "negative_pow_base": "Packaging assets - globalgamemanagers.assets: Warning: Shader warning in 'XuanXuan/Postprocess/NBPostProcessUber': pow(f, e) will not work for negative f, use abs(f) or conditionally handle negative values if you expect them at Packages/com.xuanxuan.nb.fx/NBPostProcessing/Shader/NBPostProcessUber.shader(376) (on d3d11)",
+    "varying_loop_derivatives": "BFXPlayerValidation-meshfinal1/PlayerScene.unity: Warning: Shader warning in 'NB FX/Shader Graph/NBShaderGraph': gradient instruction used in a loop with varying iteration; partial derivatives may have undefined value at /UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Packages/NB_FX/NBShaders2/Shader/HLSL/NBShaderParallaxV1.hlsl(30) (on d3d11)",
+    "potential_uninitialized": "le (Bake2) use of potentially uninitialized variable (Back0) use of potentially uninitialized variable (Back1) use of potentially uninitialized variable (Back2) use of potentially uninitialized variable (TangentSigned) at /UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Packages/NB_FX/NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl(391) (on d3d11)",
+    "signed_unsigned": "onal assets for scene 0: Assets/ResTemp/EditorTemp/NBFXPlayerValidation-meshfinal1/PlayerScene.unity: Warning: Shader warning in 'NB FX/Shader Graph/NBShaderGraph': signed/unsigned mismatch, unsigned assumed at /UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/TyflowVATKernelV1.hlsl(91) (on d3d11)",
+    "forced_array_unroll": "FXPlayerValidation-meshfinal1/PlayerScene.unity: Warning: Shader warning in 'NB FX/Shader Graph/NBShaderGraph': array reference cannot be used as an l-value; not natively addressable, forcing loop to unroll at /UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Packages/NB_FX/XuanXuanRenderUtility/Shader/HLSL/TyflowVATKernelV1.hlsl(277) (on d3d11)",
+    "Native_strip_tier_default_Ultra": "s for scene 0: Assets/ResTemp/EditorTemp/NBFXPlayerValidation-meshfinal1/PlayerScene.unity: Warning: NBShader2 build stripping tier was not specified. Defaulting to Ultra. Wrap BuildPipeline.BuildPlayer or BuildPipeline.BuildAssetBundles in NBShaderFeatureLevelEditorAPI.OverrideBuildStripExplicitTier(tier) to build lower-tier NBShader variants intentionally."
+  },
+  "riskClassification": {
+    "notAllEnvironment": "103 shader warnings, only2 environment/build-policy notices",
+    "potentialRuntimeReview": [
+      "17 negative-pow domain",
+      "9 varying-iteration derivatives/POM",
+      "6 potential-uninitialized shader variables"
+    ],
+    "typeOrOptimizationReview": [
+      "60 vector truncations: component loss may be intentional, must refer actual source if symptomatic",
+      "3 signed unsigned coercion",
+      "8 forced loop-unroll may affect codegen/performance"
+    ],
+    "notClaimedFailure": "Warnings are real diagnostics, but no actual NaN/UV/visual failure inferred without runtime/control evidence; repeated sites not new feature count",
+    "runtimePipelineConfigClarification": "Missing CLI/Pipeline RuntimePipelineConfig disables that tool/runtime subsystem in Player; not UniversalRenderPipelineAsset/URP rendering. Do not conflate Pipeline tool with URP."
+  },
+  "variantCallbacks": [
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "Universal Forward",
+      "stage": "Vertex",
+      "passType": "Normal",
+      "observedVariants": 2,
+      "ovzEnabled": 0,
+      "ovzDisabled": 2
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "Universal Forward",
+      "stage": "Fragment",
+      "passType": "Normal",
+      "observedVariants": 6,
+      "ovzEnabled": 2,
+      "ovzDisabled": 4
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "NBCameraOpaqueDistortPass",
+      "stage": "Vertex",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 1,
+      "ovzEnabled": 0,
+      "ovzDisabled": 1
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "NBCameraOpaqueDistortPass",
+      "stage": "Fragment",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 4,
+      "ovzEnabled": 0,
+      "ovzDisabled": 4
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "NBDeferredDistortPass",
+      "stage": "Vertex",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 1,
+      "ovzEnabled": 0,
+      "ovzDisabled": 1
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "NBDeferredDistortPass",
+      "stage": "Fragment",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 4,
+      "ovzEnabled": 0,
+      "ovzDisabled": 4
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "DepthOnly",
+      "stage": "Vertex",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 1,
+      "ovzEnabled": 0,
+      "ovzDisabled": 1
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "DepthOnly",
+      "stage": "Fragment",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 1,
+      "ovzEnabled": 0,
+      "ovzDisabled": 1
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "MotionVectors",
+      "stage": "Vertex",
+      "passType": "MotionVectors",
+      "observedVariants": 1,
+      "ovzEnabled": 0,
+      "ovzDisabled": 1
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "MotionVectors",
+      "stage": "Fragment",
+      "passType": "MotionVectors",
+      "observedVariants": 1,
+      "ovzEnabled": 0,
+      "ovzDisabled": 1
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "ShadowCaster",
+      "stage": "Vertex",
+      "passType": "ShadowCaster",
+      "observedVariants": 2,
+      "ovzEnabled": 0,
+      "ovzDisabled": 2
+    },
+    {
+      "shader": "NB FX/Shader Graph/NBShaderGraph",
+      "pass": "ShadowCaster",
+      "stage": "Fragment",
+      "passType": "ShadowCaster",
+      "observedVariants": 1,
+      "ovzEnabled": 0,
+      "ovzDisabled": 1
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "SRPDefaultUnlit",
+      "stage": "Vertex",
+      "passType": "ScriptableRenderPipelineDefaultUnlit",
+      "observedVariants": 24,
+      "ovzEnabled": 0,
+      "ovzDisabled": 24
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "SRPDefaultUnlit",
+      "stage": "Fragment",
+      "passType": "ScriptableRenderPipelineDefaultUnlit",
+      "observedVariants": 30,
+      "ovzEnabled": 12,
+      "ovzDisabled": 18
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "UniversalForward",
+      "stage": "Vertex",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 24,
+      "ovzEnabled": 0,
+      "ovzDisabled": 24
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "UniversalForward",
+      "stage": "Fragment",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 30,
+      "ovzEnabled": 12,
+      "ovzDisabled": 18
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "DepthOnly",
+      "stage": "Vertex",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 4,
+      "ovzEnabled": 0,
+      "ovzDisabled": 4
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "DepthOnly",
+      "stage": "Fragment",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 4,
+      "ovzEnabled": 0,
+      "ovzDisabled": 4
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "ShadowCaster",
+      "stage": "Vertex",
+      "passType": "ShadowCaster",
+      "observedVariants": 8,
+      "ovzEnabled": 0,
+      "ovzDisabled": 8
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "ShadowCaster",
+      "stage": "Fragment",
+      "passType": "ShadowCaster",
+      "observedVariants": 4,
+      "ovzEnabled": 0,
+      "ovzDisabled": 4
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "NBCameraOpaqueDistortPass",
+      "stage": "Vertex",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 10,
+      "ovzEnabled": 0,
+      "ovzDisabled": 10
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "NBCameraOpaqueDistortPass",
+      "stage": "Fragment",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 10,
+      "ovzEnabled": 0,
+      "ovzDisabled": 10
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "NBDeferredDistortPass",
+      "stage": "Vertex",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 10,
+      "ovzEnabled": 0,
+      "ovzDisabled": 10
+    },
+    {
+      "shader": "Effects/NBShader",
+      "pass": "NBDeferredDistortPass",
+      "stage": "Fragment",
+      "passType": "ScriptableRenderPipeline",
+      "observedVariants": 10,
+      "ovzEnabled": 0,
+      "ovzDisabled": 10
+    }
+  ],
+  "observedVariantStageRecordTotals": {
+    "NB FX/Shader Graph/NBShaderGraph": 25,
+    "Effects/NBShader": 168
+  },
+  "variantCountLimit": "callbackOrder=int.MaxValue pass+Vertex/Fragment ShaderCompilerData entries from current combined native+graph scene build, not final binary unique variants, axes inventory, SVC completeness, player shader memory or reduction ratio",
+  "editorLogBoundary": "Standard and recovery log probes had no meshfinal5/build completed marker; no historical warnings merged or claimed as this build segment. Exact current105 comes build-observation.messages."
+}

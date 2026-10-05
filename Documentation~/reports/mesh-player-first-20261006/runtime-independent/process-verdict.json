@@ -1,0 +1,59 @@
+{
+  "mode": "runtime",
+  "status": "FAILED_OR_UNVERIFIED",
+  "startedUTC": "2026-10-05T16:05:09.266959+00:00",
+  "elapsedSeconds": 5.811524900142103,
+  "nativeExit": 1,
+  "timedOut": false,
+  "command": [
+    "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal6-build\\NBFXMeshValidation.exe",
+    "-batchmode",
+    "-force-d3d11",
+    "-screen-width",
+    "128",
+    "-screen-height",
+    "128",
+    "-logFile",
+    "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal6-runtime-independent\\Player.log",
+    "--nbfx-runtime-proof",
+    "--nbfx-runtime-proof-evidence",
+    "D:\\UnityProject\\NBUnityProject\\.utmp\\nbp8\\meshfinal6-runtime-independent"
+  ],
+  "exeSHA256": "b9fc30bb05ca93a042831974149a681d656963e3e612ecafd9ae826759d739ad",
+  "buildReceiptSHA256": "fcab21c9e5c31e6f6791f613fe79a72f2880df2e525bdfb6c85cb0efc2baba46",
+  "issues": [
+    "Native process timeout/nonzero exit: 1",
+    "Missing/invalid exact independent24 raw",
+    "Independent Runtime projection did not pass",
+    "Stage sequence incomplete",
+    "Strict stage/state failure: mask-on",
+    "Weak/missing actual response: maskResponseB",
+    "Weak/missing actual response: maskResponseC",
+    "Weak/missing actual response: ovzResponseB",
+    "Weak/missing actual response: ovzResponseC"
+  ],
+  "shaderGPUErrorLines": [],
+  "analysis": {
+    "rawCount": 4,
+    "badRaw": [],
+    "compiledVariantObservation": [
+      {
+        "host": "B",
+        "OVZonObserved": 24,
+        "OVZoffObserved": 64,
+        "available": true,
+        "scope": "Observed preprocess callback counts; not proven final-binary enumeration"
+      },
+      {
+        "host": "C",
+        "OVZonObserved": 2,
+        "OVZoffObserved": 15,
+        "available": true,
+        "scope": "Observed preprocess callback counts; not proven final-binary enumeration"
+      }
+    ],
+    "retentionStrategy": "Explicit three on/off scene-referenced material states per host; no SVC or AlwaysIncluded mutation",
+    "renderVerdict": "FAILED_OR_UNVERIFIED",
+    "compiledVariantEvidenceComplete": true
+  }
+}
