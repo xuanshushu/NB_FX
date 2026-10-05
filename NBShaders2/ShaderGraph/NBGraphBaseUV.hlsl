@@ -223,6 +223,7 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     float4 WorldToLocal1,
     float4 WorldToLocal2,
     float4 WorldToLocal3,
+    float NBGraphTierAllowDepthDecal,
     out float2 Out, out float2 MaskUV, out float2 Mask2UV,
     out float2 Mask3UV, out float2 EmissionUV, out float2 DissolveUV,
     out float2 DissolveMaskUV, out float2 ColorBlendUV,
@@ -230,6 +231,8 @@ void NBGraphBaseUV_float(float4 UV, float4 BaseMapST,
     out float2 BumpUV, out float2 ProgramNoiseUV,
     out float DecalAlpha, out float2 BlendUV, out float BlendWeight)
 {
+    DepthDecalToggle *= NBGraphTierAllowDepthDecal > 0.5 ? 1.0 : 0.0;
+
     NBFX_BaseUVInputV1 input = (NBFX_BaseUVInputV1)0;
     input.meshTexcoord0 = UV;
     input.positionOS = PostPositionOS;
@@ -357,6 +360,7 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
     float4 WorldToLocal1,
     float4 WorldToLocal2,
     float4 WorldToLocal3,
+    float NBGraphTierAllowDepthDecal,
     out half2 Out, out half2 MaskUV, out half2 Mask2UV,
     out half2 Mask3UV, out half2 EmissionUV, out half2 DissolveUV,
     out half2 DissolveMaskUV, out half2 ColorBlendUV,
@@ -384,6 +388,7 @@ void NBGraphBaseUV_half(half4 UV, half4 BaseMapST,
         (float4)UV3, (float)FlipbookToggle, (float4)AnimationSheetBlendST, (float)AnimationSheetBlendIntensity,
         CustomDataFlag0Lo16, CustomDataFlag0Hi16, CustomDataFlag1Lo16, CustomDataFlag1Hi16, CustomDataFlag2Lo16, CustomDataFlag2Hi16, CustomDataFlag3Lo16, CustomDataFlag3Hi16,
         CustomLocalToggle, LocalToWorld0, LocalToWorld1, LocalToWorld2, LocalToWorld3, WorldToLocal0, WorldToLocal1, WorldToLocal2, WorldToLocal3,
+        NBGraphTierAllowDepthDecal,
         resolved, maskResolved, mask2Resolved, mask3Resolved,
         emissionResolved, dissolveResolved, dissolveMaskResolved,
         colorBlendResolved, rampColorResolved, noiseResolved, noiseMaskResolved, bumpResolved, programNoiseResolved, decalAlphaResolved, blendUVResolved, blendWeightResolved);

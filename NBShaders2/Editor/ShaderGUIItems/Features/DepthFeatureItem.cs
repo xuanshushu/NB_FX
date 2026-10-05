@@ -11,16 +11,7 @@ namespace NBShaderEditor
             : base(rootItem, parentItem)
         {
             new DepthOutlineFeatureItem(rootItem, this);
-            new ToggleItem(
-                rootItem,
-                this,
-                "_DepthDecal_Toggle",
-                () => FeatureToggleFoldOutItem.Content("深度贴花"),
-                rootItem.SyncService.ApplyDepthDecalEnabled,
-                FeatureToggleFoldOutItem.TierVisible(
-                    rootItem,
-                    "_DEPTH_DECAL",
-                    () => rootItem.Context.UIEffectEnabled != MixedBool.True));
+            CreateDepthDecalItem(rootItem, this);
             InitTriggerByChild();
         }
 
@@ -41,6 +32,20 @@ namespace NBShaderEditor
             }
 
             ParentItem?.CheckIsPropertyModified(true);
+        }
+
+        internal static ToggleItem CreateDepthDecalItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        {
+            return new ToggleItem(
+                rootItem,
+                parentItem,
+                "_DepthDecal_Toggle",
+                () => FeatureToggleFoldOutItem.Content("深度贴花"),
+                rootItem.SyncService.ApplyDepthDecalEnabled,
+                FeatureToggleFoldOutItem.TierVisible(
+                    rootItem,
+                    "_DEPTH_DECAL",
+                    () => rootItem.Context.UIEffectEnabled != MixedBool.True));
         }
     }
 

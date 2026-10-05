@@ -76,6 +76,8 @@ namespace NBShaderEditor
         DissolveFeatureItem _graphDissolveItem;
         VertexOffsetFeatureItem _graphVertexOffsetItem;
         bool _sharedGraphVertexOffsetReady;
+        bool _sharedGraphDepthDecalReady;
+        ToggleItem _graphDepthDecalItem;
         bool _sharedGraphDepthFeaturesReady;
         PropertyToggleBlockItem _graphDistanceFadeBlock, _graphSoftParticlesBlock;
         DepthOutlineFeatureItem _graphDepthOutlineItem;
@@ -140,6 +142,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphSharedUVReady)names.AddRange(NBShaderSyncService.GraphSharedUVPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphVertexOffsetReady)names.AddRange(NBShaderSyncService.GraphVertexOffsetSharedProperties);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphStencilWithoutPlayerReady)names.Add("_StencilWithoutPlayerToggle");
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDepthDecalReady)names.Add("_DepthDecal_Toggle");
             return names;
         }
 
@@ -362,6 +365,7 @@ namespace NBShaderEditor
                     _sharedGraphParallaxReady = false;
                     _graphFresnelItem = null;
                     _graphColorAdjustmentBlock=null;_graphColorRampItem=null;
+                    _graphDepthDecalItem=null;_sharedGraphDepthDecalReady=false;
                     _graphDistanceFadeBlock=null;_graphSoftParticlesBlock=null;_graphDepthOutlineItem=null;_sharedGraphDepthFeaturesReady=false;
                     _sharedGraphColorAdjustmentReady=false;_sharedGraphColorRampReady=false;
                     _graphDissolveItem = null;
@@ -393,6 +397,7 @@ namespace NBShaderEditor
                 DrawGraphColorAdjustmentInputs();
                 DrawGraphColorRampInputs();
                 DrawGraphDepthFeaturesInputs();
+                DrawGraphDepthDecalInputs();
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
                 if (InitializeGraphTADepthInputs())DrawGraphTAInputs();
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
@@ -643,5 +648,20 @@ namespace NBShaderEditor
             _graphStencilWithoutPlayerItem.OnGUI();
         }
 
+
+        internal bool InitializeGraphDepthDecalInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphDepthDecalReady=Context.IsGraphMaterialHost&&SyncService.HasGraphDepthDecalEditSchema();
+            if(!_sharedGraphDepthDecalReady)return false;
+            _graphDepthDecalItem??=DepthFeatureItem.CreateDepthDecalItem(this,null);return true;
+        }
+        internal void DrawGraphDepthDecalInputs()
+        {
+            if(!InitializeGraphDepthDecalInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB Depth Decal");
+            _graphDepthDecalItem.OnGUI();
+        }
     }
 }

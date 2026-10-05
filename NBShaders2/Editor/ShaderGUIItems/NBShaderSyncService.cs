@@ -1099,7 +1099,7 @@ namespace NBShaderEditor
 
         public void ApplyDepthDecalEnabled(bool enabled)
         {
-            if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
+            if (HasGraphTargets()) { TryApplyGraphDepthDecalEnabled(enabled); return; }
             ApplyToggleKeyword("_DEPTH_DECAL", enabled);
             foreach (Material mat in _rootItem.Mats)
             {
@@ -1108,12 +1108,7 @@ namespace NBShaderEditor
                     continue;
                 }
 
-                ApplyStencilPresetToMaterial(mat, enabled ? "ParticleBaseDecal" : "ParticleBaseDefault");
-                SetFloatIfExists(mat, "_CustomStencilTest", enabled ? 1f : 0f);
-                SetFloatIfExists(mat, "_Cull", enabled ? (float)RenderFace.Back : (float)RenderFace.Front);
-                SetFloatIfExists(mat, "_ZTest", enabled
-                    ? (float)UnityEngine.Rendering.CompareFunction.GreaterEqual
-                    : (float)UnityEngine.Rendering.CompareFunction.LessEqual);
+                ApplyDepthDecalLinkedState(mat, enabled);
             }
         }
 
@@ -2509,6 +2504,67 @@ namespace NBShaderEditor
             });
         }
 
+
+        // The original Native linked-state contract, shared without queue writes.
+        private void ApplyDepthDecalLinkedState(Material mat, bool enabled)
+        {
+            ApplyStencilPresetToMaterial(mat, enabled ? "ParticleBaseDecal" : "ParticleBaseDefault");
+            SetFloatIfExists(mat, "_CustomStencilTest", enabled ? 1f : 0f);
+            SetFloatIfExists(mat, "_Cull", enabled ? (float)RenderFace.Back : (float)RenderFace.Front);
+            SetFloatIfExists(mat, "_ZTest", enabled
+                ? (float)UnityEngine.Rendering.CompareFunction.GreaterEqual
+                : (float)UnityEngine.Rendering.CompareFunction.LessEqual);
+        }
+
+        internal bool HasGraphDepthDecalEditSchema()
+        {
+            if(!HasGraphQCMEditSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                if(!NBShaderRootItem.HasFloatProperty(material,"_DepthDecal_Toggle")||!_rootItem.PropertyInfoDic.ContainsKey("_DepthDecal_Toggle"))return false;
+                float toggle=material.GetFloat("_DepthDecal_Toggle");if(float.IsNaN(toggle)||float.IsInfinity(toggle))return false;
+                foreach(string name in new[]{"_Cull","_ZTest"})
+                {
+                    int index=material.shader.FindPropertyIndex(name);if(index<0||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;
+                    var type=material.shader.GetPropertyType(index);if(type!=UnityEngine.Rendering.ShaderPropertyType.Float&&type!=UnityEngine.Rendering.ShaderPropertyType.Range)return false;
+                    float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;
+                }
+            }
+            return true;
+        }
+        internal bool TryApplyGraphDepthDecalEnabled(bool enabled)
+        {
+            if(!HasGraphDepthDecalEditSchema())return false;
+            string key=enabled?"ParticleBaseDecal":"ParticleBaseDefault";
+            var config=GetStencilValuesConfig();
+            // A missing config keeps the original fallback. A malformed existing
+            // preset declines the Graph transaction before any linked-state write.
+            if(config!=null&&(!config.ContainsKey(key)||config.GetStencilValues(key)==null))return false;
+            var probes=new List<Material>();var effective=new List<float>();
+            try
+            {
+                foreach(Material material in _rootItem.Mats)
+                {
+                    var probe=new Material(material){hideFlags=HideFlags.HideAndDontSave};probes.Add(probe);
+                    probe.SetFloat("_DepthDecal_Toggle",enabled?1:0);
+                    var tier=(NBShaderFeatureTier)(int)material.GetFloat(FeatureTierPropertyName);bool changed;
+                    if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphDepthDecalGroup(probe,tier,null,out changed))return false;
+                    effective.Add(probe.GetFloat("_NB_TierAllowDepthDecal"));
+                }
+                // The only explicit-edit writer owns the original preset/Cull/ZTest.
+                // Tier filtering never invokes this method or restores a preset.
+                Undo.RecordObjects(_rootItem.MatEditor.targets,"Edit NB Depth Decal");
+                for(int i=0;i<_rootItem.Mats.Count;++i)
+                {
+                    Material material=_rootItem.Mats[i];SetFloatIfExists(material,"_DepthDecal_Toggle",enabled?1:0);
+                    ApplyDepthDecalLinkedState(material,enabled);
+                    SetFloatIfExists(material,"_NB_TierAllowDepthDecal",effective[i]);EditorUtility.SetDirty(material);
+                }
+                RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
+            }
+            finally{foreach(Material probe in probes)UnityEngine.Object.DestroyImmediate(probe);}
+        }
     }
 
     public enum VATMode
