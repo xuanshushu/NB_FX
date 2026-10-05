@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-05 16:38:49Z" end-time="2026-10-05 16:39:55Z" duration="65.493354">
+  <test-suite type="TestSuite" id="4498" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="3074" result="Passed" start-time="2026-10-05 16:38:49Z" end-time="2026-10-05 16:39:55Z" duration="65.493354" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4483" name="NBFX.G2.URP.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Library/ScriptAssemblies/NBFX.G2.URP.Editor.Tests.dll" runstate="Runnable" testcasecount="3055" result="Passed" start-time="2026-10-05 16:38:49Z" end-time="2026-10-05 16:39:55Z" duration="65.393835" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="91808" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="4484" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="3055" result="Passed" start-time="2026-10-05 16:38:49Z" end-time="2026-10-05 16:39:55Z" duration="65.386629" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="4485" name="Baseline" fullname="NBFX.Baseline" runstate="Runnable" testcasecount="3055" result="Passed" start-time="2026-10-05 16:38:50Z" end-time="2026-10-05 16:39:55Z" duration="65.286743" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="4486" name="Tests" fullname="NBFX.Baseline.Tests" runstate="Runnable" testcasecount="3055" result="Passed" start-time="2026-10-05 16:38:50Z" end-time="2026-10-05 16:39:55Z" duration="65.279343" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1186" name="G4BackFirstOptInGpuTests" fullname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests" classname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-05 16:38:50Z" end-time="2026-10-05 16:39:55Z" duration="65.179574" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <output><![CDATA[Shader Graph at Packages/com.xuanxuan.nb.fx/NBShaders2/ShaderGraph/NBShaderGraph.shadergraph has 3 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+Shader Graph at Packages/com.xuanxuan.nb.fx/Tests/URP/Graphs/NBBackFirstLegacy.shadergraph has 3 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+Shader Graph at Packages/com.xuanxuan.nb.fx/Tests/URP/Graphs/NBBackFirstModern.shadergraph has 3 warning(s), the first is: Validation: NBPostPositionOS exceeds the interpolation channel warning threshold: 16. See ShaderGraph project settings.
+]]></output>
+              <test-suite type="ParameterizedMethod" id="1195" name="NativeAndVersionedGraph_ActualDefaultAndBackFirstOrder" fullname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests.NativeAndVersionedGraph_ActualDefaultAndBackFirstOrder" classname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-05 16:39:01Z" end-time="2026-10-05 16:39:55Z" duration="54.110020" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1191" name="G4BackFirstOptInGPU_modern_alpha_order_positive_ortho" fullname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests.G4BackFirstOptInGPU_modern_alpha_order_positive_ortho" methodname="NativeAndVersionedGraph_ActualDefaultAndBackFirstOrder" classname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests" runstate="Runnable" seed="299861414" result="Passed" start-time="2026-10-05 16:39:01Z" end-time="2026-10-05 16:39:51Z" duration="50.442673" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_BACKFIRST_OPTIN_GPU {"stage":"modern-on","api":"Direct3D11","unity":"6000.3.25f1","scope":"Actual ordinaryMesh nativeA/currentB/versionedGraphC realURP twinfaces: legacy raw-main, modern defaultoff constructor, or BackFirst noncommutative alpha order. No fullGUI/DisableMain/NBController/Player/perf/Gate claim.","negative":false,"ortho":true,"finite":true,"nonCDCD":true,"ab":0.0,"bc":0.0,"repeat":0.0,"backResponseA":0.25,"backResponseB":0.25,"backResponseC":0.25,"orderErrorA":0.0,"orderErrorB":0.0,"orderErrorC":0.0,"visibleA":7396,"visibleB":7396,"visibleC":7396,"passReadback":["Effects/NBShader_T00_Frozen SRP=True Universal=True","Effects/NBShader SRP=True Universal=True","Hidden/NBFX/BackFirstValidation/NBBackFirstModern SRP=True Universal=True"]}
+]]></output>
+                </test-case>
+                <test-case id="1192" name="G4BackFirstOptInGPU_modern_alpha_order_positive_perspective" fullname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests.G4BackFirstOptInGPU_modern_alpha_order_positive_perspective" methodname="NativeAndVersionedGraph_ActualDefaultAndBackFirstOrder" classname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests" runstate="Runnable" seed="12409129" result="Passed" start-time="2026-10-05 16:39:51Z" end-time="2026-10-05 16:39:52Z" duration="1.194194" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_BACKFIRST_OPTIN_GPU {"stage":"modern-on","api":"Direct3D11","unity":"6000.3.25f1","scope":"Actual ordinaryMesh nativeA/currentB/versionedGraphC realURP twinfaces: legacy raw-main, modern defaultoff constructor, or BackFirst noncommutative alpha order. No fullGUI/DisableMain/NBController/Player/perf/Gate claim.","negative":false,"ortho":false,"finite":true,"nonCDCD":true,"ab":0.0,"bc":0.0,"repeat":0.0,"backResponseA":0.25,"backResponseB":0.25,"backResponseC":0.25,"orderErrorA":0.0,"orderErrorB":0.0,"orderErrorC":0.0,"visibleA":7056,"visibleB":7056,"visibleC":7056,"passReadback":["Effects/NBShader_T00_Frozen SRP=True Universal=True","Effects/NBShader SRP=True Universal=True","Hidden/NBFX/BackFirstValidation/NBBackFirstModern SRP=True Universal=True"]}
+]]></output>
+                </test-case>
+                <test-case id="1193" name="G4BackFirstOptInGPU_modern_alpha_order_negative_ortho" fullname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests.G4BackFirstOptInGPU_modern_alpha_order_negative_ortho" methodname="NativeAndVersionedGraph_ActualDefaultAndBackFirstOrder" classname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests" runstate="Runnable" seed="1365246506" result="Passed" start-time="2026-10-05 16:39:52Z" end-time="2026-10-05 16:39:54Z" duration="1.178464" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_BACKFIRST_OPTIN_GPU {"stage":"modern-on","api":"Direct3D11","unity":"6000.3.25f1","scope":"Actual ordinaryMesh nativeA/currentB/versionedGraphC realURP twinfaces: legacy raw-main, modern defaultoff constructor, or BackFirst noncommutative alpha order. No fullGUI/DisableMain/NBController/Player/perf/Gate claim.","negative":true,"ortho":true,"finite":true,"nonCDCD":true,"ab":0.0,"bc":0.0,"repeat":0.0,"backResponseA":0.25,"backResponseB":0.25,"backResponseC":0.25,"orderErrorA":0.0,"orderErrorB":0.0,"orderErrorC":0.0,"visibleA":7396,"visibleB":7396,"visibleC":7396,"passReadback":["Effects/NBShader_T00_Frozen SRP=True Universal=True","Effects/NBShader SRP=True Universal=True","Hidden/NBFX/BackFirstValidation/NBBackFirstModern SRP=True Universal=True"]}
+]]></output>
+                </test-case>
+                <test-case id="1194" name="G4BackFirstOptInGPU_modern_alpha_order_negative_perspective" fullname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests.G4BackFirstOptInGPU_modern_alpha_order_negative_perspective" methodname="NativeAndVersionedGraph_ActualDefaultAndBackFirstOrder" classname="NBFX.Baseline.Tests.G4BackFirstOptInGpuTests" runstate="Runnable" seed="259598093" result="Passed" start-time="2026-10-05 16:39:54Z" end-time="2026-10-05 16:39:55Z" duration="1.211918" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[NBFX_BACKFIRST_OPTIN_GPU {"stage":"modern-on","api":"Direct3D11","unity":"6000.3.25f1","scope":"Actual ordinaryMesh nativeA/currentB/versionedGraphC realURP twinfaces: legacy raw-main, modern defaultoff constructor, or BackFirst noncommutative alpha order. No fullGUI/DisableMain/NBController/Player/perf/Gate claim.","negative":true,"ortho":false,"finite":true,"nonCDCD":true,"ab":0.0,"bc":0.0,"repeat":0.0,"backResponseA":0.25,"backResponseB":0.25,"backResponseC":0.25,"orderErrorA":0.0,"orderErrorB":0.0,"orderErrorC":0.0,"visibleA":7056,"visibleB":7056,"visibleC":7056,"passReadback":["Effects/NBShader_T00_Frozen SRP=True Universal=True","Effects/NBShader SRP=True Universal=True","Hidden/NBFX/BackFirstValidation/NBBackFirstModern SRP=True Universal=True"]}
+[PipelineTestRunner] Reattaching result collector after domain reload
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

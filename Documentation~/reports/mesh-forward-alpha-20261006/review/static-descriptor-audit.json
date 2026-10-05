@@ -1,0 +1,137 @@
+{
+  "inverseTargetDeltaEqualsBefore": true,
+  "originalSourceRawSHA256": "764d3479217d20e45646719286309f16874e358ebf2a9d6fa66e5a5104f6093e",
+  "candidateSHA256": "f95286a1188e0b4a959cf68bfb3ba2902330410a0abf445211d1a5c569a0c4a4",
+  "graphZeroChanges": true,
+  "fieldsConditionsSameReferences": "states.Add(descriptor,item.fieldConditions), collection order unchanged",
+  "descriptorModelsNotUnityDiscovery": [
+    {
+      "before": "Blend One Zero",
+      "afterOrdinaryMesh": "Blend One Zero",
+      "afterVFX": "Blend One Zero",
+      "conditionBeforeAfter": "Opaque",
+      "rgbExactPreserved": true
+    },
+    {
+      "before": "Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha",
+      "afterOrdinaryMesh": "Blend SrcAlpha OneMinusSrcAlpha",
+      "afterVFX": "Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha",
+      "conditionBeforeAfter": "Alpha",
+      "rgbExactPreserved": true
+    },
+    {
+      "before": "Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha",
+      "afterOrdinaryMesh": "Blend One OneMinusSrcAlpha",
+      "afterVFX": "Blend One OneMinusSrcAlpha, One OneMinusSrcAlpha",
+      "conditionBeforeAfter": "Premultiply",
+      "rgbExactPreserved": true
+    },
+    {
+      "before": "Blend SrcAlpha One, One One",
+      "afterOrdinaryMesh": "Blend SrcAlpha One",
+      "afterVFX": "Blend SrcAlpha One, One One",
+      "conditionBeforeAfter": "Additive",
+      "rgbExactPreserved": true
+    },
+    {
+      "before": "Blend DstColor Zero, Zero One",
+      "afterOrdinaryMesh": "Blend DstColor Zero",
+      "afterVFX": "Blend DstColor Zero, Zero One",
+      "conditionBeforeAfter": "Multiply",
+      "rgbExactPreserved": true
+    },
+    {
+      "before": "Blend [_SrcBlend] [_DstBlend], [_SrcBlendAlpha] [_DstBlendAlpha]",
+      "afterOrdinaryMesh": "Blend [_SrcBlend] [_DstBlend]",
+      "afterVFX": "Blend [_SrcBlend] [_DstBlend], [_SrcBlendAlpha] [_DstBlendAlpha]",
+      "conditionBeforeAfter": "materialOverride",
+      "rgbExactPreserved": true
+    }
+  ],
+  "officialSourceSHA256": "2298cf2fb9096370d789124cfe2f470013315b1b5edb3f7ea7a415c8bae7cdcc",
+  "officialLines": [
+    1494,
+    1495,
+    1496,
+    1497,
+    1498,
+    1525,
+    1550,
+    1560,
+    1563,
+    1566,
+    1569
+  ],
+  "unchangedExistingMethods": {
+    "AddNBBackFirstPass": {
+      "exactBeforeAfter": true,
+      "SHA256UTF8": "b0035ea3451639aac56573f02626bc9ee19c978906377e9950e8955a48226543"
+    },
+    "AddDistortionPass": {
+      "exactBeforeAfter": true,
+      "SHA256UTF8": "54f6c462328b9250ca429da04f58ea72c899d5bbb2acc55bebb75e8fe35ed76b"
+    },
+    "WithNBRenderStates": {
+      "exactBeforeAfter": true,
+      "SHA256UTF8": "089d51bc751033e1aaa50f8fb4782b1198d41d4c7c49f2d6fd553cebfdc39227"
+    },
+    "WithNBZOffset": {
+      "exactBeforeAfter": true,
+      "SHA256UTF8": "d9526f1b2745e3b3988e73e27cdda1a54f15043e819c8b440517956743f43914"
+    },
+    "WithNBFragmentInclude": {
+      "exactBeforeAfter": true,
+      "SHA256UTF8": "de14d04a2a3d789f192e7b07f3c3095f860397fd8f86b5df4a36c3a54eda3272"
+    },
+    "WithNBInterpolatorShaderModel": {
+      "exactBeforeAfter": true,
+      "SHA256UTF8": "1a9f3bea5df449d820a2a0c50a3b315ef775f02c41b9f38932e1c0a9d7bb6593"
+    }
+  },
+  "fieldConditionIdentityProof": "RenderStateDescriptor is a value struct. Item.fieldConditions is the original array; Add(descriptor,item.fieldConditions) stores that same array. No new field condition or pass condition is allocated.",
+  "ordinaryMeshGuard": "Setup ordinaryMesh=true; under HAS_VFX_GRAPH ordinaryMesh=!TargetsVFX(); only forward&&ordinaryMesh invokes helper. Existing VFX state branch never reaches helper.",
+  "passScopeProof": "forward uses referenceName SHADERPASS_UNLIT only; NB BackFirst created later from unified main descriptor; AddDistortionPass overwrites all renderStates unchanged; all non-forward paths retain same renderStates/Target includes.",
+  "graphReadonlyLocks": [
+    {
+      "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+      "SHA256": "c3a0e214b754f33e854696b82429db0afef9e35808d5c37542ae8362344133ae"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/Passes/NBGraphMotionVectorPass.hlsl",
+      "SHA256": "a749afe5837df33f2946e270e6fb01d40dcd4e4e5341a42b31fb969227a139c4"
+    },
+    {
+      "path": "NBShaders2/Shader/NBShader.shader",
+      "SHA256": "325defce2ff0a012d059ffc531ed027cf2d1864ab6f233f63f96b7099159f22b"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphSpecularDebugFixture.cs",
+      "SHA256": "a493e25b2605b4c594a2f6b86bda5af6cc04bfa8e46aa16d58784cc9f338b277"
+    },
+    {
+      "path": "Tests/URP/Editor/G4GraphLightingTests.cs",
+      "SHA256": "876862bb5bcb9de6b8e85ba5847367f4b8a9dbd42841d609daec02049576ecc3"
+    },
+    {
+      "absolutePath": "D:\\UnityProject\\NBUnityProject\\Library\\PackageCache\\com.unity.render-pipelines.universal@a0dd9d2bd983\\Editor\\ShaderGraph\\Targets\\UniversalTarget.cs",
+      "SHA256": "2298cf2fb9096370d789124cfe2f470013315b1b5edb3f7ea7a415c8bae7cdcc"
+    },
+    {
+      "path": "Tests/URP/Graphs/NBBackFirstLegacy.shadergraph",
+      "SHA256": "5de1e01512c6c887ddc54c6ed5962cac72f2ff2223738e61af967023d88735d3"
+    },
+    {
+      "path": "Tests/URP/Graphs/NBBackFirstModern.shadergraph",
+      "SHA256": "ddd4b9a5b3b0fd58c051e4aaa33e0b4bba4d0a8c180792c6ce6042b05fe12307"
+    },
+    {
+      "absolutePath": "D:\\UnityProject\\NBUnityProject\\Library\\PackageCache\\com.unity.shadergraph@2fa139ee8b62\\Editor\\Generation\\Descriptors\\RenderStateDescriptor.cs",
+      "SHA256": "1e364738ca5b257952be6f07c6064baac7b2fabc9f76b04be7a3da939c260c6c"
+    },
+    {
+      "absolutePath": "D:\\UnityProject\\NBUnityProject\\Library\\PackageCache\\com.unity.shadergraph@2fa139ee8b62\\Editor\\Generation\\Collections\\RenderStateCollection.cs",
+      "SHA256": "31a8891224edbf07bdb0ca945bf2e469045c4dac2dbc63195a60eab055281639"
+    }
+  ],
+  "ranUnity": false
+}

@@ -1,0 +1,36 @@
+SHA256=f4da931f48f3d5ff742667459eb8094ab7800b75ddcfb6baabb99af60fb14c40
+Name "Universal Forward"
+    Tags
+    {
+        // LightMode: <None>
+    }
+
+// Render State
+Cull [_Cull]
+Blend [_SrcBlend] [_DstBlend]
+ZTest [_ZTest]
+Offset [_offsetFactor], [_offsetUnits]
+ZWrite [_ZWrite]
+ColorMask [_ColorMask]
+Stencil
+{
+ReadMask [_StencilReadMask]
+WriteMask [_StencilWriteMask]
+Ref [_Stencil]
+CompFront [_StencilComp]
+ZFailFront [_StencilZFail]
+FailFront [_StencilFail]
+PassFront [_StencilOp]
+CompBack [_StencilComp]
+ZFailBack [_StencilZFail]
+FailBack [_StencilFail]
+PassBack [_StencilOp]
+}
+AlphaToMask [_AlphaToMask]
+
+// Debug
+// <None>
+
+// --------------------------------------------------
+// Pass
+

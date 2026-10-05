@@ -55,6 +55,10 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             // Mesh-only choice: preserve the existing VFX generation path.
             includeDepthNormals |= TargetsVFX();
 #endif
+            bool ordinaryMesh = true;
+#if HAS_VFX_GRAPH
+            ordinaryMesh = !TargetsVFX();
+#endif
             bool found = false;
             foreach (var item in subShader.passes)
             {
@@ -70,6 +74,8 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     pass = WithNBDistortionBlocks(pass);
                 if (forward || UsesNBStencil(pass.lightMode))
                     pass.renderStates = WithNBRenderStates(pass.renderStates, forward);
+                if (forward && ordinaryMesh)
+                    pass.renderStates = WithNBNativeForwardBlend(pass.renderStates);
                 // Legacy0 keeps existing empty/default main tag exactly.
                 // Only an explicitly serialized modern1 graph changes route.
                 if (forward && m_NBBackFirstRouting)
@@ -294,6 +300,35 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             states.Add(NBStencilState());
             if (colorMask)
                 states.Add(RenderState.ColorMask("ColorMask [_ColorMask]"));
+            return states;
+        }
+
+        // Ordinary Mesh preserves NBShader's all-channel RGB blend factors.
+        // Keep delegated URP conditions and every non-Blend state unchanged.
+        // BackFirst inherits this state; the two NB distortion states are
+        // replaced separately and retain their existing source-alpha contract.
+        static RenderStateCollection WithNBNativeForwardBlend(RenderStateCollection original)
+        {
+            if (original == null)
+                throw new InvalidOperationException("NB FX Graph: Forward blend states not found.");
+            var states = new RenderStateCollection();
+            bool foundBlend = false;
+            foreach (var item in original)
+            {
+                var descriptor = item.descriptor;
+                if (descriptor.type == RenderStateType.Blend)
+                {
+                    if (!descriptor.value.StartsWith("Blend ", StringComparison.Ordinal))
+                        throw new InvalidOperationException("NB FX Graph: unexpected Forward Blend descriptor.");
+                    int separateAlpha = descriptor.value.IndexOf(',');
+                    if (separateAlpha >= 0)
+                        descriptor.value = descriptor.value.Substring(0, separateAlpha).TrimEnd();
+                    foundBlend = true;
+                }
+                states.Add(descriptor, item.fieldConditions);
+            }
+            if (!foundBlend)
+                throw new InvalidOperationException("NB FX Graph: Forward Blend descriptor not found.");
             return states;
         }
 

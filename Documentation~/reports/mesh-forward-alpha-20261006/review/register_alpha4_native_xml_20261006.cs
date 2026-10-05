@@ -1,0 +1,12 @@
+if(System.IO.Path.GetFullPath(UnityEngine.Application.dataPath)!=System.IO.Path.GetFullPath("D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Assets"))throw new System.InvalidOperationException("Wrong project");
+string output="D:/UnityProject/NBUnityProject/.utmp/nbfx-resume-20261002/alpha4-original-20261006.xml";
+if(System.IO.File.Exists(output))throw new System.InvalidOperationException("Keep original XML immutable");
+var type=System.AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType("Unity.Pipeline.Editor.Testing.TestResultCollector",false)).Single(t=>t!=null);
+var collector=System.Activator.CreateInstance(type,true);
+var callback=(UnityEditor.TestTools.TestRunner.Api.ICallbacks)collector;
+var api=UnityEngine.ScriptableObject.CreateInstance<UnityEditor.TestTools.TestRunner.Api.TestRunnerApi>();
+api.name="NBFX one-shot native XML alpha4";
+System.Action finish=()=>{try{if(System.IO.File.Exists(output))throw new System.InvalidOperationException("XML already exists");var root=(UnityEditor.TestTools.TestRunner.Api.ITestResultAdaptor)type.GetProperty("RootResult").GetValue(collector);UnityEditor.TestTools.TestRunner.Api.TestRunnerApi.SaveResultToFile(root,output);}finally{api.UnregisterCallbacks(callback);UnityEngine.Object.DestroyImmediate(api);}};
+type.GetProperty("OnRunFinished").SetValue(collector,finish);
+api.RegisterCallbacks(callback);
+return new{registered=true,output,collector=type.FullName};
