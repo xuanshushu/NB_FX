@@ -1,0 +1,26 @@
+{
+  "results": [
+    {
+      "batch": "BFSharedCPU7",
+      "counts": {
+        "total": 7,
+        "passed": 5,
+        "failed": 2,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 14.37,
+      "failures": [
+        {
+          "name": "NBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests.G4BackFirstShared_UnmigratedAndMixedLegacyRejectNoWrites",
+          "message": "Unhandled log message: '[Error] Material 'Hidden/NBFX/BackFirstValidation/NBBackFirstLegacy' with Shader 'Hidden/NBFX/BackFirstValidation/NBBackFirstLegacy' doesn't have a float or range property '_BackFirstPassToggle''. Use UnityEngine.TestTools.LogAssert.Expect"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests.G4BackFirstShared_ValidateSurfaceClipRestoreBackOnly",
+          "message": "  Actual URP+NB Validate lifecycle restores the complete material.\r\n  Expected string length 26258 but was 26260. Strings differ at index 427.\r\n  Expected: \"...\":false,\"m_CustomRenderQueue\":-1,\"stringTagMap\":{\"RenderTy...\"\r\n  But was:  \"...\":false,\"m_CustomRenderQueue\":3000,\"stringTagMap\":{\"Render...\"\r\n  --------------------------------------------^\r\n"
+        }
+      ]
+    }
+  ],
+  "fullMeshGatePassed": false
+}

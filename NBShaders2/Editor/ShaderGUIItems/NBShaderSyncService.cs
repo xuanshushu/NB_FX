@@ -241,16 +241,22 @@ namespace NBShaderEditor
                 NBShaderPassIntent[] screenIntent;
                 if(!CanApplyGraphOwnedScreenPassState(material,tier,allowed,allowedPasses,out screenIntent))return false;
                 if(screenIntent!=null)foreach(var pass in screenIntent)anyChange|=material.GetShaderPassEnabled(pass.passName)!=pass.included;
+                NBShaderPassIntent backIntent;
+                if (!CanApplyGraphOwnedBackFirstPassState(material, tier, allowed, allowedPasses, out backIntent)) return false;
+                if (backIntent != null) anyChange |= material.GetShaderPassEnabled(backIntent.passName) != backIntent.included ||
+                    material.GetFloat("_NB_BackFirstEffective") != (backIntent.included ? 1f : 0f);
             }
             if (!anyChange) return true;
             var objects = new List<UnityEngine.Object>();
             foreach (Material material in _rootItem.Mats) objects.Add(material);
             var originalScreenPasses=new GraphScreenPassSnapshot[_rootItem.Mats.Count];
+            var originalBackPasses = new GraphBackFirstPassSnapshot[_rootItem.Mats.Count];
             var originalOverrideDepth = new bool[_rootItem.Mats.Count];
             var originalGates = new float[_rootItem.Mats.Count][];
             for (int i = 0; i < _rootItem.Mats.Count; ++i)
             {
                 originalScreenPasses[i]=new GraphScreenPassSnapshot(_rootItem.Mats[i]);
+                originalBackPasses[i] = new GraphBackFirstPassSnapshot(_rootItem.Mats[i]);
                 originalOverrideDepth[i] = _rootItem.Mats[i].IsKeywordEnabled("_OVERRIDE_Z");
                 originalGates[i] = new float[NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties.Length];
                 for (int gate = 0; gate < originalGates[i].Length; ++gate)
@@ -260,10 +266,11 @@ namespace NBShaderEditor
             var changedMaterials = new bool[_rootItem.Mats.Count];
             for (int i = 0; i < _rootItem.Mats.Count; ++i)
             {
-                bool screenChanged;
+                bool screenChanged, backChanged;
                 if (NBShaderFeatureLevelMaterialApplier.ApplyGraphSupportedGateTier(_rootItem.Mats[i], tier, allowed, out changedMaterials[i]) &&
-                    ApplyGraphOwnedScreenPassState(_rootItem.Mats[i],tier,allowed,allowedPasses,out screenChanged))
-                {changedMaterials[i]|=screenChanged;continue;}
+                    ApplyGraphOwnedScreenPassState(_rootItem.Mats[i],tier,allowed,allowedPasses,out screenChanged) &&
+                    ApplyGraphOwnedBackFirstPassState(_rootItem.Mats[i], tier, allowed, allowedPasses, out backChanged))
+                {changedMaterials[i]|=screenChanged || backChanged;continue;}
                 // Reader is pure and gates are not its inputs, so this is an
                 // unexpected post-preflight failure. Roll back registered gates and
                 // the exact OVZ keyword before any Tier value is committed.
@@ -273,6 +280,7 @@ namespace NBShaderEditor
                         _rootItem.Mats[restore].SetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties[gate], originalGates[restore][gate]);
                     RestoreGraphOverrideDepthKeyword(_rootItem.Mats[restore], originalOverrideDepth[restore]);
                     originalScreenPasses[restore].Restore();
+                    originalBackPasses[restore].Restore();
                 }
                 return false;
             }
@@ -1954,6 +1962,9 @@ namespace NBShaderEditor
         // Explicit one-time migration only. Caller captures legacy main state
         // BEFORE switching the Graph/Shader route; no automatic asset write.
         internal static bool TryMigrateGraphColorPassState(Material material, bool capturedLegacyMainEnabled)
+            => TryCommitGraphColorPassState(material, capturedLegacyMainEnabled);
+
+        private static bool TryCommitGraphColorPassState(Material material, bool selectedMainEnabled)
         {
             int route;
             if (!NBShaderPassFeatureCatalog.TryGetGraphColorRouting(material, out route) || route != 1 ||
@@ -1962,7 +1973,7 @@ namespace NBShaderEditor
             float migrationState = material.GetFloat("_NB_GraphPassMigrationComplete");
             if (migrationState != 0f && migrationState != 1f) return false;
             if (migrationState == 1f) return false;
-            material.SetShaderPassEnabled("UniversalForward", capturedLegacyMainEnabled);
+            material.SetShaderPassEnabled("UniversalForward", selectedMainEnabled);
             material.SetShaderPassEnabled("SRPDefaultUnlit", false);
             material.SetFloat("_NB_BackFirstEffective", 0f);
             material.SetFloat("_NB_GraphPassMigrationComplete", 1f);
@@ -2565,6 +2576,200 @@ namespace NBShaderEditor
             }
             finally{foreach(Material probe in probes)UnityEngine.Object.DestroyImmediate(probe);}
         }
+        // Only an explicitly migrated, compiled modern route owns this back pass.
+        // Legacy SRPDefaultUnlit remains the main color pass and is never adopted.
+        internal static bool CanApplyGraphOwnedBackFirstPassState(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedKeywords, IEnumerable<string> allowedPasses, out NBShaderPassIntent intent)
+        {
+            intent = null;
+            int route;
+            if (!NBShaderPassFeatureCatalog.TryGetGraphColorRouting(material, out route)) return false;
+            if (route == 0) return true;
+            if (!NBShaderRootItem.HasFloatProperty(material, "_NB_GraphPassMigrationComplete")) return false;
+            float migration = material.GetFloat("_NB_GraphPassMigrationComplete");
+            if (migration == 0f) return true;
+            if (migration != 1f) return false;
+            return NBShaderMaterialIntentResolver.TryResolveGraphBackFirstPassIntent(material, tier,
+                allowedKeywords, allowedPasses, out intent);
+        }
+
+        internal static bool ApplyGraphOwnedBackFirstPassState(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedKeywords, IEnumerable<string> allowedPasses, out bool changed)
+        {
+            changed = false;
+            NBShaderPassIntent intent;
+            if (!CanApplyGraphOwnedBackFirstPassState(material, tier, allowedKeywords, allowedPasses, out intent)) return false;
+            if (intent == null) return true;
+            // The existing method returns changed, rather than accepted.
+            changed = TryApplyGraphBackFirstPassIntent(material, tier, allowedKeywords, allowedPasses);
+            return true;
+        }
+
+        internal static bool TryReadGraphSavedOwnedBackFirstPassIntent(Material material, out NBShaderPassIntent intent)
+        {
+            intent = null;
+            if (!NBShaderRootItem.HasFloatProperty(material, FeatureTierPropertyName)) return false;
+            float saved = material.GetFloat(FeatureTierPropertyName);
+            if (float.IsNaN(saved) || float.IsInfinity(saved) || saved < 0 || saved > 3 || saved != Mathf.Round(saved)) return false;
+            var tier = (NBShaderFeatureTier)(int)saved;
+            return CanApplyGraphOwnedBackFirstPassState(material, tier,
+                NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),
+                NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier), out intent) && intent != null;
+        }
+
+        internal static bool ApplyGraphSavedOwnedBackFirstPassState(Material material, out bool changed)
+        {
+            changed = false;
+            NBShaderPassIntent intent;
+            if (!TryReadGraphSavedOwnedBackFirstPassIntent(material, out intent)) return false;
+            var tier = (NBShaderFeatureTier)(int)material.GetFloat(FeatureTierPropertyName);
+            return ApplyGraphOwnedBackFirstPassState(material, tier,
+                NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),
+                NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier), out changed);
+        }
+
+        private sealed class GraphBackFirstPassSnapshot
+        {
+            readonly Material material;
+            readonly bool owned, enabled;
+            readonly float effective;
+            internal GraphBackFirstPassSnapshot(Material value)
+            {
+                material = value;
+                int route;
+                owned = NBShaderPassFeatureCatalog.TryGetGraphColorRouting(value, out route) && route == 1 &&
+                    value.HasProperty("_NB_GraphPassMigrationComplete") && value.GetFloat("_NB_GraphPassMigrationComplete") == 1f;
+                if (!owned) return;
+                enabled = value.GetShaderPassEnabled("SRPDefaultUnlit");
+                effective = value.GetFloat("_NB_BackFirstEffective");
+            }
+            internal void Restore()
+            {
+                if (!owned) return;
+                material.SetShaderPassEnabled("SRPDefaultUnlit", enabled);
+                material.SetFloat("_NB_BackFirstEffective", effective);
+            }
+        }
+
+        internal bool HasGraphBackFirstUIHost()
+        {
+            if (_rootItem.MatEditor == null || !HasGraphMainTexTargets()) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                int route;
+                if (!NBShaderPassFeatureCatalog.TryGetGraphColorRouting(material, out route) || route != 1 ||
+                    !NBShaderRootItem.HasFloatProperty(material, "_BackFirstPassToggle") ||
+                    !_rootItem.PropertyInfoDic.ContainsKey("_BackFirstPassToggle")) return false;
+            }
+            return true;
+        }
+
+        internal bool HasGraphBackFirstAdoptionSchema()
+        {
+            if (!HasGraphBackFirstUIHost()) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                if (!NBShaderRootItem.HasFloatProperty(material, "_NB_GraphPassMigrationComplete") ||
+                    !_rootItem.PropertyInfoDic.ContainsKey("_NB_GraphPassMigrationComplete") ||
+                    material.GetFloat("_NB_GraphPassMigrationComplete") != 0f ||
+                    !NBShaderRootItem.HasFloatProperty(material, "_NB_BackFirstEffective") ||
+                    !NBShaderRootItem.HasFloatProperty(material, "_Cull") ||
+                    !_rootItem.PropertyInfoDic.ContainsKey("_Cull")) return false;
+                float effective = material.GetFloat("_NB_BackFirstEffective"), cull = material.GetFloat("_Cull");
+                if (float.IsNaN(effective) || float.IsInfinity(effective) || float.IsNaN(cull) || float.IsInfinity(cull) ||
+                    cull < 0 || cull > 2 || cull != Mathf.Round(cull)) return false;
+                var probe = new Material(material) { hideFlags = HideFlags.HideAndDontSave };
+                try
+                {
+                    // Explicitly adopt this modern material's CURRENT main state.
+                    // This does not recover or guess an earlier Legacy main state.
+                    bool currentMain = material.GetShaderPassEnabled("UniversalForward");
+                    NBShaderPassIntent intent;
+                    if (!TryCommitGraphColorPassState(probe, currentMain) ||
+                        !TryReadGraphSavedOwnedBackFirstPassIntent(probe, out intent)) return false;
+                }
+                finally { UnityEngine.Object.DestroyImmediate(probe); }
+            }
+            return true;
+        }
+
+        internal bool TryAdoptGraphBackFirstCurrentMain()
+        {
+            if (!HasGraphBackFirstAdoptionSchema()) return false;
+            var materials = _rootItem.Mats;
+            var targets = new UnityEngine.Object[materials.Count];
+            var main = new bool[materials.Count]; var back = new bool[materials.Count];
+            var effective = new float[materials.Count]; var migration = new float[materials.Count];
+            for (int i = 0; i < materials.Count; ++i)
+            {
+                targets[i] = materials[i]; main[i] = materials[i].GetShaderPassEnabled("UniversalForward");
+                back[i] = materials[i].GetShaderPassEnabled("SRPDefaultUnlit");
+                effective[i] = materials[i].GetFloat("_NB_BackFirstEffective");
+                migration[i] = materials[i].GetFloat("_NB_GraphPassMigrationComplete");
+            }
+            Undo.RecordObjects(targets, "Adopt current NB Modern main state");
+            for (int i = 0; i < materials.Count; ++i)
+            {
+                bool changed;
+                if (TryCommitGraphColorPassState(materials[i], main[i]) &&
+                    ApplyGraphSavedOwnedBackFirstPassState(materials[i], out changed)) continue;
+                for (int restore = 0; restore < materials.Count; ++restore)
+                {
+                    materials[restore].SetShaderPassEnabled("UniversalForward", main[restore]);
+                    materials[restore].SetShaderPassEnabled("SRPDefaultUnlit", back[restore]);
+                    materials[restore].SetFloat("_NB_BackFirstEffective", effective[restore]);
+                    materials[restore].SetFloat("_NB_GraphPassMigrationComplete", migration[restore]);
+                }
+                return false;
+            }
+            foreach (Material material in materials) EditorUtility.SetDirty(material);
+            RefreshGraphMainTexPropertyReferences(); _rootItem.Context?.Refresh();
+            return true;
+        }
+
+        internal bool HasGraphBackFirstEditSchema()
+        {
+            if (!HasGraphBackFirstUIHost()) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                NBShaderPassIntent intent;
+                if (!TryReadGraphSavedOwnedBackFirstPassIntent(material, out intent) ||
+                    !NBShaderRootItem.HasFloatProperty(material, "_Cull") || !_rootItem.PropertyInfoDic.ContainsKey("_Cull")) return false;
+                float cull = material.GetFloat("_Cull");
+                if (float.IsNaN(cull) || float.IsInfinity(cull) || cull < 0 || cull > 2 || cull != Mathf.Round(cull)) return false;
+            }
+            return true;
+        }
+
+        internal bool TryApplyGraphBackFirstToggle(bool enabled)
+        {
+            if (!HasGraphBackFirstEditSchema()) return false;
+            // Preflight selected intent on copies before writing any target.
+            foreach (Material material in _rootItem.Mats)
+            {
+                var probe = new Material(material) { hideFlags = HideFlags.HideAndDontSave };
+                try
+                {
+                    probe.SetFloat("_BackFirstPassToggle", enabled ? 1f : 0f);
+                    NBShaderPassIntent intent;
+                    if (!TryReadGraphSavedOwnedBackFirstPassIntent(probe, out intent)) return false;
+                }
+                finally { UnityEngine.Object.DestroyImmediate(probe); }
+            }
+            return RunGraphMainTexEdit("Edit NB Back First", material =>
+            {
+                bool changed = false;
+                float value = enabled ? 1f : 0f;
+                if (material.GetFloat("_BackFirstPassToggle") != value) { material.SetFloat("_BackFirstPassToggle", value); changed = true; }
+                // Match the original Native control: enabling leaves the main front-facing.
+                if (enabled && material.GetFloat("_Cull") != (float)RenderFace.Front)
+                { material.SetFloat("_Cull", (float)RenderFace.Front); changed = true; }
+                bool passChanged;
+                ApplyGraphSavedOwnedBackFirstPassState(material, out passChanged);
+                return changed || passChanged;
+            });
+        }
+
     }
 
     public enum VATMode

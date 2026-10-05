@@ -53,6 +53,9 @@ namespace NBShaderEditor
         private TABigBlockItem _taBlock;
         private ParticleVertexStreamsItem _particleVertexStreamsItem;
         private NBShaderGUIToolBar _toolBar;
+        ToggleItem _graphBackFirstItem;
+        Rect _graphBackFirstAdoptRect;
+        bool _sharedGraphBackFirstHost, _sharedGraphBackFirstReady;
 
         public override void InitFlags(System.Collections.Generic.List<Material> mats)
         {
@@ -143,6 +146,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphVertexOffsetReady)names.AddRange(NBShaderSyncService.GraphVertexOffsetSharedProperties);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphStencilWithoutPlayerReady)names.Add("_StencilWithoutPlayerToggle");
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDepthDecalReady)names.Add("_DepthDecal_Toggle");
+            if (Context != null && Context.IsGraphMaterialHost && _sharedGraphBackFirstHost) names.Add("_BackFirstPassToggle");
             return names;
         }
 
@@ -381,6 +385,7 @@ namespace NBShaderEditor
                     _toolBar = null;
                     _modeBlock = null;
                     _baseBlock = null;
+                    _graphBackFirstItem = null; _sharedGraphBackFirstHost = _sharedGraphBackFirstReady = false;
                     _lightBlock = null;
                     _featureBlock = null;
                     _taBlock = null;
@@ -408,6 +413,7 @@ namespace NBShaderEditor
                 DrawGraphParallaxInputs();
                 DrawGraphSharedUVInputs();
                 DrawGraphNoiseInputs();
+                DrawGraphBackFirstInputs();
                 DrawGraphStencilWithoutPlayerInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
@@ -663,5 +669,39 @@ namespace NBShaderEditor
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Depth Decal");
             _graphDepthDecalItem.OnGUI();
         }
+        internal bool InitializeGraphBackFirstInputs()
+        {
+            Context ??= new NBShaderGUIContext(this);
+            SyncService ??= new NBShaderSyncService(this);
+            Context.Refresh();
+            _sharedGraphBackFirstHost = Context.IsGraphMaterialHost && SyncService.HasGraphBackFirstUIHost();
+            _sharedGraphBackFirstReady = _sharedGraphBackFirstHost && SyncService.HasGraphBackFirstEditSchema();
+            if (!_sharedGraphBackFirstReady) return false;
+            _graphBackFirstItem ??= BaseOptionBigBlockItem.CreateBackFirstPassToggle(this, null,
+                enabled => SyncService.TryApplyGraphBackFirstToggle(enabled),
+                () => Context.UIEffectEnabled == MixedBool.False && Context.TransparentMode == TransparentMode.Transparent, true);
+            return true;
+        }
+
+        internal void DrawGraphBackFirstInputs()
+        {
+            bool ready = InitializeGraphBackFirstInputs();
+            if (!_sharedGraphBackFirstHost) return;
+            if (!ready)
+            {
+                EditorGUILayout.HelpBox("此动作将保留各材质当前主颜色开关，并启用现代 Back First 控制；不会恢复或推测旧材质历史。", MessageType.Info);
+                using (new EditorGUI.DisabledScope(!SyncService.HasGraphBackFirstAdoptionSchema()))
+                {
+                    if (GUILayout.Button("保留当前主颜色并启用 Back First 控制"))
+                        SyncService.TryAdoptGraphBackFirstCurrentMain();
+                    _graphBackFirstAdoptRect = GUILayoutUtility.GetLastRect();
+                }
+                return;
+            }
+            if (Event.current.type != EventType.Layout && Event.current.type != EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets, "Edit NB Back First");
+            _graphBackFirstItem.OnGUI();
+        }
+
     }
 }

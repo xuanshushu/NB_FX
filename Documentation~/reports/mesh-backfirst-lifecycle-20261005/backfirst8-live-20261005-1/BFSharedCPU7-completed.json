@@ -1,0 +1,62 @@
+{
+  "status": "completed",
+  "duration": 9.73,
+  "summary": {
+    "total": 7,
+    "passed": 5,
+    "failed": 2,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests.G4BackFirstShared_ActualAdoptCurrentMainMultiUndoUnknownReject",
+      "Status": "Passed",
+      "Duration": 0.8321631,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests.G4BackFirstShared_ActualToggleMultiUndoPreservesMainAndNB",
+      "Status": "Passed",
+      "Duration": 0.6411142,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests.G4BackFirstShared_PassiveNoncanonicalToggleAllStateReadOnly",
+      "Status": "Passed",
+      "Duration": 0.2262814,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests.G4BackFirstShared_SaveReloadMigratedDisabledMain",
+      "Status": "Passed",
+      "Duration": 7.1207815,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests.G4BackFirstShared_TierTransactionRepairsDeniedBackWithoutMain",
+      "Status": "Passed",
+      "Duration": 0.1510618,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests.G4BackFirstShared_UnmigratedAndMixedLegacyRejectNoWrites",
+      "Status": "Failed",
+      "Duration": 0.4325455,
+      "Message": "Unhandled log message: '[Error] Material 'Hidden/NBFX/BackFirstValidation/NBBackFirstLegacy' with Shader 'Hidden/NBFX/BackFirstValidation/NBBackFirstLegacy' doesn't have a float or range property '_BackFirstPassToggle''. Use UnityEngine.TestTools.LogAssert.Expect",
+      "StackTrace": "UnityEditor.MaterialEditor:GetMaterialProperties (UnityEngine.Object[])\r\nNBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests:Root (UnityEngine.Material[]) (at ./Packages/NB_FX/Tests/URP/Editor/G4BackFirstSharedLifecycleTests.cs:58)\r\nNBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests:G4BackFirstShared_UnmigratedAndMixedLegacyRejectNoWrites () (at ./Packages/NB_FX/Tests/URP/Editor/G4BackFirstSharedLifecycleTests.cs:188)\r\nSystem.Reflection.MethodBase:Invoke (object,object[])\r\nNUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])\r\nNUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])\r\nNUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)\r\nNUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)\r\nNUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)\r\nUnityEditor.EditorApplication:Internal_CallUpdateFunctions ()\r\n\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests.G4BackFirstShared_ValidateSurfaceClipRestoreBackOnly",
+      "Status": "Failed",
+      "Duration": 0.0568886,
+      "Message": "  Actual URP+NB Validate lifecycle restores the complete material.\r\n  Expected string length 26258 but was 26260. Strings differ at index 427.\r\n  Expected: \"...\":false,\"m_CustomRenderQueue\":-1,\"stringTagMap\":{\"RenderTy...\"\r\n  But was:  \"...\":false,\"m_CustomRenderQueue\":3000,\"stringTagMap\":{\"Render...\"\r\n  --------------------------------------------^\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4BackFirstSharedLifecycleTests.G4BackFirstShared_ValidateSurfaceClipRestoreBackOnly () [0x00126] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4BackFirstSharedLifecycleTests.cs:148\r\n"
+    }
+  ]
+}

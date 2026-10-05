@@ -16,16 +16,21 @@ namespace NBShaderEditor
             // Read the existing normalized intent before interactive events;
             // Layout/Repaint must never normalize the saved gate values.
             System.Collections.Generic.Dictionary<Material, NBShader.NBShaderMaterialIntentResult> before = null;
+            System.Collections.Generic.Dictionary<Material, NBShader.NBShaderPassIntent> beforeBack = null;
             bool interactive = Event.current != null && Event.current.type != EventType.Layout && Event.current.type != EventType.Repaint;
             if (interactive)
             {
                 before = new System.Collections.Generic.Dictionary<Material, NBShader.NBShaderMaterialIntentResult>();
+                beforeBack = new System.Collections.Generic.Dictionary<Material, NBShader.NBShaderPassIntent>();
                 foreach (UnityEngine.Object target in materialEditor.targets)
                     if (target is Material selected)
                     {
                         NBShader.NBShaderMaterialIntentResult intent;
                         if (NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.TryReadGraphSavedSupportedGateTier(selected, out intent))
                             before[selected] = intent;
+                        NBShader.NBShaderPassIntent backIntent;
+                        if (NBShaderSyncService.TryReadGraphSavedOwnedBackFirstPassIntent(selected, out backIntent))
+                            beforeBack[selected] = backIntent;
                     }
             }
             EditorGUI.BeginChangeCheck();
@@ -52,6 +57,15 @@ namespace NBShaderEditor
                 if (target is Material material)
                 {
                     SyncSixWayKeywords(material);
+                    NBShader.NBShaderPassIntent oldBack, newBack;
+                    if (graphEdited && beforeBack != null && beforeBack.TryGetValue(material, out oldBack) &&
+                        NBShaderSyncService.TryReadGraphSavedOwnedBackFirstPassIntent(material, out newBack) &&
+                        (oldBack.enabledByMaterial != newBack.enabledByMaterial || oldBack.included != newBack.included))
+                    {
+                        bool backChanged;
+                        if (NBShaderSyncService.ApplyGraphSavedOwnedBackFirstPassState(material, out backChanged) && backChanged)
+                            EditorUtility.SetDirty(material);
+                    }
                     if (graphEdited && before != null && intentChanged && allProjectionReady)
                     {
                         bool changed;
@@ -75,6 +89,10 @@ namespace NBShaderEditor
             bool changed;
             NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material, out changed);
             if (changed) EditorUtility.SetDirty(material);
+            // Validate owns only the explicitly migrated modern back pass.
+            bool backChanged;
+            if (NBShaderSyncService.ApplyGraphSavedOwnedBackFirstPassState(material, out backChanged) && backChanged)
+                EditorUtility.SetDirty(material);
             // Zero/absent screen migration owns no raw pass; never adopt during Validate.
             if(material.HasProperty(NBShaderEditor.NBShaderSyncService.GraphScreenMigration) && material.GetFloat(NBShaderEditor.NBShaderSyncService.GraphScreenMigration)==1f)
             {

@@ -69,13 +69,7 @@ namespace NBShaderEditor
             _zTestItem = new ZTestItem(rootItem, this);
             _cullItem = new CullModeItem(rootItem, this);
 
-            _backFirstPassItem = new ToggleItem(
-                rootItem,
-                this,
-                "_BackFirstPassToggle",
-                () => Content("base.backFirstPass", "Back First Pass"),
-                OnBackFirstPassChanged,
-                () => Is3DTransparent());
+            _backFirstPassItem = CreateBackFirstPassToggle(rootItem, this, OnBackFirstPassChanged, Is3DTransparent);
 
             _forceZWriteItem = new ForceZWriteItem(rootItem, this);
             _affectsShadowsItem = new ToggleItem(
@@ -228,6 +222,14 @@ namespace NBShaderEditor
                     "base.backFirstPass.warning",
                     "预渲染反面会导致打断动态合批，请谨慎使用。"),
                 MessageType.Warning);
+        }
+
+        internal static ToggleItem CreateBackFirstPassToggle(NBShaderRootItem rootItem, ShaderGUIItem parentItem,
+            Action<bool> onChanged, Func<bool> isVisible, bool graphInteractiveOnly = false)
+        {
+            return new ToggleItem(rootItem, parentItem, "_BackFirstPassToggle",
+                () => Content("base.backFirstPass", "Back First Pass"), onChanged, isVisible)
+            { WriteOnlyOnInteractiveChange = graphInteractiveOnly };
         }
 
         private void OnBackFirstPassChanged(bool enabled)
