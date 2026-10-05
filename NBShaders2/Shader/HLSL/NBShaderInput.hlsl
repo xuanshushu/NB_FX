@@ -1375,8 +1375,11 @@
         inputData.shadowCoord = float4(0, 0, 0, 0);
     #endif
     #ifdef _ADDITIONAL_LIGHTS_VERTEX
-        inputData.fogCoord = InitializeInputDataFog(float4(input.positionWS, 1.0), input.fogFactorAndVertexLight.x);
-        inputData.vertexLighting = input.fogFactorAndVertexLight.yzw;
+        // NB packs fog in positionWS.w and owns a separate vertexLight field.
+        inputData.fogCoord = InitializeInputDataFog(float4(input.positionWS.xyz, 1.0), input.positionWS.w);
+        #if !defined(_FX_LIGHT_MODE_UNLIT) && !defined(_FX_LIGHT_MODE_SIX_WAY)
+            inputData.vertexLighting = input.vertexLight;
+        #endif
     #else
         inputData.fogCoord = InitializeInputDataFog(float4(input.positionWS.xyz, 1.0), input.positionWS.w);
     #endif

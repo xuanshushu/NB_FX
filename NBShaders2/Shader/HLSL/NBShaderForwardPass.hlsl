@@ -9,7 +9,17 @@
     #include "NBShaderDissolveV3.hlsl"
     #include "NBShaderDepthDecalV1.hlsl"
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/VAT.hlsl"
+    // Non-SixWay variants need only the existing Half-Lambert API. Do not
+    // parse unrelated SixWay material code into their vertex-light variants.
+    #if !defined(_FX_LIGHT_MODE_SIX_WAY) && !defined(NB_HALF_LAMBERT_ONLY)
+        #define NB_HALF_LAMBERT_ONLY 1
+        #define NB_NATIVE_HALF_LAMBERT_INCLUDE_SCOPE 1
+    #endif
     #include "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/HLSL/SixWaySmokeLit.hlsl"
+    #if defined(NB_NATIVE_HALF_LAMBERT_INCLUDE_SCOPE)
+        #undef NB_HALF_LAMBERT_ONLY
+        #undef NB_NATIVE_HALF_LAMBERT_INCLUDE_SCOPE
+    #endif
 
     #if defined(NB_DEPTH_ONLY_PASS) || defined(NB_SHADOW_CASTER_PASS)
         #define NB_DEPTH_SHADOW_PASS
