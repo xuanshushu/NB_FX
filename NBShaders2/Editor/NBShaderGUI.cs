@@ -130,6 +130,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphColorRampReady)names.AddRange(NBShaderSyncService.GraphColorRampSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphMatCapReady)names.AddRange(NBShaderSyncService.GraphMatCapSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDepthFeaturesReady)names.AddRange(NBShaderSyncService.GraphDepthSharedPropertyNames);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphNoiseReady)names.AddRange(NBShaderSyncService.GraphNoiseSharedPropertyNames);
             return names;
         }
 
@@ -308,6 +309,23 @@ namespace NBShaderEditor
             _graphNormalMapBlock.OnGUI();
         }
 
+        bool _sharedGraphNoiseReady;
+        NoiseAndDistortFeatureItem _graphNoiseItem;
+        internal bool InitializeGraphNoiseInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphNoiseReady=Context.IsGraphMaterialHost && SyncService.HasGraphNoiseEditSchema();
+            if(!_sharedGraphNoiseReady)return false;
+            _graphNoiseItem??=new NoiseAndDistortFeatureItem(this,null,true);return true;
+        }
+        void DrawGraphNoiseInputs()
+        {
+            if(!InitializeGraphNoiseInputs())return;
+            if(Event.current!=null && Event.current.rawType!=EventType.Layout && Event.current.rawType!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB Noise Inputs");
+            _graphNoiseItem.OnGUI();
+        }
+
         public override void OnChildOnGUI()
         {
             if (Context == null)
@@ -329,6 +347,7 @@ namespace NBShaderEditor
                     _mainTexBlock = null;
                     _graphFlipbookItem = null;
                     _graphParallaxItem = null;
+                    _graphNoiseItem=null;_sharedGraphNoiseReady=false;
                     _sharedGraphParallaxReady = false;
                     _graphFresnelItem = null;
                     _graphColorAdjustmentBlock=null;_graphColorRampItem=null;
@@ -369,6 +388,7 @@ namespace NBShaderEditor
                 if(InitializeGraphMaskProgramInputs())DrawGraphMaskProgramInputs();
                 DrawGraphOverlayInputs();
                 DrawGraphParallaxInputs();
+                DrawGraphNoiseInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
                 return;

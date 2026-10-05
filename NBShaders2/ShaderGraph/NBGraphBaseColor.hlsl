@@ -829,9 +829,13 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NBGraphTierAllowMatCap,
     float NBGraphTierAllowDistanceFade, float NBGraphTierAllowSoftParticles,
     float NBGraphTierAllowDepthOutline,
+    float NBGraphTierAllowRefraction,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    // Local Refraction mode only. Screen alias/raw saved enum stay untouched.
+    DistortMode *= NBGraphTierAllowRefraction > 0.5 ? 1.0 : 0.0;
+
     DistanceFadeToggle *= NBGraphTierAllowDistanceFade > 0.5 ? 1.0 : 0.0;
     SoftParticlesEnabled *= NBGraphTierAllowSoftParticles > 0.5 ? 1.0 : 0.0;
     DepthOutlineToggle *= NBGraphTierAllowDepthOutline > 0.5 ? 1.0 : 0.0;
@@ -1402,9 +1406,13 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NBGraphTierAllowMatCap,
     float NBGraphTierAllowDistanceFade, float NBGraphTierAllowSoftParticles,
     float NBGraphTierAllowDepthOutline,
+    float NBGraphTierAllowRefraction,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    // Local Refraction mode only. Screen alias/raw saved enum stay untouched.
+    DistortMode *= NBGraphTierAllowRefraction > 0.5 ? 1.0 : 0.0;
+
     DistanceFadeToggle *= NBGraphTierAllowDistanceFade > 0.5 ? 1.0 : 0.0;
     SoftParticlesEnabled *= NBGraphTierAllowSoftParticles > 0.5 ? 1.0 : 0.0;
     DepthOutlineToggle *= NBGraphTierAllowDepthOutline > 0.5 ? 1.0 : 0.0;

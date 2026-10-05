@@ -199,6 +199,8 @@ namespace NBShader
                 if (binding.graphSupported && material.GetFloat(binding.propertyName) > 0.5f)
                     AddManagedKeyword(intended, binding.keyword);
             ResolveCommonModeKeywords(material, intended);
+            if (!HasGraphEnumValue(material,"_NB_DistortionMode",2)) return false;
+            if (material.GetFloat("_NB_DistortionMode") > .5f) AddManagedKeyword(intended,"_SCREEN_DISTORT_MODE");
 
             // URP 17.3 BaseShaderGUI.UpdateMaterialSurfaceOptions is the
             // authority for these native controls, not NB's _TransparentMode.
@@ -221,6 +223,30 @@ namespace NBShader
                 ToCatalogOrderedArray(BuildDifference(intended, effective)),
                 new NBShaderPassIntent[0]);
             return true;
+        }
+
+        // Bounded screen ownership reads the existing aliases and same normalized
+        // keyword filter. It does not project unrelated surface/Depth/BackFirst.
+        internal static bool TryResolveGraphScreenPassIntent(Material material, NBShaderFeatureTier tier,
+            IEnumerable<string> allowedKeywords, IEnumerable<string> allowedPassFeatureIds,
+            out NBShaderPassIntent[] passes)
+        {
+            passes=null;int route;NBShaderMaterialIntentResult intent;string[] unavailable;
+            if(!NBShaderPassFeatureCatalog.TryGetGraphColorRouting(material,out route) ||
+                !TryResolveGraphSupportedKeywordIntent(material,tier,allowedKeywords,out intent,out unavailable) ||
+                !HasGraphEnumValue(material,"_NB_DistortionMode",2) ||
+                !HasGraphEnumValue(material,"_NB_GraphScreenPassMigrationComplete",1) ||
+                material.GetFloat("_NB_GraphScreenPassMigrationComplete")!=1f ||
+                !HasFiniteFloatShaderProperty(material,"_DisableMainPassToggle"))return false;
+            if(route==1 && (!HasGraphEnumValue(material,"_NB_GraphPassMigrationComplete",1) || material.GetFloat("_NB_GraphPassMigrationComplete")!=1f))return false;
+            int mode=(int)material.GetFloat("_NB_DistortionMode");
+            bool screen=mode!=0 && Array.IndexOf(intent.effectiveKeywords,"_SCREEN_DISTORT_MODE")>=0;
+            bool main=!screen || material.GetFloat("_DisableMainPassToggle")<=.5f;
+            var allowed=BuildAllowedPassFeatureSet(allowedPassFeatureIds??NBShaderPassFeatureCatalog.GetDefaultAllowedPassFeatures(tier));
+            var result=new List<NBShaderPassIntent>{NBShaderPassIntent.CreateCore(NBShaderPassFeatureCatalog.GraphMainColorPassName(route),main,"screen-owned main material intent")};
+            AddManagedPass(result,NBShaderPassFeatureCatalog.DeferredDistortPassId,screen&&mode==1,allowed,"screen alias deferred mode");
+            AddManagedPass(result,NBShaderPassFeatureCatalog.CameraOpaqueDistortPassId,screen&&mode==2,allowed,"screen alias camera opaque mode");
+            passes=result.ToArray();return true;
         }
 
         private static bool HasFiniteFloatShaderProperty(Material material, string propertyName)

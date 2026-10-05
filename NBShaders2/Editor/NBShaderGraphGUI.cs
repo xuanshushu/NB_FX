@@ -75,6 +75,14 @@ namespace NBShaderEditor
             bool changed;
             NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material, out changed);
             if (changed) EditorUtility.SetDirty(material);
+            // Zero/absent screen migration owns no raw pass; never adopt during Validate.
+            if(material.HasProperty(NBShaderEditor.NBShaderSyncService.GraphScreenMigration) && material.GetFloat(NBShaderEditor.NBShaderSyncService.GraphScreenMigration)==1f)
+            {
+                var tier=(NBShader.NBShaderFeatureTier)(int)material.GetFloat("_NBShaderFeatureTier");bool screenChanged;
+                if(NBShaderEditor.NBShaderSyncService.ApplyGraphOwnedScreenPassState(material,tier,
+                    NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),
+                    NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier),out screenChanged)&&screenChanged)EditorUtility.SetDirty(material);
+            }
         }
 
         internal static void SyncSixWayKeywords(Material material)

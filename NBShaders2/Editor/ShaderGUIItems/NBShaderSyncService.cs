@@ -232,19 +232,25 @@ namespace NBShaderEditor
             if ((int)tier < 0 || (int)tier > 3 || !HasGraphSupportedGateTierEditSchema()) return false;
             var allowed = new HashSet<string>(allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier));
             bool anyChange = false;
+            var allowedPasses=NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier);
             foreach (Material material in _rootItem.Mats)
             {
                 bool wouldChange;
                 if (!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSupportedGateTier(material, tier, allowed, out wouldChange)) return false;
                 anyChange |= wouldChange || material.GetFloat(FeatureTierPropertyName) != (float)tier;
+                NBShaderPassIntent[] screenIntent;
+                if(!CanApplyGraphOwnedScreenPassState(material,tier,allowed,allowedPasses,out screenIntent))return false;
+                if(screenIntent!=null)foreach(var pass in screenIntent)anyChange|=material.GetShaderPassEnabled(pass.passName)!=pass.included;
             }
             if (!anyChange) return true;
             var objects = new List<UnityEngine.Object>();
             foreach (Material material in _rootItem.Mats) objects.Add(material);
+            var originalScreenPasses=new GraphScreenPassSnapshot[_rootItem.Mats.Count];
             var originalOverrideDepth = new bool[_rootItem.Mats.Count];
             var originalGates = new float[_rootItem.Mats.Count][];
             for (int i = 0; i < _rootItem.Mats.Count; ++i)
             {
+                originalScreenPasses[i]=new GraphScreenPassSnapshot(_rootItem.Mats[i]);
                 originalOverrideDepth[i] = _rootItem.Mats[i].IsKeywordEnabled("_OVERRIDE_Z");
                 originalGates[i] = new float[NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties.Length];
                 for (int gate = 0; gate < originalGates[i].Length; ++gate)
@@ -254,7 +260,10 @@ namespace NBShaderEditor
             var changedMaterials = new bool[_rootItem.Mats.Count];
             for (int i = 0; i < _rootItem.Mats.Count; ++i)
             {
-                if (NBShaderFeatureLevelMaterialApplier.ApplyGraphSupportedGateTier(_rootItem.Mats[i], tier, allowed, out changedMaterials[i])) continue;
+                bool screenChanged;
+                if (NBShaderFeatureLevelMaterialApplier.ApplyGraphSupportedGateTier(_rootItem.Mats[i], tier, allowed, out changedMaterials[i]) &&
+                    ApplyGraphOwnedScreenPassState(_rootItem.Mats[i],tier,allowed,allowedPasses,out screenChanged))
+                {changedMaterials[i]|=screenChanged;continue;}
                 // Reader is pure and gates are not its inputs, so this is an
                 // unexpected post-preflight failure. Roll back registered gates and
                 // the exact OVZ keyword before any Tier value is committed.
@@ -263,6 +272,7 @@ namespace NBShaderEditor
                     for (int gate = 0; gate < originalGates[restore].Length; ++gate)
                         _rootItem.Mats[restore].SetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties[gate], originalGates[restore][gate]);
                     RestoreGraphOverrideDepthKeyword(_rootItem.Mats[restore], originalOverrideDepth[restore]);
+                    originalScreenPasses[restore].Restore();
                 }
                 return false;
             }
@@ -522,6 +532,138 @@ namespace NBShaderEditor
                     float value=mode==NBShaderFlags.UVMode.DefaultUVChannel||mode==NBShaderFlags.UVMode.CommonUV||mode==NBShaderFlags.UVMode.ScreenUV||mode==NBShaderFlags.UVMode.MainTex?0:1;
                     if(material.GetFloat("_BumpUVModeFoldOut")!=value){material.SetFloat("_BumpUVModeFoldOut",value);changed=true;}
                 }
+                return UpdateGraphMainTexUVDerived(material)|changed;
+            });
+        }
+
+        private sealed class GraphScreenPassSnapshot
+        {
+            readonly Material material;readonly Dictionary<string,bool> states=new Dictionary<string,bool>();
+            internal GraphScreenPassSnapshot(Material value)
+            {
+                material=value;
+                if(!value.HasProperty(GraphScreenMigration)||value.GetFloat(GraphScreenMigration)!=1)return;
+                int route;if(!NBShaderPassFeatureCatalog.TryGetGraphColorRouting(value,out route))return;
+                foreach(string name in new[]{NBShaderPassFeatureCatalog.GraphMainColorPassName(route),"NBDeferredDistortPass","NBCameraOpaqueDistortPass"})states[name]=value.GetShaderPassEnabled(name);
+            }
+            internal void Restore(){foreach(var state in states)material.SetShaderPassEnabled(state.Key,state.Value);}
+        }
+
+        internal const string GraphScreenMigration="_NB_GraphScreenPassMigrationComplete";
+        internal static readonly string[] GraphNoiseSharedPropertyNames={"_NoiseBlockFoldOut","_NoiseMapFoldOut","_NoiseUVModeFoldOut","_NoiseMaskBlockFoldOut","_NoiseMaskUVModeFoldOut","_ScreenDistortAlphaFoldOut","_NoiseIntensityRangeVec","_ScreenDistortIntensityRangeVec","_DisableMainPassToggle",GraphScreenMigration,"_noisemapEnabled","_NoiseIntensity","_NoiseMap","_NoiseMapUVRotation","_NoiseOffset","_DistortionDirection","_DistortionBothDirection_Toggle","_noiseMaskMap_Toggle","_NoiseMaskMap","_DistortMode","_RefractionIOR","_DistortPNoiseBlendOpacity","_NB_Debug_Distort","_ScreenDistortAlphaRefineToggle","_NB_DistortionMode","_NB_DistortionIntensity","_NB_DistortionAlphaPow","_NB_DistortionAlphaMultiplier","_NB_DistortionAlphaAdd"};
+        internal bool HasGraphNoiseEditSchema()
+        {
+            if(_rootItem.MatEditor==null || !HasGraphMainTexUVEditSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                foreach(string name in GraphNoiseSharedPropertyNames)if(!material.HasProperty(name)||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;
+                foreach(string name in new[]{"_NoiseBlockFoldOut","_NoiseMapFoldOut","_NoiseUVModeFoldOut","_NoiseMaskBlockFoldOut","_NoiseMaskUVModeFoldOut","_ScreenDistortAlphaFoldOut","_DisableMainPassToggle",GraphScreenMigration,"_noisemapEnabled","_NoiseIntensity","_NoiseMapUVRotation","_DistortionBothDirection_Toggle","_noiseMaskMap_Toggle","_DistortMode","_RefractionIOR","_DistortPNoiseBlendOpacity","_NB_Debug_Distort","_ScreenDistortAlphaRefineToggle","_NB_DistortionMode","_NB_DistortionIntensity","_NB_DistortionAlphaPow","_NB_DistortionAlphaMultiplier","_NB_DistortionAlphaAdd"})
+                {
+                    if(!NBShaderRootItem.HasFloatProperty(material,name))return false;
+                    float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;
+                }
+                foreach(string name in new[]{"_NoiseIntensityRangeVec","_ScreenDistortIntensityRangeVec","_NoiseOffset","_DistortionDirection"})
+                {
+                    int index=material.shader.FindPropertyIndex(name);if(index<0||material.shader.GetPropertyType(index)!=UnityEngine.Rendering.ShaderPropertyType.Vector)return false;
+                    Vector4 v=material.GetVector(name);for(int i=0;i<4;++i)if(float.IsNaN(v[i])||float.IsInfinity(v[i]))return false;
+                }
+                float migration=material.GetFloat(GraphScreenMigration);if(migration!=0&&migration!=1)return false;
+                int route;if(!NBShaderPassFeatureCatalog.TryGetGraphColorRouting(material,out route))return false;
+                float mode=material.GetFloat("_NB_DistortionMode");if(mode<0||mode>2||mode!=Mathf.Round(mode))return false;
+                NBShaderPassIntent[] screenIntent;var tier=(NBShaderFeatureTier)(int)material.GetFloat(FeatureTierPropertyName);
+                if(!CanApplyGraphOwnedScreenPassState(material,tier,NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier),out screenIntent))return false;
+            }
+            return true;
+        }
+        internal static bool CanApplyGraphOwnedScreenPassState(Material material,NBShaderFeatureTier tier,IEnumerable<string> allowedKeywords,IEnumerable<string> allowedPassFeatures,out NBShaderPassIntent[] intent)
+        {
+            intent=null;
+            if(!material.HasProperty(GraphScreenMigration))return true; // Old capabilities own no screen pass.
+            if(!NBShaderRootItem.HasFloatProperty(material,GraphScreenMigration))return false;
+            float state=material.GetFloat(GraphScreenMigration);if(state==0)return true;if(state!=1)return false;
+            return NBShaderMaterialIntentResolver.TryResolveGraphScreenPassIntent(material,tier,allowedKeywords,allowedPassFeatures,out intent);
+        }
+        internal static bool ApplyGraphOwnedScreenPassState(Material material,NBShaderFeatureTier tier,IEnumerable<string> allowedKeywords,IEnumerable<string> allowedPassFeatures,out bool changed)
+        {
+            changed=false;NBShaderPassIntent[] intent;
+            if(!CanApplyGraphOwnedScreenPassState(material,tier,allowedKeywords,allowedPassFeatures,out intent))return false;
+            if(intent==null)return true;
+            foreach(var pass in intent)if(material.GetShaderPassEnabled(pass.passName)!=pass.included){material.SetShaderPassEnabled(pass.passName,pass.included);changed=true;}
+            return true;
+        }
+        internal bool TryReadGraphScreenDisableMainDisplay(out bool disabled,out bool mixed)
+        {
+            disabled=mixed=false;if(!HasGraphNoiseEditSchema())return false;bool first=true;
+            foreach(Material material in _rootItem.Mats)
+            {
+                int route;NBShaderPassFeatureCatalog.TryGetGraphColorRouting(material,out route);
+                bool value=material.GetFloat(GraphScreenMigration)==1?material.GetFloat("_DisableMainPassToggle")>.5f:!material.GetShaderPassEnabled(NBShaderPassFeatureCatalog.GraphMainColorPassName(route));
+                if(first){disabled=value;first=false;}else mixed|=disabled!=value;
+            }
+            return true;
+        }
+        internal bool TryAdoptGraphScreenEdit(int? selectedMode,bool? selectedDisable)
+        {
+            if(!HasGraphNoiseEditSchema()||(selectedMode.HasValue&&(selectedMode.Value<0||selectedMode.Value>2)))return false;
+            var probes=new List<Material>();var intents=new List<NBShaderPassIntent[]>();var disabledValues=new List<float>();var chosenModes=new List<int>();
+            try
+            {
+                // Probe every target without mutating aliases, raw passes or ownership.
+                foreach(Material material in _rootItem.Mats)
+                {
+                    int route;NBShaderPassFeatureCatalog.TryGetGraphColorRouting(material,out route);
+                    if(route==1 && (!NBShaderRootItem.HasFloatProperty(material,"_NB_GraphPassMigrationComplete")||material.GetFloat("_NB_GraphPassMigrationComplete")!=1))return false;
+                    int mode=selectedMode??(int)material.GetFloat("_NB_DistortionMode");
+                    bool disable=selectedDisable??(material.GetFloat(GraphScreenMigration)==1?material.GetFloat("_DisableMainPassToggle")>.5f:!material.GetShaderPassEnabled(NBShaderPassFeatureCatalog.GraphMainColorPassName(route)));
+                    if(mode==0)disable=false;
+                    var probe=new Material(material){hideFlags=HideFlags.HideAndDontSave};probes.Add(probe);
+                    probe.SetFloat("_NB_DistortionMode",mode);probe.SetFloat("_DisableMainPassToggle",disable?1:0);probe.SetFloat(GraphScreenMigration,1);
+                    var tier=(NBShaderFeatureTier)(int)material.GetFloat(FeatureTierPropertyName);NBShaderPassIntent[] intent;
+                    if(!NBShaderMaterialIntentResolver.TryResolveGraphScreenPassIntent(probe,tier,NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier),out intent))return false;
+                    intents.Add(intent);disabledValues.Add(disable?1:0);chosenModes.Add(mode);
+                }
+                Undo.RecordObjects(_rootItem.MatEditor.targets,"Edit NB Screen Distort State");
+                for(int i=0;i<_rootItem.Mats.Count;++i)
+                {
+                    Material material=_rootItem.Mats[i];material.SetFloat("_NB_DistortionMode",chosenModes[i]);material.SetFloat("_DisableMainPassToggle",disabledValues[i]);
+                    foreach(var pass in intents[i])material.SetShaderPassEnabled(pass.passName,pass.included);
+                    material.SetFloat(GraphScreenMigration,1);EditorUtility.SetDirty(material); // Commit only after all pure probes succeeded.
+                }
+                RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
+            }
+            finally{foreach(Material probe in probes)UnityEngine.Object.DestroyImmediate(probe);}
+        }
+        internal bool TryApplyGraphNoiseIntentEdit()
+        {
+            if(!HasGraphNoiseEditSchema())return false;
+            foreach(Material material in _rootItem.Mats){bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
+            return TryProjectGraphNoiseOwnedScreenState();
+        }
+        internal bool TryProjectGraphNoiseOwnedScreenState()
+        {
+            if(!HasGraphNoiseEditSchema())return false;var intents=new List<NBShaderPassIntent[]>();
+            foreach(Material material in _rootItem.Mats)
+            {
+                var tier=(NBShaderFeatureTier)(int)material.GetFloat(FeatureTierPropertyName);NBShaderPassIntent[] intent;
+                if(!CanApplyGraphOwnedScreenPassState(material,tier,NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier),out intent))return false;
+                intents.Add(intent);
+            }
+            for(int i=0;i<intents.Count;++i)if(intents[i]!=null)foreach(var pass in intents[i])_rootItem.Mats[i].SetShaderPassEnabled(pass.passName,pass.included);
+            RefreshGraphMainTexPropertyReferences();return true;
+        }
+        internal bool TryApplyGraphNoiseFlagEdit(int bit,bool enabled,int word)
+        {
+            bool owned=word==0&&bit==NBShaderFlags.FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON||word==1&&bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE;
+            if(!owned||!HasGraphNoiseEditSchema())return false;string name="_NB_Flags"+word+"Lo16";
+            return RunGraphMainTexEdit("Noise Packed Toggle",material=>{bool changed=WriteGraphHalfSlice(material,name,bit,enabled?bit:0);if(!changed)NotifyGraphPackedFlagsEdited(material,name,bit);return changed;});
+        }
+        internal bool TryApplyGraphNoiseUVMode(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
+        {
+            if(!HasGraphNoiseEditSchema()||(int)mode<0||(int)mode>8||!(position==8&&fold=="_NoiseUVModeFoldOut"||position==10&&fold=="_NoiseMaskUVModeFoldOut"))return false;
+            int mask=3<<position;return RunGraphMainTexEdit("Noise UV Source",material=>{
+                bool changed=WriteGraphHalfSlice(material,"_NB_UVModeFlag0Lo16",mask,((int)mode&3)<<position)|WriteGraphHalfSlice(material,"_NB_UVModeFlagType0Lo16",mask,((int)mode/4)<<position);
+                if(setFold){float value=mode==NBShaderFlags.UVMode.DefaultUVChannel||mode==NBShaderFlags.UVMode.CommonUV||mode==NBShaderFlags.UVMode.ScreenUV||mode==NBShaderFlags.UVMode.MainTex?0:1;if(material.GetFloat(fold)!=value){material.SetFloat(fold,value);changed=true;}}
                 return UpdateGraphMainTexUVDerived(material)|changed;
             });
         }
@@ -2016,6 +2158,7 @@ namespace NBShaderEditor
         internal bool TryApplyGraphSharedFeatureUVMode(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
         {
             if(position==26 && fold=="_RampColorUVModeFoldOut")return TryApplyGraphColorRampUVMode(mode,setFold);
+            if(position==8||position==10)return TryApplyGraphNoiseUVMode(position,mode,fold,setFold);
             if(position==14||position==16)return TryApplyGraphDissolveUVMode(position,mode,setFold);
             return TryApplyGraphMaskProgramUVMode(position,mode,fold,setFold);
         }

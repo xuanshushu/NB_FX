@@ -18,7 +18,8 @@ namespace NBShaders2.Editor.FeatureLevel
             "_NB_TierAllowNormalMap",
             "_NB_TierAllowColorRamp", "_NB_TierAllowColorRampMap",
             "_NB_TierAllowMatCap",
-            "_NB_TierAllowDistanceFade", "_NB_TierAllowSoftParticles", "_NB_TierAllowDepthOutline"
+            "_NB_TierAllowDistanceFade", "_NB_TierAllowSoftParticles", "_NB_TierAllowDepthOutline",
+            "_NB_TierAllowRefraction"
         };
         static readonly string[] GraphSupportedGateKeywords = {
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
@@ -28,7 +29,8 @@ namespace NBShaders2.Editor.FeatureLevel
             "_NORMALMAP",
             "_COLOR_RAMP", "_COLOR_RAMP_MAP",
             "_MATCAP",
-            "_DISTANCE_FADE", "_SOFTPARTICLES_ON", "_DEPTH_OUTLINE"
+            "_DISTANCE_FADE", "_SOFTPARTICLES_ON", "_DEPTH_OUTLINE",
+            "_DISTORT_REFRACTION"
         };
 
         internal const string GraphOverrideDepthKeyword = "_OVERRIDE_Z";
@@ -142,6 +144,8 @@ namespace NBShaders2.Editor.FeatureLevel
             if(!ApplyGraphDepthFeaturesGroup(material,tier,allowed,out groupChanged))return false;
             changed|=groupChanged;
             if(!ApplyGraphMatCapGroup(material,tier,allowed,out groupChanged))return false;
+            changed|=groupChanged;
+            if(!ApplyGraphRefractionGroup(material,tier,allowed,out groupChanged))return false;
             changed|=groupChanged;
             return true;
         }
@@ -267,6 +271,15 @@ namespace NBShaders2.Editor.FeatureLevel
             if(!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material,tier,allowed,out intent,out unavailable))return false;
             changed=SetGraphAllowFloat(material,"_NB_TierAllowNormalMap",new HashSet<string>(intent.effectiveKeywords).Contains("_NORMALMAP"));
             return true;
+        }
+
+
+        internal static bool ApplyGraphRefractionGroup(Material material,NBShaderFeatureTier tier,IEnumerable<string> allowedManagedKeywords,out bool changed)
+        {
+            changed=false;if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,"_NB_TierAllowRefraction"))return false;
+            var allowed=allowedManagedKeywords??NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            NBShaderMaterialIntentResult intent;string[] unavailable;if(!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material,tier,allowed,out intent,out unavailable))return false;
+            changed=SetGraphAllowFloat(material,"_NB_TierAllowRefraction",new HashSet<string>(intent.effectiveKeywords).Contains("_DISTORT_REFRACTION"));return true;
         }
 
         static bool SetGraphAllowFloat(Material material, string name, bool enabled)

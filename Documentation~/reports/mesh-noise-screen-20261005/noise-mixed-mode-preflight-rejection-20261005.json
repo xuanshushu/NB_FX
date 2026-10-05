@@ -1,0 +1,11 @@
+{
+  "timeUTC": "2026-10-05T02:02:50.634303+00:00",
+  "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\noise-screen-shared-preview-20261005\\accepted-depth23-root-preview-4\\NBShaders2\\Editor\\ShaderGUIItems\\Features\\NoiseAndDistortFeatureItem.cs",
+  "sourceSHA256": "5256ec2e4498579c26742cc3a7eb9fb63ebf1b87306a52802cfd8ee9fc110bae",
+  "classification": "real multi-material transaction write risk found statically; not GPU failure",
+  "finding": "DisableMain action uses aggregate mode; mixed modes1/2 map to0 and TryAdopt would overwrite both modes, then clear disable. Reset does same.",
+  "requiredFix": "Preserve each target own mode for DisableMain edit/reset; only explicit Mode edit sets common mode. Full preflight and Undo retained.",
+  "installed": false,
+  "rootAndCloneUnmodifiedByThisCandidate": true,
+  "actualTestsRun": false
+}

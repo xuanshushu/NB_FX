@@ -25,9 +25,10 @@ namespace NBShaderEditor
         private const string NBPostProcessTypeFullName = "NBShader.NBPostProcess";
         private const string NBPostProcessTypeName = "NBPostProcess";
 
-        public NoiseAndDistortFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_NoiseBlockFoldOut", "_noisemapEnabled", "扭曲", keyword: "_NOISEMAP")
+        public NoiseAndDistortFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode=false)
+            : base(rootItem, parentItem, "_NoiseBlockFoldOut", "_noisemapEnabled", "扭曲", keyword: graphSharedMode?null:"_NOISEMAP", onValueChanged:graphSharedMode?(Action<bool>)(_=>rootItem.SyncService.TryApplyGraphNoiseIntentEdit()):null)
         {
+            string screenModeProperty=graphSharedMode?"_NB_DistortionMode":ScreenDistortModePropertyName;
             new NBShaderKeywordToggleItem(
                 rootItem,
                 this,
@@ -39,22 +40,24 @@ namespace NBShaderEditor
             {
                 PropertyName = "_NoiseIntensity",
                 GuiContent = Content("整体扭曲强度"),
-                RangePropertyName = "_NoiseIntensityRangeVec"
+                RangePropertyName = "_NoiseIntensityRangeVec", WriteOnlyOnInteractiveChange=graphSharedMode
             };
             noiseIntensityItem.InitTriggerByChild();
             new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_NOISE_INTENSITY, 1, () => Content("扭曲强度自定义曲线"));
-            new FeaturePopupItem(rootItem, this, "_ScreenDistortModeToggle", () => Content("屏幕扰动模式"), ScreenDistortModeNames,
-                property => rootItem.SyncService.ApplyScreenDistortMode(Mathf.RoundToInt(property.floatValue)),
+            if(graphSharedMode)new GraphScreenModePopupItem(rootItem,this);
+            else
+            new FeaturePopupItem(rootItem, this, screenModeProperty, () => Content("屏幕扰动模式"), ScreenDistortModeNames,
+                property => { if(graphSharedMode)rootItem.SyncService.TryAdoptGraphScreenEdit(Mathf.RoundToInt(property.floatValue),null);else rootItem.SyncService.ApplyScreenDistortMode(Mathf.RoundToInt(property.floatValue)); },
                 () => rootItem.Context.UIEffectEnabled != MixedBool.True,
                 ScreenDistortKeyword);
             Func<bool> isDeferredDistortVisible = TierVisible(
                 rootItem,
                 ScreenDistortKeyword,
-                () => IsScreenDistortMode(rootItem, ScreenDistortModeDeferred));
+                () => IsScreenDistortMode(rootItem, ScreenDistortModeDeferred,graphSharedMode));
             Func<bool> isCameraOpaqueDistortVisible = TierVisible(
                 rootItem,
                 ScreenDistortKeyword,
-                () => IsScreenDistortMode(rootItem, ScreenDistortModeCameraOpaque));
+                () => IsScreenDistortMode(rootItem, ScreenDistortModeCameraOpaque,graphSharedMode));
             Func<bool> isScreenDistortModeNeedsNBPostProcessVisible = () => isDeferredDistortVisible() || isCameraOpaqueDistortVisible();
             Func<bool> isMissingNBPostProcessVisible = () => isScreenDistortModeNeedsNBPostProcessVisible() && !HasActiveNBPostProcessRendererFeature();
             Func<bool> isMissingOpaqueTextureVisible = () => isCameraOpaqueDistortVisible() && !HasCameraOpaqueTextureCopyEnabled();
@@ -84,13 +87,15 @@ namespace NBShaderEditor
                 TierVisible(
                     rootItem,
                     ScreenDistortKeyword,
-                    () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f)))
+                    () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, screenModeProperty, 0.5f)))
             {
-                PropertyName = "_ScreenDistortIntensity",
+                PropertyName = graphSharedMode?"_NB_DistortionIntensity":"_ScreenDistortIntensity",
                 GuiContent = Content("屏幕扭曲强度"),
-                RangePropertyName = "_ScreenDistortIntensityRangeVec"
+                RangePropertyName = "_ScreenDistortIntensityRangeVec", WriteOnlyOnInteractiveChange=graphSharedMode
             };
             screenDistortIntensityItem.InitTriggerByChild();
+            if(graphSharedMode)new GraphDisableMainToggleItem(rootItem,this,()=>rootItem.Context.UIEffectEnabled!=MixedBool.True&&IsPropertyGreater(rootItem,screenModeProperty,.5f));
+            else
             new ToggleItem(
                 rootItem,
                 this,
@@ -103,47 +108,47 @@ namespace NBShaderEditor
                 TierVisible(
                     rootItem,
                     ScreenDistortKeyword,
-                    () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f)));
+                    () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, screenModeProperty, 0.5f)));
 
             PropertyToggleBlockItem screenAlphaBlock = ToggleBlock(
                 rootItem,
                 "_ScreenDistortAlphaFoldOut",
                 "_ScreenDistortAlphaRefineToggle",
                 "屏幕扭曲Alpha整体调整",
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE,
+                graphSharedMode?0:NBShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE,
                 1,
-                parent: this,
+                parent: this, onValueChanged:graphSharedMode?(Action<bool>)(v=>rootItem.SyncService.TryApplyGraphNoiseFlagEdit(NBShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE,v,1)):null,
                 isVisible: TierVisible(
                     rootItem,
                     ScreenDistortKeyword,
-                    () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, "_ScreenDistortModeToggle", 0.5f)));
+                    () => rootItem.Context.UIEffectEnabled != MixedBool.True && IsPropertyGreater(rootItem, screenModeProperty, 0.5f)));
             ShaderGUIFloatItem screenDistortAlphaPowItem = new ShaderGUIFloatItem(rootItem, screenAlphaBlock)
             {
-                PropertyName = "_ScreenDistortAlphaPow",
+                PropertyName = graphSharedMode?"_NB_DistortionAlphaPow":"_ScreenDistortAlphaPow",
                 GuiContent = Content("范围(Pow)")
             };
             screenDistortAlphaPowItem.InitTriggerByChild();
             ShaderGUIFloatItem screenDistortAlphaMultiItem = new ShaderGUIFloatItem(rootItem, screenAlphaBlock)
             {
-                PropertyName = "_ScreenDistortAlphaMulti",
+                PropertyName = graphSharedMode?"_NB_DistortionAlphaMultiplier":"_ScreenDistortAlphaMulti",
                 GuiContent = Content("相乘")
             };
             screenDistortAlphaMultiItem.InitTriggerByChild();
             ShaderGUIFloatItem screenDistortAlphaAddItem = new ShaderGUIFloatItem(rootItem, screenAlphaBlock)
             {
-                PropertyName = "_ScreenDistortAlphaAdd",
+                PropertyName = graphSharedMode?"_NB_DistortionAlphaAdd":"_ScreenDistortAlphaAdd",
                 GuiContent = Content("偏移(相加)")
             };
             screenDistortAlphaAddItem.InitTriggerByChild();
 
             new FeaturePopupItem(rootItem, this, "_DistortMode", () => Content("扭曲模式"), DistortModeNames,
-                property => rootItem.SyncService.ApplyToggleKeyword("_DISTORT_REFRACTION", property.floatValue > 0.5f),
+                property => { if(graphSharedMode)rootItem.SyncService.TryApplyGraphNoiseIntentEdit();else rootItem.SyncService.ApplyToggleKeyword("_DISTORT_REFRACTION", property.floatValue > 0.5f); },
                 keyword: "_DISTORT_REFRACTION");
             TextureRelatedFoldOutItem noiseMapRelatedFoldOut = AddTextureWithRelatedFoldOut(rootItem, this, "_NoiseMap", "扭曲贴图", "_NoiseMapFoldOut",
                 NBShaderFlags.FLAG_BIT_WRAPMODE_NOISEMAP, NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_NOISEMAP,
                 isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
             new UVModeSelectItem(rootItem, noiseMapRelatedFoldOut, "_NoiseUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MAP, 0, () => Content("扭曲贴图UV来源"), "_NoiseMap",
-                isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0));
+                isVisible: () => IsPropertyMode(rootItem, "_DistortMode", 0),graphFeatureProtocolEdit:graphSharedMode);
             new Vector2LineItem(rootItem, noiseMapRelatedFoldOut, "_DistortionDirection", true, () => Content("扭曲方向强度"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
             new CustomDataSelectItem(rootItem, noiseMapRelatedFoldOut, NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_X, 2, () => Content("扭曲方向强度X自定义曲线"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
             new CustomDataSelectItem(rootItem, noiseMapRelatedFoldOut, NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_NOISE_DIRECTION_Y, 2, () => Content("扭曲方向强度Y自定义曲线"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
@@ -152,7 +157,7 @@ namespace NBShaderEditor
                 PropertyName = "_NoiseMapUVRotation",
                 GuiContent = Content("扭曲旋转"),
                 Min = 0f,
-                Max = 360f
+                Max = 360f, WriteOnlyOnInteractiveChange=graphSharedMode
             };
             noiseMapUVRotationItem.InitTriggerByChild();
             new Vector2LineItem(rootItem, noiseMapRelatedFoldOut, "_NoiseOffset", true, () => Content("扭曲偏移速度"), () => IsPropertyMode(rootItem, "_DistortMode", 0));
@@ -161,7 +166,7 @@ namespace NBShaderEditor
                 noiseMapRelatedFoldOut,
                 "_DistortionBothDirection_Toggle",
                 () => Content("0.5为中值，双向扭曲"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON, enabled),
+                enabled => { if(graphSharedMode)rootItem.SyncService.TryApplyGraphNoiseFlagEdit(NBShaderFlags.FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON,enabled,0);else rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON, enabled); },
                 () => IsPropertyMode(rootItem, "_DistortMode", 0));
             ShaderGUISliderItem refractionIorItem = new ShaderGUISliderItem(
                 rootItem,
@@ -171,7 +176,7 @@ namespace NBShaderEditor
                 PropertyName = "_RefractionIOR",
                 GuiContent = Content("折射率"),
                 Min = 0f,
-                Max = 5f
+                Max = 5f, WriteOnlyOnInteractiveChange=graphSharedMode
             };
             refractionIorItem.InitTriggerByChild();
             new PNoiseBlendModeItem(rootItem, this, NBShaderFlags.FLAG_BIT_PNOISE_BLEND_POS_0_DISTORT, "_DistortPNoiseBlendOpacity", () => Content("扭曲程序噪波混合"),
@@ -183,13 +188,49 @@ namespace NBShaderEditor
                 "_noiseMaskMap_Toggle",
                 "扭曲遮罩",
                 parent: this,
-                keyword: "_NOISE_MASKMAP");
+                keyword:graphSharedMode?null:"_NOISE_MASKMAP",onValueChanged:graphSharedMode?(Action<bool>)(_=>rootItem.SyncService.TryApplyGraphNoiseIntentEdit()):null);
             AddTextureWithWrap(rootItem, noiseMaskBlock, "_NoiseMaskMap", "扭曲遮罩贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_NOISE_MASKMAP,
                 NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_NOISE_MASKMAP);
             new ColorChannelSelectItem(rootItem, noiseMaskBlock, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_NOISE_MASK, 0, () => Content("扭曲遮罩图通道选择"));
-            new UVModeSelectItem(rootItem, noiseMaskBlock, "_NoiseMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP, 0, () => Content("扭曲遮罩贴图UV来源"), "_NoiseMaskMap");
+            new UVModeSelectItem(rootItem, noiseMaskBlock, "_NoiseMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_NOISE_MASK_MAP, 0, () => Content("扭曲遮罩贴图UV来源"), "_NoiseMaskMap",graphFeatureProtocolEdit:graphSharedMode);
 
             InitTriggerByChild();
+        }
+
+        private sealed class GraphScreenModePopupItem : ShaderGUIPopUpItem
+        {
+            readonly NBShaderRootItem root;
+            internal GraphScreenModePopupItem(NBShaderRootItem value,ShaderGUIItem parent)
+                :base(value,parent,"_NB_DistortionMode",()=>Content("屏幕扰动模式"),
+                    ()=>PopupOptions("_ScreenDistortModeToggle",ScreenDistortModeNames),null,
+                    ()=>value.Context.UIEffectEnabled!=MixedBool.True){root=value;}
+            public override void DrawController()
+            {
+                // Same primitive popup, with write deferred to the atomic existing-Sync transaction.
+                // Native desktop selection stays manual; automated tests call the real service.
+                EditorGUI.BeginChangeCheck();int next=EditorGUI.Popup(ControlRect,(int)PropertyInfo.Property.floatValue,PopUpNames);
+                if(EditorGUI.EndChangeCheck())root.SyncService.TryAdoptGraphScreenEdit(next,null);
+            }
+            public override void ExecuteReset(bool isCallByParent=false)
+            {root.SyncService.TryAdoptGraphScreenEdit(0,null);CheckIsPropertyModified();}
+        }
+
+        // Thin adapter over the original Toggle. Raw state is display-only until
+        // the user edits or resets this exact control; no paint material writes.
+        private sealed class GraphDisableMainToggleItem : ToggleItem
+        {
+            readonly NBShaderRootItem root;
+            internal GraphDisableMainToggleItem(NBShaderRootItem value,ShaderGUIItem parent,Func<bool> visible)
+                :base(value,parent,"_DisableMainPassToggle",()=>Content("关闭主材质Pass"),null,visible){root=value;}
+            public override void DrawController()
+            {
+                bool disabled,mixed;if(!root.SyncService.TryReadGraphScreenDisableMainDisplay(out disabled,out mixed))return;
+                bool before=EditorGUI.showMixedValue;EditorGUI.showMixedValue=mixed;EditorGUI.BeginChangeCheck();
+                bool next=EditorGUI.Toggle(ControlRect,disabled);bool changed=EditorGUI.EndChangeCheck();EditorGUI.showMixedValue=before;
+                if(changed)root.SyncService.TryAdoptGraphScreenEdit(null,next);
+            }
+            public override void ExecuteReset(bool isCallByParent=false)
+            {root.SyncService.TryAdoptGraphScreenEdit(null,false);CheckIsPropertyModified();}
         }
 
         private static int GetIntProperty(NBShaderRootItem rootItem, string propertyName)
@@ -206,10 +247,10 @@ namespace NBShaderEditor
                    info.Property.floatValue > threshold;
         }
 
-        private static bool IsScreenDistortMode(NBShaderRootItem rootItem, int mode)
+        private static bool IsScreenDistortMode(NBShaderRootItem rootItem, int mode,bool graphSharedMode=false)
         {
             return rootItem.Context.UIEffectEnabled != MixedBool.True &&
-                   IsPropertyMode(rootItem, ScreenDistortModePropertyName, mode);
+                   IsPropertyMode(rootItem, graphSharedMode?"_NB_DistortionMode":ScreenDistortModePropertyName, mode);
         }
 
         private static bool HasActiveNBPostProcessRendererFeature()
