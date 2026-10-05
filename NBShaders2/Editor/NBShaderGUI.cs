@@ -63,6 +63,8 @@ namespace NBShaderEditor
             }
         }
 
+        bool _sharedGraphSharedUVReady;
+        SharedUVFeatureItem _graphSharedUVItem;
         bool _sharedGraphMainTextureReady;
         bool _sharedGraphFlipbookReady;
         FlipbookFeatureItem _graphFlipbookItem;
@@ -131,6 +133,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphMatCapReady)names.AddRange(NBShaderSyncService.GraphMatCapSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDepthFeaturesReady)names.AddRange(NBShaderSyncService.GraphDepthSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphNoiseReady)names.AddRange(NBShaderSyncService.GraphNoiseSharedPropertyNames);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphSharedUVReady)names.AddRange(NBShaderSyncService.GraphSharedUVPropertyNames);
             return names;
         }
 
@@ -348,6 +351,7 @@ namespace NBShaderEditor
                     _graphFlipbookItem = null;
                     _graphParallaxItem = null;
                     _graphNoiseItem=null;_sharedGraphNoiseReady=false;
+                    _graphSharedUVItem=null;_sharedGraphSharedUVReady=false;
                     _sharedGraphParallaxReady = false;
                     _graphFresnelItem = null;
                     _graphColorAdjustmentBlock=null;_graphColorRampItem=null;
@@ -388,6 +392,7 @@ namespace NBShaderEditor
                 if(InitializeGraphMaskProgramInputs())DrawGraphMaskProgramInputs();
                 DrawGraphOverlayInputs();
                 DrawGraphParallaxInputs();
+                DrawGraphSharedUVInputs();
                 DrawGraphNoiseInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
@@ -587,5 +592,20 @@ namespace NBShaderEditor
             if(selectedItem!=null){selectedItem.OnGUI();return;}
             _graphDistanceFadeBlock.OnGUI();_graphSoftParticlesBlock.OnGUI();_graphDepthOutlineItem.OnGUI();
         }
+        internal bool InitializeGraphSharedUVInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphSharedUVReady=Context.IsGraphMaterialHost&&SyncService.HasGraphSharedUVEditSchema();
+            if(!_sharedGraphSharedUVReady)return false;
+            _graphSharedUVItem??=new SharedUVFeatureItem(this,null,true);return true;
+        }
+        internal void DrawGraphSharedUVInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!InitializeGraphSharedUVInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB Shared UV");
+            (selectedItem??_graphSharedUVItem).OnGUI();
+        }
+
     }
 }

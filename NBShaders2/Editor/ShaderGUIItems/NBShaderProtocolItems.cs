@@ -463,6 +463,7 @@ namespace NBShaderEditor
         private readonly int _dataIndex;
         private readonly bool _graphMainTexOffset;
         private readonly bool _graphOverlayOffset;
+        private readonly bool _graphSharedUVOffset;
         private readonly Func<bool> _isVisible;
 
         public CustomDataSelectItem(
@@ -471,12 +472,13 @@ namespace NBShaderEditor
             int dataBitPos,
             int dataIndex,
             Func<GUIContent> contentProvider,
-            Func<bool> isVisible = null, bool graphMainTexOffset = false, bool graphOverlayOffset = false) : base(rootItem, parentItem)
+            Func<bool> isVisible = null, bool graphMainTexOffset = false, bool graphOverlayOffset = false, bool graphSharedUVOffset = false) : base(rootItem, parentItem)
         {
             _dataBitPos = dataBitPos;
             _dataIndex = dataIndex;
             _graphMainTexOffset = graphMainTexOffset;
             _graphOverlayOffset = graphOverlayOffset;
+            _graphSharedUVOffset = graphSharedUVOffset;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
             GuiContent = _contentProvider();
@@ -570,6 +572,8 @@ namespace NBShaderEditor
 
         private void SetComponent(NBShaderFlags.CutomDataComponent component)
         {
+            if (_graphSharedUVOffset && RootItem is NBShaderRootItem sharedRoot && sharedRoot.Context.IsGraphMaterialHost)
+            { sharedRoot.SyncService.TryApplyGraphSharedUVCustomData(_dataBitPos,_dataIndex,component); return; }
             if (_graphOverlayOffset && RootItem is NBShaderRootItem overlayRoot && overlayRoot.Context.IsGraphMaterialHost)
             { overlayRoot.SyncService.TryApplyGraphOverlayCustomData(_dataBitPos,_dataIndex,component); return; }
             if (_graphMainTexOffset && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)

@@ -2157,6 +2157,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphSharedFeatureUVMode(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
         {
+            if(position==NBShaderFlags.FLAG_BIT_UVMODE_POS_0_SHAREDUV && fold=="_SharedUVModeFoldOut")return TryApplyGraphSharedUVMode(mode,setFold);
             if(position==26 && fold=="_RampColorUVModeFoldOut")return TryApplyGraphColorRampUVMode(mode,setFold);
             if(position==8||position==10)return TryApplyGraphNoiseUVMode(position,mode,fold,setFold);
             if(position==14||position==16)return TryApplyGraphDissolveUVMode(position,mode,setFold);
@@ -2387,6 +2388,49 @@ namespace NBShaderEditor
             {bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
             RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
         }
+        internal static readonly string[] GraphSharedUVPropertyNames={"_SharedUVToggle","_SharedUVBlockFoldOut","_SharedUVModeFoldOut","_SharedUV_ST","_SharedUV_Vec"};
+        internal bool HasGraphSharedUVEditSchema()
+        {
+            if(!HasGraphMainTexUVEditSchema()||_rootItem.MatEditor==null)return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                if(!GraphFlagIntentSchemaAvailable(material)||material.GetFloat(GraphGUIStateVersionProperty)!=2f)return false;
+                foreach(string name in new[]{"_SharedUVToggle","_SharedUVBlockFoldOut","_SharedUVModeFoldOut","_NB_CustomDataFlag3Lo16","_NB_CustomDataFlag3Hi16"})
+                {
+                    if(!NBShaderRootItem.HasFloatProperty(material,name)||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;
+                    float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;
+                }
+                foreach(string name in new[]{"_SharedUV_ST","_SharedUV_Vec"})
+                {
+                    int index=material.shader.FindPropertyIndex(name);
+                    if(index<0||material.shader.GetPropertyType(index)!=UnityEngine.Rendering.ShaderPropertyType.Vector||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;
+                    Vector4 value=material.GetVector(name);for(int i=0;i<4;++i)if(float.IsNaN(value[i])||float.IsInfinity(value[i]))return false;
+                }
+            }
+            return true;
+        }
+        internal bool TryApplyGraphSharedUVMode(NBShaderFlags.UVMode mode,bool setFold)
+        {
+            if(!HasGraphSharedUVEditSchema()||(int)mode<0||(int)mode>8)return false;
+            const int shift=14,mask=3<<shift; // Original word0 position30 -> high-half bits14/15.
+            return RunGraphMainTexEdit("Shared UV Source",material=>{
+                bool changed=WriteGraphHalfSlice(material,"_NB_UVModeFlag0Hi16",mask,((int)mode&3)<<shift)|
+                    WriteGraphHalfSlice(material,"_NB_UVModeFlagType0Hi16",mask,((int)mode/4)<<shift);
+                if(setFold)
+                {
+                    float value=mode==NBShaderFlags.UVMode.DefaultUVChannel||mode==NBShaderFlags.UVMode.CommonUV||mode==NBShaderFlags.UVMode.ScreenUV||mode==NBShaderFlags.UVMode.MainTex?0:1;
+                    if(material.GetFloat("_SharedUVModeFoldOut")!=value){material.SetFloat("_SharedUVModeFoldOut",value);changed=true;}
+                }
+                return UpdateGraphMainTexUVDerived(material)|changed;
+            });
+        }
+        internal bool TryApplyGraphSharedUVCustomData(int position,int word,NBShaderFlags.CutomDataComponent component)
+        {
+            if(!HasGraphSharedUVEditSchema()||word!=3||(position!=8&&position!=12)||(int)component<0||(int)component>8)return false;
+            int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};
+            return RunGraphMainTexEdit("Shared UV Offset Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag3Lo16",15<<position,values[(int)component]<<position));
+        }
+
     }
 
     public enum VATMode
