@@ -252,6 +252,9 @@ namespace NBShaderEditor
                 NBShaderPassIntent[] screenIntent;
                 if(!CanApplyGraphOwnedScreenPassState(material,tier,allowed,allowedPasses,out screenIntent))return false;
                 if(screenIntent!=null)foreach(var pass in screenIntent)anyChange|=material.GetShaderPassEnabled(pass.passName)!=pass.included;
+                NBShaderPassIntent shadowIntent;
+                if(!NBShaderFeatureRuntime.CanApplyGraphOwnedShadowPassState(material,tier,allowed,allowedPasses,out shadowIntent))return false;
+                if(shadowIntent!=null)anyChange|=material.GetFloat("_CastShadows")!=(shadowIntent.included?1f:0f)||material.GetShaderPassEnabled(shadowIntent.passName)!=shadowIntent.included;
                 NBShaderPassIntent backIntent;
                 if (!CanApplyGraphOwnedBackFirstPassState(material, tier, allowed, allowedPasses, out backIntent)) return false;
                 if (backIntent != null) anyChange |= material.GetShaderPassEnabled(backIntent.passName) != backIntent.included ||
@@ -260,6 +263,7 @@ namespace NBShaderEditor
             if (!anyChange) return true;
             var objects = new List<UnityEngine.Object>();
             foreach (Material material in _rootItem.Mats) objects.Add(material);
+            var originalShadowPasses=new GraphShadowCasterSnapshot[_rootItem.Mats.Count];
             var originalScreenPasses=new GraphScreenPassSnapshot[_rootItem.Mats.Count];
             var originalBackPasses = new GraphBackFirstPassSnapshot[_rootItem.Mats.Count];
             var originalOverrideDepth = new bool[_rootItem.Mats.Count];
@@ -267,6 +271,7 @@ namespace NBShaderEditor
             var originalGates = new float[_rootItem.Mats.Count][];
             for (int i = 0; i < _rootItem.Mats.Count; ++i)
             {
+                originalShadowPasses[i]=new GraphShadowCasterSnapshot(_rootItem.Mats[i]);
                 originalScreenPasses[i]=new GraphScreenPassSnapshot(_rootItem.Mats[i]);
                 originalBackPasses[i] = new GraphBackFirstPassSnapshot(_rootItem.Mats[i]);
                 originalOverrideDepth[i] = _rootItem.Mats[i].IsKeywordEnabled("_OVERRIDE_Z");
@@ -279,11 +284,12 @@ namespace NBShaderEditor
             var changedMaterials = new bool[_rootItem.Mats.Count];
             for (int i = 0; i < _rootItem.Mats.Count; ++i)
             {
-                bool screenChanged, backChanged;
+                bool screenChanged, backChanged,shadowChanged;
                 if (NBShaderFeatureLevelMaterialApplier.ApplyGraphSupportedGateTier(_rootItem.Mats[i], tier, allowed, out changedMaterials[i]) &&
                     ApplyGraphOwnedScreenPassState(_rootItem.Mats[i],tier,allowed,allowedPasses,out screenChanged) &&
-                    ApplyGraphOwnedBackFirstPassState(_rootItem.Mats[i], tier, allowed, allowedPasses, out backChanged))
-                {changedMaterials[i]|=screenChanged || backChanged;continue;}
+                    ApplyGraphOwnedBackFirstPassState(_rootItem.Mats[i], tier, allowed, allowedPasses, out backChanged) &&
+                    NBShaderFeatureRuntime.ApplyGraphOwnedShadowPassState(_rootItem.Mats[i],tier,allowed,allowedPasses,out shadowChanged))
+                {changedMaterials[i]|=screenChanged || backChanged || shadowChanged;continue;}
                 // Reader is pure and gates are not its inputs, so this is an
                 // unexpected post-preflight failure. Roll back registered gates and
                 // the exact OVZ keyword before any Tier value is committed.
@@ -293,6 +299,7 @@ namespace NBShaderEditor
                         _rootItem.Mats[restore].SetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedProjectionProperties[gate], originalGates[restore][gate]);
                     RestoreGraphOverrideDepthKeyword(_rootItem.Mats[restore], originalOverrideDepth[restore]);
                     NBShaderFeatureLevelMaterialApplier.RestoreGraphDeclaredKeywordState(_rootItem.Mats[restore],originalDeclaredKeywords[restore]);
+                    originalShadowPasses[restore].Restore();
                     originalScreenPasses[restore].Restore();
                     originalBackPasses[restore].Restore();
                 }
@@ -2846,6 +2853,7 @@ namespace NBShaderEditor
             {
                 bool ignored;
                 if (!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out ignored)) return false;
+                if(material.HasProperty("_TransparentShadowDitherToggle")&&!HasPortalFiniteFloat(material,"_TransparentShadowDitherToggle"))return false;
                 foreach (string n in GraphPortalSharedProperties)
                     if (!HasPortalFiniteFloat(material, n)) return false;
                 foreach (string n in new[] { "_Surface", "_AlphaClip", "_Blend", "_ZWriteControl", "_ZTest", "_QueueControl", "_QueueOffset",
@@ -2904,6 +2912,7 @@ namespace NBShaderEditor
             int coverage = material.GetFloat("_Surface") == 1f ? 1 | (ReadGraphHalf(material, "_NB_Flags1Lo16") & 2) : 0;
             if (WriteGraphHalfSlice(material, "_NB_Flags1Lo16", 3, coverage))
                 NotifyGraphPackedFlagsEdited(material, "_NB_Flags1Lo16", 3);
+            if(material.HasProperty("_TransparentShadowDitherToggle")&&(coverage&2)==0)material.SetFloat("_TransparentShadowDitherToggle",0f);
             // This explicit preset holds CURRENT queue, matching Native Portal.
             // Official Advanced remains available for a subsequent Auto choice.
             material.SetFloat("_QueueControl", 1f);
@@ -3206,6 +3215,117 @@ namespace NBShaderEditor
             });
         }
 
+
+        internal static readonly string[] GraphBaseShadowProperties={"_AffectsShadows","_TransparentShadowDitherToggle","_IgnoreVetexColor_Toggle"};
+        internal bool HasGraphBaseShadowSchema()
+        {
+            if(!HasGraphMainTexTargets())return false;
+            foreach(Material value in _rootItem.Mats)
+            {
+                foreach(string name in GraphBaseShadowProperties)
+                {
+                    if(!_rootItem.PropertyInfoDic.ContainsKey(name)||!NBShaderMaterialIntentResolver.HasFloatShaderProperty(value,name))return false;
+                    float x=value.GetFloat(name);if(float.IsNaN(x)||float.IsInfinity(x))return false;
+                }
+                NBShaderFeatureTier tier;NBShaderMaterialIntentResult intent;
+                if(!NBShaderFeatureLevelMaterialApplier.TryReadGraphSavedSupportedGateTier(value,out intent))return false;
+                tier=intent.tier;NBShaderPassIntent shadow;
+                if(!NBShaderFeatureRuntime.CanApplyGraphOwnedShadowPassState(value,tier,
+                    NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),
+                    NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier),out shadow)||shadow==null)return false;
+            }
+            return true;
+        }
+        // Explicit Surface action shares the original pure reader and Shadow capability.
+        // It never projects Cast or writes on paint/Validate.
+        internal static bool CanApplyGraphShadowCoverageForSurface(Material material)
+        {
+            NBShaderMaterialIntentResult intent;
+            if(!NBShaderFeatureLevelMaterialApplier.TryReadGraphSavedSupportedGateTier(material,out intent))return false;
+            NBShaderPassIntent shadow;
+            return NBShaderFeatureRuntime.CanApplyGraphOwnedShadowPassState(material,intent.tier,
+                NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(intent.tier),
+                NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(intent.tier),out shadow);
+        }
+        internal static bool TryApplyGraphShadowCoverageForSurface(IList<Material> materials,out bool changed)
+        {
+            changed=false;if(materials==null||materials.Count==0)return false;
+            // Check the complete selection before the first NB write, including
+            // unchanged-surface targets. Official URP Surface retains its own authority.
+            foreach(Material material in materials)if(!CanApplyGraphShadowCoverageForSurface(material))return false;
+            var before=new Dictionary<Material,Vector2>();
+            foreach(Material material in materials)
+                if(material.HasProperty("_TransparentShadowDitherToggle")&&!before.ContainsKey(material))
+                    before.Add(material,new Vector2(material.GetFloat("_NB_Flags1Lo16"),material.GetFloat("_TransparentShadowDitherToggle")));
+            try
+            {
+                foreach(Material material in before.Keys)changed|=ApplyGraphShadowCoverageForSurface(material);
+                return true;
+            }
+            catch
+            {
+                foreach(var row in before){row.Key.SetFloat("_NB_Flags1Lo16",row.Value.x);row.Key.SetFloat("_TransparentShadowDitherToggle",row.Value.y);}
+                changed=false;throw;
+            }
+        }
+        internal static bool ApplyGraphShadowCoverageForSurface(Material material)
+        {
+            if(!CanApplyGraphShadowCoverageForSurface(material)||!material.HasProperty("_TransparentShadowDitherToggle"))return false;
+            float dither=material.GetFloat("_TransparentShadowDitherToggle");
+            bool transparent=material.GetFloat("_Surface")==1f;
+            int coverage=transparent?1|(ReadGraphHalf(material,"_NB_Flags1Lo16")&2):0;
+            bool changed=WriteGraphHalfSlice(material,"_NB_Flags1Lo16",3,coverage);
+            if(!transparent&&dither!=0f){material.SetFloat("_TransparentShadowDitherToggle",0f);changed=true;}
+            return changed;
+        }
+        internal bool TryWriteGraphBaseShadow(string name,bool enabled)
+        {
+            if(Array.IndexOf(GraphBaseShadowProperties,name)<0||!HasGraphBaseShadowSchema())return false;
+            // Schema/enum preflight precedes the existing pre-write Undo owner.
+            var images=new GraphBaseShadowSnapshot[_rootItem.Mats.Count];
+            for(int i=0;i<images.Length;++i)images[i]=new GraphBaseShadowSnapshot(_rootItem.Mats[i]);
+            try
+            {
+                bool accepted=true;
+                bool result=RunGraphMainTexEdit("NB Base Shadow/Vertex Color",material=>{
+                    bool next=enabled;
+                    if(name=="_TransparentShadowDitherToggle"&&material.GetFloat("_Surface")!=1f)next=false;
+                    bool changed=material.GetFloat(name)!=(next?1f:0f);if(changed)material.SetFloat(name,next?1f:0f);
+                    if(name=="_IgnoreVetexColor_Toggle")
+                        return WriteGraphHalfSlice(material,"_NB_Flags1Lo16",NBShaderFlags.FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR,next?NBShaderFlags.FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR:0)||changed;
+                    if(name=="_TransparentShadowDitherToggle")
+                        changed|=WriteGraphHalfSlice(material,"_NB_Flags1Lo16",2,next?2:0);
+                    changed|=ApplyGraphShadowCoverageForSurface(material);
+                    var tier=(NBShaderFeatureTier)(int)material.GetFloat(FeatureTierPropertyName);bool castChanged;
+                    if(!NBShaderFeatureRuntime.ApplyGraphOwnedShadowPassState(material,tier,
+                        NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),
+                        NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier),out castChanged)){accepted=false;return changed;}
+                    return changed||castChanged;
+                });
+                if(!result||!accepted){foreach(var image in images)image.Restore();RefreshGraphMainTexPropertyReferences();return false;}
+                return true;
+            }
+            catch{foreach(var image in images)image.Restore();RefreshGraphMainTexPropertyReferences();throw;}
+        }
+        private sealed class GraphBaseShadowSnapshot
+        {
+            readonly Material material;readonly float affects,dither,ignore,word,cast;readonly bool pass;
+            internal GraphBaseShadowSnapshot(Material value)
+            {
+                material=value;affects=value.GetFloat("_AffectsShadows");dither=value.GetFloat("_TransparentShadowDitherToggle");ignore=value.GetFloat("_IgnoreVetexColor_Toggle");word=value.GetFloat("_NB_Flags1Lo16");cast=value.GetFloat("_CastShadows");pass=value.GetShaderPassEnabled("ShadowCaster");
+            }
+            internal void Restore()
+            {
+                material.SetFloat("_AffectsShadows",affects);material.SetFloat("_TransparentShadowDitherToggle",dither);material.SetFloat("_IgnoreVetexColor_Toggle",ignore);material.SetFloat("_NB_Flags1Lo16",word);material.SetFloat("_CastShadows",cast);material.SetShaderPassEnabled("ShadowCaster",pass);
+            }
+        }
+        private sealed class GraphShadowCasterSnapshot
+        {
+            readonly Material material;readonly bool owned,pass;readonly float cast;
+            internal GraphShadowCasterSnapshot(Material value)
+            {material=value;owned=value.HasProperty("_TransparentShadowDitherToggle");if(owned){cast=value.GetFloat("_CastShadows");pass=value.GetShaderPassEnabled("ShadowCaster");}}
+            internal void Restore(){if(owned){material.SetFloat("_CastShadows",cast);material.SetShaderPassEnabled("ShadowCaster",pass);}}
+        }
     }
 
     public enum VATMode

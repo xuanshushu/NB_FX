@@ -57,19 +57,13 @@ namespace NBFX.Baseline.Tests
             var result=G4SpecDebugFixture.Properties(m).Where(p=>!Projections.Contains(p.Key)&&p.Key!="_NB_BackFirstEffective").ToDictionary(p=>p.Key,p=>p.Value);
             result["#queue"]=m.renderQueue.ToString();return result;
         }
-        static Dictionary<string,string> RawOwnedShadowV2(Material material)
-        {return Raw(material).Where(row=>row.Key!="_CastShadows").ToDictionary(row=>row.Key,row=>row.Value);}
-        static void AssertOwnedCaster(Material material,bool enabled)
-        {Assert.That(material.GetFloat("_AffectsShadows"),Is.EqualTo(1));Assert.That(material.GetFloat("_CastShadows"),Is.EqualTo(enabled?1:0));Assert.That(material.GetShaderPassEnabled("ShadowCaster"),Is.EqualTo(enabled));}
         static void EditorComposite(Material m,int level,string[] keywords,string[] passes)
         {
             object[] args={m,Tier(level),keywords,false};Assert.That(Call(EditorApplier,"ApplyGraphSupportedGateTier",args),Is.True);
             foreach(string method in new[]{"ApplyGraphOwnedScreenPassState","ApplyGraphOwnedBackFirstPassState"})
             {object[] a={m,Tier(level),keywords,passes,false};Assert.That(Call(Sync,method,a),Is.True);}
-            object[] shadow={m,Tier(level),keywords,passes,false};
-            Assert.That(Unique(Runtime,"ApplyGraphOwnedShadowPassState",typeof(Material),Tier(3).GetType(),typeof(IEnumerable<string>),typeof(IEnumerable<string>),typeof(bool).MakeByRefType()).Invoke(null,shadow),Is.True);
         }
-        [Test] public void G4RuntimeOwnerShadowV2_EditorRuntimeCompositeEqualAndRawPreserved()
+        [Test] public void G4RuntimeOwner1_EditorRuntimeCompositeEqualAndRawPreserved()
         {
             Assert.That(Gates.Length,Is.EqualTo(31));Assert.That(Projections.Length,Is.EqualTo(33));
             foreach(string field in new[]{"GraphSupportedGateProperties","GraphSupportedTypedProjectionProperties","GraphSupportedProjectionProperties"})
@@ -77,22 +71,20 @@ namespace NBFX.Baseline.Tests
             var e=New();var r=new Material(e){hideFlags=HideFlags.HideAndDontSave};extra.Add(r);
             foreach(var m in new[]{e,r})
             {
-                m.SetFloat("_AffectsShadows",1);m.SetFloat("_CastShadows",0);m.SetShaderPassEnabled("ShadowCaster",false);
                 m.SetFloat("_FxLightMode",4);m.SetFloat("_SixWayColorAbsorptionToggle",1);m.SetFloat("_BlinnPhongSpecularToggle",1);m.SetFloat("_OverrideZ_Toggle",1);
                 m.SetFloat("_Mask_Toggle",1);m.SetFloat("_fresnelEnabled",1);m.SetFloat("_NB_Debug_Fresnel",1);m.SetFloat("_BackFirstPassToggle",1);
                 m.SetFloat("_NB_CustomDataFlag3Hi16",53214.125f);m.SetFloat("_NB_Flags0Lo16",65536.25f);
                 m.SetFloat("_VAT_Toggle",1);m.SetFloat("_FlipbookBlending",1);m.SetFloat("_VATMode",0);m.SetFloat("_HoudiniVATSubMode",3);
                 m.SetFloat("_NB_TierVATFamily",-1);m.SetFloat("_NB_TierVATSubMode",-1);
             }
-            var beforeE=RawOwnedShadowV2(e);var beforeR=RawOwnedShadowV2(r);var deny=Keywords.Except(new[]{"_FX_LIGHT_MODE_SIX_WAY","_SPECULAR_COLOR","NB_DEBUG_FRESNEL","_OVERRIDE_Z","_VAT_HOUDINI"}).ToArray();
+            var beforeE=Raw(e);var beforeR=Raw(r);var deny=Keywords.Except(new[]{"_FX_LIGHT_MODE_SIX_WAY","_SPECULAR_COLOR","NB_DEBUG_FRESNEL","_OVERRIDE_Z","_VAT_HOUDINI"}).ToArray();
             foreach(bool allow in new[]{false,true})
             {
                 var kw=allow?Keywords:deny;var passes=allow?Passes:Array.Empty<string>();EditorComposite(e,allow?3:0,kw,passes);
                 bool changed;Assert.That(RuntimeApply(new[]{r},allow?3:0,kw,passes,out changed),Is.True);
-                AssertOwnedCaster(e,allow);AssertOwnedCaster(r,allow);
                 Assert.That(G4SpecDebugFixture.Properties(r),Is.EquivalentTo(G4SpecDebugFixture.Properties(e)));Assert.That(r.shaderKeywords.OrderBy(k=>k),Is.EqualTo(e.shaderKeywords.OrderBy(k=>k)));
-                foreach(string tag in new[]{"UniversalForward","SRPDefaultUnlit","NBDeferredDistortPass","NBCameraOpaqueDistortPass","ShadowCaster"})Assert.That(r.GetShaderPassEnabled(tag),Is.EqualTo(e.GetShaderPassEnabled(tag)),tag);
-                Assert.That(RawOwnedShadowV2(e),Is.EquivalentTo(beforeE));Assert.That(RawOwnedShadowV2(r),Is.EquivalentTo(beforeR));Assert.That(r.GetFloat("_NBShaderFeatureTier"),Is.EqualTo(3));
+                foreach(string tag in new[]{"UniversalForward","SRPDefaultUnlit","NBDeferredDistortPass","NBCameraOpaqueDistortPass"})Assert.That(r.GetShaderPassEnabled(tag),Is.EqualTo(e.GetShaderPassEnabled(tag)),tag);
+                Assert.That(Raw(e),Is.EquivalentTo(beforeE));Assert.That(Raw(r),Is.EquivalentTo(beforeR));Assert.That(r.GetFloat("_NBShaderFeatureTier"),Is.EqualTo(3));
                 Assert.That(r.GetFloat("_NB_TierAllowLighting"),Is.EqualTo(allow?1:0));Assert.That(r.IsKeywordEnabled("_OVERRIDE_Z"),Is.EqualTo(allow));Assert.That(r.IsKeywordEnabled("EVALUATE_SH_VERTEX"),Is.EqualTo(allow));
                 Assert.That(r.GetFloat("_NB_TierVATFamily"),Is.EqualTo(allow?0:-2));Assert.That(r.GetFloat("_NB_TierVATSubMode"),Is.EqualTo(allow?3:0));Assert.That(r.GetFloat("_NB_TierAllowFlipbook"),Is.Zero,"Raw VAT priority survives family filtering");
                 string stable=Snapshot(r);Assert.That(RuntimeApply(new[]{r},allow?3:0,kw,passes,out changed),Is.True);Assert.That(changed,Is.False);Assert.That(Snapshot(r),Is.EqualTo(stable));
@@ -100,23 +92,22 @@ namespace NBFX.Baseline.Tests
             foreach(string denied in new[]{"_HOUDINI_VAT_PARTICLE_SPRITE","_VAT"})
             {
                 var kw=Keywords.Except(new[]{denied}).ToArray();EditorComposite(e,0,kw,Passes);bool changed;Assert.That(RuntimeApply(new[]{r},0,kw,Passes,out changed),Is.True);
-                AssertOwnedCaster(e,true);AssertOwnedCaster(r,true);
-                Assert.That(G4SpecDebugFixture.Properties(r),Is.EquivalentTo(G4SpecDebugFixture.Properties(e)));Assert.That(RawOwnedShadowV2(r),Is.EquivalentTo(beforeR));
+                Assert.That(G4SpecDebugFixture.Properties(r),Is.EquivalentTo(G4SpecDebugFixture.Properties(e)));Assert.That(Raw(r),Is.EquivalentTo(beforeR));
                 Assert.That(r.GetFloat("_NB_TierAllowVAT"),Is.EqualTo(denied=="_VAT"?0:1));Assert.That(r.GetFloat("_NB_TierVATFamily"),Is.EqualTo(denied=="_VAT"?-2:0));Assert.That(r.GetFloat("_NB_TierVATSubMode"),Is.Zero);Assert.That(r.GetFloat("_NB_TierAllowFlipbook"),Is.Zero);
             }
         }
         [Test] public void G4RuntimeOwner1_GroupScopeAndUnownedPassesRemainExact()
         {
             var m=New(false);m.SetFloat("_NB_GraphScreenPassMigrationComplete",0);m.SetFloat("_Mask_Toggle",1);m.SetFloat("_NB_TierAllowLighting",float.NaN);
-            m.SetFloat("_AffectsShadows",1);bool shadowBefore=m.GetShaderPassEnabled("ShadowCaster");var before=G4SpecDebugFixture.Properties(m);object[] group={m,Tier(0),new[]{"_MASKMAP_ON"},false};Assert.That(Call(EditorApplier,"ApplyGraphMaskGroup",group),Is.True);
+            var before=G4SpecDebugFixture.Properties(m);object[] group={m,Tier(0),new[]{"_MASKMAP_ON"},false};Assert.That(Call(EditorApplier,"ApplyGraphMaskGroup",group),Is.True);
             var after=G4SpecDebugFixture.Properties(m);foreach(var pair in before.Where(p=>!new[]{"_NB_TierAllowMask","_NB_TierAllowMask2","_NB_TierAllowMask3"}.Contains(p.Key)))Assert.That(after[pair.Key],Is.EqualTo(pair.Value),pair.Key);
-            Assert.That(m.GetShaderPassEnabled("ShadowCaster"),Is.EqualTo(shadowBefore),"Narrow Mask group does not acquire Caster");m.SetFloat("_NB_TierAllowLighting",1);string[] tags={"SRPDefaultUnlit","NBDeferredDistortPass","NBCameraOpaqueDistortPass"};m.SetShaderPassEnabled(tags[0],false);m.SetShaderPassEnabled(tags[1],true);m.SetShaderPassEnabled(tags[2],false);var enabled=tags.Select(m.GetShaderPassEnabled).ToArray();
-            bool changed;Assert.That(RuntimeApply(new[]{m},0,Array.Empty<string>(),Array.Empty<string>(),out changed),Is.True);for(int i=0;i<tags.Length;++i)Assert.That(m.GetShaderPassEnabled(tags[i]),Is.EqualTo(enabled[i]));Assert.That(m.GetFloat("_NB_GraphScreenPassMigrationComplete"),Is.Zero);AssertOwnedCaster(m,false);
+            m.SetFloat("_NB_TierAllowLighting",1);string[] tags={"SRPDefaultUnlit","NBDeferredDistortPass","NBCameraOpaqueDistortPass"};m.SetShaderPassEnabled(tags[0],false);m.SetShaderPassEnabled(tags[1],true);m.SetShaderPassEnabled(tags[2],false);var enabled=tags.Select(m.GetShaderPassEnabled).ToArray();
+            bool changed;Assert.That(RuntimeApply(new[]{m},0,Array.Empty<string>(),Array.Empty<string>(),out changed),Is.True);for(int i=0;i<tags.Length;++i)Assert.That(m.GetShaderPassEnabled(tags[i]),Is.EqualTo(enabled[i]));Assert.That(m.GetFloat("_NB_GraphScreenPassMigrationComplete"),Is.Zero);
         }
         [Test] public void G4RuntimeOwner1_InvalidLastTargetAtomicRefusal()
         {
-            var a=New();var b=New();a.SetFloat("_AffectsShadows",1);a.SetFloat("_CastShadows",1);a.SetShaderPassEnabled("ShadowCaster",true);a.SetFloat("_Mask_Toggle",1);a.SetFloat("_NB_TierAllowMask",.25f);string baseline=EditorJsonUtility.ToJson(b);
-            foreach(var invalid in new[]{Tuple.Create("_NB_GraphGUIStateVersion",3f),Tuple.Create("_NB_TierAllowLighting",float.NaN),Tuple.Create("_NB_GraphScreenPassMigrationComplete",.5f),Tuple.Create("_NB_GraphPassMigrationComplete",.5f),Tuple.Create("_TransparentShadowDitherToggle",float.NaN),Tuple.Create("_CastShadows",float.NaN)})
+            var a=New();var b=New();a.SetFloat("_Mask_Toggle",1);a.SetFloat("_NB_TierAllowMask",.25f);string baseline=EditorJsonUtility.ToJson(b);
+            foreach(var invalid in new[]{Tuple.Create("_NB_GraphGUIStateVersion",3f),Tuple.Create("_NB_TierAllowLighting",float.NaN),Tuple.Create("_NB_GraphScreenPassMigrationComplete",.5f),Tuple.Create("_NB_GraphPassMigrationComplete",.5f)})
             {
                 EditorJsonUtility.FromJsonOverwrite(baseline,b);b.SetFloat(invalid.Item1,invalid.Item2);string sa=Snapshot(a),sb=Snapshot(b);bool changed;
                 Assert.That(RuntimeApply(new[]{a,b},0,Array.Empty<string>(),Array.Empty<string>(),out changed),Is.False,invalid.Item1);Assert.That(changed,Is.False);Assert.That(Snapshot(a),Is.EqualTo(sa));Assert.That(Snapshot(b),Is.EqualTo(sb));
@@ -127,25 +118,25 @@ namespace NBFX.Baseline.Tests
                 Assert.That(RuntimeApply(new[]{a,b},0,Array.Empty<string>(),Array.Empty<string>(),out changed),Is.False,"Invalid typed VAT pair");Assert.That(changed,Is.False);Assert.That(Snapshot(a),Is.EqualTo(sa));Assert.That(Snapshot(b),Is.EqualTo(sb));
             }
         }
-        [Test] public void G4RuntimeOwnerShadowV2_TypedTyflowSelectionFallbackAndOwnedBeforeImageExact()
+        [Test] public void G4RuntimeOwner1_TypedTyflowSelectionFallbackAndOwnedBeforeImageExact()
         {
             Assert.That(Gates.Length,Is.EqualTo(31));Assert.That(Projections.Length,Is.EqualTo(33));
-            var value=New();value.SetFloat("_AffectsShadows",1);value.SetFloat("_CastShadows",0);value.SetShaderPassEnabled("ShadowCaster",false);value.SetFloat("_VAT_Toggle",1);value.SetFloat("_FlipbookBlending",1);value.SetFloat("_VATMode",1);
+            var value=New();value.SetFloat("_VAT_Toggle",1);value.SetFloat("_FlipbookBlending",1);value.SetFloat("_VATMode",1);
             string[] sub={"_TYFLOW_VAT_ABSOLUTE","_TYFLOW_VAT_RELATIVE","_TYFLOW_VAT_SKIN_R","_TYFLOW_VAT_SKIN_PR","_TYFLOW_VAT_SKIN_PRSAVE","_TYFLOW_VAT_SKIN_PRSXYZ"};
             for(int mode=0;mode<6;++mode)
             {
-                value.SetFloat("_TyFlowVATSubMode",mode);var raw=RawOwnedShadowV2(value);bool changed;
-                Assert.That(RuntimeApply(new[]{value},3,Keywords,Passes,out changed),Is.True);Assert.That(value.GetFloat("_NB_TierVATFamily"),Is.EqualTo(1));Assert.That(value.GetFloat("_NB_TierVATSubMode"),Is.EqualTo(mode));Assert.That(value.GetFloat("_NB_TierAllowVAT"),Is.EqualTo(1));Assert.That(value.GetFloat("_NB_TierAllowFlipbook"),Is.Zero);Assert.That(RawOwnedShadowV2(value),Is.EquivalentTo(raw));AssertOwnedCaster(value,true);
-                Assert.That(RuntimeApply(new[]{value},0,Keywords.Except(new[]{sub[mode]}).ToArray(),Passes,out changed),Is.True);Assert.That(value.GetFloat("_NB_TierVATFamily"),Is.EqualTo(1));Assert.That(value.GetFloat("_NB_TierVATSubMode"),Is.Zero,"Retained Tyflow family uses Native implicit Absolute0");Assert.That(RawOwnedShadowV2(value),Is.EquivalentTo(raw));AssertOwnedCaster(value,true);
+                value.SetFloat("_TyFlowVATSubMode",mode);var raw=Raw(value);bool changed;
+                Assert.That(RuntimeApply(new[]{value},3,Keywords,Passes,out changed),Is.True);Assert.That(value.GetFloat("_NB_TierVATFamily"),Is.EqualTo(1));Assert.That(value.GetFloat("_NB_TierVATSubMode"),Is.EqualTo(mode));Assert.That(value.GetFloat("_NB_TierAllowVAT"),Is.EqualTo(1));Assert.That(value.GetFloat("_NB_TierAllowFlipbook"),Is.Zero);Assert.That(Raw(value),Is.EquivalentTo(raw));
+                Assert.That(RuntimeApply(new[]{value},0,Keywords.Except(new[]{sub[mode]}).ToArray(),Passes,out changed),Is.True);Assert.That(value.GetFloat("_NB_TierVATFamily"),Is.EqualTo(1));Assert.That(value.GetFloat("_NB_TierVATSubMode"),Is.Zero,"Retained Tyflow family uses Native implicit Absolute0");Assert.That(Raw(value),Is.EquivalentTo(raw));
             }
             for(int i=0;i<Gates.Length;++i)value.SetFloat(Gates[i],i+.25f);
             value.SetFloat("_NB_TierVATFamily",1);value.SetFloat("_NB_TierVATSubMode",5);
             var declared=(string[])Runtime.GetField("GraphDeclaredKeywordNames",All).GetValue(null);for(int i=0;i<declared.Length;++i){if((i&1)==0)value.EnableKeyword(declared[i]);else value.DisableKeyword(declared[i]);}value.EnableKeyword("_OVERRIDE_Z");
-            value.SetFloat("_CastShadows",1);value.SetShaderPassEnabled("ShadowCaster",true);string[] tags={"UniversalForward","SRPDefaultUnlit","NBDeferredDistortPass","NBCameraOpaqueDistortPass","ShadowCaster"};for(int i=0;i<tags.Length;++i)value.SetShaderPassEnabled(tags[i],(i&1)==0);
+            string[] tags={"UniversalForward","SRPDefaultUnlit","NBDeferredDistortPass","NBCameraOpaqueDistortPass"};for(int i=0;i<tags.Length;++i)value.SetShaderPassEnabled(tags[i],(i&1)==0);
             value.SetFloat("_NB_GraphScreenPassMigrationComplete",1);value.SetFloat("_NB_DistortionMode",1);value.SetFloat("_DisableMainPassToggle",1);value.SetFloat("_noisemapEnabled",1);
             string before=Snapshot(value);var states=tags.Select(value.GetShaderPassEnabled).ToArray();var imageType=Runtime.GetNestedType("GraphOwnedProjectionBeforeImage",All);Assert.That(imageType,Is.Not.Null);
             var ctor=imageType.GetConstructor(All,null,new[]{typeof(Material),Find("NBShader.NBShaderFeatureTier"),typeof(IEnumerable<string>),typeof(IEnumerable<string>)},null);Assert.That(ctor,Is.Not.Null);var image=ctor.Invoke(new[]{(object)value,Tier(3),Keywords,Passes});
-            bool altered;Assert.That(RuntimeApply(new[]{value},0,Array.Empty<string>(),Array.Empty<string>(),out altered),Is.True);Assert.That(altered,Is.True);AssertOwnedCaster(value,false);Unique(imageType,"Restore",Type.EmptyTypes).Invoke(image,null);AssertOwnedCaster(value,true);Assert.That(Snapshot(value),Is.EqualTo(before),"Before-image restores union32, declared9, OVZ and owned Passes without raw/savedTier mutation");for(int i=0;i<tags.Length;++i)Assert.That(value.GetShaderPassEnabled(tags[i]),Is.EqualTo(states[i]),tags[i]);
+            bool altered;Assert.That(RuntimeApply(new[]{value},0,Array.Empty<string>(),Array.Empty<string>(),out altered),Is.True);Assert.That(altered,Is.True);Unique(imageType,"Restore",Type.EmptyTypes).Invoke(image,null);Assert.That(Snapshot(value),Is.EqualTo(before),"Before-image restores union32, declared9, OVZ and owned Passes without raw/savedTier mutation");for(int i=0;i<tags.Length;++i)Assert.That(value.GetShaderPassEnabled(tags[i]),Is.EqualTo(states[i]),tags[i]);
         }
         static Dictionary<string,string> RawShadowV3(Material material)
         {return Raw(material).Where(row=>row.Key!="_CastShadows").ToDictionary(row=>row.Key,row=>row.Value);}

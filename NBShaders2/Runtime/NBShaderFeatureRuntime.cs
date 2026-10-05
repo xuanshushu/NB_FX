@@ -727,14 +727,16 @@ namespace NBShader
             var keywords = new HashSet<string>(allowedKeywords ?? NBShaderFeatureCatalog.RawKeywords);
             var passes = new HashSet<string>(allowedPassFeatures ?? NBShaderPassFeatureCatalog.RawPassFeatureIds);
             if (!CanApplyGraphSupportedGateTier(material, tier, keywords, out wouldChange)) return false;
-            NBShaderPassIntent[] screen; NBShaderPassIntent back;
+            NBShaderPassIntent[] screen; NBShaderPassIntent back,shadow;
             if (!CanApplyGraphOwnedScreenPassState(material, tier, keywords, passes, out screen) ||
-                !CanApplyGraphOwnedBackFirstPassState(material, tier, keywords, passes, out back)) return false;
+                !CanApplyGraphOwnedBackFirstPassState(material, tier, keywords, passes, out back) ||
+                !CanApplyGraphOwnedShadowPassState(material,tier,keywords,passes,out shadow)) return false;
             if (screen != null)
                 foreach (var pass in screen) wouldChange |= material.GetShaderPassEnabled(pass.passName) != pass.included;
             if (back != null)
                 wouldChange |= material.GetShaderPassEnabled(back.passName) != back.included ||
                     material.GetFloat("_NB_BackFirstEffective") != (back.included ? 1f : 0f);
+            if(shadow!=null)wouldChange|=material.GetFloat("_CastShadows")!=(shadow.included?1f:0f)||material.GetShaderPassEnabled(shadow.passName)!=shadow.included;
             return true;
         }
 
@@ -746,6 +748,7 @@ namespace NBShader
             readonly bool hasOverrideDepth, overrideDepth;
             readonly Dictionary<string, bool> passes = new Dictionary<string, bool>();
             readonly bool hasBack; readonly float backEffective;
+            readonly bool hasShadow;readonly float castShadows;
             internal GraphOwnedProjectionBeforeImage(Material value, NBShaderFeatureTier tier,
                 IEnumerable<string> keywords, IEnumerable<string> passFeatures)
             {
@@ -754,10 +757,12 @@ namespace NBShader
                 declared = CaptureGraphDeclaredKeywordState(value);
                 hasOverrideDepth = HasGraphOverrideDepthKeyword(value);
                 overrideDepth = hasOverrideDepth && value.IsKeywordEnabled(GraphOverrideDepthKeyword);
-                NBShaderPassIntent[] screen; NBShaderPassIntent back;
+                NBShaderPassIntent[] screen; NBShaderPassIntent back,shadow;
                 CanApplyGraphOwnedScreenPassState(value, tier, keywords, passFeatures, out screen);
                 CanApplyGraphOwnedBackFirstPassState(value, tier, keywords, passFeatures, out back);
                 if (screen != null) foreach (var pass in screen) passes[pass.passName] = value.GetShaderPassEnabled(pass.passName);
+                CanApplyGraphOwnedShadowPassState(value,tier,keywords,passFeatures,out shadow);
+                hasShadow=shadow!=null;if(hasShadow){castShadows=value.GetFloat("_CastShadows");passes[shadow.passName]=value.GetShaderPassEnabled(shadow.passName); }
                 hasBack = back != null;
                 if (hasBack) { passes[back.passName] = value.GetShaderPassEnabled(back.passName); backEffective = value.GetFloat("_NB_BackFirstEffective"); }
             }
@@ -768,6 +773,7 @@ namespace NBShader
                 if (hasOverrideDepth) SetGraphOwnedKeyword(material, GraphOverrideDepthKeyword, overrideDepth);
                 foreach (var pass in passes) material.SetShaderPassEnabled(pass.Key, pass.Value);
                 if (hasBack) material.SetFloat("_NB_BackFirstEffective", backEffective);
+                if(hasShadow)material.SetFloat("_CastShadows",castShadows);
             }
         }
 
@@ -799,12 +805,13 @@ namespace NBShader
             {
                 foreach (Material material in targets)
                 {
-                    bool gateChanged, screenChanged, backChanged;
+                    bool gateChanged, screenChanged, backChanged,shadowChanged;
                     if (!ApplyGraphSupportedGateTier(material, tier, keywords, out gateChanged) ||
                         !ApplyGraphOwnedScreenPassState(material, tier, keywords, passes, out screenChanged) ||
-                        !ApplyGraphOwnedBackFirstPassState(material, tier, keywords, passes, out backChanged))
+                        !ApplyGraphOwnedBackFirstPassState(material, tier, keywords, passes, out backChanged) ||
+                        !ApplyGraphOwnedShadowPassState(material,tier,keywords,passes,out shadowChanged))
                     { foreach (var image in before) image.Restore(); changed = false; return false; }
-                    changed |= gateChanged || screenChanged || backChanged;
+                    changed |= gateChanged || screenChanged || backChanged || shadowChanged;
                 }
                 return true;
             }
@@ -813,6 +820,23 @@ namespace NBShader
                 foreach (var image in before) image.Restore();
                 changed = false; throw;
             }
+        }
+
+        internal static bool CanApplyGraphOwnedShadowPassState(Material material,NBShaderFeatureTier tier,
+            IEnumerable<string> allowedKeywords,IEnumerable<string> allowedPassFeatures,out NBShaderPassIntent shadow)
+        {
+            return NBShaderMaterialIntentResolver.TryResolveGraphShadowPassIntent(material,tier,allowedKeywords,allowedPassFeatures,out shadow);
+        }
+        internal static bool ApplyGraphOwnedShadowPassState(Material material,NBShaderFeatureTier tier,
+            IEnumerable<string> allowedKeywords,IEnumerable<string> allowedPassFeatures,out bool changed)
+        {
+            changed=false;NBShaderPassIntent shadow;
+            if(!CanApplyGraphOwnedShadowPassState(material,tier,allowedKeywords,allowedPassFeatures,out shadow))return false;
+            if(shadow==null)return true;
+            float cast=shadow.included?1f:0f;
+            if(material.GetFloat("_CastShadows")!=cast){material.SetFloat("_CastShadows",cast);changed=true;}
+            if(material.GetShaderPassEnabled(shadow.passName)!=shadow.included){material.SetShaderPassEnabled(shadow.passName,shadow.included);changed=true;}
+            return true;
         }
 
     }

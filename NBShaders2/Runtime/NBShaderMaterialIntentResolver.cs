@@ -723,6 +723,34 @@ namespace NBShader
             backFirst = new NBShaderPassIntent(NBShaderPassFeatureCatalog.BackFirstPassId, "SRPDefaultUnlit", intended, allowedByTier, intended && allowedByTier, "versioned modern Graph ordinary transparent BackFirst");
             return true;
         }
+        // Shadow capability is owned only when the original Dither UI field exists.
+        // Intent remains raw Affects; Dither/coverage flags never change in this reader.
+        internal static bool TryResolveGraphShadowPassIntent(Material material,NBShaderFeatureTier tier,
+            IEnumerable<string> allowedKeywords,IEnumerable<string> allowedPassFeatureIds,out NBShaderPassIntent shadow)
+        {
+            shadow=null;
+            if(material==null||material.shader==null)return false;
+            if(!material.HasProperty("_TransparentShadowDitherToggle"))return true;
+            NBShaderMaterialIntentResult keywordIntent;string[] unavailable;
+            if(!TryResolveGraphSupportedKeywordIntent(material,tier,allowedKeywords,out keywordIntent,out unavailable)||
+                !HasFiniteFloatShaderProperty(material,"_TransparentShadowDitherToggle")||
+                !HasFiniteFloatShaderProperty(material,"_AffectsShadows")||
+                !HasGraphEnumValue(material,"_CastShadows",1))return false;
+            // D01's complete Graph schema is ordinary 3D. Some opt-in test variants
+            // declare original MeshSource; validate/respect it only when actually present.
+            bool ordinary=true;
+            if(material.HasProperty("_MeshSourceMode"))
+            {
+                if(!HasGraphEnumValue(material,"_MeshSourceMode",NBShaderMaterialIntentProtocol.MeshSourceUIParticle))return false;
+                ordinary=!IsUIEffectMeshSource(GetInt(material,"_MeshSourceMode",0));
+            }
+            bool intended=ordinary&&material.GetFloat("_AffectsShadows")>.5f;
+            var allowed=BuildAllowedPassFeatureSet(allowedPassFeatureIds??NBShaderPassFeatureCatalog.GetDefaultAllowedPassFeatures(tier));
+            var result=new List<NBShaderPassIntent>();
+            AddManagedPass(result,NBShaderPassFeatureCatalog.ShadowCasterPassId,intended,allowed,"Graph ordinary Mesh raw Affects Shadows");
+            if(result.Count!=1)return false;shadow=result[0];return true;
+        }
+
     }
 
     internal sealed class NBShaderMaterialIntentResult

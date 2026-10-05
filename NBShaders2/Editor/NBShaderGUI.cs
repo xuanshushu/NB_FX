@@ -106,6 +106,8 @@ namespace NBShaderEditor
         PropertyToggleBlockItem _graphBaseBackColorItem;
         BigBlockItem _graphBaseNumericBlock;
         bool _sharedGraphBaseNumericReady;
+        bool _sharedGraphBaseShadowReady;
+        ToggleItem _graphAffectsShadowsItem,_graphTransparentShadowDitherItem,_graphIgnoreVertexColorItem;
         static readonly string[] SharedGraphLightModeProperties = { "_FxLightMode", "_LightBigBlockItemFoldOut" };
 
         public override void OnGUI(MaterialEditor editor, MaterialProperty[] properties)
@@ -133,6 +135,7 @@ namespace NBShaderEditor
         public System.Collections.Generic.IEnumerable<string> GetSharedGraphPropertyNames()
         {
             var names = new System.Collections.Generic.List<string>();
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphBaseShadowReady)names.AddRange(NBShaderSyncService.GraphBaseShadowProperties);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphBaseNumericReady)names.AddRange(NBShaderSyncService.GraphBaseNumericProperties);
             if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphBaseBackColorReady)names.AddRange(NBShaderSyncService.GraphBaseBackColorProperties);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphTADepthReady)
@@ -418,6 +421,7 @@ namespace NBShaderEditor
                     _graphLightModeBlock = null;
                     _graphBaseBackColorItem=null;_sharedGraphBaseBackColorReady=false;
                     _graphBaseNumericBlock=null;_sharedGraphBaseNumericReady=false;
+                    _sharedGraphBaseShadowReady=false;_graphAffectsShadowsItem=null;_graphTransparentShadowDitherItem=null;_graphIgnoreVertexColorItem=null;
                     _sharedGraphLightSubReady = false;
                     _graphNormalMapBlock = null;
                     _graphMatCapBlock=null;_sharedGraphMatCapReady=false;
@@ -462,6 +466,7 @@ namespace NBShaderEditor
                 DrawGraphPortalInputs();
                 DrawGraphStencilWithoutPlayerInputs();
                 DrawGraphBaseBackColorInputs();
+                InitializeGraphBaseShadowInputs();
                 DrawGraphBaseNumericInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
@@ -686,6 +691,21 @@ namespace NBShaderEditor
         {
             if(!_sharedGraphVertexOffsetReady)return;if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Vertex Offset");(selectedItem??_graphVertexOffsetItem).OnGUI();
         }
+        internal bool InitializeGraphBaseShadowInputs()
+        {
+            if(!InitializeGraphBaseNumericInputs())return false;
+            _sharedGraphBaseShadowReady=SyncService.HasGraphBaseShadowSchema();if(!_sharedGraphBaseShadowReady)return false;
+            _graphAffectsShadowsItem??=BaseOptionBigBlockItem.CreateAffectsShadowsItem(this,_graphBaseNumericBlock,graphShared:true);
+            _graphTransparentShadowDitherItem??=BaseOptionBigBlockItem.CreateTransparentShadowDitherItem(this,_graphBaseNumericBlock,
+                ()=>Context.TransparentMode==TransparentMode.Transparent&&PropertyInfoDic.TryGetValue("_AffectsShadows",out ShaderPropertyInfo info)&&!info.Property.hasMixedValue&&info.Property.floatValue>.5f,true);
+            _graphIgnoreVertexColorItem??=BaseOptionBigBlockItem.CreateIgnoreVertexColorItem(this,_graphBaseNumericBlock,graphShared:true);return true;
+        }
+        internal void DrawGraphBaseShadowInputs(ShaderGUIItem selectedItem)
+        {
+            if(!InitializeGraphBaseShadowInputs()||selectedItem==null)return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Shadow/Vertex Color");selectedItem.OnGUI();
+        }
+
         internal bool InitializeGraphBaseNumericInputs()
         {
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();

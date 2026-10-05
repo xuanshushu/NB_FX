@@ -60,20 +60,8 @@ namespace NBShaderEditor
             _backFirstPassItem = CreateBackFirstPassToggle(rootItem, this, OnBackFirstPassChanged, Is3DTransparent);
 
             _forceZWriteItem = new ForceZWriteItem(rootItem, this);
-            _affectsShadowsItem = new ToggleItem(
-                rootItem,
-                this,
-                "_AffectsShadows",
-                () => Content("base.affectsShadows", "Affects Shadows"),
-                _ => rootItem.SyncService.SyncMaterialState(),
-                Is3DMode);
-            _transparentShadowDitherItem = new ToggleItem(
-                rootItem,
-                this,
-                "_TransparentShadowDitherToggle",
-                () => Content("base.transparentShadowDither", "Transparent Dither Shadows"),
-                _ => rootItem.SyncService.SyncMaterialState(),
-                ShouldDrawTransparentShadowDither);
+            _affectsShadowsItem = CreateAffectsShadowsItem(rootItem,this,Is3DMode);
+            _transparentShadowDitherItem = CreateTransparentShadowDitherItem(rootItem,this,ShouldDrawTransparentShadowDither);
 
             _baseBackColorBlock = CreateBaseBackColorBlock(rootItem, this, out _baseBackColorItem, Is3DMode);
 
@@ -83,17 +71,45 @@ namespace NBShaderEditor
 
             _stencilWithoutPlayerItem = CreateStencilWithoutPlayerItem(rootItem,this,OnStencilWithoutPlayerChanged,Is3DMode);
 
-            _ignoreVertexColorItem = new ToggleItem(
-                rootItem,
-                this,
-                "_IgnoreVetexColor_Toggle",
-                () => Content("base.ignoreVertexColor", "Ignore Vertex Color"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR, enabled, 1),
-                Is3DMode);
+            _ignoreVertexColorItem = CreateIgnoreVertexColorItem(rootItem,this,Is3DMode);
 
             _fogIntensityItem = CreateFogIntensityItem(rootItem, this);
 
             InitTriggerByChild();
+        }
+
+        internal static ToggleItem CreateAffectsShadowsItem(NBShaderRootItem rootItem,ShaderGUIItem parent,
+            Func<bool> visible=null,bool graphShared=false)
+        {
+            var item=new ToggleItem(rootItem,parent,"_AffectsShadows",()=>Content("base.affectsShadows","Affects Shadows"),_=>rootItem.SyncService.SyncMaterialState(),visible);
+            if(graphShared){item.WriteOnlyOnInteractiveChange=true;item.TryWriteValue=value=>rootItem.SyncService.TryWriteGraphBaseShadow(item.PropertyName,value);}return item;
+        }
+        internal static ToggleItem CreateTransparentShadowDitherItem(NBShaderRootItem rootItem,ShaderGUIItem parent,
+            Func<bool> visible=null,bool graphShared=false)
+        {
+            if(graphShared)return new GraphBasePackedToggleItem(rootItem,parent,"_TransparentShadowDitherToggle",()=>Content("base.transparentShadowDither","Transparent Dither Shadows"),2,visible);
+            return new ToggleItem(rootItem,parent,"_TransparentShadowDitherToggle",()=>Content("base.transparentShadowDither","Transparent Dither Shadows"),_=>rootItem.SyncService.SyncMaterialState(),visible);
+        }
+        internal static ToggleItem CreateIgnoreVertexColorItem(NBShaderRootItem rootItem,ShaderGUIItem parent,
+            Func<bool> visible=null,bool graphShared=false)
+        {
+            if(graphShared)return new GraphBasePackedToggleItem(rootItem,parent,"_IgnoreVetexColor_Toggle",()=>Content("base.ignoreVertexColor","Ignore Vertex Color"),NBShaderFlags.FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR,visible);
+            return new ToggleItem(rootItem,parent,"_IgnoreVetexColor_Toggle",()=>Content("base.ignoreVertexColor","Ignore Vertex Color"),enabled=>rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR,enabled,1),visible);
+        }
+        // Same Toggle primitive, raw flag display, explicit deferred writer.
+        private sealed class GraphBasePackedToggleItem:ToggleItem
+        {
+            readonly NBShaderRootItem root;readonly int bit;
+            internal GraphBasePackedToggleItem(NBShaderRootItem root,ShaderGUIItem parent,string name,Func<GUIContent> content,int bit,Func<bool> visible)
+                :base(root,parent,name,content,isVisible:visible){this.root=root;this.bit=bit;WriteOnlyOnInteractiveChange=true;TryWriteValue=value=>root.SyncService.TryWriteGraphBaseShadow(name,value);}
+            public override void DrawController()
+            {
+                bool enabled=new NBShaderFlags(root.Mats[0]).CheckFlagBits(bit,index:1);
+                bool mixed=false;foreach(Material value in root.Mats)mixed|=new NBShaderFlags(value).CheckFlagBits(bit,index:1)!=enabled;
+                bool oldMixed=EditorGUI.showMixedValue;EditorGUI.showMixedValue=mixed;EditorGUI.BeginChangeCheck();
+                bool next=EditorGUI.Toggle(ControlRect,enabled);bool changed=EditorGUI.EndChangeCheck();EditorGUI.showMixedValue=oldMixed;
+                if(changed&&Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)TryWriteValue(next);
+            }
         }
 
         internal static ShaderGUIFloatItem CreateBaseIntensityItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphShared=false)
