@@ -35,9 +35,7 @@ namespace NBShaderEditor
         private readonly PropertyToggleBlockItem _baseBackColorBlock;
         private readonly ColorItem _baseBackColorItem;
         private readonly PropertyToggleBlockItem _distanceFadeBlock;
-        private readonly Vector2LineItem _fadeRangeItem;
         private readonly PropertyToggleBlockItem _softParticlesBlock;
-        private readonly Vector2LineItem _softParticleFadeItem;
         private readonly ToggleItem _stencilWithoutPlayerItem;
         private readonly ToggleItem _ignoreVertexColorItem;
         private readonly ShaderGUISliderItem _fogIntensityItem;
@@ -106,25 +104,9 @@ namespace NBShaderEditor
                 isVisible: Is3DMode);
             _baseBackColorItem = new ColorItem(rootItem, _baseBackColorBlock, "_BaseBackColor", () => Content("base.backColor.color", "Back Color"));
 
-            _distanceFadeBlock = new PropertyToggleBlockItem(
-                rootItem,
-                this,
-                "_DistanceFadeFoldOut",
-                "_DistanceFade_Toggle",
-                () => Content("base.distanceFade", "Distance Fade"),
-                keyword: "_DISTANCE_FADE",
-                isVisible: Is3DMode);
-            _fadeRangeItem = new Vector2LineItem(rootItem, _distanceFadeBlock, "_Fade", true, () => Content("base.distanceFade.range", "Fade Range"));
+            _distanceFadeBlock = CreateDistanceFadeBlock(rootItem, this);
 
-            _softParticlesBlock = new PropertyToggleBlockItem(
-                rootItem,
-                this,
-                "_SoftParticlesFoldOut",
-                "_SoftParticlesEnabled",
-                () => Content("base.softParticles", "Soft Particles"),
-                keyword: "_SOFTPARTICLES_ON",
-                isVisible: Is3DMode);
-            _softParticleFadeItem = new Vector2LineItem(rootItem, _softParticlesBlock, "_SoftParticleFadeParams", true, () => Content("base.softParticles.range", "Near/Far Fade"));
+            _softParticlesBlock = CreateSoftParticlesBlock(rootItem, this);
 
             _stencilWithoutPlayerItem = new NBShaderKeywordToggleItem(
                 rootItem,
@@ -359,6 +341,40 @@ namespace NBShaderEditor
                     else rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA,enabled); });
 
             return _colorAdjustmentBlock;
+        }
+
+        internal static PropertyToggleBlockItem CreateDistanceFadeBlock(NBShaderRootItem rootItem,
+            ShaderGUIItem parentItem, bool graphSharedMode=false)
+        {
+            var block = new PropertyToggleBlockItem(
+                rootItem,
+                parentItem,
+                "_DistanceFadeFoldOut",
+                "_DistanceFade_Toggle",
+                () => Content("base.distanceFade", "Distance Fade"),
+                keyword: graphSharedMode ? null : "_DISTANCE_FADE",
+                onValueChanged: graphSharedMode ? (System.Action<bool>)(_ => rootItem.SyncService.TryApplyGraphDepthFeaturesIntentEdit()) : null,
+                isVisible: () => rootItem.Context.UIEffectEnabled == MixedBool.False);
+            new Vector2LineItem(rootItem, block, "_Fade", true, () => Content("base.distanceFade.range", "Fade Range"));
+
+            return block;
+        }
+
+        internal static PropertyToggleBlockItem CreateSoftParticlesBlock(NBShaderRootItem rootItem,
+            ShaderGUIItem parentItem, bool graphSharedMode=false)
+        {
+            var block = new PropertyToggleBlockItem(
+                rootItem,
+                parentItem,
+                "_SoftParticlesFoldOut",
+                "_SoftParticlesEnabled",
+                () => Content("base.softParticles", "Soft Particles"),
+                keyword: graphSharedMode ? null : "_SOFTPARTICLES_ON",
+                onValueChanged: graphSharedMode ? (System.Action<bool>)(_ => rootItem.SyncService.TryApplyGraphDepthFeaturesIntentEdit()) : null,
+                isVisible: () => rootItem.Context.UIEffectEnabled == MixedBool.False);
+            new Vector2LineItem(rootItem, block, "_SoftParticleFadeParams", true, () => Content("base.softParticles.range", "Near/Far Fade"));
+
+            return block;
         }
     }
 

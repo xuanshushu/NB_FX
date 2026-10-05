@@ -2212,6 +2212,38 @@ namespace NBShaderEditor
             }
             RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
         }
+
+        internal static readonly string[] GraphDepthSharedPropertyNames={"_DistanceFade_Toggle","_Fade","_DistanceFadeFoldOut",
+            "_SoftParticlesEnabled","_SoftParticleFadeParams","_SoftParticlesFoldOut",
+            "_DepthOutline_Toggle","_DepthOutline_Color","_DepthOutline_Vec","_DepthOutlineBlockFoldOut"};
+        internal bool HasGraphDepthFeaturesEditSchema()
+        {
+            if(!HasGraphMainTexTargets()||_rootItem.MatEditor==null)return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                foreach(string name in new[]{"_DistanceFade_Toggle","_SoftParticlesEnabled","_DepthOutline_Toggle","_DistanceFadeFoldOut","_SoftParticlesFoldOut","_DepthOutlineBlockFoldOut"})
+                {
+                    if(!_rootItem.PropertyInfoDic.ContainsKey(name)||!NBShaderRootItem.HasFloatProperty(material,name))return false;
+                    float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;
+                }
+                foreach(string name in new[]{"_Fade","_SoftParticleFadeParams","_DepthOutline_Vec","_DepthOutline_Color"})
+                {
+                    if(!_rootItem.PropertyInfoDic.ContainsKey(name))return false;
+                    int index=material.shader.FindPropertyIndex(name);
+                    var expected=name=="_DepthOutline_Color"?UnityEngine.Rendering.ShaderPropertyType.Color:UnityEngine.Rendering.ShaderPropertyType.Vector;
+                    if(index<0||material.shader.GetPropertyType(index)!=expected)return false;
+                }
+            }
+            return true;
+        }
+        internal bool TryApplyGraphDepthFeaturesIntentEdit()
+        {
+            if(!HasGraphDepthFeaturesEditSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
+            RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
+        }
     }
 
     public enum VATMode

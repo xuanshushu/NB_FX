@@ -827,9 +827,15 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NBGraphTierAllowNormalMap,
     float NBGraphTierAllowColorRamp, float NBGraphTierAllowColorRampMap,
     float NBGraphTierAllowMatCap,
+    float NBGraphTierAllowDistanceFade, float NBGraphTierAllowSoftParticles,
+    float NBGraphTierAllowDepthOutline,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    DistanceFadeToggle *= NBGraphTierAllowDistanceFade > 0.5 ? 1.0 : 0.0;
+    SoftParticlesEnabled *= NBGraphTierAllowSoftParticles > 0.5 ? 1.0 : 0.0;
+    DepthOutlineToggle *= NBGraphTierAllowDepthOutline > 0.5 ? 1.0 : 0.0;
+
     MatCapToggle *= NBGraphTierAllowMatCap > 0.5 ? 1.0 : 0.0;
 
     RampColorToggle *= NBGraphTierAllowColorRamp > 0.5 ? 1.0 : 0.0;
@@ -1394,9 +1400,15 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NBGraphTierAllowNormalMap,
     float NBGraphTierAllowColorRamp, float NBGraphTierAllowColorRampMap,
     float NBGraphTierAllowMatCap,
+    float NBGraphTierAllowDistanceFade, float NBGraphTierAllowSoftParticles,
+    float NBGraphTierAllowDepthOutline,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    DistanceFadeToggle *= NBGraphTierAllowDistanceFade > 0.5 ? 1.0 : 0.0;
+    SoftParticlesEnabled *= NBGraphTierAllowSoftParticles > 0.5 ? 1.0 : 0.0;
+    DepthOutlineToggle *= NBGraphTierAllowDepthOutline > 0.5 ? 1.0 : 0.0;
+
     MatCapToggle *= NBGraphTierAllowMatCap > 0.5 ? 1.0 : 0.0;
 
     RampColorToggle *= NBGraphTierAllowColorRamp > 0.5 ? 1.0 : 0.0;

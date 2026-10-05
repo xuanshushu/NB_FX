@@ -70,6 +70,9 @@ namespace NBShaderEditor
         FresnelFeatureItem _graphFresnelItem;
         bool _sharedGraphDissolveReady;
         DissolveFeatureItem _graphDissolveItem;
+        bool _sharedGraphDepthFeaturesReady;
+        PropertyToggleBlockItem _graphDistanceFadeBlock, _graphSoftParticlesBlock;
+        DepthOutlineFeatureItem _graphDepthOutlineItem;
         bool _sharedGraphColorAdjustmentReady, _sharedGraphColorRampReady;
         BlockItem _graphColorAdjustmentBlock;
         RampColorFeatureItem _graphColorRampItem;
@@ -126,6 +129,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphColorAdjustmentReady)names.AddRange(NBShaderSyncService.GraphColorAdjustmentSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphColorRampReady)names.AddRange(NBShaderSyncService.GraphColorRampSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphMatCapReady)names.AddRange(NBShaderSyncService.GraphMatCapSharedPropertyNames);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDepthFeaturesReady)names.AddRange(NBShaderSyncService.GraphDepthSharedPropertyNames);
             return names;
         }
 
@@ -328,6 +332,7 @@ namespace NBShaderEditor
                     _sharedGraphParallaxReady = false;
                     _graphFresnelItem = null;
                     _graphColorAdjustmentBlock=null;_graphColorRampItem=null;
+                    _graphDistanceFadeBlock=null;_graphSoftParticlesBlock=null;_graphDepthOutlineItem=null;_sharedGraphDepthFeaturesReady=false;
                     _sharedGraphColorAdjustmentReady=false;_sharedGraphColorRampReady=false;
                     _graphDissolveItem = null;
                     _graphMaskItem=null;_graphProgramNoiseItem=null;_sharedGraphMaskProgramReady=false;
@@ -356,6 +361,7 @@ namespace NBShaderEditor
                 DrawGraphMatCapInputs();
                 DrawGraphColorAdjustmentInputs();
                 DrawGraphColorRampInputs();
+                DrawGraphDepthFeaturesInputs();
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
                 if (InitializeGraphTADepthInputs())DrawGraphTAInputs();
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
@@ -542,6 +548,24 @@ namespace NBShaderEditor
             if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
                 Undo.RecordObjects(MatEditor.targets,"Edit NB MatCap Inputs");
             (selectedItem??_graphMatCapBlock).OnGUI();
+        }
+
+        internal bool InitializeGraphDepthFeaturesInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphDepthFeaturesReady=Context.IsGraphMaterialHost&&SyncService.HasGraphDepthFeaturesEditSchema();
+            if(!_sharedGraphDepthFeaturesReady)return false;
+            _graphDistanceFadeBlock??=BaseOptionBigBlockItem.CreateDistanceFadeBlock(this,null,true);
+            _graphSoftParticlesBlock??=BaseOptionBigBlockItem.CreateSoftParticlesBlock(this,null,true);
+            _graphDepthOutlineItem??=new DepthOutlineFeatureItem(this,null,true);return true;
+        }
+        internal void DrawGraphDepthFeaturesInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!InitializeGraphDepthFeaturesInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB Depth Features");
+            if(selectedItem!=null){selectedItem.OnGUI();return;}
+            _graphDistanceFadeBlock.OnGUI();_graphSoftParticlesBlock.OnGUI();_graphDepthOutlineItem.OnGUI();
         }
     }
 }

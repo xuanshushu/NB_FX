@@ -17,7 +17,8 @@ namespace NBShaders2.Editor.FeatureLevel
             "_NB_TierAllowParallax",
             "_NB_TierAllowNormalMap",
             "_NB_TierAllowColorRamp", "_NB_TierAllowColorRampMap",
-            "_NB_TierAllowMatCap"
+            "_NB_TierAllowMatCap",
+            "_NB_TierAllowDistanceFade", "_NB_TierAllowSoftParticles", "_NB_TierAllowDepthOutline"
         };
         static readonly string[] GraphSupportedGateKeywords = {
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
@@ -26,7 +27,8 @@ namespace NBShaders2.Editor.FeatureLevel
             "_PARALLAX_MAPPING",
             "_NORMALMAP",
             "_COLOR_RAMP", "_COLOR_RAMP_MAP",
-            "_MATCAP"
+            "_MATCAP",
+            "_DISTANCE_FADE", "_SOFTPARTICLES_ON", "_DEPTH_OUTLINE"
         };
 
         internal const string GraphOverrideDepthKeyword = "_OVERRIDE_Z";
@@ -136,6 +138,8 @@ namespace NBShaders2.Editor.FeatureLevel
             if (!ApplyGraphNormalMapGroup(material,tier,allowed,out groupChanged)) return false;
             changed |= groupChanged;
             if(!ApplyGraphColorRampGroup(material,tier,allowed,out groupChanged))return false;
+            changed|=groupChanged;
+            if(!ApplyGraphDepthFeaturesGroup(material,tier,allowed,out groupChanged))return false;
             changed|=groupChanged;
             if(!ApplyGraphMatCapGroup(material,tier,allowed,out groupChanged))return false;
             changed|=groupChanged;
@@ -403,6 +407,22 @@ namespace NBShaders2.Editor.FeatureLevel
             NBShaderMaterialIntentResult intent;string[] unavailable;
             if(!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material,tier,allowed,out intent,out unavailable))return false;
             changed=SetGraphAllowFloat(material,"_NB_TierAllowMatCap",new HashSet<string>(intent.effectiveKeywords).Contains("_MATCAP"));return true;
+        }
+
+        internal static bool ApplyGraphDepthFeaturesGroup(Material material,NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords,out bool changed)
+        {
+            changed=false;
+            foreach(string name in new[]{"_NB_TierAllowDistanceFade","_NB_TierAllowSoftParticles","_NB_TierAllowDepthOutline"})
+                if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,name))return false;
+            var allowed=allowedManagedKeywords??NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            NBShaderMaterialIntentResult intent;string[] unavailable;
+            if(!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material,tier,allowed,out intent,out unavailable))return false;
+            var effective=new HashSet<string>(intent.effectiveKeywords);
+            changed|=SetGraphAllowFloat(material,"_NB_TierAllowDistanceFade",effective.Contains("_DISTANCE_FADE"));
+            changed|=SetGraphAllowFloat(material,"_NB_TierAllowSoftParticles",effective.Contains("_SOFTPARTICLES_ON"));
+            changed|=SetGraphAllowFloat(material,"_NB_TierAllowDepthOutline",effective.Contains("_DEPTH_OUTLINE"));
+            return true;
         }
     }
 }

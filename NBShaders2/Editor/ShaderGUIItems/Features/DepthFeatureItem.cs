@@ -46,14 +46,15 @@ namespace NBShaderEditor
 
     internal sealed class DepthOutlineFeatureItem : FeatureToggleFoldOutItem
     {
-        public DepthOutlineFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        public DepthOutlineFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode=false)
             : base(
                 rootItem,
                 parentItem,
                 "_DepthOutlineBlockFoldOut",
                 "_DepthOutline_Toggle",
                 "深度描边",
-                keyword: "_DEPTH_OUTLINE",
+                keyword: graphSharedMode ? null : "_DEPTH_OUTLINE",
+                onValueChanged: graphSharedMode ? (Action<bool>)(_ => rootItem.SyncService.TryApplyGraphDepthFeaturesIntentEdit()) : null,
                 isVisible: () => rootItem.Context.UIEffectEnabled != MixedBool.True)
         {
             new ColorItem(rootItem, this, "_DepthOutline_Color", () => Content("深度描边颜色"));
