@@ -70,6 +70,8 @@ namespace NBShaderEditor
         SharedUVFeatureItem _graphSharedUVItem;
         bool _sharedGraphStencilWithoutPlayerReady;
         ToggleItem _graphStencilWithoutPlayerItem;
+        bool _sharedGraphVATReady;
+        VatFeatureItem _graphVATItem;
         bool _sharedGraphMainTextureReady;
         bool _sharedGraphFlipbookReady;
         FlipbookFeatureItem _graphFlipbookItem;
@@ -147,6 +149,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphStencilWithoutPlayerReady)names.Add("_StencilWithoutPlayerToggle");
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDepthDecalReady)names.Add("_DepthDecal_Toggle");
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphBackFirstHost) names.Add("_BackFirstPassToggle");
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphVATReady)names.AddRange(NBShaderSyncService.GraphVATSharedPropertyNames);
             return names;
         }
 
@@ -366,6 +369,7 @@ namespace NBShaderEditor
                     _graphFlipbookItem = null;
                     _graphParallaxItem = null;
                     _graphNoiseItem=null;_sharedGraphNoiseReady=false;
+                    _graphVATItem=null;_sharedGraphVATReady=false;
                     _graphStencilWithoutPlayerItem=null;_sharedGraphStencilWithoutPlayerReady=false;
                     _graphSharedUVItem=null;_sharedGraphSharedUVReady=false;
                     _sharedGraphParallaxReady = false;
@@ -415,6 +419,7 @@ namespace NBShaderEditor
                 DrawGraphParallaxInputs();
                 DrawGraphSharedUVInputs();
                 DrawGraphNoiseInputs();
+                DrawGraphVATInputs();
                 DrawGraphBackFirstInputs();
                 DrawGraphStencilWithoutPlayerInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
@@ -703,6 +708,21 @@ namespace NBShaderEditor
             if (Event.current.type != EventType.Layout && Event.current.type != EventType.Repaint)
                 Undo.RecordObjects(MatEditor.targets, "Edit NB Back First");
             _graphBackFirstItem.OnGUI();
+        }
+
+        internal bool InitializeGraphVATInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphVATReady=Context.IsGraphMaterialHost&&SyncService.HasGraphVATEditSchema();
+            if(!_sharedGraphVATReady)return false;
+            if(!SyncService.TryInitializeGraphSupportedGateTierState()){_sharedGraphVATReady=false;return false;}
+            _graphVATItem??=new VatFeatureItem(this,null,true);return true;
+        }
+        internal void DrawGraphVATInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!InitializeGraphVATInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB VAT");
+            (selectedItem??_graphVATItem).OnGUI();
         }
 
     }

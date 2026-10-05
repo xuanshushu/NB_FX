@@ -20,6 +20,7 @@ namespace NBShaderEditor
         private readonly bool _graphMainTexUVEdit;
         private readonly bool _taDepthEdit;
         private readonly bool _graphQCMStencilEdit;
+        private readonly bool _graphVATToggleEdit;
         private readonly bool _graphRawMaskRotationDisplay;
 
         public PropertyToggleBlockItem(
@@ -34,12 +35,13 @@ namespace NBShaderEditor
             string shaderPassName = null,
             Action<bool> onValueChanged = null,
             Func<bool> isVisible = null,
-            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false, bool graphQCMStencilEdit=false) : base(rootItem, parentItem)
+            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false, bool graphQCMStencilEdit=false, bool graphVATToggleEdit=false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
             _graphMainTexUVEdit = graphMainTexUVEdit;
             _taDepthEdit = taDepthEdit;
             _graphQCMStencilEdit=graphQCMStencilEdit;
+            _graphVATToggleEdit=graphVATToggleEdit;
             _graphRawMaskRotationDisplay=graphRawMaskRotationDisplay;
             PropertyName = togglePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
@@ -93,7 +95,9 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsRootEdit&&qsRootEdit.Context.IsGraphMaterialHost)
+                    if(_graphVATToggleEdit&&RootItem is NBShaderRootItem vatEdit&&vatEdit.Context.IsGraphMaterialHost)
+                        vatEdit.SyncService.TryApplyGraphVATToggle(enabled);
+                    else if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsRootEdit&&qsRootEdit.Context.IsGraphMaterialHost)
                         qsRootEdit.SyncService.TryApplyGraphQCMStencilToggle(enabled);
                     else if(_graphRawMaskRotationDisplay&&RootItem is NBShaderRootItem maskRoot&&maskRoot.Context.IsGraphMaterialHost)
                         maskRoot.SyncService.TryApplyGraphMaskProgramFlagEdit(_flagBits,enabled,_flagIndex);
@@ -158,6 +162,8 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if(_graphVATToggleEdit&&RootItem is NBShaderRootItem vatReset&&vatReset.Context.IsGraphMaterialHost)
+            {vatReset.SyncService.TryRunGraphVATReset(()=>base.ExecuteReset(isCallByParent));return;}
             if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsReset&&qsReset.Context.IsGraphMaterialHost)
             {if(!qsReset.SyncService.TryApplyGraphQCMStencilToggle(false))return;foreach(var child in ChildrenItemList)child.CheckIsPropertyModified();CheckIsPropertyModified();return;}
             if(_graphRawMaskRotationDisplay&&RootItem is NBShaderRootItem maskRoot&&maskRoot.Context.IsGraphMaterialHost)
@@ -465,6 +471,7 @@ namespace NBShaderEditor
         private readonly bool _graphOverlayOffset;
         private readonly bool _graphVertexOffsetData;
         private readonly bool _graphSharedUVOffset;
+        private readonly bool _graphVATFrame;
         private readonly Func<bool> _isVisible;
 
         public CustomDataSelectItem(
@@ -473,7 +480,7 @@ namespace NBShaderEditor
             int dataBitPos,
             int dataIndex,
             Func<GUIContent> contentProvider,
-            Func<bool> isVisible = null, bool graphMainTexOffset = false, bool graphOverlayOffset = false, bool graphSharedUVOffset = false, bool graphVertexOffsetData=false) : base(rootItem, parentItem)
+            Func<bool> isVisible = null, bool graphMainTexOffset = false, bool graphOverlayOffset = false, bool graphSharedUVOffset = false, bool graphVertexOffsetData=false, bool graphVATFrame=false) : base(rootItem, parentItem)
         {
             _dataBitPos = dataBitPos;
             _dataIndex = dataIndex;
@@ -481,6 +488,7 @@ namespace NBShaderEditor
             _graphOverlayOffset = graphOverlayOffset;
             _graphVertexOffsetData=graphVertexOffsetData;
             _graphSharedUVOffset = graphSharedUVOffset;
+            _graphVATFrame=graphVATFrame;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
             GuiContent = _contentProvider();
@@ -575,6 +583,8 @@ namespace NBShaderEditor
         private void SetComponent(NBShaderFlags.CutomDataComponent component)
         {
             if(_graphVertexOffsetData&&RootItem is NBShaderRootItem voRoot&&voRoot.Context.IsGraphMaterialHost){voRoot.SyncService.TryApplyGraphVertexOffsetCustomData(_dataBitPos,_dataIndex,component);return;}
+            if(_graphVATFrame&&RootItem is NBShaderRootItem vatRoot&&vatRoot.Context.IsGraphMaterialHost)
+            {vatRoot.SyncService.TryApplyGraphVATFrameCustomData(component);return;}
             if (_graphSharedUVOffset && RootItem is NBShaderRootItem sharedRoot && sharedRoot.Context.IsGraphMaterialHost)
             { sharedRoot.SyncService.TryApplyGraphSharedUVCustomData(_dataBitPos,_dataIndex,component); return; }
             if (_graphOverlayOffset && RootItem is NBShaderRootItem overlayRoot && overlayRoot.Context.IsGraphMaterialHost)

@@ -133,6 +133,7 @@ namespace NBShaderEditor
         {
             if (_rootItem.Mats == null || _rootItem.Mats.Count == 0 || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return false;
             List<Material> initialize = null;
+            List<Material> initializeVATOnly = null;
             foreach (Material material in _rootItem.Mats)
             {
                 if (!NBShaderGUIContext.IsGraphMaterial(material) ||
@@ -146,6 +147,8 @@ namespace NBShaderEditor
                 if (marker == 2f)
                 {
                     if (!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out wouldChange)) return false;
+                    bool oldVATProjection;if(!NBShaderFeatureLevelMaterialApplier.HasGraphVATProjectionState(material,out oldVATProjection))return false;
+                    if(oldVATProjection){if(initialize==null)initialize=new List<Material>();initialize.Add(material);if(initializeVATOnly==null)initializeVATOnly=new List<Material>();initializeVATOnly.Add(material);}
                     continue;
                 }
                 if (!GraphFlagIntentSchemaAvailable(material)) return false;
@@ -169,31 +172,36 @@ namespace NBShaderEditor
             var ownedNames = new List<string> { GraphGUIStateVersionProperty };
             foreach (var binding in ToggleFlagBindings) ownedNames.Add(binding.propertyName);
             foreach (var binding in ModeFlagBindings) ownedNames.Add(binding.propertyName);
-            ownedNames.AddRange(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties);
+            ownedNames.AddRange(NBShaderFeatureLevelMaterialApplier.GraphSupportedProjectionProperties);
             var originalOverrideDepth = new bool[initialize.Count];
             var originalDeclaredKeywords = new bool[initialize.Count][];
             var originals = new float[initialize.Count][];
+            var perTargetOwnedNames = new string[initialize.Count][];
             var targets = new UnityEngine.Object[initialize.Count];
             for (int i = 0; i < initialize.Count; ++i)
             {
                 originalOverrideDepth[i] = initialize[i].IsKeywordEnabled("_OVERRIDE_Z");
                 originalDeclaredKeywords[i]=NBShaderFeatureLevelMaterialApplier.CaptureGraphDeclaredKeywordState(initialize[i]);
-                targets[i] = initialize[i]; originals[i] = new float[ownedNames.Count];
-                for (int field = 0; field < ownedNames.Count; ++field) originals[i][field] = initialize[i].GetFloat(ownedNames[field]);
+                bool vatOnly=initializeVATOnly!=null&&initializeVATOnly.Contains(initialize[i]);
+                perTargetOwnedNames[i]=vatOnly?new[]{"_NB_TierAllowVAT","_NB_TierAllowFlipbook","_NB_TierVATFamily","_NB_TierVATSubMode"}:ownedNames.ToArray();
+                targets[i] = initialize[i]; originals[i] = new float[perTargetOwnedNames[i].Length];
+                for (int field = 0; field < perTargetOwnedNames[i].Length; ++field) originals[i][field] = initialize[i].GetFloat(perTargetOwnedNames[i][field]);
             }
             Undo.RecordObjects(targets, "Initialize NB Graph GUI state and Tier");
             PrepareGraphGUIState(); // Original seed-only implementation, same protocol.
             foreach (Material material in initialize)
             {
                 bool changed;
-                if (NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material, out changed)) continue;
+                bool vatOnly=initializeVATOnly!=null&&initializeVATOnly.Contains(material);
+                bool applied=vatOnly?NBShaderFeatureLevelMaterialApplier.ApplyGraphVATProjectionGroup(material,(NBShaderFeatureTier)(int)material.GetFloat(FeatureTierPropertyName),null,out changed):NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed);
+                if(applied)continue;
                 // Unexpected failure after a pure probe: restore only the
                 // owned initialization fields for every new target.
                 for (int i = 0; i < initialize.Count; ++i)
                 {
-                    for (int field = 0; field < ownedNames.Count; ++field) initialize[i].SetFloat(ownedNames[field], originals[i][field]);
-                    RestoreGraphOverrideDepthKeyword(initialize[i], originalOverrideDepth[i]);
-                    NBShaderFeatureLevelMaterialApplier.RestoreGraphDeclaredKeywordState(initialize[i],originalDeclaredKeywords[i]);
+                    for (int field = 0; field < perTargetOwnedNames[i].Length; ++field) initialize[i].SetFloat(perTargetOwnedNames[i][field], originals[i][field]);
+                    if(initializeVATOnly==null||!initializeVATOnly.Contains(initialize[i]))RestoreGraphOverrideDepthKeyword(initialize[i], originalOverrideDepth[i]);
+                    if(initializeVATOnly==null||!initializeVATOnly.Contains(initialize[i]))NBShaderFeatureLevelMaterialApplier.RestoreGraphDeclaredKeywordState(initialize[i],originalDeclaredKeywords[i]);
                 }
                 return false;
             }
@@ -224,7 +232,7 @@ namespace NBShaderEditor
                 if (!NBShaderGUIContext.IsGraphMaterial(material) || !_rootItem.PropertyInfoDic.ContainsKey(FeatureTierPropertyName) ||
                     !NBShaderFeatureLevelMaterialApplier.CanApplyGraphSupportedGateTier(material, NBShaderFeatureTier.Ultra,
                         NBShaderFeatureCatalog.RawKeywords, out wouldChange)) return false;
-                foreach (string property in NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties)
+                foreach (string property in NBShaderFeatureLevelMaterialApplier.GraphSupportedProjectionProperties)
                     if (!_rootItem.PropertyInfoDic.ContainsKey(property)) return false;
             }
             return true;
@@ -263,9 +271,9 @@ namespace NBShaderEditor
                 originalBackPasses[i] = new GraphBackFirstPassSnapshot(_rootItem.Mats[i]);
                 originalOverrideDepth[i] = _rootItem.Mats[i].IsKeywordEnabled("_OVERRIDE_Z");
                 originalDeclaredKeywords[i]=NBShaderFeatureLevelMaterialApplier.CaptureGraphDeclaredKeywordState(_rootItem.Mats[i]);
-                originalGates[i] = new float[NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties.Length];
+                originalGates[i] = new float[NBShaderFeatureLevelMaterialApplier.GraphSupportedProjectionProperties.Length];
                 for (int gate = 0; gate < originalGates[i].Length; ++gate)
-                    originalGates[i][gate] = _rootItem.Mats[i].GetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties[gate]);
+                    originalGates[i][gate] = _rootItem.Mats[i].GetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedProjectionProperties[gate]);
             }
             Undo.RecordObjects(objects.ToArray(), "Set NBShader Feature Tier");
             var changedMaterials = new bool[_rootItem.Mats.Count];
@@ -282,7 +290,7 @@ namespace NBShaderEditor
                 for (int restore = 0; restore < _rootItem.Mats.Count; ++restore)
                 {
                     for (int gate = 0; gate < originalGates[restore].Length; ++gate)
-                        _rootItem.Mats[restore].SetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties[gate], originalGates[restore][gate]);
+                        _rootItem.Mats[restore].SetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedProjectionProperties[gate], originalGates[restore][gate]);
                     RestoreGraphOverrideDepthKeyword(_rootItem.Mats[restore], originalOverrideDepth[restore]);
                     NBShaderFeatureLevelMaterialApplier.RestoreGraphDeclaredKeywordState(_rootItem.Mats[restore],originalDeclaredKeywords[restore]);
                     originalScreenPasses[restore].Restore();
@@ -1214,15 +1222,8 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphFlipbookEdit(bool enabled)
         {
-            if (!HasGraphFlipbookEditSchema()) return false;
-            foreach (Material material in _rootItem.Mats)
-            {
-                SetFloatIfExists(material, "_FlipbookBlending", enabled ? 1f : 0f);
-                if (enabled) DisableVat(material); // Reuse original enable-Flipbook mutual-exclusion contract.
-                // Graph consumes the real Float; no fictitious local Flipbook axis.
-            }
-            _rootItem.Context?.Refresh();
-            return true;
+            // Same original enable-Flipbook excludes VAT; no pass/surface projection.
+            return RunGraphVATTransaction("NB Flipbook",material=>{material.SetFloat("_FlipbookBlending",enabled?1:0);if(enabled)material.SetFloat("_VAT_Toggle",0);});
         }
 
         public void ApplyFlipbookEnabled(bool enabled)
@@ -2774,6 +2775,87 @@ namespace NBShaderEditor
                 ApplyGraphSavedOwnedBackFirstPassState(material, out passChanged);
                 return changed || passChanged;
             });
+        }
+
+        internal static readonly string[] GraphVATSharedPropertyNames = {"_VATBlockFoldOut","_VAT_Toggle","_VATMode","_HoudiniVATSubMode","_B_autoPlayback","_displayFrame","_gameTimeAtFirstFrame","_playbackSpeed","_houdiniFPS","_B_interpolate","_animateFirstFrame","_frameCount","_boundMinX","_boundMinY","_boundMinZ","_boundMaxX","_boundMaxY","_boundMaxZ","_posTexture","_posTexture2","_B_LOAD_POS_TWO_TEX","_rotTexture","_colTexture","_B_LOAD_COL_TEX","_lookupTable","_B_LOAD_LOOKUP_TABLE","_globalPscaleMul","_B_pscaleAreInPosA","_widthBaseScale","_heightBaseScale","_B_hideOverlappingOrigin","_originRadius","_B_CAN_SPIN","_B_spinFromHeading","_spinPhase","_scaleByVelAmount","_particleTexUScale","_particleTexVScale","_B_UNLOAD_ROT_TEX","_VATTex","_ImportScale","_TyFlowVATSubMode","_DeformingSkin","_SkinBoneCount","_RGBAEncoded","_RGBAHalf","_LinearToGamma","_VATIncludesNormals","_Frame","_Frames","_FrameInterpolation","_Loop","_InterpolateLoop","_Autoplay","_AutoplaySpeed"};
+        internal bool HasGraphVATEditSchema()
+        {
+            if(_rootItem.MatEditor==null||!HasGraphMainTexTargets())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                bool changed;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out changed))return false;
+                foreach(string name in GraphVATSharedPropertyNames)
+                {
+                    if(!_rootItem.PropertyInfoDic.ContainsKey(name)||!material.HasProperty(name))return false;
+                    int index=material.shader.FindPropertyIndex(name);var type=material.shader.GetPropertyType(index);
+                    bool texture=name=="_posTexture"||name=="_posTexture2"||name=="_rotTexture"||name=="_colTexture"||name=="_lookupTable"||name=="_VATTex";
+                    if(texture){if(type!=UnityEngine.Rendering.ShaderPropertyType.Texture)return false;}
+                    else {if(type!=UnityEngine.Rendering.ShaderPropertyType.Float)return false;float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;}
+                }
+                foreach(string name in new[]{"_NB_CustomDataFlag2Lo16","_NB_CustomDataFlag2Hi16","_FlipbookBlending"})
+                {if(!NBShaderRootItem.HasFloatProperty(material,name)||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;}
+            }
+            return true;
+        }
+        bool RunGraphVATTransaction(string label,Action<Material> edit,Action reset=null)
+        {
+            if(!HasGraphVATEditSchema())return false;
+            var snapshots=new List<Material>();var targets=new List<UnityEngine.Object>();
+            try
+            {
+                // Probe every proposed scalar/CD change before first actual write.
+                foreach(Material material in _rootItem.Mats)
+                {
+                    var copy=new Material(material){hideFlags=HideFlags.HideAndDontSave};snapshots.Add(copy);targets.Add(material);
+                    if(edit!=null)
+                    {
+                        var probe=new Material(material){hideFlags=HideFlags.HideAndDontSave};
+                        try{edit(probe);bool change;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(probe,out change))return false;}
+                        finally{UnityEngine.Object.DestroyImmediate(probe);}
+                    }
+                }
+                Undo.RecordObjects(targets.ToArray(),label);
+                try
+                {
+                    if(reset!=null)reset();else foreach(Material material in _rootItem.Mats)edit(material);
+                    foreach(Material material in _rootItem.Mats)
+                    {bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed)){RestoreGraphVATTransaction(snapshots);return false;}EditorUtility.SetDirty(material);}
+                    RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
+                }
+                catch {RestoreGraphVATTransaction(snapshots);throw;}
+            }
+            finally{foreach(Material material in snapshots)UnityEngine.Object.DestroyImmediate(material);}
+        }
+        void RestoreGraphVATTransaction(List<Material> snapshots)
+        {
+            for(int i=0;i<snapshots.Count;++i)
+            {
+                Material value=_rootItem.Mats[i],old=snapshots[i];
+                foreach(string name in GraphVATSharedPropertyNames)
+                {
+                    int index=value.shader.FindPropertyIndex(name);
+                    if(value.shader.GetPropertyType(index)==UnityEngine.Rendering.ShaderPropertyType.Texture)
+                    {value.SetTexture(name,old.GetTexture(name));value.SetTextureScale(name,old.GetTextureScale(name));value.SetTextureOffset(name,old.GetTextureOffset(name));}
+                    else value.SetFloat(name,old.GetFloat(name));
+                }
+                foreach(string name in NBShaderFeatureLevelMaterialApplier.GraphSupportedProjectionProperties)value.SetFloat(name,old.GetFloat(name));
+                value.SetFloat("_NB_CustomDataFlag2Hi16",old.GetFloat("_NB_CustomDataFlag2Hi16"));value.SetFloat("_FlipbookBlending",old.GetFloat("_FlipbookBlending"));
+                RestoreGraphOverrideDepthKeyword(value,old.IsKeywordEnabled("_OVERRIDE_Z"));
+                NBShaderFeatureLevelMaterialApplier.RestoreGraphDeclaredKeywordState(value,NBShaderFeatureLevelMaterialApplier.CaptureGraphDeclaredKeywordState(old));
+            }
+            RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();
+        }
+        internal bool TryApplyGraphVATToggle(bool enabled)
+            =>RunGraphVATTransaction("NB VAT",material=>{material.SetFloat("_VAT_Toggle",enabled?1:0);if(enabled)material.SetFloat("_FlipbookBlending",0);});
+        internal bool TryApplyGraphVATIntentEdit()
+            =>RunGraphVATTransaction("NB VAT Mode",material=>{});
+        internal bool TryRunGraphVATReset(Action reset)
+            =>reset!=null&&RunGraphVATTransaction("Reset NB VAT",null,reset);
+        internal bool TryApplyGraphVATFrameCustomData(NBShaderFlags.CutomDataComponent component)
+        {
+            if(!HasGraphVATEditSchema()||(int)component<0||(int)component>8)return false;
+            int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};
+            return RunGraphMainTexEdit("VAT Frame Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag2Hi16",15<<12,values[(int)component]<<12));
         }
 
     }

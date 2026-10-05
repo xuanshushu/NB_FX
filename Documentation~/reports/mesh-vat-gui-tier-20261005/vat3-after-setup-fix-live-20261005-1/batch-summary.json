@@ -1,0 +1,46 @@
+{
+  "results": [
+    {
+      "batch": "GPU1",
+      "counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 10.97,
+      "failures": []
+    },
+    {
+      "batch": "GPU2",
+      "counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 9.83,
+      "failures": []
+    },
+    {
+      "batch": "GPU3",
+      "counts": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 4.92,
+      "failures": [
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphVATTypedProjectionRenderTests.G4VATTier_GPU_DeniedPassthroughBasisVertexLighting_ortho",
+          "message": "  Expected: True\r\n  But was:  False\r\n"
+        }
+      ]
+    }
+  ],
+  "fullMeshGatePassed": false
+}

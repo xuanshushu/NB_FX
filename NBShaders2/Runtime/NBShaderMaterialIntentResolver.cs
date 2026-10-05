@@ -249,6 +249,26 @@ namespace NBShader
             passes=result.ToArray();return true;
         }
 
+        // Same normalized keyword binding/filter/dependency core. No raw intent writes.
+        // Derived family: -2=no retained family; 0=Houdini; 1=Tyflow.
+        internal static bool TryResolveGraphVATProjection(Material material,NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords,out bool parentAllowed,out float family,out float subMode,out bool flipbookAllowed)
+        {
+            parentAllowed=flipbookAllowed=false;family=-2f;subMode=0f;
+            NBShaderMaterialIntentResult intent;string[] unavailable;
+            if(!TryResolveGraphSupportedKeywordIntent(material,tier,allowedManagedKeywords,out intent,out unavailable))return false;
+            var effective=new HashSet<string>(intent.effectiveKeywords,StringComparer.Ordinal);
+            parentAllowed=effective.Contains("_VAT");flipbookAllowed=effective.Contains("_FLIPBOOKBLENDING_ON");
+            if(!parentAllowed)return true;
+            string[] modes;
+            if(effective.Contains("_VAT_HOUDINI")){family=0f;modes=HoudiniVatKeywords;}
+            else if(effective.Contains("_VAT_TYFLOW")){family=1f;modes=TyflowVatKeywords;}
+            else return true;
+            for(int i=0;i<modes.Length;++i)if(effective.Contains(modes[i])){subMode=i;break;}
+            // Retained family with no retained submode uses Native's implicit mode0 fallback.
+            return true;
+        }
+
         private static bool HasFiniteFloatShaderProperty(Material material, string propertyName)
         {
             if (!HasFloatShaderProperty(material, propertyName)) return false;

@@ -25,28 +25,28 @@ namespace NBShaderEditor
             "Skin (PRSXYZ)"
         };
 
-        public VatFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_VATBlockFoldOut", "_VAT_Toggle", "VAT顶点动画图", keyword: "_VAT", onValueChanged: rootItem.SyncService.ApplyVatEnabled)
+        public VatFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode=false)
+            : base(rootItem, parentItem, "_VATBlockFoldOut", "_VAT_Toggle", "VAT顶点动画图", keyword: graphSharedMode?null:"_VAT", onValueChanged: graphSharedMode?null:(System.Action<bool>)rootItem.SyncService.ApplyVatEnabled, graphVATToggleEdit:graphSharedMode)
         {
-            new FeaturePopupItem(rootItem, this, "_VATMode", () => Content("VAT模式"), VatModeNames, _ => rootItem.SyncService.SyncMaterialState());
+            new FeaturePopupItem(rootItem, this, "_VATMode", () => Content("VAT模式"), VatModeNames, _ => {if(graphSharedMode)rootItem.SyncService.TryApplyGraphVATIntentEdit();else rootItem.SyncService.SyncMaterialState();});
             Func<bool> isHoudini = () => IsPropertyMode(rootItem, "_VATMode", (int)VATMode.Houdini);
             Func<bool> isTyflow = () => IsPropertyMode(rootItem, "_VATMode", (int)VATMode.Tyflow);
-            Func<bool> hasVatFrameCustomData = () => IsVatFrameCustomDataVisible(rootItem);
+            Func<bool> hasVatFrameCustomData = () => graphSharedMode?IsGraphVatFrameCustomDataVisible(rootItem):IsVatFrameCustomDataVisible(rootItem);
             ShaderGUIFloatItem floatItem;
 
             new FeaturePopupItem(rootItem, this, "_HoudiniVATSubMode", () => Content("Houdini VAT Sub Mode"), HoudiniVatSubModeNames,
-                _ => rootItem.SyncService.SyncMaterialState(), isHoudini);
+                _ => {if(graphSharedMode)rootItem.SyncService.TryApplyGraphVATIntentEdit();else rootItem.SyncService.SyncMaterialState();}, isHoudini);
             new HelpBoxItem(rootItem, this, () => Text("feature.vat.houdiniUnsupportedParticle.message", "该 Houdini VAT 类型需要 Mesh 多 UV 数据，不支持 ParticleSystem VertexStream 模式。"), MessageType.Warning,
                 () => isHoudini() && HasUnsupportedHoudiniParticleMode(rootItem));
             new SectionLabelItem(rootItem, this, () => Content("Playback"), isHoudini);
-            new ToggleItem(rootItem, this, "_B_autoPlayback", () => Content("Auto Playback"), isVisible: isHoudini);
+            new ToggleItem(rootItem, this, "_B_autoPlayback", () => Content("Auto Playback"), isVisible: isHoudini) {WriteOnlyOnInteractiveChange=graphSharedMode};
             floatItem = new ShaderGUIFloatItem(rootItem, this, () => isHoudini() && ShouldDrawWhenFloatOff(rootItem, "_B_autoPlayback"))
             {
                 PropertyName = "_displayFrame",
                 GuiContent = Content("Display Frame")
             };
             floatItem.InitTriggerByChild();
-            new VatFrameCustomDataItem(rootItem, this, () => Content("VAT Frame CustomData"), () => isHoudini() && hasVatFrameCustomData(), hasVatFrameCustomData);
+            new VatFrameCustomDataItem(rootItem, this, () => Content("VAT Frame CustomData"), () => isHoudini() && hasVatFrameCustomData(), hasVatFrameCustomData,graphSharedMode);
             floatItem = new ShaderGUIFloatItem(rootItem, this, isHoudini)
             {
                 PropertyName = "_gameTimeAtFirstFrame",
@@ -65,8 +65,8 @@ namespace NBShaderEditor
                 GuiContent = Content("Houdini FPS")
             };
             floatItem.InitTriggerByChild();
-            new ToggleItem(rootItem, this, "_B_interpolate", () => Content("Interframe Interpolation"), isVisible: isHoudini);
-            new ToggleItem(rootItem, this, "_animateFirstFrame", () => Content("Animate First Frame"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 1));
+            new ToggleItem(rootItem, this, "_B_interpolate", () => Content("Interframe Interpolation"), isVisible: isHoudini) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_animateFirstFrame", () => Content("Animate First Frame"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 1)) {WriteOnlyOnInteractiveChange=graphSharedMode};
             floatItem = new ShaderGUIFloatItem(rootItem, this, isHoudini)
             {
                 PropertyName = "_frameCount",
@@ -130,7 +130,7 @@ namespace NBShaderEditor
                 GuiContent = Content("Global Piece Scale Multiplier")
             };
             floatItem.InitTriggerByChild();
-            new ToggleItem(rootItem, this, "_B_pscaleAreInPosA", () => Content("Piece Scales in Position Alpha"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 1, 3));
+            new ToggleItem(rootItem, this, "_B_pscaleAreInPosA", () => Content("Piece Scales in Position Alpha"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 1, 3)) {WriteOnlyOnInteractiveChange=graphSharedMode};
 
             new SectionLabelItem(rootItem, this, () => Content("Particle Sprite"), () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 3));
             floatItem = new ShaderGUIFloatItem(rootItem, this, () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 3))
@@ -145,15 +145,15 @@ namespace NBShaderEditor
                 GuiContent = Content("Height Base Scale")
             };
             floatItem.InitTriggerByChild();
-            new ToggleItem(rootItem, this, "_B_hideOverlappingOrigin", () => Content("Hide Overlapping Origin"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 3));
+            new ToggleItem(rootItem, this, "_B_hideOverlappingOrigin", () => Content("Hide Overlapping Origin"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 3)) {WriteOnlyOnInteractiveChange=graphSharedMode};
             floatItem = new ShaderGUIFloatItem(rootItem, this, () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 3) && ShouldDrawWhenFloatOn(rootItem, "_B_hideOverlappingOrigin"))
             {
                 PropertyName = "_originRadius",
                 GuiContent = Content("Origin Effective Radius")
             };
             floatItem.InitTriggerByChild();
-            new ToggleItem(rootItem, this, "_B_CAN_SPIN", () => Content("Particles Can Spin"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 3));
-            new ToggleItem(rootItem, this, "_B_spinFromHeading", () => Content("Compute Spin from Heading"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 3) && ShouldDrawWhenFloatOn(rootItem, "_B_CAN_SPIN"));
+            new ToggleItem(rootItem, this, "_B_CAN_SPIN", () => Content("Particles Can Spin"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 3)) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_B_spinFromHeading", () => Content("Compute Spin from Heading"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 3) && ShouldDrawWhenFloatOn(rootItem, "_B_CAN_SPIN")) {WriteOnlyOnInteractiveChange=graphSharedMode};
             floatItem = new ShaderGUIFloatItem(rootItem, this, () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 3) && ShouldDrawWhenFloatOn(rootItem, "_B_CAN_SPIN") && ShouldDrawWhenFloatOff(rootItem, "_B_spinFromHeading"))
             {
                 PropertyName = "_spinPhase",
@@ -180,10 +180,10 @@ namespace NBShaderEditor
             floatItem.InitTriggerByChild();
 
             new SectionLabelItem(rootItem, this, () => Content("Flags"), isHoudini);
-            new ToggleItem(rootItem, this, "_B_LOAD_POS_TWO_TEX", () => Content("Positions Require Two Textures"), isVisible: isHoudini);
-            new ToggleItem(rootItem, this, "_B_UNLOAD_ROT_TEX", () => Content("Use Compressed Normals (no rotTex)"), isVisible: () => isHoudini() && ShouldDrawCompressedNormalsToggle(rootItem));
-            new ToggleItem(rootItem, this, "_B_LOAD_COL_TEX", () => Content("Load Color Texture"), isVisible: isHoudini);
-            new ToggleItem(rootItem, this, "_B_LOAD_LOOKUP_TABLE", () => Content("Load Lookup Table"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 2));
+            new ToggleItem(rootItem, this, "_B_LOAD_POS_TWO_TEX", () => Content("Positions Require Two Textures"), isVisible: isHoudini) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_B_UNLOAD_ROT_TEX", () => Content("Use Compressed Normals (no rotTex)"), isVisible: () => isHoudini() && ShouldDrawCompressedNormalsToggle(rootItem)) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_B_LOAD_COL_TEX", () => Content("Load Color Texture"), isVisible: isHoudini) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_B_LOAD_LOOKUP_TABLE", () => Content("Load Lookup Table"), isVisible: () => isHoudini() && IsPropertyMode(rootItem, "_HoudiniVATSubMode", 2)) {WriteOnlyOnInteractiveChange=graphSharedMode};
 
             new TextureItem(rootItem, this, "_VATTex", () => Content("VAT texture"), drawScaleOffset: false, isVisible: isTyflow);
             floatItem = new ShaderGUIFloatItem(rootItem, this, isTyflow)
@@ -193,39 +193,39 @@ namespace NBShaderEditor
             };
             floatItem.InitTriggerByChild();
             new FeaturePopupItem(rootItem, this, "_TyFlowVATSubMode", () => Content("TyFlow VAT Sub Mode"), TyFlowVatSubModeNames,
-                _ => rootItem.SyncService.SyncMaterialState(), isTyflow);
+                _ => {if(graphSharedMode)rootItem.SyncService.TryApplyGraphVATIntentEdit();else rootItem.SyncService.SyncMaterialState();}, isTyflow);
             new HelpBoxItem(rootItem, this, () => Text("feature.vat.tyflowUnsupportedParticle.message", "该 TyFlow VAT 类型需要 Mesh 多 UV 数据，不支持 ParticleSystem VertexStream 模式。"), MessageType.Warning,
                 () => isTyflow() && HasUnsupportedTyflowParticleMode(rootItem));
             new HelpBoxItem(rootItem, this, () => Text("feature.vat.tyflowUv2Conflict.message", "TyFlow VAT uses UV2 (TEXCOORD0.zw) as vertexIndex / vertexCount in ParticleSystem mode. Flipbook blending or Special UV (UV2) conflicts with it; VAT takes priority."), MessageType.Warning,
                 () => isTyflow() && !HasUnsupportedTyflowParticleMode(rootItem) && HasTyflowParticleUV2Conflict(rootItem));
-            new ToggleItem(rootItem, this, "_DeformingSkin", () => Content("Deforming skin"), isVisible: isTyflow);
+            new ToggleItem(rootItem, this, "_DeformingSkin", () => Content("Deforming skin"), isVisible: isTyflow) {WriteOnlyOnInteractiveChange=graphSharedMode};
             floatItem = new ShaderGUIFloatItem(rootItem, this, isTyflow)
             {
                 PropertyName = "_SkinBoneCount",
                 GuiContent = Content("Skin bone count")
             };
             floatItem.InitTriggerByChild();
-            new ToggleItem(rootItem, this, "_RGBAEncoded", () => Content("RGBA encoded"), isVisible: isTyflow);
-            new ToggleItem(rootItem, this, "_RGBAHalf", () => Content("RGBA half"), isVisible: isTyflow);
-            new ToggleItem(rootItem, this, "_LinearToGamma", () => Content("Gamma correction"), isVisible: isTyflow);
-            new ToggleItem(rootItem, this, "_VATIncludesNormals", () => Content("VAT includes normals"), isVisible: isTyflow);
+            new ToggleItem(rootItem, this, "_RGBAEncoded", () => Content("RGBA encoded"), isVisible: isTyflow) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_RGBAHalf", () => Content("RGBA half"), isVisible: isTyflow) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_LinearToGamma", () => Content("Gamma correction"), isVisible: isTyflow) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_VATIncludesNormals", () => Content("VAT includes normals"), isVisible: isTyflow) {WriteOnlyOnInteractiveChange=graphSharedMode};
             floatItem = new ShaderGUIFloatItem(rootItem, this, isTyflow)
             {
                 PropertyName = "_Frame",
                 GuiContent = Content("Frame")
             };
             floatItem.InitTriggerByChild();
-            new VatFrameCustomDataItem(rootItem, this, () => Content("VAT Frame CustomData"), () => isTyflow() && hasVatFrameCustomData(), hasVatFrameCustomData);
+            new VatFrameCustomDataItem(rootItem, this, () => Content("VAT Frame CustomData"), () => isTyflow() && hasVatFrameCustomData(), hasVatFrameCustomData,graphSharedMode);
             floatItem = new ShaderGUIFloatItem(rootItem, this, isTyflow)
             {
                 PropertyName = "_Frames",
                 GuiContent = Content("Frames")
             };
             floatItem.InitTriggerByChild();
-            new ToggleItem(rootItem, this, "_FrameInterpolation", () => Content("Frame interpolation"), isVisible: isTyflow);
-            new ToggleItem(rootItem, this, "_Loop", () => Content("Loop"), isVisible: isTyflow);
-            new ToggleItem(rootItem, this, "_InterpolateLoop", () => Content("Interpolate loop"), isVisible: isTyflow);
-            new ToggleItem(rootItem, this, "_Autoplay", () => Content("Autoplay"), isVisible: isTyflow);
+            new ToggleItem(rootItem, this, "_FrameInterpolation", () => Content("Frame interpolation"), isVisible: isTyflow) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_Loop", () => Content("Loop"), isVisible: isTyflow) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_InterpolateLoop", () => Content("Interpolate loop"), isVisible: isTyflow) {WriteOnlyOnInteractiveChange=graphSharedMode};
+            new ToggleItem(rootItem, this, "_Autoplay", () => Content("Autoplay"), isVisible: isTyflow) {WriteOnlyOnInteractiveChange=graphSharedMode};
             floatItem = new ShaderGUIFloatItem(rootItem, this, isTyflow)
             {
                 PropertyName = "_AutoplaySpeed",
@@ -233,6 +233,19 @@ namespace NBShaderEditor
             };
             floatItem.InitTriggerByChild();
             InitTriggerByChild();
+        }
+
+        private static bool IsGraphVatFrameCustomDataVisible(NBShaderRootItem root)
+        {
+            if(root.Mats==null)return false;
+            foreach(Material material in root.Mats)
+            {
+                if(material==null||!material.HasProperty("_VAT_Toggle")||material.GetFloat("_VAT_Toggle")<=.5f)continue;
+                if(Mathf.RoundToInt(material.GetFloat("_VATMode"))==1)return true; // Tyflow's actual FrameCD consumer also runs for Mesh/skin.
+                var flags=new NBShaderFlags(material);
+                if(flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_1_IS_PARTICLE_SYSTEM,index:1))return true;
+            }
+            return false;
         }
 
         private static bool ShouldDrawWhenFloatOn(NBShaderRootItem rootItem, string propertyName)

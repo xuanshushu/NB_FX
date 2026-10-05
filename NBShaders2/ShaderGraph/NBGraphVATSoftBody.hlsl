@@ -56,13 +56,19 @@ void NBGraphVATSoftBody_float(float3 PositionOS, float3 NormalOS, float4 UV1,
     float Loop,
     float InterpolateLoop,
     float FrameInterpolation,
-    out float3 OutPositionOS, out float3 OutNormalOS, out float Supported)
+    float NBGraphTierAllowVAT, float NBGraphTierVATFamily, float NBGraphTierVATSubMode,
+    out float3 OutPositionOS, out float3 OutNormalOS, out float Supported, out float EffectiveVATToggle)
 {
-    OutPositionOS=PositionOS; OutNormalOS=NormalOS; Supported=1.0;
+    OutPositionOS=PositionOS; OutNormalOS=NormalOS; Supported=1.0; EffectiveVATToggle=0.0;
 #if defined(NB_GRAPH_NO_VAT)
     return;
 #else
-    if (VATToggle < 0.5) return;
+    VATToggle *= NBGraphTierAllowVAT > 0.5 ? 1.0 : 0.0;
+    if (VATToggle < 0.5 || NBGraphTierVATFamily == -2.0) return;
+    // -1/-1 is the old, unprojected raw contract. Projected enums are preflighted by the shared owner.
+    if (NBGraphTierVATFamily >= 0.0) VATMode=NBGraphTierVATFamily;
+    if (NBGraphTierVATSubMode >= 0.0){HoudiniVATSubMode=NBGraphTierVATSubMode;TyFlowVATSubMode=NBGraphTierVATSubMode;}
+    EffectiveVATToggle=VATToggle;
     uint flags1=NBGraphDecodeUInt32(Flags1Lo16,Flags1Hi16);
     if (round(VATMode) == 1.0)
     {

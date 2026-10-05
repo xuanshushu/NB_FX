@@ -1,0 +1,46 @@
+{
+  "results": [
+    {
+      "batch": "CPU",
+      "counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 7.99,
+      "failures": []
+    },
+    {
+      "batch": "GUI",
+      "counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 4.34,
+      "failures": []
+    },
+    {
+      "batch": "GPU1",
+      "counts": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 32.84,
+      "failures": [
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphVATTypedProjectionRenderTests.G4VATTier_GPU_HoudiniFamilyDenyFallbackFrame_ortho",
+          "message": "  Original strict0 ABC/repeat/restore retained\r\n  Expected: True\r\n  But was:  False\r\n"
+        }
+      ]
+    }
+  ],
+  "fullMeshGatePassed": false
+}

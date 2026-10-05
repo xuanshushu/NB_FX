@@ -1,0 +1,34 @@
+{
+  "status": "completed",
+  "duration": 1.39,
+  "summary": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphVATSharedTierTests.G4VATTier_GUI_ActualVATEnableExcludesFlipbookCompleteUndoRedo",
+      "Status": "Passed",
+      "Duration": 0.5304635,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphVATSharedTierTests.G4VATTier_GUI_HiddenFrameCDMixedChildBooleansPassiveReadOnly",
+      "Status": "Passed",
+      "Duration": 0.2471586,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphVATSharedTierTests.G4VATTier_GUI_TyflowMeshFrameCDVisibleActualResetUndoRedo",
+      "Status": "Failed",
+      "Duration": 0.2810725,
+      "Message": "System.Reflection.TargetInvocationException : Exception has been thrown by the target of an invocation.\r\n  ----> NUnit.Framework.AssertionException :   Real non-popup FrameCD Reset owns only original nibble28 float _NB_TierAllowVAT\r\n  Expected: 0\r\n  But was:  1065353216\r\n",
+      "StackTrace": "  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00083] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n  at NBFX.Baseline.Tests.G4GraphVATSharedTierTests+Snapshot.Same (UnityEngine.Material material, System.String label, System.String[] allow) [0x00024] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphVATSharedTierTests.cs:34 \r\n  at NBFX.Baseline.Tests.G4GraphVATSharedTierTests.G4VATTier_GUI_TyflowMeshFrameCDVisibleActualResetUndoRedo () [0x001cf] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphVATSharedTierTests.cs:127 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 \r\n--AssertionException\r\n  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00039] in <f577cd9686154d6ab10efd7e65e64366>:0 \r\n  at NBFX.Baseline.Tests.G4GraphGuiFeatureIntentTests+Snapshot.AssertSame (UnityEngine.Material material, System.String label, System.String[] allowed) [0x0013a] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphGuiFeatureIntentTests.cs:333 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <d49d4cb128564ee1b54a84338c98d353>:0 "
+    }
+  ]
+}

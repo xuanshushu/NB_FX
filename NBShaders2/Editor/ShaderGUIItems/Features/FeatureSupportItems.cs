@@ -158,24 +158,26 @@ namespace NBShaderEditor
     {
         private readonly Func<bool> _isVisible;
         private readonly Func<bool> _anyVatFrameCustomDataVisible;
+        private readonly bool _graphSharedMode;
 
         public VatFrameCustomDataItem(
             NBShaderRootItem rootItem,
             ShaderGUIItem parentItem,
             Func<GUIContent> contentProvider,
             Func<bool> isVisible,
-            Func<bool> anyVatFrameCustomDataVisible)
-            : base(rootItem, parentItem, NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME, 2, contentProvider)
+            Func<bool> anyVatFrameCustomDataVisible, bool graphSharedMode=false)
+            : base(rootItem, parentItem, NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_VAT_FRAME, 2, contentProvider, graphVATFrame:graphSharedMode)
         {
             _isVisible = isVisible;
             _anyVatFrameCustomDataVisible = anyVatFrameCustomDataVisible;
+            _graphSharedMode=graphSharedMode;
         }
 
         public override void OnGUI()
         {
             if (_isVisible != null && !_isVisible())
             {
-                if (_anyVatFrameCustomDataVisible == null || !_anyVatFrameCustomDataVisible())
+                if (!_graphSharedMode && (_anyVatFrameCustomDataVisible == null || !_anyVatFrameCustomDataVisible()))
                 {
                     ClearVatFrameCustomData();
                 }

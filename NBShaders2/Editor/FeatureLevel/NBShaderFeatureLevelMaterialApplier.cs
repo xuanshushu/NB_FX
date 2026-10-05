@@ -21,7 +21,8 @@ namespace NBShaders2.Editor.FeatureLevel
             "_NB_TierAllowDistanceFade", "_NB_TierAllowSoftParticles", "_NB_TierAllowDepthOutline",
             "_NB_TierAllowRefraction", "_NB_TierAllowVertexOffset","_NB_TierAllowVertexOffsetMask",
             "_NB_TierAllowDepthDecal",
-            "_NB_TierAllowLighting"
+            "_NB_TierAllowLighting",
+            "_NB_TierAllowVAT", "_NB_TierAllowFlipbook"
         };
         static readonly string[] GraphSupportedGateKeywords = {
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
@@ -34,8 +35,25 @@ namespace NBShaders2.Editor.FeatureLevel
             "_DISTANCE_FADE", "_SOFTPARTICLES_ON", "_DEPTH_OUTLINE",
             "_DISTORT_REFRACTION", "_VERTEX_OFFSET","_VERTEX_OFFSET_MASKMAP",
             "_DEPTH_DECAL",
-            null // Selected lighting mode: use the same normalized effective intent.
+            null, // Selected lighting mode: use the same normalized effective intent.
+            "_VAT", "_FLIPBOOKBLENDING_ON"
         };
+
+        internal static readonly string[] GraphSupportedTypedProjectionProperties={"_NB_TierVATFamily","_NB_TierVATSubMode"};
+        // One ownership enumeration for preflight, initialization and rollback, also reusable by Runtime.
+        internal static readonly string[] GraphSupportedProjectionProperties=CreateGraphProjectionProperties();
+        static string[] CreateGraphProjectionProperties()
+        {var values=new string[GraphSupportedGateProperties.Length+GraphSupportedTypedProjectionProperties.Length];GraphSupportedGateProperties.CopyTo(values,0);GraphSupportedTypedProjectionProperties.CopyTo(values,GraphSupportedGateProperties.Length);return values;}
+        internal static bool HasGraphVATProjectionState(Material material,out bool unprojected)
+        {
+            unprojected=false;
+            foreach(string name in GraphSupportedTypedProjectionProperties)
+            {if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,name))return false;float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value)||value!=Mathf.Round(value))return false;}
+            float family=material.GetFloat("_NB_TierVATFamily"),mode=material.GetFloat("_NB_TierVATSubMode");
+            if(family==-1f&&mode==-1f){unprojected=true;return true;} // Old unprojected schema only.
+            if(family==-2f)return mode==0f;
+            return (family==0f&&mode>=0f&&mode<=3f)||(family==1f&&mode>=0f&&mode<=5f);
+        }
 
         internal const string GraphOverrideDepthKeyword = "_OVERRIDE_Z";
 
@@ -80,12 +98,13 @@ namespace NBShaders2.Editor.FeatureLevel
                 !NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, FeatureTierPropertyName)) return false;
             float saved = material.GetFloat(FeatureTierPropertyName);
             if (float.IsNaN(saved) || float.IsInfinity(saved) || saved < 0 || saved > 3 || saved != Mathf.Round(saved)) return false;
-            foreach (string property in GraphSupportedGateProperties)
+            foreach (string property in GraphSupportedProjectionProperties)
             {
                 if (!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material, property)) return false;
                 float value = material.GetFloat(property);
                 if (float.IsNaN(value) || float.IsInfinity(value)) return false;
             }
+            bool oldProjection;if(!HasGraphVATProjectionState(material,out oldProjection))return false;
             var allowed = allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
             string[] unavailable;
             return NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material, tier, allowed, out intent, out unavailable);
@@ -100,6 +119,10 @@ namespace NBShaders2.Editor.FeatureLevel
             var effective = new HashSet<string>(intent.effectiveKeywords);
             for (int i = 0; i < GraphSupportedGateProperties.Length; ++i)
                 wouldChange |= material.GetFloat(GraphSupportedGateProperties[i]) != (GraphGateEnabled(i,effective) ? 1f : 0f);
+            bool parentAllowed,flipbookAllowed;float family,subMode;
+            var vatAllowed=allowedManagedKeywords??NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            if(!NBShaderMaterialIntentResolver.TryResolveGraphVATProjection(material,tier,vatAllowed,out parentAllowed,out family,out subMode,out flipbookAllowed))return false;
+            wouldChange|=material.GetFloat("_NB_TierVATFamily")!=family||material.GetFloat("_NB_TierVATSubMode")!=subMode;
             // Older graphs may omit the declared keyword; never invent one.
             if (HasGraphOverrideDepthKeyword(material))
             {
@@ -158,6 +181,8 @@ namespace NBShaders2.Editor.FeatureLevel
             if(!ApplyGraphRefractionGroup(material,tier,allowed,out groupChanged))return false;
             changed|=groupChanged;
             if(!ApplyGraphLightingGroup(material,tier,allowed,out groupChanged))return false;
+            changed|=groupChanged;
+            if(!ApplyGraphVATProjectionGroup(material,tier,allowed,out groupChanged))return false;
             changed|=groupChanged;
             return true;
         }
@@ -292,6 +317,21 @@ namespace NBShaders2.Editor.FeatureLevel
             var allowed=allowedManagedKeywords??NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
             NBShaderMaterialIntentResult intent;string[] unavailable;if(!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material,tier,allowed,out intent,out unavailable))return false;
             changed=SetGraphAllowFloat(material,"_NB_TierAllowRefraction",new HashSet<string>(intent.effectiveKeywords).Contains("_DISTORT_REFRACTION"));return true;
+        }
+
+        internal static bool ApplyGraphVATProjectionGroup(Material material,NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords,out bool changed)
+        {
+            changed=false;bool oldProjection;if(!HasGraphVATProjectionState(material,out oldProjection))return false;
+            foreach(string name in new[]{"_NB_TierAllowVAT","_NB_TierAllowFlipbook"})
+            {if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,name))return false;float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;}
+            bool parentAllowed,flipbookAllowed;float family,subMode;
+            var vatAllowed=allowedManagedKeywords??NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+            if(!NBShaderMaterialIntentResolver.TryResolveGraphVATProjection(material,tier,vatAllowed,out parentAllowed,out family,out subMode,out flipbookAllowed))return false;
+            changed|=SetGraphAllowFloat(material,"_NB_TierAllowVAT",parentAllowed);changed|=SetGraphAllowFloat(material,"_NB_TierAllowFlipbook",flipbookAllowed);
+            if(material.GetFloat("_NB_TierVATFamily")!=family){material.SetFloat("_NB_TierVATFamily",family);changed=true;}
+            if(material.GetFloat("_NB_TierVATSubMode")!=subMode){material.SetFloat("_NB_TierVATSubMode",subMode);changed=true;}
+            return true;
         }
 
         static bool SetGraphAllowFloat(Material material, string name, bool enabled)
