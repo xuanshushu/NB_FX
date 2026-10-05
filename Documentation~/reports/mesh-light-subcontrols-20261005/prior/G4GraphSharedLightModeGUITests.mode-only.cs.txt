@@ -51,7 +51,7 @@ namespace NBFX.Baseline.Tests
             object root = Activator.CreateInstance(Type("NBShaderEditor.NBShaderRootItem")); var type = root.GetType();
             var editor = (MaterialEditor)Editor.CreateEditor(materials.Cast<Object>().ToArray(), typeof(MaterialEditor)); owned.Add(editor);
             type.GetField("MatEditor", All).SetValue(root, editor); type.GetField("Mats", All).SetValue(root, materials.ToList()); type.GetField("Shader", All).SetValue(root, materials[0].shader);
-            type.GetMethod("InitFlags", All, null, new[]{typeof(List<Material>)}, null).Invoke(root, new object[] { materials.ToList() });
+            type.GetMethod("InitFlags", All).Invoke(root, new object[] { materials.ToList() });
             var dictionary = (IDictionary)type.GetField("PropertyInfoDic", All).GetValue(root);
             // MaterialEditor retains all actual targets. Its property API receives one
             // same-shader group; production guards still inspect every root.Mats host.
@@ -64,15 +64,15 @@ namespace NBFX.Baseline.Tests
             }
             return root;
         }
-        bool Ready(object root) => (bool)root.GetType().GetMethod("InitializeGraphLightModeInputs", All, null, System.Type.EmptyTypes, null).Invoke(root, null);
+        bool Ready(object root) => (bool)root.GetType().GetMethod("InitializeGraphLightModeInputs", All).Invoke(root, null);
         object Block(object root) => root.GetType().GetField("_graphLightModeBlock", All).GetValue(root);
         object Popup(object root) => ((IList)Block(root).GetType().GetField("ChildrenItemList", All).GetValue(Block(root)))[0];
         bool Select(object root, int value)
         {
-            object popup = Popup(root); bool changed = (bool)popup.GetType().GetMethod("CommitSelectedMode", All, null, new[]{typeof(int)}, null).Invoke(popup, new object[] { value });
-            if (changed) popup.GetType().GetMethod("OnEndChange", All, null, System.Type.EmptyTypes, null).Invoke(popup, null); return changed;
+            object popup = Popup(root); bool changed = (bool)popup.GetType().GetMethod("CommitSelectedMode", All).Invoke(popup, new object[] { value });
+            if (changed) popup.GetType().GetMethod("OnEndChange", All).Invoke(popup, null); return changed;
         }
-        void Sync(Material material) => Type("NBShaderEditor.NBShaderGraphGUI").GetMethod("SyncSixWayKeywords", All, null, new[]{typeof(Material)}, null).Invoke(null, new object[] { material });
+        void Sync(Material material) => Type("NBShaderEditor.NBShaderGraphGUI").GetMethod("SyncSixWayKeywords", All).Invoke(null, new object[] { material });
         string Snapshot(Material material) => EditorJsonUtility.ToJson(material) + "\n" + string.Join("|", material.shaderKeywords.OrderBy(k => k));
         [TearDown] public void Cleanup()
         {
@@ -84,13 +84,13 @@ namespace NBFX.Baseline.Tests
                 AssetDatabase.DeleteAsset(assetFolder); assetFolder = null;
             }
         }
-        [TestCase(TestName = "G4SharedLightModeGUI_ActualSharedSubControlsV2_ReadOnlyInit")]
+        [TestCase(TestName = "G4SharedLightModeGUI_ActualFactoryOnlyMode_ReadOnlyInit")]
         public void ExistingItemFactoryOnly()
         {
             var material = Material(); material.SetFloat("_NB_Flags0Lo16", -3.75f); string before = Snapshot(material); object root = Root(material);
             Assert.That(Ready(root), Is.True); Assert.That(Block(root).GetType().FullName, Is.EqualTo("NBShaderEditor.BigBlockItem")); Assert.That(Popup(root).GetType().FullName, Is.EqualTo("NBShaderEditor.FxLightModePopupItem"));
-            Assert.That(((IList)Block(root).GetType().GetField("ChildrenItemList", All).GetValue(Block(root))).Count, Is.EqualTo(17));
-            var names = (IEnumerable<string>)root.GetType().GetMethod("GetSharedGraphPropertyNames", All, null, System.Type.EmptyTypes, null).Invoke(root, null); Assert.That(names, Is.EquivalentTo(new[] { Mode, Foldout, "_BlinnPhongSpecularToggle", "_SpecularColor", "_MaterialInfo", "_RigRTBk", "_RigLBtF", "_SixWayColorAbsorptionToggle", "_SixWayInfo", "_SixWayEmissionRamp", "_SixWayEmissionColor" })); Assert.That(Snapshot(material), Is.EqualTo(before));
+            Assert.That(((IList)Block(root).GetType().GetField("ChildrenItemList", All).GetValue(Block(root))).Count, Is.EqualTo(1));
+            var names = (IEnumerable<string>)root.GetType().GetMethod("GetSharedGraphPropertyNames", All).Invoke(root, null); Assert.That(names, Is.EquivalentTo(new[] { Mode, Foldout })); Assert.That(Snapshot(material), Is.EqualTo(before));
         }
         [TestCase(Mode, TestName = "G4SharedLightModeGUI_MissingMode")]
         [TestCase(Foldout, TestName = "G4SharedLightModeGUI_MissingFoldout")]
@@ -131,7 +131,7 @@ namespace NBFX.Baseline.Tests
         public void ResetIsSameSharedItem()
         {
             var material = Material(); material.SetFloat(Mode, 4); Sync(material); var root = Root(material); Assert.That(Ready(root), Is.True); Undo.IncrementCurrentGroup(); int group = Undo.GetCurrentGroup();
-            try { Popup(root).GetType().GetMethod("ExecuteReset", All, null, new[]{typeof(bool)}, null).Invoke(Popup(root), new object[] { false }); Undo.FlushUndoRecordObjects(); Assert.That(material.GetFloat(Mode), Is.Zero); Assert.That(material.IsKeywordEnabled("EVALUATE_SH_VERTEX"), Is.False); Undo.PerformUndo(); Assert.That(material.GetFloat(Mode), Is.EqualTo(4)); Assert.That(material.IsKeywordEnabled("EVALUATE_SH_VERTEX"), Is.True); }
+            try { Popup(root).GetType().GetMethod("ExecuteReset", All).Invoke(Popup(root), new object[] { false }); Undo.FlushUndoRecordObjects(); Assert.That(material.GetFloat(Mode), Is.Zero); Assert.That(material.IsKeywordEnabled("EVALUATE_SH_VERTEX"), Is.False); Undo.PerformUndo(); Assert.That(material.GetFloat(Mode), Is.EqualTo(4)); Assert.That(material.IsKeywordEnabled("EVALUATE_SH_VERTEX"), Is.True); }
             finally { Undo.RevertAllDownToGroup(group); }
         }
         [TestCase(TestName = "G4SharedLightModeGUI_SaveAndExactReimport")]

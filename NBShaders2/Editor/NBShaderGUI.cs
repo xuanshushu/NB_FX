@@ -98,6 +98,7 @@ namespace NBShaderEditor
         bool _sharedGraphQCMReady;
         BigBlockItem _graphTADepthBlock;
         bool _sharedGraphLightModeReady;
+        bool _sharedGraphLightSubReady;
         BigBlockItem _graphLightModeBlock;
         static readonly string[] SharedGraphLightModeProperties = { "_FxLightMode", "_LightBigBlockItemFoldOut" };
 
@@ -133,6 +134,7 @@ namespace NBShaderEditor
                 names.AddRange(SharedGraphMainTextureProperties);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphLightModeReady)
                 names.AddRange(SharedGraphLightModeProperties);
+            if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphLightSubReady) names.AddRange(NBShaderSyncService.GraphLightSubSharedProperties);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphFlipbookReady) names.Add("_FlipbookBlending");
             if (Context != null && _sharedGraphMainTextureReady && Context.CanEditGraphMainTexUV) names.AddRange(new[] { "_UTwirlEnabled", "_PolarCoordinatesEnabled", "_TWParameter", "_TWStrength", "_PCCenter", "_CylinderUVRotate", "_CylinderUVPosOffset", "_WorldSpaceUVModeSelector", "_ObjectSpaceUVModeSelector" });
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphFresnelReady) names.AddRange(SharedGraphFresnelProperties);
@@ -227,8 +229,26 @@ namespace NBShaderEditor
             Context.Refresh();
             _sharedGraphLightModeReady = Context.IsGraphMaterialHost && IsGraphLightModeSchemaReady();
             if (!_sharedGraphLightModeReady) return false;
-            _graphLightModeBlock ??= LightBigBlockItem.CreateGraphModeOnlyBlock(this, null);
+            bool subReady = SyncService.HasGraphLightSubControlsSchema();
+            if(_graphLightModeBlock==null || _sharedGraphLightSubReady!=subReady)
+                _graphLightModeBlock = subReady ? LightBigBlockItem.CreateGraphSharedLightBlock(this, null) : LightBigBlockItem.CreateGraphModeOnlyBlock(this, null);
+            _sharedGraphLightSubReady = subReady;
             return true;
+        }
+
+        internal void DrawGraphLightInputs(ShaderGUIItem selectedItem = null)
+        {
+            bool interactive = Event.current!=null && Event.current.type!=EventType.Layout && Event.current.type!=EventType.Repaint;
+            System.Collections.Generic.List<Texture> rampBefore=null;
+            if(_sharedGraphLightSubReady && interactive)
+            {
+                var targets=new UnityEngine.Object[Mats.Count];rampBefore=new System.Collections.Generic.List<Texture>(Mats.Count);
+                for(int i=0;i<Mats.Count;++i){targets[i]=Mats[i];rampBefore.Add(Mats[i].GetTexture("_SixWayEmissionRamp"));}
+                // Own original direct NoMip/vector/color writes before the actual child event.
+                Undo.RecordObjects(targets,"NB Shared Light Inputs");
+            }
+            if(selectedItem==null)_graphLightModeBlock.OnGUI();else selectedItem.OnGUI();
+            if(rampBefore!=null)SyncService.TryFinalizeGraphLightRampEdit(rampBefore);
         }
 
         internal bool InitializeGraphTADepthInputs()
@@ -387,6 +407,7 @@ namespace NBShaderEditor
                     _sharedGraphDissolveReady = false;
                     _sharedGraphFresnelReady = false;
                     _graphLightModeBlock = null;
+                    _sharedGraphLightSubReady = false;
                     _graphNormalMapBlock = null;
                     _graphMatCapBlock=null;_sharedGraphMatCapReady=false;
                     _sharedGraphNormalMapReady = false;
@@ -406,7 +427,7 @@ namespace NBShaderEditor
                 else
                     EditorGUILayout.HelpBox("Shared Main Texture needs its real Float foldouts/schema. Existing Graph native inputs remain available below.", MessageType.Info);
                 if (InitializeGraphLightModeInputs())
-                    _graphLightModeBlock.OnGUI();
+                    DrawGraphLightInputs();
                 DrawGraphNormalMapInputs();
                 DrawGraphMatCapInputs();
                 DrawGraphColorAdjustmentInputs();

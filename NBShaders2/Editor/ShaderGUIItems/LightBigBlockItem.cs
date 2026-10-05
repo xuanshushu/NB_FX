@@ -104,6 +104,175 @@ namespace NBShaderEditor
             return block;
         }
 
+        // Both hosts construct the same original atomic controls. Native defaults stay unchanged.
+        internal sealed class SharedLightSubItems
+        {
+            internal ToggleItem SpecularToggleItem;
+            internal ColorItem SpecularColorItem;
+            internal VectorComponentItem SpecularSmoothnessItem;
+            internal VectorComponentItem PbrMetallicItem;
+            internal VectorComponentItem PbrSmoothnessItem;
+            internal TextureItem SixWayPositiveItem;
+            internal ForceNoMipItem SixWayPositiveForceNoMipItem;
+            internal TextureItem SixWayNegativeItem;
+            internal ForceNoMipItem SixWayNegativeForceNoMipItem;
+            internal ToggleItem SixWayAbsorptionToggleItem;
+            internal VectorComponentItem SixWayAbsorptionStrengthItem;
+            internal TextureItem SixWayEmissionRampItem;
+            internal ForceNoMipItem SixWayEmissionRampForceNoMipItem;
+            internal VectorComponentItem SixWayEmissionPowItem;
+            internal ColorItem SixWayEmissionColorItem;
+        }
+
+        internal static SharedLightSubItems CreateSpecularPBRSubItems(NBShaderRootItem rootItem,
+            ShaderGUIItem parentItem, bool graphSharedMode = false)
+        {
+            var items = new SharedLightSubItems();
+            items.SpecularToggleItem = new NBShaderKeywordToggleItem(
+                rootItem,
+                parentItem,
+                "_BlinnPhongSpecularToggle",
+                "_SPECULAR_COLOR",
+                () => Content("light.specular.toggle", "Specular"),
+                isVisible: () => IsBlinnOrHalf(rootItem), graphLightingEdit: graphSharedMode) { WriteOnlyOnInteractiveChange = graphSharedMode };
+
+            items.SpecularColorItem = new ColorItem(
+                rootItem,
+                parentItem,
+                "_SpecularColor",
+                () => Content("light.specular.color", "Specular Color"),
+                () => IsToggleOn(rootItem, "_BlinnPhongSpecularToggle") && IsBlinnOrHalf(rootItem));
+
+            items.SpecularSmoothnessItem = new VectorComponentItem(
+                rootItem,
+                parentItem,
+                "_MaterialInfo",
+                1,
+                () => Content("light.specular.smoothness", "Smoothness"),
+                true,
+                0f,
+                1f,
+                () => IsToggleOn(rootItem, "_BlinnPhongSpecularToggle") && IsBlinnOrHalf(rootItem));
+
+            items.PbrMetallicItem = new VectorComponentItem(
+                rootItem,
+                parentItem,
+                "_MaterialInfo",
+                0,
+                () => Content("light.pbr.metallic", "Metallic"),
+                true,
+                0f,
+                1f,
+                () => rootItem.Context.FxLightMode == FxLightMode.PBR);
+
+            items.PbrSmoothnessItem = new VectorComponentItem(
+                rootItem,
+                parentItem,
+                "_MaterialInfo",
+                1,
+                () => Content("light.pbr.smoothness", "Smoothness"),
+                true,
+                0f,
+                1f,
+                () => rootItem.Context.FxLightMode == FxLightMode.PBR);
+
+            return items;
+        }
+
+        internal static void AddSixWaySubItems(NBShaderRootItem rootItem, ShaderGUIItem parentItem,
+            SharedLightSubItems items, System.Action<MaterialProperty> syncSixWayRampFlag = null,
+            bool graphSharedMode = false)
+        {
+            System.Func<bool> isSixWay = () => rootItem.Context.FxLightMode == FxLightMode.SixWay;
+            items.SixWayPositiveItem = new TextureItem(
+                rootItem,
+                parentItem,
+                "_RigRTBk",
+                () => Content("light.sixway.positive", "SixWay Positive"),
+                drawScaleOffset: false,
+                isVisible: isSixWay);
+            items.SixWayPositiveForceNoMipItem = new ForceNoMipItem(
+                rootItem,
+                parentItem,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_RIG_RTBK,
+                isSixWay);
+
+            items.SixWayNegativeItem = new TextureItem(
+                rootItem,
+                parentItem,
+                "_RigLBtF",
+                () => Content("light.sixway.negative", "SixWay Negative"),
+                drawScaleOffset: false,
+                isVisible: isSixWay);
+            items.SixWayNegativeForceNoMipItem = new ForceNoMipItem(
+                rootItem,
+                parentItem,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_RIG_LBTF,
+                isSixWay);
+
+            items.SixWayAbsorptionToggleItem = new NBShaderKeywordToggleItem(
+                rootItem,
+                parentItem,
+                "_SixWayColorAbsorptionToggle",
+                "VFX_SIX_WAY_ABSORPTION",
+                () => Content("light.sixway.absorption.toggle", "Light Color Absorption"),
+                isVisible: isSixWay, graphLightingEdit: graphSharedMode) { WriteOnlyOnInteractiveChange = graphSharedMode };
+
+            items.SixWayAbsorptionStrengthItem = new VectorComponentItem(
+                rootItem,
+                parentItem,
+                "_SixWayInfo",
+                0,
+                () => Content("light.sixway.absorption.strength", "Absorption Strength"),
+                true,
+                0f,
+                1f,
+                () => isSixWay() && IsToggleOn(rootItem, "_SixWayColorAbsorptionToggle"));
+
+            items.SixWayEmissionRampItem = new TextureItem(
+                rootItem,
+                parentItem,
+                "_SixWayEmissionRamp",
+                () => Content("light.sixway.ramp", "SixWay Emission Ramp"),
+                drawScaleOffset: false,
+                afterDraw: syncSixWayRampFlag,
+                isVisible: isSixWay);
+            items.SixWayEmissionRampForceNoMipItem = new ForceNoMipItem(
+                rootItem,
+                parentItem,
+                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_SIX_WAY_EMISSION_RAMP,
+                isSixWay);
+
+            items.SixWayEmissionPowItem = new VectorComponentItem(
+                rootItem,
+                parentItem,
+                "_SixWayInfo",
+                1,
+                () => Content("light.sixway.emissionPow", "SixWay Emission Pow"),
+                false,
+                isVisible: isSixWay);
+
+            items.SixWayEmissionColorItem = new ColorItem(
+                rootItem,
+                parentItem,
+                "_SixWayEmissionColor",
+                () => Content("light.sixway.color", "SixWay Emission Color"),
+                isSixWay);
+
+        }
+
+        internal static BigBlockItem CreateGraphSharedLightBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        {
+            var block = CreateGraphModeOnlyBlock(rootItem, parentItem);
+            var items = CreateSpecularPBRSubItems(rootItem, block, true);
+            // Native's afterDraw callback remains Native-only: Graph paint never derives the Ramp bit.
+            AddSixWaySubItems(rootItem, block, items, graphSharedMode: true);
+            new HelpBoxItem(rootItem, block,
+                () => NBShaderInspectorLocalization.GetInspectorText("light.sixway.uvWarning.message", "六路UV跟随主贴图UV及颜色"),
+                MessageType.Warning, () => rootItem.Context.FxLightMode == FxLightMode.SixWay);
+            return block;
+        }
+
         public LightBigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(
                 rootItem,
@@ -114,132 +283,28 @@ namespace NBShaderEditor
             _nbRootItem = rootItem;
             _lightModeItem = CreateModeItem(rootItem, this);
 
-            _specularToggleItem = new NBShaderKeywordToggleItem(
-                rootItem,
-                this,
-                "_BlinnPhongSpecularToggle",
-                "_SPECULAR_COLOR",
-                () => Content("light.specular.toggle", "Specular"),
-                isVisible: () => IsBlinnOrHalf(rootItem));
-
-            _specularColorItem = new ColorItem(
-                rootItem,
-                this,
-                "_SpecularColor",
-                () => Content("light.specular.color", "Specular Color"),
-                () => IsToggleOn(rootItem, "_BlinnPhongSpecularToggle") && IsBlinnOrHalf(rootItem));
-
-            _specularSmoothnessItem = new VectorComponentItem(
-                rootItem,
-                this,
-                "_MaterialInfo",
-                1,
-                () => Content("light.specular.smoothness", "Smoothness"),
-                true,
-                0f,
-                1f,
-                () => IsToggleOn(rootItem, "_BlinnPhongSpecularToggle") && IsBlinnOrHalf(rootItem));
-
-            _pbrMetallicItem = new VectorComponentItem(
-                rootItem,
-                this,
-                "_MaterialInfo",
-                0,
-                () => Content("light.pbr.metallic", "Metallic"),
-                true,
-                0f,
-                1f,
-                () => rootItem.Context.FxLightMode == FxLightMode.PBR);
-
-            _pbrSmoothnessItem = new VectorComponentItem(
-                rootItem,
-                this,
-                "_MaterialInfo",
-                1,
-                () => Content("light.pbr.smoothness", "Smoothness"),
-                true,
-                0f,
-                1f,
-                () => rootItem.Context.FxLightMode == FxLightMode.PBR);
+            var sharedSubItems = CreateSpecularPBRSubItems(rootItem, this);
+            _specularToggleItem = sharedSubItems.SpecularToggleItem;
+            _specularColorItem = sharedSubItems.SpecularColorItem;
+            _specularSmoothnessItem = sharedSubItems.SpecularSmoothnessItem;
+            _pbrMetallicItem = sharedSubItems.PbrMetallicItem;
+            _pbrSmoothnessItem = sharedSubItems.PbrSmoothnessItem;
 
             _bumpBlock = CreateNormalMapBlock(rootItem, this);
 
             _matCapBlock = CreateMatCapBlock(rootItem, this);
 
-            _sixWayPositiveItem = new TextureItem(
-                rootItem,
-                this,
-                "_RigRTBk",
-                () => Content("light.sixway.positive", "SixWay Positive"),
-                drawScaleOffset: false,
-                isVisible: IsSixWay);
-            _sixWayPositiveForceNoMipItem = new ForceNoMipItem(
-                rootItem,
-                this,
-                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_RIG_RTBK,
-                IsSixWay);
-
-            _sixWayNegativeItem = new TextureItem(
-                rootItem,
-                this,
-                "_RigLBtF",
-                () => Content("light.sixway.negative", "SixWay Negative"),
-                drawScaleOffset: false,
-                isVisible: IsSixWay);
-            _sixWayNegativeForceNoMipItem = new ForceNoMipItem(
-                rootItem,
-                this,
-                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_RIG_LBTF,
-                IsSixWay);
-
-            _sixWayAbsorptionToggleItem = new NBShaderKeywordToggleItem(
-                rootItem,
-                this,
-                "_SixWayColorAbsorptionToggle",
-                "VFX_SIX_WAY_ABSORPTION",
-                () => Content("light.sixway.absorption.toggle", "Light Color Absorption"),
-                isVisible: IsSixWay);
-
-            _sixWayAbsorptionStrengthItem = new VectorComponentItem(
-                rootItem,
-                this,
-                "_SixWayInfo",
-                0,
-                () => Content("light.sixway.absorption.strength", "Absorption Strength"),
-                true,
-                0f,
-                1f,
-                () => IsSixWay() && IsToggleOn(rootItem, "_SixWayColorAbsorptionToggle"));
-
-            _sixWayEmissionRampItem = new TextureItem(
-                rootItem,
-                this,
-                "_SixWayEmissionRamp",
-                () => Content("light.sixway.ramp", "SixWay Emission Ramp"),
-                drawScaleOffset: false,
-                afterDraw: SyncSixWayRampFlag,
-                isVisible: IsSixWay);
-            _sixWayEmissionRampForceNoMipItem = new ForceNoMipItem(
-                rootItem,
-                this,
-                NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_SIX_WAY_EMISSION_RAMP,
-                IsSixWay);
-
-            _sixWayEmissionPowItem = new VectorComponentItem(
-                rootItem,
-                this,
-                "_SixWayInfo",
-                1,
-                () => Content("light.sixway.emissionPow", "SixWay Emission Pow"),
-                false,
-                isVisible: IsSixWay);
-
-            _sixWayEmissionColorItem = new ColorItem(
-                rootItem,
-                this,
-                "_SixWayEmissionColor",
-                () => Content("light.sixway.color", "SixWay Emission Color"),
-                IsSixWay);
+            AddSixWaySubItems(rootItem, this, sharedSubItems, SyncSixWayRampFlag);
+            _sixWayPositiveItem = sharedSubItems.SixWayPositiveItem;
+            _sixWayPositiveForceNoMipItem = sharedSubItems.SixWayPositiveForceNoMipItem;
+            _sixWayNegativeItem = sharedSubItems.SixWayNegativeItem;
+            _sixWayNegativeForceNoMipItem = sharedSubItems.SixWayNegativeForceNoMipItem;
+            _sixWayAbsorptionToggleItem = sharedSubItems.SixWayAbsorptionToggleItem;
+            _sixWayAbsorptionStrengthItem = sharedSubItems.SixWayAbsorptionStrengthItem;
+            _sixWayEmissionRampItem = sharedSubItems.SixWayEmissionRampItem;
+            _sixWayEmissionRampForceNoMipItem = sharedSubItems.SixWayEmissionRampForceNoMipItem;
+            _sixWayEmissionPowItem = sharedSubItems.SixWayEmissionPowItem;
+            _sixWayEmissionColorItem = sharedSubItems.SixWayEmissionColorItem;
 
             InitTriggerByChild();
         }

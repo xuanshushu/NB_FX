@@ -244,6 +244,8 @@ namespace NBShaderEditor
 
     public class NBShaderKeywordToggleItem : ToggleItem
     {
+        readonly NBShaderRootItem _graphLightingRoot;
+        readonly bool _graphLightingEdit;
         public NBShaderKeywordToggleItem(
             NBShaderRootItem rootItem,
             ShaderGUIItem parentItem,
@@ -251,7 +253,7 @@ namespace NBShaderEditor
             string keyword,
             Func<GUIContent> contentProvider,
             Action<bool> onValueChanged = null,
-            Func<bool> isVisible = null)
+            Func<bool> isVisible = null, bool graphLightingEdit = false)
             : base(
                 rootItem,
                 parentItem,
@@ -264,6 +266,23 @@ namespace NBShaderEditor
                 },
                 FeatureToggleFoldOutItem.TierVisible(rootItem, keyword, isVisible))
         {
+            _graphLightingRoot = rootItem;
+            _graphLightingEdit = graphLightingEdit;
+        }
+        public override void DrawController()
+        {
+            if(!_graphLightingEdit){base.DrawController();return;}
+            if(!_graphLightingRoot.SyncService.HasGraphLightSubControlsSchema())return;
+            EditorGUI.showMixedValue=PropertyInfo.Property.hasMixedValue;
+            EditorGUI.BeginChangeCheck();bool value=EditorGUI.Toggle(ControlRect,PropertyInfo.Property.floatValue>0.5f);
+            bool changed=EditorGUI.EndChangeCheck();EditorGUI.showMixedValue=false;
+            if(changed && Event.current!=null && Event.current.type!=EventType.Layout && Event.current.type!=EventType.Repaint &&
+                _graphLightingRoot.SyncService.TryApplyGraphLightSubToggle(PropertyName,value))OnEndChange();
+        }
+        public override void ExecuteReset(bool isCallByParent=false)
+        {
+            if(!_graphLightingEdit){base.ExecuteReset(isCallByParent);return;}
+            if(_graphLightingRoot.SyncService.TryApplyGraphLightSubToggle(PropertyName,null))CheckIsPropertyModified();
         }
     }
 

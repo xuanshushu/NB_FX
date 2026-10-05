@@ -3008,6 +3008,78 @@ namespace NBShaderEditor
             });
         }
 
+
+        internal static readonly string[] GraphLightSubSharedProperties = {
+            "_BlinnPhongSpecularToggle", "_SpecularColor", "_MaterialInfo", "_RigRTBk", "_RigLBtF",
+            "_SixWayColorAbsorptionToggle", "_SixWayInfo", "_SixWayEmissionRamp", "_SixWayEmissionColor"
+        };
+        internal bool HasGraphLightSubControlsSchema()
+        {
+            if (!_rootItem.IsGraphLightModeSchemaReady()) return false;
+            foreach (Material value in _rootItem.Mats)
+            {
+                foreach (string name in GraphLightSubSharedProperties)
+                {
+                    if (!_rootItem.PropertyInfoDic.ContainsKey(name)) return false;
+                    int index=value.shader.FindPropertyIndex(name); if(index<0)return false;
+                    var type=value.shader.GetPropertyType(index);
+                    if(name=="_BlinnPhongSpecularToggle" || name=="_SixWayColorAbsorptionToggle")
+                    {if(type!=UnityEngine.Rendering.ShaderPropertyType.Float)return false;float x=value.GetFloat(name);if(float.IsNaN(x)||float.IsInfinity(x))return false;}
+                    else if(name=="_SpecularColor" || name=="_SixWayEmissionColor")
+                    {if(type!=UnityEngine.Rendering.ShaderPropertyType.Color)return false;Color c=value.GetColor(name);for(int ch=0;ch<4;++ch)if(float.IsNaN(c[ch])||float.IsInfinity(c[ch]))return false;}
+                    else if(name=="_MaterialInfo" || name=="_SixWayInfo")
+                    {if(type!=UnityEngine.Rendering.ShaderPropertyType.Vector)return false;Vector4 v=value.GetVector(name);for(int ch=0;ch<4;++ch)if(float.IsNaN(v[ch])||float.IsInfinity(v[ch]))return false;}
+                    else if(type!=UnityEngine.Rendering.ShaderPropertyType.Texture || value.shader.GetPropertyTextureDimension(index)!=UnityEngine.Rendering.TextureDimension.Tex2D)return false;
+                }
+                foreach(string name in new[]{"_NB_Flags1Hi16","_NB_ForceNoMipFlagsLo16","_NB_ForceNoMipFlagsHi16"})
+                {if(!NBShaderRootItem.HasFloatProperty(value,name))return false;float x=value.GetFloat(name);if(float.IsNaN(x)||float.IsInfinity(x))return false;}
+            }
+            return true;
+        }
+        internal bool TryApplyGraphLightSubToggle(string name, bool? enabled)
+        {
+            if ((name!="_BlinnPhongSpecularToggle" && name!="_SixWayColorAbsorptionToggle") || !HasGraphLightSubControlsSchema()) return false;
+            int count=_rootItem.Mats.Count;var targets=new UnityEngine.Object[count];var oldRaw=new float[count];var oldAllow=new float[count];var next=new float[count];var oldDeclared=new bool[count][];
+            for(int i=0;i<count;++i)
+            {
+                Material value=_rootItem.Mats[i];targets[i]=value;oldRaw[i]=value.GetFloat(name);oldAllow[i]=value.GetFloat("_NB_TierAllowLighting");oldDeclared[i]=NBShaderFeatureLevelMaterialApplier.CaptureGraphDeclaredKeywordState(value);
+                next[i]=enabled.HasValue?(enabled.Value?1f:0f):value.shader.GetPropertyDefaultFloatValue(value.shader.FindPropertyIndex(name));
+                Material probe=null;
+                try {probe=new Material(value){hideFlags=HideFlags.HideAndDontSave};probe.SetFloat(name,next[i]);bool changed;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(probe,out changed))return false;}
+                finally {if(probe)UnityEngine.Object.DestroyImmediate(probe);}
+            }
+            Undo.RecordObjects(targets,"NB Lighting Intent");
+            bool completed=false;
+            try
+            {
+                for(int i=0;i<count;++i)
+                {
+                    Material value=_rootItem.Mats[i];value.SetFloat(name,next[i]);bool changed;
+                    if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedLightingGroup(value,out changed))return false;
+                }
+                completed=true;foreach(Material value in _rootItem.Mats)EditorUtility.SetDirty(value);
+                return true;
+            }
+            finally
+            {
+                if(!completed)for(int i=0;i<count;++i)
+                {Material value=_rootItem.Mats[i];value.SetFloat(name,oldRaw[i]);value.SetFloat("_NB_TierAllowLighting",oldAllow[i]);NBShaderFeatureLevelMaterialApplier.RestoreGraphDeclaredKeywordState(value,oldDeclared[i]);}
+                RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();
+            }
+        }
+        internal bool TryFinalizeGraphLightRampEdit(IList<Texture> before)
+        {
+            if(before==null || before.Count!=_rootItem.Mats.Count || !HasGraphLightSubControlsSchema())return false;
+            const int mask=1<<(29-16);
+            for(int i=0;i<before.Count;++i)
+            {
+                Material value=_rootItem.Mats[i];Texture after=value.GetTexture("_SixWayEmissionRamp");
+                if(before[i]==after)continue;
+                if(WriteGraphHalfSlice(value,"_NB_Flags1Hi16",mask,after?mask:0))EditorUtility.SetDirty(value);
+            }
+            RefreshGraphMainTexPropertyReferences();return true;
+        }
+
     }
 
     public enum VATMode
