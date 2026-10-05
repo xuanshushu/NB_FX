@@ -1,0 +1,34 @@
+{
+  "results": [
+    {
+      "batch": "PortalCPU4",
+      "counts": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 11.99,
+      "failures": []
+    },
+    {
+      "batch": "PortalGPU1",
+      "counts": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 50.9,
+      "failures": [
+        {
+          "name": "NBFX.Baseline.Tests.G4PortalStencilDepthTests.G4PortalStencilDepth_ActualABC_ortho",
+          "message": "  Expected: 0\r\n  But was:  1.375f\r\n"
+        }
+      ]
+    }
+  ],
+  "fullMeshGatePassed": false
+}

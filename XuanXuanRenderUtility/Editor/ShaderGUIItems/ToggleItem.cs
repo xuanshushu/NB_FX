@@ -10,6 +10,7 @@ namespace NBShaderEditor
         private readonly Func<bool> _isVisible;
         private readonly Action<bool> _onValueChanged;
         public bool WriteOnlyOnInteractiveChange;
+        public Func<bool, bool> TryWriteValue;
 
         public ToggleItem(
             ShaderGUIRootItem rootItem,
@@ -40,7 +41,7 @@ namespace NBShaderEditor
         public override void DrawController()
         {
             bool value = PropertyInfo.Property.floatValue > 0.5f;
-            if (WriteOnlyOnInteractiveChange)
+            if (WriteOnlyOnInteractiveChange || TryWriteValue != null)
             {
                 EditorGUI.BeginChangeCheck();
                 value = EditorGUI.Toggle(ControlRect, value);
@@ -48,17 +49,27 @@ namespace NBShaderEditor
                 if (!changed || Event.current == null || Event.current.type == EventType.Layout || Event.current.type == EventType.Repaint) return;
             }
             else value = EditorGUI.Toggle(ControlRect, value);
+            if (TryWriteValue != null) { TryWriteValue(value); return; }
             SetFloatIfDifferent(PropertyInfo.Property, value ? 1f : 0f);
         }
 
         public override void OnEndChange()
         {
             base.OnEndChange();
-            _onValueChanged?.Invoke(PropertyInfo.Property.floatValue > 0.5f);
+            if (TryWriteValue == null) _onValueChanged?.Invoke(PropertyInfo.Property.floatValue > 0.5f);
         }
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if (TryWriteValue != null)
+            {
+                bool value = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index) > .5f;
+                if (!TryWriteValue(value)) return;
+                foreach (var child in ChildrenItemList) child.ExecuteReset(true);
+                CheckIsPropertyModified();
+                if (!isCallByParent) ParentItem?.CheckIsPropertyModified(true);
+                return;
+            }
             base.ExecuteReset(isCallByParent);
             _onValueChanged?.Invoke(PropertyInfo.Property.floatValue > 0.5f);
         }

@@ -2858,6 +2858,156 @@ namespace NBShaderEditor
             return RunGraphMainTexEdit("VAT Frame Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag2Hi16",15<<12,values[(int)component]<<12));
         }
 
+        internal static readonly string[] GraphPortalSharedProperties = { "_PortalBlockFoldOut", "_Portal_Toggle", "_Portal_MaskToggle" };
+        internal bool HasGraphPortalEditSchema()
+        {
+            if (_rootItem.MatEditor == null || !HasGraphMainTexTargets()) return false;
+            var config = GetStencilValuesConfig();
+            if (config == null) return false;
+            foreach (string key in new[] { "ParticleBaseDefault", "ParticalBasePortal", "ParticalBasePortalMask" })
+            {
+                if (!config.ContainsKey(key)) return false;
+                var value = config.GetStencilValues(key);
+                if (value == null || value.Ref < 0 || value.Ref > 255 || value.ReadMask < 0 || value.ReadMask > 255 ||
+                    value.WriteMask < 0 || value.WriteMask > 255 || (int)value.Comp < 0 || (int)value.Comp > 8 ||
+                    (int)value.Pass < 0 || (int)value.Pass > 7 || (int)value.Fail < 0 || (int)value.Fail > 7 ||
+                    (int)value.ZFail < 0 || (int)value.ZFail > 7) return false;
+            }
+            foreach (Material material in _rootItem.Mats)
+            {
+                bool ignored;
+                if (!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out ignored)) return false;
+                foreach (string n in GraphPortalSharedProperties)
+                    if (!HasPortalFiniteFloat(material, n)) return false;
+                foreach (string n in new[] { "_Surface", "_AlphaClip", "_Blend", "_ZWriteControl", "_ZTest", "_QueueControl", "_QueueOffset",
+                    "_CustomStencilTest", "_Stencil", "_StencilComp", "_StencilOp", "_StencilFail", "_StencilZFail", "_StencilReadMask", "_StencilWriteMask", "_StencilKeyIndex", "_NB_Flags1Lo16", "_NB_Flags1Hi16" })
+                    if (!HasPortalFiniteFloat(material, n)) return false;
+                if (!PortalEnum(material, "_Surface", 0, 1) || !PortalEnum(material, "_Blend", 0, 3) ||
+                    !PortalEnum(material, "_ZWriteControl", 0, 2) || !PortalEnum(material, "_ZTest", 0, 8) ||
+                    !PortalEnum(material, "_QueueControl", -1, 1)) return false;
+                if (material.rawRenderQueue < -1 || material.rawRenderQueue > 5000) return false;
+                float offset = material.GetFloat("_QueueOffset");
+                if (offset < -5000 || offset > 5000 || offset != Mathf.Round(offset)) return false;
+                if (material.HasProperty("_MeshSourceMode") && !PortalEnum(material, "_MeshSourceMode", 0, 1)) return false;
+            }
+            return true;
+        }
+
+        private bool HasPortalFiniteFloat(Material material, string name)
+        {
+            if (!NBShaderRootItem.HasFloatProperty(material, name) || !_rootItem.PropertyInfoDic.ContainsKey(name)) return false;
+            float value = material.GetFloat(name);
+            return !float.IsNaN(value) && !float.IsInfinity(value);
+        }
+        private static bool PortalEnum(Material material, string name, int minimum, int maximum)
+        {
+            float value = material.GetFloat(name);
+            return value >= minimum && value <= maximum && value == Mathf.Round(value);
+        }
+
+        private void ApplyGraphPortalPreset(Material material)
+        {
+            bool portal = material.GetFloat("_Portal_Toggle") > .5f;
+            bool mask = material.GetFloat("_Portal_MaskToggle") > .5f;
+            bool wasTransparent = material.GetFloat("_Surface") == 1f;
+            int rawQueue = material.rawRenderQueue;
+            float queueOffset = material.GetFloat("_QueueOffset");
+            string key = !portal ? "ParticleBaseDefault" : mask ? "ParticalBasePortalMask" : "ParticalBasePortal";
+            // The original helper returns DefaultQueue, but Portal ignores it.
+            StencilTestHelper.SetMaterialStencil(material, key, GetStencilValuesConfig(), out _);
+            material.SetFloat("_CustomStencilTest", portal ? 1f : 0f);
+            if (!portal)
+            {
+                material.SetFloat("_Surface", 1f); material.SetFloat("_AlphaClip", 0f);
+                material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);
+                material.SetFloat("_ZWriteControl", 0f);
+                if (!wasTransparent) material.SetFloat("_Blend", 0f);
+            }
+            else if (mask)
+            {
+                if (wasTransparent) { material.SetFloat("_Surface", 0f); material.SetFloat("_AlphaClip", 1f); }
+                material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);
+                material.SetFloat("_ZWriteControl", 2f);
+            }
+            if (material.GetFloat("_Surface") == 0f) material.SetFloat("_Blend", 0f);
+            // Existing Native surface sync owns only these two coverage bits.
+            // A mask clears dither; a later Off never revives that cleared bit.
+            int coverage = material.GetFloat("_Surface") == 1f ? 1 | (ReadGraphHalf(material, "_NB_Flags1Lo16") & 2) : 0;
+            if (WriteGraphHalfSlice(material, "_NB_Flags1Lo16", 3, coverage))
+                NotifyGraphPackedFlagsEdited(material, "_NB_Flags1Lo16", 3);
+            // This explicit preset holds CURRENT queue, matching Native Portal.
+            // Official Advanced remains available for a subsequent Auto choice.
+            material.SetFloat("_QueueControl", 1f);
+            new NBShaderGraphGUI().ValidateMaterial(material);
+            material.SetFloat("_QueueOffset", queueOffset);
+            if (material.rawRenderQueue != rawQueue) material.renderQueue = rawQueue;
+        }
+
+        internal bool TryApplyGraphPortalState()
+        {
+            if (!HasGraphPortalEditSchema()) return false;
+            // Validate the complete projected state on copies before any target write.
+            foreach (Material material in _rootItem.Mats)
+            {
+                var probe = new Material(material) { hideFlags = HideFlags.HideAndDontSave };
+                try
+                {
+                    ApplyGraphPortalPreset(probe);
+                    NBShader.NBShaderPassIntent back; NBShader.NBShaderPassIntent[] screen;
+                    var tier = (NBShaderFeatureTier)(int)probe.GetFloat(FeatureTierPropertyName);
+                    var keywords = NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+                    var passes = NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier);
+                    if (!CanApplyGraphOwnedBackFirstPassState(probe, tier, keywords, passes, out back) ||
+                        !CanApplyGraphOwnedScreenPassState(probe, tier, keywords, passes, out screen)) return false;
+                }
+                finally { UnityEngine.Object.DestroyImmediate(probe); }
+            }
+            return RunGraphMainTexEdit("Apply NB Portal preset (keep current queue)", material =>
+            {
+                string before = EditorJsonUtility.ToJson(material);
+                ApplyGraphPortalPreset(material);
+                return EditorJsonUtility.ToJson(material) != before;
+            });
+        }
+
+        internal bool TryApplyGraphPortalToggle(string name, bool enabled, bool resetBoth = false)
+        {
+            if ((name != "_Portal_Toggle" && name != "_Portal_MaskToggle") || !HasGraphPortalEditSchema()) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                var probe = new Material(material) { hideFlags = HideFlags.HideAndDontSave };
+                try
+                {
+                    // Before ANY intent setter can notify MaterialEditor, hold
+                    // the current queue using the original official control.
+                    probe.SetFloat("_QueueControl", 1f);
+                    probe.SetFloat(name, enabled ? 1f : 0f);
+                    if (resetBoth) probe.SetFloat("_Portal_MaskToggle", 0f);
+                    ApplyGraphPortalPreset(probe);
+                    NBShaderPassIntent back; NBShaderPassIntent[] screen;
+                    var tier = (NBShaderFeatureTier)(int)probe.GetFloat(FeatureTierPropertyName);
+                    var keywords = NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+                    var passes = NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier);
+                    if (!CanApplyGraphOwnedBackFirstPassState(probe, tier, keywords, passes, out back) ||
+                        !CanApplyGraphOwnedScreenPassState(probe, tier, keywords, passes, out screen)) return false;
+                }
+                finally { UnityEngine.Object.DestroyImmediate(probe); }
+            }
+            return RunGraphMainTexEdit("Edit NB Portal preset (keep current queue)", material =>
+            {
+                int rawQueue = material.rawRenderQueue;
+                float offset = material.GetFloat("_QueueOffset");
+                string before = EditorJsonUtility.ToJson(material);
+                material.SetFloat("_QueueControl", 1f);
+                material.SetFloat(name, enabled ? 1f : 0f);
+                if (resetBoth) material.SetFloat("_Portal_MaskToggle", 0f);
+                ApplyGraphPortalPreset(material);
+                material.SetFloat("_QueueOffset", offset);
+                if (material.rawRenderQueue != rawQueue) material.renderQueue = rawQueue;
+                return EditorJsonUtility.ToJson(material) != before;
+            });
+        }
+
     }
 
     public enum VATMode

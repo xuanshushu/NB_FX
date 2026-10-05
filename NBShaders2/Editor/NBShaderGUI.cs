@@ -54,6 +54,8 @@ namespace NBShaderEditor
         private ParticleVertexStreamsItem _particleVertexStreamsItem;
         private NBShaderGUIToolBar _toolBar;
         ToggleItem _graphBackFirstItem;
+        PortalFeatureItem _graphPortalItem;
+        bool _sharedGraphPortalReady;
         Rect _graphBackFirstAdoptRect;
         bool _sharedGraphBackFirstHost, _sharedGraphBackFirstReady;
 
@@ -150,6 +152,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDepthDecalReady)names.Add("_DepthDecal_Toggle");
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphBackFirstHost) names.Add("_BackFirstPassToggle");
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphVATReady)names.AddRange(NBShaderSyncService.GraphVATSharedPropertyNames);
+            if (Context != null && Context.IsGraphMaterialHost && _sharedGraphPortalReady) names.AddRange(NBShaderSyncService.GraphPortalSharedProperties);
             return names;
         }
 
@@ -391,6 +394,7 @@ namespace NBShaderEditor
                     _toolBar = null;
                     _modeBlock = null;
                     _baseBlock = null;
+                    _graphPortalItem = null; _sharedGraphPortalReady = false;
                     _graphBackFirstItem = null; _sharedGraphBackFirstHost = _sharedGraphBackFirstReady = false;
                     _lightBlock = null;
                     _featureBlock = null;
@@ -421,6 +425,7 @@ namespace NBShaderEditor
                 DrawGraphNoiseInputs();
                 DrawGraphVATInputs();
                 DrawGraphBackFirstInputs();
+                DrawGraphPortalInputs();
                 DrawGraphStencilWithoutPlayerInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
@@ -723,6 +728,22 @@ namespace NBShaderEditor
             if(!InitializeGraphVATInputs())return;
             if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB VAT");
             (selectedItem??_graphVATItem).OnGUI();
+        }
+
+        internal bool InitializeGraphPortalInputs()
+        {
+            Context ??= new NBShaderGUIContext(this); SyncService ??= new NBShaderSyncService(this); Context.Refresh();
+            _sharedGraphPortalReady = Context.IsGraphMaterialHost && SyncService.HasGraphPortalEditSchema();
+            if (!_sharedGraphPortalReady) return false;
+            _graphPortalItem ??= new PortalFeatureItem(this, null, true); return true;
+        }
+        internal void DrawGraphPortalInputs(ShaderGUIItem selectedItem = null)
+        {
+            if (!InitializeGraphPortalInputs()) return;
+            if (Event.current != null && Event.current.rawType != EventType.Layout && Event.current.rawType != EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets, "Apply NB Portal preset");
+            (selectedItem ?? _graphPortalItem).OnGUI();
+            EditorGUILayout.HelpBox("此 Portal 预设保留当前渲染队列；如需自动队列，可在 URP Advanced 中选择 Auto。", MessageType.Info);
         }
 
     }

@@ -21,6 +21,7 @@ namespace NBShaderEditor
         private readonly bool _taDepthEdit;
         private readonly bool _graphQCMStencilEdit;
         private readonly bool _graphVATToggleEdit;
+        private readonly bool _graphPortalEdit;
         private readonly bool _graphRawMaskRotationDisplay;
 
         public PropertyToggleBlockItem(
@@ -35,13 +36,14 @@ namespace NBShaderEditor
             string shaderPassName = null,
             Action<bool> onValueChanged = null,
             Func<bool> isVisible = null,
-            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false, bool graphQCMStencilEdit=false, bool graphVATToggleEdit=false) : base(rootItem, parentItem)
+            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false, bool graphQCMStencilEdit=false, bool graphVATToggleEdit=false, bool graphPortalEdit=false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
             _graphMainTexUVEdit = graphMainTexUVEdit;
             _taDepthEdit = taDepthEdit;
             _graphQCMStencilEdit=graphQCMStencilEdit;
             _graphVATToggleEdit=graphVATToggleEdit;
+            _graphPortalEdit=graphPortalEdit;
             _graphRawMaskRotationDisplay=graphRawMaskRotationDisplay;
             PropertyName = togglePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
@@ -95,7 +97,9 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if(_graphVATToggleEdit&&RootItem is NBShaderRootItem vatEdit&&vatEdit.Context.IsGraphMaterialHost)
+                    if(_graphPortalEdit&&RootItem is NBShaderRootItem portalEdit&&portalEdit.Context.IsGraphMaterialHost)
+                        portalEdit.SyncService.TryApplyGraphPortalToggle(PropertyName,enabled);
+                    else if(_graphVATToggleEdit&&RootItem is NBShaderRootItem vatEdit&&vatEdit.Context.IsGraphMaterialHost)
                         vatEdit.SyncService.TryApplyGraphVATToggle(enabled);
                     else if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsRootEdit&&qsRootEdit.Context.IsGraphMaterialHost)
                         qsRootEdit.SyncService.TryApplyGraphQCMStencilToggle(enabled);
@@ -162,6 +166,11 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if(_graphPortalEdit&&RootItem is NBShaderRootItem portalReset&&portalReset.Context.IsGraphMaterialHost)
+            {
+                if(!portalReset.SyncService.TryApplyGraphPortalToggle(PropertyName,false,PropertyName=="_Portal_Toggle"))return;
+                foreach(var child in ChildrenItemList)child.CheckIsPropertyModified();CheckIsPropertyModified();return;
+            }
             if(_graphVATToggleEdit&&RootItem is NBShaderRootItem vatReset&&vatReset.Context.IsGraphMaterialHost)
             {vatReset.SyncService.TryRunGraphVATReset(()=>base.ExecuteReset(isCallByParent));return;}
             if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsReset&&qsReset.Context.IsGraphMaterialHost)

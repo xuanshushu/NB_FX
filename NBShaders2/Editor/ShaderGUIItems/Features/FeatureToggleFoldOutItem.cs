@@ -26,7 +26,7 @@ namespace NBShaderEditor
             string keyword = null,
             Action<bool> onValueChanged = null,
             Func<bool> isVisible = null,
-            bool bold = true, bool graphVATToggleEdit=false)
+            bool bold = true, bool graphVATToggleEdit=false, bool graphPortalEdit=false)
             : base(
                 rootItem,
                 parentItem,
@@ -38,7 +38,7 @@ namespace NBShaderEditor
                 keyword,
                 onValueChanged: onValueChanged,
                 isVisible: isVisible,
-                bold: bold, graphVATToggleEdit:graphVATToggleEdit)
+                bold: bold, graphVATToggleEdit:graphVATToggleEdit, graphPortalEdit:graphPortalEdit)
         {
         }
 
