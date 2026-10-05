@@ -26,23 +26,6 @@ namespace NBShaderEditor
         private readonly ShaderGUIFloatItem _baseColorIntensityItem;
         private readonly ShaderGUISliderItem _alphaAllItem;
         private readonly BlockItem _colorAdjustmentBlock;
-        private readonly ToggleItem _colorAdjustmentOnlyMainTexItem;
-        private readonly PropertyToggleBlockItem _hueShiftBlock;
-        private readonly ShaderGUISliderItem _hueShiftSlider;
-        private readonly CustomDataSelectItem _hueShiftCustomDataItem;
-        private readonly PropertyToggleBlockItem _saturabilityBlock;
-        private readonly ShaderGUISliderItem _saturabilitySlider;
-        private readonly CustomDataSelectItem _saturabilityCustomDataItem;
-        private readonly PropertyToggleBlockItem _contrastBlock;
-        private readonly ColorItem _contrastMidColorItem;
-        private readonly ShaderGUISliderItem _contrastSlider;
-        private readonly CustomDataSelectItem _contrastCustomDataItem;
-        private readonly PropertyToggleBlockItem _baseMapColorRefineBlock;
-        private readonly VectorComponentItem _baseMapColorRefineA;
-        private readonly VectorComponentItem _baseMapColorRefineBPower;
-        private readonly VectorComponentItem _baseMapColorRefineBMultiply;
-        private readonly VectorComponentItem _baseMapColorRefineLerp;
-        private readonly ToggleItem _colorMultiAlphaItem;
         private readonly ZTestItem _zTestItem;
         private readonly CullModeItem _cullItem;
         private readonly ToggleItem _backFirstPassItem;
@@ -83,110 +66,7 @@ namespace NBShaderEditor
             };
             _alphaAllItem.InitTriggerByChild();
 
-            _colorAdjustmentBlock = new BlockItem(
-                rootItem,
-                this,
-                "_BaseColorAdjustmentFoldOut",
-                () => Content("base.colorAdjustment", "Color Adjustment"));
-
-            _colorAdjustmentOnlyMainTexItem = new ToggleItem(
-                rootItem,
-                _colorAdjustmentBlock,
-                "_ColorAdjustmentOnlyAffectMainTex",
-                () => Content("base.colorAdjustment.onlyMainTex", "Only Affect Main Texture"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(
-                    NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX,
-                    enabled));
-
-            _hueShiftBlock = new PropertyToggleBlockItem(
-                rootItem,
-                _colorAdjustmentBlock,
-                "_HueShiftFoldOut",
-                "_HueShift_Toggle",
-                () => Content("base.hueShift", "Hue Shift"),
-                NBShaderFlags.FLAG_BIT_HUESHIFT_ON);
-            _hueShiftSlider = new ShaderGUISliderItem(rootItem, _hueShiftBlock)
-            {
-                PropertyName = "_HueShift",
-                GuiContent = Content("base.hueShift.value", "Hue"),
-                Min = 0f,
-                Max = 1f
-            };
-            _hueShiftSlider.InitTriggerByChild();
-            _hueShiftCustomDataItem = new CustomDataSelectItem(
-                rootItem,
-                _hueShiftBlock,
-                NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,
-                0,
-                () => Content("base.hueShift.customData", "Hue Custom Data"),
-                IsParticleMode);
-
-            _saturabilityBlock = new PropertyToggleBlockItem(
-                rootItem,
-                _colorAdjustmentBlock,
-                "_SaturabilityFoldOut",
-                "_ChangeSaturability_Toggle",
-                () => Content("base.saturability", "Saturation"),
-                NBShaderFlags.FLAG_BIT_SATURABILITY_ON);
-            _saturabilitySlider = new ShaderGUISliderItem(rootItem, _saturabilityBlock)
-            {
-                PropertyName = "_Saturability",
-                GuiContent = Content("base.saturability.value", "Saturation"),
-                RangePropertyName = "SaturabilityRangeVec"
-            };
-            _saturabilitySlider.InitTriggerByChild();
-            _saturabilityCustomDataItem = new CustomDataSelectItem(
-                rootItem,
-                _saturabilityBlock,
-                NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_SATURATE,
-                1,
-                () => Content("base.saturability.customData", "Saturation Custom Data"),
-                IsParticleMode);
-
-            _contrastBlock = new PropertyToggleBlockItem(
-                rootItem,
-                _colorAdjustmentBlock,
-                "_ContrastFoldOut",
-                "_Contrast_Toggle",
-                () => Content("base.contrast", "Contrast"),
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST,
-                1);
-            _contrastMidColorItem = new ColorItem(rootItem, _contrastBlock, "_ContrastMidColor", () => Content("base.contrast.mid", "Contrast Mid Color"));
-            _contrastSlider = new ShaderGUISliderItem(rootItem, _contrastBlock)
-            {
-                PropertyName = "_Contrast",
-                GuiContent = Content("base.contrast.value", "Contrast"),
-                Min = 0f,
-                Max = 5f
-            };
-            _contrastSlider.InitTriggerByChild();
-            _contrastCustomDataItem = new CustomDataSelectItem(
-                rootItem,
-                _contrastBlock,
-                NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,
-                2,
-                () => Content("base.contrast.customData", "Contrast Custom Data"),
-                IsParticleMode);
-
-            _baseMapColorRefineBlock = new PropertyToggleBlockItem(
-                rootItem,
-                _colorAdjustmentBlock,
-                "_BaseMapColorRefineFoldOut",
-                "_BaseMapColorRefine_Toggle",
-                () => Content("base.colorRefine", "Color Refine"),
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE,
-                1);
-            _baseMapColorRefineA = new VectorComponentItem(rootItem, _baseMapColorRefineBlock, "_BaseMapColorRefine", 0, () => Content("base.colorRefine.a", "A Main Color Multiply"), false);
-            _baseMapColorRefineBPower = new VectorComponentItem(rootItem, _baseMapColorRefineBlock, "_BaseMapColorRefine", 1, () => Content("base.colorRefine.bPower", "B Main Color Power"), false);
-            _baseMapColorRefineBMultiply = new VectorComponentItem(rootItem, _baseMapColorRefineBlock, "_BaseMapColorRefine", 2, () => Content("base.colorRefine.bMultiply", "B After Power Multiply"), false);
-            _baseMapColorRefineLerp = new VectorComponentItem(rootItem, _baseMapColorRefineBlock, "_BaseMapColorRefine", 3, () => Content("base.colorRefine.lerp", "A/B Lerp"), true, 0f, 1f);
-
-            _colorMultiAlphaItem = new ToggleItem(
-                rootItem,
-                _colorAdjustmentBlock,
-                "_ColorMultiAlpha",
-                () => Content("base.colorMultiAlpha", "Color Multiply Alpha"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA, enabled));
+            _colorAdjustmentBlock = CreateColorAdjustmentBlock(rootItem, this);
 
             _zTestItem = new ZTestItem(rootItem, this);
             _cullItem = new CullModeItem(rootItem, this);
@@ -364,6 +244,121 @@ namespace NBShaderEditor
         private static GUIContent Content(string key, string fallback, string tip = "")
         {
             return NBShaderInspectorLocalization.MakeInspectorContent(key, fallback, tip);
+        }
+
+        internal static BlockItem CreateColorAdjustmentBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode=false)
+        {
+            var _colorAdjustmentBlock = new BlockItem(
+                rootItem,
+                parentItem,
+                "_BaseColorAdjustmentFoldOut",
+                () => Content("base.colorAdjustment", "Color Adjustment"));
+
+            var _colorAdjustmentOnlyMainTexItem = new ToggleItem(
+                rootItem,
+                _colorAdjustmentBlock,
+                "_ColorAdjustmentOnlyAffectMainTex",
+                () => Content("base.colorAdjustment.onlyMainTex", "Only Affect Main Texture"),
+                enabled => { if(graphSharedMode)rootItem.SyncService.TryApplyGraphColorAdjustmentFlagEdit(NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX,0,enabled);
+                    else rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX,enabled); });
+
+            var _hueShiftBlock = new PropertyToggleBlockItem(
+                rootItem,
+                _colorAdjustmentBlock,
+                "_HueShiftFoldOut",
+                "_HueShift_Toggle",
+                () => Content("base.hueShift", "Hue Shift"),
+                graphSharedMode ? 0 : NBShaderFlags.FLAG_BIT_HUESHIFT_ON,
+                onValueChanged: graphSharedMode ? (Action<bool>)(enabled => rootItem.SyncService.TryApplyGraphColorAdjustmentFlagEdit(NBShaderFlags.FLAG_BIT_HUESHIFT_ON,0,enabled)) : null);
+            var _hueShiftSlider = new ShaderGUISliderItem(rootItem, _hueShiftBlock)
+            {
+                PropertyName = "_HueShift",
+                GuiContent = Content("base.hueShift.value", "Hue"),
+                Min = 0f,
+                Max = 1f
+            };
+            _hueShiftSlider.WriteOnlyOnInteractiveChange = graphSharedMode;
+            _hueShiftSlider.InitTriggerByChild();
+            var _hueShiftCustomDataItem = new CustomDataSelectItem(
+                rootItem,
+                _hueShiftBlock,
+                NBShaderFlags.FLAGBIT_POS_0_CUSTOMDATA_HUESHIFT,
+                0,
+                () => Content("base.hueShift.customData", "Hue Custom Data"),
+                () => rootItem.Context.ParticleMode == MixedBool.True);
+
+            var _saturabilityBlock = new PropertyToggleBlockItem(
+                rootItem,
+                _colorAdjustmentBlock,
+                "_SaturabilityFoldOut",
+                "_ChangeSaturability_Toggle",
+                () => Content("base.saturability", "Saturation"),
+                graphSharedMode ? 0 : NBShaderFlags.FLAG_BIT_SATURABILITY_ON,
+                onValueChanged: graphSharedMode ? (Action<bool>)(enabled => rootItem.SyncService.TryApplyGraphColorAdjustmentFlagEdit(NBShaderFlags.FLAG_BIT_SATURABILITY_ON,0,enabled)) : null);
+            var _saturabilitySlider = new ShaderGUISliderItem(rootItem, _saturabilityBlock)
+            {
+                PropertyName = "_Saturability",
+                GuiContent = Content("base.saturability.value", "Saturation"),
+                RangePropertyName = "SaturabilityRangeVec"
+            };
+            _saturabilitySlider.WriteOnlyOnInteractiveChange = graphSharedMode;
+            _saturabilitySlider.InitTriggerByChild();
+            var _saturabilityCustomDataItem = new CustomDataSelectItem(
+                rootItem,
+                _saturabilityBlock,
+                NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_SATURATE,
+                1,
+                () => Content("base.saturability.customData", "Saturation Custom Data"),
+                () => rootItem.Context.ParticleMode == MixedBool.True);
+
+            var _contrastBlock = new PropertyToggleBlockItem(
+                rootItem,
+                _colorAdjustmentBlock,
+                "_ContrastFoldOut",
+                "_Contrast_Toggle",
+                () => Content("base.contrast", "Contrast"),
+                graphSharedMode ? 0 : NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST,
+                1, onValueChanged: graphSharedMode ? (Action<bool>)(enabled => rootItem.SyncService.TryApplyGraphColorAdjustmentFlagEdit(NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST,1,enabled)) : null);
+            var _contrastMidColorItem = new ColorItem(rootItem, _contrastBlock, "_ContrastMidColor", () => Content("base.contrast.mid", "Contrast Mid Color"));
+            var _contrastSlider = new ShaderGUISliderItem(rootItem, _contrastBlock)
+            {
+                PropertyName = "_Contrast",
+                GuiContent = Content("base.contrast.value", "Contrast"),
+                Min = 0f,
+                Max = 5f
+            };
+            _contrastSlider.WriteOnlyOnInteractiveChange = graphSharedMode;
+            _contrastSlider.InitTriggerByChild();
+            var _contrastCustomDataItem = new CustomDataSelectItem(
+                rootItem,
+                _contrastBlock,
+                NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_MAINTEX_CONTRAST,
+                2,
+                () => Content("base.contrast.customData", "Contrast Custom Data"),
+                () => rootItem.Context.ParticleMode == MixedBool.True);
+
+            var _baseMapColorRefineBlock = new PropertyToggleBlockItem(
+                rootItem,
+                _colorAdjustmentBlock,
+                "_BaseMapColorRefineFoldOut",
+                "_BaseMapColorRefine_Toggle",
+                () => Content("base.colorRefine", "Color Refine"),
+                graphSharedMode ? 0 : NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE,
+                1, onValueChanged: graphSharedMode ? (Action<bool>)(enabled => rootItem.SyncService.TryApplyGraphColorAdjustmentFlagEdit(NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE,1,enabled)) : null);
+            var _baseMapColorRefineA = new VectorComponentItem(rootItem, _baseMapColorRefineBlock, "_BaseMapColorRefine", 0, () => Content("base.colorRefine.a", "A Main Color Multiply"), false);
+            var _baseMapColorRefineBPower = new VectorComponentItem(rootItem, _baseMapColorRefineBlock, "_BaseMapColorRefine", 1, () => Content("base.colorRefine.bPower", "B Main Color Power"), false);
+            var _baseMapColorRefineBMultiply = new VectorComponentItem(rootItem, _baseMapColorRefineBlock, "_BaseMapColorRefine", 2, () => Content("base.colorRefine.bMultiply", "B After Power Multiply"), false);
+            var _baseMapColorRefineLerp = new VectorComponentItem(rootItem, _baseMapColorRefineBlock, "_BaseMapColorRefine", 3, () => Content("base.colorRefine.lerp", "A/B Lerp"), true, 0f, 1f);
+
+            var _colorMultiAlphaItem = new ToggleItem(
+                rootItem,
+                _colorAdjustmentBlock,
+                "_ColorMultiAlpha",
+                () => Content("base.colorMultiAlpha", "Color Multiply Alpha"),
+                enabled => { if(graphSharedMode)rootItem.SyncService.TryApplyGraphColorAdjustmentFlagEdit(NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA,0,enabled);
+                    else rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA,enabled); });
+
+            return _colorAdjustmentBlock;
         }
     }
 

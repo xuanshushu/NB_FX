@@ -1,0 +1,77 @@
+{
+  "success": true,
+  "command": "command eval_file",
+  "data": {
+    "command": "eval_file",
+    "parameters": {
+      "file": "D:/UnityProject/NBUnityProject/.utmp/nbfx-resume-20261002/diagnose_colorramp_types_20261005.cs"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "project": "D:/UnityProject/NBUnityProject/.utmp/NBFXMeshValidation-20261002/Assets",
+        "registeredGates": 19,
+        "mismatches": [
+          {
+            "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+            "name": "_Saturability",
+            "expected": "Float",
+            "actual": "Range"
+          },
+          {
+            "path": "Tests/URP/Graphs/NBBackFirstLegacy.shadergraph",
+            "name": "_Saturability",
+            "expected": "Float",
+            "actual": "Range"
+          },
+          {
+            "path": "Tests/URP/Graphs/NBBackFirstModern.shadergraph",
+            "name": "_Saturability",
+            "expected": "Float",
+            "actual": "Range"
+          }
+        ],
+        "methodsLoaded": true,
+        "shaders": [
+          {
+            "path": "NBShaders2/ShaderGraph/NBShaderGraph.shadergraph",
+            "allSharedTypesCorrect": true,
+            "rampGate": 1,
+            "mapGate": 1,
+            "depthNormalsPass": -1,
+            "errors": 0,
+            "warnings": 16
+          },
+          {
+            "path": "Tests/URP/Graphs/NBBackFirstLegacy.shadergraph",
+            "allSharedTypesCorrect": true,
+            "rampGate": 1,
+            "mapGate": 1,
+            "depthNormalsPass": 5,
+            "errors": 0,
+            "warnings": 16
+          },
+          {
+            "path": "Tests/URP/Graphs/NBBackFirstModern.shadergraph",
+            "allSharedTypesCorrect": true,
+            "rampGate": 1,
+            "mapGate": 1,
+            "depthNormalsPass": 6,
+            "errors": 0,
+            "warnings": 16
+          }
+        ],
+        "scope": "Actual compile/import/schema only"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -2015,8 +2015,106 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphSharedFeatureUVMode(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
         {
+            if(position==26 && fold=="_RampColorUVModeFoldOut")return TryApplyGraphColorRampUVMode(mode,setFold);
             if(position==14||position==16)return TryApplyGraphDissolveUVMode(position,mode,setFold);
             return TryApplyGraphMaskProgramUVMode(position,mode,fold,setFold);
+        }
+
+        internal static readonly string[] GraphColorAdjustmentFloats = { "_ColorAdjustmentOnlyAffectMainTex", "_HueShift_Toggle", "_ChangeSaturability_Toggle", "_Contrast_Toggle", "_BaseMapColorRefine_Toggle", "_ColorMultiAlpha", "_HueShift", "_Contrast", "_Saturability", "_BaseColorAdjustmentFoldOut", "_HueShiftFoldOut", "_SaturabilityFoldOut", "_ContrastFoldOut", "_BaseMapColorRefineFoldOut" };
+        internal static readonly string[] GraphColorAdjustmentColors = { "_ContrastMidColor" };
+        internal static readonly string[] GraphColorAdjustmentVectors = { "_BaseMapColorRefine", "SaturabilityRangeVec" };
+        internal static readonly string[] GraphColorRampFloats = { "_RampColorToggle", "_RampColorSourceMode", "_RampColorBlendMode", "_RampColorCount", "_RampColorBlockFoldOut", "_RampColorUVModeFoldOut" };
+        internal static readonly string[] GraphColorRampColors = { "_RampColor0", "_RampColor1", "_RampColor2", "_RampColor3", "_RampColor4", "_RampColor5", "_RampColorBlendColor" };
+        internal static readonly string[] GraphColorRampVectors = { "_RampColorAlpha0", "_RampColorAlpha1", "_RampColorAlpha2", "_RampColorMapOffset" };
+        internal static readonly string[] GraphColorAdjustmentSharedPropertyNames = { "_ColorAdjustmentOnlyAffectMainTex", "_HueShift_Toggle", "_ChangeSaturability_Toggle", "_Contrast_Toggle", "_BaseMapColorRefine_Toggle", "_ColorMultiAlpha", "_HueShift", "_Contrast", "_Saturability", "_BaseColorAdjustmentFoldOut", "_HueShiftFoldOut", "_SaturabilityFoldOut", "_ContrastFoldOut", "_BaseMapColorRefineFoldOut", "_ContrastMidColor", "_BaseMapColorRefine", "SaturabilityRangeVec" };
+        internal static readonly string[] GraphColorRampSharedPropertyNames = { "_RampColorToggle", "_RampColorSourceMode", "_RampColorBlendMode", "_RampColorCount", "_RampColorBlockFoldOut", "_RampColorUVModeFoldOut", "_RampColor0", "_RampColor1", "_RampColor2", "_RampColor3", "_RampColor4", "_RampColor5", "_RampColorBlendColor", "_RampColorAlpha0", "_RampColorAlpha1", "_RampColorAlpha2", "_RampColorMapOffset", "_RampColorMap" };
+
+        // These leaves reuse existing property types and packed protocol. Unknown
+        // schemas decline ownership; passive paint never seeds or normalizes them.
+        bool HasGraphColorLeafSchema(string[] floats, string[] colors, string[] vectors, bool ramp)
+        {
+            if (!HasGraphMainTexTargets() || _rootItem.MatEditor == null) return false;
+            foreach (Material material in _rootItem.Mats)
+            {
+                if (!GraphFlagIntentSchemaAvailable(material) || material.GetFloat(GraphGUIStateVersionProperty) != 2f) return false;
+                foreach (string name in floats)
+                {
+                    bool numericType = NBShaderRootItem.HasFloatProperty(material,name);
+                    // The original Saturability input is compiled as Range.
+                    if (!numericType && name == "_Saturability")
+                    {
+                        int index = material.shader.FindPropertyIndex(name);
+                        numericType = index >= 0 && material.shader.GetPropertyType(index) == UnityEngine.Rendering.ShaderPropertyType.Range;
+                    }
+                    if (!_rootItem.PropertyInfoDic.ContainsKey(name) || !numericType) return false;
+                    float value=material.GetFloat(name); if(float.IsNaN(value)||float.IsInfinity(value))return false;
+                }
+                foreach (string name in colors)
+                    if (!HasGraphColorLeafPropertyType(material,name,UnityEngine.Rendering.ShaderPropertyType.Color)) return false;
+                foreach (string name in vectors)
+                    if (!HasGraphColorLeafPropertyType(material,name,UnityEngine.Rendering.ShaderPropertyType.Vector)) return false;
+                if (ramp)
+                {
+                    if (!HasGraphColorLeafPropertyType(material,"_RampColorMap",UnityEngine.Rendering.ShaderPropertyType.Texture)) return false;
+                    foreach (string name in new[]{"_RampColorSourceMode","_RampColorBlendMode"})
+                    { float value=material.GetFloat(name); if(value!=0f&&value!=1f)return false; }
+                    bool changed; if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out changed))return false;
+                }
+            }
+            return true;
+        }
+        bool HasGraphColorLeafPropertyType(Material material,string name,UnityEngine.Rendering.ShaderPropertyType type)
+        {
+            if (!_rootItem.PropertyInfoDic.ContainsKey(name) || !material.HasProperty(name)) return false;
+            int index=material.shader.FindPropertyIndex(name);
+            return index>=0 && material.shader.GetPropertyType(index)==type;
+        }
+        internal bool HasGraphColorAdjustmentEditSchema()
+            => HasGraphColorLeafSchema(GraphColorAdjustmentFloats,GraphColorAdjustmentColors,GraphColorAdjustmentVectors,false);
+        internal bool HasGraphColorRampEditSchema()
+            => HasGraphColorLeafSchema(GraphColorRampFloats,GraphColorRampColors,GraphColorRampVectors,true);
+        internal bool TryApplyGraphColorAdjustmentFlagEdit(int bit,int word,bool enabled)
+        {
+            bool owned=word==0 && (bit==NBShaderFlags.FLAG_BIT_SATURABILITY_ON || bit==NBShaderFlags.FLAG_BIT_HUESHIFT_ON ||
+                bit==NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX || bit==NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) ||
+                word==1 && (bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST || bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE);
+            if(!owned || !HasGraphColorAdjustmentEditSchema())return false;
+            return RunGraphMainTexEdit("Color Adjustment Flag",material=>WriteGraphColorLeafFlag(material,bit,word,enabled));
+        }
+        bool WriteGraphColorLeafFlag(Material material,int bit,int word,bool enabled)
+        {
+            string name="_NB_Flags"+word+((bit&65535)!=0?"Lo16":"Hi16");
+            int mask=(bit&65535)!=0?bit&65535:(int)((uint)bit>>16);
+            bool changed=WriteGraphHalfSlice(material,name,mask,enabled?mask:0);
+            if(!changed)NotifyGraphPackedFlagsEdited(material,name,mask);
+            return changed;
+        }
+        internal bool TryApplyGraphColorRampBlendEdit(bool add)
+        {
+            if(!HasGraphColorRampEditSchema())return false;
+            return RunGraphMainTexEdit("Color Ramp Blend",material=>WriteGraphColorLeafFlag(material,NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD,0,add));
+        }
+        internal bool TryApplyGraphColorRampIntentEdit()
+        {
+            if(!HasGraphColorRampEditSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
+            RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
+        }
+        internal bool TryApplyGraphColorRampUVMode(NBShaderFlags.UVMode mode,bool setFold)
+        {
+            if(!HasGraphColorRampEditSchema() || !HasGraphMainTexUVEditSchema() || (int)mode<0 || (int)mode>8)return false;
+            const int shift=10, mask=3<<shift; // Original word0/type0 position26, high half only.
+            return RunGraphMainTexEdit("Color Ramp UV Source",material=>{
+                bool changed=WriteGraphHalfSlice(material,"_NB_UVModeFlag0Hi16",mask,((int)mode&3)<<shift);
+                changed|=WriteGraphHalfSlice(material,"_NB_UVModeFlagType0Hi16",mask,((int)mode/4)<<shift);
+                if(setFold)
+                {
+                    float value=mode==NBShaderFlags.UVMode.DefaultUVChannel||mode==NBShaderFlags.UVMode.CommonUV||mode==NBShaderFlags.UVMode.ScreenUV||mode==NBShaderFlags.UVMode.MainTex?0:1;
+                    if(material.GetFloat("_RampColorUVModeFoldOut")!=value){material.SetFloat("_RampColorUVModeFoldOut",value);changed=true;}
+                }
+                return UpdateGraphMainTexUVDerived(material)|changed;
+            });
         }
     }
 

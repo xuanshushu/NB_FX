@@ -70,6 +70,9 @@ namespace NBShaderEditor
         FresnelFeatureItem _graphFresnelItem;
         bool _sharedGraphDissolveReady;
         DissolveFeatureItem _graphDissolveItem;
+        bool _sharedGraphColorAdjustmentReady, _sharedGraphColorRampReady;
+        BlockItem _graphColorAdjustmentBlock;
+        RampColorFeatureItem _graphColorRampItem;
         bool _sharedGraphMaskProgramReady;
         MaskFeatureItem _graphMaskItem;
         ProgramNoiseFeatureItem _graphProgramNoiseItem;
@@ -118,6 +121,8 @@ namespace NBShaderEditor
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphParallaxReady) names.AddRange(SharedGraphParallaxProperties);
             if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphNormalMapReady)names.AddRange(SharedGraphNormalMapProperties);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphMaskProgramReady)names.AddRange(NBShaderSyncService.GraphMaskProgramSharedPropertyNames);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphColorAdjustmentReady)names.AddRange(NBShaderSyncService.GraphColorAdjustmentSharedPropertyNames);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphColorRampReady)names.AddRange(NBShaderSyncService.GraphColorRampSharedPropertyNames);
             return names;
         }
 
@@ -316,6 +321,8 @@ namespace NBShaderEditor
                     _graphParallaxItem = null;
                     _sharedGraphParallaxReady = false;
                     _graphFresnelItem = null;
+                    _graphColorAdjustmentBlock=null;_graphColorRampItem=null;
+                    _sharedGraphColorAdjustmentReady=false;_sharedGraphColorRampReady=false;
                     _graphDissolveItem = null;
                     _graphMaskItem=null;_graphProgramNoiseItem=null;_sharedGraphMaskProgramReady=false;
                     _sharedGraphDissolveReady = false;
@@ -339,6 +346,8 @@ namespace NBShaderEditor
                 if (InitializeGraphLightModeInputs())
                     _graphLightModeBlock.OnGUI();
                 DrawGraphNormalMapInputs();
+                DrawGraphColorAdjustmentInputs();
+                DrawGraphColorRampInputs();
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
                 if (InitializeGraphTADepthInputs()) _graphTADepthBlock.OnGUI();
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
@@ -474,6 +483,35 @@ namespace NBShaderEditor
             if(!_sharedGraphMaskProgramReady)return;
             if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Mask / Program Noise");
             if(selectedItem!=null)selectedItem.OnGUI();else{_graphMaskItem.OnGUI();_graphProgramNoiseItem.OnGUI();}
+        }
+
+        internal bool InitializeGraphColorAdjustmentInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphColorAdjustmentReady=Context.IsGraphMaterialHost&&SyncService.HasGraphColorAdjustmentEditSchema();
+            if(!_sharedGraphColorAdjustmentReady)return false;
+            _graphColorAdjustmentBlock??=BaseOptionBigBlockItem.CreateColorAdjustmentBlock(this,null,true);return true;
+        }
+        internal bool InitializeGraphColorRampInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphColorRampReady=Context.IsGraphMaterialHost&&SyncService.HasGraphColorRampEditSchema();
+            if(!_sharedGraphColorRampReady)return false;
+            _graphColorRampItem??=new RampColorFeatureItem(this,null,true);return true;
+        }
+        internal void DrawGraphColorAdjustmentInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!InitializeGraphColorAdjustmentInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB Color Adjustment");
+            (selectedItem??_graphColorAdjustmentBlock).OnGUI();
+        }
+        internal void DrawGraphColorRampInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!InitializeGraphColorRampInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB Color Ramp");
+            (selectedItem??_graphColorRampItem).OnGUI();
         }
     }
 }
