@@ -2160,6 +2160,7 @@ namespace NBShaderEditor
             if(position==NBShaderFlags.FLAG_BIT_UVMODE_POS_0_SHAREDUV && fold=="_SharedUVModeFoldOut")return TryApplyGraphSharedUVMode(mode,setFold);
             if(position==26 && fold=="_RampColorUVModeFoldOut")return TryApplyGraphColorRampUVMode(mode,setFold);
             if(position==8||position==10)return TryApplyGraphNoiseUVMode(position,mode,fold,setFold);
+            if(position==20||position==22)return TryApplyGraphVertexOffsetUV(position,mode,fold,setFold);
             if(position==14||position==16)return TryApplyGraphDissolveUVMode(position,mode,setFold);
             return TryApplyGraphMaskProgramUVMode(position,mode,fold,setFold);
         }
@@ -2431,6 +2432,59 @@ namespace NBShaderEditor
             return RunGraphMainTexEdit("Shared UV Offset Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag3Lo16",15<<position,values[(int)component]<<position));
         }
 
+
+        internal static readonly string[] GraphVertexOffsetSharedProperties={"_IgnoreVetexColor_Toggle","_NB_Debug_VertexOffset","_VertexOffsetBlockFoldOut","_VertexOffsetMaskBlockFoldOut","_VertexOffsetMaskUVModeFoldOut","_VertexOffsetUVModeFoldOut","_VertexOffset_CustomDir","_VertexOffset_DirectionSpace","_VertexOffset_Map","_VertexOffset_MaskMap","_VertexOffset_MaskMap_Vec","_VertexOffset_Mask_Toggle","_VertexOffset_NormalDir_Toggle","_VertexOffset_StartFromZero","_VertexOffset_Toggle","_VertexOffset_Vec"};
+
+        internal bool HasGraphVertexOffsetEditSchema()
+        {
+            if(_rootItem.MatEditor==null||!HasGraphMainTexUVEditSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                foreach(string name in GraphVertexOffsetSharedProperties)if(!material.HasProperty(name)||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;
+                foreach(string name in new[]{"_NB_CustomDataFlag1Lo16","_NB_CustomDataFlag1Hi16","_NB_CustomDataFlag3Lo16","_NB_CustomDataFlag3Hi16"})
+                {if(!NBShaderRootItem.HasFloatProperty(material,name)||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;}
+                foreach(string name in new[]{"_VertexOffset_Toggle","_VertexOffset_Mask_Toggle","_VertexOffset_NormalDir_Toggle","_VertexOffset_DirectionSpace","_VertexOffset_StartFromZero",GraphGUIStateVersionProperty})
+                {if(!NBShaderRootItem.HasFloatProperty(material,name))return false;float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;}
+                float direction=material.GetFloat("_VertexOffset_NormalDir_Toggle"),space=material.GetFloat("_VertexOffset_DirectionSpace");if(direction!=Mathf.Round(direction)||direction<0||direction>3||space!=Mathf.Round(space)||space<0||space>1||material.GetFloat(GraphGUIStateVersionProperty)!=2)return false;
+                bool changed;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out changed))return false;
+            }
+            return true;
+        }
+        internal bool TryApplyGraphVertexOffsetIntentEdit()
+        {
+            if(!HasGraphVertexOffsetEditSchema())return false;
+            foreach(Material material in _rootItem.Mats){bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
+            RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
+        }
+        internal bool TryApplyGraphVertexOffsetStart(bool enabled)
+        {
+            if(!HasGraphVertexOffsetEditSchema())return false;const string name="_NB_Flags1Hi16";const int mask=1<<(25-16);
+            return RunGraphMainTexEdit("Vertex Offset From Zero",material=>{bool changed=WriteGraphHalfSlice(material,name,mask,enabled?mask:0);if(!changed)NotifyGraphPackedFlagsEdited(material,name,mask);return changed;});
+        }
+        internal bool TryRepairGraphVertexOffsetColor()
+        {
+            if(!HasGraphVertexOffsetEditSchema())return false;
+            return RunGraphMainTexEdit("Vertex Offset Ignore Vertex Color",material=>{
+                if(material.GetFloat("_VertexOffset_Toggle")<=.5f||material.GetFloat("_VertexOffset_NormalDir_Toggle")!=2)return false;
+                const string name="_NB_Flags1Lo16";const int mask=1<<9;bool changed=WriteGraphHalfSlice(material,name,mask,mask);if(!changed)NotifyGraphPackedFlagsEdited(material,name,mask);return changed;
+            });
+        }
+        internal bool TryApplyGraphVertexOffsetUV(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
+        {
+            if(!HasGraphVertexOffsetEditSchema()||(int)mode<0||(int)mode>8||!(position==20&&fold=="_VertexOffsetUVModeFoldOut"||position==22&&fold=="_VertexOffsetMaskUVModeFoldOut"))return false;
+            int shift=position-16,mask=3<<shift;
+            return RunGraphMainTexEdit("Vertex Offset UV",material=>{
+                bool changed=WriteGraphHalfSlice(material,"_NB_UVModeFlag0Hi16",mask,((int)mode&3)<<shift)|WriteGraphHalfSlice(material,"_NB_UVModeFlagType0Hi16",mask,((int)mode/4)<<shift);
+                if(setFold){float value=mode==NBShaderFlags.UVMode.DefaultUVChannel||mode==NBShaderFlags.UVMode.CommonUV||mode==NBShaderFlags.UVMode.ScreenUV||mode==NBShaderFlags.UVMode.MainTex?0:1;if(material.GetFloat(fold)!=value){material.SetFloat(fold,value);changed=true;}}
+                return UpdateGraphMainTexUVDerived(material)|changed;
+            });
+        }
+        internal bool TryApplyGraphVertexOffsetCustomData(int position,int word,NBShaderFlags.CutomDataComponent component)
+        {
+            if(!HasGraphVertexOffsetEditSchema()||(int)component<0||(int)component>8||!(word==1&&(position==16||position==20||position==24)||word==3&&(position==0||position==4)))return false;
+            int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};int shift=position&15;string name="_NB_CustomDataFlag"+word+(position<16?"Lo16":"Hi16");
+            return RunGraphMainTexEdit("Vertex Offset Custom Data",material=>WriteGraphHalfSlice(material,name,15<<shift,values[(int)component]<<shift));
+        }
     }
 
     public enum VATMode

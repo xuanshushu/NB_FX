@@ -71,6 +71,7 @@ void NBGraphVertexOffset_float(
     float4 WorldToLocal1,
     float4 WorldToLocal2,
     float4 WorldToLocal3,
+    float NBGraphTierAllowVertexOffset,float NBGraphTierAllowVertexOffsetMask,
     out float3 OutPositionOS, out float3 OutNormalOS,
     out float3 OutTangentOS, out float Supported, out float3 OutDebugVertexOffset)
 {
@@ -79,6 +80,8 @@ void NBGraphVertexOffset_float(
     OutTangentOS = TangentOS;
     Supported = 1.0;
     OutDebugVertexOffset = 0;
+    VertexOffsetToggle *= NBGraphTierAllowVertexOffset > 0.5 ? 1.0 : 0.0;
+    VertexOffsetMaskToggle *= NBGraphTierAllowVertexOffsetMask > 0.5 ? 1.0 : 0.0;
     if (VertexOffsetToggle <= 0.5)
         return;
 

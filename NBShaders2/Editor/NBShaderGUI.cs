@@ -72,6 +72,8 @@ namespace NBShaderEditor
         FresnelFeatureItem _graphFresnelItem;
         bool _sharedGraphDissolveReady;
         DissolveFeatureItem _graphDissolveItem;
+        VertexOffsetFeatureItem _graphVertexOffsetItem;
+        bool _sharedGraphVertexOffsetReady;
         bool _sharedGraphDepthFeaturesReady;
         PropertyToggleBlockItem _graphDistanceFadeBlock, _graphSoftParticlesBlock;
         DepthOutlineFeatureItem _graphDepthOutlineItem;
@@ -134,6 +136,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDepthFeaturesReady)names.AddRange(NBShaderSyncService.GraphDepthSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphNoiseReady)names.AddRange(NBShaderSyncService.GraphNoiseSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphSharedUVReady)names.AddRange(NBShaderSyncService.GraphSharedUVPropertyNames);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphVertexOffsetReady)names.AddRange(NBShaderSyncService.GraphVertexOffsetSharedProperties);
             return names;
         }
 
@@ -358,6 +361,7 @@ namespace NBShaderEditor
                     _graphDistanceFadeBlock=null;_graphSoftParticlesBlock=null;_graphDepthOutlineItem=null;_sharedGraphDepthFeaturesReady=false;
                     _sharedGraphColorAdjustmentReady=false;_sharedGraphColorRampReady=false;
                     _graphDissolveItem = null;
+                    _graphVertexOffsetItem=null;_sharedGraphVertexOffsetReady=false;
                     _graphMaskItem=null;_graphProgramNoiseItem=null;_sharedGraphMaskProgramReady=false;
                     _sharedGraphDissolveReady = false;
                     _sharedGraphFresnelReady = false;
@@ -389,6 +393,7 @@ namespace NBShaderEditor
                 if (InitializeGraphTADepthInputs())DrawGraphTAInputs();
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
                 if(InitializeGraphDissolveInputs())DrawGraphDissolveInputs();
+                if(InitializeGraphVertexOffsetInputs())DrawGraphVertexOffsetInputs();
                 if(InitializeGraphMaskProgramInputs())DrawGraphMaskProgramInputs();
                 DrawGraphOverlayInputs();
                 DrawGraphParallaxInputs();
@@ -607,5 +612,15 @@ namespace NBShaderEditor
             (selectedItem??_graphSharedUVItem).OnGUI();
         }
 
+
+        internal bool InitializeGraphVertexOffsetInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();_sharedGraphVertexOffsetReady=Context.IsGraphMaterialHost&&SyncService.HasGraphVertexOffsetEditSchema();
+            if(!_sharedGraphVertexOffsetReady)return false;_graphVertexOffsetItem??=new VertexOffsetFeatureItem(this,null,true);return true;
+        }
+        internal void DrawGraphVertexOffsetInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!_sharedGraphVertexOffsetReady)return;if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Vertex Offset");(selectedItem??_graphVertexOffsetItem).OnGUI();
+        }
     }
 }

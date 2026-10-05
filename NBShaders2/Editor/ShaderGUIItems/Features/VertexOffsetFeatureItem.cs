@@ -12,8 +12,8 @@ namespace NBShaderEditor
         private static readonly string[] DirectionModeNames = { "自定义方向", "顶点法线方向", "顶点色 RGB", "贴图 RGB" };
         private static readonly string[] DirectionSpaceNames = { "本地空间", "世界空间" };
 
-        public VertexOffsetFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_VertexOffsetBlockFoldOut", "_VertexOffset_Toggle", "顶点偏移", keyword: "_VERTEX_OFFSET")
+        public VertexOffsetFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode=false)
+            : base(rootItem, parentItem, "_VertexOffsetBlockFoldOut", "_VertexOffset_Toggle", "顶点偏移", keyword: graphSharedMode?null:"_VERTEX_OFFSET",onValueChanged:graphSharedMode?(Action<bool>)(_=>rootItem.SyncService.TryApplyGraphVertexOffsetIntentEdit()):null)
         {
             new NBShaderKeywordToggleItem(
                 rootItem,
@@ -32,26 +32,26 @@ namespace NBShaderEditor
             new Vector3Item(rootItem, this, "_VertexOffset_CustomDir", () => Content("顶点偏移本地方向"), isVisible: showCustomDirection);
             AddTextureWithWrap(rootItem, this, "_VertexOffset_Map", "顶点偏移贴图", NBShaderFlags.FLAG_BIT_WRAPMODE_VERTEXOFFSETMAP, 0, isVisible: showOffsetMap);
             new ColorChannelSelectItem(rootItem, this, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MAP, 0, () => Content("顶点偏移贴图通道选择"), showScalarChannel);
-            new UVModeSelectItem(rootItem, this, "_VertexOffsetUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MAP, 0, () => Content("顶点偏移贴图UV来源"), "_VertexOffset_Map", isVisible: showOffsetMap);
-            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X, 1, () => Content("顶点扰动X轴偏移自定义曲线"), showOffsetMap);
-            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_Y, 1, () => Content("顶点扰动Y轴偏移自定义曲线"), showOffsetMap);
+            new UVModeSelectItem(rootItem, this, "_VertexOffsetUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MAP, 0, () => Content("顶点偏移贴图UV来源"), "_VertexOffset_Map", isVisible: showOffsetMap, graphFeatureProtocolEdit:graphSharedMode);
+            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_X, 1, () => Content("顶点扰动X轴偏移自定义曲线"), showOffsetMap,graphVertexOffsetData:graphSharedMode);
+            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_VERTEX_OFFSET_Y, 1, () => Content("顶点扰动Y轴偏移自定义曲线"), showOffsetMap,graphVertexOffsetData:graphSharedMode);
             new Vector2LineItem(rootItem, this, "_VertexOffset_Vec", true, () => Content("顶点偏移动画"), isVisible: showOffsetMap);
             new VectorComponentItem(rootItem, this, "_VertexOffset_Vec", 2, () => Content("顶点偏移强度"), false);
-            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_VERTEXOFFSET_INTENSITY, 1, () => Content("顶点扰动强度自定义曲线"));
+            new CustomDataSelectItem(rootItem, this, NBShaderFlags.FLAGBIT_POS_1_CUSTOMDATA_VERTEXOFFSET_INTENSITY, 1, () => Content("顶点扰动强度自定义曲线"),graphVertexOffsetData:graphSharedMode);
             new ToggleItem(
                 rootItem,
                 this,
                 "_VertexOffset_StartFromZero",
                 () => Content("顶点偏移从零开始"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_1_VERTEXOFFSET_START_FROM_ZERO, enabled, 1));
+                enabled => {if(graphSharedMode)rootItem.SyncService.TryApplyGraphVertexOffsetStart(enabled);else rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_1_VERTEXOFFSET_START_FROM_ZERO,enabled,1);});
 
             PropertyToggleBlockItem maskBlock = ToggleBlock(rootItem, "_VertexOffsetMaskBlockFoldOut", "_VertexOffset_Mask_Toggle", "顶点偏移遮罩",
-                parent: this, keyword: "_VERTEX_OFFSET_MASKMAP");
+                parent: this, keyword: graphSharedMode?null:"_VERTEX_OFFSET_MASKMAP",onValueChanged:graphSharedMode?(Action<bool>)(_=>rootItem.SyncService.TryApplyGraphVertexOffsetIntentEdit()):null);
             AddTextureWithWrap(rootItem, maskBlock, "_VertexOffset_MaskMap", "顶点偏移遮罩图", NBShaderFlags.FLAG_BIT_WRAPMODE_VERTEXOFFSET_MASKMAP, 0);
             new ColorChannelSelectItem(rootItem, maskBlock, NBShaderFlags.FLAG_BIT_COLOR_CHANNEL_POS_0_VERTEX_OFFSET_MASKMAP, 0, () => Content("顶点偏移遮罩图通道选择"));
-            new UVModeSelectItem(rootItem, maskBlock, "_VertexOffsetMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP, 0, () => Content("顶点偏移遮罩图UV来源"), "_VertexOffset_MaskMap");
-            new CustomDataSelectItem(rootItem, maskBlock, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X, 3, () => Content("顶点扰动遮罩X轴偏移自定义曲线"));
-            new CustomDataSelectItem(rootItem, maskBlock, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y, 3, () => Content("顶点扰动遮罩Y轴偏移自定义曲线"));
+            new UVModeSelectItem(rootItem, maskBlock, "_VertexOffsetMaskUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_VERTEX_OFFSET_MASKMAP, 0, () => Content("顶点偏移遮罩图UV来源"), "_VertexOffset_MaskMap", graphFeatureProtocolEdit:graphSharedMode);
+            new CustomDataSelectItem(rootItem, maskBlock, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_X, 3, () => Content("顶点扰动遮罩X轴偏移自定义曲线"),graphVertexOffsetData:graphSharedMode);
+            new CustomDataSelectItem(rootItem, maskBlock, NBShaderFlags.FLAGBIT_POS_3_CUSTOMDATA_VERTEX_OFFSET_MASK_Y, 3, () => Content("顶点扰动遮罩Y轴偏移自定义曲线"),graphVertexOffsetData:graphSharedMode);
             new Vector2LineItem(rootItem, maskBlock, "_VertexOffset_MaskMap_Vec", true, () => Content("顶点偏移遮罩动画"));
             new VectorComponentItem(rootItem, maskBlock, "_VertexOffset_MaskMap_Vec", 2, () => Content("顶点偏移遮罩强度"), true);
             InitTriggerByChild();
@@ -104,7 +104,7 @@ namespace NBShaderEditor
                        material.HasProperty(IgnoreVertexColorProperty) &&
                        material.GetFloat("_VertexOffset_Toggle") > 0.5f &&
                        Mathf.RoundToInt(material.GetFloat(DirectionModeProperty)) == 2 &&
-                       material.GetFloat(IgnoreVertexColorProperty) <= 0.5f;
+                       (NBShaderGUIContext.IsGraphMaterial(material)?(((int)Mathf.RoundToInt(Mathf.Clamp(material.GetFloat("_NB_Flags1Lo16"),0,65535))&(1<<9))==0):material.GetFloat(IgnoreVertexColorProperty)<=0.5f);
             }
 
             public override void OnGUI()
@@ -122,7 +122,9 @@ namespace NBShaderEditor
                     GUIContent repairContent = Content("启用忽略顶点色");
                     if (GUI.Button(ApplyGlobalRectCompensation(LayoutRect()), repairContent))
                     {
-                        foreach (Material material in RootItem.Mats)
+                        if(RootItem is NBShaderRootItem graphRoot&&graphRoot.Context.IsGraphMaterialHost)
+                            graphRoot.SyncService.TryRepairGraphVertexOffsetColor();
+                        else foreach (Material material in RootItem.Mats)
                         {
                             if (!NeedsRepair(material))
                                 continue;

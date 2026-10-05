@@ -19,7 +19,7 @@ namespace NBShaders2.Editor.FeatureLevel
             "_NB_TierAllowColorRamp", "_NB_TierAllowColorRampMap",
             "_NB_TierAllowMatCap",
             "_NB_TierAllowDistanceFade", "_NB_TierAllowSoftParticles", "_NB_TierAllowDepthOutline",
-            "_NB_TierAllowRefraction"
+            "_NB_TierAllowRefraction", "_NB_TierAllowVertexOffset","_NB_TierAllowVertexOffsetMask"
         };
         static readonly string[] GraphSupportedGateKeywords = {
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
@@ -30,7 +30,7 @@ namespace NBShaders2.Editor.FeatureLevel
             "_COLOR_RAMP", "_COLOR_RAMP_MAP",
             "_MATCAP",
             "_DISTANCE_FADE", "_SOFTPARTICLES_ON", "_DEPTH_OUTLINE",
-            "_DISTORT_REFRACTION"
+            "_DISTORT_REFRACTION", "_VERTEX_OFFSET","_VERTEX_OFFSET_MASKMAP"
         };
 
         internal const string GraphOverrideDepthKeyword = "_OVERRIDE_Z";
@@ -143,6 +143,7 @@ namespace NBShaders2.Editor.FeatureLevel
             changed|=groupChanged;
             if(!ApplyGraphDepthFeaturesGroup(material,tier,allowed,out groupChanged))return false;
             changed|=groupChanged;
+            if(!ApplyGraphVertexOffsetGroup(material,tier,allowed,out groupChanged))return false;changed|=groupChanged;
             if(!ApplyGraphMatCapGroup(material,tier,allowed,out groupChanged))return false;
             changed|=groupChanged;
             if(!ApplyGraphRefractionGroup(material,tier,allowed,out groupChanged))return false;
@@ -436,6 +437,13 @@ namespace NBShaders2.Editor.FeatureLevel
             changed|=SetGraphAllowFloat(material,"_NB_TierAllowSoftParticles",effective.Contains("_SOFTPARTICLES_ON"));
             changed|=SetGraphAllowFloat(material,"_NB_TierAllowDepthOutline",effective.Contains("_DEPTH_OUTLINE"));
             return true;
+        }
+
+        internal static bool ApplyGraphVertexOffsetGroup(Material material,NBShaderFeatureTier tier,System.Collections.Generic.IEnumerable<string> allowedManagedKeywords,out bool changed)
+        {
+            changed=false;foreach(string name in new[]{"_NB_TierAllowVertexOffset","_NB_TierAllowVertexOffsetMask"})if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,name))return false;
+            var allowed=allowedManagedKeywords??NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);NBShaderMaterialIntentResult intent;string[] unavailable;if(!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material,tier,allowed,out intent,out unavailable))return false;
+            var effective=new System.Collections.Generic.HashSet<string>(intent.effectiveKeywords);changed|=SetGraphAllowFloat(material,"_NB_TierAllowVertexOffset",effective.Contains("_VERTEX_OFFSET"));changed|=SetGraphAllowFloat(material,"_NB_TierAllowVertexOffsetMask",effective.Contains("_VERTEX_OFFSET_MASKMAP"));return true;
         }
     }
 }
