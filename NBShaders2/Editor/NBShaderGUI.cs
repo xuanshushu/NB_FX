@@ -65,6 +65,8 @@ namespace NBShaderEditor
 
         bool _sharedGraphSharedUVReady;
         SharedUVFeatureItem _graphSharedUVItem;
+        bool _sharedGraphStencilWithoutPlayerReady;
+        ToggleItem _graphStencilWithoutPlayerItem;
         bool _sharedGraphMainTextureReady;
         bool _sharedGraphFlipbookReady;
         FlipbookFeatureItem _graphFlipbookItem;
@@ -137,6 +139,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphNoiseReady)names.AddRange(NBShaderSyncService.GraphNoiseSharedPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphSharedUVReady)names.AddRange(NBShaderSyncService.GraphSharedUVPropertyNames);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphVertexOffsetReady)names.AddRange(NBShaderSyncService.GraphVertexOffsetSharedProperties);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphStencilWithoutPlayerReady)names.Add("_StencilWithoutPlayerToggle");
             return names;
         }
 
@@ -354,6 +357,7 @@ namespace NBShaderEditor
                     _graphFlipbookItem = null;
                     _graphParallaxItem = null;
                     _graphNoiseItem=null;_sharedGraphNoiseReady=false;
+                    _graphStencilWithoutPlayerItem=null;_sharedGraphStencilWithoutPlayerReady=false;
                     _graphSharedUVItem=null;_sharedGraphSharedUVReady=false;
                     _sharedGraphParallaxReady = false;
                     _graphFresnelItem = null;
@@ -399,6 +403,7 @@ namespace NBShaderEditor
                 DrawGraphParallaxInputs();
                 DrawGraphSharedUVInputs();
                 DrawGraphNoiseInputs();
+                DrawGraphStencilWithoutPlayerInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
                 return;
@@ -622,5 +627,21 @@ namespace NBShaderEditor
         {
             if(!_sharedGraphVertexOffsetReady)return;if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Vertex Offset");(selectedItem??_graphVertexOffsetItem).OnGUI();
         }
+        internal bool InitializeGraphStencilWithoutPlayerInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphStencilWithoutPlayerReady=Context.IsGraphMaterialHost&&SyncService.HasGraphStencilWithoutPlayerEditSchema();
+            if(!_sharedGraphStencilWithoutPlayerReady)return false;
+            _graphStencilWithoutPlayerItem??=BaseOptionBigBlockItem.CreateStencilWithoutPlayerItem(this,null,
+                isVisible:()=>Context.UIEffectEnabled==MixedBool.False,graphSharedMode:true);return true;
+        }
+        internal void DrawGraphStencilWithoutPlayerInputs()
+        {
+            if(!InitializeGraphStencilWithoutPlayerInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB Stencil Without Player");
+            _graphStencilWithoutPlayerItem.OnGUI();
+        }
+
     }
 }

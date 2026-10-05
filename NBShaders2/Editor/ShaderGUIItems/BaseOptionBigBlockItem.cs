@@ -108,14 +108,7 @@ namespace NBShaderEditor
 
             _softParticlesBlock = CreateSoftParticlesBlock(rootItem, this);
 
-            _stencilWithoutPlayerItem = new NBShaderKeywordToggleItem(
-                rootItem,
-                this,
-                "_StencilWithoutPlayerToggle",
-                "_STENCIL_WITHOUT_PLAYER",
-                () => Content("base.stencilWithoutPlayer", "Stencil Without Player"),
-                OnStencilWithoutPlayerChanged,
-                Is3DMode);
+            _stencilWithoutPlayerItem = CreateStencilWithoutPlayerItem(rootItem,this,OnStencilWithoutPlayerChanged,Is3DMode);
 
             _ignoreVertexColorItem = new ToggleItem(
                 rootItem,
@@ -135,6 +128,38 @@ namespace NBShaderEditor
             _fogIntensityItem.InitTriggerByChild();
 
             InitTriggerByChild();
+        }
+
+        internal static ToggleItem CreateStencilWithoutPlayerItem(NBShaderRootItem rootItem,ShaderGUIItem parentItem,
+            Action<bool> onValueChanged=null,Func<bool> isVisible=null,bool graphSharedMode=false)
+        {
+            if(graphSharedMode)return new GraphStencilWithoutPlayerToggleItem(rootItem,parentItem,isVisible);
+            return new NBShaderKeywordToggleItem(
+                rootItem,
+                parentItem,
+                "_StencilWithoutPlayerToggle",
+                "_STENCIL_WITHOUT_PLAYER",
+                () => Content("base.stencilWithoutPlayer", "Stencil Without Player"),
+                onValueChanged,
+                isVisible);
+        }
+        // Same original control; Graph owns a deferred explicit preset transaction only.
+        private sealed class GraphStencilWithoutPlayerToggleItem : NBShaderKeywordToggleItem
+        {
+            readonly NBShaderRootItem root;
+            public GraphStencilWithoutPlayerToggleItem(NBShaderRootItem root,ShaderGUIItem parent,Func<bool> visible)
+                :base(root,parent,"_StencilWithoutPlayerToggle","_STENCIL_WITHOUT_PLAYER",
+                    ()=>Content("base.stencilWithoutPlayer","Stencil Without Player"),isVisible:visible){this.root=root;}
+            public override void DrawController()
+            {
+                EditorGUI.BeginChangeCheck();bool enabled=EditorGUI.Toggle(ControlRect,PropertyInfo.Property.floatValue>.5f);
+                if(EditorGUI.EndChangeCheck())root.SyncService.TryApplyGraphStencilWithoutPlayer(enabled);
+            }
+            public override void ExecuteReset(bool isCallByParent=false)
+            {
+                if(!root.SyncService.TryApplyGraphStencilWithoutPlayer(false))return;
+                CheckIsPropertyModified();if(!isCallByParent)ParentItem?.CheckIsPropertyModified(true);
+            }
         }
 
         public override void DrawBlock()

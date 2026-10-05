@@ -2485,6 +2485,30 @@ namespace NBShaderEditor
             int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};int shift=position&15;string name="_NB_CustomDataFlag"+word+(position<16?"Lo16":"Hi16");
             return RunGraphMainTexEdit("Vertex Offset Custom Data",material=>WriteGraphHalfSlice(material,name,15<<shift,values[(int)component]<<shift));
         }
+        internal bool HasGraphStencilWithoutPlayerEditSchema()
+        {
+            if(!HasGraphQCMEditSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                if(!NBShaderRootItem.HasFloatProperty(material,"_StencilWithoutPlayerToggle")||!_rootItem.PropertyInfoDic.ContainsKey("_StencilWithoutPlayerToggle")||
+                    !NBShaderRootItem.HasFloatProperty(material,GraphGUIStateVersionProperty)||material.GetFloat(GraphGUIStateVersionProperty)!=2f)return false;
+                float value=material.GetFloat("_StencilWithoutPlayerToggle");if(float.IsNaN(value)||float.IsInfinity(value))return false;
+            }
+            return true;
+        }
+        internal bool TryApplyGraphStencilWithoutPlayer(bool enabled)
+        {
+            if(!HasGraphStencilWithoutPlayerEditSchema())return false;
+            string key=enabled?"ParticleWithoutPlayer":"ParticleBaseDefault";var config=GetStencilValuesConfig();
+            if(config==null||!config.ContainsKey(key)||config.GetStencilValues(key)==null)return false;
+            return RunGraphMainTexEdit(enabled?"NB Stencil Without Player":"Reset NB Stencil Without Player",material=>{
+                // The same original helper returns its default queue; this transaction keeps the saved queue.
+                StencilTestHelper.SetMaterialStencil(material,key,config,out _);
+                material.SetFloat("_CustomStencilTest",enabled?1:0);material.SetFloat("_StencilWithoutPlayerToggle",enabled?1:0);
+                return true;
+            });
+        }
+
     }
 
     public enum VATMode
