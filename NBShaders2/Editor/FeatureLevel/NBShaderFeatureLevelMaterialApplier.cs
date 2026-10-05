@@ -20,7 +20,8 @@ namespace NBShaders2.Editor.FeatureLevel
             "_NB_TierAllowMatCap",
             "_NB_TierAllowDistanceFade", "_NB_TierAllowSoftParticles", "_NB_TierAllowDepthOutline",
             "_NB_TierAllowRefraction", "_NB_TierAllowVertexOffset","_NB_TierAllowVertexOffsetMask",
-            "_NB_TierAllowDepthDecal"
+            "_NB_TierAllowDepthDecal",
+            "_NB_TierAllowLighting"
         };
         static readonly string[] GraphSupportedGateKeywords = {
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
@@ -32,7 +33,8 @@ namespace NBShaders2.Editor.FeatureLevel
             "_MATCAP",
             "_DISTANCE_FADE", "_SOFTPARTICLES_ON", "_DEPTH_OUTLINE",
             "_DISTORT_REFRACTION", "_VERTEX_OFFSET","_VERTEX_OFFSET_MASKMAP",
-            "_DEPTH_DECAL"
+            "_DEPTH_DECAL",
+            null // Selected lighting mode: use the same normalized effective intent.
         };
 
         internal const string GraphOverrideDepthKeyword = "_OVERRIDE_Z";
@@ -97,7 +99,7 @@ namespace NBShaders2.Editor.FeatureLevel
             if (!TryReadGraphSupportedGateTier(material, tier, allowedManagedKeywords, out intent)) return false;
             var effective = new HashSet<string>(intent.effectiveKeywords);
             for (int i = 0; i < GraphSupportedGateProperties.Length; ++i)
-                wouldChange |= material.GetFloat(GraphSupportedGateProperties[i]) != (effective.Contains(GraphSupportedGateKeywords[i]) ? 1f : 0f);
+                wouldChange |= material.GetFloat(GraphSupportedGateProperties[i]) != (GraphGateEnabled(i,effective) ? 1f : 0f);
             // Older graphs may omit the declared keyword; never invent one.
             if (HasGraphOverrideDepthKeyword(material))
             {
@@ -106,6 +108,9 @@ namespace NBShaders2.Editor.FeatureLevel
                 if (!NBShaderMaterialIntentResolver.TryResolveGraphOverrideDepthIntent(material, allowed, out overrideDepth)) return false;
                 wouldChange |= material.IsKeywordEnabled(GraphOverrideDepthKeyword) != overrideDepth;
             }
+            bool declaredChange;
+            if(!CanApplyGraphDeclaredKeywordState(material,effective,out declaredChange))return false;
+            wouldChange|=declaredChange;
             return true;
         }
 
@@ -151,6 +156,8 @@ namespace NBShaders2.Editor.FeatureLevel
             if(!ApplyGraphMatCapGroup(material,tier,allowed,out groupChanged))return false;
             changed|=groupChanged;
             if(!ApplyGraphRefractionGroup(material,tier,allowed,out groupChanged))return false;
+            changed|=groupChanged;
+            if(!ApplyGraphLightingGroup(material,tier,allowed,out groupChanged))return false;
             changed|=groupChanged;
             return true;
         }
@@ -459,6 +466,86 @@ namespace NBShaders2.Editor.FeatureLevel
             NBShaderMaterialIntentResult intent;string[] unavailable;
             if(!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material,tier,allowed,out intent,out unavailable))return false;
             changed=SetGraphAllowFloat(material,"_NB_TierAllowDepthDecal",new HashSet<string>(intent.effectiveKeywords).Contains("_DEPTH_DECAL"));return true;
+        }
+
+        // Existing declared keywords only. No new mode/flags protocol and no
+        // change to unrecognized/raw-new schema until the existing GUI adopts it.
+        internal static readonly string[] GraphDeclaredKeywordNames={
+            "_SPECULAR_COLOR","VFX_SIX_WAY_ABSORPTION","EVALUATE_SH_VERTEX",
+            "NB_DEBUG_MASK","NB_DEBUG_PNOISE","NB_DEBUG_DISSOLVE","NB_DEBUG_DISTORT","NB_DEBUG_FRESNEL","NB_DEBUG_VERTEX_OFFSET"};
+        static bool GraphDeclaredKeywordWanted(string name,HashSet<string> effective)
+            => effective.Contains(name=="EVALUATE_SH_VERTEX"?"_FX_LIGHT_MODE_SIX_WAY":name);
+        static bool CanApplyGraphDeclaredKeywordState(Material material,HashSet<string> effective,out bool wouldChange)
+        {
+            wouldChange=false;if(material==null||material.shader==null)return false;
+            foreach(string name in GraphDeclaredKeywordNames)
+            {
+                if(!material.shader.keywordSpace.FindKeyword(name).isValid)return false;
+                wouldChange|=material.IsKeywordEnabled(name)!=GraphDeclaredKeywordWanted(name,effective);
+            }
+            return true;
+        }
+        static bool ApplyGraphDeclaredKeywordState(Material material,HashSet<string> effective,out bool changed)
+        {
+            changed=false;bool wouldChange;
+            if(!CanApplyGraphDeclaredKeywordState(material,effective,out wouldChange))return false;
+            if(!wouldChange)return true;
+            foreach(string name in GraphDeclaredKeywordNames)changed|=SetKeyword(material,name,GraphDeclaredKeywordWanted(name,effective));
+            return true;
+        }
+        internal static bool ApplyGraphDeclaredKeywords(Material material,NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords,out bool changed)
+        {
+            changed=false;NBShaderMaterialIntentResult intent;
+            if(!TryReadGraphSupportedGateTier(material,tier,allowedManagedKeywords,out intent))return false;
+            return ApplyGraphDeclaredKeywordState(material,new HashSet<string>(intent.effectiveKeywords),out changed);
+        }
+        internal static bool ApplyGraphSavedDeclaredKeywords(Material material,out bool changed)
+        {
+            changed=false;NBShaderMaterialIntentResult intent;
+            if(!TryReadGraphSavedSupportedGateTier(material,out intent))return false;
+            return ApplyGraphDeclaredKeywordState(material,new HashSet<string>(intent.effectiveKeywords),out changed);
+        }
+        internal static bool[] CaptureGraphDeclaredKeywordState(Material material)
+        {
+            var states=new bool[GraphDeclaredKeywordNames.Length];
+            for(int i=0;i<states.Length;++i)states[i]=material.IsKeywordEnabled(GraphDeclaredKeywordNames[i]);return states;
+        }
+        internal static void RestoreGraphDeclaredKeywordState(Material material,bool[] states)
+        {
+            if(states==null||states.Length!=GraphDeclaredKeywordNames.Length)return;
+            for(int i=0;i<states.Length;++i)SetKeyword(material,GraphDeclaredKeywordNames[i],states[i]);
+        }
+
+        // The normalized resolver already selected exactly one existing mode.
+        // A denied selected mode uses the proven mode-0 local shader fallback;
+        // the saved _FxLightMode and intended keywords are never rewritten.
+        static bool GraphLightingAllowed(HashSet<string> effective)
+        {
+            foreach(string keyword in effective)
+                if(keyword.StartsWith("_FX_LIGHT_MODE_",System.StringComparison.Ordinal))return true;
+            return false;
+        }
+        static bool GraphGateEnabled(int index,HashSet<string> effective)
+            => GraphSupportedGateKeywords[index]==null ? GraphLightingAllowed(effective) : effective.Contains(GraphSupportedGateKeywords[index]);
+
+        internal static bool ApplyGraphLightingGroup(Material material,NBShaderFeatureTier tier,
+            IEnumerable<string> allowedManagedKeywords,out bool changed)
+        {
+            changed=false;NBShaderMaterialIntentResult intent;
+            if(!TryReadGraphSupportedGateTier(material,tier,allowedManagedKeywords,out intent))return false;
+            var effective=new HashSet<string>(intent.effectiveKeywords);bool keywordChange;
+            if(!CanApplyGraphDeclaredKeywordState(material,effective,out keywordChange))return false;
+            float value=GraphLightingAllowed(effective)?1f:0f;
+            if(material.GetFloat("_NB_TierAllowLighting")!=value){material.SetFloat("_NB_TierAllowLighting",value);changed=true;}
+            bool projected;if(!ApplyGraphDeclaredKeywordState(material,effective,out projected))return false;
+            changed|=projected;return true;
+        }
+        internal static bool ApplyGraphSavedLightingGroup(Material material,out bool changed)
+        {
+            changed=false;NBShaderMaterialIntentResult intent;
+            if(!TryReadGraphSavedSupportedGateTier(material,out intent))return false;
+            return ApplyGraphLightingGroup(material,intent.tier,null,out changed);
         }
     }
 }

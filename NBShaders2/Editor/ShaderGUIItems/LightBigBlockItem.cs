@@ -446,7 +446,12 @@ namespace NBShaderEditor
             if (_graphSharedMode)
             {
                 if (_nbRootItem.IsGraphLightModeSchemaReady())
-                    foreach (Material material in _nbRootItem.Mats) NBShaderGraphGUI.SyncSixWayKeywords(material);
+                    foreach (Material material in _nbRootItem.Mats)
+                    {
+                        bool changed;
+                        NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedLightingGroup(material,out changed);
+                        NBShaderGraphGUI.SyncSixWayKeywords(material);
+                    }
             }
             else _nbRootItem.SyncService.ApplyLightMode((FxLightMode)PropertyInfo.Property.floatValue);
             _nbRootItem.Context.Refresh();

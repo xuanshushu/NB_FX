@@ -203,6 +203,8 @@ namespace NBShaderEditor
                 if (material == null || !NBShaderGUIContext.IsGraphMaterial(material)) return false;
                 foreach (string name in new[] { "_FxLightMode", "_LightBigBlockItemFoldOut", "_SixWayColorAbsorptionToggle", NBShaderSyncService.GraphGUIStateVersionProperty })
                     if (!HasFloatProperty(material, name) || !PropertyInfoDic.ContainsKey(name)) return false;
+                bool projectionChange;
+                if(!NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out projectionChange))return false;
                 float mode = material.GetFloat("_FxLightMode");
                 if (float.IsNaN(mode) || float.IsInfinity(mode) || mode < 0 || mode > 4 || mode != Mathf.Round(mode) ||
                     material.GetFloat(NBShaderSyncService.GraphGUIStateVersionProperty) != 2f) return false;

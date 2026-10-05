@@ -171,11 +171,13 @@ namespace NBShaderEditor
             foreach (var binding in ModeFlagBindings) ownedNames.Add(binding.propertyName);
             ownedNames.AddRange(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties);
             var originalOverrideDepth = new bool[initialize.Count];
+            var originalDeclaredKeywords = new bool[initialize.Count][];
             var originals = new float[initialize.Count][];
             var targets = new UnityEngine.Object[initialize.Count];
             for (int i = 0; i < initialize.Count; ++i)
             {
                 originalOverrideDepth[i] = initialize[i].IsKeywordEnabled("_OVERRIDE_Z");
+                originalDeclaredKeywords[i]=NBShaderFeatureLevelMaterialApplier.CaptureGraphDeclaredKeywordState(initialize[i]);
                 targets[i] = initialize[i]; originals[i] = new float[ownedNames.Count];
                 for (int field = 0; field < ownedNames.Count; ++field) originals[i][field] = initialize[i].GetFloat(ownedNames[field]);
             }
@@ -191,6 +193,7 @@ namespace NBShaderEditor
                 {
                     for (int field = 0; field < ownedNames.Count; ++field) initialize[i].SetFloat(ownedNames[field], originals[i][field]);
                     RestoreGraphOverrideDepthKeyword(initialize[i], originalOverrideDepth[i]);
+                    NBShaderFeatureLevelMaterialApplier.RestoreGraphDeclaredKeywordState(initialize[i],originalDeclaredKeywords[i]);
                 }
                 return false;
             }
@@ -252,12 +255,14 @@ namespace NBShaderEditor
             var originalScreenPasses=new GraphScreenPassSnapshot[_rootItem.Mats.Count];
             var originalBackPasses = new GraphBackFirstPassSnapshot[_rootItem.Mats.Count];
             var originalOverrideDepth = new bool[_rootItem.Mats.Count];
+            var originalDeclaredKeywords = new bool[_rootItem.Mats.Count][];
             var originalGates = new float[_rootItem.Mats.Count][];
             for (int i = 0; i < _rootItem.Mats.Count; ++i)
             {
                 originalScreenPasses[i]=new GraphScreenPassSnapshot(_rootItem.Mats[i]);
                 originalBackPasses[i] = new GraphBackFirstPassSnapshot(_rootItem.Mats[i]);
                 originalOverrideDepth[i] = _rootItem.Mats[i].IsKeywordEnabled("_OVERRIDE_Z");
+                originalDeclaredKeywords[i]=NBShaderFeatureLevelMaterialApplier.CaptureGraphDeclaredKeywordState(_rootItem.Mats[i]);
                 originalGates[i] = new float[NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties.Length];
                 for (int gate = 0; gate < originalGates[i].Length; ++gate)
                     originalGates[i][gate] = _rootItem.Mats[i].GetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties[gate]);
@@ -279,6 +284,7 @@ namespace NBShaderEditor
                     for (int gate = 0; gate < originalGates[restore].Length; ++gate)
                         _rootItem.Mats[restore].SetFloat(NBShaderFeatureLevelMaterialApplier.GraphSupportedGateProperties[gate], originalGates[restore][gate]);
                     RestoreGraphOverrideDepthKeyword(_rootItem.Mats[restore], originalOverrideDepth[restore]);
+                    NBShaderFeatureLevelMaterialApplier.RestoreGraphDeclaredKeywordState(_rootItem.Mats[restore],originalDeclaredKeywords[restore]);
                     originalScreenPasses[restore].Restore();
                     originalBackPasses[restore].Restore();
                 }

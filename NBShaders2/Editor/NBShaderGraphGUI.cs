@@ -109,27 +109,11 @@ namespace NBShaderEditor
             // Same authority as Tier transactions: final sync cannot reopen a filtered SV_Depth variant.
             bool overrideDepthChanged;
             NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedOverrideDepth(material, out overrideDepthChanged);
-            SetExistingKeyword(material, "_SPECULAR_COLOR",
-                material.HasProperty("_BlinnPhongSpecularToggle") && material.GetFloat("_BlinnPhongSpecularToggle") > 0.5f);
-            NBShader.NBShaderMaterialIntentResult debugIntent;
-            string[] unavailable;
-            if (NBShader.NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(
-                material, NBShader.NBShaderFeatureTier.Ultra, NBShader.NBShaderFeatureCatalog.RawKeywords,
-                out debugIntent, out unavailable))
-            {
-                SetExistingKeyword(material, "NB_DEBUG_MASK", System.Array.IndexOf(debugIntent.effectiveKeywords, "NB_DEBUG_MASK") >= 0);
-                SetExistingKeyword(material, "NB_DEBUG_PNOISE", System.Array.IndexOf(debugIntent.effectiveKeywords, "NB_DEBUG_PNOISE") >= 0);
-                SetExistingKeyword(material, "NB_DEBUG_DISSOLVE", System.Array.IndexOf(debugIntent.effectiveKeywords, "NB_DEBUG_DISSOLVE") >= 0);
-                SetExistingKeyword(material, "NB_DEBUG_DISTORT", System.Array.IndexOf(debugIntent.effectiveKeywords, "NB_DEBUG_DISTORT") >= 0);
-                SetExistingKeyword(material, "NB_DEBUG_FRESNEL", System.Array.IndexOf(debugIntent.effectiveKeywords, "NB_DEBUG_FRESNEL") >= 0);
-                SetExistingKeyword(material, "NB_DEBUG_VERTEX_OFFSET", System.Array.IndexOf(debugIntent.effectiveKeywords, "NB_DEBUG_VERTEX_OFFSET") >= 0);
-            }
-            bool sixWay = material.HasProperty("_FxLightMode") &&
-                Mathf.RoundToInt(material.GetFloat("_FxLightMode")) == 4;
-            SetExistingKeyword(material, "EVALUATE_SH_VERTEX", sixWay);
-            SetExistingKeyword(material, "VFX_SIX_WAY_ABSORPTION", sixWay &&
-                material.HasProperty("_SixWayColorAbsorptionToggle") &&
-                material.GetFloat("_SixWayColorAbsorptionToggle") > 0.5f);
+            // Saved Tier authority for the existing declared keywords. This
+            // passive final sync never writes derived Float gates or raw intent.
+            bool declaredChanged;
+            NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedDeclaredKeywords(material,out declaredChanged);
+
         }
 
         static void SetExistingKeyword(Material material, string keyword, bool enabled)

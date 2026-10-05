@@ -368,7 +368,7 @@ half4 NBGraphApplyFresnel(half4 color, float3 viewDirWS, half3 normalWS,
 // The same EVALUATE_SH_VERTEX keyword used by the old material is selected
 // by NBShaderGraphGUI when mode 4 is active. Geometry N/T/B is post-VertexOffset.
 void NBGraphSixWayBake_float(float3 NormalWS, float3 TangentWS,
-    float3 BitangentWS, float CustomLocalToggle,float CustomSign,
+    float3 BitangentWS, float CustomLocalToggle,float CustomSign, float NBGraphTierAllowLighting,
     out float3 Bake0, out float3 Bake1,
     out float3 Bake2, out float3 Back0, out float3 Back1,
     out float3 Back2, out float4 TangentSigned)
@@ -383,6 +383,12 @@ void NBGraphSixWayBake_float(float3 NormalWS, float3 TangentWS,
     if(CustomLocalToggle>0.5)sign=(half)CustomSign;
     half3 tangentWS = (half3)TangentWS;
     float3 bitangentWS = sign * cross(NormalWS,tangentWS);
+    if(NBGraphTierAllowLighting<0.5)
+    {
+        Bake0=Bake1=Bake2=Back0=Back1=Back2=0;
+        TangentSigned=float4(tangentWS,sign);
+        return;
+    }
     half3 b0,b1,b2,r0,r1,r2;
     GetSixWayBakeDiffuseLight(NormalWS,tangentWS,bitangentWS,
         b0,b1,b2,r0,r1,r2);
@@ -391,13 +397,13 @@ void NBGraphSixWayBake_float(float3 NormalWS, float3 TangentWS,
     TangentSigned=float4(tangentWS,sign);
 }
 void NBGraphSixWayBake_half(half3 NormalWS, half3 TangentWS,
-    half3 BitangentWS, float CustomLocalToggle,float CustomSign,
+    half3 BitangentWS, float CustomLocalToggle,float CustomSign, float NBGraphTierAllowLighting,
     out half3 Bake0, out half3 Bake1,
     out half3 Bake2, out half3 Back0, out half3 Back1,
     out half3 Back2, out half4 TangentSigned)
 {
     float3 b0,b1,b2,r0,r1,r2;float4 ts;
-    NBGraphSixWayBake_float(NormalWS,TangentWS,BitangentWS,CustomLocalToggle,CustomSign,
+    NBGraphSixWayBake_float(NormalWS,TangentWS,BitangentWS,CustomLocalToggle,CustomSign,NBGraphTierAllowLighting,
         b0,b1,b2,r0,r1,r2,ts);
     Bake0=(half3)b0; Bake1=(half3)b1; Bake2=(half3)b2;
     Back0=(half3)r0; Back1=(half3)r1; Back2=(half3)r2;
@@ -457,9 +463,11 @@ half4 NBGraphApplySixWay(half4 preAdjustAlbedo, UnityTexture2D rigPositive,
 void NBGraphVertexLighting_float(float3 PositionOS, float3 NormalWS,
     float FxLightMode, float CustomLocalToggle,
     float4 LocalToWorld0, float4 LocalToWorld1,
-    float4 LocalToWorld2, float4 LocalToWorld3, out float3 VertexLight)
+    float4 LocalToWorld2, float4 LocalToWorld3,
+    float NBGraphTierAllowLighting, out float3 VertexLight)
 {
     VertexLight = 0;
+    FxLightMode = NBGraphTierAllowLighting > 0.5 ? FxLightMode : 0.0;
 #if !defined(SHADERGRAPH_PREVIEW) && defined(NB_GRAPH_MAIN_FORWARD) && defined(_ADDITIONAL_LIGHTS_VERTEX)
     if (FxLightMode > 0.5 && FxLightMode < 3.5)
     {
@@ -473,11 +481,12 @@ void NBGraphVertexLighting_float(float3 PositionOS, float3 NormalWS,
 void NBGraphVertexLighting_half(float3 PositionOS, float3 NormalWS,
     float FxLightMode, float CustomLocalToggle,
     float4 LocalToWorld0, float4 LocalToWorld1,
-    float4 LocalToWorld2, float4 LocalToWorld3, out half3 VertexLight)
+    float4 LocalToWorld2, float4 LocalToWorld3,
+    float NBGraphTierAllowLighting, out half3 VertexLight)
 {
     float3 result;
     NBGraphVertexLighting_float(PositionOS, NormalWS, FxLightMode,
-        CustomLocalToggle, LocalToWorld0, LocalToWorld1, LocalToWorld2, LocalToWorld3, result);
+        CustomLocalToggle, LocalToWorld0, LocalToWorld1, LocalToWorld2, LocalToWorld3, NBGraphTierAllowLighting, result);
     VertexLight = (half3)result;
 }
 
@@ -868,9 +877,12 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NBGraphTierAllowDepthOutline,
     float NBGraphTierAllowRefraction,
     float3 NBVertexLighting,
+    float NBGraphTierAllowLighting,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    FxLightMode = NBGraphTierAllowLighting > 0.5 ? FxLightMode : 0.0;
+
     // Local Refraction mode only. Screen alias/raw saved enum stay untouched.
     DistortMode *= NBGraphTierAllowRefraction > 0.5 ? 1.0 : 0.0;
 
@@ -1446,9 +1458,12 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NBGraphTierAllowDepthOutline,
     float NBGraphTierAllowRefraction,
     half3 NBVertexLighting,
+    float NBGraphTierAllowLighting,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    FxLightMode = NBGraphTierAllowLighting > 0.5 ? FxLightMode : 0.0;
+
     // Local Refraction mode only. Screen alias/raw saved enum stay untouched.
     DistortMode *= NBGraphTierAllowRefraction > 0.5 ? 1.0 : 0.0;
 
