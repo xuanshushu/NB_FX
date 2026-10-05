@@ -1,0 +1,123 @@
+--- old/NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs
++++ new/NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs
+@@ -3140,16 +3140,7 @@
+             }
+             return true;
+         }
+-        internal bool TryApplyGraphChromaticToggle(bool enabled)
+-        {
+-            if(!HasGraphChromaticEditSchema())return false;
+-            return RunGraphMainTexEdit("Edit NB Chromatic",material=>
+-            {
+-                float value=enabled?1f:0f;bool changed=material.GetFloat("_Distortion_Choraticaberrat_Toggle")!=value;
+-                if(changed)material.SetFloat("_Distortion_Choraticaberrat_Toggle",value);
+-                bool gateChanged;NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out gateChanged);return changed||gateChanged;
+-            });
+-        }
++        internal bool TryApplyGraphChromaticToggle(bool enabled)=>TryCommitGraphChromaticOwned(enabled,false);
+         internal bool TryApplyGraphChromaticNoiseFlag(bool enabled)
+         {
+             if(!HasGraphChromaticEditSchema())return false;
+@@ -3171,17 +3162,37 @@
+             int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};
+             return RunGraphMainTexEdit("Edit NB Chromatic Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag0Hi16",15<<12,values[(int)component]<<12));
+         }
+-        internal bool TryResetGraphChromatic()
++        internal bool TryResetGraphChromatic()=>TryCommitGraphChromaticOwned(false,true);
++        private bool TryCommitGraphChromaticOwned(bool enabled,bool reset)
+         {
+             if(!HasGraphChromaticEditSchema())return false;
+-            return RunGraphMainTexEdit("Reset NB Chromatic",material=>
+-            {
+-                string before=EditorJsonUtility.ToJson(material);material.SetFloat("_Distortion_Choraticaberrat_Toggle",0);
++            void WriteIntent(Material material)
++            {
++                material.SetFloat("_Distortion_Choraticaberrat_Toggle",enabled?1f:0f);
++                if(!reset)return;
+                 WriteGraphHalfSlice(material,"_NB_Flags0Lo16",2,0);NotifyGraphPackedFlagsEdited(material,"_NB_Flags0Lo16",2);
+                 WriteGraphHalfSlice(material,"_NB_CustomDataFlag0Hi16",15<<12,0);
+                 Vector4 direction=material.GetVector("_DistortionDirection");direction.z=material.shader.GetPropertyDefaultVectorValue(material.shader.FindPropertyIndex("_DistortionDirection")).z;material.SetVector("_DistortionDirection",direction);
+-                bool changed;NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed);return before!=EditorJsonUtility.ToJson(material);
+-            });
++            }
++            foreach(Material material in _rootItem.Mats)
++            {
++                var probe=new Material(material){hideFlags=HideFlags.HideAndDontSave};
++                try{WriteIntent(probe);bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedChromaticGroup(probe,out changed))return false;}
++                finally{UnityEngine.Object.DestroyImmediate(probe);}
++            }
++            string[] fields={"_Distortion_Choraticaberrat_Toggle","_NB_TierAllowChromaticAberration","_NB_Flags0Lo16","_Distortion_Choraticaberrat_WithNoise_Toggle","_NB_CustomDataFlag0Hi16"};
++            var before=new float[_rootItem.Mats.Count][];var z=new float[_rootItem.Mats.Count];var objects=new UnityEngine.Object[_rootItem.Mats.Count];var states=new string[_rootItem.Mats.Count];
++            for(int i=0;i<objects.Length;++i){Material material=_rootItem.Mats[i];objects[i]=material;before[i]=new float[fields.Length];for(int f=0;f<fields.Length;++f)before[i][f]=material.GetFloat(fields[f]);z[i]=material.GetVector("_DistortionDirection").z;states[i]=EditorJsonUtility.ToJson(material);}
++            Undo.RecordObjects(objects,reset?"Reset NB Chromatic":"Edit NB Chromatic");
++            for(int i=0;i<objects.Length;++i)
++            {
++                Material material=_rootItem.Mats[i];WriteIntent(material);bool changed;
++                if(NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedChromaticGroup(material,out changed))continue;
++                for(int r=0;r<objects.Length;++r){Material target=_rootItem.Mats[r];for(int f=0;f<fields.Length;++f)target.SetFloat(fields[f],before[r][f]);Vector4 direction=target.GetVector("_DistortionDirection");direction.z=z[r];target.SetVector("_DistortionDirection",direction);}
++                RefreshGraphMainTexPropertyReferences();return false;
++            }
++            for(int i=0;i<objects.Length;++i)if(states[i]!=EditorJsonUtility.ToJson(_rootItem.Mats[i]))EditorUtility.SetDirty(_rootItem.Mats[i]);
++            RefreshGraphMainTexPropertyReferences();return true;
+         }
+ 
+     }
+--- old/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs
++++ new/NBShaders2/Editor/FeatureLevel/NBShaderFeatureLevelMaterialApplier.cs
+@@ -593,9 +593,16 @@
+         internal static bool ApplyGraphChromaticGroup(Material material,NBShaderFeatureTier tier,IEnumerable<string> allowedKeywords,out bool changed)
+         {
+             changed=false;if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,"_NB_TierAllowChromaticAberration"))return false;
+-            NBShaderMaterialIntentResult intent;string[] unavailable;var allowed=allowedKeywords??NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier);
+-            if(!NBShaderMaterialIntentResolver.TryResolveGraphSupportedKeywordIntent(material,tier,allowed,out intent,out unavailable))return false;
++            NBShaderMaterialIntentResult intent;
++            if(!TryReadGraphSupportedGateTier(material,tier,allowedKeywords,out intent))return false;
+             changed=SetGraphAllowFloat(material,"_NB_TierAllowChromaticAberration",new HashSet<string>(intent.effectiveKeywords).Contains("_CHROMATIC_ABERRATION"));return true;
++        }
++        internal static bool ApplyGraphSavedChromaticGroup(Material material,out bool changed)
++        {
++            changed=false;if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,FeatureTierPropertyName))return false;
++            float saved=material.GetFloat(FeatureTierPropertyName);
++            if(float.IsNaN(saved)||float.IsInfinity(saved)||saved<0||saved>3||saved!=Mathf.Round(saved))return false;
++            return ApplyGraphChromaticGroup(material,(NBShaderFeatureTier)(int)saved,null,out changed);
+         }
+     }
+ }
+--- old/Tests/URP/Editor/G4ChromaticSharedGUITests.cs
++++ new/Tests/URP/Editor/G4ChromaticSharedGUITests.cs
+@@ -24,6 +24,14 @@
+         }
+         static object Value(object target,string name){var f=target.GetType().GetField(name,All);return f!=null?f.GetValue(target):target.GetType().GetProperty(name,All).GetValue(target);}
+         static string Snapshot(Material m)=>EditorJsonUtility.ToJson(m);
++        static void UnrelatedManualState(Material m)
++        {
++            m.SetFloat("_NB_TierAllowMask",.25f);m.SetFloat("_NB_TierAllowNoise",.75f);m.SetFloat("_NB_TierAllowLighting",.5f);
++            var declared=(string[])Find("NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier").GetField("GraphDeclaredKeywordNames",All).GetValue(null);
++            Assert.That(declared.Length,Is.EqualTo(9));foreach(string keyword in declared)m.EnableKeyword(keyword);
++            m.EnableKeyword("_OVERRIDE_Z");
++        }
++
+         object Root(params Material[] m)=>Call(roots,"Root",(object)m);
+         Material New()
+         {
+@@ -46,8 +54,8 @@
+ 
+         [Test]public void G4CAShared_ActualParentToggleUndo()
+         {
+-            var m=New();var h=Host(new[]{m},"_Distortion_Choraticaberrat_Toggle",out _,out var item);string before=Snapshot(m);Undo.FlushUndoRecordObjects();Undo.IncrementCurrentGroup();int group=Undo.GetCurrentGroup();
+-            try{Send(h,new Event{type=EventType.Layout});Send(h,new Event{type=EventType.Repaint});var r=(Rect)Value(item,"ControlRect");Send(h,new Event{type=EventType.MouseDown,button=0,mousePosition=r.center});Send(h,new Event{type=EventType.MouseUp,button=0,mousePosition=r.center});Assert.That(m.GetFloat("_Distortion_Choraticaberrat_Toggle"),Is.Zero);Assert.That(m.GetFloat("_NB_TierAllowChromaticAberration"),Is.Zero);Undo.FlushUndoRecordObjects();Undo.CollapseUndoOperations(group);string after=Snapshot(m);h.Draw=null;Undo.PerformUndo();Assert.That(Snapshot(m),Is.EqualTo(before));Undo.PerformRedo();Assert.That(Snapshot(m),Is.EqualTo(after));}finally{h.Draw=null;Undo.RevertAllDownToGroup(group);}
++            var m=New();UnrelatedManualState(m);var h=Host(new[]{m},"_Distortion_Choraticaberrat_Toggle",out _,out var item);string before=Snapshot(m);Undo.FlushUndoRecordObjects();Undo.IncrementCurrentGroup();int group=Undo.GetCurrentGroup();
++            try{Send(h,new Event{type=EventType.Layout});Send(h,new Event{type=EventType.Repaint});var r=(Rect)Value(item,"ControlRect");Send(h,new Event{type=EventType.MouseDown,button=0,mousePosition=r.center});Send(h,new Event{type=EventType.MouseUp,button=0,mousePosition=r.center});Assert.That(m.GetFloat("_Distortion_Choraticaberrat_Toggle"),Is.Zero);Assert.That(m.GetFloat("_NB_TierAllowChromaticAberration"),Is.Zero);Assert.That(m.GetFloat("_NB_TierAllowMask"),Is.EqualTo(.25f));Assert.That(m.GetFloat("_NB_TierAllowNoise"),Is.EqualTo(.75f));Assert.That(m.GetFloat("_NB_TierAllowLighting"),Is.EqualTo(.5f));Assert.That(m.IsKeywordEnabled("_OVERRIDE_Z"),Is.True);Undo.FlushUndoRecordObjects();Undo.CollapseUndoOperations(group);string after=Snapshot(m);h.Draw=null;Undo.PerformUndo();Assert.That(Snapshot(m),Is.EqualTo(before));Undo.PerformRedo();Assert.That(Snapshot(m),Is.EqualTo(after));}finally{h.Draw=null;Undo.RevertAllDownToGroup(group);}
+         }
+         [Test]public void G4CAShared_ActualWithNoiseOwnLowBitUndo()
+         {
+@@ -67,7 +75,8 @@
+         }
+         [Test]public void G4CAShared_SameEffectiveGateDenyRestoreNoop()
+         {
+-            var m=New();var apply=Find("NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier");var tier=Enum.ToObject(Find("NBShader.NBShaderFeatureTier"),3);string before=Snapshot(m);object[] args={m,tier,new string[0],false};Assert.That(Call(apply,"ApplyGraphChromaticGroup",args),Is.True);Assert.That(m.GetFloat("_NB_TierAllowChromaticAberration"),Is.Zero);Assert.That(m.GetFloat("_Distortion_Choraticaberrat_Toggle"),Is.EqualTo(1));args=new object[]{m,tier,new[]{"_CHROMATIC_ABERRATION"},false};Assert.That(Call(apply,"ApplyGraphChromaticGroup",args),Is.True);Assert.That(m.GetFloat("_NB_TierAllowChromaticAberration"),Is.EqualTo(1));Assert.That(Snapshot(m),Is.EqualTo(before));Assert.That(Call(apply,"ApplyGraphChromaticGroup",args),Is.True);Assert.That(Snapshot(m),Is.EqualTo(before));
++            var m=New();UnrelatedManualState(m);var apply=Find("NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier");var tier=Enum.ToObject(Find("NBShader.NBShaderFeatureTier"),3);string before=Snapshot(m);object[] args={m,tier,new string[0],false};Assert.That(Call(apply,"ApplyGraphChromaticGroup",args),Is.True);Assert.That(m.GetFloat("_NB_TierAllowChromaticAberration"),Is.Zero);Assert.That(m.GetFloat("_Distortion_Choraticaberrat_Toggle"),Is.EqualTo(1));args=new object[]{m,tier,new[]{"_CHROMATIC_ABERRATION"},false};Assert.That(Call(apply,"ApplyGraphChromaticGroup",args),Is.True);Assert.That(m.GetFloat("_NB_TierAllowChromaticAberration"),Is.EqualTo(1));Assert.That(Snapshot(m),Is.EqualTo(before));Assert.That(Call(apply,"ApplyGraphChromaticGroup",args),Is.True);Assert.That(Snapshot(m),Is.EqualTo(before));
++            m.SetFloat("_NB_TierAllowChromaticAberration",float.NaN);string invalid=Snapshot(m);Assert.That(Call(apply,"ApplyGraphChromaticGroup",args),Is.False);Assert.That(Snapshot(m),Is.EqualTo(invalid));
+         }
+         [Test]public void G4CAShared_PassiveMixedUnknownSchemaNoWrites()
+         {

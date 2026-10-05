@@ -21,6 +21,7 @@ namespace NBShaderEditor
         private readonly bool _taDepthEdit;
         private readonly bool _graphQCMStencilEdit;
         private readonly bool _graphVATToggleEdit;
+        private readonly bool _graphChromaticEdit;
         private readonly bool _graphPortalEdit;
         private readonly bool _graphRawMaskRotationDisplay;
         private readonly bool _graphBaseBackColorEdit;
@@ -37,13 +38,14 @@ namespace NBShaderEditor
             string shaderPassName = null,
             Action<bool> onValueChanged = null,
             Func<bool> isVisible = null,
-            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false, bool graphQCMStencilEdit=false, bool graphVATToggleEdit=false, bool graphPortalEdit=false, bool graphBaseBackColorEdit=false) : base(rootItem, parentItem)
+            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false, bool graphQCMStencilEdit=false, bool graphVATToggleEdit=false, bool graphPortalEdit=false, bool graphBaseBackColorEdit=false, bool graphChromaticEdit=false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
             _graphMainTexUVEdit = graphMainTexUVEdit;
             _taDepthEdit = taDepthEdit;
             _graphQCMStencilEdit=graphQCMStencilEdit;
             _graphVATToggleEdit=graphVATToggleEdit;
+            _graphChromaticEdit=graphChromaticEdit;
             _graphPortalEdit=graphPortalEdit;
             _graphRawMaskRotationDisplay=graphRawMaskRotationDisplay;
             _graphBaseBackColorEdit=graphBaseBackColorEdit;
@@ -104,6 +106,8 @@ namespace NBShaderEditor
                         backEdit.SyncService.TryApplyGraphBaseBackColorToggle(enabled);
                     else if(_graphPortalEdit&&RootItem is NBShaderRootItem portalEdit&&portalEdit.Context.IsGraphMaterialHost)
                         portalEdit.SyncService.TryApplyGraphPortalToggle(PropertyName,enabled);
+                    else if(_graphChromaticEdit&&RootItem is NBShaderRootItem caEdit&&caEdit.Context.IsGraphMaterialHost)
+                        caEdit.SyncService.TryApplyGraphChromaticToggle(enabled);
                     else if(_graphVATToggleEdit&&RootItem is NBShaderRootItem vatEdit&&vatEdit.Context.IsGraphMaterialHost)
                         vatEdit.SyncService.TryApplyGraphVATToggle(enabled);
                     else if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsRootEdit&&qsRootEdit.Context.IsGraphMaterialHost)
@@ -179,6 +183,8 @@ namespace NBShaderEditor
                 if(!portalReset.SyncService.TryApplyGraphPortalToggle(PropertyName,false,PropertyName=="_Portal_Toggle"))return;
                 foreach(var child in ChildrenItemList)child.CheckIsPropertyModified();CheckIsPropertyModified();return;
             }
+            if(_graphChromaticEdit&&RootItem is NBShaderRootItem caReset&&caReset.Context.IsGraphMaterialHost)
+            {if(!caReset.SyncService.TryResetGraphChromatic())return;foreach(var child in ChildrenItemList)child.CheckIsPropertyModified();CheckIsPropertyModified();return;}
             if(_graphVATToggleEdit&&RootItem is NBShaderRootItem vatReset&&vatReset.Context.IsGraphMaterialHost)
             {vatReset.SyncService.TryRunGraphVATReset(()=>base.ExecuteReset(isCallByParent));return;}
             if(_graphQCMStencilEdit&&RootItem is NBShaderRootItem qsReset&&qsReset.Context.IsGraphMaterialHost)
@@ -514,6 +520,7 @@ namespace NBShaderEditor
         private readonly bool _graphVertexOffsetData;
         private readonly bool _graphSharedUVOffset;
         private readonly bool _graphVATFrame;
+        private readonly bool _graphChromaticData;
         private readonly Func<bool> _isVisible;
 
         public CustomDataSelectItem(
@@ -522,7 +529,7 @@ namespace NBShaderEditor
             int dataBitPos,
             int dataIndex,
             Func<GUIContent> contentProvider,
-            Func<bool> isVisible = null, bool graphMainTexOffset = false, bool graphOverlayOffset = false, bool graphSharedUVOffset = false, bool graphVertexOffsetData=false, bool graphVATFrame=false) : base(rootItem, parentItem)
+            Func<bool> isVisible = null, bool graphMainTexOffset = false, bool graphOverlayOffset = false, bool graphSharedUVOffset = false, bool graphVertexOffsetData=false, bool graphVATFrame=false, bool graphChromaticData=false) : base(rootItem, parentItem)
         {
             _dataBitPos = dataBitPos;
             _dataIndex = dataIndex;
@@ -531,6 +538,7 @@ namespace NBShaderEditor
             _graphVertexOffsetData=graphVertexOffsetData;
             _graphSharedUVOffset = graphSharedUVOffset;
             _graphVATFrame=graphVATFrame;
+            _graphChromaticData=graphChromaticData;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
             GuiContent = _contentProvider();
@@ -624,6 +632,8 @@ namespace NBShaderEditor
 
         private void SetComponent(NBShaderFlags.CutomDataComponent component)
         {
+            if(_graphChromaticData&&RootItem is NBShaderRootItem caRoot&&caRoot.Context.IsGraphMaterialHost)
+            {caRoot.SyncService.TryApplyGraphChromaticCustomData(component);return;}
             if(_graphVertexOffsetData&&RootItem is NBShaderRootItem voRoot&&voRoot.Context.IsGraphMaterialHost){voRoot.SyncService.TryApplyGraphVertexOffsetCustomData(_dataBitPos,_dataIndex,component);return;}
             if(_graphVATFrame&&RootItem is NBShaderRootItem vatRoot&&vatRoot.Context.IsGraphMaterialHost)
             {vatRoot.SyncService.TryApplyGraphVATFrameCustomData(component);return;}

@@ -3125,6 +3125,76 @@ namespace NBShaderEditor
             });
         }
 
+        internal static readonly string[] GraphChromaticSharedProperties={"_ChromaticAberrationFoldOut","_Distortion_Choraticaberrat_Toggle","_Distortion_Choraticaberrat_WithNoise_Toggle"};
+        internal bool HasGraphChromaticEditSchema()
+        {
+            if(_rootItem.MatEditor==null || !HasGraphMainTexTargets())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                foreach(string name in new[]{"_ChromaticAberrationFoldOut","_Distortion_Choraticaberrat_Toggle","_Distortion_Choraticaberrat_WithNoise_Toggle","_NB_Flags0Lo16","_NB_Flags0Hi16","_NB_CustomDataFlag0Lo16","_NB_CustomDataFlag0Hi16"})
+                {if(!NBShaderRootItem.HasFloatProperty(material,name)||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;float v=material.GetFloat(name);if(float.IsNaN(v)||float.IsInfinity(v))return false;}
+                int index=material.shader.FindPropertyIndex("_DistortionDirection");
+                if(index<0||material.shader.GetPropertyType(index)!=UnityEngine.Rendering.ShaderPropertyType.Vector||!_rootItem.PropertyInfoDic.ContainsKey("_DistortionDirection"))return false;
+                Vector4 direction=material.GetVector("_DistortionDirection");for(int i=0;i<4;++i)if(float.IsNaN(direction[i])||float.IsInfinity(direction[i]))return false;
+            }
+            return true;
+        }
+        internal bool TryApplyGraphChromaticToggle(bool enabled)=>TryCommitGraphChromaticOwned(enabled,false);
+        internal bool TryApplyGraphChromaticNoiseFlag(bool enabled)
+        {
+            if(!HasGraphChromaticEditSchema())return false;
+            return RunGraphMainTexEdit("Edit NB Chromatic With Noise",material=>
+            {
+                string before=EditorJsonUtility.ToJson(material);WriteGraphHalfSlice(material,"_NB_Flags0Lo16",2,enabled?2:0);
+                NotifyGraphPackedFlagsEdited(material,"_NB_Flags0Lo16",2);return before!=EditorJsonUtility.ToJson(material);
+            });
+        }
+        internal bool TryApplyGraphChromaticIntensity(float value)
+        {
+            if(float.IsNaN(value)||float.IsInfinity(value)||!HasGraphChromaticEditSchema())return false;
+            return RunGraphMainTexEdit("Edit NB Chromatic Intensity",material=>
+            {Vector4 v=material.GetVector("_DistortionDirection");if(v.z==value)return false;v.z=value;material.SetVector("_DistortionDirection",v);return true;});
+        }
+        internal bool TryApplyGraphChromaticCustomData(NBShaderFlags.CutomDataComponent component)
+        {
+            if((int)component<0||(int)component>8||!HasGraphChromaticEditSchema())return false;
+            int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};
+            return RunGraphMainTexEdit("Edit NB Chromatic Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag0Hi16",15<<12,values[(int)component]<<12));
+        }
+        internal bool TryResetGraphChromatic()=>TryCommitGraphChromaticOwned(false,true);
+        private bool TryCommitGraphChromaticOwned(bool enabled,bool reset)
+        {
+            if(!HasGraphChromaticEditSchema())return false;
+            void WriteIntent(Material material)
+            {
+                material.SetFloat("_Distortion_Choraticaberrat_Toggle",enabled?1f:0f);
+                if(!reset)return;
+                WriteGraphHalfSlice(material,"_NB_Flags0Lo16",2,0);NotifyGraphPackedFlagsEdited(material,"_NB_Flags0Lo16",2);
+                WriteGraphHalfSlice(material,"_NB_CustomDataFlag0Hi16",15<<12,0);
+                Vector4 direction=material.GetVector("_DistortionDirection");direction.z=material.shader.GetPropertyDefaultVectorValue(material.shader.FindPropertyIndex("_DistortionDirection")).z;material.SetVector("_DistortionDirection",direction);
+            }
+            foreach(Material material in _rootItem.Mats)
+            {
+                var probe=new Material(material){hideFlags=HideFlags.HideAndDontSave};
+                try{WriteIntent(probe);bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedChromaticGroup(probe,out changed))return false;}
+                finally{UnityEngine.Object.DestroyImmediate(probe);}
+            }
+            string[] fields={"_Distortion_Choraticaberrat_Toggle","_NB_TierAllowChromaticAberration","_NB_Flags0Lo16","_Distortion_Choraticaberrat_WithNoise_Toggle","_NB_CustomDataFlag0Hi16"};
+            var before=new float[_rootItem.Mats.Count][];var z=new float[_rootItem.Mats.Count];var objects=new UnityEngine.Object[_rootItem.Mats.Count];var states=new string[_rootItem.Mats.Count];
+            for(int i=0;i<objects.Length;++i){Material material=_rootItem.Mats[i];objects[i]=material;before[i]=new float[fields.Length];for(int f=0;f<fields.Length;++f)before[i][f]=material.GetFloat(fields[f]);z[i]=material.GetVector("_DistortionDirection").z;states[i]=EditorJsonUtility.ToJson(material);}
+            Undo.RecordObjects(objects,reset?"Reset NB Chromatic":"Edit NB Chromatic");
+            for(int i=0;i<objects.Length;++i)
+            {
+                Material material=_rootItem.Mats[i];WriteIntent(material);bool changed;
+                if(NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedChromaticGroup(material,out changed))continue;
+                for(int r=0;r<objects.Length;++r){Material target=_rootItem.Mats[r];for(int f=0;f<fields.Length;++f)target.SetFloat(fields[f],before[r][f]);Vector4 direction=target.GetVector("_DistortionDirection");direction.z=z[r];target.SetVector("_DistortionDirection",direction);}
+                RefreshGraphMainTexPropertyReferences();return false;
+            }
+            for(int i=0;i<objects.Length;++i)if(states[i]!=EditorJsonUtility.ToJson(_rootItem.Mats[i]))EditorUtility.SetDirty(_rootItem.Mats[i]);
+            RefreshGraphMainTexPropertyReferences();return true;
+        }
+
     }
 
     public enum VATMode

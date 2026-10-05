@@ -53,6 +53,8 @@ namespace NBShaderEditor
         private TABigBlockItem _taBlock;
         private ParticleVertexStreamsItem _particleVertexStreamsItem;
         private NBShaderGUIToolBar _toolBar;
+        ChromaticAberrationFeatureItem _graphChromaticItem;
+        bool _sharedGraphChromaticReady;
         ToggleItem _graphBackFirstItem;
         PortalFeatureItem _graphPortalItem;
         bool _sharedGraphPortalReady;
@@ -158,6 +160,7 @@ namespace NBShaderEditor
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphBackFirstHost) names.Add("_BackFirstPassToggle");
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphVATReady)names.AddRange(NBShaderSyncService.GraphVATSharedPropertyNames);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphPortalReady) names.AddRange(NBShaderSyncService.GraphPortalSharedProperties);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphChromaticReady)names.AddRange(NBShaderSyncService.GraphChromaticSharedProperties);
             return names;
         }
 
@@ -419,6 +422,7 @@ namespace NBShaderEditor
                     _toolBar = null;
                     _modeBlock = null;
                     _baseBlock = null;
+                    _graphChromaticItem=null;_sharedGraphChromaticReady=false;
                     _graphPortalItem = null; _sharedGraphPortalReady = false;
                     _graphBackFirstItem = null; _sharedGraphBackFirstHost = _sharedGraphBackFirstReady = false;
                     _lightBlock = null;
@@ -448,6 +452,7 @@ namespace NBShaderEditor
                 DrawGraphParallaxInputs();
                 DrawGraphSharedUVInputs();
                 DrawGraphNoiseInputs();
+                DrawGraphChromaticInputs();
                 DrawGraphVATInputs();
                 DrawGraphBackFirstInputs();
                 DrawGraphPortalInputs();
@@ -786,6 +791,19 @@ namespace NBShaderEditor
                 Undo.RecordObjects(MatEditor.targets, "Apply NB Portal preset");
             (selectedItem ?? _graphPortalItem).OnGUI();
             EditorGUILayout.HelpBox("此 Portal 预设保留当前渲染队列；如需自动队列，可在 URP Advanced 中选择 Auto。", MessageType.Info);
+        }
+
+        internal bool InitializeGraphChromaticInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphChromaticReady=Context.IsGraphMaterialHost&&SyncService.HasGraphChromaticEditSchema();
+            if(!_sharedGraphChromaticReady)return false;_graphChromaticItem??=new ChromaticAberrationFeatureItem(this,null,true);return true;
+        }
+        internal void DrawGraphChromaticInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!InitializeGraphChromaticInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Chromatic");
+            (selectedItem??_graphChromaticItem).OnGUI();
         }
 
     }

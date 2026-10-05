@@ -133,6 +133,7 @@ namespace NBShaderEditor
 
     public class VectorComponentItem : ShaderGUIItem
     {
+        public Func<float,bool> TryWriteComponent;
         private readonly int _componentIndex;
         private readonly bool _isSlider;
         private readonly float _min;
@@ -211,8 +212,8 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    SetValue(ref vector, value);
-                    property.vectorValue = vector;
+                    if(TryWriteComponent!=null)TryWriteComponent(value);
+                    else {SetValue(ref vector, value);property.vectorValue = vector;}
                     OnEndChange();
                 }
             }
@@ -281,6 +282,11 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if(TryWriteComponent!=null)
+            {
+                float value=GetValue(RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index));
+                if(!TryWriteComponent(value))return;CheckIsPropertyModified();if(!isCallByParent)ParentItem?.CheckIsPropertyModified(true);return;
+            }
             Vector4 vector = PropertyInfo.Property.vectorValue;
             Vector4 defaultValue = RootItem.Shader.GetPropertyDefaultVectorValue(PropertyInfo.Index);
             SetValue(ref vector, GetValue(defaultValue));

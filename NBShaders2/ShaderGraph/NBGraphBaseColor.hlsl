@@ -878,9 +878,11 @@ void NBGraphBaseColor_float(float4 SampledAlbedo, float SelectedAlpha,
     float NBGraphTierAllowRefraction,
     float3 NBVertexLighting,
     float NBGraphTierAllowLighting,
+    float NBGraphTierAllowChromaticAberration,
     out float4 Out, out float2 NBDistortionSignedRG,
     out float NBDistortionNoiseMask)
 {
+    ChromaticToggle *= NBGraphTierAllowChromaticAberration > 0.5 ? 1.0 : 0.0;
     FxLightMode = NBGraphTierAllowLighting > 0.5 ? FxLightMode : 0.0;
 
     // Local Refraction mode only. Screen alias/raw saved enum stay untouched.
@@ -1459,9 +1461,11 @@ void NBGraphBaseColor_half(half4 SampledAlbedo, half SelectedAlpha,
     float NBGraphTierAllowRefraction,
     half3 NBVertexLighting,
     float NBGraphTierAllowLighting,
+    float NBGraphTierAllowChromaticAberration,
     out half4 Out, out half2 NBDistortionSignedRG,
     out half NBDistortionNoiseMask)
 {
+    ChromaticToggle *= NBGraphTierAllowChromaticAberration > 0.5 ? 1.0 : 0.0;
     FxLightMode = NBGraphTierAllowLighting > 0.5 ? FxLightMode : 0.0;
 
     // Local Refraction mode only. Screen alias/raw saved enum stay untouched.

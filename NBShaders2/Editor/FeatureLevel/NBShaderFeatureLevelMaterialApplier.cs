@@ -22,7 +22,8 @@ namespace NBShaders2.Editor.FeatureLevel
             "_NB_TierAllowRefraction", "_NB_TierAllowVertexOffset","_NB_TierAllowVertexOffsetMask",
             "_NB_TierAllowDepthDecal",
             "_NB_TierAllowLighting",
-            "_NB_TierAllowVAT", "_NB_TierAllowFlipbook"
+            "_NB_TierAllowVAT", "_NB_TierAllowFlipbook",
+            "_NB_TierAllowChromaticAberration"
         };
         static readonly string[] GraphSupportedGateKeywords = {
             "_MASKMAP_ON", "_MASKMAP2_ON", "_MASKMAP3_ON", "_NOISEMAP", "_NOISE_MASKMAP",
@@ -36,7 +37,8 @@ namespace NBShaders2.Editor.FeatureLevel
             "_DISTORT_REFRACTION", "_VERTEX_OFFSET","_VERTEX_OFFSET_MASKMAP",
             "_DEPTH_DECAL",
             null, // Selected lighting mode: use the same normalized effective intent.
-            "_VAT", "_FLIPBOOKBLENDING_ON"
+            "_VAT", "_FLIPBOOKBLENDING_ON",
+            "_CHROMATIC_ABERRATION"
         };
 
         internal static readonly string[] GraphSupportedTypedProjectionProperties={"_NB_TierVATFamily","_NB_TierVATSubMode"};
@@ -146,6 +148,7 @@ namespace NBShaders2.Editor.FeatureLevel
             if (!CanApplyGraphSupportedGateTier(material, tier, allowed, out wouldChange)) return false;
             if (!wouldChange) return true;
             // All registered groups have been preflighted before the first write.
+            bool chromaticChanged;if(!ApplyGraphChromaticGroup(material,tier,allowed,out chromaticChanged))return false;changed|=chromaticChanged;
             bool groupChanged;
             if (!ApplyGraphMaskGroup(material, tier, allowed, out groupChanged)) return false;
             changed |= groupChanged;
@@ -586,6 +589,20 @@ namespace NBShaders2.Editor.FeatureLevel
             changed=false;NBShaderMaterialIntentResult intent;
             if(!TryReadGraphSavedSupportedGateTier(material,out intent))return false;
             return ApplyGraphLightingGroup(material,intent.tier,null,out changed);
+        }
+        internal static bool ApplyGraphChromaticGroup(Material material,NBShaderFeatureTier tier,IEnumerable<string> allowedKeywords,out bool changed)
+        {
+            changed=false;if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,"_NB_TierAllowChromaticAberration"))return false;
+            NBShaderMaterialIntentResult intent;
+            if(!TryReadGraphSupportedGateTier(material,tier,allowedKeywords,out intent))return false;
+            changed=SetGraphAllowFloat(material,"_NB_TierAllowChromaticAberration",new HashSet<string>(intent.effectiveKeywords).Contains("_CHROMATIC_ABERRATION"));return true;
+        }
+        internal static bool ApplyGraphSavedChromaticGroup(Material material,out bool changed)
+        {
+            changed=false;if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,FeatureTierPropertyName))return false;
+            float saved=material.GetFloat(FeatureTierPropertyName);
+            if(float.IsNaN(saved)||float.IsInfinity(saved)||saved<0||saved>3||saved!=Mathf.Round(saved))return false;
+            return ApplyGraphChromaticGroup(material,(NBShaderFeatureTier)(int)saved,null,out changed);
         }
     }
 }
