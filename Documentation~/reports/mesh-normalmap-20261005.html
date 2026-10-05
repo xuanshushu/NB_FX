@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><title>NormalMap 共享工厂与 Tier</title><style>body{max-width:980px;margin:36px auto;font:16px/1.65 system-ui;color:#1d2939}</style><h1>NormalMap：复用原 Bump 工厂</h1>
+<p>同一Light源文件提取原Bump子树工厂，Native原构造和Graph共同调用。原创建参数、可见性与事件在defaultfalse归约后逐字一致；Graph仅启用既有事务和滑条被动保护。新增一项有效gate（16→17、CF239→240），UV仍word0 pos24、Mask仍flags0 bit21、Wrap14/NoMip1，没有新CD nibble或假_ST属性。</p>
+<p>新增9项结果为7通过、2严格GPU失败。CPU3和非菜单GUI4通过，验证原工厂/字段类型、Tier拒绝恢复、Mask/UV服务、Cylinder多选/超范围被动只读、实际主开关及Mask切换Undo/Redo。GPU两相机从Fresnel消费法线变化，38raw全部finite/noCDCD；重复/恢复0，响应0.1533203125/0.189453125，可见9216/8357。</p>
+<p>GPU保留微弱数值差为严格Failed：启用／恢复时每相机BC仅1像素、max0.000244140625；禁用时1918/1840像素有低幅RGB差，max0.00048828125，mean absolute约2.28e-5/2.17e-5，alpha差0。AB最多4像素。历史Normal/Fresnel已有相同类型的启用微差及禁用控制微差，输入/分辨率不同，不做逐点等同或精确归因。</p>
+<p>原NUnit在严格零差处停止，后置response／完整材质snapshot断言未执行；独立原raw/metrics确认response大于原0.01阈值，但不改原Failed判决。<a href="mesh-normalmap-20261005/normal9-live-20261005-1/independent-pixel-audit.json">逐通道/像素审计</a> · <a href="mesh-normalmap-20261005/normal-historical-fresnel-diff-background-20261005.json">历史背景</a>。</p>
+<p>正确的BackFirst两图回归2P/28健康raw，另两个相邻既有LightMode/Native MainTex构造smoke通过；后者不代表Native Bump点击已验证。未重跑不相关Mesh45。一次复用运行器路径错误重复了Normal9，其7P/2F只作重复记录，不增加覆盖；真正BackFirst证据来自后缀-2目录。全部原结果保留。</p>
+<p>三图旧对象/属性/edges/slots前缀及全部Target/DN缺省/路由保留。主包12路径已集成，实际主工程读回17gate、三图Shader Error0和DN布局-1/5/6。<a href="mesh-normalmap-20261005/main-normal12-actual-readback-20261005.json">主工程读回</a> · <a href="mesh-normalmap-20261005/provenance.json">来源与边界</a>。</p>
+<p>两项微差与原生菜单项留最终人工验收；不据此放行全部光照/MatCap/折射/深度阴影组合、Player、性能或Mesh G3/G4。环境Unity6000.3.25f1/D3D11。</p>

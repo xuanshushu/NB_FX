@@ -470,6 +470,62 @@ namespace NBShaderEditor
             return true;
         }
 
+
+        internal bool HasGraphNormalMapEditSchema()
+        {
+            if(_rootItem.MatEditor==null || !HasGraphMainTexUVEditSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                foreach(string name in new[]{"_BumpMapToggle","_BumpMapMaskMode","_BumpScale","_BumpToggleFoldOut","_BumpTexFoldOut","_BumpUVModeFoldOut"})
+                {
+                    if(!NBShaderRootItem.HasFloatProperty(material,name) || !_rootItem.PropertyInfoDic.ContainsKey(name))return false;
+                    float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;
+                }
+                int index=material.shader.FindPropertyIndex("BumpScaleRangeVec");
+                if(index<0 || material.shader.GetPropertyType(index)!=UnityEngine.Rendering.ShaderPropertyType.Vector || !_rootItem.PropertyInfoDic.ContainsKey("BumpScaleRangeVec"))return false;
+                Vector4 range=material.GetVector("BumpScaleRangeVec");for(int i=0;i<4;++i)if(float.IsNaN(range[i])||float.IsInfinity(range[i]))return false;
+                index=material.shader.FindPropertyIndex("_BumpTex");
+                if(index<0 || material.shader.GetPropertyType(index)!=UnityEngine.Rendering.ShaderPropertyType.Texture || !_rootItem.PropertyInfoDic.ContainsKey("_BumpTex"))return false;
+            }
+            return true;
+        }
+        internal bool TryApplyGraphNormalMapEdit(bool enabled)
+        {
+            if(!HasGraphNormalMapEditSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                SetFloatIfExists(material,"_BumpMapToggle",enabled?1f:0f);
+                bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;
+            }
+            RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
+        }
+        internal bool TryApplyGraphNormalMapMaskEdit(bool enabled)
+        {
+            if(!HasGraphNormalMapEditSchema())return false;
+            const string name="_NB_Flags0Hi16";const int mask=1<<(21-16);
+            return RunGraphMainTexEdit("Normal Map Multi Channel",material=>{
+                bool changed=WriteGraphHalfSlice(material,name,mask,enabled?mask:0);
+                if(!changed)NotifyGraphPackedFlagsEdited(material,name,mask);
+                return changed;
+            });
+        }
+        internal bool TryApplyGraphNormalMapUVMode(NBShaderFlags.UVMode mode,bool setFold)
+        {
+            if(!HasGraphNormalMapEditSchema() || (int)mode<0 || (int)mode>8)return false;
+            const int shift=NBShaderFlags.FLAG_BIT_UVMODE_POS_0_BUMPMAP-16;const int mask=3<<shift;
+            return RunGraphMainTexEdit("Normal Map UV Source",material=>{
+                bool changed=WriteGraphHalfSlice(material,"_NB_UVModeFlag0Hi16",mask,((int)mode&3)<<shift);
+                changed|=WriteGraphHalfSlice(material,"_NB_UVModeFlagType0Hi16",mask,((int)mode/4)<<shift);
+                if(setFold)
+                {
+                    float value=mode==NBShaderFlags.UVMode.DefaultUVChannel||mode==NBShaderFlags.UVMode.CommonUV||mode==NBShaderFlags.UVMode.ScreenUV||mode==NBShaderFlags.UVMode.MainTex?0:1;
+                    if(material.GetFloat("_BumpUVModeFoldOut")!=value){material.SetFloat("_BumpUVModeFoldOut",value);changed=true;}
+                }
+                return UpdateGraphMainTexUVDerived(material)|changed;
+            });
+        }
+
         public void NotifyKeywordsMayHaveChanged()
         {
             KeywordVersion++;

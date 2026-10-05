@@ -1,0 +1,157 @@
+{
+  "scope": "Limited historical Normal/Fresnel microdiff background only. Both new GPU2 remain strict Failed; no source/tolerance/rerun change.",
+  "historical": [
+    {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\fresnel-existing14-live-20261004-1\\captures\\g4-normalmap\\fresnel-uv0-ortho\\metrics.json",
+      "SHA256": "52abf949ed3b849790599b2a3d19cc3cc1e40fb3213bdbee02d4e44d104bb238",
+      "camera": "ortho",
+      "finite": true,
+      "roiPixels": 4096,
+      "abMax": 0.000244140625,
+      "abControlMax": 0.0,
+      "bcMax": 0.0,
+      "bcControlMax": 0.0009765625,
+      "abPixels": 1,
+      "bcPixels": 0,
+      "bcControlPixels": 2723,
+      "repeatABC": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "responseABC": [
+        0.1484375,
+        0.1484375,
+        0.14892578125
+      ]
+    },
+    {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\fresnel-existing14-live-20261004-1\\captures\\g4-normalmap\\fresnel-uv0-perspective\\metrics.json",
+      "SHA256": "a6aeea15331e8b2ede05dd0b1ce626bbe0bc3cf366934f81cb0df57c11585268",
+      "camera": "perspective",
+      "finite": true,
+      "roiPixels": 4096,
+      "abMax": 0.000244140625,
+      "abControlMax": 0.0,
+      "bcMax": 0.000244140625,
+      "bcControlMax": 0.0009765625,
+      "abPixels": 1,
+      "bcPixels": 1,
+      "bcControlPixels": 2274,
+      "repeatABC": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "responseABC": [
+        0.16455078125,
+        0.16455078125,
+        0.1650390625
+      ]
+    }
+  ],
+  "current": [
+    {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\normal9-live-20261005-1\\captures\\normal-shared-tier-ortho\\metrics.json",
+      "SHA256": "44ae929fa326e0ebe02fc011a3b37ccbbef0215ec00e2ae193b04fbbe7907aef",
+      "camera": "ortho",
+      "ab": [
+        0.00048828125,
+        0.000244140625,
+        0.00048828125
+      ],
+      "bc": [
+        0.000244140625,
+        0.00048828125,
+        0.000244140625
+      ],
+      "repeat": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "restore": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "response": [
+        0.1533203125,
+        0.1533203125,
+        0.1533203125
+      ],
+      "finite": true,
+      "visible": [
+        9216,
+        9216,
+        9216,
+        9216,
+        9216,
+        9216,
+        9216,
+        9216,
+        9216
+      ]
+    },
+    {
+      "path": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\normal9-live-20261005-1\\captures\\normal-shared-tier-perspective\\metrics.json",
+      "SHA256": "84265d158f400eed5946fe31edc345f956738c65f88df7bc1cd710273674b51d",
+      "camera": "perspective",
+      "ab": [
+        0.00048828125,
+        0.00048828125,
+        0.00048828125
+      ],
+      "bc": [
+        0.000244140625,
+        0.00048828125,
+        0.000244140625
+      ],
+      "repeat": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "restore": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "response": [
+        0.189453125,
+        0.189453125,
+        0.189453125
+      ],
+      "finite": true,
+      "visible": [
+        8357,
+        8357,
+        8357,
+        8357,
+        8357,
+        8357,
+        8357,
+        8357,
+        8357
+      ]
+    }
+  ],
+  "pattern": "Historical Normal\u2192Fresnel on had AB .000244 / BC0-.000244; normal-off control had BC .0009765625 over2274/2723 ROI pixels. Current on/restored BC .000244 only1 fullframe pixel, denied BC\u2264.000488 over1918/1840 fullframe pixels. The broad low-amplitude normal-off Fresnel difference is already historical; not new invisible or missing-normal functionality.",
+  "comparisonBoundary": "Historical128x128 ROI4096 with rotation(11,29,4)/scale(1.15,.9,1.2)/FOV45 vs current96x96 fullframe/rotation(0,18,0)/scale(2,2,1)/FOV43. Not matched geometry or pixel-wise identity. Exact precision origin not established.",
+  "gateMathPreservation": "Accepted final candidate audit proves all existing normal/HLSL arithmetic byte-exact after removing only two new scalar parameters and two multiplier lines. Native shader/includes not edited by product9.",
+  "assertionBoundary": "SaveAndAssert fails strict AB/BC first; final NUnit response/material snapshot not executed. Root independent raw response audit establishes .153320/.189453>.01; describe as separate computed fact, not NUnit Passed.",
+  "rawIndependentAudit": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\normal9-live-20261005-1\\independent-pixel-audit.json",
+  "noAdditionalRenderRun": true
+}

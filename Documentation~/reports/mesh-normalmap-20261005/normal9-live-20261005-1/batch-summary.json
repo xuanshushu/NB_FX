@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "batch": "CPU",
+      "counts": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 4.88,
+      "failures": []
+    },
+    {
+      "batch": "GUI",
+      "counts": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 5.27,
+      "failures": []
+    },
+    {
+      "batch": "GPU",
+      "counts": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 31.81,
+      "failures": [
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphNormalMapSharedTierTests.G4NormalShared_GPU_FresnelDenyRestore_ortho",
+          "message": "  Strict zero AB/BC/repeat; retain all differences as failures.\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "name": "NBFX.Baseline.Tests.G4GraphNormalMapSharedTierTests.G4NormalShared_GPU_FresnelDenyRestore_perspective",
+          "message": "  Strict zero AB/BC/repeat; retain all differences as failures.\r\n  Expected: True\r\n  But was:  False\r\n"
+        }
+      ]
+    }
+  ],
+  "fullMeshGatePassed": false
+}

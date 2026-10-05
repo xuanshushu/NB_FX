@@ -47,6 +47,63 @@ namespace NBShaderEditor
             return block;
         }
 
+
+        // Both Native and Graph construct the same original Bump subtree.
+        // Graph opts into existing scoped writers; Native arguments/visibility stay unchanged.
+        internal static PropertyToggleBlockItem CreateNormalMapBlock(NBShaderRootItem rootItem,
+            ShaderGUIItem parentItem, bool graphSharedMode = false)
+        {
+            var block = new PropertyToggleBlockItem(
+                rootItem,
+                parentItem,
+                "_BumpToggleFoldOut",
+                "_BumpMapToggle",
+                () => Content("light.bump.toggle", "Normal Map"),
+                keyword: graphSharedMode ? null : "_NORMALMAP",
+                onValueChanged: graphSharedMode ? (System.Action<bool>)(enabled => rootItem.SyncService.TryApplyGraphNormalMapEdit(enabled)) : null,
+                isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay);
+
+            new TextureItem(
+                rootItem,
+                block,
+                "_BumpTex",
+                () => Content("light.bump.texture", "Normal Map"),
+                drawScaleOffset: true);
+            TextureRelatedFoldOutItem bumpTexRelatedFoldOut = new TextureRelatedFoldOutItem(
+                rootItem,
+                block,
+                "_BumpTexFoldOut",
+                "_BumpTex",
+                () => Content("light.bump.related", "Normal Map Related"));
+            new WrapModeItem(rootItem, bumpTexRelatedFoldOut, NBShaderFlags.FLAG_BIT_WRAPMODE_BUMPTEX, () => Content("light.bump.wrap", "Normal Map Wrap"));
+            new ForceNoMipItem(rootItem, bumpTexRelatedFoldOut, NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_BUMPTEX);
+            new UVModeSelectItem(
+                rootItem,
+                bumpTexRelatedFoldOut,
+                "_BumpUVModeFoldOut",
+                NBShaderFlags.FLAG_BIT_UVMODE_POS_0_BUMPMAP,
+                0,
+                () => Content("light.bump.uvmode", "Normal Map UV Source"),
+                "_BumpTex", graphFeatureProtocolEdit: graphSharedMode);
+            new ToggleItem(
+                rootItem,
+                bumpTexRelatedFoldOut,
+                "_BumpMapMaskMode",
+                () => Content("light.bump.maskMode", "Normal Map Multi Channel"),
+                enabled => { if(graphSharedMode)rootItem.SyncService.TryApplyGraphNormalMapMaskEdit(enabled);
+                    else rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE, enabled); });
+            ShaderGUISliderItem bumpScaleItem = new ShaderGUISliderItem(rootItem, bumpTexRelatedFoldOut)
+            {
+                PropertyName = "_BumpScale",
+                GuiContent = Content("light.bump.scale", "Normal Strength"),
+                RangePropertyName = "BumpScaleRangeVec",
+                WriteOnlyOnInteractiveChange = graphSharedMode
+            };
+            bumpScaleItem.InitTriggerByChild();
+
+            return block;
+        }
+
         public LightBigBlockItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
             : base(
                 rootItem,
@@ -105,50 +162,7 @@ namespace NBShaderEditor
                 1f,
                 () => rootItem.Context.FxLightMode == FxLightMode.PBR);
 
-            _bumpBlock = new PropertyToggleBlockItem(
-                rootItem,
-                this,
-                "_BumpToggleFoldOut",
-                "_BumpMapToggle",
-                () => Content("light.bump.toggle", "Normal Map"),
-                keyword: "_NORMALMAP",
-                isVisible: () => rootItem.Context.FxLightMode != FxLightMode.SixWay);
-
-            new TextureItem(
-                rootItem,
-                _bumpBlock,
-                "_BumpTex",
-                () => Content("light.bump.texture", "Normal Map"),
-                drawScaleOffset: true);
-            TextureRelatedFoldOutItem bumpTexRelatedFoldOut = new TextureRelatedFoldOutItem(
-                rootItem,
-                _bumpBlock,
-                "_BumpTexFoldOut",
-                "_BumpTex",
-                () => Content("light.bump.related", "Normal Map Related"));
-            new WrapModeItem(rootItem, bumpTexRelatedFoldOut, NBShaderFlags.FLAG_BIT_WRAPMODE_BUMPTEX, () => Content("light.bump.wrap", "Normal Map Wrap"));
-            new ForceNoMipItem(rootItem, bumpTexRelatedFoldOut, NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_BUMPTEX);
-            new UVModeSelectItem(
-                rootItem,
-                bumpTexRelatedFoldOut,
-                "_BumpUVModeFoldOut",
-                NBShaderFlags.FLAG_BIT_UVMODE_POS_0_BUMPMAP,
-                0,
-                () => Content("light.bump.uvmode", "Normal Map UV Source"),
-                "_BumpTex");
-            new ToggleItem(
-                rootItem,
-                bumpTexRelatedFoldOut,
-                "_BumpMapMaskMode",
-                () => Content("light.bump.maskMode", "Normal Map Multi Channel"),
-                enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE, enabled));
-            ShaderGUISliderItem bumpScaleItem = new ShaderGUISliderItem(rootItem, bumpTexRelatedFoldOut)
-            {
-                PropertyName = "_BumpScale",
-                GuiContent = Content("light.bump.scale", "Normal Strength"),
-                RangePropertyName = "BumpScaleRangeVec"
-            };
-            bumpScaleItem.InitTriggerByChild();
+            _bumpBlock = CreateNormalMapBlock(rootItem, this);
 
             _matCapBlock = new PropertyToggleBlockItem(
                 rootItem,

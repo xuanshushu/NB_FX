@@ -1251,7 +1251,11 @@ namespace NBShaderEditor
             if(_graphOverlayProtocolEdit && RootItem is NBShaderRootItem overlayRoot && overlayRoot.Context.IsGraphMaterialHost)
                 return overlayRoot.SyncService.TryApplyGraphOverlayUVMode(_uvModeBitPos,mode,_foldOutPropertyName,setFoldFromPopup);
             if (_graphFeatureProtocolEdit && RootItem is NBShaderRootItem featureRoot && featureRoot.Context.IsGraphMaterialHost)
+            {
+                if (_uvModeBitPos == NBShaderFlags.FLAG_BIT_UVMODE_POS_0_BUMPMAP)
+                    return featureRoot.SyncService.TryApplyGraphNormalMapUVMode(mode,setFoldFromPopup);
                 return featureRoot.SyncService.TryApplyGraphDissolveUVMode(_uvModeBitPos,mode,setFoldFromPopup);
+            }
             if (_graphMainTexProtocolEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
                 return graphRoot.SyncService.TryApplyGraphMainTexUVMode(mode, setFoldFromPopup);
             for (int i = 0; i < RootItem.ShaderFlags.Count; i++)

@@ -113,6 +113,7 @@ namespace NBShaderEditor
             if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphOverlayReady)names.AddRange(SharedGraphOverlayProperties);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDissolveReady)names.AddRange(NBShaderSyncService.GraphDissolveSharedPropertyNames);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphParallaxReady) names.AddRange(SharedGraphParallaxProperties);
+            if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphNormalMapReady)names.AddRange(SharedGraphNormalMapProperties);
             return names;
         }
 
@@ -269,6 +270,25 @@ namespace NBShaderEditor
             if (input) SyncService.TryFinalizeGraphParallaxLayerEdit(previous);
         }
 
+
+        bool _sharedGraphNormalMapReady;
+        PropertyToggleBlockItem _graphNormalMapBlock;
+        internal static readonly string[] SharedGraphNormalMapProperties={"_BumpMapToggle","_BumpTex","_BumpMapMaskMode","_BumpScale"};
+        internal bool InitializeGraphNormalMapInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphNormalMapReady=Context.IsGraphMaterialHost && SyncService.HasGraphNormalMapEditSchema();
+            if(!_sharedGraphNormalMapReady)return false;
+            _graphNormalMapBlock??=LightBigBlockItem.CreateNormalMapBlock(this,null,true);return true;
+        }
+        void DrawGraphNormalMapInputs()
+        {
+            if(!InitializeGraphNormalMapInputs())return;
+            if(Event.current!=null && Event.current.rawType!=EventType.Layout && Event.current.rawType!=EventType.Repaint)
+                Undo.RecordObjects(MatEditor.targets,"Edit NB Normal Map Inputs");
+            _graphNormalMapBlock.OnGUI();
+        }
+
         public override void OnChildOnGUI()
         {
             if (Context == null)
@@ -296,6 +316,8 @@ namespace NBShaderEditor
                     _sharedGraphDissolveReady = false;
                     _sharedGraphFresnelReady = false;
                     _graphLightModeBlock = null;
+                    _graphNormalMapBlock = null;
+                    _sharedGraphNormalMapReady = false;
                     _graphTADepthBlock = null;
                     _toolBar = null;
                     _modeBlock = null;
@@ -311,6 +333,7 @@ namespace NBShaderEditor
                     EditorGUILayout.HelpBox("Shared Main Texture needs its real Float foldouts/schema. Existing Graph native inputs remain available below.", MessageType.Info);
                 if (InitializeGraphLightModeInputs())
                     _graphLightModeBlock.OnGUI();
+                DrawGraphNormalMapInputs();
                 if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
                 if (InitializeGraphTADepthInputs()) _graphTADepthBlock.OnGUI();
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
