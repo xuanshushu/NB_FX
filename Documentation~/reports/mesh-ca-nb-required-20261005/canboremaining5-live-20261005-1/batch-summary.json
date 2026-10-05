@@ -1,0 +1,70 @@
+{
+  "results": [
+    {
+      "batch": "Graphrefractionperspective",
+      "counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 5.35,
+      "failures": []
+    },
+    {
+      "batch": "Currentpnoiseortho",
+      "counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 6.34,
+      "failures": []
+    },
+    {
+      "batch": "Currentpnoiseperspective",
+      "counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 5.27,
+      "failures": []
+    },
+    {
+      "batch": "Currentrefractionortho",
+      "counts": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 6.36,
+      "failures": [
+        {
+          "name": "NBFX.Baseline.Tests.G4ChromaticCurrentNBRequiredTests.G4CACurrentNBRequired_NBCameraOpaqueDistortPass_refraction_ortho",
+          "message": "  Expected: greater than 0.00300000003f\r\n  But was:  0.00219726563f\r\n"
+        }
+      ]
+    },
+    {
+      "batch": "Currentrefractionperspective",
+      "counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 5.28,
+      "failures": []
+    }
+  ],
+  "fullMeshGatePassed": false
+}

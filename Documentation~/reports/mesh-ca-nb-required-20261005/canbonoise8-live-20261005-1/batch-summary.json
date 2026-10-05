@@ -1,0 +1,46 @@
+{
+  "results": [
+    {
+      "batch": "Graphpnoiseortho",
+      "counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 5.46,
+      "failures": []
+    },
+    {
+      "batch": "Graphpnoiseperspective",
+      "counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 5.79,
+      "failures": []
+    },
+    {
+      "batch": "Graphrefractionortho",
+      "counts": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "seconds": 5.28,
+      "failures": [
+        {
+          "name": "NBFX.Baseline.Tests.G4ChromaticGraphNBRequiredTests.G4CAGraphNBRequired_NBCameraOpaqueDistortPass_refraction_ortho",
+          "message": "  Expected: greater than 0.00300000003f\r\n  But was:  0.00219726563f\r\n"
+        }
+      ]
+    }
+  ],
+  "fullMeshGatePassed": false
+}

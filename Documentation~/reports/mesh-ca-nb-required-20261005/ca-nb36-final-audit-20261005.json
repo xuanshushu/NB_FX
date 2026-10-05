@@ -1,0 +1,1203 @@
+{
+  "unique": 36,
+  "passed": 34,
+  "failed": 2,
+  "rawHealthy": 348,
+  "failures": [
+    {
+      "name": "NBFX.Baseline.Tests.G4ChromaticGraphNBRequiredTests.G4CAGraphNBRequired_NBCameraOpaqueDistortPass_refraction_ortho",
+      "message": "  Expected: greater than 0.00300000003f\r\n  But was:  0.00219726563f\r\n",
+      "category": "strict strong-response below original threshold, both hosts; not BC colour difference, not invisible, no GPU crash"
+    },
+    {
+      "name": "NBFX.Baseline.Tests.G4ChromaticCurrentNBRequiredTests.G4CACurrentNBRequired_NBCameraOpaqueDistortPass_refraction_ortho",
+      "message": "  Expected: greater than 0.00300000003f\r\n  But was:  0.00219726563f\r\n",
+      "category": "strict strong-response below original threshold, both hosts; not BC colour difference, not invisible, no GPU crash"
+    }
+  ],
+  "runs": [
+    "canbdpersp2-live-20261005-1",
+    "canbdradial4-live-20261005-1",
+    "canbdnoise8-live-20261005-1",
+    "canbdpom4-live-20261005-1",
+    "canbopersp2-live-20261005-1",
+    "canboradial4-live-20261005-1",
+    "canbonoise8-live-20261005-1",
+    "canboremaining5-live-20261005-1",
+    "canbopom4-live-20261005-1"
+  ],
+  "recipes": [
+    {
+      "recipe": "NBDeferredDistortPass-with-noise-perspective",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-with-noise-perspective\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-with-noise-perspective\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-with-noise-perspective\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-with-noise-perspective\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-with-noise-perspective\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-with-noise-perspective\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-with-noise-perspective\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-with-noise-perspective\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-with-noise-perspective\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-with-noise-perspective\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-with-noise-perspective\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-with-noise-perspective\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-with-noise-perspective\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-with-noise-perspective\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-with-noise-perspective\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-with-noise-perspective\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-with-noise-perspective\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-with-noise-perspective\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBDeferredDistortPass-without-noise-ortho",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-ortho\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-ortho\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-ortho\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-ortho\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-ortho\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-ortho\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-ortho\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-ortho\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-ortho\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-ortho\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-ortho\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-ortho\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-ortho\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-ortho\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-ortho\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-ortho\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-ortho\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-ortho\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBDeferredDistortPass-without-noise-perspective",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-perspective\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-perspective\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-perspective\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-perspective\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-perspective\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-perspective\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-perspective\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-perspective\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-perspective\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-perspective\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-perspective\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-perspective\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-perspective\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-perspective\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-perspective\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-perspective\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-without-noise-perspective\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-without-noise-perspective\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBDeferredDistortPass-pnoise-ortho",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-ortho\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-ortho\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-ortho\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-ortho\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-ortho\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-ortho\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-ortho\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-ortho\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-ortho\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-ortho\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-ortho\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-ortho\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-ortho\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-ortho\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-ortho\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-ortho\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-ortho\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-ortho\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBDeferredDistortPass-pnoise-perspective",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-perspective\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-perspective\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-perspective\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-perspective\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-perspective\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-perspective\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-perspective\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-perspective\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-perspective\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-perspective\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-perspective\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-perspective\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-perspective\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-perspective\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-perspective\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-perspective\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pnoise-perspective\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pnoise-perspective\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBDeferredDistortPass-refraction-ortho",
+      "strictExact": false,
+      "max": 3.0517578125e-05,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-ortho\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-ortho\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-ortho\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-ortho\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-ortho\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-ortho\\B-keyword-restored.rgba-f32.gz",
+          "max": 3.0517578125e-05,
+          "differentComponents": 4
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-ortho\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-ortho\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-ortho\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-ortho\\B-on.rgba-f32.gz",
+          "max": 3.0517578125e-05,
+          "differentComponents": 4
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-ortho\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-ortho\\B-repeat.rgba-f32.gz",
+          "max": 3.0517578125e-05,
+          "differentComponents": 4
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-ortho\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-ortho\\B-restored.rgba-f32.gz",
+          "max": 3.0517578125e-05,
+          "differentComponents": 4
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-ortho\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-ortho\\B-warm.rgba-f32.gz",
+          "max": 3.0517578125e-05,
+          "differentComponents": 4
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-ortho\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-ortho\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBDeferredDistortPass-refraction-perspective",
+      "strictExact": false,
+      "max": 3.0517578125e-05,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-perspective\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-perspective\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-perspective\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-perspective\\B-keyword-denied.rgba-f32.gz",
+          "max": 3.0517578125e-05,
+          "differentComponents": 8
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-perspective\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-perspective\\B-keyword-restored.rgba-f32.gz",
+          "max": 1.52587890625e-05,
+          "differentComponents": 12
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-perspective\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-perspective\\B-off.rgba-f32.gz",
+          "max": 3.0517578125e-05,
+          "differentComponents": 8
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-perspective\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-perspective\\B-on.rgba-f32.gz",
+          "max": 1.52587890625e-05,
+          "differentComponents": 12
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-perspective\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-perspective\\B-repeat.rgba-f32.gz",
+          "max": 1.52587890625e-05,
+          "differentComponents": 12
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-perspective\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-perspective\\B-restored.rgba-f32.gz",
+          "max": 1.52587890625e-05,
+          "differentComponents": 12
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-perspective\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-perspective\\B-warm.rgba-f32.gz",
+          "max": 1.52587890625e-05,
+          "differentComponents": 12
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-refraction-perspective\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdnoise8-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-refraction-perspective\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 3.0517578125e-05,
+          "differentComponents": 9
+        }
+      ]
+    },
+    {
+      "recipe": "NBDeferredDistortPass-pom-inert-ortho",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\C-pom-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\B-pom-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\C-pom-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\B-pom-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-ortho\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBDeferredDistortPass-pom-inert-perspective",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\C-pom-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\B-pom-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\C-pom-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\B-pom-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbdpom4-live-20261005-1\\captures\\ca-current-nb-required\\NBDeferredDistortPass-pom-inert-perspective\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBCameraOpaqueDistortPass-with-noise-perspective",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopersp2-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-with-noise-perspective\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBCameraOpaqueDistortPass-without-noise-ortho",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\C-active-input-control.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\B-active-input-control.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\C-active-input-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\B-active-input-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-ortho\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBCameraOpaqueDistortPass-without-noise-perspective",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\C-active-input-control.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\B-active-input-control.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\C-active-input-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\B-active-input-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboradial4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-without-noise-perspective\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBCameraOpaqueDistortPass-pnoise-ortho",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-ortho\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBCameraOpaqueDistortPass-pnoise-perspective",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pnoise-perspective\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBCameraOpaqueDistortPass-refraction-ortho",
+      "strictExact": false,
+      "max": 0.000244140625,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.000244140625,
+          "differentComponents": 1
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\B-on.rgba-f32.gz",
+          "max": 0.000244140625,
+          "differentComponents": 1
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\B-repeat.rgba-f32.gz",
+          "max": 0.000244140625,
+          "differentComponents": 1
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\B-restored.rgba-f32.gz",
+          "max": 0.000244140625,
+          "differentComponents": 1
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\B-warm.rgba-f32.gz",
+          "max": 0.000244140625,
+          "differentComponents": 1
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbonoise8-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-ortho\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.000244140625,
+          "differentComponents": 1
+        }
+      ]
+    },
+    {
+      "recipe": "NBCameraOpaqueDistortPass-refraction-perspective",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canboremaining5-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-refraction-perspective\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBCameraOpaqueDistortPass-pom-inert-ortho",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\C-pom-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\B-pom-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\C-pom-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\B-pom-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-ortho\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    },
+    {
+      "recipe": "NBCameraOpaqueDistortPass-pom-inert-perspective",
+      "strictExact": true,
+      "max": 0.0,
+      "framePairs": [
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\background.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\background.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\C-gate-denied.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\B-keyword-denied.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\C-gate-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\B-keyword-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\C-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\B-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\C-on.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\B-on.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\C-pom-off.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\B-pom-off.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\C-pom-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\B-pom-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\C-repeat.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\B-repeat.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\C-restored.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\B-restored.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\C-warm.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\B-warm.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        },
+        {
+          "Graph": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-graph-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\C-withnoise-flipped.rgba-f32.gz",
+          "Current": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-mesh-current-6000.3.25f1-d3d11-20261002\\canbopom4-live-20261005-1\\captures\\ca-current-nb-required\\NBCameraOpaqueDistortPass-pom-inert-perspective\\B-withnoise-flipped.rgba-f32.gz",
+          "max": 0.0,
+          "differentComponents": 0
+        }
+      ]
+    }
+  ],
+  "notFrozenABC": true,
+  "rootInstalled": false
+}
