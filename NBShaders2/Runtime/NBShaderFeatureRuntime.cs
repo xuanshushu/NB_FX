@@ -4,13 +4,12 @@ using UnityEngine;
 namespace NBShader
 {
     /// <summary>
-    /// Runtime API for applying NBShader feature tiers to materials.
+    /// Runtime API for applying NBShader feature tiers to Native and complete ordinary Mesh NB Graph materials.
     /// </summary>
     public static class NBShaderFeatureRuntime
     {
         /// <summary>
-        /// Applies an NBShader feature tier to one material in place. Only materials whose shader name is
-        /// "Effects/NBShader" are processed. Managed Catalog keywords and shader passes are derived from
+        /// Applies an NBShader feature tier to one material in place. Native "Effects/NBShader" and complete ordinary Mesh NB Graph materials are processed. Managed Catalog keywords and shader passes are derived from
         /// serialized material intent, then filtered by the target tier.
         /// </summary>
         /// <param name="material">Material to process. Null materials are ignored.</param>
@@ -37,8 +36,7 @@ namespace NBShader
         }
 
         /// <summary>
-        /// Applies an NBShader feature tier to multiple materials in place. Only materials whose shader name is
-        /// "Effects/NBShader" are processed. Catalog-external keywords are left unchanged unless they are
+        /// Applies an NBShader feature tier to multiple materials in place. Native "Effects/NBShader" and complete ordinary Mesh NB Graph materials are processed. Catalog-external keywords are left unchanged unless they are
         /// explicitly tied to a managed NBShader feature.
         /// </summary>
         /// <param name="materials">Materials to process. Null collections and null entries are ignored.</param>
@@ -71,14 +69,24 @@ namespace NBShader
                 return;
             }
 
+            List<Material> graph=null;
             foreach (Material material in materials)
             {
-                ApplyTierInternal(material, settings, tier);
+                if(IsGraphProjectionCandidate(material))
+                {if(graph==null)graph=new List<Material>();graph.Add(material);}
+                else ApplyTierInternal(material, settings, tier);
             }
+            // Native remains its original per-item application; only the Graph subset is atomic.
+            if(graph!=null){bool ignored;TryApplyGraphRuntimePolicy(graph,settings,tier,out ignored);}
         }
 
         private static void ApplyTierInternal(Material material, NBShaderFeatureRuntimeSettings settings, NBShaderFeatureTier? tier)
         {
+            if(IsGraphProjectionCandidate(material))
+            {
+                bool ignored;TryApplyGraphRuntimePolicy(new[]{material},settings,tier,out ignored);return;
+            }
+
             if (!IsNBShaderMaterial(material))
             {
                 return;
@@ -93,6 +101,21 @@ namespace NBShader
                 : null;
             NBShaderMaterialIntentResult result = NBShaderMaterialIntentResolver.Resolve(material, resolvedTier, allowed, allowedPassFeatures);
             ApplyResolvedIntent(material, result);
+        }
+
+        // Complete Graph owner distinguishes candidate identity from schema validity.
+        // Keep both global Native classifiers and the existing editor asset scan unchanged.
+        private static bool IsGraphProjectionCandidate(Material material)
+            => material != null && material.shader != null && !IsNBShaderMaterial(material) && material.HasProperty("_NB_DistortionMode");
+
+        private static bool TryApplyGraphRuntimePolicy(IEnumerable<Material> materials,
+            NBShaderFeatureRuntimeSettings settings, NBShaderFeatureTier? tier, out bool changed)
+        {
+            changed=false;NBShaderFeatureTier resolved=tier.HasValue?tier.Value:ResolveTierFromQuality(settings);
+            if(resolved<NBShaderFeatureTier.Low||resolved>NBShaderFeatureTier.Ultra)return false;
+            IEnumerable<string> keywords=settings!=null?settings.BuildAllowedSet(resolved):NBShaderFeatureCatalog.RawKeywords;
+            IEnumerable<string> passes=settings!=null?settings.BuildAllowedPassFeatureSet(resolved):NBShaderPassFeatureCatalog.RawPassFeatureIds;
+            return TryApplyGraphOwnedProjection(materials,resolved,keywords,passes,out changed);
         }
 
         private static bool IsNBShaderMaterial(Material material)
