@@ -7,6 +7,8 @@ namespace NBShaderEditor
     public class ShaderGUIFloatItem:ShaderGUIItem
     {
         private readonly Func<bool> _isVisible;
+        public Func<float,bool> TryWriteValue; // Null preserves original Native writer.
+        public Func<bool> TryReset;
 
         public ShaderGUIFloatItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem, Func<bool> isVisible = null) :
             base(rootItem, parentItem: parentItem)
@@ -25,10 +27,17 @@ namespace NBShaderEditor
             base.OnGUI();
         }
 
+        public override void ExecuteReset(bool isCallByParent=false)
+        {
+            if(TryReset!=null){if(TryReset())CheckIsPropertyModified();return;}
+            base.ExecuteReset(isCallByParent);
+        }
         public override void DrawController()
         {
+            if(TryWriteValue!=null)EditorGUI.BeginChangeCheck();
             float value = DraggableLabelFloat.Handle(LabelRect, PropertyInfo.Property.floatValue, sensitivity: -1f);//拖动Label控件可以操作Float参数
             value = EditorGUI.FloatField(ControlRect, value);
+            if(TryWriteValue!=null){bool changed=EditorGUI.EndChangeCheck();Event e=Event.current;if(changed&&e!=null&&e.rawType!=EventType.Layout&&e.rawType!=EventType.Repaint)TryWriteValue(value);return;}
             SetFloatIfDifferent(PropertyInfo.Property, value);
         }
         
@@ -36,6 +45,9 @@ namespace NBShaderEditor
     
     public class ShaderGUISliderItem:ShaderGUIItem
     {
+        public Func<float,bool> TryWriteValue; // Null preserves original Native writer.
+        public Func<float,float,bool,bool,bool> TryWriteRange;
+        public Func<bool> TryReset;
         public bool WriteOnlyOnInteractiveChange; // Default false preserves Native behavior.
         public float Min = 0;
         public float Max = 1;
@@ -118,6 +130,17 @@ namespace NBShaderEditor
                 float min = rangeVector.x;
                 float max = rangeVector.y;
 
+                bool rangeEdited=false;
+                if(TryWriteRange!=null)
+                {
+                    EditorGUI.showMixedValue=minValueHasMixed;EditorGUI.BeginChangeCheck();
+                    bool minAnimatedScope=BeginAnimatedPropertyBackground(minRect,_rangePropertyInfo.Property);min=EditorGUI.FloatField(minRect,min);EndAnimatedPropertyBackground(minAnimatedScope);bool minEdited=EndInteractiveInputChange();
+                    EditorGUI.showMixedValue=maxValueHasMixed;EditorGUI.BeginChangeCheck();
+                    bool maxAnimatedScope=BeginAnimatedPropertyBackground(maxRect,_rangePropertyInfo.Property);max=EditorGUI.FloatField(maxRect,max);EndAnimatedPropertyBackground(maxAnimatedScope);bool maxEdited=EndInteractiveInputChange();
+                    rangeEdited=minEdited||maxEdited;if(rangeEdited&&!TryWriteRange(min,max,minEdited,maxEdited))return;
+                }
+                else
+                {
                 if (WriteOnlyOnInteractiveChange) EditorGUI.BeginChangeCheck();
                 EditorGUI.showMixedValue = minValueHasMixed;
                 bool minAnimatedScope = BeginAnimatedPropertyBackground(minRect, _rangePropertyInfo.Property);
@@ -129,8 +152,10 @@ namespace NBShaderEditor
                 EndAnimatedPropertyBackground(maxAnimatedScope);
                 rangeVector.x = min;
                 rangeVector.y = max;
-                bool rangeEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
+                rangeEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
                 if (rangeEdited) SetVectorIfDifferent(_rangePropertyInfo.Property, rangeVector);
+
+                }
 
                 float sliderMin = Mathf.Min(min, max);
                 float sliderMax = Mathf.Max(min, max);
@@ -147,7 +172,8 @@ namespace NBShaderEditor
                 EndAnimatedPropertyBackground(sliderAnimatedScope);
 
                 bool valueEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
-                if (valueEdited || rangeEdited) SetFloatIfDifferent(PropertyInfo.Property, Mathf.Clamp(value, sliderMin, sliderMax));
+                if(TryWriteValue!=null){if(valueEdited&&!TryWriteValue(Mathf.Clamp(value,sliderMin,sliderMax)))return;}
+                else if (valueEdited || rangeEdited) SetFloatIfDifferent(PropertyInfo.Property, Mathf.Clamp(value, sliderMin, sliderMax));
                 EditorGUI.showMixedValue = false;
 
             }
@@ -162,7 +188,7 @@ namespace NBShaderEditor
                     Max);
                 value = EditorGUI.Slider(ControlRect, value,Min,Max);
                 bool valueEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
-                if (valueEdited) SetFloatIfDifferent(PropertyInfo.Property, value);
+                if(valueEdited){if(TryWriteValue!=null){if(!TryWriteValue(value))return;}else SetFloatIfDifferent(PropertyInfo.Property,value);}
             }
         }
 
@@ -269,6 +295,7 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if(TryReset!=null){if(TryReset())CheckIsPropertyModified();return;}
             if (RangePropertyName != null)
             {
                 PropertyInfo.Property.floatValue = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index);

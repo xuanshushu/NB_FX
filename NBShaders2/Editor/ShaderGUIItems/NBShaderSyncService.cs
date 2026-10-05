@@ -3164,6 +3164,48 @@ namespace NBShaderEditor
             RefreshGraphMainTexPropertyReferences();return true;
         }
 
+
+        internal static readonly string[] GraphBaseNumericProperties={"_BaseOptionBigBlockItemFoldOut","_BaseColorIntensityForTimeline","_AlphaAll","AlphaAllRangeVec","_fogintensity"};
+        internal bool HasGraphBaseNumericSchema()
+        {
+            if(!HasGraphMainTexTargets())return false;
+            foreach(Material value in _rootItem.Mats)
+            {
+                foreach(string name in new[]{GraphGUIStateVersionProperty,"_BaseOptionBigBlockItemFoldOut","_BaseColorIntensityForTimeline","_AlphaAll","_fogintensity"})
+                {
+                    if(!_rootItem.PropertyInfoDic.ContainsKey(name))return false;int index=value.shader.FindPropertyIndex(name);if(index<0)return false;
+                    var type=value.shader.GetPropertyType(index);if(type!=UnityEngine.Rendering.ShaderPropertyType.Float&&!(name=="_BaseColorIntensityForTimeline"&&type==UnityEngine.Rendering.ShaderPropertyType.Range))return false;
+                    float x=value.GetFloat(name);if(float.IsNaN(x)||float.IsInfinity(x))return false;
+                }
+                if(value.GetFloat(GraphGUIStateVersionProperty)!=2)return false;
+                int ri=value.shader.FindPropertyIndex("AlphaAllRangeVec");if(ri<0||value.shader.GetPropertyType(ri)!=UnityEngine.Rendering.ShaderPropertyType.Vector||!_rootItem.PropertyInfoDic.ContainsKey("AlphaAllRangeVec"))return false;
+                Vector4 range=value.GetVector("AlphaAllRangeVec");for(int i=0;i<4;++i)if(float.IsNaN(range[i])||float.IsInfinity(range[i]))return false;
+            }
+            return true;
+        }
+        internal bool TryWriteGraphBaseNumeric(string name,float next)
+        {
+            if((name!="_BaseColorIntensityForTimeline"&&name!="_AlphaAll"&&name!="_fogintensity")||float.IsNaN(next)||float.IsInfinity(next)||!HasGraphBaseNumericSchema())return false;
+            return RunGraphMainTexEdit("NB Base Numeric",value=>{if(value.GetFloat(name)==next)return false;value.SetFloat(name,next);return true;});
+        }
+        internal bool TryWriteGraphAlphaRange(float min,float max,bool minEdited,bool maxEdited)
+        {
+            if((!minEdited&&!maxEdited)||float.IsNaN(min)||float.IsInfinity(min)||float.IsNaN(max)||float.IsInfinity(max)||!HasGraphBaseNumericSchema())return false;
+            return RunGraphMainTexEdit("NB Overall Alpha Range",value=>{
+                Vector4 before=value.GetVector("AlphaAllRangeVec"),next=before;if(minEdited)next.x=min;if(maxEdited)next.y=max;
+                bool changed=next!=before;if(changed)value.SetVector("AlphaAllRangeVec",next);
+                float alpha=value.GetFloat("_AlphaAll"),clamped=Mathf.Clamp(alpha,Mathf.Min(next.x,next.y),Mathf.Max(next.x,next.y));if(clamped!=alpha){value.SetFloat("_AlphaAll",clamped);changed=true;}return changed;
+            });
+        }
+        internal bool TryResetGraphBaseNumeric(string name)
+        {
+            if((name!="_BaseColorIntensityForTimeline"&&name!="_AlphaAll"&&name!="_fogintensity")||!HasGraphBaseNumericSchema())return false;
+            return RunGraphMainTexEdit("Reset NB Base Numeric",value=>{
+                value.SetFloat(name,value.shader.GetPropertyDefaultFloatValue(value.shader.FindPropertyIndex(name)));
+                if(name=="_AlphaAll")value.SetVector("AlphaAllRangeVec",value.shader.GetPropertyDefaultVectorValue(value.shader.FindPropertyIndex("AlphaAllRangeVec")));return true;
+            });
+        }
+
     }
 
     public enum VATMode

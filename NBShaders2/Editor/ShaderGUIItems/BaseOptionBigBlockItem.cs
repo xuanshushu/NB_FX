@@ -49,20 +49,8 @@ namespace NBShaderEditor
         {
             _nbRootItem = rootItem;
 
-            _baseColorIntensityItem = new ShaderGUIFloatItem(rootItem, this)
-            {
-                PropertyName = "_BaseColorIntensityForTimeline",
-                GuiContent = Content("base.colorIntensity", "Base Color Intensity")
-            };
-            _baseColorIntensityItem.InitTriggerByChild();
-
-            _alphaAllItem = new ShaderGUISliderItem(rootItem, this)
-            {
-                PropertyName = "_AlphaAll",
-                GuiContent = Content("base.alphaAll", "Overall Alpha"),
-                RangePropertyName = "AlphaAllRangeVec"
-            };
-            _alphaAllItem.InitTriggerByChild();
+            _baseColorIntensityItem = CreateBaseIntensityItem(rootItem, this);
+            _alphaAllItem = CreateOverallAlphaItem(rootItem, this);
 
             _colorAdjustmentBlock = CreateColorAdjustmentBlock(rootItem, this);
 
@@ -103,16 +91,33 @@ namespace NBShaderEditor
                 enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR, enabled, 1),
                 Is3DMode);
 
-            _fogIntensityItem = new ShaderGUISliderItem(rootItem, this)
-            {
-                PropertyName = "_fogintensity",
-                GuiContent = Content("base.fogIntensity", "Fog Intensity"),
-                Min = 0f,
-                Max = 1f
-            };
-            _fogIntensityItem.InitTriggerByChild();
+            _fogIntensityItem = CreateFogIntensityItem(rootItem, this);
 
             InitTriggerByChild();
+        }
+
+        internal static ShaderGUIFloatItem CreateBaseIntensityItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphShared=false)
+        {
+            var item=new ShaderGUIFloatItem(rootItem,parentItem){PropertyName="_BaseColorIntensityForTimeline",GuiContent=Content("base.colorIntensity","Base Color Intensity")};
+            if(graphShared){item.TryWriteValue=value=>rootItem.SyncService.TryWriteGraphBaseNumeric(item.PropertyName,value);item.TryReset=()=>rootItem.SyncService.TryResetGraphBaseNumeric(item.PropertyName);}
+            item.InitTriggerByChild();return item;
+        }
+        internal static ShaderGUISliderItem CreateOverallAlphaItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphShared=false)
+        {
+            var item=new ShaderGUISliderItem(rootItem,parentItem){PropertyName="_AlphaAll",GuiContent=Content("base.alphaAll","Overall Alpha"),RangePropertyName="AlphaAllRangeVec",WriteOnlyOnInteractiveChange=graphShared};
+            if(graphShared){item.TryWriteValue=value=>rootItem.SyncService.TryWriteGraphBaseNumeric(item.PropertyName,value);item.TryWriteRange=(min,max,minEdited,maxEdited)=>rootItem.SyncService.TryWriteGraphAlphaRange(min,max,minEdited,maxEdited);item.TryReset=()=>rootItem.SyncService.TryResetGraphBaseNumeric(item.PropertyName);}
+            item.InitTriggerByChild();return item;
+        }
+        internal static ShaderGUISliderItem CreateFogIntensityItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphShared=false)
+        {
+            var item=new ShaderGUISliderItem(rootItem,parentItem){PropertyName="_fogintensity",GuiContent=Content("base.fogIntensity","Fog Intensity"),Min=0f,Max=1f,WriteOnlyOnInteractiveChange=graphShared};
+            if(graphShared){item.TryWriteValue=value=>rootItem.SyncService.TryWriteGraphBaseNumeric(item.PropertyName,value);item.TryReset=()=>rootItem.SyncService.TryResetGraphBaseNumeric(item.PropertyName);}
+            item.InitTriggerByChild();return item;
+        }
+        internal static BigBlockItem CreateGraphBaseNumericBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
+        {
+            var block=new BigBlockItem(rootItem,parentItem,"_BaseOptionBigBlockItemFoldOut",()=>Content("block.base","Base Options","Global controls"));
+            CreateBaseIntensityItem(rootItem,block,true);CreateOverallAlphaItem(rootItem,block,true);CreateFogIntensityItem(rootItem,block,true);return block;
         }
 
         internal static PropertyToggleBlockItem CreateBaseBackColorBlock(NBShaderRootItem rootItem,

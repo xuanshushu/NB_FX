@@ -104,6 +104,8 @@ namespace NBShaderEditor
         BigBlockItem _graphLightModeBlock;
         bool _sharedGraphBaseBackColorReady;
         PropertyToggleBlockItem _graphBaseBackColorItem;
+        BigBlockItem _graphBaseNumericBlock;
+        bool _sharedGraphBaseNumericReady;
         static readonly string[] SharedGraphLightModeProperties = { "_FxLightMode", "_LightBigBlockItemFoldOut" };
 
         public override void OnGUI(MaterialEditor editor, MaterialProperty[] properties)
@@ -131,6 +133,7 @@ namespace NBShaderEditor
         public System.Collections.Generic.IEnumerable<string> GetSharedGraphPropertyNames()
         {
             var names = new System.Collections.Generic.List<string>();
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphBaseNumericReady)names.AddRange(NBShaderSyncService.GraphBaseNumericProperties);
             if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphBaseBackColorReady)names.AddRange(NBShaderSyncService.GraphBaseBackColorProperties);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphTADepthReady)
                 names.AddRange(NBShaderSyncService.GraphTADepthProperties);
@@ -414,6 +417,7 @@ namespace NBShaderEditor
                     _sharedGraphFresnelReady = false;
                     _graphLightModeBlock = null;
                     _graphBaseBackColorItem=null;_sharedGraphBaseBackColorReady=false;
+                    _graphBaseNumericBlock=null;_sharedGraphBaseNumericReady=false;
                     _sharedGraphLightSubReady = false;
                     _graphNormalMapBlock = null;
                     _graphMatCapBlock=null;_sharedGraphMatCapReady=false;
@@ -458,6 +462,7 @@ namespace NBShaderEditor
                 DrawGraphPortalInputs();
                 DrawGraphStencilWithoutPlayerInputs();
                 DrawGraphBaseBackColorInputs();
+                DrawGraphBaseNumericInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
                 _toolBar.DrawGraphTierSelector();
                 return;
@@ -681,6 +686,19 @@ namespace NBShaderEditor
         {
             if(!_sharedGraphVertexOffsetReady)return;if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Vertex Offset");(selectedItem??_graphVertexOffsetItem).OnGUI();
         }
+        internal bool InitializeGraphBaseNumericInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphBaseNumericReady=Context.IsGraphMaterialHost&&SyncService.HasGraphBaseNumericSchema();if(!_sharedGraphBaseNumericReady)return false;
+            _graphBaseNumericBlock??=BaseOptionBigBlockItem.CreateGraphBaseNumericBlock(this,null);return true;
+        }
+        internal void DrawGraphBaseNumericInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!InitializeGraphBaseNumericInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Base Numeric");
+            if(selectedItem==null)_graphBaseNumericBlock.OnGUI();else selectedItem.OnGUI();
+        }
+
         internal bool InitializeGraphBaseBackColorInputs()
         {
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();

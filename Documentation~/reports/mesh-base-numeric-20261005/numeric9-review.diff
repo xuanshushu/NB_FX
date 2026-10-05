@@ -1,0 +1,269 @@
+--- NBShaders2/Editor/ShaderGUIItems/BaseOptionBigBlockItem.cs
++++ candidate/NBShaders2/Editor/ShaderGUIItems/BaseOptionBigBlockItem.cs
+@@ -49,20 +49,8 @@
+         {
+             _nbRootItem = rootItem;
+ 
+-            _baseColorIntensityItem = new ShaderGUIFloatItem(rootItem, this)
+-            {
+-                PropertyName = "_BaseColorIntensityForTimeline",
+-                GuiContent = Content("base.colorIntensity", "Base Color Intensity")
+-            };
+-            _baseColorIntensityItem.InitTriggerByChild();
+-
+-            _alphaAllItem = new ShaderGUISliderItem(rootItem, this)
+-            {
+-                PropertyName = "_AlphaAll",
+-                GuiContent = Content("base.alphaAll", "Overall Alpha"),
+-                RangePropertyName = "AlphaAllRangeVec"
+-            };
+-            _alphaAllItem.InitTriggerByChild();
++            _baseColorIntensityItem = CreateBaseIntensityItem(rootItem, this);
++            _alphaAllItem = CreateOverallAlphaItem(rootItem, this);
+ 
+             _colorAdjustmentBlock = CreateColorAdjustmentBlock(rootItem, this);
+ 
+@@ -103,16 +91,33 @@
+                 enabled => rootItem.SyncService.ApplyToggleFlag(NBShaderFlags.FLAG_BIT_PARTICLE_1_IGNORE_VERTEX_COLOR, enabled, 1),
+                 Is3DMode);
+ 
+-            _fogIntensityItem = new ShaderGUISliderItem(rootItem, this)
+-            {
+-                PropertyName = "_fogintensity",
+-                GuiContent = Content("base.fogIntensity", "Fog Intensity"),
+-                Min = 0f,
+-                Max = 1f
+-            };
+-            _fogIntensityItem.InitTriggerByChild();
++            _fogIntensityItem = CreateFogIntensityItem(rootItem, this);
+ 
+             InitTriggerByChild();
++        }
++
++        internal static ShaderGUIFloatItem CreateBaseIntensityItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphShared=false)
++        {
++            var item=new ShaderGUIFloatItem(rootItem,parentItem){PropertyName="_BaseColorIntensityForTimeline",GuiContent=Content("base.colorIntensity","Base Color Intensity")};
++            if(graphShared){item.TryWriteValue=value=>rootItem.SyncService.TryWriteGraphBaseNumeric(item.PropertyName,value);item.TryReset=()=>rootItem.SyncService.TryResetGraphBaseNumeric(item.PropertyName);}
++            item.InitTriggerByChild();return item;
++        }
++        internal static ShaderGUISliderItem CreateOverallAlphaItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphShared=false)
++        {
++            var item=new ShaderGUISliderItem(rootItem,parentItem){PropertyName="_AlphaAll",GuiContent=Content("base.alphaAll","Overall Alpha"),RangePropertyName="AlphaAllRangeVec",WriteOnlyOnInteractiveChange=graphShared};
++            if(graphShared){item.TryWriteValue=value=>rootItem.SyncService.TryWriteGraphBaseNumeric(item.PropertyName,value);item.TryWriteRange=(min,max,minEdited,maxEdited)=>rootItem.SyncService.TryWriteGraphAlphaRange(min,max,minEdited,maxEdited);item.TryReset=()=>rootItem.SyncService.TryResetGraphBaseNumeric(item.PropertyName);}
++            item.InitTriggerByChild();return item;
++        }
++        internal static ShaderGUISliderItem CreateFogIntensityItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphShared=false)
++        {
++            var item=new ShaderGUISliderItem(rootItem,parentItem){PropertyName="_fogintensity",GuiContent=Content("base.fogIntensity","Fog Intensity"),Min=0f,Max=1f,WriteOnlyOnInteractiveChange=graphShared};
++            if(graphShared){item.TryWriteValue=value=>rootItem.SyncService.TryWriteGraphBaseNumeric(item.PropertyName,value);item.TryReset=()=>rootItem.SyncService.TryResetGraphBaseNumeric(item.PropertyName);}
++            item.InitTriggerByChild();return item;
++        }
++        internal static BigBlockItem CreateGraphBaseNumericBlock(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
++        {
++            var block=new BigBlockItem(rootItem,parentItem,"_BaseOptionBigBlockItemFoldOut",()=>Content("block.base","Base Options","Global controls"));
++            CreateBaseIntensityItem(rootItem,block,true);CreateOverallAlphaItem(rootItem,block,true);CreateFogIntensityItem(rootItem,block,true);return block;
+         }
+ 
+         internal static PropertyToggleBlockItem CreateBaseBackColorBlock(NBShaderRootItem rootItem,
+--- NBShaders2/Editor/NBShaderGUI.cs
++++ candidate/NBShaders2/Editor/NBShaderGUI.cs
+@@ -104,6 +104,8 @@
+         BigBlockItem _graphLightModeBlock;
+         bool _sharedGraphBaseBackColorReady;
+         PropertyToggleBlockItem _graphBaseBackColorItem;
++        BigBlockItem _graphBaseNumericBlock;
++        bool _sharedGraphBaseNumericReady;
+         static readonly string[] SharedGraphLightModeProperties = { "_FxLightMode", "_LightBigBlockItemFoldOut" };
+ 
+         public override void OnGUI(MaterialEditor editor, MaterialProperty[] properties)
+@@ -131,6 +133,7 @@
+         public System.Collections.Generic.IEnumerable<string> GetSharedGraphPropertyNames()
+         {
+             var names = new System.Collections.Generic.List<string>();
++            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphBaseNumericReady)names.AddRange(NBShaderSyncService.GraphBaseNumericProperties);
+             if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphBaseBackColorReady)names.AddRange(NBShaderSyncService.GraphBaseBackColorProperties);
+             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphTADepthReady)
+                 names.AddRange(NBShaderSyncService.GraphTADepthProperties);
+@@ -414,6 +417,7 @@
+                     _sharedGraphFresnelReady = false;
+                     _graphLightModeBlock = null;
+                     _graphBaseBackColorItem=null;_sharedGraphBaseBackColorReady=false;
++                    _graphBaseNumericBlock=null;_sharedGraphBaseNumericReady=false;
+                     _sharedGraphLightSubReady = false;
+                     _graphNormalMapBlock = null;
+                     _graphMatCapBlock=null;_sharedGraphMatCapReady=false;
+@@ -458,6 +462,7 @@
+                 DrawGraphPortalInputs();
+                 DrawGraphStencilWithoutPlayerInputs();
+                 DrawGraphBaseBackColorInputs();
++                DrawGraphBaseNumericInputs();
+                 _toolBar ??= new NBShaderGUIToolBar(this);
+                 _toolBar.DrawGraphTierSelector();
+                 return;
+@@ -681,6 +686,19 @@
+         {
+             if(!_sharedGraphVertexOffsetReady)return;if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Vertex Offset");(selectedItem??_graphVertexOffsetItem).OnGUI();
+         }
++        internal bool InitializeGraphBaseNumericInputs()
++        {
++            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
++            _sharedGraphBaseNumericReady=Context.IsGraphMaterialHost&&SyncService.HasGraphBaseNumericSchema();if(!_sharedGraphBaseNumericReady)return false;
++            _graphBaseNumericBlock??=BaseOptionBigBlockItem.CreateGraphBaseNumericBlock(this,null);return true;
++        }
++        internal void DrawGraphBaseNumericInputs(ShaderGUIItem selectedItem=null)
++        {
++            if(!InitializeGraphBaseNumericInputs())return;
++            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Base Numeric");
++            if(selectedItem==null)_graphBaseNumericBlock.OnGUI();else selectedItem.OnGUI();
++        }
++
+         internal bool InitializeGraphBaseBackColorInputs()
+         {
+             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+--- NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs
++++ candidate/NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs
+@@ -3164,6 +3164,48 @@
+             RefreshGraphMainTexPropertyReferences();return true;
+         }
+ 
++
++        internal static readonly string[] GraphBaseNumericProperties={"_BaseOptionBigBlockItemFoldOut","_BaseColorIntensityForTimeline","_AlphaAll","AlphaAllRangeVec","_fogintensity"};
++        internal bool HasGraphBaseNumericSchema()
++        {
++            if(!HasGraphMainTexTargets())return false;
++            foreach(Material value in _rootItem.Mats)
++            {
++                foreach(string name in new[]{GraphGUIStateVersionProperty,"_BaseOptionBigBlockItemFoldOut","_BaseColorIntensityForTimeline","_AlphaAll","_fogintensity"})
++                {
++                    if(!_rootItem.PropertyInfoDic.ContainsKey(name))return false;int index=value.shader.FindPropertyIndex(name);if(index<0)return false;
++                    var type=value.shader.GetPropertyType(index);if(type!=UnityEngine.Rendering.ShaderPropertyType.Float&&!(name=="_BaseColorIntensityForTimeline"&&type==UnityEngine.Rendering.ShaderPropertyType.Range))return false;
++                    float x=value.GetFloat(name);if(float.IsNaN(x)||float.IsInfinity(x))return false;
++                }
++                if(value.GetFloat(GraphGUIStateVersionProperty)!=2)return false;
++                int ri=value.shader.FindPropertyIndex("AlphaAllRangeVec");if(ri<0||value.shader.GetPropertyType(ri)!=UnityEngine.Rendering.ShaderPropertyType.Vector||!_rootItem.PropertyInfoDic.ContainsKey("AlphaAllRangeVec"))return false;
++                Vector4 range=value.GetVector("AlphaAllRangeVec");for(int i=0;i<4;++i)if(float.IsNaN(range[i])||float.IsInfinity(range[i]))return false;
++            }
++            return true;
++        }
++        internal bool TryWriteGraphBaseNumeric(string name,float next)
++        {
++            if((name!="_BaseColorIntensityForTimeline"&&name!="_AlphaAll"&&name!="_fogintensity")||float.IsNaN(next)||float.IsInfinity(next)||!HasGraphBaseNumericSchema())return false;
++            return RunGraphMainTexEdit("NB Base Numeric",value=>{if(value.GetFloat(name)==next)return false;value.SetFloat(name,next);return true;});
++        }
++        internal bool TryWriteGraphAlphaRange(float min,float max,bool minEdited,bool maxEdited)
++        {
++            if((!minEdited&&!maxEdited)||float.IsNaN(min)||float.IsInfinity(min)||float.IsNaN(max)||float.IsInfinity(max)||!HasGraphBaseNumericSchema())return false;
++            return RunGraphMainTexEdit("NB Overall Alpha Range",value=>{
++                Vector4 before=value.GetVector("AlphaAllRangeVec"),next=before;if(minEdited)next.x=min;if(maxEdited)next.y=max;
++                bool changed=next!=before;if(changed)value.SetVector("AlphaAllRangeVec",next);
++                float alpha=value.GetFloat("_AlphaAll"),clamped=Mathf.Clamp(alpha,Mathf.Min(next.x,next.y),Mathf.Max(next.x,next.y));if(clamped!=alpha){value.SetFloat("_AlphaAll",clamped);changed=true;}return changed;
++            });
++        }
++        internal bool TryResetGraphBaseNumeric(string name)
++        {
++            if((name!="_BaseColorIntensityForTimeline"&&name!="_AlphaAll"&&name!="_fogintensity")||!HasGraphBaseNumericSchema())return false;
++            return RunGraphMainTexEdit("Reset NB Base Numeric",value=>{
++                value.SetFloat(name,value.shader.GetPropertyDefaultFloatValue(value.shader.FindPropertyIndex(name)));
++                if(name=="_AlphaAll")value.SetVector("AlphaAllRangeVec",value.shader.GetPropertyDefaultVectorValue(value.shader.FindPropertyIndex("AlphaAllRangeVec")));return true;
++            });
++        }
++
+     }
+ 
+     public enum VATMode
+--- XuanXuanRenderUtility/Editor/ShaderGUIItems/ShaderGUIFloatItem.cs
++++ candidate/XuanXuanRenderUtility/Editor/ShaderGUIItems/ShaderGUIFloatItem.cs
+@@ -7,6 +7,8 @@
+     public class ShaderGUIFloatItem:ShaderGUIItem
+     {
+         private readonly Func<bool> _isVisible;
++        public Func<float,bool> TryWriteValue; // Null preserves original Native writer.
++        public Func<bool> TryReset;
+ 
+         public ShaderGUIFloatItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem, Func<bool> isVisible = null) :
+             base(rootItem, parentItem: parentItem)
+@@ -25,10 +27,17 @@
+             base.OnGUI();
+         }
+ 
++        public override void ExecuteReset(bool isCallByParent=false)
++        {
++            if(TryReset!=null){if(TryReset())CheckIsPropertyModified();return;}
++            base.ExecuteReset(isCallByParent);
++        }
+         public override void DrawController()
+         {
++            if(TryWriteValue!=null)EditorGUI.BeginChangeCheck();
+             float value = DraggableLabelFloat.Handle(LabelRect, PropertyInfo.Property.floatValue, sensitivity: -1f);//拖动Label控件可以操作Float参数
+             value = EditorGUI.FloatField(ControlRect, value);
++            if(TryWriteValue!=null){bool changed=EditorGUI.EndChangeCheck();Event e=Event.current;if(changed&&e!=null&&e.rawType!=EventType.Layout&&e.rawType!=EventType.Repaint)TryWriteValue(value);return;}
+             SetFloatIfDifferent(PropertyInfo.Property, value);
+         }
+         
+@@ -36,6 +45,9 @@
+     
+     public class ShaderGUISliderItem:ShaderGUIItem
+     {
++        public Func<float,bool> TryWriteValue; // Null preserves original Native writer.
++        public Func<float,float,bool,bool,bool> TryWriteRange;
++        public Func<bool> TryReset;
+         public bool WriteOnlyOnInteractiveChange; // Default false preserves Native behavior.
+         public float Min = 0;
+         public float Max = 1;
+@@ -118,6 +130,17 @@
+                 float min = rangeVector.x;
+                 float max = rangeVector.y;
+ 
++                bool rangeEdited=false;
++                if(TryWriteRange!=null)
++                {
++                    EditorGUI.showMixedValue=minValueHasMixed;EditorGUI.BeginChangeCheck();
++                    bool minAnimatedScope=BeginAnimatedPropertyBackground(minRect,_rangePropertyInfo.Property);min=EditorGUI.FloatField(minRect,min);EndAnimatedPropertyBackground(minAnimatedScope);bool minEdited=EndInteractiveInputChange();
++                    EditorGUI.showMixedValue=maxValueHasMixed;EditorGUI.BeginChangeCheck();
++                    bool maxAnimatedScope=BeginAnimatedPropertyBackground(maxRect,_rangePropertyInfo.Property);max=EditorGUI.FloatField(maxRect,max);EndAnimatedPropertyBackground(maxAnimatedScope);bool maxEdited=EndInteractiveInputChange();
++                    rangeEdited=minEdited||maxEdited;if(rangeEdited&&!TryWriteRange(min,max,minEdited,maxEdited))return;
++                }
++                else
++                {
+                 if (WriteOnlyOnInteractiveChange) EditorGUI.BeginChangeCheck();
+                 EditorGUI.showMixedValue = minValueHasMixed;
+                 bool minAnimatedScope = BeginAnimatedPropertyBackground(minRect, _rangePropertyInfo.Property);
+@@ -129,8 +152,10 @@
+                 EndAnimatedPropertyBackground(maxAnimatedScope);
+                 rangeVector.x = min;
+                 rangeVector.y = max;
+-                bool rangeEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
++                rangeEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
+                 if (rangeEdited) SetVectorIfDifferent(_rangePropertyInfo.Property, rangeVector);
++
++                }
+ 
+                 float sliderMin = Mathf.Min(min, max);
+                 float sliderMax = Mathf.Max(min, max);
+@@ -147,7 +172,8 @@
+                 EndAnimatedPropertyBackground(sliderAnimatedScope);
+ 
+                 bool valueEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
+-                if (valueEdited || rangeEdited) SetFloatIfDifferent(PropertyInfo.Property, Mathf.Clamp(value, sliderMin, sliderMax));
++                if(TryWriteValue!=null){if(valueEdited&&!TryWriteValue(Mathf.Clamp(value,sliderMin,sliderMax)))return;}
++                else if (valueEdited || rangeEdited) SetFloatIfDifferent(PropertyInfo.Property, Mathf.Clamp(value, sliderMin, sliderMax));
+                 EditorGUI.showMixedValue = false;
+ 
+             }
+@@ -162,7 +188,7 @@
+                     Max);
+                 value = EditorGUI.Slider(ControlRect, value,Min,Max);
+                 bool valueEdited = !WriteOnlyOnInteractiveChange || EndInteractiveInputChange();
+-                if (valueEdited) SetFloatIfDifferent(PropertyInfo.Property, value);
++                if(valueEdited){if(TryWriteValue!=null){if(!TryWriteValue(value))return;}else SetFloatIfDifferent(PropertyInfo.Property,value);}
+             }
+         }
+ 
+@@ -269,6 +295,7 @@
+ 
+         public override void ExecuteReset(bool isCallByParent = false)
+         {
++            if(TryReset!=null){if(TryReset())CheckIsPropertyModified();return;}
+             if (RangePropertyName != null)
+             {
+                 PropertyInfo.Property.floatValue = RootItem.Shader.GetPropertyDefaultFloatValue(PropertyInfo.Index);
