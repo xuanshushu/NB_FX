@@ -70,6 +70,9 @@ namespace NBShaderEditor
         FresnelFeatureItem _graphFresnelItem;
         bool _sharedGraphDissolveReady;
         DissolveFeatureItem _graphDissolveItem;
+        bool _sharedGraphMaskProgramReady;
+        MaskFeatureItem _graphMaskItem;
+        ProgramNoiseFeatureItem _graphProgramNoiseItem;
         bool _sharedGraphTADepthReady;
         BigBlockItem _graphTADepthBlock;
         bool _sharedGraphLightModeReady;
@@ -114,6 +117,7 @@ namespace NBShaderEditor
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphDissolveReady)names.AddRange(NBShaderSyncService.GraphDissolveSharedPropertyNames);
             if (Context != null && Context.IsGraphMaterialHost && _sharedGraphParallaxReady) names.AddRange(SharedGraphParallaxProperties);
             if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphNormalMapReady)names.AddRange(SharedGraphNormalMapProperties);
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphMaskProgramReady)names.AddRange(NBShaderSyncService.GraphMaskProgramSharedPropertyNames);
             return names;
         }
 
@@ -313,6 +317,7 @@ namespace NBShaderEditor
                     _sharedGraphParallaxReady = false;
                     _graphFresnelItem = null;
                     _graphDissolveItem = null;
+                    _graphMaskItem=null;_graphProgramNoiseItem=null;_sharedGraphMaskProgramReady=false;
                     _sharedGraphDissolveReady = false;
                     _sharedGraphFresnelReady = false;
                     _graphLightModeBlock = null;
@@ -338,6 +343,7 @@ namespace NBShaderEditor
                 if (InitializeGraphTADepthInputs()) _graphTADepthBlock.OnGUI();
                 if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
                 if(InitializeGraphDissolveInputs())DrawGraphDissolveInputs();
+                if(InitializeGraphMaskProgramInputs())DrawGraphMaskProgramInputs();
                 DrawGraphOverlayInputs();
                 DrawGraphParallaxInputs();
                 _toolBar ??= new NBShaderGUIToolBar(this);
@@ -455,6 +461,19 @@ namespace NBShaderEditor
             if(type!=EventType.Layout && type!=EventType.Repaint)
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Dissolve");
             (selectedItem??_graphDissolveItem).OnGUI();
+        }
+
+        internal bool InitializeGraphMaskProgramInputs()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphMaskProgramReady=Context.IsGraphMaterialHost&&SyncService.HasGraphMaskProgramEditSchema();
+            if(!_sharedGraphMaskProgramReady)return false;_graphMaskItem??=new MaskFeatureItem(this,null,true);_graphProgramNoiseItem??=new ProgramNoiseFeatureItem(this,null,true);return true;
+        }
+        internal void DrawGraphMaskProgramInputs(ShaderGUIItem selectedItem=null)
+        {
+            if(!_sharedGraphMaskProgramReady)return;
+            if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Mask / Program Noise");
+            if(selectedItem!=null)selectedItem.OnGUI();else{_graphMaskItem.OnGUI();_graphProgramNoiseItem.OnGUI();}
         }
     }
 }

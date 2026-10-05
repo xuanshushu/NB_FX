@@ -7,8 +7,8 @@ namespace NBShaderEditor
 {
     internal sealed class ProgramNoiseFeatureItem : FeatureToggleFoldOutItem
     {
-        public ProgramNoiseFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_ProgramNoiseBlockFoldOut", "_ProgramNoise_Toggle", "程序化噪波", keyword: "_PROGRAM_NOISE")
+        public ProgramNoiseFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode=false)
+            : base(rootItem, parentItem, "_ProgramNoiseBlockFoldOut", "_ProgramNoise_Toggle", "程序化噪波", keyword: graphSharedMode?null:"_PROGRAM_NOISE", onValueChanged: graphSharedMode?(Action<bool>)(_=>rootItem.SyncService.TryApplyGraphMaskProgramIntentEdit()):null)
         {
             new NBShaderKeywordToggleItem(
                 rootItem,
@@ -17,7 +17,7 @@ namespace NBShaderEditor
                 "NB_DEBUG_PNOISE",
                 () => Content("程序化噪波测试颜色"),
                 isVisible: null);
-            new UVModeSelectItem(rootItem, this, "_ProgramNoiseUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE, 0, () => Content("程序噪波UV来源"), forceEnable: true);
+            new UVModeSelectItem(rootItem, this, "_ProgramNoiseUVModeFoldOut", NBShaderFlags.FLAG_BIT_UVMODE_POS_0_PROGRAM_NOISE, 0, () => Content("程序噪波UV来源"), forceEnable: true, graphFeatureProtocolEdit:graphSharedMode);
             ShaderGUIFloatItem programNoiseRotateItem = new ShaderGUIFloatItem(rootItem, this)
             {
                 PropertyName = "_ProgramNoise_Rotate",
@@ -26,7 +26,7 @@ namespace NBShaderEditor
             programNoiseRotateItem.InitTriggerByChild();
 
             PropertyToggleBlockItem simpleBlock = ToggleBlock(rootItem, "_ProgramNoiseSimpleFoldOut", "_ProgramNoise_Simple_Toggle", "Perlin噪波",
-                parent: this, keyword: "_PROGRAM_NOISE_SIMPLE");
+                parent: this, keyword: graphSharedMode?null:"_PROGRAM_NOISE_SIMPLE", onValueChanged: graphSharedMode?(Action<bool>)(_=>rootItem.SyncService.TryApplyGraphMaskProgramIntentEdit()):null);
             new Vector2LineItem(rootItem, simpleBlock, "_DissolveVoronoi_Vec", true, () => Content("噪波1缩放"));
             new VectorComponentItem(rootItem, simpleBlock, "_DissolveVoronoi_Vec2", 2, () => Content("噪波1速度"), false);
             new Vector2LineItem(rootItem, simpleBlock, "_DissolveVoronoi_Vec4", true, () => Content("噪波1偏移"));
@@ -35,7 +35,7 @@ namespace NBShaderEditor
             new CustomDataSelectItem(rootItem, simpleBlock, NBShaderFlags.FLAGBIT_POS_2_CUSTOMDATA_DISSOLVE_NOISE1_OFFSET_Y, 2, () => Content("噪波1偏移速度Y自定义曲线"));
 
             PropertyToggleBlockItem voronoiBlock = ToggleBlock(rootItem, "_ProgramNoiseVoronoiFoldOut", "_ProgramNoise_Voronoi_Toggle", "Voronoi噪波",
-                parent: this, keyword: "_PROGRAM_NOISE_VORONOI");
+                parent: this, keyword: graphSharedMode?null:"_PROGRAM_NOISE_VORONOI", onValueChanged: graphSharedMode?(Action<bool>)(_=>rootItem.SyncService.TryApplyGraphMaskProgramIntentEdit()):null);
             new Vector2LineItem(rootItem, voronoiBlock, "_DissolveVoronoi_Vec", false, () => Content("噪波2缩放"));
             new VectorComponentItem(rootItem, voronoiBlock, "_DissolveVoronoi_Vec2", 3, () => Content("噪波2速度"), false);
             new Vector2LineItem(rootItem, voronoiBlock, "_DissolveVoronoi_Vec4", false, () => Content("噪波2偏移"));

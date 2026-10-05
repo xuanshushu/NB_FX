@@ -19,6 +19,7 @@ namespace NBShaderEditor
         private readonly ShaderGUIFoldOutHelper _foldOutHelper;
         private readonly bool _graphMainTexUVEdit;
         private readonly bool _taDepthEdit;
+        private readonly bool _graphRawMaskRotationDisplay;
 
         public PropertyToggleBlockItem(
             NBShaderRootItem rootItem,
@@ -32,11 +33,12 @@ namespace NBShaderEditor
             string shaderPassName = null,
             Action<bool> onValueChanged = null,
             Func<bool> isVisible = null,
-            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false) : base(rootItem, parentItem)
+            bool bold = false, bool graphMainTexUVEdit = false, bool taDepthEdit = false, bool graphRawMaskRotationDisplay=false) : base(rootItem, parentItem)
         {
             _foldOutPropertyName = foldOutPropertyName;
             _graphMainTexUVEdit = graphMainTexUVEdit;
             _taDepthEdit = taDepthEdit;
+            _graphRawMaskRotationDisplay=graphRawMaskRotationDisplay;
             PropertyName = togglePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _flagBits = flagBits;
@@ -74,6 +76,7 @@ namespace NBShaderEditor
             bool graphZEnabled, graphZMixed;
             if (TryGetGraphZOffsetDisplay(out graphZEnabled, out graphZMixed))
             { enabled = graphZEnabled; displayMixed = graphZMixed; }
+            if(TryGetGraphRawMaskRotationDisplay(out graphZEnabled,out graphZMixed)){enabled=graphZEnabled;displayMixed=graphZMixed;}
             using (ParentControlDisabledScope())
             {
                 EditorGUI.showMixedValue = displayMixed;
@@ -87,7 +90,9 @@ namespace NBShaderEditor
                 EditorGUI.showMixedValue = false;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if (_taDepthEdit && RootItem is NBShaderRootItem taRoot && taRoot.Context.IsGraphMaterialHost)
+                    if(_graphRawMaskRotationDisplay&&RootItem is NBShaderRootItem maskRoot&&maskRoot.Context.IsGraphMaterialHost)
+                        maskRoot.SyncService.TryApplyGraphMaskProgramFlagEdit(_flagBits,enabled,_flagIndex);
+                    else if (_taDepthEdit && RootItem is NBShaderRootItem taRoot && taRoot.Context.IsGraphMaterialHost)
                         taRoot.SyncService.TryApplyGraphTADepthToggle(PropertyName, enabled);
                     else if (_graphMainTexUVEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
                         graphRoot.SyncService.TryApplyGraphMainTexUVToggle(_flagBits, enabled);
@@ -115,6 +120,7 @@ namespace NBShaderEditor
                 EditorGUI.indentLevel++;
                 bool childrenDisabled = property.hasMixedValue || property.floatValue <= 0.5f;
                 if (TryGetGraphZOffsetDisplay(out graphZEnabled, out graphZMixed)) childrenDisabled = graphZMixed || !graphZEnabled;
+                if(TryGetGraphRawMaskRotationDisplay(out graphZEnabled,out graphZMixed))childrenDisabled=graphZMixed||!graphZEnabled;
                 using (new InheritedControlDisabledScope(childrenDisabled))
                 {
                     DrawBlock();
@@ -146,6 +152,8 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if(_graphRawMaskRotationDisplay&&RootItem is NBShaderRootItem maskRoot&&maskRoot.Context.IsGraphMaterialHost)
+            {if(!maskRoot.SyncService.TryApplyGraphMaskProgramFlagEdit(_flagBits,false,_flagIndex))return;foreach(var child in ChildrenItemList)child.ExecuteReset(true);CheckIsPropertyModified();return;}
             if (_taDepthEdit && RootItem is NBShaderRootItem taRoot && taRoot.Context.IsGraphMaterialHost)
             {
                 taRoot.SyncService.TryResetGraphTADepth(PropertyName);
@@ -168,6 +176,23 @@ namespace NBShaderEditor
             {
                 ChildrenItemList[i].OnGUI();
             }
+        }
+
+
+        private bool TryGetGraphRawMaskRotationDisplay(out bool enabled,out bool mixed)
+        {
+            enabled=mixed=false;
+            if(!_graphRawMaskRotationDisplay||!(RootItem is NBShaderRootItem root)||!root.Context.IsGraphMaterialHost||_flagIndex!=0||_flagBits!=NBShaderFlags.FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON)return false;
+            bool first=true;foreach(Material material in root.Mats)
+            {bool current=((int)Mathf.RoundToInt(Mathf.Clamp(material.GetFloat("_NB_Flags0Lo16"),0,65535))&_flagBits)!=0;if(first){enabled=current;first=false;}else mixed|=enabled!=current;}
+            return true;
+        }
+        public override void CheckIsPropertyModified(bool isCallByChild=false)
+        {
+            bool enabled,mixed;if(!TryGetGraphRawMaskRotationDisplay(out enabled,out mixed)){base.CheckIsPropertyModified(isCallByChild);return;}
+            PropertyIsDefaultValue=!mixed&&!enabled;HasModified=!PropertyIsDefaultValue;
+            foreach(var child in ChildrenItemList)HasModified|=child.HasModified;
+            ParentItem?.CheckIsPropertyModified(true);
         }
 
         private void ApplySideEffects(bool enabled)
@@ -1254,7 +1279,7 @@ namespace NBShaderEditor
             {
                 if (_uvModeBitPos == NBShaderFlags.FLAG_BIT_UVMODE_POS_0_BUMPMAP)
                     return featureRoot.SyncService.TryApplyGraphNormalMapUVMode(mode,setFoldFromPopup);
-                return featureRoot.SyncService.TryApplyGraphDissolveUVMode(_uvModeBitPos,mode,setFoldFromPopup);
+                return featureRoot.SyncService.TryApplyGraphSharedFeatureUVMode(_uvModeBitPos,mode,_foldOutPropertyName,setFoldFromPopup);
             }
             if (_graphMainTexProtocolEdit && RootItem is NBShaderRootItem graphRoot && graphRoot.Context.IsGraphMaterialHost)
                 return graphRoot.SyncService.TryApplyGraphMainTexUVMode(mode, setFoldFromPopup);

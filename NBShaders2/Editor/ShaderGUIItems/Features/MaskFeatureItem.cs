@@ -7,11 +7,13 @@ namespace NBShaderEditor
 {
     internal sealed class MaskFeatureItem : FeatureToggleFoldOutItem
     {
+        readonly bool _graphSharedMode;
         private static readonly string[] TextureGradientNames = { "贴图", "渐变" };
 
-        public MaskFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem)
-            : base(rootItem, parentItem, "_MaskBlockFoldOut", "_Mask_Toggle", "遮罩", keyword: "_MASKMAP_ON")
+        public MaskFeatureItem(NBShaderRootItem rootItem, ShaderGUIItem parentItem, bool graphSharedMode=false)
+            : base(rootItem, parentItem, "_MaskBlockFoldOut", "_Mask_Toggle", "遮罩", keyword: graphSharedMode?null:"_MASKMAP_ON", onValueChanged: graphSharedMode?(Action<bool>)(_=>rootItem.SyncService.TryApplyGraphMaskProgramIntentEdit()):null)
         {
+            _graphSharedMode=graphSharedMode;
             new NBShaderKeywordToggleItem(
                 rootItem,
                 this,
@@ -26,9 +28,9 @@ namespace NBShaderEditor
                 "_MaskRefineFoldOut",
                 "_MaskRefineToggle",
                 "遮罩整体调整",
-                NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_REFINE,
+                graphSharedMode?0:NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_REFINE,
                 1,
-                parent: this);
+                parent: this, onValueChanged: graphSharedMode?(Action<bool>)(v=>rootItem.SyncService.TryApplyGraphMaskProgramFlagEdit(NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_REFINE,v,1)):null);
             new VectorComponentItem(rootItem, refineBlock, "_MaskRefineVec", 0, () => Content("范围(Pow)"), false);
             new VectorComponentItem(rootItem, refineBlock, "_MaskRefineVec", 1, () => Content("相乘"), false);
             new VectorComponentItem(rootItem, refineBlock, "_MaskRefineVec", 2, () => Content("偏移(相加)"), false);
@@ -51,16 +53,10 @@ namespace NBShaderEditor
                 PropertyName = "_MaskMapUVRotation",
                 GuiContent = Content("遮罩旋转"),
                 Min = 0f,
-                Max = 360f
+                Max = 360f, WriteOnlyOnInteractiveChange=graphSharedMode
             };
             maskMapUVRotationItem.InitTriggerByChild();
-            PropertyToggleBlockItem rotateBlock = ToggleBlock(
-                rootItem,
-                "_MaskRotationFoldOut",
-                "_Mask_RotationToggle",
-                "遮罩旋转速度",
-                NBShaderFlags.FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON,
-                parent: this);
+            PropertyToggleBlockItem rotateBlock = new PropertyToggleBlockItem(rootItem,this,"_MaskRotationFoldOut","_Mask_RotationToggle",()=>Content("遮罩旋转速度"),NBShaderFlags.FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON,graphRawMaskRotationDisplay:graphSharedMode);
             ShaderGUIFloatItem maskMapRotationSpeedItem = new ShaderGUIFloatItem(rootItem, rotateBlock)
             {
                 PropertyName = "_MaskMapRotationSpeed",
@@ -72,7 +68,7 @@ namespace NBShaderEditor
             {
                 PropertyName = "_MaskDistortion_intensity",
                 GuiContent = Content("遮罩扭曲强度"),
-                RangePropertyName = "MaskDistortionIntensityRangeVec"
+                RangePropertyName = "MaskDistortionIntensityRangeVec", WriteOnlyOnInteractiveChange=graphSharedMode
             };
             maskDistortionIntensityItem.InitTriggerByChild();
 
@@ -82,7 +78,7 @@ namespace NBShaderEditor
                 "_Mask2_Toggle",
                 "遮罩2",
                 parent: this,
-                keyword: "_MASKMAP2_ON");
+                keyword: graphSharedMode?null:"_MASKMAP2_ON", onValueChanged: graphSharedMode?(Action<bool>)(_=>rootItem.SyncService.TryApplyGraphMaskProgramIntentEdit()):null);
             AddMaskMap(rootItem, mask2Block, "_MaskMap2", "_MaskMap2GradientToggle", "_Mask2UVModeFoldOut", "遮罩2",
                 NBShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP2,
                 NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_MASKMAP2,
@@ -99,7 +95,7 @@ namespace NBShaderEditor
                 "_Mask3_Toggle",
                 "遮罩3",
                 parent: this,
-                keyword: "_MASKMAP3_ON");
+                keyword: graphSharedMode?null:"_MASKMAP3_ON", onValueChanged: graphSharedMode?(Action<bool>)(_=>rootItem.SyncService.TryApplyGraphMaskProgramIntentEdit()):null);
             AddMaskMap(rootItem, mask3Block, "_MaskMap3", "_MaskMap3GradientToggle", "_Mask3UVModeFoldOut", "遮罩3",
                 NBShaderFlags.FLAG_BIT_WRAPMODE_MASKMAP3,
                 NBShaderFlags.FLAG_BIT_FORCE_NO_MIP_MASKMAP3,
@@ -128,7 +124,7 @@ namespace NBShaderEditor
             string textureFoldOutPropertyName = null)
         {
             new FeaturePopupItem(rootItem, parent, modePropertyName, () => Content(label + "模式"), TextureGradientNames,
-                property => rootItem.SyncService.ApplyToggleFlag(gradientFlag, property.floatValue > 0.5f, gradientFlagIndex));
+                property => { if(_graphSharedMode)rootItem.SyncService.TryApplyGraphMaskProgramFlagEdit(gradientFlag,property.floatValue>0.5f,gradientFlagIndex);else rootItem.SyncService.ApplyToggleFlag(gradientFlag,property.floatValue>0.5f,gradientFlagIndex); });
             ShaderGUIItem textureParent = parent;
             if (string.IsNullOrEmpty(textureFoldOutPropertyName))
             {
@@ -148,7 +144,7 @@ namespace NBShaderEditor
             new TextureScaleOffsetItem(rootItem, parent, texturePropertyName, false, () => IsPropertyMode(rootItem, modePropertyName, 1), TillingContent, OffsetContent);
             new WrapModeItem(rootItem, parent, wrapFlag, () => Content(label + "UV Wrap"), 2,
                 () => IsPropertyMode(rootItem, modePropertyName, 1));
-            new UVModeSelectItem(rootItem, parent, uvFoldOutPropertyName, uvModeFlagPos, 0, () => Content(label + "UV来源"), texturePropertyName, forceEnable: true);
+            new UVModeSelectItem(rootItem, parent, uvFoldOutPropertyName, uvModeFlagPos, 0, () => Content(label + "UV来源"), texturePropertyName, forceEnable: true, graphFeatureProtocolEdit:_graphSharedMode);
         }
 
         private static void AddAlphaGradient(

@@ -1965,6 +1965,59 @@ namespace NBShaderEditor
                 if(!WriteGraphHalfSlice(material,name,mask,enabled?mask:0))NotifyGraphPackedFlagsEdited(material,name,mask);
             RefreshGraphMainTexPropertyReferences();return true;
         }
+
+        internal static readonly string[] GraphMaskProgramSharedPropertyNames={"MaskDistortionIntensityRangeVec","_DissolveVoronoi_Vec","_DissolveVoronoi_Vec2","_DissolveVoronoi_Vec3","_DissolveVoronoi_Vec4","_Mask2BlockFoldOut","_Mask2UVModeFoldOut","_Mask2_Toggle","_Mask3BlockFoldOut","_Mask3UVModeFoldOut","_Mask3_Toggle","_MaskBlockFoldOut","_MaskDistortion_intensity","_MaskMap","_MaskMap2","_MaskMap2GradientCount","_MaskMap2GradientFloat0","_MaskMap2GradientFloat1","_MaskMap2GradientFloat2","_MaskMap2GradientToggle","_MaskMap3","_MaskMap3GradientCount","_MaskMap3GradientFloat0","_MaskMap3GradientFloat1","_MaskMap3GradientFloat2","_MaskMap3GradientToggle","_MaskMap3OffsetAnition","_MaskMapFoldOut","_MaskMapGradientCount","_MaskMapGradientFloat0","_MaskMapGradientFloat1","_MaskMapGradientFloat2","_MaskMapGradientToggle","_MaskMapOffsetAnition","_MaskMapRotationSpeed","_MaskMapUVRotation","_MaskMapVec","_MaskPNoiseBlendOpacity","_MaskRefineFoldOut","_MaskRefineToggle","_MaskRefineVec","_MaskRotationFoldOut","_MaskUVModeFoldOut","_Mask_RotationToggle","_Mask_Toggle","_NB_Debug_Mask","_NB_Debug_PNoise","_ProgramNoiseBaseBlendOpacity","_ProgramNoiseBlockFoldOut","_ProgramNoiseSimpleFoldOut","_ProgramNoiseUVModeFoldOut","_ProgramNoiseVoronoiFoldOut","_ProgramNoise_Rotate","_ProgramNoise_Simple_Toggle","_ProgramNoise_Toggle","_ProgramNoise_Voronoi_Toggle"};
+
+        internal bool HasGraphMaskProgramEditSchema()
+        {
+            if(!HasGraphMainTexTargets()||_rootItem.MatEditor==null)return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                foreach(string n in GraphMaskProgramSharedPropertyNames)if(!material.HasProperty(n)||!_rootItem.PropertyInfoDic.ContainsKey(n))return false;
+                foreach(string n in new[]{"_Mask_Toggle","_Mask2_Toggle","_Mask3_Toggle","_MaskRefineToggle","_MaskMapGradientToggle","_MaskMap2GradientToggle","_MaskMap3GradientToggle","_Mask_RotationToggle","_ProgramNoise_Toggle","_ProgramNoise_Simple_Toggle","_ProgramNoise_Voronoi_Toggle",GraphGUIStateVersionProperty})
+                {if(!NBShaderRootItem.HasFloatProperty(material,n))return false;float v=material.GetFloat(n);if(float.IsNaN(v)||float.IsInfinity(v))return false;}
+                if(material.GetFloat(GraphGUIStateVersionProperty)!=2)return false;
+                foreach(string n in new[]{"_MaskMapGradientToggle","_MaskMap2GradientToggle","_MaskMap3GradientToggle"}){float v=material.GetFloat(n);if(v!=0&&v!=1)return false;}
+                bool change;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out change))return false;
+            }
+            return true;
+        }
+        internal bool TryApplyGraphMaskProgramIntentEdit()
+        {
+            if(!HasGraphMaskProgramEditSchema())return false;
+            foreach(Material material in _rootItem.Mats){bool change;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out change))return false;}
+            RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
+        }
+        internal bool TryApplyGraphMaskProgramFlagEdit(int bit,bool enabled,int word)
+        {
+            bool owned=word==0&&bit==NBShaderFlags.FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON || word==1&&(bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_REFINE||bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT||bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT||bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT);
+            if(!owned||!HasGraphMaskProgramEditSchema())return false;
+            string name="_NB_Flags"+word+((bit&65535)!=0?"Lo16":"Hi16");int mask=(bit&65535)!=0?bit&65535:(int)((uint)bit>>16);
+            return RunGraphMainTexEdit("Mask Flags",material=>{
+                bool changed=WriteGraphHalfSlice(material,name,mask,enabled?mask:0);
+                // New UI mirror is Graph explicit-action-only. Do not add it to
+                // the shared Native projection table or seed marker2 on paint.
+                if(word==0&&bit==NBShaderFlags.FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON)
+                {float value=enabled?1:0;if(material.GetFloat("_Mask_RotationToggle")!=value){material.SetFloat("_Mask_RotationToggle",value);changed=true;}}
+                if(!changed)NotifyGraphPackedFlagsEdited(material,name,mask);return changed;
+            });
+        }
+        internal bool TryApplyGraphMaskProgramUVMode(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
+        {
+            bool owned=position==2&&fold=="_MaskUVModeFoldOut" || position==4&&fold=="_Mask2UVModeFoldOut" || position==6&&fold=="_Mask3UVModeFoldOut" || position==28&&fold=="_ProgramNoiseUVModeFoldOut";
+            if(!owned||!HasGraphMaskProgramEditSchema()||!HasGraphMainTexUVEditSchema()||(int)mode<0||(int)mode>8)return false;
+            string suffix=position<16?"Lo16":"Hi16";int shift=position&15,mask=3<<shift;
+            return RunGraphMainTexEdit("Mask/Program Noise UV",material=>{
+                bool changed=WriteGraphHalfSlice(material,"_NB_UVModeFlag0"+suffix,mask,((int)mode&3)<<shift)|WriteGraphHalfSlice(material,"_NB_UVModeFlagType0"+suffix,mask,((int)mode/4)<<shift);
+                if(setFold){float v=mode==NBShaderFlags.UVMode.DefaultUVChannel||mode==NBShaderFlags.UVMode.CommonUV||mode==NBShaderFlags.UVMode.ScreenUV||mode==NBShaderFlags.UVMode.MainTex?0:1;if(material.GetFloat(fold)!=v){material.SetFloat(fold,v);changed=true;}}
+                return UpdateGraphMainTexUVDerived(material)|changed;
+            });
+        }
+        internal bool TryApplyGraphSharedFeatureUVMode(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
+        {
+            if(position==14||position==16)return TryApplyGraphDissolveUVMode(position,mode,setFold);
+            return TryApplyGraphMaskProgramUVMode(position,mode,fold,setFold);
+        }
     }
 
     public enum VATMode
