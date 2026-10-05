@@ -109,14 +109,15 @@ namespace NBShaderEditor
             AddFloat(rootItem, _customStencilBlock, "_StencilReadMask", "Stencil Read Mask");
             AddFloat(rootItem, _customStencilBlock, "_StencilWriteMask", "Stencil Write Mask");
 
-            _keywordBlock = new BlockItem(
-                rootItem,
-                this,
-                "_ShaderKeywordFoldOut",
-                () => Content("ta.keywords", "Enabled Keywords"));
-            new KeywordListItem(rootItem, _keywordBlock, () => Content("ta.keywords.list", "Enabled Keywords"));
+            _keywordBlock=CreateKeywordsBlock(rootItem,this);
 
             InitTriggerByChild();
+        }
+
+        internal static BlockItem CreateKeywordsBlock(NBShaderRootItem root,ShaderGUIItem parent,bool graphShared=false)
+        {
+            var block=new BlockItem(root,parent,"_ShaderKeywordFoldOut",()=>Content("ta.keywords","Enabled Keywords"));
+            new KeywordListItem(root,block,()=>Content("ta.keywords.list","Enabled Keywords"),graphShared);return block;
         }
 
         public override void DrawBlock()

@@ -25,6 +25,12 @@ namespace NBShaderEditor
             base.InitTriggerByChild();
         }
 
+        internal static BigBlockItem CreateGraphAdditiveBlendBlock(NBShaderRootItem root,ShaderGUIItem parent)
+        {
+            var block=new BigBlockItem(root,parent,"_BigBlockModeSettingFoldOut",()=>NBShaderInspectorLocalization.MakeInspectorContent("block.mode","Mode Settings"));
+            new AddToPreMultiplySlider(root,block,true);return block;
+        }
+
         private MeshModePopUp _meshModePopUp;
         private TransparentModePopUp _transparentMode;
 
@@ -335,8 +341,11 @@ namespace NBShaderEditor
 
     public class AddToPreMultiplySlider : ShaderGUISliderItem
     {
-        public AddToPreMultiplySlider(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem) : base(rootItem, parentItem)
+        readonly bool _graphSharedMode;
+        public AddToPreMultiplySlider(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem,bool graphSharedMode=false) : base(rootItem, parentItem)
         {
+            _graphSharedMode=graphSharedMode;WriteOnlyOnInteractiveChange=graphSharedMode;
+            if(graphSharedMode)TryWriteValue=value=>(rootItem as NBShaderRootItem).SyncService.TryWriteGraphAdditiveBlend(value);
             PropertyName = "_AdditiveToPreMultiplyAlphaLerp";
             GuiContent = NBShaderInspectorLocalization.MakeInspectorContent("mode.additiveToPremultiply", "Additive To Premultiply", "0 is additive, 1 is premultiply.");
             base.InitTriggerByChild();
@@ -344,14 +353,15 @@ namespace NBShaderEditor
 
         public override void OnGUI()
         {
+            if(_graphSharedMode){var root=RootItem as NBShaderRootItem;if(root==null||root.Mats.Count==0||root.PropertyInfoDic["_Blend"].Property.hasMixedValue||root.PropertyInfoDic["_Surface"].Property.hasMixedValue||root.Mats[0].GetFloat("_Surface")!=1f||(root.Mats[0].GetFloat("_Blend")!=1f&&root.Mats[0].GetFloat("_Blend")!=2f))return;}
             base.OnGUI();
         }
 
         public override void CheckIsPropertyModified(bool isCallByChild = false)
         {
             float defaultValue = 0;
-            BlendPopUp blendPopUp = BlendPopUp.BlendModeDic[RootItem];
-            if (blendPopUp.BlendMode == BlendMode.Premultiply)
+            BlendMode mode=_graphSharedMode?(BlendMode)RootItem.Mats[0].GetFloat("_Blend"):BlendPopUp.BlendModeDic[RootItem].BlendMode;
+            if (mode == BlendMode.Premultiply)
             {
                 defaultValue = 1;
             }
@@ -363,9 +373,10 @@ namespace NBShaderEditor
 
         public override void ExecuteReset(bool isCallByParent = false)
         {
+            if(_graphSharedMode){(RootItem as NBShaderRootItem).SyncService.TryWriteGraphAdditiveBlend(0,true);CheckIsPropertyModified();return;}
             float defaultValue = 0;
-            BlendPopUp blendPopUp = BlendPopUp.BlendModeDic[RootItem];
-            if (blendPopUp.BlendMode == BlendMode.Premultiply)
+            BlendMode mode=_graphSharedMode?(BlendMode)RootItem.Mats[0].GetFloat("_Blend"):BlendPopUp.BlendModeDic[RootItem].BlendMode;
+            if (mode == BlendMode.Premultiply)
             {
                 defaultValue = 1;
             }

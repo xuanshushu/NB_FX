@@ -3376,6 +3376,24 @@ namespace NBShaderEditor
         }
         internal bool TryRunGraphSharedReset(Action reset,bool resetSpecial)
         {
+            return TryRunGraphKnownMaterialEdit(reset,rampBefore=>{
+                if(resetSpecial&&!TryResetGraphSpecialUVValues("all"))return false;
+                // Original Native final sync derives this existing ramp bit after Light reset.
+                if(resetSpecial)foreach(Material value in _rootItem.Mats)
+                    WriteGraphHalfSlice(value,"_NB_Flags1Hi16",1<<(29-16),value.GetTexture("_SixWayEmissionRamp")?1<<(29-16):0);
+                else if(!TryFinalizeGraphLightRampEdit(rampBefore))return false;
+                foreach(Material value in _rootItem.Mats)
+                {
+                    var tier=(NBShaderFeatureTier)(int)value.GetFloat(FeatureTierPropertyName);bool changed;
+                    if(!NBShaderFeatureRuntime.TryApplyGraphOwnedProjection(value,tier,
+                        NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),
+                        NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier),out changed))return false;
+                }
+                return true;
+            },"Reset NB shared Graph controls");
+        }
+        internal bool TryRunGraphKnownMaterialEdit(Action reset,Func<IList<Texture>,bool> finish,string label)
+        {
             if(reset==null||!HasGraphSharedResetSchema())return false;
             var originals=new List<string>();var originalObjectReferences=new List<Dictionary<string,UnityEngine.Object>>();var objects=new List<UnityEngine.Object>();
             var rampBefore=new List<Texture>();var passState=new List<Dictionary<string,bool>>();int group=Undo.GetCurrentGroup();bool completed=false;
@@ -3398,20 +3416,10 @@ namespace NBShaderEditor
                     foreach(string tag in new[]{"SRPDefaultUnlit","UniversalForward","Universal Forward","DepthOnly","DepthNormalsOnly","ShadowCaster","NBCameraOpaqueDistortPass","NBDeferredDistortPass","Universal2D"})passes[tag]=value.GetShaderPassEnabled(tag);
                     passState.Add(passes);
                 }
-                Undo.RegisterCompleteObjectUndo(objects.ToArray(),"Reset NB shared Graph controls");
+                Undo.RegisterCompleteObjectUndo(objects.ToArray(),label);
                 reset();
-                if(resetSpecial&&!TryResetGraphSpecialUVValues("all"))return false;
-                // Original Native final sync derives this existing ramp bit after Light reset.
-                if(resetSpecial)foreach(Material value in _rootItem.Mats)
-                    WriteGraphHalfSlice(value,"_NB_Flags1Hi16",1<<(29-16),value.GetTexture("_SixWayEmissionRamp")?1<<(29-16):0);
-                else if(!TryFinalizeGraphLightRampEdit(rampBefore))return false;
-                foreach(Material value in _rootItem.Mats)
-                {
-                    var tier=(NBShaderFeatureTier)(int)value.GetFloat(FeatureTierPropertyName);bool changed;
-                    if(!NBShaderFeatureRuntime.TryApplyGraphOwnedProjection(value,tier,
-                        NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier),
-                        NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(tier),out changed))return false;
-                }
+                if(finish!=null&&!finish(rampBefore))return false;
+                if(!HasGraphSharedResetSchema()||(_rootItem.Mats[0].HasProperty("_ShaderKeywordFoldOut")&&!HasGraphRemainingSharedUISchema()))return false;
                 completed=true;foreach(Material value in _rootItem.Mats)EditorUtility.SetDirty(value);Undo.CollapseUndoOperations(group);return true;
             }
             finally
@@ -3435,6 +3443,56 @@ namespace NBShaderEditor
                 }
                 RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();
             }
+        }
+
+        internal static readonly string[] GraphRemainingSharedUIProperties={"_BigBlockModeSettingFoldOut","_AdditiveToPreMultiplyAlphaLerp","_ShaderKeywordFoldOut"};
+        internal static bool HasGraphRemainingSharedUIMaterialSchema(Material material)
+        {
+            NBShaderMaterialIntentResult intent;
+            if(!NBShaderFeatureLevelMaterialApplier.TryReadGraphSavedSupportedGateTier(material,out intent))return false;
+            foreach(string name in GraphRemainingSharedUIProperties)
+            {
+                if(!NBShaderMaterialIntentResolver.HasFloatShaderProperty(material,name))return false;
+                float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;
+            }
+            bool change;
+            return NBShaderFeatureRuntime.CanApplyGraphOwnedProjection(material,intent.tier,
+                NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(intent.tier),
+                NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(intent.tier),out change);
+        }
+        internal bool HasGraphRemainingSharedUISchema()
+        {
+            if(!HasGraphSharedResetSchema())return false;
+            foreach(Material material in _rootItem.Mats)
+            {
+                if(!HasGraphRemainingSharedUIMaterialSchema(material))return false;
+                foreach(string name in GraphRemainingSharedUIProperties)if(!_rootItem.PropertyInfoDic.ContainsKey(name))return false;
+            }
+            return true;
+        }
+        internal bool TryWriteGraphAdditiveBlend(float value,bool reset=false)
+        {
+            if(!HasGraphRemainingSharedUISchema()||float.IsNaN(value)||float.IsInfinity(value)||(!reset&&(value<0||value>1)))return false;
+            return TryRunGraphKnownMaterialEdit(()=>{
+                foreach(Material material in _rootItem.Mats)material.SetFloat("_AdditiveToPreMultiplyAlphaLerp",reset?(material.GetFloat("_Blend")==1f?1f:0f):value);
+            },null,"NB Additive To Premultiply");
+        }
+        internal static bool TryApplyGraphBlendPresetForOfficialEdit(IList<Material> materials,IDictionary<Material,float> beforeBlend,out bool changed)
+        {
+            changed=false;if(materials==null||materials.Count==0||beforeBlend==null)return false;
+            foreach(Material material in materials)if(!HasGraphRemainingSharedUIMaterialSchema(material)||!beforeBlend.ContainsKey(material))return false;
+            foreach(Material material in materials)
+            {
+                float mode=material.GetFloat("_Blend");if(mode==beforeBlend[material]||(mode!=1f&&mode!=2f))continue;
+                float next=mode==1f?1f:0f;
+                if(material.GetFloat("_AdditiveToPreMultiplyAlphaLerp")!=next){material.SetFloat("_AdditiveToPreMultiplyAlphaLerp",next);changed=true;}
+            }
+            return true;
+        }
+        internal bool TryRunGraphKnownToolbarEdit(Action edit)
+        {
+            if(!HasGraphRemainingSharedUISchema())return false;
+            return TryRunGraphKnownMaterialEdit(edit,null,"NB Graph Toolbar");
         }
 
     }

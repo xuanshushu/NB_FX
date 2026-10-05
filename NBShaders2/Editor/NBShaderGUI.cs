@@ -135,6 +135,7 @@ namespace NBShaderEditor
         public System.Collections.Generic.IEnumerable<string> GetSharedGraphPropertyNames()
         {
             var names = new System.Collections.Generic.List<string>();
+            if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphRemainingUIReady)names.AddRange(NBShaderSyncService.GraphRemainingSharedUIProperties);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphBaseShadowReady)names.AddRange(NBShaderSyncService.GraphBaseShadowProperties);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphBaseNumericReady)names.AddRange(NBShaderSyncService.GraphBaseNumericProperties);
             if(Context!=null && Context.IsGraphMaterialHost && _sharedGraphBaseBackColorReady)names.AddRange(NBShaderSyncService.GraphBaseBackColorProperties);
@@ -421,6 +422,7 @@ namespace NBShaderEditor
                     _graphLightModeBlock = null;
                     _graphBaseBackColorItem=null;_sharedGraphBaseBackColorReady=false;
                     _graphBaseNumericBlock=null;_sharedGraphBaseNumericReady=false;
+                    _graphBlendModeBlock=null;_graphKeywordListBlock=null;_sharedGraphRemainingUIReady=false;
                     _sharedGraphBaseShadowReady=false;_graphAffectsShadowsItem=null;_graphTransparentShadowDitherItem=null;_graphIgnoreVertexColorItem=null;
                     _sharedGraphLightSubReady = false;
                     _graphNormalMapBlock = null;
@@ -438,8 +440,10 @@ namespace NBShaderEditor
                     _taBlock = null;
                     _particleVertexStreamsItem = null;
                 }
-                if (InitializeGraphMainTextureInputs())
-                    _mainTexBlock.OnGUI();
+                bool mainReady=InitializeGraphMainTextureInputs();
+                _toolBar??=new NBShaderGUIToolBar(this);_toolBar.DrawGraphTierSelector();
+                DrawGraphRemainingSharedUI();
+                if(mainReady)_mainTexBlock.OnGUI();
                 else
                     EditorGUILayout.HelpBox("Shared Main Texture needs its real Float foldouts/schema. Existing Graph native inputs remain available below.", MessageType.Info);
                 if (InitializeGraphLightModeInputs())
@@ -468,8 +472,6 @@ namespace NBShaderEditor
                 DrawGraphBaseBackColorInputs();
                 InitializeGraphBaseShadowInputs();
                 DrawGraphBaseNumericInputs();
-                _toolBar ??= new NBShaderGUIToolBar(this);
-                _toolBar.DrawGraphTierSelector();
                 return;
             }
 
@@ -856,7 +858,7 @@ namespace NBShaderEditor
             items=null;Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             if(!Context.IsGraphMaterialHost||!SyncService.HasGraphSharedResetSchema())return false;
             // Every existing leaf preflight is complete before factories can initialize.
-            if(!InitializeGraphBaseShadowInputs()||!InitializeGraphBaseBackColorInputs()||!InitializeGraphDepthFeaturesInputs()||
+            if(!InitializeGraphRemainingSharedUI()||!InitializeGraphBaseShadowInputs()||!InitializeGraphBaseBackColorInputs()||!InitializeGraphDepthFeaturesInputs()||
                 !InitializeGraphStencilWithoutPlayerInputs()||!InitializeGraphMainTextureInputs()||!InitializeGraphLightModeInputs()||
                 !InitializeGraphNormalMapInputs()||!InitializeGraphMatCapInputs()||!InitializeGraphColorAdjustmentInputs()||
                 !InitializeGraphMaskProgramInputs()||!InitializeGraphNoiseInputs()||!InitializeGraphChromaticInputs()||
@@ -865,13 +867,13 @@ namespace NBShaderEditor
                 !InitializeGraphDepthDecalInputs()||!InitializeGraphParallaxInputs()||!InitializeGraphPortalInputs()||
                 !InitializeGraphFlipbookInputs()||!InitializeGraphVATInputs()||!InitializeGraphTADepthInputs())return false;
             items=new System.Collections.Generic.List<ShaderGUIItem>{
-                _graphBaseNumericBlock,_graphColorAdjustmentBlock,_graphBaseBackColorItem,
+                _graphBlendModeBlock,_graphBaseNumericBlock,_graphColorAdjustmentBlock,_graphBaseBackColorItem,
                 _graphDistanceFadeBlock,_graphSoftParticlesBlock,_graphStencilWithoutPlayerItem,
                 _mainTexBlock,_graphLightModeBlock,_graphNormalMapBlock,_graphMatCapBlock,
                 _graphMaskItem,_graphNoiseItem,_graphChromaticItem,_graphEmissionItem,_graphColorRampItem,
                 _graphDissolveItem,_graphColorBlendItem,_graphProgramNoiseItem,_graphSharedUVItem,
                 _graphFresnelItem,_graphVertexOffsetItem,_graphDepthOutlineItem,_graphDepthDecalItem,
-                _graphParallaxItem,_graphPortalItem,_graphFlipbookItem,_graphVATItem,_graphTADepthBlock};
+                _graphParallaxItem,_graphPortalItem,_graphFlipbookItem,_graphVATItem,_graphTADepthBlock,_graphKeywordListBlock};
             if(SyncService.HasGraphBackFirstEditSchema()&&InitializeGraphBackFirstInputs())items.Insert(2,_graphBackFirstItem);
             foreach(ShaderGUIItem item in items)if(!GraphResetDefaultsCompatible(item))return false;
             return true;
@@ -911,6 +913,69 @@ namespace NBShaderEditor
                 item.CheckIsPropertyModified(true);return;
             }
             foreach(ShaderGUIItem child in item.ChildrenItemList)ResetGraphDisabledChildren(child);
+        }
+
+        BigBlockItem _graphBlendModeBlock;BlockItem _graphKeywordListBlock;bool _sharedGraphRemainingUIReady;
+        internal bool InitializeGraphRemainingSharedUI()
+        {
+            Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
+            _sharedGraphRemainingUIReady=Context.IsGraphMaterialHost&&SyncService.HasGraphRemainingSharedUISchema();
+            if(!_sharedGraphRemainingUIReady)return false;
+            _graphBlendModeBlock??=ModeBigBlockItem.CreateGraphAdditiveBlendBlock(this,null);
+            _graphKeywordListBlock??=TABigBlockItem.CreateKeywordsBlock(this,null,true);return true;
+        }
+        internal void DrawGraphRemainingSharedUI(ShaderGUIItem selectedItem=null)
+        {
+            if(!InitializeGraphRemainingSharedUI())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"NB Shared Mode/Keywords");
+            if(selectedItem!=null){selectedItem.OnGUI();return;}
+            _graphBlendModeBlock.OnGUI();if(Mats.Count==1)_graphKeywordListBlock.OnGUI();
+        }
+        internal bool CanUseGraphSharedToolbar(bool singleTarget=false)
+        {
+            return Context!=null&&Context.IsGraphMaterialHost&&!Context.HasMixedMaterialHosts&&
+                (!singleTarget||Mats.Count==1)&&SyncService!=null&&SyncService.HasGraphRemainingSharedUISchema();
+        }
+        internal bool TryCollapseGraphOwnedFolds()
+        {
+            System.Collections.Generic.List<ShaderGUIItem> items;if(!CanUseGraphSharedToolbar()||!TryGetGraphResetRootItems(out items))return false;
+            var names=new System.Collections.Generic.HashSet<string>(System.StringComparer.Ordinal);
+            foreach(ShaderGUIItem item in items)CollectGraphOwnedFolds(item,names);
+            foreach(Material material in Mats)foreach(string name in names)
+                if(!HasFloatProperty(material,name)||float.IsNaN(material.GetFloat(name))||float.IsInfinity(material.GetFloat(name)))return false;
+            return SyncService.TryRunGraphKnownToolbarEdit(()=>{
+                foreach(Material material in Mats)foreach(string name in names)material.SetFloat(name,0f);
+            });
+        }
+        private static void CollectGraphOwnedFolds(ShaderGUIItem item,System.Collections.Generic.HashSet<string> names)
+        {
+            if(item is BlockItem block&&!string.IsNullOrEmpty(block.FoldOutPropertyName))names.Add(block.FoldOutPropertyName);
+            if(item is PropertyToggleBlockItem toggle&&!string.IsNullOrEmpty(toggle.FoldOutPropertyName))names.Add(toggle.FoldOutPropertyName);
+            if(item is TextureRelatedFoldOutItem related&&!string.IsNullOrEmpty(related.FoldOutPropertyName))names.Add(related.FoldOutPropertyName);
+            if(item is UVModeSelectItem uv&&!string.IsNullOrEmpty(uv.FoldOutPropertyName))names.Add(uv.FoldOutPropertyName);
+            if(item is ShaderGUIBigBlockItem oldBlock&&!string.IsNullOrEmpty(oldBlock.FoldOutPropertyName))names.Add(oldBlock.FoldOutPropertyName);
+            foreach(ShaderGUIItem child in item.ChildrenItemList)CollectGraphOwnedFolds(child,names);
+        }
+        internal bool TryClearGraphOwnedClosedTextures()
+        {
+            System.Collections.Generic.List<ShaderGUIItem> items;if(!CanUseGraphSharedToolbar()||!TryGetGraphResetRootItems(out items))return false;
+            var names=new System.Collections.Generic.Dictionary<Material,System.Collections.Generic.HashSet<string>>();
+            foreach(Material material in Mats)
+            {
+                var fields=new System.Collections.Generic.HashSet<string>(System.StringComparer.Ordinal);
+                foreach(ShaderGUIItem item in items)CollectGraphClosedTextures(item,material,false,fields);names.Add(material,fields);
+            }
+            return SyncService.TryRunGraphKnownToolbarEdit(()=>{
+                foreach(var target in names)foreach(string name in target.Value)if(target.Key.GetTexture(name)!=null)target.Key.SetTexture(name,null);
+            });
+        }
+        private static void CollectGraphClosedTextures(ShaderGUIItem item,Material material,bool closed,System.Collections.Generic.HashSet<string> fields)
+        {
+            if(item is PropertyToggleBlockItem&&item.PropertyInfo?.Property!=null)
+                closed|=material.GetFloat(item.PropertyName)<=.5f;
+            if(closed&&item is TextureObjectItem&&!string.IsNullOrEmpty(item.PropertyName)&&
+                material.shader.GetPropertyType(material.shader.FindPropertyIndex(item.PropertyName))==UnityEngine.Rendering.ShaderPropertyType.Texture)fields.Add(item.PropertyName);
+            foreach(ShaderGUIItem child in item.ChildrenItemList)CollectGraphClosedTextures(child,material,closed,fields);
         }
 
     }

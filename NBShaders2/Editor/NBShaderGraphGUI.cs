@@ -18,15 +18,18 @@ namespace NBShaderEditor
             System.Collections.Generic.Dictionary<Material, NBShader.NBShaderMaterialIntentResult> before = null;
             System.Collections.Generic.Dictionary<Material, NBShader.NBShaderPassIntent> beforeBack = null;
             System.Collections.Generic.Dictionary<Material,float> beforeSurface=null;
+            System.Collections.Generic.Dictionary<Material,float> beforeBlend=null;
             bool interactive = Event.current != null && Event.current.type != EventType.Layout && Event.current.type != EventType.Repaint;
             if (interactive)
             {
+                beforeBlend=new System.Collections.Generic.Dictionary<Material,float>();
                 beforeSurface=new System.Collections.Generic.Dictionary<Material,float>();
                 before = new System.Collections.Generic.Dictionary<Material, NBShader.NBShaderMaterialIntentResult>();
                 beforeBack = new System.Collections.Generic.Dictionary<Material, NBShader.NBShaderPassIntent>();
                 foreach (UnityEngine.Object target in materialEditor.targets)
                     if (target is Material selected)
                     {
+                        if(selected.HasProperty("_Blend"))beforeBlend[selected]=selected.GetFloat("_Blend");
                         if(selected.HasProperty("_TransparentShadowDitherToggle"))beforeSurface[selected]=selected.GetFloat("_Surface");
                         NBShader.NBShaderMaterialIntentResult intent;
                         if (NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.TryReadGraphSavedSupportedGateTier(selected, out intent))
@@ -65,6 +68,11 @@ namespace NBShaderEditor
                 bool coverageChanged;
                 if(surfaceChanged&&NBShaderSyncService.TryApplyGraphShadowCoverageForSurface(selection,out coverageChanged)&&coverageChanged)
                     foreach(Material selected in selection)EditorUtility.SetDirty(selected);
+            }
+            if(graphEdited&&beforeBlend!=null)
+            {
+                var selection=new System.Collections.Generic.List<Material>();foreach(UnityEngine.Object target in materialEditor.targets)if(target is Material material)selection.Add(material);
+                bool changed;if(NBShaderSyncService.TryApplyGraphBlendPresetForOfficialEdit(selection,beforeBlend,out changed)&&changed)foreach(Material material in selection)EditorUtility.SetDirty(material);
             }
             // URP's nested GUI owns surface state; this outer GUI owns only
             // the original NB SixWay keywords. Sync immediately on edits.

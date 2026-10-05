@@ -52,16 +52,7 @@ namespace NBShaderEditor
         // Same Tier content/menu/callback, scoped to real Graph consumers.
         internal void DrawGraphTierSelector()
         {
-            Rect rect = ShaderGUIItem.ApplyGlobalRectCompensation(_rootItem.GetControlRect(EditorGUIUtility.singleLineHeight));
-            GUI.Box(rect, GUIContent.none, EditorStyles.toolbar);
-            GUI.Label(new Rect(rect.x + ButtonWidth + 4, rect.y, Mathf.Max(0, rect.width - TierButtonWidth - ButtonWidth - 8), rect.height),
-                Label("graphTierScope", "Supported Tier: Mask / Noise / Refraction / Chromatic Aberration / Program Noise / Fresnel / Overlay / Dissolve / Parallax / Normal Map / Color Ramp / MatCap / Distance Fade / Soft Particles / Depth Outline / Depth Decal / Lighting / VAT / Flipbook / Vertex Offset / Override Z"), EditorStyles.miniLabel);
-            // Same original Reset menu and callbacks, real Graph shared ownership.
-            using(new EditorGUI.DisabledScope(_rootItem.SyncService==null||!_rootItem.SyncService.HasGraphSharedResetSchema()))
-                if(GUI.Button(MakeToolbarButtonRect(rect,rect.x,ButtonWidth),TextContent("specialReset","R","特殊重置功能"),EditorStyles.toolbarButton))ShowResetPopupMenu();
-            using (new EditorGUI.DisabledScope(_rootItem.SyncService == null || !_rootItem.SyncService.HasGraphSupportedGateTierEditSchema()))
-                if (GUI.Button(MakeToolbarButtonRect(rect, rect.xMax - TierButtonWidth, TierButtonWidth), TierContent(), EditorStyles.toolbarButton))
-                    ShowTierPopupMenu();
+            using(new EditorGUI.DisabledScope(!_rootItem.CanUseGraphSharedToolbar()))DrawToolbar();
         }
 
         public void DrawToolbar()
@@ -71,7 +62,8 @@ namespace NBShaderEditor
             GUI.Box(toolbarRect, GUIContent.none, EditorStyles.toolbar);
 
             Material material = MainMaterial;
-            bool hasMaterial = material != null;
+            bool graph=_rootItem.Context!=null&&_rootItem.Context.IsGraphMaterialHost;
+            bool hasMaterial = material != null&&(!graph||_rootItem.CanUseGraphSharedToolbar());
             float buttonX = toolbarRect.x;
 
             using (new EditorGUI.DisabledScope(!hasMaterial))
@@ -86,13 +78,14 @@ namespace NBShaderEditor
                     CleanUnusedTextures();
                 }
 
+                using(new EditorGUI.DisabledScope(graph&&!_rootItem.CanUseGraphSharedToolbar(true)))
                 if (ToolbarButton(toolbarRect, ref buttonX, TextContent("copy", "C", "复制材质属性")))
                 {
-                    CopyMaterial(material);
+                    if(!graph||_rootItem.CanUseGraphSharedToolbar(true))CopyMaterial(material);
                 }
             }
 
-            using (new EditorGUI.DisabledScope(!hasMaterial || !HasCopiedMaterial()))
+            using (new EditorGUI.DisabledScope(!hasMaterial || !HasCopiedMaterial() || (graph&&!CanPasteGraph())))
             {
                 if (ToolbarButton(toolbarRect, ref buttonX, TextContent("paste", "V", "粘贴材质属性")))
                 {
@@ -320,6 +313,7 @@ namespace NBShaderEditor
 
         private void CleanUnusedTextures()
         {
+            if(_rootItem.Context!=null&&_rootItem.Context.IsGraphMaterialHost){_rootItem.TryClearGraphOwnedClosedTextures();return;}
             RecordAllMaterials(UndoText("cleanUnusedTextures", "清除没有使用的贴图"));
             foreach (Material mat in Materials)
             {
@@ -332,6 +326,7 @@ namespace NBShaderEditor
 
         private void PasteMaterial()
         {
+            if(_rootItem.Context!=null&&_rootItem.Context.IsGraphMaterialHost){if(TryPasteGraph())GUIUtility.ExitGUI();return;}
             Material material = MainMaterial;
             if (material == null || !HasCopiedMaterial())
             {
@@ -497,6 +492,7 @@ namespace NBShaderEditor
 
         private void CollapseAll()
         {
+            if(_rootItem.Context!=null&&_rootItem.Context.IsGraphMaterialHost){if(_rootItem.TryCollapseGraphOwnedFolds())UnityEditorInternal.InternalEditorUtility.RepaintAllViews();return;}
             RecordAllMaterials(UndoText("collapseAll", "折叠所有控件"));
             foreach (KeyValuePair<string, ShaderPropertyInfo> pair in _rootItem.PropertyInfoDic)
             {
@@ -741,5 +737,18 @@ namespace NBShaderEditor
         {
             return NBShaderInspectorLocalization.Get("inspector.toolbar." + key + ".undo", fallback);
         }
+        internal bool CanPasteGraph()
+        {
+            return _rootItem.CanUseGraphSharedToolbar(true)&&copiedMaterialSnapshot!=null&&copiedShader==MainMaterial.shader&&
+                NBShaderSyncService.HasGraphRemainingSharedUIMaterialSchema(copiedMaterialSnapshot);
+        }
+        internal bool TryPasteGraph()
+        {
+            if(!CanPasteGraph())return false;
+            bool accepted=_rootItem.SyncService.TryRunGraphKnownToolbarEdit(()=>MainMaterial.CopyPropertiesFromMaterial(copiedMaterialSnapshot));
+            if(accepted){_rootItem.IsInit=true;_rootItem.Context?.Refresh();_rootItem.SyncService.NotifyKeywordsMayHaveChanged();UnityEditorInternal.InternalEditorUtility.RepaintAllViews();}
+            return accepted;
+        }
+
     }
 }

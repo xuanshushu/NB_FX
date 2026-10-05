@@ -8,6 +8,7 @@ namespace NBShaderEditor
     public class PropertyToggleBlockItem : ShaderGUIItem
     {
         private readonly string _foldOutPropertyName;
+        internal string FoldOutPropertyName=>_foldOutPropertyName;
         private readonly Func<GUIContent> _contentProvider;
         private readonly int _flagBits;
         private readonly int _flagIndex;
@@ -310,6 +311,7 @@ namespace NBShaderEditor
     {
         private readonly ShaderGUIFoldOutHelper _foldOutHelper;
         private readonly string _texturePropertyName;
+        internal string FoldOutPropertyName{get;}
         private readonly Func<GUIContent> _contentProvider;
         private readonly Func<bool> _isVisible;
 
@@ -322,6 +324,7 @@ namespace NBShaderEditor
             Func<bool> isVisible = null) : base(rootItem, parentItem)
         {
             _foldOutHelper = new ShaderGUIFoldOutHelper(rootItem, foldOutPropertyName);
+            FoldOutPropertyName=foldOutPropertyName;
             _texturePropertyName = texturePropertyName;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             _isVisible = isVisible;
@@ -1073,6 +1076,7 @@ namespace NBShaderEditor
 
         private readonly Func<GUIContent> _contentProvider;
         private readonly string _foldOutPropertyName;
+        internal string FoldOutPropertyName=>_foldOutPropertyName;
         private readonly int _uvModeBitPos;
         private readonly int _uvModeFlagIndex;
         private readonly string _texturePropertyName;
@@ -1536,12 +1540,14 @@ namespace NBShaderEditor
     public class KeywordListItem : ShaderGUIItem
     {
         private readonly Func<GUIContent> _contentProvider;
+        readonly bool _graphReadLive;
         private Material _cachedMaterial;
         private int _cachedKeywordVersion = -1;
         private string[] _cachedKeywords = Array.Empty<string>();
 
-        public KeywordListItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem, Func<GUIContent> contentProvider) : base(rootItem, parentItem)
+        public KeywordListItem(ShaderGUIRootItem rootItem, ShaderGUIItem parentItem, Func<GUIContent> contentProvider,bool graphReadLive=false) : base(rootItem, parentItem)
         {
+            _graphReadLive=graphReadLive;
             _contentProvider = contentProvider ?? (() => GUIContent.none);
             GuiContent = _contentProvider();
         }
@@ -1583,6 +1589,7 @@ namespace NBShaderEditor
 
         private string[] GetCachedKeywords(Material material)
         {
+            if(_graphReadLive){_cachedMaterial=material;_cachedKeywords=material!=null?material.shaderKeywords??Array.Empty<string>():Array.Empty<string>();return _cachedKeywords;}
             int keywordVersion = RootItem is NBShaderRootItem nbRootItem && nbRootItem.SyncService != null
                 ? nbRootItem.SyncService.KeywordVersion
                 : 0;
