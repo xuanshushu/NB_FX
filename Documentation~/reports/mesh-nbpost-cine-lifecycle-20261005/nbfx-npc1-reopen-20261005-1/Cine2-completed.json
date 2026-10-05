@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "duration": 2.29,
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4NBPostCinemachinePersistenceTests.NBPostCine3_SaveUnloadReopen_RealLifecycle",
+      "Status": "Failed",
+      "Duration": 1.9630902,
+      "Message": "Unhandled log message: '[Exception] MissingReferenceException: The object of type 'NBShader.PostProcessingManager' has been destroyed but you are still trying to access it.\nYour script should either check if it is null or you should not destroy the object.'. Use UnityEngine.TestTools.LogAssert.Expect",
+      "StackTrace": "UnityEngine.Object+MarshalledUnityObject.TryThrowEditorNullExceptionObject (UnityEngine.Object unityObj, System.String parameterName) (at <4188a0f79dff4b4191dbeaff03bfe462>:0)\r\nUnityEngine.Bindings.ThrowHelper.ThrowNullReferenceException (System.Object obj) (at <4188a0f79dff4b4191dbeaff03bfe462>:0)\r\nUnityEngine.Behaviour.get_isActiveAndEnabled () (at <4188a0f79dff4b4191dbeaff03bfe462>:0)\r\nNBShader.PostProcessingManager.EditorUpdate () (at ./Packages/NB_FX/NBPostProcessing/Runtime/PostProcessingManager.cs:703)\r\nUnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <04e249a5238343c6a036befedb61c13f>:0)\r\n\r\n"
+    }
+  ]
+}

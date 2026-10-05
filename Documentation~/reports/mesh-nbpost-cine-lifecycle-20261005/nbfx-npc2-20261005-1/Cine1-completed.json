@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "duration": 0.42,
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4NBPostCinemachinePersistenceTests.NBPostCine3_FreshPerlin_RealLifecycle",
+      "Status": "Failed",
+      "Duration": 0.0757172,
+      "Message": "System.InvalidOperationException : Cannot create a new scene additively with an untitled scene unsaved.",
+      "StackTrace": "  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)\r\n  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) [0x00000] in <04e249a5238343c6a036befedb61c13f>:0 \r\n  at NBFX.Baseline.Tests.G4NBPostCinemachinePersistenceTests+Scope..ctor (System.Boolean existingPerlin, System.Boolean persistent) [0x00dfc] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4NBPostCinemachinePersistenceTests.cs:99 \r\n  at NBFX.Baseline.Tests.G4NBPostCinemachinePersistenceTests+<NBPostCine3_FreshPerlin_RealLifecycle>d__15.MoveNext () [0x0004e] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4NBPostCinemachinePersistenceTests.cs:195 \r\n  at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0004e] in .\\Library\\PackageCache\\com.unity.test-framework@bd7f943e9647\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:44 "
+    }
+  ]
+}

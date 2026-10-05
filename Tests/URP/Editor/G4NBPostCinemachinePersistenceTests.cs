@@ -1,0 +1,315 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using NUnit.Framework;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.RenderGraphModule;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
+using Object=UnityEngine.Object;
+
+namespace NBFX.Baseline.Tests
+{
+    public sealed class G4NBPostCinemachinePersistenceTests
+    {
+        static readonly List<Scope> ActiveScopes=new List<Scope>();
+        [TearDown] public void DisposeOwnedScopesAfterNestedEnumeratorFailure()
+        {
+            var failures=new List<Exception>();
+            foreach(var scope in ActiveScopes.ToArray().Reverse())
+            {try{scope.evidence.cleanupViaTearDown=true;scope.Dispose();}catch(Exception e){failures.Add(e);}}
+            if(failures.Count>0)throw new AggregateException("Owned NBPost scope cleanup failed; do not continue rendering",failures);
+        }
+        const BindingFlags All=BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance|BindingFlags.Static;
+        const string Package="Packages/com.xuanxuan.nb.fx/";
+        const int Size=128,Layer=2;
+        static Type TypeOf(string n)=>AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType(n,false)).FirstOrDefault(t=>t!=null);
+        static object Get(object o,string n){var t=o as Type??o.GetType();return t.GetField(n,All)?.GetValue(o is Type?null:o)??t.GetProperty(n,All)?.GetValue(o is Type?null:o);}
+        static void Set(object o,string n,object value){var t=o as Type??o.GetType();var f=t.GetField(n,All);Assert.That(f,Is.Not.Null,n);f.SetValue(o is Type?null:o,f.FieldType.IsEnum?Enum.ToObject(f.FieldType,value):value);}
+        static int Callbacks(object o,string n)=>EditorApplication.update==null?0:EditorApplication.update.GetInvocationList().Count(d=>ReferenceEquals(d.Target,o)&&d.Method.Name==n);
+        static float Delta(Color[] a,Color[] b)=>(float)typeof(G4NBPostEffectsControllerTests).GetMethod("Delta",All).Invoke(null,new object[]{a,b});
+        static bool Finite(Color[] a)=>(bool)typeof(G4NBPostEffectsControllerTests).GetMethod("Finite",All).Invoke(null,new object[]{new[]{a}});
+        static int Visible(Color[] a)=>(int)typeof(G4NBPostEffectsControllerTests).GetMethod("Visible",All).Invoke(null,new object[]{a});
+        static int Changed(Color[] a,Color[] b)=>Enumerable.Range(0,a.Length).Count(i=>Enumerable.Range(0,4).Any(c=>Mathf.Abs(a[i][c]-b[i][c])>.01f));
+        static bool SameRotation(Quaternion a,Quaternion b)
+        {
+            float direct=Mathf.Max(Mathf.Abs(a.x-b.x),Mathf.Abs(a.y-b.y),Mathf.Abs(a.z-b.z),Mathf.Abs(a.w-b.w));
+            float opposite=Mathf.Max(Mathf.Abs(a.x+b.x),Mathf.Abs(a.y+b.y),Mathf.Abs(a.z+b.z),Mathf.Abs(a.w+b.w));return Mathf.Min(direct,opposite)<.00001f;
+        }
+        static bool DefaultComponents(GameObject go,Type[] required,params Type[] optional)
+        {
+            var components=go.GetComponents<Component>();return components.All(c=>c!=null)&&required.All(t=>components.Count(c=>c.GetType()==t)==1)&&components.All(c=>required.Contains(c.GetType())||optional.Contains(c.GetType()))&&optional.All(t=>components.Count(c=>c.GetType()==t)<=1);
+        }
+        static string ExactRunnerBootstrapFingerprint(Scene scene)
+        {
+            Assert.That(SceneManager.sceneCount,Is.EqualTo(1));Assert.That(scene.IsValid()&&scene.isLoaded&&!scene.isDirty&&string.IsNullOrEmpty(scene.path),Is.True,"Only a clean untitled runner bootstrap may be borrowed");
+            var roots=scene.GetRootGameObjects();Assert.That(roots.Length,Is.EqualTo(2));var c=roots.SingleOrDefault(o=>o.name=="Main Camera");var l=roots.SingleOrDefault(o=>o.name=="Directional Light");Assert.That(c&&l,Is.True);
+            Assert.That(c.activeSelf&&l.activeSelf&&c.layer==0&&l.layer==0&&c.hideFlags==HideFlags.None&&l.hideFlags==HideFlags.None&&c.transform.childCount==0&&l.transform.childCount==0&&c.CompareTag("MainCamera")&&l.CompareTag("Untagged"),Is.True,"Unknown bootstrap content remains untouched");
+            Assert.That(DefaultComponents(c,new[]{typeof(Transform),typeof(Camera),typeof(AudioListener)},typeof(UniversalAdditionalCameraData))&&DefaultComponents(l,new[]{typeof(Transform),typeof(Light)},typeof(UniversalAdditionalLightData)),Is.True);
+            Assert.That(c.GetComponent<Camera>().enabled&&c.GetComponent<Camera>().targetTexture==null&&l.GetComponent<Light>().enabled&&l.GetComponent<Light>().type==LightType.Directional&&l.GetComponent<Light>().cookie==null,Is.True);
+            // Compare complete component serialization, normalizing ONLY references
+            // to these two local GameObjects/components. External references stay exact.
+            var local=new Dictionary<int,string>();foreach(var go in new[]{c,l}){local[go.GetInstanceID()]=go.name;foreach(var comp in go.GetComponents<Component>())local[comp.GetInstanceID()]=go.name+"/"+comp.GetType().FullName;}
+            var rows=new List<string>();foreach(var go in new[]{c,l})foreach(var comp in go.GetComponents<Component>().OrderBy(x=>x.GetType().FullName))
+            {
+                string json=EditorJsonUtility.ToJson(comp);
+                json=System.Text.RegularExpressions.Regex.Replace(json,"\\\"instanceID\\\"\\s*:\\s*(-?[0-9]+)",m=>local.TryGetValue(int.Parse(m.Groups[1].Value),out string name)?"\"instanceID\":\"local:"+name+"\"":m.Value);
+                rows.Add(go.name+"/"+comp.GetType().FullName+":"+json);
+            }
+            return string.Join("\n",rows);
+        }
+        [Serializable] sealed class State
+        {
+            public string phase,cameraType,profilePath;public int ticks,unityFrame,index,controllerMask,shakeMask,managerCallbacks,controllerCallbacks,managerCallbackPosition,controllerCallbackPosition,postFlags;
+            public bool managerEnabled,controllerEnabled,perlinExists,managerCachedSamePerlin,soloIsCamera,brainLiveIsCamera;
+            public float amplitude,frequency,intensity;public Vector3 cameraPosition;public Quaternion cameraRotation;
+            public Vector3 virtualRawPosition,virtualPositionCorrection,brainRawPosition,brainPositionCorrection;
+            public Quaternion virtualRawOrientation,virtualOrientationCorrection,brainRawOrientation,brainOrientationCorrection;
+            public bool publicEvaluationMatchesCamera;public int publicResetEvaluations,publicBrainEvaluations;
+        }
+        [Serializable] sealed class BeforeReceipt
+        {
+            public string project,randomStateJSON,rendererFile,pipelineFile,rendererJSON,pipelineJSON,featureJSON,postMaterialJSON,managerStaticsJSON;
+            public float cineDelta,cineTime;public string solo;public string[] scenes,rendererFeatures;
+        }
+        [Serializable] sealed class Evidence
+        {
+            public string scope="Real NB Controller/Manager lifecycle + public Cine UpdateCameraState(-1)/Brain.ManualUpdate(0) evaluation + Camera.Render. Fixed Cine time gives exact repeat; no NB lifecycle invocation or Cine private cache write.",caseId;
+            public State[] states;public bool finite=true,cleanupRestored,rendererBytesUnchanged,pipelineBytesUnchanged,ownedCallbacksRemoved,settingsRestored,sceneRestored,serializedRefsRestored,persistentAssetBytesUnchanged,perlinAbsentBeforeController,unloadedOwnershipCleared,borrowedRunnerBootstrap,runnerBootstrapRestored,cleanupViaTearDown,randomStateRestored,observerRemoved;
+            public string cleanupFailure;public bool rendererFeatureListRestored,componentsRemoved;public float cleanupCineDelta,cleanupCineTime;public string cleanupRandomStateJSON;
+            public float[] response,restore,repeat;public int[] visible,changedPixels;public int rawCount;
+        }
+        sealed class Scope:IDisposable
+        {
+            readonly List<Object> owned=new List<Object>();readonly Dictionary<FieldInfo,object> managerStatics;
+            readonly Scene previousScene;readonly ScriptableRendererData renderer;readonly UniversalRenderPipelineAsset pipeline;readonly ScriptableRendererFeature nb;
+            readonly ScriptableRendererFeature[] originalFeatures;
+            readonly byte[] rendererBytes,pipelineBytes;readonly string rendererFile,pipelineFile,featureJSON;readonly RenderTexture previousRT;
+            readonly UnityEngine.Random.State randomState;readonly object oldSolo;readonly float oldDelta,oldTime;
+            readonly Type managerType,controllerType,cameraType,perlinType,brainType,coreType;readonly List<object> componentHistory=new List<object>();
+            readonly List<State> states=new List<State>();readonly List<Color[]> frames=new List<Color[]>();readonly List<float> repeats=new List<float>();
+            internal Scene scene;internal Camera camera;internal Component manager,controller,vcam,brain;internal Component perlin;
+            internal readonly string folder;internal readonly Evidence evidence;internal int ticks;
+            RenderTexture target;Texture2D read;Material post,postBefore;NBPostLifecyclePassObserver observer;string assetFolder,scenePath,bootstrapFingerprint;bool disposed;readonly Dictionary<string,byte[]> persistedBytes=new Dictionary<string,byte[]>();
+            int publicResetEvaluations,publicBrainEvaluations;
+            T Keep<T>(T value)where T:Object{owned.Add(value);return value;}
+            void RememberComponent(Component value){if(!ReferenceEquals(value,null)&&!componentHistory.Any(o=>ReferenceEquals(o,value)))componentHistory.Add(value);}
+            void RememberManagerBindings(){if(controller)RememberComponent(Get(controller,"_manager")as Component);RememberComponent(Get(managerType,"_instance")as Component);}
+            void EnsureAssetFolder()
+            {
+                if(!string.IsNullOrEmpty(assetFolder))return;
+                const string parent="Assets/ResTemp/EditorTemp";Assert.That(AssetDatabase.IsValidFolder(parent),Is.True,"Create the approved clone local-only EditorTemp parent before this fixture");assetFolder=parent+"/NBFX_Cine_"+Guid.NewGuid().ToString("N");Assert.That(AssetDatabase.CreateFolder(parent,Path.GetFileName(assetFolder)),Is.Not.Empty);
+            }
+            internal Scope(bool existingPerlin,bool persistent)
+            {
+                Assert.That(ActiveScopes,Is.Empty,"A prior owned scope must be cleaned before a new test");
+                Assert.That(Path.GetFullPath(Application.dataPath),Is.EqualTo(Path.GetFullPath(@"D:\UnityProject\NBUnityProject\.utmp\NBFXMeshValidation-20261002\Assets")).IgnoreCase);
+                Assert.That(Application.isPlaying,Is.False);previousScene=SceneManager.GetActiveScene();previousRT=RenderTexture.active;
+                for(int i=0;i<SceneManager.sceneCount;++i){var s=SceneManager.GetSceneAt(i);Assert.That((s.name+"/"+s.path).IndexOf("TAI",StringComparison.OrdinalIgnoreCase),Is.LessThan(0));Assert.That(s.isDirty,Is.False,"Do not operate on dirty user scene state");}
+                Assert.That(GraphicsSettings.GetRenderPipelineSettings<RenderGraphSettings>().enableRenderCompatibilityMode,Is.False,"Compatibility remains separate");
+                managerType=TypeOf("NBShader.PostProcessingManager");controllerType=TypeOf("NBShader.PostProcessingController");cameraType=TypeOf("Unity.Cinemachine.CinemachineCamera");perlinType=TypeOf("Unity.Cinemachine.CinemachineBasicMultiChannelPerlin");brainType=TypeOf("Unity.Cinemachine.CinemachineBrain");coreType=TypeOf("Unity.Cinemachine.CinemachineCore");
+                foreach(var t in new[]{managerType,controllerType,cameraType,perlinType,brainType,coreType})Assert.That(t,Is.Not.Null,"Actual Cinemachine3 capability must be compiled");
+                foreach(var t in new[]{managerType,controllerType,cameraType,brainType})Assert.That(Resources.FindObjectsOfTypeAll(t).OfType<Component>().Any(c=>c&&c.gameObject.scene.IsValid()&&c.gameObject.scene.isLoaded),Is.False,"No user NB/Cinemachine component may be touched");
+                Assert.That(controllerType.GetField("cinemachineCamera",All),Is.Not.Null);Assert.That(managerType.GetField("_perlin",All),Is.Not.Null);
+                oldSolo=coreType.GetProperty("SoloCamera",All).GetValue(null);Assert.That(oldSolo,Is.Null,"Do not override a user Solo camera");oldDelta=(float)Get(coreType,"UniformDeltaTimeOverride");oldTime=(float)Get(coreType,"CurrentTimeOverride");randomState=UnityEngine.Random.state;
+                pipeline=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;Assert.That(pipeline,Is.Not.Null);renderer=pipeline.rendererDataList[0];nb=renderer.rendererFeatures.First(f=>f&&f.GetType().FullName=="NBShader.NBPostProcess");Assert.That(nb.isActive,Is.True);
+                Assert.That(renderer.rendererFeatures.Any(f=>f is NBPostLifecyclePassObserver),Is.False,"Pre-existing transient observer residue requires Root cleanup");
+                originalFeatures=renderer.rendererFeatures.ToArray();
+                string project=Path.GetDirectoryName(Application.dataPath);rendererFile=Path.Combine(project,AssetDatabase.GetAssetPath(renderer));pipelineFile=Path.Combine(project,AssetDatabase.GetAssetPath(pipeline));rendererBytes=File.ReadAllBytes(rendererFile);pipelineBytes=File.ReadAllBytes(pipelineFile);featureJSON=EditorJsonUtility.ToJson(nb);
+                folder=Path.Combine(Environment.GetEnvironmentVariable("NBFX_MESH_EVIDENCE_DIR")??Path.Combine(project,"Temp/NBFXCine"),persistent?"cine-reopen":"cine-fresh");Directory.CreateDirectory(folder);evidence=new Evidence{caseId=persistent?"cine-reopen":"cine-fresh"};
+                try
+                {
+                    // Persist the actual clean state before any Unity setting, scene,
+                    // asset, renderer feature or component mutation.
+                    var before=new BeforeReceipt{project=project,cineDelta=oldDelta,cineTime=oldTime,solo=oldSolo==null?"<null>":oldSolo.ToString(),randomStateJSON=JsonUtility.ToJson(randomState),rendererFile=rendererFile,pipelineFile=pipelineFile,rendererJSON=EditorJsonUtility.ToJson(renderer),pipelineJSON=EditorJsonUtility.ToJson(pipeline),featureJSON=featureJSON,
+                        postMaterialJSON=Get(TypeOf("NBShader.NBPostProcess"),"NBPostProcessMaterial")is Material material?EditorJsonUtility.ToJson(material):"<null>",
+                        managerStaticsJSON=string.Join("\n",managerType.GetFields(All).Where(f=>f.IsStatic&&!f.IsLiteral&&!f.IsInitOnly).Select(f=>f.Name+"="+(f.GetValue(null)?.ToString()??"<null>"))),
+                        scenes=Enumerable.Range(0,SceneManager.sceneCount).Select(i=>{var s=SceneManager.GetSceneAt(i);return s.handle+"|"+s.name+"|"+s.path+"|dirty="+s.isDirty+"|roots="+s.rootCount;}).ToArray(),
+                        rendererFeatures=renderer.rendererFeatures.Select(f=>f?f.GetType().FullName+"|"+f.GetInstanceID()+"|"+AssetDatabase.GetAssetPath(f)+"|"+f.hideFlags:"<null>").ToArray()};
+                    File.WriteAllText(Path.Combine(folder,"before.json"),JsonUtility.ToJson(before,true));ActiveScopes.Add(this);
+                    if(string.IsNullOrEmpty(previousScene.path))
+                    {
+                        bootstrapFingerprint=ExactRunnerBootstrapFingerprint(previousScene);EnsureAssetFolder();
+                        File.WriteAllText(Path.Combine(folder,"runner-bootstrap-before.txt"),bootstrapFingerprint);
+                        evidence.borrowedRunnerBootstrap=true;
+                        Assert.That(EditorSceneManager.SaveScene(previousScene,assetFolder+"/RunnerBootstrap.unity"),Is.True);
+                    }
+                    Set(coreType,"UniformDeltaTimeOverride",0f);Set(coreType,"CurrentTimeOverride",17.25f);UnityEngine.Random.InitState(18051);
+                    scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Additive);SceneManager.SetActiveScene(scene);
+                    if(persistent){EnsureAssetFolder();scenePath=assetFolder+"/Lifecycle.unity";}
+                    var go=new GameObject("NBFX_Cine_Output");SceneManager.MoveGameObjectToScene(go,scene);camera=go.AddComponent<Camera>();camera.enabled=false;camera.orthographic=false;camera.fieldOfView=43;camera.nearClipPlane=.1f;camera.farClipPlane=30;camera.allowHDR=true;camera.allowMSAA=false;camera.cullingMask=1<<Layer;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.03f,.05f,.1f,1);camera.scene=scene;
+                    camera.transform.position=new Vector3(0,0,8);camera.transform.rotation=Quaternion.Euler(0,180,0);var additional=go.AddComponent<UniversalAdditionalCameraData>();additional.SetRenderer(0);additional.renderPostProcessing=false;additional.requiresColorTexture=true;
+                    brain=go.AddComponent(brainType);Set(brain,"UpdateMethod",Enum.Parse(brainType.GetField("UpdateMethod",All).FieldType,"ManualUpdate"));
+                    var cg=new GameObject("NBFX_Cine_Virtual");SceneManager.MoveGameObjectToScene(cg,scene);cg.transform.SetPositionAndRotation(camera.transform.position,camera.transform.rotation);vcam=cg.AddComponent(cameraType);
+                    var lens=Get(vcam,"Lens");Set(lens,"FieldOfView",43f);Set(lens,"NearClipPlane",.1f);Set(lens,"FarClipPlane",30f);Set(vcam,"Lens",lens);
+                    Assert.That(vcam.GetComponent(perlinType),Is.Null,"New CinemachineCamera input must really lack Perlin before fixture setup");
+                    if(existingPerlin)perlin=cg.AddComponent(perlinType);
+                    var gradient=new Texture2D(64,64,TextureFormat.RGBAHalf,false,true){name="NBFX Cine original gradient"};for(int y=0;y<64;++y)for(int x=0;x<64;++x)gradient.SetPixel(x,y,new Color(.08f+.8f*x/63,.1f+.7f*y/63,.15f+.55f*((x+2*y)%64)/63,1));gradient.Apply(false);gradient.filterMode=FilterMode.Point;gradient.wrapMode=TextureWrapMode.Clamp;
+                    var mat=new Material(Shader.Find("Universal Render Pipeline/Unlit"));mat.SetTexture("_BaseMap",gradient);mat.SetColor("_BaseColor",Color.white);mat.SetFloat("_Cull",0);mat.SetFloat("_Surface",0);mat.SetFloat("_ZWrite",1);
+                    if(persistent){AssetDatabase.CreateAsset(gradient,assetFolder+"/Gradient.asset");AssetDatabase.CreateAsset(mat,assetFolder+"/Background.mat");}else{Keep(gradient);Keep(mat);}
+                    var quad=GameObject.CreatePrimitive(PrimitiveType.Quad);quad.name="NBFX_Cine_Background";SceneManager.MoveGameObjectToScene(quad,scene);quad.layer=Layer;quad.transform.position=new Vector3(0,0,1);quad.transform.localScale=new Vector3(6,6,1);quad.GetComponent<MeshRenderer>().sharedMaterial=mat;quad.GetComponent<MeshRenderer>().shadowCastingMode=ShadowCastingMode.Off;
+                    target=Keep(new RenderTexture(Size,Size,24,RenderTextureFormat.ARGBHalf,RenderTextureReadWrite.Linear));target.Create();Assert.That(target.IsCreated()&&!target.sRGB,Is.True);read=Keep(new Texture2D(Size,Size,TextureFormat.RGBAHalf,false,true));camera.targetTexture=target;
+                    observer=Keep(ScriptableObject.CreateInstance<NBPostLifecyclePassObserver>());observer.hideFlags=HideFlags.HideAndDontSave;observer.targetCamera=camera;observer.Create();observer.SetActive(true);renderer.rendererFeatures.Add(observer);renderer.SetDirty();
+                    for(int i=0;i<4;++i)camera.Render();post=Get(TypeOf("NBShader.NBPostProcess"),"NBPostProcessMaterial")as Material;Assert.That(post&&!AssetDatabase.Contains(post),Is.True);postBefore=Keep(new Material(post));
+                    managerStatics=managerType.GetFields(All).Where(f=>f.IsStatic&&!f.IsLiteral&&!f.IsInitOnly).ToDictionary(f=>f,f=>f.GetValue(null));
+                    var mg=new GameObject("NBFX_Cine_Manager");SceneManager.MoveGameObjectToScene(mg,scene);manager=mg.AddComponent(managerType);RememberComponent(manager);
+                    var ctrl=new GameObject("NBFX_Cine_Controller");ctrl.SetActive(false);SceneManager.MoveGameObjectToScene(ctrl,scene);controller=ctrl.AddComponent(controllerType);RememberComponent(controller);
+                    foreach(string toggle in new[]{"chromaticAberrationToggle","distortSpeedToggle","radialBlurToggle","vignetteToggle","overlayTextureToggle","flashToggle","cameraShakeToggle"})Set(controller,toggle,false);
+                    Set(controller,"cinemachineCamera",vcam);Set(controller,"cameraShakeIntensity",4f);evidence.perlinAbsentBeforeController=vcam.GetComponent(perlinType)==null;Assert.That(evidence.perlinAbsentBeforeController,Is.EqualTo(!existingPerlin));ctrl.SetActive(true);RememberManagerBindings();
+                    perlin=vcam.GetComponent(perlinType);Assert.That(perlin,Is.Not.Null,"Real Controller adds missing Perlin");Assert.That(Get(perlin,"NoiseProfile"),Is.Not.Null);Assert.That(AssetDatabase.GetAssetPath((Object)Get(perlin,"NoiseProfile")),Is.EqualTo(Package+"NBPostProcessing/3DPostionShake.asset"));
+                }
+                catch{Dispose();throw;}
+            }
+            internal IEnumerator Wait()
+            {
+                // Real Editor ticks drive NB lifecycle. Time.frameCount need not
+                // advance in background EditMode; Cine evaluation is explicit below.
+                yield return (IEnumerator)typeof(G4NBPostEffectsControllerTests).GetMethod("WaitForActualEditorTicks",All).Invoke(null,new object[]{new Action<int>(n=>ticks+=n)});
+            }
+            internal void Save(){evidence.states=states.ToArray();evidence.rawCount=frames.Count;evidence.repeat=repeats.ToArray();evidence.visible=frames.Select(Visible).ToArray();File.WriteAllText(Path.Combine(folder,"lifecycle.json"),JsonUtility.ToJson(evidence,true));}
+            internal State State(string phase)
+            {
+                var state=new State{phase=phase,ticks=ticks,unityFrame=Time.frameCount,cameraType=camera?camera.cameraType.ToString():"unloaded",managerEnabled=manager&&((Behaviour)manager).isActiveAndEnabled,controllerEnabled=controller&&((Behaviour)controller).isActiveAndEnabled,
+                    index=controller?(int)Get(controller,"index"):32,controllerMask=manager?(int)Get(manager,"_controllerIndexFlags"):0,shakeMask=(int)Get(managerType,"cameraShakeToggles"),managerCallbacks=Callbacks(manager,"EditorUpdate"),controllerCallbacks=Callbacks(controller,"ControllerEditorUpdate"),
+                    perlinExists=perlin,managerCachedSamePerlin=manager&&perlin&&ReferenceEquals(Get(manager,"_perlin"),perlin),soloIsCamera=vcam&&ReferenceEquals(coreType.GetProperty("SoloCamera",All).GetValue(null),vcam),brainLiveIsCamera=brain&&ReferenceEquals(Get(brain,"ActiveVirtualCamera"),vcam),
+                    amplitude=perlin?(float)Get(perlin,"AmplitudeGain"):0,frequency=perlin?(float)Get(perlin,"FrequencyGain"):0,intensity=controller?(float)Get(controller,"cameraShakeIntensity"):0,postFlags=post?post.GetInteger("_NBPostProcessFlags"):0,
+                    profilePath=perlin?AssetDatabase.GetAssetPath((Object)Get(perlin,"NoiseProfile")):"",cameraPosition=camera?camera.transform.position:Vector3.zero,cameraRotation=camera?camera.transform.rotation:Quaternion.identity};
+                if(vcam&&brain&&camera)
+                {
+                    var virtualState=Get(vcam,"State");var brainState=Get(brain,"State");
+                    state.virtualRawPosition=(Vector3)Get(virtualState,"RawPosition");state.virtualPositionCorrection=(Vector3)Get(virtualState,"PositionCorrection");state.virtualRawOrientation=(Quaternion)Get(virtualState,"RawOrientation");state.virtualOrientationCorrection=(Quaternion)Get(virtualState,"OrientationCorrection");
+                    state.brainRawPosition=(Vector3)Get(brainState,"RawPosition");state.brainPositionCorrection=(Vector3)Get(brainState,"PositionCorrection");state.brainRawOrientation=(Quaternion)Get(brainState,"RawOrientation");state.brainOrientationCorrection=(Quaternion)Get(brainState,"OrientationCorrection");
+                    state.publicEvaluationMatchesCamera=Vector3.Distance(state.virtualRawPosition+state.virtualPositionCorrection,state.cameraPosition)<.000001f&&Vector3.Distance(state.brainRawPosition+state.brainPositionCorrection,state.cameraPosition)<.000001f&&SameRotation(state.virtualRawOrientation*state.virtualOrientationCorrection,state.cameraRotation)&&SameRotation(state.brainRawOrientation*state.brainOrientationCorrection,state.cameraRotation);
+                }
+                state.publicResetEvaluations=publicResetEvaluations;state.publicBrainEvaluations=publicBrainEvaluations;
+                var callbacks=EditorApplication.update==null?Array.Empty<Delegate>():EditorApplication.update.GetInvocationList();state.managerCallbackPosition=Array.FindIndex(callbacks,d=>ReferenceEquals(d.Target,manager)&&d.Method.Name=="EditorUpdate");state.controllerCallbackPosition=Array.FindIndex(callbacks,d=>ReferenceEquals(d.Target,controller)&&d.Method.Name=="ControllerEditorUpdate");states.Add(state);Save();return state;
+            }
+            Color[] Capture(string name)
+            {
+                // Public framework route: negative delta ignores time/reset-evaluates
+                // the VCam; the following zero delta ManualUpdate is a different cache
+                // key even when EditMode Time.frameCount is fixed. No private cache write.
+                Assert.That(Get(brain,"UpdateMethod").ToString(),Is.EqualTo("ManualUpdate"));Assert.That((float)Get(coreType,"UniformDeltaTimeOverride"),Is.Zero);
+                cameraType.GetMethod("UpdateCameraState",BindingFlags.Public|BindingFlags.Instance).Invoke(vcam,new object[]{Get(brain,"DefaultWorldUp"),-1f});publicResetEvaluations++;
+                brainType.GetMethod("ManualUpdate",BindingFlags.Public|BindingFlags.Instance).Invoke(brain,null);
+                publicBrainEvaluations++;
+                for(int i=0;i<3;++i)camera.Render();Assert.That(camera.cameraType,Is.EqualTo(CameraType.Game));Assert.That(observer.observed.calls,Is.GreaterThan(0));
+                foreach(string pass in new[]{"NBShader.RenderCameraOpaqueDistortObjectPass","NBShader.ScreenColorRenderPass","NBShader.DisturbanceMaskRenderPass","NBShader.NBPostProcessRenderPass"})Assert.That(observer.observed.passTypes,Does.Contain(pass));
+                Assert.That(Get(TypeOf("NBShader.NBPostProcess"),"NBPostProcessMaterial"),Is.SameAs(post));Assert.That(ShaderUtil.GetShaderMessages(post.shader).Any(m=>m.severity.ToString()=="Error"),Is.False);
+                RenderTexture.active=target;read.ReadPixels(new Rect(0,0,Size,Size),0,0,false);read.Apply(false,false);var pixels=read.GetPixels();RenderTexture.active=previousRT;
+                using(var writer=new BinaryWriter(File.Create(Path.Combine(folder,name+".rgba32f"))))foreach(var p in pixels){writer.Write(p.r);writer.Write(p.g);writer.Write(p.b);writer.Write(p.a);}frames.Add(pixels);evidence.finite&=Finite(pixels);File.WriteAllText(Path.Combine(folder,name+"-enqueue.json"),JsonUtility.ToJson(observer.observed,true));return pixels;
+            }
+            internal Color[] Snap(string name){var a=Capture(name);var b=Capture(name+"-repeat");repeats.Add(Delta(a,b));var state=State(name);Assert.That(state.publicEvaluationMatchesCamera&&state.brainLiveIsCamera,Is.True,"Real public VCam/Brain state must agree with the rendered Camera; frameCount is not a validity proxy");return a;}
+            internal void CloseSaved()
+            {
+                Assert.That(scenePath,Is.Not.Null);camera.targetTexture=null;Assert.That(EditorSceneManager.SaveScene(scene,scenePath),Is.True);string project=Path.GetDirectoryName(Application.dataPath);File.Copy(Path.Combine(project,scenePath),Path.Combine(folder,"saved-scene.yaml"),false);
+                foreach(string path in new[]{assetFolder+"/Background.mat",assetFolder+"/Gradient.asset"}){persistedBytes[path]=File.ReadAllBytes(Path.Combine(project,path));File.WriteAllBytes(Path.Combine(folder,Path.GetFileName(path)),persistedBytes[path]);}
+                Assert.That(EditorSceneManager.CloseScene(scene,true),Is.True);State("unloaded");
+                evidence.unloadedOwnershipCleared=!(Get(managerType,"_instance")as Component)&&(int)Get(managerType,"cameraShakeToggles")==0&&coreType.GetProperty("SoloCamera",All).GetValue(null)==null&&componentHistory.All(o=>Callbacks(o,"EditorUpdate")==0&&Callbacks(o,"ControllerEditorUpdate")==0);Save();
+                // Force the fixture-owned persistent Material/Texture to leave memory;
+                // the following real scene load must resolve the saved asset references.
+                foreach(string path in new[]{assetFolder+"/Background.mat",assetFolder+"/Gradient.asset"}){var asset=AssetDatabase.LoadAssetAtPath<Object>(path);if(asset)Resources.UnloadAsset(asset);}
+            }
+            internal void Reopen()
+            {
+                scene=EditorSceneManager.OpenScene(scenePath,OpenSceneMode.Additive);SceneManager.SetActiveScene(scene);
+                GameObject Named(string n)=>scene.GetRootGameObjects().Single(o=>o.name==n);
+                camera=Named("NBFX_Cine_Output").GetComponent<Camera>();brain=Named("NBFX_Cine_Output").GetComponent(brainType);vcam=Named("NBFX_Cine_Virtual").GetComponent(cameraType);perlin=vcam.GetComponent(perlinType);manager=Named("NBFX_Cine_Manager").GetComponent(managerType);controller=Named("NBFX_Cine_Controller").GetComponent(controllerType);RememberComponent(manager);RememberComponent(controller);RememberManagerBindings();
+                camera.targetTexture=target;camera.scene=scene;observer.targetCamera=camera;
+                evidence.serializedRefsRestored=ReferenceEquals(Get(controller,"cinemachineCamera"),vcam)&&ReferenceEquals(Get(controller,"_manager"),manager)&&ReferenceEquals(Get(managerType,"_instance"),manager)&&ReferenceEquals(Get(manager,"currentVirtualCamera"),vcam)&&Get(perlin,"NoiseProfile")!=null;
+                var mat=Named("NBFX_Cine_Background").GetComponent<MeshRenderer>().sharedMaterial;
+                evidence.serializedRefsRestored&=AssetDatabase.GetAssetPath(mat)==assetFolder+"/Background.mat"&&AssetDatabase.GetAssetPath(mat.GetTexture("_BaseMap"))==assetFolder+"/Gradient.asset";
+                evidence.persistentAssetBytesUnchanged=persistedBytes.All(pair=>File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(Application.dataPath),pair.Key)).SequenceEqual(pair.Value));
+            }
+            internal void AssertHealth(){Assert.That(evidence.finite,Is.True);Assert.That(evidence.visible.All(v=>v>150),Is.True);Assert.That(evidence.repeat.All(v=>v==0),Is.True,"Frozen Cine time repeat must remain exact");}
+            public void Dispose()
+            {
+                if(disposed)return;disposed=true;
+                if(evidence!=null)File.WriteAllText(Path.Combine(folder,"cleanup-started.json"),JsonUtility.ToJson(evidence,true));
+                try
+                {
+                    if(managerType!=null)RememberManagerBindings();
+                    if(controller)((Behaviour)controller).enabled=false;
+                    if(scene.IsValid()&&scene.isLoaded)EditorSceneManager.CloseScene(scene,true);
+                    foreach(var value in componentHistory.OfType<Component>().Where(c=>c&&managerType.IsInstanceOfType(c)).ToArray())
+                    {
+                        // A source-created hidden singleton can land in the prior active
+                        // scene during additive reload. Remove only its recorded identity.
+                        Assert.That(value.gameObject.name,Is.EqualTo("NBPostProcessManager"));Assert.That((value.gameObject.hideFlags&HideFlags.HideAndDontSave)!=0,Is.True);Object.DestroyImmediate(value.gameObject);
+                    }
+                    if(observer){renderer.rendererFeatures.Remove(observer);renderer.SetDirty();}
+                    if(managerStatics!=null)foreach(var pair in managerStatics)pair.Key.SetValue(null,pair.Value);
+                    if(post&&postBefore)post.CopyPropertiesFromMaterial(postBefore);
+                    if(coreType!=null){coreType.GetProperty("SoloCamera",All).SetValue(null,oldSolo);Set(coreType,"UniformDeltaTimeOverride",oldDelta);Set(coreType,"CurrentTimeOverride",oldTime);}
+                    UnityEngine.Random.state=randomState;RenderTexture.active=previousRT;if(target)target.Release();
+                    foreach(var o in owned.AsEnumerable().Reverse())if(o)Object.DestroyImmediate(o);owned.Clear();
+                    if(evidence.borrowedRunnerBootstrap)
+                    {
+                        // A saved scene cannot be made untitled in place via the public
+                        // Editor API. Recreate only the recognized runner default and
+                        // verify its original component data, not a fabricated success flag.
+                        Assert.That(SceneManager.sceneCount,Is.EqualTo(1),"Do not close a newly introduced unknown scene");Assert.That(SceneManager.GetSceneAt(0),Is.EqualTo(previousScene));Assert.That(previousScene.isDirty,Is.False,"Do not discard unexpected edits to the borrowed bootstrap");
+                        Assert.That(string.IsNullOrEmpty(previousScene.path)||previousScene.path==assetFolder+"/RunnerBootstrap.unity",Is.True,"Bootstrap path changed unexpectedly");
+                        var restored=EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects,NewSceneMode.Single);
+                        string fingerprint=ExactRunnerBootstrapFingerprint(restored);File.WriteAllText(Path.Combine(folder,"runner-bootstrap-after.txt"),fingerprint);
+                        evidence.runnerBootstrapRestored=fingerprint==bootstrapFingerprint;
+                    }
+                    if(!string.IsNullOrEmpty(assetFolder)){Assert.That(assetFolder.StartsWith("Assets/ResTemp/EditorTemp/NBFX_Cine_",StringComparison.Ordinal),Is.True);AssetDatabase.DeleteAsset(assetFolder);}
+                    if(!evidence.borrowedRunnerBootstrap&&previousScene.IsValid()&&previousScene.isLoaded)SceneManager.SetActiveScene(previousScene);
+                    UnityEngine.Random.state=randomState;
+                }
+                catch(Exception error){if(evidence!=null)evidence.cleanupFailure=error.ToString();throw;}
+                finally
+                {
+                    try
+                    {
+                        if(evidence!=null)
+                        {
+                            evidence.rendererBytesUnchanged=File.ReadAllBytes(rendererFile).SequenceEqual(rendererBytes);evidence.pipelineBytesUnchanged=File.ReadAllBytes(pipelineFile).SequenceEqual(pipelineBytes);
+                            evidence.ownedCallbacksRemoved=componentHistory.All(o=>Callbacks(o,"EditorUpdate")==0&&Callbacks(o,"ControllerEditorUpdate")==0);evidence.sceneRestored=evidence.borrowedRunnerBootstrap?evidence.runnerBootstrapRestored:SceneManager.GetActiveScene()==previousScene;
+                            evidence.cleanupCineDelta=(float)Get(coreType,"UniformDeltaTimeOverride");evidence.cleanupCineTime=(float)Get(coreType,"CurrentTimeOverride");evidence.cleanupRandomStateJSON=JsonUtility.ToJson(UnityEngine.Random.state);
+                            evidence.settingsRestored=evidence.cleanupCineDelta==oldDelta&&evidence.cleanupCineTime==oldTime&&ReferenceEquals(coreType.GetProperty("SoloCamera",All).GetValue(null),oldSolo);
+                            evidence.randomStateRestored=evidence.cleanupRandomStateJSON==JsonUtility.ToJson(randomState);evidence.observerRemoved=!renderer.rendererFeatures.Contains(observer);
+                            evidence.rendererFeatureListRestored=renderer.rendererFeatures.SequenceEqual(originalFeatures);evidence.componentsRemoved=new[]{managerType,controllerType,cameraType,brainType}.All(t=>!Resources.FindObjectsOfTypeAll(t).OfType<Component>().Any(c=>c&&c.gameObject.scene.IsValid()&&c.gameObject.scene.isLoaded));
+                            evidence.cleanupRestored=evidence.rendererBytesUnchanged&&evidence.pipelineBytesUnchanged&&evidence.ownedCallbacksRemoved&&evidence.sceneRestored&&evidence.settingsRestored&&evidence.randomStateRestored&&evidence.observerRemoved&&evidence.rendererFeatureListRestored&&evidence.componentsRemoved&&EditorJsonUtility.ToJson(nb)==featureJSON;
+                            Save();File.WriteAllText(Path.Combine(folder,"cleanup.json"),JsonUtility.ToJson(evidence,true));Assert.That(evidence.cleanupRestored,Is.True);
+                        }
+                    }
+                    finally{ActiveScopes.Remove(this);}
+                }
+            }
+        }
+        [UnityTest] public IEnumerator NBPostCine3_FreshPerlin_RealLifecycle()
+        {
+            using(var s=new Scope(false,false))
+            {
+                yield return s.Wait();var off=s.Snap("off");Set(s.controller,"cameraShakeToggle",true);yield return s.Wait();var on=s.Snap("first-on");var first=s.State("first-on-state");
+                ((Behaviour)s.controller).enabled=false;yield return s.Wait();var stopped=s.Snap("first-off");
+                ((Behaviour)s.controller).enabled=true;yield return s.Wait();var resumed=s.Snap("reenabled-on");var resumedState=s.State("reenabled-state");
+                ((Behaviour)s.controller).enabled=false;yield return s.Wait();var lastOff=s.Snap("reenabled-off");var end=s.State("final-off-state");
+                s.evidence.response=new[]{Delta(off,on),Delta(off,resumed)};s.evidence.changedPixels=new[]{Changed(off,on),Changed(off,resumed)};s.evidence.restore=new[]{Delta(off,stopped),Delta(off,lastOff)};s.Save();s.AssertHealth();
+                Assert.That(first.brainLiveIsCamera&&resumedState.brainLiveIsCamera,Is.True);Assert.That(first.managerCallbackPosition,Is.GreaterThan(first.controllerCallbackPosition));Assert.That(first.managerCachedSamePerlin,Is.True,"First activation must cache the Perlin the Controller actually creates");Assert.That(first.amplitude,Is.EqualTo(4));Assert.That(resumedState.amplitude,Is.EqualTo(4));Assert.That(first.frequency,Is.EqualTo(5));
+                Assert.That(s.evidence.response.All(v=>v>.01f)&&s.evidence.changedPixels.All(v=>v>=64),Is.True);Assert.That(s.evidence.restore.All(v=>v==0),Is.True);Assert.That(end.amplitude,Is.Zero);Assert.That(end.shakeMask,Is.Zero);Assert.That(end.controllerMask,Is.Zero);Assert.That(end.soloIsCamera,Is.False);
+            }
+        }
+        [UnityTest] public IEnumerator NBPostCine3_SaveUnloadReopen_RealLifecycle()
+        {
+            using(var s=new Scope(true,true))
+            {
+                yield return s.Wait();var off=s.Snap("off");Set(s.controller,"cameraShakeToggle",true);yield return s.Wait();var on=s.Snap("before-save-on");
+                s.CloseSaved();yield return s.Wait();s.Reopen();yield return s.Wait();var reopened=s.Snap("reopened-on");var active=s.State("reopened-state");
+                ((Behaviour)s.controller).enabled=false;yield return s.Wait();var endImage=s.Snap("reopened-off");var end=s.State("reopened-off-state");
+                s.evidence.response=new[]{Delta(off,on),Delta(off,reopened)};s.evidence.changedPixels=new[]{Changed(off,on),Changed(off,reopened)};s.evidence.restore=new[]{Delta(on,reopened),Delta(off,endImage)};s.Save();s.AssertHealth();
+                Assert.That(s.evidence.serializedRefsRestored&&s.evidence.persistentAssetBytesUnchanged&&s.evidence.unloadedOwnershipCleared,Is.True);Assert.That(active.managerCachedSamePerlin&&active.brainLiveIsCamera,Is.True);Assert.That(active.index,Is.InRange(0,30));Assert.That(active.controllerMask,Is.EqualTo(1<<active.index));Assert.That(active.managerCallbacks,Is.EqualTo(1));Assert.That(active.controllerCallbacks,Is.EqualTo(1));Assert.That(active.managerCallbackPosition,Is.GreaterThan(active.controllerCallbackPosition));Assert.That(active.amplitude,Is.EqualTo(4));Assert.That(active.intensity,Is.EqualTo(4));Assert.That(active.frequency,Is.EqualTo(5));Assert.That(active.profilePath,Is.EqualTo(Package+"NBPostProcessing/3DPostionShake.asset"));
+                Assert.That(s.evidence.response.All(v=>v>.01f)&&s.evidence.changedPixels.All(v=>v>=64),Is.True);Assert.That(s.evidence.restore.All(v=>v==0),Is.True,"Persisted frozen-noise input and true stop must restore exactly");Assert.That(end.amplitude,Is.Zero);Assert.That(end.shakeMask,Is.Zero);Assert.That(end.controllerMask,Is.Zero);Assert.That(end.soloIsCamera,Is.False);
+            }
+        }
+    }
+}

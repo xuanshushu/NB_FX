@@ -52,7 +52,7 @@ namespace NBShader
             {
                 _instance = this;
             }
-            else
+            else if (_instance != this)
             {
                 DestroyImmediate(this);
             }
@@ -73,6 +73,7 @@ namespace NBShader
 #if CINIMACHINE_3_0
         public CinemachineCamera currentVirtualCamera;
         private CinemachineBasicMultiChannelPerlin _perlin;
+        [NonSerialized] private PostProcessingController _cameraShakeOwner;
 #endif
 
         public static void InitMat()
@@ -154,14 +155,43 @@ namespace NBShader
             return count;
         }
 
+#if CINIMACHINE_3_0
+        // Keep the existing last-bound camera rule. The owner distinguishes two
+        // Controllers targeting the same camera; no fallback/selection stack is added.
+        internal void BindCameraShake(PostProcessingController controller, CinemachineBasicMultiChannelPerlin perlin)
+        {
+            if (!this || !controller || !controller.isActiveAndEnabled) return;
+            var camera = controller.cinemachineCamera;
+            if (!camera) { ReleaseCameraShake(controller); return; }
+            if (!ReferenceEquals(_cameraShakeOwner, controller) || currentVirtualCamera != camera || _perlin != perlin)
+            {
+                if (!ReferenceEquals(_cameraShakeOwner, null)) EndCameraShake();
+                _cameraShakeOwner = controller;
+                currentVirtualCamera = camera;
+                _perlin = perlin;
+            }
+#if UNITY_EDITOR
+            if (_perlin) _perlin.AmplitudeGain = 0f; // Original initial Editor mute, after ownership is known.
+#endif
+        }
+
+        private void ReleaseCameraShake(PostProcessingController controller)
+        {
+            if (!ReferenceEquals(_cameraShakeOwner, controller)) return;
+            EndCameraShake(); // Stop the actual cached Perlin before clearing the binding.
+            currentVirtualCamera = null;
+            _perlin = null;
+            _cameraShakeOwner = null;
+        }
+#endif
+
         //每次Controller触发Play都会触发Init
         public void InitController(PostProcessingController controller)
         {
 #if CINIMACHINE_3_0
             if (controller.cinemachineCamera != null)
             {
-                currentVirtualCamera = controller.cinemachineCamera;
-                _perlin = currentVirtualCamera.gameObject.GetComponent<CinemachineBasicMultiChannelPerlin>();
+                BindCameraShake(controller, controller.cinemachineCamera.GetComponent<CinemachineBasicMultiChannelPerlin>());
             }
 #endif
 
@@ -171,11 +201,7 @@ namespace NBShader
         public void EndController(PostProcessingController controller)
         {
 #if CINIMACHINE_3_0
-            if (currentVirtualCamera == controller.cinemachineCamera)
-            {
-                currentVirtualCamera = null;
-                _perlin = null;
-            }
+            ReleaseCameraShake(controller);
 #endif
 
             ReleaseControllerIndex(controller.index);
@@ -522,7 +548,8 @@ namespace NBShader
                 _perlin.AmplitudeGain = 0;
             }
 
-            CinemachineCore.SoloCamera = null;
+            if (ReferenceEquals(CinemachineCore.SoloCamera, currentVirtualCamera))
+                CinemachineCore.SoloCamera = null;
         }
 #endif
 
@@ -700,7 +727,7 @@ namespace NBShader
 #if UNITY_EDITOR
         void EditorUpdate()
         {
-            if (isActiveAndEnabled && !Application.isPlaying)
+            if (this && isActiveAndEnabled && !Application.isPlaying)
             {
                 LateUpdate(); //每帧Update会导致SceneView闪
             }
@@ -709,7 +736,7 @@ namespace NBShader
         public void ReRegistEditorUpdate()
         {
             EditorApplication.update -= EditorUpdate;
-            if (isActiveAndEnabled)
+            if (this && isActiveAndEnabled)
                 EditorApplication.update += EditorUpdate;
         }
 #endif

@@ -349,6 +349,9 @@ namespace NBShader
                     if (!cinemachineCamera.gameObject.TryGetComponent<CinemachineBasicMultiChannelPerlin>(out var _perlin))
                     {
                         _perlin = cinemachineCamera.gameObject.AddComponent<CinemachineBasicMultiChannelPerlin>();
+                        #if UNITY_EDITOR
+                            _perlin.AmplitudeGain = 0f; // Mute only the component this call just created.
+                        #endif
                     }
 
                     #if  UNITY_EDITOR
@@ -361,16 +364,15 @@ namespace NBShader
                                             "Packages/com.xuanxuan.nb.fx/NBPostProcessing/3DPostionShake.asset");
                                 _perlin.FrequencyGain = 5f; //做一个自定义
                             }
-                            _perlin.AmplitudeGain = 0f; //一开始先不要震动
+                            // Existing Perlin gain is reset only by its active Manager binding.
                         }
 
-                        if (_manager)
-                        {
-                            _manager.currentVirtualCamera = cinemachineCamera;
-                        }
                     #endif
+                    // InitController may have run before this component existed.
+                    // Publish the actual created/found Perlin through the same owner.
+                    if (_manager && isActiveAndEnabled) _manager.BindCameraShake(this, _perlin);
                 }
-                
+                else if (_manager && isActiveAndEnabled) _manager.BindCameraShake(this, null);
             }
         #endif
 
@@ -568,7 +570,7 @@ namespace NBShader
         
         void ControllerEditorUpdate()
         {
-            if (!Application.isPlaying)
+            if (this && isActiveAndEnabled && !Application.isPlaying)
             {
                 Update();
             }

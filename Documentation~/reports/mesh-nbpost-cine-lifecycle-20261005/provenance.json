@@ -1,0 +1,994 @@
+{
+  "uniquePassed": 5,
+  "acceptedRaw": 34,
+  "acceptedSourceRuns": [
+    "nbfx-npcrest3-product-fixed-20261005-1",
+    "nbfx-npcself2-fixed-20261005-1"
+  ],
+  "ownerStateOnly": true,
+  "originalFailures": [
+    {
+      "run": "nbfx-npc2-20261005-1",
+      "name": "NBFX.Baseline.Tests.G4NBPostCinemachinePersistenceTests.NBPostCine3_FreshPerlin_RealLifecycle",
+      "message": "System.InvalidOperationException : Cannot create a new scene additively with an untitled scene unsaved."
+    },
+    {
+      "run": "nbfx-npc2-bootstrap-20261005-1",
+      "name": "NBFX.Baseline.Tests.G4NBPostCinemachinePersistenceTests.NBPostCine3_FreshPerlin_RealLifecycle",
+      "message": "  Real player loop did not advance; do not bypass Cinemachine update cache\r\n  Expected: less than 27616.2486814d\r\n  But was:  27616.3476878d\r\n"
+    },
+    {
+      "run": "nbfx-npc2-public-clock-20261005-1",
+      "name": "NBFX.Baseline.Tests.G4NBPostCinemachinePersistenceTests.NBPostCine3_FreshPerlin_RealLifecycle",
+      "message": "  First activation must cache the Perlin the Controller actually creates\r\n  Expected: True\r\n  But was:  False\r\n"
+    },
+    {
+      "run": "nbfx-npc1-reopen-20261005-1",
+      "name": "NBFX.Baseline.Tests.G4NBPostCinemachinePersistenceTests.NBPostCine3_SaveUnloadReopen_RealLifecycle",
+      "message": "Unhandled log message: '[Exception] MissingReferenceException: The object of type 'NBShader.PostProcessingManager' has been destroyed but you are still trying to access it.\nYour script should either check if it is null or you should not destroy the object.'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "run": "nbfx-npc5-product-fixed-20261005-1",
+      "name": "NBFX.Baseline.Tests.G4NBPostCinemachinePersistenceTests.NBPostCine3_SaveUnloadReopen_RealLifecycle",
+      "message": "  Expected: True\r\n  But was:  False\r\n"
+    }
+  ],
+  "files": [
+    {
+      "saved": "root-npc6-installation-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\root-npc6-installation-20261005.json",
+      "sourceSHA256": "e55623066ecdc06ac50f4a38e8dc2f3b7260ab9caf992a78ac463321a049f03b"
+    },
+    {
+      "saved": "npc6-reviewed-plan2-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc6-reviewed-plan2-20261005.json",
+      "sourceSHA256": "92b82a9e1bf5392b21d0467c8af6830a9ab1ed0426e299b57a5e85f7311636b2"
+    },
+    {
+      "saved": "npc-product2-reviewed-plan-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc-product2-reviewed-plan-20261005.json",
+      "sourceSHA256": "d2333a7d734e14b8933db0a54afb04cc4bc6921001d157b86fe4ebe9da1a3ec4"
+    },
+    {
+      "saved": "main-npc6-actual-readback-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\main-npc6-actual-readback-20261005.json",
+      "sourceSHA256": "c003690445ba0ac701076350199e2f96fb0d37d629aa9a00ff78f0c4176b3e2d"
+    },
+    {
+      "saved": "main-npc6-compile-status-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\main-npc6-compile-status-20261005.json",
+      "sourceSHA256": "b85c10aad3b4eaeb49fb774978061a54abe6f77040401f23a4f786b4198baba0"
+    },
+    {
+      "saved": "npc-product4-actual-readback-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc-product4-actual-readback-20261005.json",
+      "sourceSHA256": "2b9be56b18715a31bc2f665d2afff1e67e15d7de594d1681c962945ed6f56358"
+    },
+    {
+      "saved": "npc-self-final-actual-clean-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc-self-final-actual-clean-20261005.json",
+      "sourceSHA256": "ad318adccaa38c1b85d9f1346591f6a33bdc4ed1b6c08817e94cfe6181ed002c"
+    },
+    {
+      "saved": "npc-public-first-failure-clean-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc-public-first-failure-clean-20261005.json",
+      "sourceSHA256": "ad318adccaa38c1b85d9f1346591f6a33bdc4ed1b6c08817e94cfe6181ed002c"
+    },
+    {
+      "saved": "npc-public-reopen-failure-clean-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc-public-reopen-failure-clean-20261005.json",
+      "sourceSHA256": "ad318adccaa38c1b85d9f1346591f6a33bdc4ed1b6c08817e94cfe6181ed002c"
+    },
+    {
+      "saved": "npc-failure-residue-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc-failure-residue-20261005.json",
+      "sourceSHA256": "fb87bbd5163d600b822bfff01293eb9010d3620fdf308bead355c1526580904b"
+    },
+    {
+      "saved": "npc-recovery-actual-clean-20261005.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc-recovery-actual-clean-20261005.json",
+      "sourceSHA256": "ad318adccaa38c1b85d9f1346591f6a33bdc4ed1b6c08817e94cfe6181ed002c"
+    },
+    {
+      "saved": "recovery/before.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc-editor-recovery-20261005\\before.json",
+      "sourceSHA256": "a814f8d7def139fecccf86694e3787c0c640046da4bc1ec51fea0c14c3732416"
+    },
+    {
+      "saved": "recovery/after-start.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc-editor-recovery-20261005\\after-start.json",
+      "sourceSHA256": "fe3eca12556ef5249217d06d3b1449f42ccc7579b9a0ce7ddc9a1ec6e3ca79a1"
+    },
+    {
+      "saved": "recovery/residue-before.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\npc-editor-recovery-20261005\\residue-before.json",
+      "sourceSHA256": "fb87bbd5163d600b822bfff01293eb9010d3620fdf308bead355c1526580904b"
+    },
+    {
+      "saved": "nbfx-npc2-20261005-1/Cine1-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-20261005-1\\Cine1-completed.json",
+      "sourceSHA256": "a24ef45f63e947859764c89829e4eddbde816c94eae5ddbd7b08ba816f4cc950"
+    },
+    {
+      "saved": "nbfx-npc2-20261005-1/batch-summary.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-20261005-1\\batch-summary.json",
+      "sourceSHA256": "0c3e49b4d7821bf437adbcd569cac88cb269e1cb68ca8093b4ebff39f36ff368"
+    },
+    {
+      "saved": "nbfx-npc2-20261005-1/source-lock.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-20261005-1\\source-lock.json",
+      "sourceSHA256": "459c0f8cd3f5406c6363da0b5717df4d86edc9b66d4b823c6ce25f033f2cce55"
+    },
+    {
+      "saved": "nbfx-npc2-20261005-1/raw-health.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-20261005-1\\raw-health.json",
+      "sourceSHA256": "b9922892883cd780c9fbda89c5bd6b5871f6aae49f52cb290dd1a6b632f65764"
+    },
+    {
+      "saved": "nbfx-npc2-20261005-1/restored-env.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-20261005-1\\restored-env.json",
+      "sourceSHA256": "a89401058deab8e7dac625c00f1c5519b53d50501503e081a2e46a8cb6876129"
+    },
+    {
+      "saved": "nbfx-npc2-20261005-1/captures/cine-fresh/lifecycle.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-20261005-1\\captures\\cine-fresh\\lifecycle.json",
+      "sourceSHA256": "a280c3c2bf968eb9dca53c12e6ab7d48598101ed8d2ec84a798de6175989ad84"
+    },
+    {
+      "saved": "nbfx-npc2-bootstrap-20261005-1/Cine1-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-bootstrap-20261005-1\\Cine1-completed.json",
+      "sourceSHA256": "7bc0aaf74a2fab785366e95cb2f2631a46539bf4ea5eb00d967fe5f3a32633f0"
+    },
+    {
+      "saved": "nbfx-npc2-bootstrap-20261005-1/batch-summary.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-bootstrap-20261005-1\\batch-summary.json",
+      "sourceSHA256": "f6bf238b851fcaf8d6cc2828525dc5b98303b8bd1efca584765fbac92fecadcf"
+    },
+    {
+      "saved": "nbfx-npc2-bootstrap-20261005-1/source-lock.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-bootstrap-20261005-1\\source-lock.json",
+      "sourceSHA256": "c14e3811ac0bbaaedca3e763771b06e03907cdd985ab37fe33ec682ed90e442e"
+    },
+    {
+      "saved": "nbfx-npc2-bootstrap-20261005-1/raw-health.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-bootstrap-20261005-1\\raw-health.json",
+      "sourceSHA256": "b9922892883cd780c9fbda89c5bd6b5871f6aae49f52cb290dd1a6b632f65764"
+    },
+    {
+      "saved": "nbfx-npc2-bootstrap-20261005-1/restored-env.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-bootstrap-20261005-1\\restored-env.json",
+      "sourceSHA256": "e80255c4e191efe04b6dd378d0d6b55cded8c33dc43377566f8a12d0638358cc"
+    },
+    {
+      "saved": "nbfx-npc2-bootstrap-20261005-1/captures/cine-fresh/runner-bootstrap-before.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-bootstrap-20261005-1\\captures\\cine-fresh\\runner-bootstrap-before.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/Cine1-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\Cine1-completed.json",
+      "sourceSHA256": "3f01dcb66abf5a5d3bd07e899f53a0f86c93de30de43ffcd1bb0a4ca4a271544"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/batch-summary.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\batch-summary.json",
+      "sourceSHA256": "22f1c0f346207062ba99936dee24769c7b09811d6c19fcfc27bfcaabf49de234"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/source-lock.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\source-lock.json",
+      "sourceSHA256": "42e87604c2cdb9da99935375b6ffcd9a3ff12aa8d4b171698032a92506111277"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/raw-health.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\raw-health.json",
+      "sourceSHA256": "cfb05e0ebcedc7937d4f30d901b8fdca5f14e3d971b1f041c98b9c0290a4606b"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/restored-env.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\restored-env.json",
+      "sourceSHA256": "365b63d4fa8ee2ecb56cc80c45e8b89fb69915b8b5aa2d747a59c986551c0a1c"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/before.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\before.json",
+      "sourceSHA256": "0785323c759184a46050c5f7b0fcfad2037568075552ef0984c57691deb5ee6c"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/cleanup-started.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\cleanup-started.json",
+      "sourceSHA256": "3894dd4eba01039e04392c1bf2706e55efb4bad6bd106df991d8af8c68e599cd"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/cleanup.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\cleanup.json",
+      "sourceSHA256": "c3368c9225b045483faf9dbdf81c91f8a92faf056e7d601a4280236e1c33d910"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/first-off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\first-off-enqueue.json",
+      "sourceSHA256": "c844da37f5eb48e302e49e6bc100a5806044659b5798fd87169091c4e80bbefb"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/first-off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\first-off-repeat-enqueue.json",
+      "sourceSHA256": "5c3e9f6ddd4aa6eccac4fc5f773cd2f4fb4285bbf9b183a0d88b069a727b8c0d"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/first-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\first-on-enqueue.json",
+      "sourceSHA256": "ea1a1dbdc48e7dfb17b3a9a7393ad473324b09f67a681043a2289480de8157b9"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/first-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\first-on-repeat-enqueue.json",
+      "sourceSHA256": "f299b7be02cd60ab56bdc5e2c54c6c06b1f9013a275006962a437afbcc35ac9a"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/lifecycle.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\lifecycle.json",
+      "sourceSHA256": "c3368c9225b045483faf9dbdf81c91f8a92faf056e7d601a4280236e1c33d910"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\off-enqueue.json",
+      "sourceSHA256": "958099844fd5ac253523e0065e3e7dd29635002576c61aea22df328972301a92"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\off-repeat-enqueue.json",
+      "sourceSHA256": "b5147d83003a42d8dbed4097ce11f6fbf9a650e9b658a6a9d69cec88bf47d1c9"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/reenabled-off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\reenabled-off-enqueue.json",
+      "sourceSHA256": "09b808ee5e71df7077715b4ab8301253dcdd59cc661ad36061a9471b3ff994d3"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/reenabled-off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\reenabled-off-repeat-enqueue.json",
+      "sourceSHA256": "c8631d8b4f8090a3eccfbb162732aefc5a99a1566afc7d451b907acdce7843fa"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/reenabled-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\reenabled-on-enqueue.json",
+      "sourceSHA256": "19f6081186fd9857cc0e18cb550ab1dadd2285646037ea055ee7ca2f13cf3061"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/reenabled-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\reenabled-on-repeat-enqueue.json",
+      "sourceSHA256": "9ed83985b24a9c8a9561319471de58f250010a79680c5c14b669bd4862d162d4"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/runner-bootstrap-after.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\runner-bootstrap-after.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npc2-public-clock-20261005-1/captures/cine-fresh/runner-bootstrap-before.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc2-public-clock-20261005-1\\captures\\cine-fresh\\runner-bootstrap-before.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/Cine2-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\Cine2-completed.json",
+      "sourceSHA256": "ff380ce57892cbd5c4846598f24a01ef17ef25bd34a97874e5149b3afab6e366"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/batch-summary.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\batch-summary.json",
+      "sourceSHA256": "f96512a7f03342b6dd1f3e281c12f24b107931e7335b1e7869fa95c0dee1ad23"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/source-lock.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\source-lock.json",
+      "sourceSHA256": "42e87604c2cdb9da99935375b6ffcd9a3ff12aa8d4b171698032a92506111277"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/raw-health.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\raw-health.json",
+      "sourceSHA256": "1a77833c13de9732939b44443e92ddc1e7b819edf4b361b9ca3798fcb75394d0"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/restored-env.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\restored-env.json",
+      "sourceSHA256": "3a913209a949eed15ffe71d6c98fecd5078f60bceaca80be06f37343cc9d9b47"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/Background.mat",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\Background.mat",
+      "sourceSHA256": "9b0dfcf6492b4220000950f96fdec2837f5ab0a06d0d0059667d070454e8f416"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/before-save-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\before-save-on-enqueue.json",
+      "sourceSHA256": "ea1a1dbdc48e7dfb17b3a9a7393ad473324b09f67a681043a2289480de8157b9"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/before-save-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\before-save-on-repeat-enqueue.json",
+      "sourceSHA256": "f299b7be02cd60ab56bdc5e2c54c6c06b1f9013a275006962a437afbcc35ac9a"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/before.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\before.json",
+      "sourceSHA256": "ff73c47374f8a5e2091a2ee4e4e68189adec828aa4f1a0b0843a176ff856eaa8"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/cleanup-started.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\cleanup-started.json",
+      "sourceSHA256": "4aae32eaf51168efb62843a65c9ba7d64e0906357a9964d203d357471845e565"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/cleanup.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\cleanup.json",
+      "sourceSHA256": "80f9c94eb71bf4266d6f2f7c178984861ec1fa9bbc8c3d701532e77caae43e8a"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/lifecycle.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\lifecycle.json",
+      "sourceSHA256": "80f9c94eb71bf4266d6f2f7c178984861ec1fa9bbc8c3d701532e77caae43e8a"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\off-enqueue.json",
+      "sourceSHA256": "958099844fd5ac253523e0065e3e7dd29635002576c61aea22df328972301a92"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\off-repeat-enqueue.json",
+      "sourceSHA256": "b5147d83003a42d8dbed4097ce11f6fbf9a650e9b658a6a9d69cec88bf47d1c9"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/runner-bootstrap-after.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\runner-bootstrap-after.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/runner-bootstrap-before.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\runner-bootstrap-before.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npc1-reopen-20261005-1/captures/cine-reopen/saved-scene.yaml",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc1-reopen-20261005-1\\captures\\cine-reopen\\saved-scene.yaml",
+      "sourceSHA256": "563c90be072ebd64086fca36483100cce098b2067189840cefd2806552091925"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/fresh-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\fresh-completed.json",
+      "sourceSHA256": "b0d02da4b8962c3e960e378610ffde032aa339d00a599c315c9dd3d34f65fcf5"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/reopen-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\reopen-completed.json",
+      "sourceSHA256": "501ed87953cfd671d69e424537f2ddfc665a99f496d605d602ebdb3e356681d0"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/batch-summary.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\batch-summary.json",
+      "sourceSHA256": "1c4bca22b9ef8229155c349ab182cee4a0f941bccab4c953d2a304be0913bb5a"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/source-lock.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\source-lock.json",
+      "sourceSHA256": "d15d6ecfaf008a8aab96fd13a5102c119e31d921b487e7dc1086683458a4d918"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/raw-health.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\raw-health.json",
+      "sourceSHA256": "388d8267dd361b3780747a85750e01891455457cf85febdd9b8820afff5b16a4"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/restored-env.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\restored-env.json",
+      "sourceSHA256": "27ae7b0b73ef6f7dbe9f5e2a2166cbc05d90935cc12ba2f1fa74d627a151b944"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/before.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\before.json",
+      "sourceSHA256": "3caf0e2f2d75cb8e91946343093335a7ad29700c2d78f3c65fab227d71129183"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/cleanup-started.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\cleanup-started.json",
+      "sourceSHA256": "5bdff0b89c9e4efd9948c0055b650b4f19bfb25faad3f12c463e66960f00c8ba"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/cleanup.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\cleanup.json",
+      "sourceSHA256": "10d69249c70e8837854984cd6d745dffea1a91c2d7fb9b789806f3fee51ae2e6"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/first-off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\first-off-enqueue.json",
+      "sourceSHA256": "c844da37f5eb48e302e49e6bc100a5806044659b5798fd87169091c4e80bbefb"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/first-off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\first-off-repeat-enqueue.json",
+      "sourceSHA256": "5c3e9f6ddd4aa6eccac4fc5f773cd2f4fb4285bbf9b183a0d88b069a727b8c0d"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/first-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\first-on-enqueue.json",
+      "sourceSHA256": "ea1a1dbdc48e7dfb17b3a9a7393ad473324b09f67a681043a2289480de8157b9"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/first-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\first-on-repeat-enqueue.json",
+      "sourceSHA256": "f299b7be02cd60ab56bdc5e2c54c6c06b1f9013a275006962a437afbcc35ac9a"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/lifecycle.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\lifecycle.json",
+      "sourceSHA256": "10d69249c70e8837854984cd6d745dffea1a91c2d7fb9b789806f3fee51ae2e6"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\off-enqueue.json",
+      "sourceSHA256": "958099844fd5ac253523e0065e3e7dd29635002576c61aea22df328972301a92"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\off-repeat-enqueue.json",
+      "sourceSHA256": "b5147d83003a42d8dbed4097ce11f6fbf9a650e9b658a6a9d69cec88bf47d1c9"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/reenabled-off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\reenabled-off-enqueue.json",
+      "sourceSHA256": "09b808ee5e71df7077715b4ab8301253dcdd59cc661ad36061a9471b3ff994d3"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/reenabled-off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\reenabled-off-repeat-enqueue.json",
+      "sourceSHA256": "c8631d8b4f8090a3eccfbb162732aefc5a99a1566afc7d451b907acdce7843fa"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/reenabled-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\reenabled-on-enqueue.json",
+      "sourceSHA256": "19f6081186fd9857cc0e18cb550ab1dadd2285646037ea055ee7ca2f13cf3061"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/reenabled-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\reenabled-on-repeat-enqueue.json",
+      "sourceSHA256": "9ed83985b24a9c8a9561319471de58f250010a79680c5c14b669bd4862d162d4"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/runner-bootstrap-after.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\runner-bootstrap-after.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-fresh/runner-bootstrap-before.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-fresh\\runner-bootstrap-before.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/Background.mat",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\Background.mat",
+      "sourceSHA256": "9219d5f5ab4ee80ac355d67736ceb4c0f1f1d57b0818b6800bf2158dcf8f12f7"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/before-save-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\before-save-on-enqueue.json",
+      "sourceSHA256": "ea1a1dbdc48e7dfb17b3a9a7393ad473324b09f67a681043a2289480de8157b9"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/before-save-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\before-save-on-repeat-enqueue.json",
+      "sourceSHA256": "f299b7be02cd60ab56bdc5e2c54c6c06b1f9013a275006962a437afbcc35ac9a"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/before.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\before.json",
+      "sourceSHA256": "df01bdfb6bc5c3f904b6a130d6f1c26019777c44ca652e1d62dc12c05ba01f56"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/cleanup-started.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\cleanup-started.json",
+      "sourceSHA256": "38f80284059eac4be8a2b2dfb222f07a89051319f4b724478194d9450a3c6709"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/cleanup.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\cleanup.json",
+      "sourceSHA256": "b0d124d31dc6e76081ec69c08ea7dfff4e8c0f93decfdc9db053a176609adc7c"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/lifecycle.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\lifecycle.json",
+      "sourceSHA256": "b0d124d31dc6e76081ec69c08ea7dfff4e8c0f93decfdc9db053a176609adc7c"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\off-enqueue.json",
+      "sourceSHA256": "958099844fd5ac253523e0065e3e7dd29635002576c61aea22df328972301a92"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\off-repeat-enqueue.json",
+      "sourceSHA256": "b5147d83003a42d8dbed4097ce11f6fbf9a650e9b658a6a9d69cec88bf47d1c9"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/reopened-off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\reopened-off-enqueue.json",
+      "sourceSHA256": "19f6081186fd9857cc0e18cb550ab1dadd2285646037ea055ee7ca2f13cf3061"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/reopened-off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\reopened-off-repeat-enqueue.json",
+      "sourceSHA256": "9ed83985b24a9c8a9561319471de58f250010a79680c5c14b669bd4862d162d4"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/reopened-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\reopened-on-enqueue.json",
+      "sourceSHA256": "c844da37f5eb48e302e49e6bc100a5806044659b5798fd87169091c4e80bbefb"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/reopened-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\reopened-on-repeat-enqueue.json",
+      "sourceSHA256": "5c3e9f6ddd4aa6eccac4fc5f773cd2f4fb4285bbf9b183a0d88b069a727b8c0d"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/runner-bootstrap-after.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\runner-bootstrap-after.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/runner-bootstrap-before.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\runner-bootstrap-before.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npc5-product-fixed-20261005-1/captures/cine-reopen/saved-scene.yaml",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npc5-product-fixed-20261005-1\\captures\\cine-reopen\\saved-scene.yaml",
+      "sourceSHA256": "3bb0bf388484043876e813297e024a31e3e50b60361bac78eb10b69bd5ee9770"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/disabled-new-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\disabled-new-completed.json",
+      "sourceSHA256": "2f9c90db9d9c2d17efc92e5a0e66455f5e95943225c4775e6c46ab688003f1e2"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/disabled-reenable-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\disabled-reenable-completed.json",
+      "sourceSHA256": "c8e54f194cf4d7bbefcd7a8a46bf4daefb5cc815ba04d6bb543da3ef0be2719f"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/owner-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\owner-completed.json",
+      "sourceSHA256": "ad975620b84001e33ac68c314eea2af63e4a4ba620bc3a6be1e93d5fb0b9b6f4"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/batch-summary.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\batch-summary.json",
+      "sourceSHA256": "ffe8cbe2e2b0226b8b51ec1ac0e810642858c195aaa00aa88ff366b6fb8faf37"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/source-lock.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\source-lock.json",
+      "sourceSHA256": "d15d6ecfaf008a8aab96fd13a5102c119e31d921b487e7dc1086683458a4d918"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/raw-health.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\raw-health.json",
+      "sourceSHA256": "5bea7d8d32622585b0bfaa86db3a82a4495d4552540d30149dd2dda94e852674"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/restored-env.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\restored-env.json",
+      "sourceSHA256": "bdb59d083658740d0d67adcf85a8198595ca4a3d3ad2a8ae50fe2af216d6765e"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/all-controllers-off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\all-controllers-off-enqueue.json",
+      "sourceSHA256": "9ed83985b24a9c8a9561319471de58f250010a79680c5c14b669bd4862d162d4"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/all-controllers-off-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\all-controllers-off-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/disabled-after-activation-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\disabled-after-activation-enqueue.json",
+      "sourceSHA256": "ea1a1dbdc48e7dfb17b3a9a7393ad473324b09f67a681043a2289480de8157b9"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/disabled-after-activation-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\disabled-after-activation-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/disabled-before-activation-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\disabled-before-activation-enqueue.json",
+      "sourceSHA256": "b5147d83003a42d8dbed4097ce11f6fbf9a650e9b658a6a9d69cec88bf47d1c9"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/disabled-before-activation-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\disabled-before-activation-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/lifecycle.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\lifecycle.json",
+      "sourceSHA256": "d7ce895a9dd167f19ca968cd85864fcab2f493a5bc536fdef9d672b515a8c7e3"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/manager-disabled-again-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\manager-disabled-again-enqueue.json",
+      "sourceSHA256": "5c3e9f6ddd4aa6eccac4fc5f773cd2f4fb4285bbf9b183a0d88b069a727b8c0d"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/manager-disabled-again-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\manager-disabled-again-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/manager-reenabled-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\manager-reenabled-enqueue.json",
+      "sourceSHA256": "f299b7be02cd60ab56bdc5e2c54c6c06b1f9013a275006962a437afbcc35ac9a"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/manager-reenabled-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\manager-reenabled-repeat-enqueue.json",
+      "sourceSHA256": "c844da37f5eb48e302e49e6bc100a5806044659b5798fd87169091c4e80bbefb"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/manager-reenabled-repeat-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\manager-reenabled-repeat-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/manager-reenabled-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\manager-reenabled-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/manager-second-reenable-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\manager-second-reenable-enqueue.json",
+      "sourceSHA256": "19f6081186fd9857cc0e18cb550ab1dadd2285646037ea055ee7ca2f13cf3061"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/manager-second-reenable-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\manager-second-reenable-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/primary-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\primary-on-enqueue.json",
+      "sourceSHA256": "958099844fd5ac253523e0065e3e7dd29635002576c61aea22df328972301a92"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-new/primary-on-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-new\\primary-on-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/all-controllers-off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\all-controllers-off-enqueue.json",
+      "sourceSHA256": "9ed83985b24a9c8a9561319471de58f250010a79680c5c14b669bd4862d162d4"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/all-controllers-off-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\all-controllers-off-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/disabled-after-activation-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\disabled-after-activation-enqueue.json",
+      "sourceSHA256": "ea1a1dbdc48e7dfb17b3a9a7393ad473324b09f67a681043a2289480de8157b9"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/disabled-after-activation-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\disabled-after-activation-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/disabled-before-activation-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\disabled-before-activation-enqueue.json",
+      "sourceSHA256": "b5147d83003a42d8dbed4097ce11f6fbf9a650e9b658a6a9d69cec88bf47d1c9"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/disabled-before-activation-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\disabled-before-activation-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/lifecycle.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\lifecycle.json",
+      "sourceSHA256": "e9359a74586a56e3949ce3dcaf978d9d4f61c2a004fa908df1662321283fb9de"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/manager-disabled-again-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\manager-disabled-again-enqueue.json",
+      "sourceSHA256": "5c3e9f6ddd4aa6eccac4fc5f773cd2f4fb4285bbf9b183a0d88b069a727b8c0d"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/manager-disabled-again-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\manager-disabled-again-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/manager-reenabled-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\manager-reenabled-enqueue.json",
+      "sourceSHA256": "f299b7be02cd60ab56bdc5e2c54c6c06b1f9013a275006962a437afbcc35ac9a"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/manager-reenabled-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\manager-reenabled-repeat-enqueue.json",
+      "sourceSHA256": "c844da37f5eb48e302e49e6bc100a5806044659b5798fd87169091c4e80bbefb"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/manager-reenabled-repeat-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\manager-reenabled-repeat-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/manager-reenabled-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\manager-reenabled-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/manager-second-reenable-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\manager-second-reenable-enqueue.json",
+      "sourceSHA256": "19f6081186fd9857cc0e18cb550ab1dadd2285646037ea055ee7ca2f13cf3061"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/manager-second-reenable-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\manager-second-reenable-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/primary-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\primary-on-enqueue.json",
+      "sourceSHA256": "958099844fd5ac253523e0065e3e7dd29635002576c61aea22df328972301a92"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/mgr-reenable/primary-on-shader-errors.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\mgr-reenable\\primary-on-shader-errors.txt",
+      "sourceSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/owner-boundary/before-env.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\owner-boundary\\before-env.txt",
+      "sourceSHA256": "770d2ccb73868791f29ffe2df09de2fe7bffe46edf818a3f39f182a5ea2595c3"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/owner-boundary/cine-fresh/before.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\owner-boundary\\cine-fresh\\before.json",
+      "sourceSHA256": "1a11f539d3fe3a989f2237824b32068a634bb818b394418f48907664483836e4"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/owner-boundary/cine-fresh/cleanup-started.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\owner-boundary\\cine-fresh\\cleanup-started.json",
+      "sourceSHA256": "24cdf3c713f67d7e78ff68adf364b41b8c97ab3ad1fb83d99e6b79bdc373cae5"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/owner-boundary/cine-fresh/cleanup.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\owner-boundary\\cine-fresh\\cleanup.json",
+      "sourceSHA256": "dbb470ec6c2ad36a634b359da7e143608a9eead5a8fcad49384952f38812186d"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/owner-boundary/cine-fresh/lifecycle.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\owner-boundary\\cine-fresh\\lifecycle.json",
+      "sourceSHA256": "dbb470ec6c2ad36a634b359da7e143608a9eead5a8fcad49384952f38812186d"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/owner-boundary/cine-fresh/owner-states.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\owner-boundary\\cine-fresh\\owner-states.json",
+      "sourceSHA256": "7f040579a82709047722a91aa87f9c1056b183e1466ba6f98041a72cff6322da"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/owner-boundary/cine-fresh/runner-bootstrap-after.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\owner-boundary\\cine-fresh\\runner-bootstrap-after.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npcrest3-product-fixed-20261005-1/captures/owner-boundary/cine-fresh/runner-bootstrap-before.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcrest3-product-fixed-20261005-1\\captures\\owner-boundary\\cine-fresh\\runner-bootstrap-before.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/fresh-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\fresh-completed.json",
+      "sourceSHA256": "21b4609fdab6e8db185256d0ccf82fa95eb1ae77771059c37b7d124e4bb6913b"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/reopen-completed.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\reopen-completed.json",
+      "sourceSHA256": "802462a843a231cc4dd1222825be7cebbea0c05b94ce369d5a635e926d418bd4"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/batch-summary.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\batch-summary.json",
+      "sourceSHA256": "a738f896d82970612edabca2fb1c23a5b36b744960f008e2a60d69cd66713b19"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/source-lock.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\source-lock.json",
+      "sourceSHA256": "9626d2bac6ec00448d213b6dd200c9942edec4d9b8efa2713a2a415291df023e"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/raw-health.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\raw-health.json",
+      "sourceSHA256": "388d8267dd361b3780747a85750e01891455457cf85febdd9b8820afff5b16a4"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/restored-env.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\restored-env.json",
+      "sourceSHA256": "1b7e0437291e3086ece21fced4f67daea5f9009a89167531b5926cdbafe5aab6"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/before.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\before.json",
+      "sourceSHA256": "ae1d0e6086b5efd0608511eea60ae82df5a0a860d44c40d09e7b340734857fda"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/cleanup-started.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\cleanup-started.json",
+      "sourceSHA256": "5bdff0b89c9e4efd9948c0055b650b4f19bfb25faad3f12c463e66960f00c8ba"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/cleanup.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\cleanup.json",
+      "sourceSHA256": "10d69249c70e8837854984cd6d745dffea1a91c2d7fb9b789806f3fee51ae2e6"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/first-off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\first-off-enqueue.json",
+      "sourceSHA256": "c844da37f5eb48e302e49e6bc100a5806044659b5798fd87169091c4e80bbefb"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/first-off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\first-off-repeat-enqueue.json",
+      "sourceSHA256": "5c3e9f6ddd4aa6eccac4fc5f773cd2f4fb4285bbf9b183a0d88b069a727b8c0d"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/first-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\first-on-enqueue.json",
+      "sourceSHA256": "ea1a1dbdc48e7dfb17b3a9a7393ad473324b09f67a681043a2289480de8157b9"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/first-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\first-on-repeat-enqueue.json",
+      "sourceSHA256": "f299b7be02cd60ab56bdc5e2c54c6c06b1f9013a275006962a437afbcc35ac9a"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/lifecycle.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\lifecycle.json",
+      "sourceSHA256": "10d69249c70e8837854984cd6d745dffea1a91c2d7fb9b789806f3fee51ae2e6"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\off-enqueue.json",
+      "sourceSHA256": "958099844fd5ac253523e0065e3e7dd29635002576c61aea22df328972301a92"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\off-repeat-enqueue.json",
+      "sourceSHA256": "b5147d83003a42d8dbed4097ce11f6fbf9a650e9b658a6a9d69cec88bf47d1c9"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/reenabled-off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\reenabled-off-enqueue.json",
+      "sourceSHA256": "09b808ee5e71df7077715b4ab8301253dcdd59cc661ad36061a9471b3ff994d3"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/reenabled-off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\reenabled-off-repeat-enqueue.json",
+      "sourceSHA256": "c8631d8b4f8090a3eccfbb162732aefc5a99a1566afc7d451b907acdce7843fa"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/reenabled-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\reenabled-on-enqueue.json",
+      "sourceSHA256": "19f6081186fd9857cc0e18cb550ab1dadd2285646037ea055ee7ca2f13cf3061"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/reenabled-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\reenabled-on-repeat-enqueue.json",
+      "sourceSHA256": "9ed83985b24a9c8a9561319471de58f250010a79680c5c14b669bd4862d162d4"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/runner-bootstrap-after.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\runner-bootstrap-after.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-fresh/runner-bootstrap-before.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-fresh\\runner-bootstrap-before.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/Background.mat",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\Background.mat",
+      "sourceSHA256": "1348a92f9b97644825e3ea32bf37dcd5f485c72b917da42c9a8b45420afa4af7"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/before-save-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\before-save-on-enqueue.json",
+      "sourceSHA256": "ea1a1dbdc48e7dfb17b3a9a7393ad473324b09f67a681043a2289480de8157b9"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/before-save-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\before-save-on-repeat-enqueue.json",
+      "sourceSHA256": "f299b7be02cd60ab56bdc5e2c54c6c06b1f9013a275006962a437afbcc35ac9a"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/before.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\before.json",
+      "sourceSHA256": "b4b676109c6c67461f2e5e11f9b0775f287981beeb84eab0d433a88ac83e121c"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/cleanup-started.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\cleanup-started.json",
+      "sourceSHA256": "9919cad9493af23b85f7c14a6b171e8953cf08abb7d2ad9382dce3abc66a7cf1"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/cleanup.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\cleanup.json",
+      "sourceSHA256": "eaa2781bb52de76c21191f6f9f4f9cfec48ccd6cabd7814b5ff930a8dccc8570"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/lifecycle.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\lifecycle.json",
+      "sourceSHA256": "eaa2781bb52de76c21191f6f9f4f9cfec48ccd6cabd7814b5ff930a8dccc8570"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\off-enqueue.json",
+      "sourceSHA256": "958099844fd5ac253523e0065e3e7dd29635002576c61aea22df328972301a92"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\off-repeat-enqueue.json",
+      "sourceSHA256": "b5147d83003a42d8dbed4097ce11f6fbf9a650e9b658a6a9d69cec88bf47d1c9"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/reopened-off-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\reopened-off-enqueue.json",
+      "sourceSHA256": "19f6081186fd9857cc0e18cb550ab1dadd2285646037ea055ee7ca2f13cf3061"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/reopened-off-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\reopened-off-repeat-enqueue.json",
+      "sourceSHA256": "9ed83985b24a9c8a9561319471de58f250010a79680c5c14b669bd4862d162d4"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/reopened-on-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\reopened-on-enqueue.json",
+      "sourceSHA256": "c844da37f5eb48e302e49e6bc100a5806044659b5798fd87169091c4e80bbefb"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/reopened-on-repeat-enqueue.json",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\reopened-on-repeat-enqueue.json",
+      "sourceSHA256": "5c3e9f6ddd4aa6eccac4fc5f773cd2f4fb4285bbf9b183a0d88b069a727b8c0d"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/runner-bootstrap-after.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\runner-bootstrap-after.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/runner-bootstrap-before.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\runner-bootstrap-before.txt",
+      "sourceSHA256": "8b5f1810ac4651506358f5a219fa852bb6fd154f9bd30a8d33e9f9aa9e056601"
+    },
+    {
+      "saved": "nbfx-npcself2-fixed-20261005-1/captures/cine-reopen/saved-scene.yaml",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-npcself2-fixed-20261005-1\\captures\\cine-reopen\\saved-scene.yaml",
+      "sourceSHA256": "924877c5d83442f30bb9aba95c15ff2ce95def65ca104f87132c31644957a696"
+    },
+    {
+      "saved": "previous-fixtures/initial.cs.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\default-pass-ssao-execution-20261004\\nbpost-cine-save-v1\\ready-testonly-v2\\package\\Tests\\URP\\Editor\\G4NBPostCinemachinePersistenceTests.cs",
+      "sourceSHA256": "e2a81477ac2863ed65c0e472a78c8d231a9e18794d19464c40b5092b23484fd1"
+    },
+    {
+      "saved": "previous-fixtures/bootstrap.cs.txt",
+      "source": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-resume-20261002\\default-pass-ssao-execution-20261004\\nbpost-cine-save-v1\\bootstrap-v3\\package\\Tests\\URP\\Editor\\G4NBPostCinemachinePersistenceTests.cs",
+      "sourceSHA256": "95e41b17473cf6cb73ba46020bb71b5e9a259920c7eb7ab2f4b090e8ff5f18e4"
+    }
+  ],
+  "fullMeshGatePassed": false
+}
