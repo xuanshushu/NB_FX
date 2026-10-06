@@ -1,0 +1,89 @@
+{
+  "status": "completed",
+  "summary": {
+    "total": 11,
+    "passed": 6,
+    "failed": 5,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_Forward_stream25_ortho",
+      "Status": "Passed",
+      "Duration": 26.0666615,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_Forward_stream75_perspective",
+      "Status": "Passed",
+      "Duration": 0.6520383,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBDeferredDistortPass_stream25_ortho",
+      "Status": "Passed",
+      "Duration": 5.2701669,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphFlipbookTests.G4Flipbook_NBCameraOpaqueDistortPass_stream75_perspective",
+      "Status": "Passed",
+      "Duration": 5.6689259,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphMeshParityTests.G4MeshBC_fresnel-alpha_perspective",
+      "Status": "Passed",
+      "Duration": 1.4210208,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphMeshParityTests.G4MeshBC_fresnel-color_ortho",
+      "Status": "Passed",
+      "Duration": 0.171012,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-uv0_ortho",
+      "Status": "Failed",
+      "Duration": 0.8075228,
+      "Message": "  Pure ShaderLab extraction A/B mismatch.\r\n  Expected: 0\r\n  But was:  1\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x0088c] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphNormalMapTests.cs:194\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_fresnel-mask-mode_perspective",
+      "Status": "Failed",
+      "Duration": 0.7838523,
+      "Message": "  Graph normal-map B/C mismatch.\r\n  Expected: 0\r\n  But was:  1\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008ba] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphNormalMapTests.cs:196\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_matcap-uv0_perspective",
+      "Status": "Failed",
+      "Duration": 0.8277597,
+      "Message": "  Pure ShaderLab extraction A/B mismatch.\r\n  Expected: 0\r\n  But was:  1\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x0088c] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphNormalMapTests.cs:194\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4GraphNormalMapTests.G4NormalMapABC_matcap-mask-mode_ortho",
+      "Status": "Failed",
+      "Duration": 0.5623209,
+      "Message": "  Expected: 0\r\n  But was:  1\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4GraphNormalMapTests.CurvedMeshNormalMapMatchesFrozenAndGraph (System.String name, System.Boolean ortho) [0x008d6] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4GraphNormalMapTests.cs:197\r\n"
+    },
+    {
+      "FullName": "NBFX.Baseline.Tests.G4QCMSharedGUITests.G4QCM_ActualConstructorPaint_MixedManualQueueEnumReadOnly",
+      "Status": "Failed",
+      "Duration": 0.2194044,
+      "Message": "  Expected string length 27047 but was 27046. Strings differ at index 12988.\r\n  Expected: \"...B_TierAllowFlipbook\",\"second\":1.0},{\"first\":\"_NB_TierAllow...\"\r\n  But was:  \"...B_TierAllowFlipbook\",\"second\":0.0},{\"first\":\"_NB_TierAllow...\"\r\n  --------------------------------------------^\r\n",
+      "StackTrace": "at NBFX.Baseline.Tests.G4QCMSharedGUITests.G4QCM_ActualConstructorPaint_MixedManualQueueEnumReadOnly () [0x00139] in .\\Packages\\NB_FX\\Tests\\URP\\Editor\\G4QCMSharedGUITests.cs:66\r\n"
+    }
+  ]
+}

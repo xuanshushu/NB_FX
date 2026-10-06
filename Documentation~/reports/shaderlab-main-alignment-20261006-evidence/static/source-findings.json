@@ -1,0 +1,297 @@
+[
+  {
+    "id": "S-PRECISION-01",
+    "classification": "real_ShaderLab_precision_boundary_change",
+    "priority": "P1_for_strict_parity",
+    "title": "Particle Flipbook blend weight is narrowed from float to half",
+    "baseline": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+        "lines": [
+          449
+        ],
+        "needle": "blendUv.z = input.normalWSAndAnimBlend.w",
+        "source": "main"
+      }
+    ],
+    "candidate": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderUVV1.hlsl",
+        "lines": [
+          166
+        ],
+        "needle": "return helper ? (float)helperWeight : (float)(half)streamWeight;",
+        "source": "candidate"
+      },
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+        "lines": [
+          1288
+        ],
+        "needle": "float4 normalWSAndAnimBlend",
+        "source": "candidate"
+      }
+    ],
+    "trigger": "_FLIPBOOKBLENDING_ON, helper flag false, interpolated TEXCOORD3.x weight not exactly representable in binary16",
+    "before": "float3 blendUv.z receives float4 varying.w directly",
+    "after": "streamWeight converts float -> half -> float before lerp",
+    "risk": "Potential output delta on actual 16-bit/min16 targets; current desktop parity does not prove this path exact. ShaderLab type contract changed even when half maps float.",
+    "smallest_fix": "Return streamWeight directly in the non-helper arm."
+  },
+  {
+    "id": "S-PRECISION-02",
+    "classification": "real_ShaderLab_precision_boundary_change",
+    "priority": "P1_for_strict_parity",
+    "title": "Fresnel dot narrows interpolated normal before dot",
+    "baseline": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+        "lines": [
+          1148
+        ],
+        "needle": "half dotNV = dot(fresnelDir,input.normalWSAndAnimBlend.xyz)",
+        "source": "main"
+      }
+    ],
+    "candidate": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl",
+        "lines": [
+          195
+        ],
+        "needle": "half NBFX_EvaluateFresnelV1",
+        "source": "candidate"
+      },
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderSharedContractV1.hlsl",
+        "lines": [
+          97
+        ],
+        "needle": "half NBFX_EvaluateFresnelV1",
+        "source": "candidate"
+      }
+    ],
+    "trigger": "_FRESNEL, interpolation gives float normal not binary16-representable, actual half/min16 shader target",
+    "before": "half3 fresnelDir and float3 normal are dotted, then assigned half dotNV",
+    "after": "incoming float normal converts to half3 function argument before dot",
+    "risk": "Remap/pow/Fresnel alpha/RGB can differ. Keep the original normal precision and assignment boundary.",
+    "smallest_fix": "Change normalWS argument to float3 in both implementation and forward declaration."
+  },
+  {
+    "id": "S-PRECISION-03",
+    "classification": "conditional_precision_risk",
+    "priority": "P2",
+    "title": "Normal-map transformed result now passes through half3 output",
+    "baseline": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+        "lines": [
+          602
+        ],
+        "needle": "normalize(TransformTangentToWorld(normalTS, tangentToWorld))",
+        "source": "main"
+      }
+    ],
+    "candidate": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderEnvironmentV2.hlsl",
+        "lines": [
+          31
+        ],
+        "needle": "out half3 normalWS",
+        "source": "candidate"
+      },
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+        "lines": [
+          514
+        ],
+        "needle": "half3 mappedNormalWS",
+        "source": "candidate"
+      }
+    ],
+    "trigger": "Only configurations with real3=float3 but native/minimum 16-bit half semantics; not an extra narrowing when real3 already half3",
+    "before": "normalize(URP TransformTangentToWorld(...)) assigned directly to float3 varying",
+    "after": "normalize result assigned to half3 out and half3 local before float3 varying",
+    "risk": "URP17.3 return type is real3. Mobile/unified default already real=half; REAL_IS_HALF=0/native-half combination is the unresolved precision case.",
+    "smallest_fix": "Use float3 output and local, or exactly preserve real3 output/local; retain existing normalize invocation."
+  },
+  {
+    "id": "S-PRECISION-04",
+    "classification": "literal_precision_risk_not_demonstrated",
+    "priority": "P3",
+    "title": "Fresnel constant 1.01 is spelled 1.01h",
+    "baseline": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+        "lines": [
+          1155
+        ],
+        "needle": "_FresnelUnit.x + 1.01 - _FresnelUnit.w",
+        "source": "main"
+      }
+    ],
+    "candidate": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl",
+        "lines": [
+          201
+        ],
+        "needle": "unit.x + 1.01h - unit.w",
+        "source": "candidate"
+      }
+    ],
+    "risk": "Suffix handling is compiler dependent; no current-target output delta established. Literal spelling is unnecessary for extraction and weakens strict source precision proof.",
+    "smallest_fix": "Preserve 1.01 literal from main."
+  },
+  {
+    "id": "S-CONTRACT-01",
+    "classification": "ShaderLab_property_surface_addition",
+    "priority": "P2_for_literal_contract",
+    "title": "Two hidden material Properties added",
+    "candidate": [
+      {
+        "path": "NBShaders2/Shader/NBShader.shader",
+        "lines": [
+          409
+        ],
+        "needle": "_BaseMap_AnimationSheetBlend_ST",
+        "source": "candidate"
+      },
+      {
+        "path": "NBShaders2/Shader/NBShader.shader",
+        "lines": [
+          410
+        ],
+        "needle": "_AnimationSheetHelperBlendIntensity",
+        "source": "candidate"
+      }
+    ],
+    "before": "No ShaderLab Property declarations, but both HLSL variables already in UnityPerMaterial",
+    "after": "Vector default (0,0,0,0), Float default 0; new property count 443 versus 441",
+    "risk": "Changes Material.HasProperty/default/serialized property surface. Existing 441 property declaration lines and defaults are exact. Host helper MPB binding needs read-back validation; static audit does not establish import/default equivalence for previously undeclared properties.",
+    "smallest_fix": "Either restore property surface if user requires literal sameness, or explicitly document/approve this contract addition."
+  },
+  {
+    "id": "S-CONTRACT-02",
+    "classification": "CBUFFER_layout_and_binding_change",
+    "priority": "P2_for_literal_contract",
+    "title": "31 uniforms appended to UnityPerMaterial",
+    "candidate": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+        "lines": [
+          256
+        ],
+        "needle": "float4 _VATTex_TexelSize;",
+        "source": "candidate"
+      },
+      {
+        "path": "XuanXuanRenderUtility/Shader/HLSL/HoudiniVAT.hlsl",
+        "lines": [
+          30
+        ],
+        "needle": "#ifndef NBSHADER_INPUT",
+        "source": "candidate"
+      }
+    ],
+    "before": "_VATTex_TexelSize outside buffer; 30 Houdini float uniforms extern/outside material CBUFFER",
+    "after": "All 31 in material CBUFFER; old declarations retained as exact prefix; Houdini extern disabled under NBSHADER_INPUT",
+    "risk": "Normal Material binding should preserve numeric values, but memory layout/material-global binding/SRP Batcher eligibility changes. Append preserves old member order/offsets; cannot claim identical CBUFFER or SRP behavior.",
+    "smallest_fix": "Treat as explicit allowed batching/binding fix, or restore layout when literal invariance is required."
+  },
+  {
+    "id": "S-BEHAVIOR-01",
+    "classification": "real_ShaderLab_compile_and_lighting_fix",
+    "priority": "P2_scope_exception",
+    "title": "Additional vertex-light/fog path differs from main",
+    "baseline": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+        "lines": [
+          1530,
+          1531
+        ],
+        "needle": "input.fogFactorAndVertexLight",
+        "source": "main"
+      }
+    ],
+    "candidate": [
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderInput.hlsl",
+        "lines": [
+          1381
+        ],
+        "needle": "inputData.vertexLighting = input.vertexLight",
+        "source": "candidate"
+      },
+      {
+        "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+        "lines": [
+          15
+        ],
+        "needle": "#define NB_HALF_LAMBERT_ONLY 1",
+        "source": "candidate"
+      }
+    ],
+    "trigger": "_ADDITIONAL_LIGHTS_VERTEX native variants",
+    "before": "InitializeInputData accesses nonexistent fogFactorAndVertexLight; non-SixWay includes SixWay material body containing undeclared surfaceData reference",
+    "after": "Reads actual fog positionWS.w and vertexLight; non-SixWay includes only Half-Lambert section",
+    "risk": "Improves previously broken compiled variants but is a real behavior/variant compilability delta, not relocation. SixWay + _ADDITIONAL_LIGHTS_VERTEX still has old surfaceData.albedo reference and is a baseline issue, not introduced regression.",
+    "smallest_fix": "Record as explicit baseline defect fix rather than state main behavior wholly unchanged."
+  },
+  {
+    "id": "S-NBPOST-01",
+    "classification": "real_runtime_behavior_change_unrelated_to_HLSL_extraction",
+    "priority": "P2_scope_exception",
+    "title": "NBPostProcessing camera shake and disable lifecycle changed",
+    "candidate": [
+      {
+        "path": "NBPostProcessing/Runtime/PostProcessingManager.cs",
+        "lines": [
+          161
+        ],
+        "needle": "internal void BindCameraShake",
+        "source": "candidate"
+      },
+      {
+        "path": "NBPostProcessing/Runtime/PostProcessingManager.cs",
+        "lines": [
+          178
+        ],
+        "needle": "private void ReleaseCameraShake",
+        "source": "candidate"
+      },
+      {
+        "path": "NBPostProcessing/Runtime/PostProcessingManager.cs",
+        "lines": [
+          84,
+          113,
+          305
+        ],
+        "needle": "ResetEffect();",
+        "source": "candidate"
+      },
+      {
+        "path": "NBPostProcessing/Runtime/PostProcessingManager.cs",
+        "lines": [
+          551
+        ],
+        "needle": "ReferenceEquals(CinemachineCore.SoloCamera",
+        "source": "candidate"
+      },
+      {
+        "path": "NBPostProcessing/Runtime/PostProcessingController.cs",
+        "lines": [
+          373,
+          375
+        ],
+        "needle": "_manager.BindCameraShake",
+        "source": "candidate"
+      }
+    ],
+    "before": "Camera identity alone controls release; binding does not stop old Perlin; OnDisable only clears post enable; EndCameraShake unconditionally clears SoloCamera; editor callbacks lack active guard",
+    "after": "Controller owns Perlin binding; swap/release stops cached old shake; manager disable resets active effects; SoloCamera cleared only if owned; inactive editor callbacks suppressed",
+    "risk": "Real camera/effect lifecycle behavior change versus main. NBPost shader/HLSL/pass/deferred signed-RG math and flag protocol unchanged. Needs approved scope exception or separate baseline-preserving treatment."
+  }
+]

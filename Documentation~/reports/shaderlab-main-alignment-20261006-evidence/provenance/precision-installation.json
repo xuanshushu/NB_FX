@@ -1,0 +1,90 @@
+{
+  "project": "D:\\UnityProject\\NBUnityProject\\.utmp\\NBFXMeshValidation-20261002",
+  "basePackageCommit": "17ac773c29fdc8a1bb2780ca0b2057ea0f5826bf",
+  "rootProductChanged": false,
+  "installedUTC": "2026-10-06T01:35:07.555941+00:00",
+  "files": [
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderUVV1.hlsl",
+      "base_commit": "17ac773c29fdc8a1bb2780ca0b2057ea0f5826bf",
+      "original_sha256": "8beb3f81f7058bf148f17897bcc8ef0d671d372780319932a93a68543677c43b",
+      "preview_sha256": "45f50ff4f243258366cfe111faf6a09e9289b7db938cc5d77a642830827fdb52",
+      "replacements": [
+        {
+          "old": "return helper ? (float)helperWeight : (float)(half)streamWeight;",
+          "new": "return helper ? (float)helperWeight : streamWeight;"
+        }
+      ],
+      "scope": "ShaderLab_shared_precision_restoration"
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl",
+      "base_commit": "17ac773c29fdc8a1bb2780ca0b2057ea0f5826bf",
+      "original_sha256": "7d18d3e09c46e7b9371fddc2ce06fa57c10a60c8a154e48e6d1d6d667229ab75",
+      "preview_sha256": "8391a4d97ed5e45ddd0b5d5389bf15641b20daf4d2545d6cbf09417c2ba293f2",
+      "replacements": [
+        {
+          "old": "half NBFX_EvaluateFresnelV1(float3 viewDirWS, half3 normalWS,",
+          "new": "half NBFX_EvaluateFresnelV1(float3 viewDirWS, float3 normalWS,"
+        },
+        {
+          "old": "unit.x + 1.01h - unit.w",
+          "new": "unit.x + 1.01 - unit.w"
+        }
+      ],
+      "scope": "ShaderLab_shared_precision_restoration"
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderSharedContractV1.hlsl",
+      "base_commit": "17ac773c29fdc8a1bb2780ca0b2057ea0f5826bf",
+      "original_sha256": "b06e62db11165d7e053a4395a1fb7df5c7bce69be1a71332ecc8ab0b4ac22640",
+      "preview_sha256": "73e149918af314d377ec0709d590a7f456fe103e6906c4d762d1dcca2ae556ac",
+      "replacements": [
+        {
+          "old": "half NBFX_EvaluateFresnelV1(float3 viewDirWS, half3 normalWS,",
+          "new": "half NBFX_EvaluateFresnelV1(float3 viewDirWS, float3 normalWS,"
+        }
+      ],
+      "scope": "ShaderLab_shared_precision_restoration"
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderEnvironmentV2.hlsl",
+      "base_commit": "17ac773c29fdc8a1bb2780ca0b2057ea0f5826bf",
+      "original_sha256": "6a0e6557eeb3bafacbeb082e79f0769f2944289d0e7db61f2ea49ae4e6afa4c2",
+      "preview_sha256": "5ee137e591f76769558c403246dc1decbaaabc538975fbe8aaa0a5bca879d49b",
+      "replacements": [
+        {
+          "old": "out half3 normalWS, out half metallicWeight, out half smoothnessWeight)",
+          "new": "out float3 normalWS, out half metallicWeight, out half smoothnessWeight)"
+        }
+      ],
+      "scope": "ShaderLab_shared_precision_restoration"
+    },
+    {
+      "path": "NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl",
+      "base_commit": "17ac773c29fdc8a1bb2780ca0b2057ea0f5826bf",
+      "original_sha256": "bba922b8d63e9fbcc693a0146e8daca5d3a8c6913753b15b074e6a9efcee0126",
+      "preview_sha256": "d7c2e0712bc34a909ed81753cbc97d4a1fc73bcf30952c5f213a27a4f35e4655",
+      "replacements": [
+        {
+          "old": "half3 mappedNormalWS;",
+          "new": "float3 mappedNormalWS;"
+        }
+      ],
+      "scope": "ShaderLab_shared_precision_restoration"
+    },
+    {
+      "path": "NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl",
+      "base_commit": "17ac773c29fdc8a1bb2780ca0b2057ea0f5826bf",
+      "original_sha256": "fa2e8550e675c16bc02df48e849f216f116a204672da15c89077476128be0559",
+      "preview_sha256": "e320f057a914548c04616a7f7ff9700bd812799589207f82d8c342c2f6fc9bbe",
+      "replacements": [
+        {
+          "old": "half3 facedNormalWS;",
+          "new": "float3 facedNormalWS;"
+        }
+      ],
+      "scope": "Graph_required_float_out_adapter"
+    }
+  ]
+}

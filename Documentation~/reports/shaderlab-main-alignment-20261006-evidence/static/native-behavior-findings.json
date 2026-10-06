@@ -1,0 +1,222 @@
+[
+  {
+    "id": "C-NATIVE-01",
+    "category": "Native_UI_interaction_and_passive_value_behavior_change",
+    "title": "Native ColorMask now reverses UI bits and stops passive normalization",
+    "locations": [
+      {
+        "path": "NBShaders2/Editor/ShaderGUIItems/TABigBlockItem.cs",
+        "source": "main",
+        "lines": [
+          69
+        ],
+        "needle": "ValidMask = 0xF"
+      },
+      {
+        "path": "NBShaders2/Editor/ShaderGUIItems/TABigBlockItem.cs",
+        "source": "candidate",
+        "lines": [
+          91
+        ],
+        "needle": "ValidMask = 0xF, ReverseFourChannelMaskUI=true"
+      },
+      {
+        "path": "XuanXuanRenderUtility/Editor/ShaderGUIItems/ShaderGUIPopUpItem.cs",
+        "source": "candidate",
+        "lines": [
+          131
+        ],
+        "needle": "ReverseFourChannelMask(int mask)"
+      }
+    ],
+    "Native_trigger": "Normal Effects/NBShader inspector -> Native TABigBlockItem constructor, no Graph condition",
+    "before": "R/G/B/A menu uses raw bits1/2/4/8. Every paint rewrites rounded raw ColorMask & 15.",
+    "after": "Menu uses reversed bits8/4/2/1. Write only on control change. A saved R-only raw8 is displayed R instead of A; clicking R alone writes8 instead of1. Out-of-range/fractional stale ColorMask values no longer normalize on paint.",
+    "impact": "Existing material is unchanged if valid value and no click; same user selection can write different render ColorMask. This is not Graph-only adaptation.",
+    "authorization": "Root reports prior broad implementation/bugfix authorization, not explicit permission to change each Native main semantic; classify as baseline-defect repair exception candidate pending Root conversation review.",
+    "review_recommendation": "Root should explicitly classify/approve the original UI mapping defect fix or preserve Native main semantics; do not silently mark behavior unchanged."
+  },
+  {
+    "id": "C-NATIVE-02",
+    "category": "Native_MPB_physical_storage_fix_and_contract_change",
+    "title": "SetFlagBits(MaterialPropertyBlock) switches float API to integer API",
+    "locations": [
+      {
+        "path": "XuanXuanRenderUtility/Runtime/ShaderFlagsBase.cs",
+        "source": "main",
+        "lines": [
+          53
+        ],
+        "needle": "propertyBlock.GetInt("
+      },
+      {
+        "path": "XuanXuanRenderUtility/Runtime/ShaderFlagsBase.cs",
+        "source": "candidate",
+        "lines": [
+          39
+        ],
+        "needle": "propertyBlock.GetInteger(propertyId)"
+      },
+      {
+        "path": "XuanXuanRenderUtility/Runtime/ShaderFlagsBase.cs",
+        "source": "candidate",
+        "lines": [
+          50
+        ],
+        "needle": "propertyBlock.SetInteger(propertyId, value)"
+      }
+    ],
+    "Native_trigger": "new NBShaderFlags(native material).SetFlagBits(bits, propertyBlock,index), and every ShaderFlagsBase subclass MPB SetFlagBits caller",
+    "before": "SetFlagBits MPB uses GetInt/SetInt; Clear/Check already use GetInteger/SetInteger. Float-API/int-API word storage mixed.",
+    "after": "All MPB operations use GetInteger/SetInteger; Graph override never applies to MPB. Native Material operations remain GetInteger/SetInteger.",
+    "impact": "Correct integer storage preserves high bits and matches HLSL integer protocol. Existing external MPB writers using legacy SetInt(float) are not migrated; their prior float-backed value will not be merged by the new integer reader. No flag bits/IDs changed.",
+    "authorization": "Root reports prior broad implementation/bugfix authorization, not explicit permission to change each Native main semantic; classify as baseline-defect repair exception candidate pending Root conversation review.",
+    "review_recommendation": "Keep as an explicit packed-word bugfix exception candidate; test integer-word high-bit controls and legacy float-word behavior separately."
+  },
+  {
+    "id": "C-NATIVE-03",
+    "category": "Native_Helper_first_frame_and_lifecycle_behavior_change",
+    "title": "AnimationSheetHelper initializes first frame and wraps next frame",
+    "locations": [
+      {
+        "path": "XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs",
+        "source": "candidate",
+        "lines": [
+          133
+        ],
+        "needle": "frameIndex = 0;"
+      },
+      {
+        "path": "XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs",
+        "source": "candidate",
+        "lines": [
+          134
+        ],
+        "needle": "_lastIndex = -1;"
+      },
+      {
+        "path": "XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs",
+        "source": "candidate",
+        "lines": [
+          182,
+          303
+        ],
+        "needle": "CalSt(_nextIndex)"
+      },
+      {
+        "path": "XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs",
+        "source": "candidate",
+        "lines": [
+          300
+        ],
+        "needle": "(frameIndex + 1) % frameCount"
+      },
+      {
+        "path": "XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs",
+        "source": "candidate",
+        "lines": [
+          105
+        ],
+        "needle": "else ReleaseRendererFlagMaterial();"
+      }
+    ],
+    "Native_trigger": "Enabled/initialized/disabled Graphic or Renderer helper with isParticleBaseShader true, Effects/NBShader/legacy property IDs",
+    "before": "Init sets time/scale and current ST only; frameIndex/lastIndex/nextIndex/blend not explicitly reset. Next index uses frame+1 without modulo. Renderer OnDisable calls Init (rebind/restart current ST) and clears current flag.",
+    "after": "Init resets frameIndex=0,last=-1,next=1 or0,blend=0, writes next ST and blend0; next index wraps modulo. Renderer OnDisable clears only acquired material flag without rebinding/resetting ST. Update guards inactive/missing material/framecount and rebinds when renderer shared material changes. Editor delta resets on enable.",
+    "impact": "Visible first/last-frame blend and disabling/switching/re-enabling Native helper behavior differ from main. Flags1 helperbit remains bit15 and Native OR/AND integer operations untouched. These are real fixes, including the human first-frame review area.",
+    "authorization": "Root reports prior broad implementation/bugfix authorization, not explicit permission to change each Native main semantic; classify as baseline-defect repair exception candidate pending Root conversation review.",
+    "review_recommendation": "Separate first-frame/last-frame/helper ownership A/B from Graph protocol bridge tests; retain previous authorized lifecycle fixes only as explicit exception candidates."
+  },
+  {
+    "id": "C-NATIVE-04",
+    "category": "Native_NBPost_camera_and_effect_lifecycle_behavior_change",
+    "title": "NBPost camera-shake owner/release and disable handling differ",
+    "locations": [
+      {
+        "path": "NBPostProcessing/Runtime/PostProcessingManager.cs",
+        "source": "candidate",
+        "lines": [
+          161
+        ],
+        "needle": "internal void BindCameraShake"
+      },
+      {
+        "path": "NBPostProcessing/Runtime/PostProcessingManager.cs",
+        "source": "candidate",
+        "lines": [
+          178
+        ],
+        "needle": "private void ReleaseCameraShake"
+      },
+      {
+        "path": "NBPostProcessing/Runtime/PostProcessingManager.cs",
+        "source": "candidate",
+        "lines": [
+          84,
+          113,
+          305
+        ],
+        "needle": "ResetEffect();"
+      },
+      {
+        "path": "NBPostProcessing/Runtime/PostProcessingManager.cs",
+        "source": "candidate",
+        "lines": [
+          551
+        ],
+        "needle": "ReferenceEquals(CinemachineCore.SoloCamera"
+      },
+      {
+        "path": "NBPostProcessing/Runtime/PostProcessingController.cs",
+        "source": "candidate",
+        "lines": [
+          573
+        ],
+        "needle": "isActiveAndEnabled && !Application.isPlaying"
+      }
+    ],
+    "Native_trigger": "NBPostProcessing controllers/manager with CINIMACHINE_3_0 and/or Editor callbacks; no Graph check",
+    "before": "Camera identity alone controls release; old cached Perlin can keep amplitude on binding switch; manager disable only clears post flag; global SoloCamera always cleared on shake end; inactive editor callback can still update.",
+    "after": "Controller owner controls release; binding switch stops prior owner Perlin; OnDisable resets active effects; SoloCamera cleared only if owned; inactive callbacks suppressed; newly-created/found Perlin published after camera setup.",
+    "impact": "Actual camera, screen shake and effect cleanup change versus main. Shader/postprocessing numerical contracts are unchanged; C# lifecycle is not.",
+    "authorization": "Root explicitly reports historical real bug evidence for this repair; still a repair exception candidate under new strict-main requirement, not automatically behavior-equivalent.",
+    "review_recommendation": "Record as separate baseline defect fix; do not revert to known shake/disable faults just to claim identical source."
+  },
+  {
+    "id": "C-GUARD-01",
+    "category": "new_Graph_host_boundary",
+    "title": "Mixed Native/Graph selection is read-only; Native-only core unchanged",
+    "locations": [
+      {
+        "path": "NBShaders2/Editor/NBShaderGUI.cs",
+        "source": "candidate",
+        "lines": [
+          395
+        ],
+        "needle": "if (Context.HasMixedMaterialHosts)"
+      },
+      {
+        "path": "NBShaders2/Editor/ShaderGUIItems/NBShaderSyncService.cs",
+        "source": "candidate",
+        "lines": [
+          1047,
+          1077
+        ],
+        "needle": "if (NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return;"
+      },
+      {
+        "path": "NBShaders2/Runtime/NBShaderFeatureRuntime.cs",
+        "source": "candidate",
+        "lines": [
+          109
+        ],
+        "needle": "!IsNBShaderMaterial(material) && material.HasProperty"
+      }
+    ],
+    "Native_trigger": "Only mixed-host UI selection; ordinary Native-only selection has IsGraphMaterialHost=false, HasGraphTargets=false, HasMixedHosts=false",
+    "before": "No Graph host existed; Native per-material edit/sync/tier loop",
+    "after": "Mixed host GUI and static SyncMaterialState IList both return for the whole selection. Graph-only static Sync performs seed-only PrepareGraphGUIState then skips old projection. Runtime Native+Graph enumerable applies Native in original order then atomically projects the Graph subset.",
+    "impact": "New capability guard, not a new Native-only default or flags layout. Cross-host behavior must not be used as proof Native semantics unchanged.",
+    "authorization": "Graph host extension in implementation scope; Native-only branch preservation mechanically checked."
+  }
+]

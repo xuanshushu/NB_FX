@@ -1,0 +1,20 @@
+{
+  "path": "XuanXuanRenderUtility/Runtime/ShaderFlagsBase.cs",
+  "baseCommit": "17ac773c29fdc8a1bb2780ca0b2057ea0f5826bf",
+  "baseSHA256": "ff1351f980de2697931b3644068cfed9b1f892e6e67eb87ad912be7e5f01ef87",
+  "previewSHA256": "700cb7182c917618e9e49a8741e7654a95869d921fda01c855a5d8f1cb51fc76",
+  "scope": "Only existing SetFlagBits MPB branch. Product/runtime/clone not modified; Root review/install required.",
+  "MaterialPathUnchanged": true,
+  "ClearAndCheckExact": true,
+  "protocol": "No flag bit, slot, property ID/name, default, material serialization, CBUF or HLSL change. Preserve old float transport only for an already Float-only MPB in SetFlagBits; integer and empty MPB keep current Integer path.",
+  "Graph": "NBShaderFlags.ReadWord/WriteWord enable Graph halfword mapping only with propertyBlock null; material Graph path untouched; existing MPB fallback remains Native physical word.",
+  "boundaries": [
+    "Existing Float-only retains original GetInt/SetInt float precision and conversion, not full32 guarantee",
+    "Existing Integer keeps full signed32/bitwise OR and current virtual word seam",
+    "Empty MPB remains current SetInteger default, not main original empty SetInt transport; existing fullword defect repair candidate remains separately recorded",
+    "Mixed Float+Integer same ID or unrelated foreign type is not silently cleared, converted or normalized; no compatibility claim for already-invalid mixed sheets",
+    "Clear/Check remain original/current Integer behavior; no opportunistic legacy Float Clear/Check repair"
+  ],
+  "actualEvidence": "candidate-behavior5 integer actual seed2441257091 set2441257107 correct; legacy GetInt8388609 GetInteger16 and Unity different type0 error. Original candidate6P1F remains unchanged.",
+  "validation": "Root targeted same existing MPB case, original strict logs and fullword assertion. Legacy readback should be8388625 (0x800011) and retain Float only, with no new Unity error. Actual render binding not asserted by this CPU fixture."
+}

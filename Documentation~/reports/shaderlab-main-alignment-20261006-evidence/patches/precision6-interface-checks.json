@@ -1,0 +1,74 @@
+{
+  "checks": {
+    "flipbook_nonhelper_preserves_float": true,
+    "flipbook_Helper_still_half": true,
+    "fresnel_definition_matches_declaration": true,
+    "fresnel_float_normal_argument": true,
+    "fresnel_normalize_expression_unchanged": true,
+    "fresnel_original_float_literal": true,
+    "fresnel_dot_result_still_half": true,
+    "fresnel_ShaderLab_caller_still_uses_float_varying": true,
+    "normalmap_shared_out_float": true,
+    "normalmap_ShaderLab_local_float": true,
+    "normalmap_original_normalize_expression_unchanged": true,
+    "normalmap_ShaderLab_float_destination": true,
+    "normalmap_Graph_out_argument_matches_float": true,
+    "normalmap_Graph_final_half_return_preserved": true,
+    "all_known_calls_accounted_for": true,
+    "Unity_runtime_compilation": "not_run_read_only_audit",
+    "product_file_changes": "none_only_private_preview"
+  },
+  "callchains": [
+    {
+      "symbol": "NBFX_ResolveFlipbookWeightV1",
+      "definition": "NBShaderUVV1.hlsl:163",
+      "declarations": [],
+      "callers": [
+        {
+          "path": "NBShaderForwardPass.hlsl:369",
+          "input": "float varying.w",
+          "output": "float blendUv.z"
+        },
+        {
+          "path": "NBGraphBaseUV.hlsl:278",
+          "input": "float UV3.x, existing half helper conversion",
+          "output": "float BlendWeight"
+        }
+      ]
+    },
+    {
+      "symbol": "NBFX_EvaluateFresnelV1",
+      "definition": "NBShaderSurfaceV1.hlsl:195",
+      "declarations": [
+        "NBShaderSharedContractV1.hlsl:97"
+      ],
+      "callers": [
+        {
+          "path": "NBShaderForwardPass.hlsl:1034",
+          "input": "float3 varying normal",
+          "output": "half fresnelValue"
+        },
+        {
+          "path": "NBGraphBaseColor.hlsl:354",
+          "input": "existing half3 Graph wrapper normal, promoted float3",
+          "output": "half fresnelValue; final half4 color"
+        }
+      ]
+    },
+    {
+      "symbol": "NBFX_DecodeNormalMapV2",
+      "definition": "NBShaderEnvironmentV2.hlsl:29",
+      "declarations": [],
+      "callers": [
+        {
+          "path": "NBShaderForwardPass.hlsl:515",
+          "output": "float3 mappedNormalWS -> float3 varying"
+        },
+        {
+          "path": "NBGraphBaseColor.hlsl:586",
+          "output": "float3 facedNormalWS -> unchanged half3 feature return"
+        }
+      ]
+    }
+  ]
+}

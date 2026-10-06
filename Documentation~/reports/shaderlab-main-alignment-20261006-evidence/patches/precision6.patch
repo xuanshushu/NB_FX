@@ -1,0 +1,73 @@
+--- a/NBShaders2/Shader/HLSL/NBShaderUVV1.hlsl
++++ b/NBShaders2/Shader/HLSL/NBShaderUVV1.hlsl
+@@ -163,7 +163,7 @@
+ float NBFX_ResolveFlipbookWeightV1(float streamWeight,
+     half helperWeight, bool helper)
+ {
+-    return helper ? (float)helperWeight : (float)(half)streamWeight;
++    return helper ? (float)helperWeight : streamWeight;
+ }
+ 
+ #endif
+--- a/NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl
++++ b/NBShaders2/Shader/HLSL/NBShaderSurfaceV1.hlsl
+@@ -192,13 +192,13 @@
+ 
+ // Original NBShader Fresnel math. Hosts own the enable gate, normal source,
+ // CustomData offset and back-face policy; the numerical operation is shared.
+-half NBFX_EvaluateFresnelV1(float3 viewDirWS, half3 normalWS,
++half NBFX_EvaluateFresnelV1(float3 viewDirWS, float3 normalWS,
+     half3 directionOffset, half4 unit, bool invert)
+ {
+     half3 fresnelDir = normalize(viewDirWS + directionOffset);
+     half fresnelValue = dot(fresnelDir, normalWS);
+     fresnelValue = NB_Remap(fresnelValue, unit.x,
+-        unit.x + 1.01h - unit.w, 0.0h, 1.0h);
++        unit.x + 1.01 - unit.w, 0.0h, 1.0h);
+     UNITY_BRANCH
+     if (!invert)
+         fresnelValue = 1.0h - fresnelValue;
+--- a/NBShaders2/Shader/HLSL/NBShaderSharedContractV1.hlsl
++++ b/NBShaders2/Shader/HLSL/NBShaderSharedContractV1.hlsl
+@@ -94,7 +94,7 @@
+     bool saturationOn, half saturability,
+     bool refineOn, half4 baseMapColorRefine,
+     bool premultiplyRGB);
+-half NBFX_EvaluateFresnelV1(float3 viewDirWS, half3 normalWS,
++half NBFX_EvaluateFresnelV1(float3 viewDirWS, float3 normalWS,
+     half3 directionOffset, half4 unit, bool invert);
+ void NBFX_ApplyFresnelV1(inout half3 color, inout half alpha,
+     half fresnelValue, half strength, half4 fresnelColor,
+--- a/NBShaders2/Shader/HLSL/NBShaderEnvironmentV2.hlsl
++++ b/NBShaders2/Shader/HLSL/NBShaderEnvironmentV2.hlsl
+@@ -28,7 +28,7 @@
+ // tangent basis construction and consumers. Keep every original half boundary.
+ void NBFX_DecodeNormalMapV2(half4 normalMapSample, half bumpScale,
+     bool maskMode, half3x3 tangentToWorld, out half3 normalTS,
+-    out half3 normalWS, out half metallicWeight, out half smoothnessWeight)
++    out float3 normalWS, out half metallicWeight, out half smoothnessWeight)
+ {
+     metallicWeight = 1;
+     smoothnessWeight = 1;
+--- a/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl
++++ b/NBShaders2/Shader/HLSL/NBShaderForwardPass.hlsl
+@@ -511,7 +511,7 @@
+             bool forceBumpLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_BUMPTEX);
+             half4 normalMapSample = SampleTexture2DWithWrapFlags(_BumpTex,BumpTex_uv,FLAG_BIT_WRAPMODE_BUMPTEX,forceBumpLod0);
+             half metallicWeight, smoothnessWeight;
+-            half3 mappedNormalWS;
++            float3 mappedNormalWS;
+             NBFX_DecodeNormalMapV2(normalMapSample, _BumpScale,
+                 CheckLocalFlags(FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE), tangentToWorld,
+                 normalTS, mappedNormalWS, metallicWeight, smoothnessWeight);
+--- a/NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl
++++ b/NBShaders2/ShaderGraph/NBGraphBaseColor.hlsl
+@@ -582,7 +582,7 @@
+         (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BUMPTEX) != 0u);
+     half3x3 tangentToWorld = half3x3((half3)tangentWS,
+         (half3)(side * bitangentWS), (half3)(side * normalWS));
+-    half3 facedNormalWS;
++    float3 facedNormalWS;
+     NBFX_DecodeNormalMapV2(sampled, scale,
+         (flags0 & FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE) != 0u,
+         tangentToWorld, normalTS, facedNormalWS, metallicWeight, smoothnessWeight);

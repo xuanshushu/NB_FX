@@ -1,0 +1,76 @@
+{
+  "scope": "Read-only sourceAfter vs original player7 lock; BuildSucceeded retained, sourceUnchangedAfterBuild false retained",
+  "buildResult": "Succeeded",
+  "actualChanges": [
+    {
+      "path": "Assets/UniversalRenderPipelineGlobalSettings.asset",
+      "beforeSHA256": "720fdbd129c1b423a4e3e82fb5f19ee157a2bbccdc0c5ac7c9410bdcede0931d",
+      "buildAfterSHA256": "6258351c2f15a24bae0f42437cb14dd608e9d39817b7018aab2737afb39ac00a",
+      "beforeBackup": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-shaderlab-main-align-20261006\\evidence-audit\\main-player7-environment\\Assets__UniversalRenderPipelineGlobalSettings.asset.before",
+      "afterSnapshot": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-shaderlab-main-align-20261006\\evidence-audit\\main-player7-environment\\Assets__UniversalRenderPipelineGlobalSettings.asset.after",
+      "semanticDiff": "--- verified-before/Assets/UniversalRenderPipelineGlobalSettings.asset\n+++ build-after/Assets/UniversalRenderPipelineGlobalSettings.asset\n@@ -168,7 +168,7 @@\n         asm: Unity.RenderPipelines.Universal.Runtime}\n       data:\n         m_Version: 0\n-        m_VolumeProfile: {fileID: 11400000, guid: 931df9a20dffe450db70d0db260a7f9c,\n+        m_VolumeProfile: {fileID: 11400000, guid: 61049969440a0c3429cdd538086cb6b1,\n           type: 2}\n     - rid: 5372388923258962117\n       type: {class: UniversalRenderPipelineEditorMaterials, ns: UnityEngine.Rendering.Universal,",
+      "classification": "Actual URP default VolumeProfile reference changed: before GUID931df9... is unresolved in inspected project/package maps, after GUID610499... resolves to generated Assets/DefaultVolumeProfile.asset. Real dependency change, not formatting or harmless map rename.",
+      "pairedEnvironmentEqualityClaim": false
+    },
+    {
+      "path": "ProjectSettings/BurstAotSettings_StandaloneWindows.json",
+      "beforeSHA256": "a1b3e1d8db4bde9720d498bea2916f1d4ee97073f6930813171757a2a81669b7",
+      "buildAfterSHA256": "b1172456683422bbd9a2e712d961e49b943b4c8e5aa22ab7b0e59180bbe9829c",
+      "beforeBackup": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-shaderlab-main-align-20261006\\evidence-audit\\main-player7-environment\\ProjectSettings__BurstAotSettings_StandaloneWindows.json.before",
+      "afterSnapshot": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-shaderlab-main-align-20261006\\evidence-audit\\main-player7-environment\\ProjectSettings__BurstAotSettings_StandaloneWindows.json.after",
+      "semanticDiff": "--- verified-before/ProjectSettings/BurstAotSettings_StandaloneWindows.json\n+++ build-after/ProjectSettings/BurstAotSettings_StandaloneWindows.json\n@@ -1,16 +1,19 @@\n {\n   \"MonoBehaviour\": {\n-    \"Version\": 3,\n+    \"Version\": 5,\n     \"EnableBurstCompilation\": true,\n     \"EnableOptimisations\": true,\n     \"EnableSafetyChecks\": false,\n     \"EnableDebugInAllBuilds\": false,\n-    \"UsePlatformSDKLinker\": false,\n+    \"DebugDataKind\": 0,\n+    \"EnableArmv9SecurityFeatures\": false,\n     \"CpuMinTargetX32\": 0,\n     \"CpuMaxTargetX32\": 0,\n     \"CpuMinTargetX64\": 0,\n     \"CpuMaxTargetX64\": 0,\n     \"CpuTargetsX32\": 6,\n-    \"CpuTargetsX64\": 72\n+    \"CpuTargetsX64\": 72,\n+    \"OptimizeFor\": 0,\n+    \"FloatMode\": 0\n   }\n }",
+      "changedValues": {
+        "OptimizeFor": {
+          "before": "ABSENT",
+          "after": 0
+        },
+        "UsePlatformSDKLinker": {
+          "before": false,
+          "after": "ABSENT"
+        },
+        "FloatMode": {
+          "before": "ABSENT",
+          "after": 0
+        },
+        "EnableArmv9SecurityFeatures": {
+          "before": "ABSENT",
+          "after": false
+        },
+        "DebugDataKind": {
+          "before": "ABSENT",
+          "after": 0
+        },
+        "Version": {
+          "before": 3,
+          "after": 5
+        }
+      },
+      "classification": "Burst SDK Version3->5 migration/serialization; existing CPU target/optimization/safety contract retained; newly explicit defaults individually recorded",
+      "pairedEnvironmentEqualityClaim": false
+    },
+    {
+      "path": "ProjectSettings/GraphicsSettings.asset",
+      "beforeSHA256": "3ba98a74f235583eeb74bea2e54feee1dec62339ca55970d6732f4816ece5454",
+      "buildAfterSHA256": "77c8658e4d2921538ff8a95d755b6589dcc6cb9d1f8a5965cc009493922c361d",
+      "beforeBackup": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-shaderlab-main-align-20261006\\evidence-audit\\main-player7-environment\\ProjectSettings__GraphicsSettings.asset.before",
+      "afterSnapshot": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-shaderlab-main-align-20261006\\evidence-audit\\main-player7-environment\\ProjectSettings__GraphicsSettings.asset.after",
+      "semanticDiff": "--- verified-before/ProjectSettings/GraphicsSettings.asset\n+++ build-after/ProjectSettings/GraphicsSettings.asset\n@@ -3,7 +3,7 @@\n --- !u!30 &1\n GraphicsSettings:\n   m_ObjectHideFlags: 0\n-  serializedVersion: 15\n+  serializedVersion: 16\n   m_Deferred:\n     m_Mode: 1\n     m_Shader: {fileID: 69, guid: 0000000000000000f000000000000000, type: 0}\n@@ -62,13 +62,14 @@\n   m_FogKeepExp: 1\n   m_FogKeepExp2: 1\n   m_AlbedoSwatchInfos: []\n+  m_RenderPipelineGlobalSettingsMap:\n+    UnityEngine.Rendering.Universal.UniversalRenderPipeline: {fileID: 11400000, guid: 18dc0cd2c080841dea60987a38ce93fa,\n+      type: 2}\n+  m_ShaderBuildSettings:\n+    keywordDeclarationOverrides: []\n   m_LightsUseLinearIntensity: 1\n   m_LightsUseColorTemperature: 1\n-  m_DefaultRenderingLayerMask: 1\n   m_LogWhenShaderIsCompiled: 0\n-  m_SRPDefaultSettings:\n-    UnityEngine.Rendering.Universal.UniversalRenderPipeline: {fileID: 11400000, guid: 18dc0cd2c080841dea60987a38ce93fa,\n-      type: 2}\n   m_LightProbeOutsideHullStrategy: 0\n   m_CameraRelativeLightCulling: 0\n   m_CameraRelativeShadowCulling: 0",
+      "classification": "GraphicsSettings15->16 serialization migration: same URP GUID moves from obsolete map to current map; empty keyword overrides added; obsolete default layer mask1 removed. Effective before-layer mask not separately observed, no arbitrary normalize.",
+      "pairedEnvironmentEqualityClaim": false
+    },
+    {
+      "path": "ProjectSettings/ProjectSettings.asset",
+      "beforeSHA256": "8a789f982dd5c4a365e5c25f5ed78908852e7adfc51ce592e444dbe456149f8f",
+      "buildAfterSHA256": "bec4bb8bcea13796cd274106356ae655cfdd0992c2a131679b96153a244ab2ae",
+      "beforeBackup": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-shaderlab-main-align-20261006\\evidence-audit\\main-player7-environment\\ProjectSettings__ProjectSettings.asset.before",
+      "afterSnapshot": "D:\\UnityProject\\NBUnityProject\\.utmp\\nbfx-shaderlab-main-align-20261006\\evidence-audit\\main-player7-environment\\ProjectSettings__ProjectSettings.asset.after",
+      "semanticDiff": "--- verified-before/ProjectSettings/ProjectSettings.asset\n+++ build-after/ProjectSettings/ProjectSettings.asset\n@@ -66,6 +66,9 @@\n   useOSAutorotation: 1\n   use32BitDisplayBuffer: 1\n   preserveFramebufferAlpha: 0\n+  adjustIOSFPSUsingThermalState: 1\n+  thermalStateSeriousIOSFPS: 30\n+  thermalStateCriticalIOSFPS: 15\n   disableDepthAndStencilBuffers: 0\n   androidStartInFullscreen: 1\n   androidRenderOutsideSafeArea: 1\n@@ -525,7 +528,10 @@\n       m_Height: 720\n       m_Kind: 1\n       m_SubKind: \n-  m_BuildTargetBatching: []\n+  m_BuildTargetBatching:\n+  - m_BuildTarget: Standalone\n+    m_StaticBatching: 1\n+    m_DynamicBatching: 0\n   m_BuildTargetShaderSettings: []\n   m_BuildTargetGraphicsJobs: []\n   m_BuildTargetGraphicsJobMode: []",
+      "classification": "PlayerSettings serialization adds iOS thermal fields + explicit Standalone Static1/Dynamic0 batching. No Builder setter found; before effective batching API not captured, so implicit [] cannot be blindly treated as equal.",
+      "pairedEnvironmentEqualityClaim": false
+    }
+  ],
+  "builderTemporarySettingsRecoveryGapFound": false,
+  "builderEvidence": "NBFXPairedPlayerBuilder.Build only calls BuildPipeline.BuildPlayer(BuildOptions.Development); no PlayerSettings/GraphicsSettings/Burst setter; finally cancels audit and saves receipt, no environment restore",
+  "knownLimit": "Automatic save cause inferred from installed SDK migration and observed file changes; no invented prebuild effective batching/volume observation",
+  "genericWaiverOrNumericNormalization": false
+}

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="7" result="Failed(Child)" total="7" passed="1" failed="6" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-06 03:05:44Z" end-time="2026-10-06 03:05:53Z" duration="9.0503356">
+  <test-suite type="TestSuite" id="1055" name="NBUnityProject" fullname="NBUnityProject" runstate="Runnable" testcasecount="36" result="Failed" site="Child" start-time="2026-10-06 03:05:44Z" end-time="2026-10-06 03:05:53Z" duration="9.050336" total="7" passed="1" failed="6" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1042" name="NBFX.Paired.Native.Editor.Tests.dll" fullname="D:/UnityProject/NBUnityProject/.utmp/NBFXShaderLabMain-20261006/Library/ScriptAssemblies/NBFX.Paired.Native.Editor.Tests.dll" runstate="Runnable" testcasecount="36" result="Failed" site="Child" start-time="2026-10-06 03:05:44Z" end-time="2026-10-06 03:05:53Z" duration="9.037380" total="7" passed="1" failed="6" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="91044" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1043" name="NBFX" fullname="NBFX" runstate="Runnable" testcasecount="36" result="Failed" site="Child" start-time="2026-10-06 03:05:44Z" end-time="2026-10-06 03:05:53Z" duration="9.036634" total="7" passed="1" failed="6" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1044" name="Paired" fullname="NBFX.Paired" runstate="Runnable" testcasecount="36" result="Failed" site="Child" start-time="2026-10-06 03:05:44Z" end-time="2026-10-06 03:05:53Z" duration="9.036307" total="7" passed="1" failed="6" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1045" name="Native" fullname="NBFX.Paired.Native" runstate="Runnable" testcasecount="36" result="Failed" site="Child" start-time="2026-10-06 03:05:44Z" end-time="2026-10-06 03:05:53Z" duration="9.035903" total="7" passed="1" failed="6" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1001" name="PairedNativeBehaviorTestsV2" fullname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2" classname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-10-06 03:05:44Z" end-time="2026-10-06 03:05:53Z" duration="9.033870" total="7" passed="1" failed="6" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1006" name="PairedNative_animation_disable_swap_destroy_actual_editor" fullname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2.PairedNative_animation_disable_swap_destroy_actual_editor" methodname="PairedNative_animation_disable_swap_destroy_actual_editor" classname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2" runstate="Runnable" seed="1729018957" result="Failed" start-time="2026-10-06 03:05:44Z" end-time="2026-10-06 03:05:45Z" duration="1.489109" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="Category" value="NBFXNativeBehaviorBatch" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  MISSING STORED VALUE: _BaseMap_ST in m_SavedProperties.m_Colors; not a shader image result.
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at NBFX.Paired.Native.PairedNativeBehaviorTestsV2.ActualVector (UnityEngine.Material material, System.String name) [0x0000a] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:62
+at NBFX.Paired.Native.PairedNativeBehaviorTestsV2+<PairedNative_animation_disable_swap_destroy_actual_editor>d__39.MoveNext () [0x0013c] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:167
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0004e] in .\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[MissingReferenceException: The object of type 'UnityEngine.Material' has been destroyed but you are still trying to access it.
+Your script should either check if it is null or you should not destroy the object.
+UnityEngine.Object+MarshalledUnityObject.TryThrowEditorNullExceptionObject (UnityEngine.Object unityObj, System.String parameterName) (at <4188a0f79dff4b4191dbeaff03bfe462>:0)
+UnityEngine.Bindings.ThrowHelper.ThrowNullReferenceException (System.Object obj) (at <4188a0f79dff4b4191dbeaff03bfe462>:0)
+UnityEngine.Material.SetFloatImpl (System.Int32 name, System.Single value) (at <4188a0f79dff4b4191dbeaff03bfe462>:0)
+UnityEngine.Material.SetFloat (System.Int32 nameID, System.Single value) (at <4188a0f79dff4b4191dbeaff03bfe462>:0)
+AnimationSheetHelper.Update () (at ./Packages/NB_FX/XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs:281)
+AnimationSheetHelper.EditorUpdate () (at ./Packages/NB_FX/XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs:365)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <04e249a5238343c6a036befedb61c13f>:0)
+
+]]></output>
+              </test-case>
+              <test-case id="1004" name="PairedNative_animation_init_reinit_actual_editor" fullname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2.PairedNative_animation_init_reinit_actual_editor" methodname="PairedNative_animation_init_reinit_actual_editor" classname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2" runstate="Runnable" seed="1543284345" result="Failed" start-time="2026-10-06 03:05:45Z" end-time="2026-10-06 03:05:47Z" duration="1.231376" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="Category" value="NBFXNativeBehaviorBatch" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  MISSING STORED VALUE: _BaseMap_ST in m_SavedProperties.m_Colors; not a shader image result.
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at NBFX.Paired.Native.PairedNativeBehaviorTestsV2.ActualVector (UnityEngine.Material material, System.String name) [0x0000a] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:62
+at NBFX.Paired.Native.PairedNativeBehaviorTestsV2.Frame (UnityEngine.Material material, System.Int32 current, System.Int32 next, System.Single blend) [0x00001] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:129
+at NBFX.Paired.Native.PairedNativeBehaviorTestsV2+<PairedNative_animation_init_reinit_actual_editor>d__37.MoveNext () [0x000a4] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:153
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0004e] in .\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1005" name="PairedNative_animation_last_wrap_single_actual_editor" fullname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2.PairedNative_animation_last_wrap_single_actual_editor" methodname="PairedNative_animation_last_wrap_single_actual_editor" classname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2" runstate="Runnable" seed="613488462" result="Failed" start-time="2026-10-06 03:05:47Z" end-time="2026-10-06 03:05:48Z" duration="1.237747" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="Category" value="NBFXNativeBehaviorBatch" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  MISSING STORED VALUE: _BaseMap_ST in m_SavedProperties.m_Colors; not a shader image result.
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at NBFX.Paired.Native.PairedNativeBehaviorTestsV2.ActualVector (UnityEngine.Material material, System.String name) [0x0000a] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:62
+at NBFX.Paired.Native.PairedNativeBehaviorTestsV2.Frame (UnityEngine.Material material, System.Int32 current, System.Int32 next, System.Single blend) [0x00001] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:129
+at NBFX.Paired.Native.PairedNativeBehaviorTestsV2+<PairedNative_animation_last_wrap_single_actual_editor>d__38.MoveNext () [0x000ca] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:160
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0004e] in .\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[MissingReferenceException: The object of type 'UnityEngine.Material' has been destroyed but you are still trying to access it.
+Your script should either check if it is null or you should not destroy the object.
+UnityEngine.Object+MarshalledUnityObject.TryThrowEditorNullExceptionObject (UnityEngine.Object unityObj, System.String parameterName) (at <4188a0f79dff4b4191dbeaff03bfe462>:0)
+UnityEngine.Bindings.ThrowHelper.ThrowNullReferenceException (System.Object obj) (at <4188a0f79dff4b4191dbeaff03bfe462>:0)
+UnityEngine.Material.SetFloatImpl (System.Int32 name, System.Single value) (at <4188a0f79dff4b4191dbeaff03bfe462>:0)
+UnityEngine.Material.SetFloat (System.Int32 nameID, System.Single value) (at <4188a0f79dff4b4191dbeaff03bfe462>:0)
+AnimationSheetHelper.Update () (at ./Packages/NB_FX/XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs:281)
+AnimationSheetHelper.EditorUpdate () (at ./Packages/NB_FX/XuanXuanRenderUtility/Runtime/AnimationSheetHelper.cs:365)
+UnityEditor.EditorApplication.Internal_CallUpdateFunctions () (at <04e249a5238343c6a036befedb61c13f>:0)
+
+]]></output>
+              </test-case>
+              <test-case id="1002" name="PairedNative_material_integer_words_all_slots" fullname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2.PairedNative_material_integer_words_all_slots" methodname="PairedNative_material_integer_words_all_slots" classname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2" runstate="Runnable" seed="1520497006" result="Passed" start-time="2026-10-06 03:05:48Z" end-time="2026-10-06 03:05:49Z" duration="1.328139" asserts="0">
+                <properties>
+                  <property name="Category" value="NBFXNativeBehaviorBatch" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1003" name="PairedNative_mpb_integer_highbit_and_legacy_float_control" fullname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2.PairedNative_mpb_integer_highbit_and_legacy_float_control" methodname="PairedNative_mpb_integer_highbit_and_legacy_float_control" classname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2" runstate="Runnable" seed="361864519" result="Failed" start-time="2026-10-06 03:05:49Z" end-time="2026-10-06 03:05:50Z" duration="1.213896" asserts="0">
+                <properties>
+                  <property name="Category" value="NBFXNativeBehaviorBatch" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Keep the original full-width integer assertion: a main failure is a repair exception, not a skipped/normalized pass.
+  Expected: 2441257107
+  But was:  2441257091
+]]></message>
+                  <stack-trace><![CDATA[at NBFX.Paired.Native.PairedNativeBehaviorTestsV2.PairedNative_mpb_integer_highbit_and_legacy_float_control () [0x00159] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:149
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Property _W9ParticleShaderFlags already exists in the property sheet with a different type: 1
+]]></output>
+              </test-case>
+              <test-case id="1009" name="PairedNative_nbpost_manager_disable_actual_editor" fullname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2.PairedNative_nbpost_manager_disable_actual_editor" methodname="PairedNative_nbpost_manager_disable_actual_editor" classname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2" runstate="Runnable" seed="1415256206" result="Failed" start-time="2026-10-06 03:05:50Z" end-time="2026-10-06 03:05:52Z" duration="1.254531" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="Category" value="NBFXNativeBehaviorBatch" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  MISSING STORED VALUE: _ChromaticAberrationVec in m_SavedProperties.m_Colors; not a shader image result.
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at NBFX.Paired.Native.PairedNativeBehaviorTestsV2.ActualVector (UnityEngine.Material material, System.String name) [0x0000a] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:62
+at NBFX.Paired.Native.PairedNativeBehaviorTestsV2+<PairedNative_nbpost_manager_disable_actual_editor>d__43.MoveNext () [0x000e0] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:225
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0004e] in .\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1008" name="PairedNative_nbpost_same_camera_owner_actual_editor" fullname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2.PairedNative_nbpost_same_camera_owner_actual_editor" methodname="PairedNative_nbpost_same_camera_owner_actual_editor" classname="NBFX.Paired.Native.PairedNativeBehaviorTestsV2" runstate="Runnable" seed="2007494496" result="Failed" start-time="2026-10-06 03:05:52Z" end-time="2026-10-06 03:05:53Z" duration="1.253479" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="Category" value="NBFXNativeBehaviorBatch" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: same as <Own Cinemachine camera (Unity.Cinemachine.CinemachineCamera)>
+  But was:  null
+]]></message>
+                  <stack-trace><![CDATA[at NBFX.Paired.Native.PairedNativeBehaviorTestsV2+<PairedNative_nbpost_same_camera_owner_actual_editor>d__42.MoveNext () [0x0019b] in D:\UnityProject\NBUnityProject\.utmp\NBFXShaderLabMain-20261006\Assets\ResTemp\EditorTemp\NBFXPairedHarness\Editor\PairedNativeBehaviorTestsV2.cs:217
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0004e] in .\Library\PackageCache\com.unity.test-framework@bd7f943e9647\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/NBUnityProject\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
