@@ -61,6 +61,14 @@ namespace NBShader
             }
             else
             {
+                int propertyId = GetShaderFlagsId(index);
+                if (propertyBlock.HasFloat(propertyId) && !propertyBlock.HasInteger(propertyId))
+                {
+                    // Preserve the original SetFlagBits contract for an existing legacy Float MPB word.
+                    int legacyFlags = propertyBlock.GetInt(propertyId);
+                    propertyBlock.SetInt(propertyId, legacyFlags | flagBits);
+                    return;
+                }
                 int flags = ReadWord(GetShaderFlagsId(index), propertyBlock);
                 WriteWord(GetShaderFlagsId(index), flags | flagBits, propertyBlock);
             }
