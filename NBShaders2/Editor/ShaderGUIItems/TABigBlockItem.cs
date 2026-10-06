@@ -88,7 +88,9 @@ namespace NBShaderEditor
                 () => Content("ta.property._ColorMask", "RGBA Mask"),
                 () => NBShaderInspectorLocalization.GetInspectorOptions("ta.colorMask", RgbaMaskOptions))
             {
-                ValidMask = 0xF, ReverseFourChannelMaskUI=true, WriteOnlyOnInteractiveChange=true
+                ValidMask = 0xF,
+                ReverseFourChannelMaskUI = rootItem.Context?.IsGraphMaterialHost == true,
+                WriteOnlyOnInteractiveChange = rootItem.Context?.IsGraphMaterialHost == true
             };
 
             _customStencilBlock = new PropertyToggleBlockItem(
