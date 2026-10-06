@@ -511,7 +511,7 @@
             bool forceBumpLod0 = CheckForceNoMipFlags(FLAG_BIT_FORCE_NO_MIP_BUMPTEX);
             half4 normalMapSample = SampleTexture2DWithWrapFlags(_BumpTex,BumpTex_uv,FLAG_BIT_WRAPMODE_BUMPTEX,forceBumpLod0);
             half metallicWeight, smoothnessWeight;
-            half3 mappedNormalWS;
+            float3 mappedNormalWS;
             NBFX_DecodeNormalMapV2(normalMapSample, _BumpScale,
                 CheckLocalFlags(FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE), tangentToWorld,
                 normalTS, mappedNormalWS, metallicWeight, smoothnessWeight);

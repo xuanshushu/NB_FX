@@ -582,7 +582,7 @@ half3 NBGraphNormalForFeatures(UnityTexture2D map, float2 sourceUV,
         (noMipFlags & FLAG_BIT_FORCE_NO_MIP_BUMPTEX) != 0u);
     half3x3 tangentToWorld = half3x3((half3)tangentWS,
         (half3)(side * bitangentWS), (half3)(side * normalWS));
-    half3 facedNormalWS;
+    float3 facedNormalWS;
     NBFX_DecodeNormalMapV2(sampled, scale,
         (flags0 & FLAG_BIT_PARTICLE_NORMALMAP_MASK_MODE) != 0u,
         tangentToWorld, normalTS, facedNormalWS, metallicWeight, smoothnessWeight);

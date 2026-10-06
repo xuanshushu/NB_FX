@@ -94,7 +94,7 @@ void NBFX_ApplyColorAdjustmentV1(inout half3 color, half alpha,
     bool saturationOn, half saturability,
     bool refineOn, half4 baseMapColorRefine,
     bool premultiplyRGB);
-half NBFX_EvaluateFresnelV1(float3 viewDirWS, half3 normalWS,
+half NBFX_EvaluateFresnelV1(float3 viewDirWS, float3 normalWS,
     half3 directionOffset, half4 unit, bool invert);
 void NBFX_ApplyFresnelV1(inout half3 color, inout half alpha,
     half fresnelValue, half strength, half4 fresnelColor,

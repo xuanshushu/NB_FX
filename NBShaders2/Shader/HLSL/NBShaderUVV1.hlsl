@@ -163,7 +163,7 @@ float2 NBFX_ResolveFlipbookUVV1(float4 meshTexcoord0,
 float NBFX_ResolveFlipbookWeightV1(float streamWeight,
     half helperWeight, bool helper)
 {
-    return helper ? (float)helperWeight : (float)(half)streamWeight;
+    return helper ? (float)helperWeight : streamWeight;
 }
 
 #endif
