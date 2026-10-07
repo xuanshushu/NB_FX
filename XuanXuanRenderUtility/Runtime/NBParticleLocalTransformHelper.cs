@@ -10,7 +10,7 @@ namespace NBShader
         private const string NBShaderName = "Effects/NBShader";
         private const string LegacyShaderName = "Effects/NBShader(Legacy)";
         private const string CustomLocalTransformKeyword = "_CUSTOM_LOCAL_TRANSFORM";
-        private const string GraphShaderName = "NB FX/Shader Graph/NBShaderGraph";
+        private const string GraphShaderName = "NB FX/Shader Graph/NBShader_VFX";
         private static readonly int GraphCustomLocalToggleId = Shader.PropertyToID("_NB_CustomLocalTransform");
         private static readonly int[] GraphLocalToWorldRowIds =
         {

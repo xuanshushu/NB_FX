@@ -7,7 +7,6 @@ namespace NBShaderEditor
     public class NBShaderGUI : ShaderGUI
     {
         private NBShaderRootItem _rootItem;
-        private NBShaderGraphRootItem _graphRootItem;
         private string _currentLanguage;
 
         public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
@@ -22,9 +21,7 @@ namespace NBShaderEditor
             _rootItem.OnGUI(materialEditor, properties);
         }
 
-        // URP retains Surface Options/Advanced. Shared blocks incrementally own
-        // Surface Inputs; the existing Graph root temporarily draws remaining
-        // native inputs so PNoise/SixWay/etc never lose their editing entry.
+        // Graph and ShaderLab share the original NB section layout and leaf controls.
         protected void OnGraphGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
         {
             string language = NBShaderInspectorLocalization.CurrentLanguage;
@@ -35,8 +32,7 @@ namespace NBShaderEditor
             }
             _rootItem.OnGUI(materialEditor, properties);
             if (_rootItem.Context.HasMixedMaterialHosts) return;
-            _graphRootItem ??= new NBShaderGraphRootItem();
-            _graphRootItem.OnGUI(materialEditor, properties, _rootItem.GetSharedGraphPropertyNames());
+            // The original six shared sections are the sole visible NB layout.
         }
     }
 
@@ -110,6 +106,20 @@ namespace NBShaderEditor
         ToggleItem _graphAffectsShadowsItem,_graphTransparentShadowDitherItem,_graphIgnoreVertexColorItem;
         static readonly string[] SharedGraphLightModeProperties = { "_FxLightMode", "_LightBigBlockItemFoldOut" };
 
+        int _graphGUIReadPass;
+        bool _graphGUIReadPassActive;
+        internal int GraphGUIReadPass => _graphGUIReadPassActive ? _graphGUIReadPass : 0;
+        int _toolbarDisplayReadPass, _toolbarDisplayShaderRevision;
+        bool _toolbarDisplayReady;
+        internal void InvalidateGraphGUIReadPass()
+        {
+            // First capability initialization invalidates every scoped pure read,
+            // including Sync preflight; clearing only Context would leave old results.
+            if(_graphGUIReadPassActive){unchecked{++_graphGUIReadPass;}if(_graphGUIReadPass==0)++_graphGUIReadPass;}
+            _toolbarDisplayReadPass=0;
+            Context?.InvalidateGUIReadPass();
+        }
+
         public override void OnGUI(MaterialEditor editor, MaterialProperty[] properties)
         {
             // The shared root base updates PropertyInfo references, but does
@@ -123,7 +133,205 @@ namespace NBShaderEditor
                 else foreach (MaterialProperty property in properties)
                     if (!PropertyInfoDic.ContainsKey(property.name)) { IsInit = true; break; }
             }
-            base.OnGUI(editor, properties);
+            if(graphSelection && Shader!=null && Mats!=null && Mats.Count>0 && Mats[0]!=null && Shader!=Mats[0].shader)IsInit=true;
+            _graphGUIReadPassActive=graphSelection&&Event.current!=null&&
+                (Event.current.rawType==EventType.Layout||Event.current.rawType==EventType.Repaint);
+            if(_graphGUIReadPassActive){unchecked{++_graphGUIReadPass;}if(_graphGUIReadPass==0)++_graphGUIReadPass;}
+            try{base.OnGUI(editor, properties);}
+            finally{_graphGUIReadPassActive=false;}
+        }
+
+        GraphOriginalSectionItem _graphOriginalMode, _graphOriginalBase, _graphOriginalLight, _graphOriginalFeature, _graphOriginalTA;
+        enum GraphOriginalSection { Mode, Base, Light, Feature, TA }
+        sealed class GraphOriginalSectionItem : BigBlockItem
+        {
+            readonly NBShaderRootItem owner; readonly GraphOriginalSection section; readonly System.Action draw;
+            internal GraphOriginalSectionItem(NBShaderRootItem owner,GraphOriginalSection section,string fold,System.Func<GUIContent> content,System.Action draw):base(owner,null,fold,content)
+            {this.owner=owner;this.section=section;this.draw=draw;}
+            public override void DrawBlock()=>draw();
+            public override void ExecuteReset(bool isCallByParent=false)=>owner.ResetGraphOriginalSection(section);
+        }
+        bool PrepareGraphOriginalSections()
+        {
+            // The sole missing original section fold is a real Float metadata prerequisite.
+            // No EditorPrefs surrogate, packed bit or unknown-property fallback is invented.
+            if(!PropertyInfoDic.ContainsKey("_FeatureBigBlockItemFoldOut"))return false;
+            foreach(Material material in Mats)if(!HasFloatProperty(material,"_FeatureBigBlockItemFoldOut"))return false;
+            _graphOriginalMode??=new GraphOriginalSectionItem(this,GraphOriginalSection.Mode,"_BigBlockModeSettingFoldOut",()=>NBShaderInspectorLocalization.MakeContent("inspector.block.mode.label","模式设置","inspector.block.mode.tip","各种基础模式设置"),DrawGraphOriginalModeBody);
+            _graphOriginalBase??=new GraphOriginalSectionItem(this,GraphOriginalSection.Base,"_BaseOptionBigBlockItemFoldOut",()=>NBShaderInspectorLocalization.MakeInspectorContent("block.base","Base Options","Common render and alpha controls"),DrawGraphOriginalBaseBody);
+            _graphOriginalLight??=new GraphOriginalSectionItem(this,GraphOriginalSection.Light,"_LightBigBlockItemFoldOut",()=>NBShaderInspectorLocalization.MakeInspectorContent("block.light","Light","Normal, MatCap and light mode controls"),DrawGraphOriginalLightBody);
+            _graphOriginalFeature??=new GraphOriginalSectionItem(this,GraphOriginalSection.Feature,"_FeatureBigBlockItemFoldOut",()=>NBShaderInspectorLocalization.MakeContent("inspector.block.feature.label","特效功能","inspector.block.feature.tip","遮罩、扭曲、溶解等特效功能"),DrawGraphOriginalFeatureBody);
+            _graphOriginalTA??=new GraphOriginalSectionItem(this,GraphOriginalSection.TA,"_TABigBlockItemFoldOut",()=>NBShaderInspectorLocalization.MakeInspectorContent("block.ta","TA Debug","Technical artist debug and helper controls"),DrawGraphOriginalTABody);
+            if(_graphOriginalMode.ChildrenItemList.Count==0)
+            {
+                System.Collections.Generic.List<ShaderGUIItem> all;
+                if(!TryGetGraphResetRootItems(out all))return false;
+                AttachGraphOriginalMembers(_graphOriginalMode,GraphOriginalSection.Mode);
+                AttachGraphOriginalMembers(_graphOriginalBase,GraphOriginalSection.Base);
+                AttachGraphOriginalMembers(_graphOriginalLight,GraphOriginalSection.Light);
+                AttachGraphOriginalMembers(_graphOriginalFeature,GraphOriginalSection.Feature);
+                AttachGraphOriginalMembers(_graphOriginalTA,GraphOriginalSection.TA);
+            }
+            return true;
+        }
+        void AttachGraphOriginalMembers(GraphOriginalSectionItem group,GraphOriginalSection section)
+        {
+            foreach(ShaderGUIItem item in GraphOriginalSectionMembers(section))
+                if(item!=null&&!group.ChildrenItemList.Contains(item)){group.ChildrenItemList.Add(item);item.ParentItem=group;}
+            group.CheckIsPropertyModified();
+        }
+        void DrawGraphOfficialModeInputs()
+        {
+            // URP surface properties remain the sole state storage. Use the original NB labels/order.
+            using(new EditorGUI.DisabledScope(true))EditorGUI.Popup(GetControlRect(),NBShaderInspectorLocalization.MakeInspectorContent("mode.meshSource","Mesh Source").text,1,NBShaderInspectorLocalization.GetInspectorOptions("mode.meshSource",new[]{"粒子系统","模型（非粒子发射）","2D RawImage","2D 精灵","2D 材质贴图","2D UIParticle"}));
+            var surface=Context.GetProperty("_Surface");var clip=Context.GetProperty("_AlphaClip");
+            int mode=surface.hasMixedValue||clip.hasMixedValue?-1:surface.floatValue>.5f?1:clip.floatValue>.5f?2:0;
+            bool previous=EditorGUI.showMixedValue;EditorGUI.showMixedValue=mode<0;EditorGUI.BeginChangeCheck();
+            int next=EditorGUI.Popup(GetControlRect(),NBShaderInspectorLocalization.MakeInspectorContent("mode.transparent","Transparent Mode").text,mode,NBShaderInspectorLocalization.GetInspectorOptions("mode.transparent",new[]{"不透明","透明","裁剪"}));
+            if(EditorGUI.EndChangeCheck()&&next>=0){MatEditor.RegisterPropertyChangeUndo("NB Transparent Mode");surface.floatValue=next==1?1:0;clip.floatValue=next==2?1:0;Context.Refresh();}
+            EditorGUI.showMixedValue=previous;
+            if(mode==1&&PropertyInfoDic.ContainsKey("_Blend"))
+            {
+                _graphOfficialBlend??=new ShaderGUIPopUpItem(this,_graphOriginalMode,"_Blend",
+                    ()=>NBShaderInspectorLocalization.MakeInspectorContent("mode.blend","Blend Mode"),
+                    ()=>NBShaderInspectorLocalization.GetInspectorOptions("mode.blend",GraphOfficialBlendOptions))
+                    {WriteOnlyOnInteractiveChange=true};
+                _graphOfficialBlend.OnGUI();
+            }
+            if(mode==2&&PropertyInfoDic.ContainsKey("_Cutoff"))
+            {
+                if(_graphOfficialCutoff==null)
+                {
+                    _graphOfficialCutoff=new ShaderGUISliderItem(this,_graphOriginalMode){PropertyName="_Cutoff",GuiContent=NBShaderInspectorLocalization.MakeInspectorContent("mode.cutoff","Cutoff","0 keeps everything, 1 clips everything."),WriteOnlyOnInteractiveChange=true};
+                    _graphOfficialCutoff.InitTriggerByChild();
+                }
+                _graphOfficialCutoff.OnGUI();
+            }
+        }
+        void DrawGraphOfficialRenderStateInputs()
+        {
+            if(!PropertyInfoDic.ContainsKey("_ZTest")||!PropertyInfoDic.ContainsKey("_Cull")||!PropertyInfoDic.ContainsKey("_ZWriteControl"))return;
+            _graphOfficialZTest??=new ZTestItem(this,_graphOriginalBase){WriteOnlyOnInteractiveChange=true};
+            _graphOfficialCull??=new CullModeItem(this,_graphOriginalBase){WriteOnlyOnInteractiveChange=true};
+            _graphOfficialZWrite??=new ShaderGUIPopUpItem(this,_graphOriginalBase,"_ZWriteControl",
+                ()=>NBShaderInspectorLocalization.MakeInspectorContent("base.forceZWrite","Force ZWrite"),
+                ()=>NBShaderInspectorLocalization.GetInspectorOptions("base.forceZWrite",GraphOfficialZWriteOptions))
+                {WriteOnlyOnInteractiveChange=true};
+            _graphOfficialZTest.OnGUI();_graphOfficialCull.OnGUI();
+        }
+        static readonly string[] GraphOfficialRenderStateNames={"_ZTest","_Cull","_ZWriteControl"};
+        static readonly string[] GraphOfficialModeNames={"_Surface","_AlphaClip","_Blend","_Cutoff"};
+        UnityEditor.Rendering.Universal.ShaderGraph.NBGraphUnlitGUIBridge _graphResetURPBridge;
+        bool GraphOfficialResetDefaultsCompatible(string[] names)
+        {
+            foreach(Material value in Mats)foreach(string name in names)
+            {
+                if(!HasFloatProperty(value,name))return false;
+                float compiled=value.shader.GetPropertyDefaultFloatValue(value.shader.FindPropertyIndex(name));
+                if(float.IsNaN(compiled)||float.IsInfinity(compiled))return false;
+            }
+            return true;
+        }
+        void ResetGraphOfficialDefaults(string[] names)
+        {
+            foreach(Material value in Mats)foreach(string name in names)
+                value.SetFloat(name,value.shader.GetPropertyDefaultFloatValue(value.shader.FindPropertyIndex(name)));
+        }
+        void ValidateGraphOfficialResetMaterials()
+        {
+            _graphResetURPBridge??=new UnityEditor.Rendering.Universal.ShaderGraph.NBGraphUnlitGUIBridge();
+            foreach(Material value in Mats)_graphResetURPBridge.ValidateMaterial(value);
+        }
+        ZTestItem _graphOfficialZTest;
+        CullModeItem _graphOfficialCull;
+        ShaderGUIPopUpItem _graphOfficialZWrite,_graphOfficialBlend;
+        ShaderGUISliderItem _graphOfficialCutoff;
+        static readonly string[] GraphOfficialZWriteOptions={"Default","Force On","Force Off"};
+        static readonly string[] GraphOfficialBlendOptions={"閫忔槑搴︽贩鍚圓lphaBlend","棰勪箻PreMultiply","鍙犲姞Additive","姝ｇ墖鍙犲簳Multiply"};
+        void DrawGraphOriginalModeBody()
+        {
+            DrawGraphOfficialModeInputs();
+            // Existing original additive slider business remains unchanged.
+            if(InitializeGraphRemainingSharedUI())DrawGraphBareBlock(_graphBlendModeBlock,"Edit NB Mode");
+        }
+        void DrawGraphBaseNumericLeaf(string property)
+        {
+            if(!InitializeGraphBaseNumericInputs())return;
+            foreach(ShaderGUIItem item in _graphBaseNumericBlock.ChildrenItemList)
+                if(item.PropertyName==property){DrawGraphBaseNumericInputs(item);return;}
+        }
+        void DrawGraphOriginalBaseBody()
+        {
+            DrawGraphBaseNumericLeaf("_BaseColorIntensityForTimeline");DrawGraphBaseNumericLeaf("_AlphaAll");
+            DrawGraphColorAdjustmentInputs();
+            DrawGraphOfficialRenderStateInputs();
+            DrawGraphBackFirstInputs();_graphOfficialZWrite?.OnGUI();InitializeGraphBaseShadowInputs();
+            DrawGraphBaseShadowInputs(_graphAffectsShadowsItem);DrawGraphBaseShadowInputs(_graphTransparentShadowDitherItem);
+            DrawGraphBaseBackColorInputs();
+            if(InitializeGraphDepthFeaturesInputs()){DrawGraphDepthFeaturesInputs(_graphDistanceFadeBlock);DrawGraphDepthFeaturesInputs(_graphSoftParticlesBlock);}
+            DrawGraphStencilWithoutPlayerInputs();DrawGraphBaseShadowInputs(_graphIgnoreVertexColorItem);DrawGraphBaseNumericLeaf("_fogintensity");
+        }
+        void DrawGraphOriginalLightBody()
+        {
+            if(InitializeGraphLightModeInputs())DrawGraphBareBlock(_graphLightModeBlock,"Edit NB Light");
+            DrawGraphNormalMapInputs();DrawGraphMatCapInputs();
+        }
+        void DrawGraphOriginalFeatureBody()
+        {
+            InitializeGraphMaskProgramInputs();DrawGraphMaskProgramInputs(_graphMaskItem);
+            DrawGraphNoiseInputs();DrawGraphChromaticInputs();
+            if(InitializeGraphOverlayInputs())DrawGraphOverlayLeaf(_graphEmissionItem);
+            DrawGraphColorRampInputs();if(InitializeGraphDissolveInputs())DrawGraphDissolveInputs();
+            if(InitializeGraphOverlayInputs())DrawGraphOverlayLeaf(_graphColorBlendItem);
+            DrawGraphMaskProgramInputs(_graphProgramNoiseItem);DrawGraphSharedUVInputs();
+            if(InitializeGraphFresnelInputs())_graphFresnelItem.OnGUI();
+            if(InitializeGraphVertexOffsetInputs())DrawGraphVertexOffsetInputs();
+            DrawGraphDepthDecalInputs();if(InitializeGraphDepthFeaturesInputs())DrawGraphDepthFeaturesInputs(_graphDepthOutlineItem);
+            DrawGraphParallaxInputs();DrawGraphPortalInputs();
+            if(InitializeGraphFlipbookInputs())_graphFlipbookItem.OnGUI();DrawGraphVATInputs();
+        }
+        void DrawGraphOriginalTABody()
+        {
+            if(InitializeGraphTADepthInputs())DrawGraphBareBlock(_graphTADepthBlock,"Edit NB TA");
+            if(InitializeGraphRemainingSharedUI())_graphKeywordListBlock.OnGUI();
+        }
+        void DrawGraphBareBlock(BigBlockItem block,string undoLabel)
+        {
+            if(block==null)return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,undoLabel);
+            block.DrawBlock();
+        }
+        void DrawGraphOverlayLeaf(ShaderGUIItem item)
+        {
+            if(item==null||!InitializeGraphOverlayInputs())return;
+            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Overlay Inputs");item.OnGUI();
+        }
+        System.Collections.Generic.List<ShaderGUIItem> GraphOriginalSectionMembers(GraphOriginalSection section)
+        {
+            // Populate only on explicit Reset, after the same accepted whole-schema preflight.
+            switch(section)
+            {
+                case GraphOriginalSection.Mode:return new System.Collections.Generic.List<ShaderGUIItem>{_graphBlendModeBlock};
+                case GraphOriginalSection.Base:return new System.Collections.Generic.List<ShaderGUIItem>{_graphBaseNumericBlock,_graphColorAdjustmentBlock,_graphBaseBackColorItem,_graphDistanceFadeBlock,_graphSoftParticlesBlock,_graphStencilWithoutPlayerItem,_graphBackFirstItem};
+                case GraphOriginalSection.Light:return new System.Collections.Generic.List<ShaderGUIItem>{_graphLightModeBlock,_graphNormalMapBlock,_graphMatCapBlock};
+                case GraphOriginalSection.TA:return new System.Collections.Generic.List<ShaderGUIItem>{_graphTADepthBlock,_graphKeywordListBlock};
+                default:return new System.Collections.Generic.List<ShaderGUIItem>{_graphMaskItem,_graphNoiseItem,_graphChromaticItem,_graphEmissionItem,_graphColorRampItem,_graphDissolveItem,_graphColorBlendItem,_graphProgramNoiseItem,_graphSharedUVItem,_graphFresnelItem,_graphVertexOffsetItem,_graphDepthDecalItem,_graphDepthOutlineItem,_graphParallaxItem,_graphPortalItem,_graphFlipbookItem,_graphVATItem};
+            }
+        }
+        void ResetGraphOriginalSection(GraphOriginalSection section)
+        {
+            System.Collections.Generic.List<ShaderGUIItem> all;
+            if(!TryGetGraphResetRootItems(out all))return;
+            bool officialMode=section==GraphOriginalSection.Mode,officialBase=section==GraphOriginalSection.Base;
+            if((officialMode&&!GraphOfficialResetDefaultsCompatible(GraphOfficialModeNames))||
+                (officialBase&&!GraphOfficialResetDefaultsCompatible(GraphOfficialRenderStateNames)))return;
+            var members=GraphOriginalSectionMembers(section);
+            SyncService.TryRunGraphSharedReset(()=>{
+                if(officialMode)ResetGraphOfficialDefaults(GraphOfficialModeNames);
+                foreach(ShaderGUIItem item in members)if(item!=null)item.ExecuteReset(true);
+                if(officialBase)ResetGraphOfficialDefaults(GraphOfficialRenderStateNames);
+                if(officialMode||officialBase)ValidateGraphOfficialResetMaterials();
+            },true);
         }
 
         static readonly string[] SharedGraphMainTextureProperties =
@@ -135,6 +343,7 @@ namespace NBShaderEditor
         public System.Collections.Generic.IEnumerable<string> GetSharedGraphPropertyNames()
         {
             var names = new System.Collections.Generic.List<string>();
+            if(Context!=null&&Context.IsGraphMaterialHost&&PropertyInfoDic.ContainsKey("_FeatureBigBlockItemFoldOut"))names.Add("_FeatureBigBlockItemFoldOut");
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphRemainingUIReady)names.AddRange(NBShaderSyncService.GraphRemainingSharedUIProperties);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphBaseShadowReady)names.AddRange(NBShaderSyncService.GraphBaseShadowProperties);
             if(Context!=null&&Context.IsGraphMaterialHost&&_sharedGraphBaseNumericReady)names.AddRange(NBShaderSyncService.GraphBaseNumericProperties);
@@ -171,13 +380,58 @@ namespace NBShaderEditor
             return names;
         }
 
+        sealed class ShaderPropertyTypeMap
+        {
+            internal int count;
+            internal System.Collections.Generic.Dictionary<string,UnityEngine.Rendering.ShaderPropertyType> types;
+        }
+        static System.Runtime.CompilerServices.ConditionalWeakTable<Shader,ShaderPropertyTypeMap> s_ShaderPropertyTypes=
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Shader,ShaderPropertyTypeMap>();
+        static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Shader,ShaderPropertyTypeMap>.CreateValueCallback s_BuildShaderPropertyTypes=BuildShaderPropertyTypes;
+        internal static int ShaderPropertyTypeCacheRevision { get; private set; }
+        static NBShaderRootItem(){EditorApplication.projectChanged+=InvalidateShaderPropertyTypes;}
+        internal static void InvalidateShaderPropertyTypes()
+        {
+            s_ShaderPropertyTypes=new System.Runtime.CompilerServices.ConditionalWeakTable<Shader,ShaderPropertyTypeMap>();
+            unchecked{++ShaderPropertyTypeCacheRevision;}
+        }
+        static ShaderPropertyTypeMap BuildShaderPropertyTypes(Shader shader)
+        {
+            int count=shader.GetPropertyCount();
+            var values=new System.Collections.Generic.Dictionary<string,UnityEngine.Rendering.ShaderPropertyType>(count,System.StringComparer.Ordinal);
+            for(int i=0;i<count;++i)
+            {
+                string name=shader.GetPropertyName(i);
+                if(values.ContainsKey(name))
+                {
+                    int actual=shader.FindPropertyIndex(name);
+                    if(actual>=0)values[name]=shader.GetPropertyType(actual);
+                }
+                else values.Add(name,shader.GetPropertyType(i));
+            }
+            return new ShaderPropertyTypeMap{count=count,types=values};
+        }
         internal static bool HasFloatProperty(Material material, string name)
         {
-            if (!material.HasProperty(name)) return false;
-            Shader shader = material.shader;
-            for (int i = 0; i < shader.GetPropertyCount(); i++)
-                if (shader.GetPropertyName(i) == name)
-                    return shader.GetPropertyType(i) == UnityEngine.Rendering.ShaderPropertyType.Float;
+            if(material==null||material.shader==null||!material.HasProperty(name))return false;
+            Shader shader=material.shader;
+            var map=s_ShaderPropertyTypes.GetValue(shader,s_BuildShaderPropertyTypes);
+            if(map.count!=shader.GetPropertyCount())
+            {
+                s_ShaderPropertyTypes.Remove(shader);
+                map=s_ShaderPropertyTypes.GetValue(shader,s_BuildShaderPropertyTypes);
+            }
+            UnityEngine.Rendering.ShaderPropertyType type;
+            return map.types.TryGetValue(name,out type)&&type==UnityEngine.Rendering.ShaderPropertyType.Float;
+        }
+        internal bool GraphGUIStateMayInitialize()
+        {
+            foreach(Material material in Mats)
+            {
+                if(!material.HasProperty(NBShaderSyncService.GraphGUIStateVersionProperty)||material.GetFloat(NBShaderSyncService.GraphGUIStateVersionProperty)!=2f)return true;
+                if(material.HasProperty("_NB_TierVATFamily")&&material.HasProperty("_NB_TierVATSubMode")&&
+                    material.GetFloat("_NB_TierVATFamily")==-1f&&material.GetFloat("_NB_TierVATSubMode")==-1f)return true;
+            }
             return false;
         }
 
@@ -206,11 +460,15 @@ namespace NBShaderEditor
             // Marker2 already ready returns without any paint projection.
             bool hasTierContract = false;
             foreach (Material material in Mats) if (material.HasProperty("_NBShaderFeatureTier")) hasTierContract = true;
+            bool mayInitialize=GraphGUIStateMayInitialize();
             if (hasTierContract)
             {
                 if (!SyncService.TryInitializeGraphSupportedGateTierState()) return false;
             }
             else SyncService.PrepareGraphGUIState();
+            // The first authorized marker/typed projection must not leave a
+            // before-initialization Context cached for the rest of this paint.
+            if(mayInitialize){InvalidateGraphGUIReadPass();Context.Refresh();}
             _mainTexBlock ??= new MainTexBigBlockItem(this, null);
             _sharedGraphMainTextureReady = true;
             return true;
@@ -401,6 +659,8 @@ namespace NBShaderEditor
             {
                 if (IsInit)
                 {
+                    _graphOriginalMode=_graphOriginalBase=_graphOriginalLight=_graphOriginalFeature=_graphOriginalTA=null;
+                    _graphOfficialZTest=null;_graphOfficialCull=null;_graphOfficialZWrite=_graphOfficialBlend=null;_graphOfficialCutoff=null;
                     _mainTexBlock = null;
                     _graphFlipbookItem = null;
                     _graphParallaxItem = null;
@@ -442,36 +702,15 @@ namespace NBShaderEditor
                 }
                 bool mainReady=InitializeGraphMainTextureInputs();
                 _toolBar??=new NBShaderGUIToolBar(this);_toolBar.DrawGraphTierSelector();
-                DrawGraphRemainingSharedUI();
+                if(!PrepareGraphOriginalSections())
+                {
+                    EditorGUILayout.HelpBox("Original NB Feature section requires its real Float foldout metadata. No generic Surface Inputs fallback is used.",MessageType.Error);
+                    return;
+                }
+                _graphOriginalMode.OnGUI();_graphOriginalBase.OnGUI();
                 if(mainReady)_mainTexBlock.OnGUI();
-                else
-                    EditorGUILayout.HelpBox("Shared Main Texture needs its real Float foldouts/schema. Existing Graph native inputs remain available below.", MessageType.Info);
-                if (InitializeGraphLightModeInputs())
-                    DrawGraphLightInputs();
-                DrawGraphNormalMapInputs();
-                DrawGraphMatCapInputs();
-                DrawGraphColorAdjustmentInputs();
-                DrawGraphColorRampInputs();
-                DrawGraphDepthFeaturesInputs();
-                DrawGraphDepthDecalInputs();
-                if (InitializeGraphFlipbookInputs()) _graphFlipbookItem.OnGUI();
-                if (InitializeGraphTADepthInputs())DrawGraphTAInputs();
-                if (InitializeGraphFresnelInputs()) _graphFresnelItem.OnGUI();
-                if(InitializeGraphDissolveInputs())DrawGraphDissolveInputs();
-                if(InitializeGraphVertexOffsetInputs())DrawGraphVertexOffsetInputs();
-                if(InitializeGraphMaskProgramInputs())DrawGraphMaskProgramInputs();
-                DrawGraphOverlayInputs();
-                DrawGraphParallaxInputs();
-                DrawGraphSharedUVInputs();
-                DrawGraphNoiseInputs();
-                DrawGraphChromaticInputs();
-                DrawGraphVATInputs();
-                DrawGraphBackFirstInputs();
-                DrawGraphPortalInputs();
-                DrawGraphStencilWithoutPlayerInputs();
-                DrawGraphBaseBackColorInputs();
-                InitializeGraphBaseShadowInputs();
-                DrawGraphBaseNumericInputs();
+                else EditorGUILayout.HelpBox("Shared Main Texture schema is incomplete.",MessageType.Error);
+                _graphOriginalLight.OnGUI();_graphOriginalFeature.OnGUI();_graphOriginalTA.OnGUI();
                 return;
             }
 
@@ -814,7 +1053,9 @@ namespace NBShaderEditor
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphVATReady=Context.IsGraphMaterialHost&&SyncService.HasGraphVATEditSchema();
             if(!_sharedGraphVATReady)return false;
+            bool mayInitialize=GraphGUIStateMayInitialize();
             if(!SyncService.TryInitializeGraphSupportedGateTierState()){_sharedGraphVATReady=false;return false;}
+            if(mayInitialize){InvalidateGraphGUIReadPass();Context.Refresh();}
             _graphVATItem??=new VatFeatureItem(this,null,true);return true;
         }
         internal void DrawGraphVATInputs(ShaderGUIItem selectedItem=null)
@@ -898,9 +1139,37 @@ namespace NBShaderEditor
         {
             System.Collections.Generic.List<ShaderGUIItem> items;
             if(!TryGetGraphResetRootItems(out items))return false;
+            if(!disabledChildrenOnly&&(!GraphOfficialResetDefaultsCompatible(GraphOfficialModeNames)||
+                !GraphOfficialResetDefaultsCompatible(GraphOfficialRenderStateNames)))return false;
+            string[] officialNames=null;
+            System.Collections.Generic.Dictionary<Material,float[]> officialBefore=null;
+            if(disabledChildrenOnly)
+            {
+                officialNames=new[]{"_Surface","_AlphaClip","_Blend","_Cutoff","_ZTest","_Cull","_ZWriteControl"};
+                officialBefore=new System.Collections.Generic.Dictionary<Material,float[]>();
+                foreach(Material value in Mats)
+                {
+                    var values=new float[officialNames.Length];
+                    for(int i=0;i<officialNames.Length;++i)
+                    {
+                        if(!HasFloatProperty(value,officialNames[i]))return false;
+                        values[i]=value.GetFloat(officialNames[i]);
+                        if(float.IsNaN(values[i])||float.IsInfinity(values[i]))return false;
+                    }
+                    officialBefore.Add(value,values);
+                }
+            }
             return SyncService.TryRunGraphSharedReset(()=>{
+                if(!disabledChildrenOnly)ResetGraphOfficialDefaults(GraphOfficialModeNames);
                 foreach(ShaderGUIItem item in items)
                     if(disabledChildrenOnly)ResetGraphDisabledChildren(item);else item.ExecuteReset(true);
+                if(disabledChildrenOnly)
+                {
+                    foreach(var original in officialBefore)
+                        for(int i=0;i<officialNames.Length;++i)original.Key.SetFloat(officialNames[i],original.Value[i]);
+                }
+                else ResetGraphOfficialDefaults(GraphOfficialRenderStateNames);
+                ValidateGraphOfficialResetMaterials();
             },!disabledChildrenOnly);
         }
         private static void ResetGraphDisabledChildren(ShaderGUIItem item)
@@ -933,14 +1202,29 @@ namespace NBShaderEditor
         }
         internal bool CanUseGraphSharedToolbar(bool singleTarget=false)
         {
-            return Context!=null&&Context.IsGraphMaterialHost&&!Context.HasMixedMaterialHosts&&
-                (!singleTarget||Mats.Count==1)&&SyncService!=null&&SyncService.HasGraphRemainingSharedUISchema();
+            if(Context==null||!Context.IsGraphMaterialHost||Context.HasMixedMaterialHosts||
+                (singleTarget&&Mats.Count!=1)||SyncService==null)return false;
+            using(SyncService.BeginGraphFreshPreflightRead())return SyncService.HasGraphRemainingSharedUISchema();
+        }
+        internal bool CanUseGraphSharedToolbarForDisplay(bool singleTarget=false)
+        {
+            if(Context==null||!Context.IsGraphMaterialHost||Context.HasMixedMaterialHosts||
+                (singleTarget&&Mats.Count!=1)||SyncService==null)return false;
+            int pass=GraphGUIReadPass;
+            if(pass==0)return SyncService.HasGraphRemainingSharedUISchema(); // All actions/backends fresh.
+            if(_toolbarDisplayReadPass!=pass||_toolbarDisplayShaderRevision!=ShaderPropertyTypeCacheRevision)
+            {
+                _toolbarDisplayReady=SyncService.HasGraphRemainingSharedUISchema();
+                _toolbarDisplayReadPass=pass;_toolbarDisplayShaderRevision=ShaderPropertyTypeCacheRevision;
+            }
+            return _toolbarDisplayReady;
         }
         internal bool TryCollapseGraphOwnedFolds()
         {
             System.Collections.Generic.List<ShaderGUIItem> items;if(!CanUseGraphSharedToolbar()||!TryGetGraphResetRootItems(out items))return false;
             var names=new System.Collections.Generic.HashSet<string>(System.StringComparer.Ordinal);
             foreach(ShaderGUIItem item in items)CollectGraphOwnedFolds(item,names);
+            if(PropertyInfoDic.ContainsKey("_FeatureBigBlockItemFoldOut"))names.Add("_FeatureBigBlockItemFoldOut");
             foreach(Material material in Mats)foreach(string name in names)
                 if(!HasFloatProperty(material,name)||float.IsNaN(material.GetFloat(name))||float.IsInfinity(material.GetFloat(name)))return false;
             return SyncService.TryRunGraphKnownToolbarEdit(()=>{

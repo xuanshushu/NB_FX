@@ -1,0 +1,250 @@
+{
+  "completed": false,
+  "failure": "System.InvalidOperationException: Disabled-only Reset preserves all seven official fields\r\n  at PipelineEvaluation.PipelineEval_22dc1d3a+<>c__DisplayClass0_0.<Execute>g__Need|2 (System.Boolean condition, System.String label) [0x0001c] in <65142bc14217440389fe5bfa4186476e>:0 \r\n  at PipelineEvaluation.PipelineEval_22dc1d3a+<>c__DisplayClass0_0.<Execute>b__4 () [0x00445] in <65142bc14217440389fe5bfa4186476e>:0 ",
+  "checks": [
+    {
+      "label": "Actual expanded GUI completed six draws",
+      "passed": true
+    },
+    {
+      "label": "Original popup drawn: _graphOfficialZTest",
+      "passed": true
+    },
+    {
+      "label": "Original popup drawn: _graphOfficialCull",
+      "passed": true
+    },
+    {
+      "label": "Original popup drawn: _graphOfficialZWrite",
+      "passed": true
+    },
+    {
+      "label": "Original popup drawn: _graphOfficialBlend",
+      "passed": true
+    },
+    {
+      "label": "Mode Reset restores four official defaults and preserves Base controls",
+      "passed": true
+    },
+    {
+      "label": "Base Reset restores three official defaults and preserves Mode controls",
+      "passed": true
+    },
+    {
+      "label": "Full Reset restores all seven official defaults",
+      "passed": true
+    },
+    {
+      "label": "Disabled-only diagnostics",
+      "disabled": true,
+      "values": [
+        {
+          "name": "_Surface",
+          "before": 0.0,
+          "after": 1.0
+        },
+        {
+          "name": "_AlphaClip",
+          "before": 1.0,
+          "after": 0.0
+        },
+        {
+          "name": "_Blend",
+          "before": 2.0,
+          "after": 0.0
+        },
+        {
+          "name": "_Cutoff",
+          "before": 0.21,
+          "after": 0.21
+        },
+        {
+          "name": "_ZTest",
+          "before": 8.0,
+          "after": 4.0
+        },
+        {
+          "name": "_Cull",
+          "before": 1.0,
+          "after": 1.0
+        },
+        {
+          "name": "_ZWriteControl",
+          "before": 1.0,
+          "after": 0.0
+        }
+      ]
+    },
+    {
+      "label": "Disabled-only Reset preserves all seven official fields",
+      "passed": false
+    }
+  ],
+  "paintSamples": [
+    {
+      "eventType": "Layout",
+      "gcAlloc": 1307700,
+      "allocationSamples": 17745,
+      "recorderValid": true,
+      "heapDelta": 1564672,
+      "collections": 0,
+      "ms": 59.4628
+    },
+    {
+      "eventType": "repaint",
+      "gcAlloc": 514000,
+      "allocationSamples": 8646,
+      "recorderValid": true,
+      "heapDelta": 647168,
+      "collections": 0,
+      "ms": 61.6501
+    },
+    {
+      "eventType": "Layout",
+      "gcAlloc": 316700,
+      "allocationSamples": 5582,
+      "recorderValid": true,
+      "heapDelta": 544768,
+      "collections": 0,
+      "ms": 27.066200000000002
+    },
+    {
+      "eventType": "repaint",
+      "gcAlloc": 338100,
+      "allocationSamples": 5689,
+      "recorderValid": true,
+      "heapDelta": 552960,
+      "collections": 0,
+      "ms": 36.580200000000005
+    },
+    {
+      "eventType": "Layout",
+      "gcAlloc": 362100,
+      "allocationSamples": 5582,
+      "recorderValid": true,
+      "heapDelta": 581632,
+      "collections": 0,
+      "ms": 30.3077
+    },
+    {
+      "eventType": "repaint",
+      "gcAlloc": 320800,
+      "allocationSamples": 5688,
+      "recorderValid": true,
+      "heapDelta": 561152,
+      "collections": 0,
+      "ms": 35.5411
+    },
+    {
+      "eventType": "Layout",
+      "gcAlloc": 325200,
+      "allocationSamples": 5579,
+      "recorderValid": true,
+      "heapDelta": 557056,
+      "collections": 0,
+      "ms": 28.0637
+    },
+    {
+      "eventType": "Layout",
+      "gcAlloc": 329200,
+      "allocationSamples": 5574,
+      "recorderValid": true,
+      "heapDelta": 589824,
+      "collections": 0,
+      "ms": 29.413
+    },
+    {
+      "eventType": "repaint",
+      "gcAlloc": 376200,
+      "allocationSamples": 6582,
+      "recorderValid": true,
+      "heapDelta": 606208,
+      "collections": 0,
+      "ms": 41.926100000000005
+    },
+    {
+      "eventType": "Layout",
+      "gcAlloc": 318500,
+      "allocationSamples": 5573,
+      "recorderValid": true,
+      "heapDelta": 569344,
+      "collections": 0,
+      "ms": 27.721500000000002
+    },
+    {
+      "eventType": "Layout",
+      "gcAlloc": 348300,
+      "allocationSamples": 5573,
+      "recorderValid": true,
+      "heapDelta": 581632,
+      "collections": 0,
+      "ms": 28.152
+    },
+    {
+      "eventType": "repaint",
+      "gcAlloc": 329700,
+      "allocationSamples": 5684,
+      "recorderValid": true,
+      "heapDelta": 569344,
+      "collections": 0,
+      "ms": 37.7997
+    },
+    {
+      "eventType": "Layout",
+      "gcAlloc": 323700,
+      "allocationSamples": 5573,
+      "recorderValid": true,
+      "heapDelta": 565248,
+      "collections": 0,
+      "ms": 35.5367
+    },
+    {
+      "eventType": "Layout",
+      "gcAlloc": 323100,
+      "allocationSamples": 5573,
+      "recorderValid": true,
+      "heapDelta": 561152,
+      "collections": 0,
+      "ms": 35.3309
+    },
+    {
+      "eventType": "repaint",
+      "gcAlloc": 330800,
+      "allocationSamples": 5684,
+      "recorderValid": true,
+      "heapDelta": 565248,
+      "collections": 0,
+      "ms": 41.8538
+    },
+    {
+      "eventType": "Layout",
+      "gcAlloc": 339300,
+      "allocationSamples": 5901,
+      "recorderValid": true,
+      "heapDelta": 425984,
+      "collections": 0,
+      "ms": 27.5728
+    },
+    {
+      "eventType": "Layout",
+      "gcAlloc": 336600,
+      "allocationSamples": 5901,
+      "recorderValid": true,
+      "heapDelta": 438272,
+      "collections": 0,
+      "ms": 27.6779
+    },
+    {
+      "eventType": "repaint",
+      "gcAlloc": 357300,
+      "allocationSamples": 6145,
+      "recorderValid": true,
+      "heapDelta": 466944,
+      "collections": 0,
+      "ms": 41.095
+    }
+  ],
+  "ownedClone": true,
+  "actualOnGUI": true,
+  "actualSliderEvents": true
+}

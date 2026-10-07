@@ -52,7 +52,7 @@ namespace NBShaderEditor
         // Same Tier content/menu/callback, scoped to real Graph consumers.
         internal void DrawGraphTierSelector()
         {
-            using(new EditorGUI.DisabledScope(!_rootItem.CanUseGraphSharedToolbar()))DrawToolbar();
+            using(new EditorGUI.DisabledScope(!_rootItem.CanUseGraphSharedToolbarForDisplay()))DrawToolbar();
         }
 
         public void DrawToolbar()
@@ -63,7 +63,7 @@ namespace NBShaderEditor
 
             Material material = MainMaterial;
             bool graph=_rootItem.Context!=null&&_rootItem.Context.IsGraphMaterialHost;
-            bool hasMaterial = material != null&&(!graph||_rootItem.CanUseGraphSharedToolbar());
+            bool hasMaterial = material != null&&(!graph||_rootItem.CanUseGraphSharedToolbarForDisplay());
             float buttonX = toolbarRect.x;
 
             using (new EditorGUI.DisabledScope(!hasMaterial))
@@ -78,14 +78,14 @@ namespace NBShaderEditor
                     CleanUnusedTextures();
                 }
 
-                using(new EditorGUI.DisabledScope(graph&&!_rootItem.CanUseGraphSharedToolbar(true)))
+                using(new EditorGUI.DisabledScope(graph&&!_rootItem.CanUseGraphSharedToolbarForDisplay(true)))
                 if (ToolbarButton(toolbarRect, ref buttonX, TextContent("copy", "C", "复制材质属性")))
                 {
                     if(!graph||_rootItem.CanUseGraphSharedToolbar(true))CopyMaterial(material);
                 }
             }
 
-            using (new EditorGUI.DisabledScope(!hasMaterial || !HasCopiedMaterial() || (graph&&!CanPasteGraph())))
+            using (new EditorGUI.DisabledScope(!hasMaterial || !HasCopiedMaterial() || (graph&&!CanPasteGraphForDisplay())))
             {
                 if (ToolbarButton(toolbarRect, ref buttonX, TextContent("paste", "V", "粘贴材质属性")))
                 {
@@ -736,6 +736,11 @@ namespace NBShaderEditor
         private static string UndoText(string key, string fallback)
         {
             return NBShaderInspectorLocalization.Get("inspector.toolbar." + key + ".undo", fallback);
+        }
+        internal bool CanPasteGraphForDisplay()
+        {
+            return _rootItem.CanUseGraphSharedToolbarForDisplay(true)&&copiedMaterialSnapshot!=null&&copiedShader==MainMaterial.shader&&
+                NBShaderSyncService.HasGraphRemainingSharedUIMaterialSchema(copiedMaterialSnapshot);
         }
         internal bool CanPasteGraph()
         {

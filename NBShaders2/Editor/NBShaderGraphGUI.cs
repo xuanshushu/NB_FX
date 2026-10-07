@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace NBShaderEditor
 {
-    // Mesh Shader Graph entry. URP owns Surface Options/Advanced and their
-    // material validation; NBShaderGUI owns only the Graph-specific inputs.
+    // Graph materials use the same NB sections as the native inspector.
+    // URP remains the authority for material validation and shader assignment.
     public sealed class NBShaderGraphGUI : NBShaderGUI
     {
         readonly NBGraphUnlitGUIBridge _urpGUI = new NBGraphUnlitGUIBridge();
@@ -40,8 +40,11 @@ namespace NBShaderEditor
                     }
             }
             EditorGUI.BeginChangeCheck();
-            _urpGUI.OnGUI(materialEditor, properties, OnGraphGUI);
+            OnGraphGUI(materialEditor, properties);
             bool graphEdited = EditorGUI.EndChangeCheck();
+            if (graphEdited && interactive)
+                foreach (UnityEngine.Object target in materialEditor.targets)
+                    if (target is Material changedMaterial) _urpGUI.ValidateMaterial(changedMaterial);
             bool allProjectionReady = true;
             bool intentChanged = false;
             if (graphEdited && before != null)

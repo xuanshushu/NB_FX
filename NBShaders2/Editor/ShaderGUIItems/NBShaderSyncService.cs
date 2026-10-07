@@ -12,6 +12,44 @@ namespace NBShaderEditor
         private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
         private const string StencilConfigAssetPath = "Packages/com.xuanxuan.nb.fx/XuanXuanRenderUtility/Shader/StencilConfig.asset";
         private readonly NBShaderRootItem _rootItem;
+        int _graphFreshPreflightDepth;
+        internal readonly struct GraphFreshPreflightScope : IDisposable
+        {
+            readonly NBShaderSyncService owner;
+            internal GraphFreshPreflightScope(NBShaderSyncService owner,bool invalidatePass)
+            {
+                this.owner=owner;
+                if(invalidatePass)owner._rootItem.InvalidateGraphGUIReadPass();
+                ++owner._graphFreshPreflightDepth;
+            }
+            public void Dispose(){if(owner!=null)--owner._graphFreshPreflightDepth;}
+        }
+        internal GraphFreshPreflightScope BeginGraphFreshPreflightRead(bool invalidatePass=true)
+        {
+            if(_rootItem.GraphGUIReadPass==0)return default; // Native/backends: no Root/Context touches.
+            return new GraphFreshPreflightScope(this,invalidatePass);
+        }
+        struct GraphSavedPaintPreflight { internal bool accepted,wouldChange; }
+        readonly Dictionary<Material,GraphSavedPaintPreflight> _graphSavedPaintPreflights=new Dictionary<Material,GraphSavedPaintPreflight>();
+        int _graphSavedReadPass, _graphSavedShaderRevision;
+        bool CanApplyGraphSavedProjectionForPaint(Material material,out bool wouldChange)
+        {
+            int pass=_graphFreshPreflightDepth==0?_rootItem.GraphGUIReadPass:0;
+            if(pass==0)return NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out wouldChange);
+            if(_graphSavedReadPass!=pass||_graphSavedShaderRevision!=NBShaderRootItem.ShaderPropertyTypeCacheRevision)
+            {
+                _graphSavedPaintPreflights.Clear();_graphSavedReadPass=pass;
+                _graphSavedShaderRevision=NBShaderRootItem.ShaderPropertyTypeCacheRevision;
+            }
+            GraphSavedPaintPreflight value;
+            if(!_graphSavedPaintPreflights.TryGetValue(material,out value))
+            {
+                value.accepted=NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out value.wouldChange);
+                _graphSavedPaintPreflights.Add(material,value);
+            }
+            wouldChange=value.wouldChange;return value.accepted;
+        }
+
         private StencilValuesConfig _stencilValuesConfig;
 
         public int KeywordVersion { get; private set; }
@@ -131,6 +169,7 @@ namespace NBShaderEditor
         // remains seed-only; a ready marker2 inspector never projects on paint.
         internal bool TryInitializeGraphSupportedGateTierState()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead(_rootItem.GraphGUIStateMayInitialize());
             if (_rootItem.Mats == null || _rootItem.Mats.Count == 0 || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return false;
             List<Material> initialize = null;
             List<Material> initializeVATOnly = null;
@@ -240,6 +279,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphSupportedGateTier(NBShaderFeatureTier tier, IEnumerable<string> allowedManagedKeywords = null)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if ((int)tier < 0 || (int)tier > 3 || !HasGraphSupportedGateTierEditSchema()) return false;
             var allowed = new HashSet<string>(allowedManagedKeywords ?? NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(tier));
             bool anyChange = false;
@@ -342,6 +382,7 @@ namespace NBShaderEditor
 
         private bool RunGraphTADepthEdit(string property, bool? enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if ((property != "_ZOffset_Toggle" && property != "_OverrideZ_Toggle") || !HasGraphTADepthEditSchema()) return false;
             string[] names = property == "_ZOffset_Toggle"
                 ? new[] { property, "_offsetFactor", "_offsetUnits" } : new[] { property, "_OverrideZValue" };
@@ -395,7 +436,7 @@ namespace NBShaderEditor
             foreach (Material material in _rootItem.Mats)
             {
                 bool ignored;
-                if (!NBShaderGUIContext.IsGraphMaterial(material) || !NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out ignored)) return false;
+                if (!NBShaderGUIContext.IsGraphMaterial(material) || !CanApplyGraphSavedProjectionForPaint(material, out ignored)) return false;
                 foreach (string field in NBShaderRootItem.SharedGraphOverlayFloatProperties)
                 {
                     // These two original Graph numeric inputs are serialized Range properties.
@@ -423,6 +464,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphOverlayEdit(string field, bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if ((field != "_EmissionEnabled" && field != "_ColorBlendMap_Toggle") || !HasGraphOverlayEditSchema()) return false;
             foreach (Material material in _rootItem.Mats)
             {
@@ -433,6 +475,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphOverlayFlagEdit(int bit, int word, bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             bool owned = word==0 && (bit==NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_OVERLAY_1_MULTIPLY || bit==NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_BLEND_ALPHA_MULTIPLY_MODE) ||
                 word==1 && (bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_2_ADD || bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_COLOR_OVERLAY_1_ALPHA_MULTIPLY);
             if (!owned || !HasGraphOverlayEditSchema()) return false;
@@ -443,6 +486,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphOverlayUVMode(int position, NBShaderFlags.UVMode mode, string fold, bool setFold)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphOverlayEditSchema() || (int)mode<0 || (int)mode>8 ||
                 !(position==NBShaderFlags.FLAG_BIT_UVMODE_POS_0_EMISSION_MAP && fold=="_EmissionUVModeFoldOut" || position==NBShaderFlags.FLAG_BIT_UVMODE_POS_0_COLOR_BLEND_MAP && fold=="_ColorBlendUVModeFoldOut")) return false;
             int shift=position&15;int mask=3<<shift;string suffix=position<16?"Lo16":"Hi16";
@@ -456,6 +500,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphOverlayCustomData(int position, int word, NBShaderFlags.CutomDataComponent component)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphOverlayEditSchema() || word!=3 || (position!=16 && position!=20 && position!=24 && position!=28) || (int)component<0 || (int)component>8)return false;
             int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};
             int shift=position-16;return RunGraphMainTexEdit("Overlay Offset Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag3Hi16",15<<shift,values[(int)component]<<shift));
@@ -468,7 +513,7 @@ namespace NBShaderEditor
             foreach (Material material in _rootItem.Mats)
             {
                 bool ignored;
-                if (!NBShaderGUIContext.IsGraphMaterial(material) || !NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out ignored)) return false;
+                if (!NBShaderGUIContext.IsGraphMaterial(material) || !CanApplyGraphSavedProjectionForPaint(material, out ignored)) return false;
                 foreach (string field in new[] { "_ParallaxBlockFoldOut", "_ParallaxMapping_Toggle", "_ParallaxMapping_Intensity", "_NB_WrapFlagsLo16", "_NB_WrapFlagsHi16", "_NB_ForceNoMipFlagsLo16", "_NB_ForceNoMipFlagsHi16" })
                 {
                     if (!NBShaderRootItem.HasFloatProperty(material, field) || !_rootItem.PropertyInfoDic.ContainsKey(field)) return false;
@@ -487,6 +532,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphParallaxEdit(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphParallaxEditSchema()) return false;
             foreach (Material material in _rootItem.Mats)
             {
@@ -497,6 +543,7 @@ namespace NBShaderEditor
         }
         internal bool TryFinalizeGraphParallaxLayerEdit(IList<Vector4> previous)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (previous==null || !HasGraphParallaxEditSchema() || previous.Count!=_rootItem.Mats.Count) return false;
             bool changed=false;
             for(int i=0;i<previous.Count;++i)
@@ -515,7 +562,7 @@ namespace NBShaderEditor
             if(_rootItem.MatEditor==null || !HasGraphMainTexUVEditSchema())return false;
             foreach(Material material in _rootItem.Mats)
             {
-                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                bool ignored;if(!CanApplyGraphSavedProjectionForPaint(material,out ignored))return false;
                 foreach(string name in new[]{"_BumpMapToggle","_BumpMapMaskMode","_BumpScale","_BumpToggleFoldOut","_BumpTexFoldOut","_BumpUVModeFoldOut"})
                 {
                     if(!NBShaderRootItem.HasFloatProperty(material,name) || !_rootItem.PropertyInfoDic.ContainsKey(name))return false;
@@ -531,6 +578,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphNormalMapEdit(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphNormalMapEditSchema())return false;
             foreach(Material material in _rootItem.Mats)
             {
@@ -541,6 +589,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphNormalMapMaskEdit(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphNormalMapEditSchema())return false;
             const string name="_NB_Flags0Hi16";const int mask=1<<(21-16);
             return RunGraphMainTexEdit("Normal Map Multi Channel",material=>{
@@ -551,6 +600,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphNormalMapUVMode(NBShaderFlags.UVMode mode,bool setFold)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphNormalMapEditSchema() || (int)mode<0 || (int)mode>8)return false;
             const int shift=NBShaderFlags.FLAG_BIT_UVMODE_POS_0_BUMPMAP-16;const int mask=3<<shift;
             return RunGraphMainTexEdit("Normal Map UV Source",material=>{
@@ -585,7 +635,7 @@ namespace NBShaderEditor
             if(_rootItem.MatEditor==null || !HasGraphMainTexUVEditSchema())return false;
             foreach(Material material in _rootItem.Mats)
             {
-                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                bool ignored;if(!CanApplyGraphSavedProjectionForPaint(material,out ignored))return false;
                 foreach(string name in GraphNoiseSharedPropertyNames)if(!material.HasProperty(name)||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;
                 foreach(string name in new[]{"_NoiseBlockFoldOut","_NoiseMapFoldOut","_NoiseUVModeFoldOut","_NoiseMaskBlockFoldOut","_NoiseMaskUVModeFoldOut","_ScreenDistortAlphaFoldOut","_DisableMainPassToggle",GraphScreenMigration,"_noisemapEnabled","_NoiseIntensity","_NoiseMapUVRotation","_DistortionBothDirection_Toggle","_noiseMaskMap_Toggle","_DistortMode","_RefractionIOR","_DistortPNoiseBlendOpacity","_NB_Debug_Distort","_ScreenDistortAlphaRefineToggle","_NB_DistortionMode","_NB_DistortionIntensity","_NB_DistortionAlphaPow","_NB_DistortionAlphaMultiplier","_NB_DistortionAlphaAdd"})
                 {
@@ -626,6 +676,7 @@ namespace NBShaderEditor
         }
         internal bool TryAdoptGraphScreenEdit(int? selectedMode,bool? selectedDisable)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphNoiseEditSchema()||(selectedMode.HasValue&&(selectedMode.Value<0||selectedMode.Value>2)))return false;
             var probes=new List<Material>();var intents=new List<NBShaderPassIntent[]>();var disabledValues=new List<float>();var chosenModes=new List<int>();
             try
@@ -657,6 +708,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphNoiseIntentEdit()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphNoiseEditSchema())return false;
             foreach(Material material in _rootItem.Mats){bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
             return TryProjectGraphNoiseOwnedScreenState();
@@ -675,12 +727,14 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphNoiseFlagEdit(int bit,bool enabled,int word)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             bool owned=word==0&&bit==NBShaderFlags.FLAG_BIT_PARTICLE_NOISEMAP_NORMALIZEED_ON||word==1&&bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_SCREEN_DISTORT_ALPHA_REFINE;
             if(!owned||!HasGraphNoiseEditSchema())return false;string name="_NB_Flags"+word+"Lo16";
             return RunGraphMainTexEdit("Noise Packed Toggle",material=>{bool changed=WriteGraphHalfSlice(material,name,bit,enabled?bit:0);if(!changed)NotifyGraphPackedFlagsEdited(material,name,bit);return changed;});
         }
         internal bool TryApplyGraphNoiseUVMode(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphNoiseEditSchema()||(int)mode<0||(int)mode>8||!(position==8&&fold=="_NoiseUVModeFoldOut"||position==10&&fold=="_NoiseMaskUVModeFoldOut"))return false;
             int mask=3<<position;return RunGraphMainTexEdit("Noise UV Source",material=>{
                 bool changed=WriteGraphHalfSlice(material,"_NB_UVModeFlag0Lo16",mask,((int)mode&3)<<position)|WriteGraphHalfSlice(material,"_NB_UVModeFlagType0Lo16",mask,((int)mode/4)<<position);
@@ -696,6 +750,7 @@ namespace NBShaderEditor
 
         public void ApplyTransparentMode(TransparentMode mode)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             if (!_rootItem.PropertyInfoDic.ContainsKey("_ZWrite") || !_rootItem.PropertyInfoDic.ContainsKey("_QueueBias"))
             {
@@ -815,6 +870,7 @@ namespace NBShaderEditor
 
         private bool RunGraphMainTexEdit(string label, Func<Material, bool> edit)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphMainTexTargets()) return false;
             var objects = new List<UnityEngine.Object>();
             foreach (Material material in _rootItem.Mats) objects.Add(material);
@@ -837,6 +893,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphMainTexUVMode(NBShaderFlags.UVMode mode, bool setFoldFromPopup = false)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphMainTexUVEditSchema() || (int)mode < 0 || (int)mode > 8) return false;
             return RunGraphMainTexEdit("Main Texture UV Source", material => {
                 bool changed = WriteGraphHalfSlice(material, "_NB_UVModeFlag0Lo16", 3, (int)mode & 3);
@@ -853,6 +910,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphMainTexCustomData(int position, NBShaderFlags.CutomDataComponent component)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphMainTexCustomDataEditSchema() || (position != 0 && position != 4) || (int)component < 0 || (int)component > 8) return false;
             // Same public protocol constants/enum as NBShaderFlags.SetCustomDataFlag; no new meaning.
             int[] values = { 0, NBShaderFlags.CustomData1XBit, NBShaderFlags.CustomData1YBit,
@@ -864,6 +922,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphMainTexSpecialUV(int channel)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphMainTexUVEditSchema() || channel < 0 || channel > 1) return false;
             return RunGraphMainTexEdit("Special UV Channel", material =>
                 WriteGraphHalfSlice(material, "_NB_Flags1Hi16", 12, channel == 0 ? 4 : 8));
@@ -871,6 +930,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphMainTexUVToggle(int bit, bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphMainTexUVEditSchema() || (bit != NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON && bit != NBShaderFlags.FLAG_BIT_PARTICLE_POLARCOORDINATES_ON)) return false;
             string property = bit == NBShaderFlags.FLAG_BIT_PARTICLE_UTWIRL_ON ? "_UTwirlEnabled" : "_PolarCoordinatesEnabled";
             return RunGraphMainTexEdit("Main Texture UV Transform", material => {
@@ -882,6 +942,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphMainTexPlane(string property, int plane)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphMainTexUVEditSchema() || plane < 0 || plane > 2 ||
                 (property != "_WorldSpaceUVModeSelector" && property != "_ObjectSpaceUVModeSelector")) return false;
             return RunGraphMainTexEdit("Coordinate Plane", material => {
@@ -892,6 +953,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphMainTexCylinderComponent(string property, int component, float value)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphMainTexUVEditSchema() || component < 0 || component > 2 || float.IsNaN(value) || float.IsInfinity(value) ||
                 (property != "_CylinderUVRotate" && property != "_CylinderUVPosOffset")) return false;
             return RunGraphMainTexEdit("Cylinder UV", material => {
@@ -910,6 +972,7 @@ namespace NBShaderEditor
         // Restore unowned raw halves and unowned decoded bits rather than normalize the whole word.
         internal bool TryRunGraphMainTexReset(Action reset, bool wholeBlock, int flags0Bits = 0)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphMainTexTargets() || (!wholeBlock && !HasGraphMainTexUVEditSchema())) return false;
             string[] names = { "_NB_Flags0Lo16", "_NB_Flags0Hi16", "_NB_Flags1Lo16", "_NB_Flags1Hi16",
                 "_NB_UVModeFlag0Lo16", "_NB_UVModeFlag0Hi16", "_NB_UVModeFlagType0Lo16", "_NB_UVModeFlagType0Hi16",
@@ -1015,6 +1078,7 @@ namespace NBShaderEditor
 
         internal void PrepareGraphGUIState()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead(_rootItem.GraphGUIStateMayInitialize());
             if (_rootItem.Mats == null || NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return;
             var uninitialized = new List<UnityEngine.Object>();
             foreach (Material material in _rootItem.Mats)
@@ -1043,6 +1107,7 @@ namespace NBShaderEditor
 
         public void SyncMaterialState()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             // Static Material/list entry must also be protected without Context.
             if (NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return;
             PrepareGraphGUIState();
@@ -1074,6 +1139,7 @@ namespace NBShaderEditor
 
         public void ApplyToggleFlag(int flagBits, bool enabled, int flagIndex = 0)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (NBShaderGUIContext.HasMixedHosts(_rootItem.Mats)) return;
             foreach (ShaderFlagsBase flagBase in _rootItem.ShaderFlags)
             {
@@ -1090,6 +1156,7 @@ namespace NBShaderEditor
 
         public void ApplyShaderPass(string passName, bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
@@ -1102,6 +1169,7 @@ namespace NBShaderEditor
 
         public void ApplyScreenDistortMode(int mode)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
@@ -1120,6 +1188,7 @@ namespace NBShaderEditor
 
         public void ApplyDepthDecalEnabled(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) { TryApplyGraphDepthDecalEnabled(enabled); return; }
             ApplyToggleKeyword("_DEPTH_DECAL", enabled);
             foreach (Material mat in _rootItem.Mats)
@@ -1135,6 +1204,7 @@ namespace NBShaderEditor
 
         public void ApplyPortalState()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
@@ -1178,6 +1248,7 @@ namespace NBShaderEditor
 
         public void ApplyVatEnabled(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
@@ -1221,12 +1292,14 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphFlipbookEdit(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             // Same original enable-Flipbook excludes VAT; no pass/surface projection.
             return RunGraphVATTransaction("NB Flipbook",material=>{material.SetFloat("_FlipbookBlending",enabled?1:0);if(enabled)material.SetFloat("_VAT_Toggle",0);});
         }
 
         public void ApplyFlipbookEnabled(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
@@ -1246,6 +1319,7 @@ namespace NBShaderEditor
 
         public void ApplyBlendMode(BlendMode mode)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
@@ -1306,6 +1380,7 @@ namespace NBShaderEditor
 
         public void ApplyLightMode(FxLightMode mode)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
@@ -1318,6 +1393,7 @@ namespace NBShaderEditor
 
         public void ApplyToggleKeyword(string keyword, bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
@@ -1331,6 +1407,7 @@ namespace NBShaderEditor
 
         public void ApplyStencilPreset(string key)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (HasGraphTargets()) return; // Graph1A uses native fallback; no legacy projection.
             foreach (Material mat in _rootItem.Mats)
             {
@@ -1377,6 +1454,7 @@ namespace NBShaderEditor
 
         private void ApplyStencilPresetToMaterial(Material mat, string key)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             StencilValuesConfig config = GetStencilValuesConfig();
             if (config != null)
             {
@@ -1477,6 +1555,7 @@ namespace NBShaderEditor
 
         private void SyncMeshSourceMode(Material mat, NBShaderFlags flags)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (flags == null || !mat.HasProperty("_MeshSourceMode"))
             {
                 return;
@@ -1520,6 +1599,7 @@ namespace NBShaderEditor
 
         private void SyncTimeMode(Material mat, NBShaderFlags flags)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (flags == null || !mat.HasProperty("_TimeMode"))
             {
                 return;
@@ -1532,6 +1612,7 @@ namespace NBShaderEditor
 
         private void SyncTogglePropertyFlags(Material mat, NBShaderFlags flags)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (flags == null || mat == null)
             {
                 return;
@@ -1592,6 +1673,7 @@ namespace NBShaderEditor
 
         private void SyncResolvedIntentState(Material mat)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             var tier = ResolveMaterialTier(mat);
             var allowedKeywords = NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForReadOnlyUse(tier);
             var allowedPassFeatures = NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForReadOnlyUse(tier);
@@ -1618,6 +1700,7 @@ namespace NBShaderEditor
 
         private void SyncResolvedIntentStateIfNBShader(Material mat)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (NBShaderMaterialIntentResolver.IsNBShaderMaterial(mat))
                 SyncResolvedIntentState(mat);
         }
@@ -1655,6 +1738,7 @@ namespace NBShaderEditor
 
         private void SyncCustomData(Material mat, NBShaderFlags flags)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (flags == null || !mat.HasProperty("_MeshSourceMode"))
             {
                 return;
@@ -1689,6 +1773,7 @@ namespace NBShaderEditor
 
         private void SyncTransparentMode(Material mat)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!mat.HasProperty("_TransparentMode"))
             {
                 return;
@@ -1783,6 +1868,7 @@ namespace NBShaderEditor
 
         private void SyncBlendMode(Material mat)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!mat.HasProperty("_Blend"))
             {
                 return;
@@ -1845,6 +1931,7 @@ namespace NBShaderEditor
 
         private void SyncVatKeywords(Material mat)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!mat.HasProperty("_VAT_Toggle") || mat.GetFloat("_VAT_Toggle") <= 0.5f)
             {
                 ClearVatKeywords(mat);
@@ -2017,13 +2104,14 @@ namespace NBShaderEditor
                     for (int channel = 0; channel < 4; ++channel) if (float.IsNaN(value[channel]) || float.IsInfinity(value[channel])) return false;
                 }
                 bool wouldChange;
-                if (!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out wouldChange)) return false;
+                if (!CanApplyGraphSavedProjectionForPaint(material, out wouldChange)) return false;
             }
             return true;
         }
 
         internal bool TryApplyGraphFresnelEdit(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphFresnelEditSchema()) return false;
             foreach (Material material in _rootItem.Mats)
             {
@@ -2038,6 +2126,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphFresnelFlagEdit(int bit, bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (bit != NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_FADE_ON &&
                 bit != NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_INVERT_ON &&
                 bit != NBShaderFlags.FLAG_BIT_PARTICLE_FRESNEL_COLOR_AFFETCT_BY_ALPHA) return false;
@@ -2057,6 +2146,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphDissolveUVMode(int position,NBShaderFlags.UVMode mode,bool setFold)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(position!=NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP && position!=NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MASK_MAP)return false;
             if(!HasGraphDissolveEditSchema() || !HasGraphMainTexUVEditSchema() || (int)mode<0 || (int)mode>8)return false;
             string fold=position==NBShaderFlags.FLAG_BIT_UVMODE_POS_0_DISSOLVE_MAP?"_DissolveUVModeFoldOut":"_DissolveMaskUVModeFoldOut";
@@ -2089,13 +2179,14 @@ namespace NBShaderEditor
                 foreach(string name in new[]{"_DissolveMaskMode","_DissolveRampSourceMode","_DissolveRampColorBlendMode"})
                 {float mode=material.GetFloat(name);if(mode!=0f&&mode!=1f)return false;}
                 bool wouldChange;
-                if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out wouldChange))return false;
+                if(!CanApplyGraphSavedProjectionForPaint(material,out wouldChange))return false;
             }
             return true;
         }
 
         internal bool TryApplyGraphDissolveIntentEdit()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphDissolveEditSchema())return false;
             foreach(Material material in _rootItem.Mats)
             {bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
@@ -2104,6 +2195,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphDissolveFlagEdit(int bit,bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(bit!=NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_LINE_MASK && bit!=NBShaderFlags.FLAG_BIT_PARTICLE_1_DISSOLVE_RAMP_MULITPLY)return false;
             if(!HasGraphDissolveEditSchema())return false;
             string name=(bit&65535)!=0?"_NB_Flags1Lo16":"_NB_Flags1Hi16";int mask=(bit&65535)!=0?bit&65535:(int)((uint)bit>>16);
@@ -2124,18 +2216,20 @@ namespace NBShaderEditor
                 {if(!NBShaderRootItem.HasFloatProperty(material,n))return false;float v=material.GetFloat(n);if(float.IsNaN(v)||float.IsInfinity(v))return false;}
                 if(material.GetFloat(GraphGUIStateVersionProperty)!=2)return false;
                 foreach(string n in new[]{"_MaskMapGradientToggle","_MaskMap2GradientToggle","_MaskMap3GradientToggle"}){float v=material.GetFloat(n);if(v!=0&&v!=1)return false;}
-                bool change;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out change))return false;
+                bool change;if(!CanApplyGraphSavedProjectionForPaint(material,out change))return false;
             }
             return true;
         }
         internal bool TryApplyGraphMaskProgramIntentEdit()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphMaskProgramEditSchema())return false;
             foreach(Material material in _rootItem.Mats){bool change;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out change))return false;}
             RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
         }
         internal bool TryApplyGraphMaskProgramFlagEdit(int bit,bool enabled,int word)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             bool owned=word==0&&bit==NBShaderFlags.FLAG_BIT_PARTILCE_MASKMAPROTATIONANIMATION_ON || word==1&&(bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MASK_REFINE||bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_GRADIENT||bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_2_GRADIENT||bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MASKMAP_3_GRADIENT);
             if(!owned||!HasGraphMaskProgramEditSchema())return false;
             string name="_NB_Flags"+word+((bit&65535)!=0?"Lo16":"Hi16");int mask=(bit&65535)!=0?bit&65535:(int)((uint)bit>>16);
@@ -2150,6 +2244,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphMaskProgramUVMode(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             bool owned=position==2&&fold=="_MaskUVModeFoldOut" || position==4&&fold=="_Mask2UVModeFoldOut" || position==6&&fold=="_Mask3UVModeFoldOut" || position==28&&fold=="_ProgramNoiseUVModeFoldOut";
             if(!owned||!HasGraphMaskProgramEditSchema()||!HasGraphMainTexUVEditSchema()||(int)mode<0||(int)mode>8)return false;
             string suffix=position<16?"Lo16":"Hi16";int shift=position&15,mask=3<<shift;
@@ -2161,6 +2256,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphSharedFeatureUVMode(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(position==NBShaderFlags.FLAG_BIT_UVMODE_POS_0_SHAREDUV && fold=="_SharedUVModeFoldOut")return TryApplyGraphSharedUVMode(mode,setFold);
             if(position==26 && fold=="_RampColorUVModeFoldOut")return TryApplyGraphColorRampUVMode(mode,setFold);
             if(position==8||position==10)return TryApplyGraphNoiseUVMode(position,mode,fold,setFold);
@@ -2207,7 +2303,7 @@ namespace NBShaderEditor
                     if (!HasGraphColorLeafPropertyType(material,"_RampColorMap",UnityEngine.Rendering.ShaderPropertyType.Texture)) return false;
                     foreach (string name in new[]{"_RampColorSourceMode","_RampColorBlendMode"})
                     { float value=material.GetFloat(name); if(value!=0f&&value!=1f)return false; }
-                    bool changed; if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out changed))return false;
+                    bool changed; if(!CanApplyGraphSavedProjectionForPaint(material,out changed))return false;
                 }
             }
             return true;
@@ -2224,6 +2320,7 @@ namespace NBShaderEditor
             => HasGraphColorLeafSchema(GraphColorRampFloats,GraphColorRampColors,GraphColorRampVectors,true);
         internal bool TryApplyGraphColorAdjustmentFlagEdit(int bit,int word,bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             bool owned=word==0 && (bit==NBShaderFlags.FLAG_BIT_SATURABILITY_ON || bit==NBShaderFlags.FLAG_BIT_HUESHIFT_ON ||
                 bit==NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_ADJUSTMENT_ONLY_AFFECT_MAINTEX || bit==NBShaderFlags.FLAG_BIT_PARTICLE_COLOR_MULTI_ALPHA) ||
                 word==1 && (bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_CONTRAST || bit==NBShaderFlags.FLAG_BIT_PARTICLE_1_MAINTEX_COLOR_REFINE);
@@ -2240,11 +2337,13 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphColorRampBlendEdit(bool add)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphColorRampEditSchema())return false;
             return RunGraphMainTexEdit("Color Ramp Blend",material=>WriteGraphColorLeafFlag(material,NBShaderFlags.FLAG_BIT_PARTICLE_RAMP_COLOR_BLEND_ADD,0,add));
         }
         internal bool TryApplyGraphColorRampIntentEdit()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphColorRampEditSchema())return false;
             foreach(Material material in _rootItem.Mats)
             {bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
@@ -2252,6 +2351,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphColorRampUVMode(NBShaderFlags.UVMode mode,bool setFold)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphColorRampEditSchema() || !HasGraphMainTexUVEditSchema() || (int)mode<0 || (int)mode>8)return false;
             const int shift=10, mask=3<<shift; // Original word0/type0 position26, high half only.
             return RunGraphMainTexEdit("Color Ramp UV Source",material=>{
@@ -2287,6 +2387,7 @@ namespace NBShaderEditor
             => material.GetFloat("_Surface")>.5f?3000:material.GetFloat("_AlphaClip")>.5f?2450:2000;
         internal bool TryApplyGraphQCMQueue(float bias,bool reset=false)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphQCMEditSchema()||float.IsNaN(bias)||float.IsInfinity(bias)||bias<-5000||bias>5000)return false;
             int rounded=Mathf.RoundToInt(bias);
             foreach(Material material in _rootItem.Mats)
@@ -2301,6 +2402,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphQCMStencilToggle(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphQCMEditSchema())return false;
             StencilValuesConfig config=null;
             if(!enabled)
@@ -2334,7 +2436,7 @@ namespace NBShaderEditor
             if(!HasGraphMainTexTargets() || _rootItem.MatEditor==null)return false;
             foreach(Material material in _rootItem.Mats)
             {
-                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                bool ignored;if(!CanApplyGraphSavedProjectionForPaint(material,out ignored))return false;
                 foreach(string name in new[]{"_MatCapToggle","_MatCapFoldOut","_NB_ForceNoMipFlagsLo16","_NB_ForceNoMipFlagsHi16"})
                 {
                     if(!_rootItem.PropertyInfoDic.ContainsKey(name)||!NBShaderRootItem.HasFloatProperty(material,name))return false;
@@ -2353,6 +2455,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphMatCapEdit(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphMatCapEditSchema())return false;
             foreach(Material material in _rootItem.Mats)
             {
@@ -2370,7 +2473,7 @@ namespace NBShaderEditor
             if(!HasGraphMainTexTargets()||_rootItem.MatEditor==null)return false;
             foreach(Material material in _rootItem.Mats)
             {
-                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                bool ignored;if(!CanApplyGraphSavedProjectionForPaint(material,out ignored))return false;
                 foreach(string name in new[]{"_DistanceFade_Toggle","_SoftParticlesEnabled","_DepthOutline_Toggle","_DistanceFadeFoldOut","_SoftParticlesFoldOut","_DepthOutlineBlockFoldOut"})
                 {
                     if(!_rootItem.PropertyInfoDic.ContainsKey(name)||!NBShaderRootItem.HasFloatProperty(material,name))return false;
@@ -2388,6 +2491,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphDepthFeaturesIntentEdit()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphDepthFeaturesEditSchema())return false;
             foreach(Material material in _rootItem.Mats)
             {bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
@@ -2416,6 +2520,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphSharedUVMode(NBShaderFlags.UVMode mode,bool setFold)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphSharedUVEditSchema()||(int)mode<0||(int)mode>8)return false;
             const int shift=14,mask=3<<shift; // Original word0 position30 -> high-half bits14/15.
             return RunGraphMainTexEdit("Shared UV Source",material=>{
@@ -2431,6 +2536,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphSharedUVCustomData(int position,int word,NBShaderFlags.CutomDataComponent component)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphSharedUVEditSchema()||word!=3||(position!=8&&position!=12)||(int)component<0||(int)component>8)return false;
             int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};
             return RunGraphMainTexEdit("Shared UV Offset Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag3Lo16",15<<position,values[(int)component]<<position));
@@ -2450,18 +2556,20 @@ namespace NBShaderEditor
                 foreach(string name in new[]{"_VertexOffset_Toggle","_VertexOffset_Mask_Toggle","_VertexOffset_NormalDir_Toggle","_VertexOffset_DirectionSpace","_VertexOffset_StartFromZero",GraphGUIStateVersionProperty})
                 {if(!NBShaderRootItem.HasFloatProperty(material,name))return false;float value=material.GetFloat(name);if(float.IsNaN(value)||float.IsInfinity(value))return false;}
                 float direction=material.GetFloat("_VertexOffset_NormalDir_Toggle"),space=material.GetFloat("_VertexOffset_DirectionSpace");if(direction!=Mathf.Round(direction)||direction<0||direction>3||space!=Mathf.Round(space)||space<0||space>1||material.GetFloat(GraphGUIStateVersionProperty)!=2)return false;
-                bool changed;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out changed))return false;
+                bool changed;if(!CanApplyGraphSavedProjectionForPaint(material,out changed))return false;
             }
             return true;
         }
         internal bool TryApplyGraphVertexOffsetIntentEdit()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphVertexOffsetEditSchema())return false;
             foreach(Material material in _rootItem.Mats){bool changed;if(!NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedSupportedGateTier(material,out changed))return false;}
             RefreshGraphMainTexPropertyReferences();_rootItem.Context?.Refresh();return true;
         }
         internal bool TryApplyGraphVertexOffsetStart(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphVertexOffsetEditSchema())return false;const string name="_NB_Flags1Hi16";const int mask=1<<(25-16);
             return RunGraphMainTexEdit("Vertex Offset From Zero",material=>{bool changed=WriteGraphHalfSlice(material,name,mask,enabled?mask:0);if(!changed)NotifyGraphPackedFlagsEdited(material,name,mask);return changed;});
         }
@@ -2475,6 +2583,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphVertexOffsetUV(int position,NBShaderFlags.UVMode mode,string fold,bool setFold)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphVertexOffsetEditSchema()||(int)mode<0||(int)mode>8||!(position==20&&fold=="_VertexOffsetUVModeFoldOut"||position==22&&fold=="_VertexOffsetMaskUVModeFoldOut"))return false;
             int shift=position-16,mask=3<<shift;
             return RunGraphMainTexEdit("Vertex Offset UV",material=>{
@@ -2485,6 +2594,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphVertexOffsetCustomData(int position,int word,NBShaderFlags.CutomDataComponent component)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphVertexOffsetEditSchema()||(int)component<0||(int)component>8||!(word==1&&(position==16||position==20||position==24)||word==3&&(position==0||position==4)))return false;
             int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};int shift=position&15;string name="_NB_CustomDataFlag"+word+(position<16?"Lo16":"Hi16");
             return RunGraphMainTexEdit("Vertex Offset Custom Data",material=>WriteGraphHalfSlice(material,name,15<<shift,values[(int)component]<<shift));
@@ -2502,6 +2612,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphStencilWithoutPlayer(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphStencilWithoutPlayerEditSchema())return false;
             string key=enabled?"ParticleWithoutPlayer":"ParticleBaseDefault";var config=GetStencilValuesConfig();
             if(config==null||!config.ContainsKey(key)||config.GetStencilValues(key)==null)return false;
@@ -2517,6 +2628,7 @@ namespace NBShaderEditor
         // The original Native linked-state contract, shared without queue writes.
         private void ApplyDepthDecalLinkedState(Material mat, bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             ApplyStencilPresetToMaterial(mat, enabled ? "ParticleBaseDecal" : "ParticleBaseDefault");
             SetFloatIfExists(mat, "_CustomStencilTest", enabled ? 1f : 0f);
             SetFloatIfExists(mat, "_Cull", enabled ? (float)RenderFace.Back : (float)RenderFace.Front);
@@ -2530,7 +2642,7 @@ namespace NBShaderEditor
             if(!HasGraphQCMEditSchema())return false;
             foreach(Material material in _rootItem.Mats)
             {
-                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                bool ignored;if(!CanApplyGraphSavedProjectionForPaint(material,out ignored))return false;
                 if(!NBShaderRootItem.HasFloatProperty(material,"_DepthDecal_Toggle")||!_rootItem.PropertyInfoDic.ContainsKey("_DepthDecal_Toggle"))return false;
                 float toggle=material.GetFloat("_DepthDecal_Toggle");if(float.IsNaN(toggle)||float.IsInfinity(toggle))return false;
                 foreach(string name in new[]{"_Cull","_ZTest"})
@@ -2544,6 +2656,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphDepthDecalEnabled(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphDepthDecalEditSchema())return false;
             string key=enabled?"ParticleBaseDecal":"ParticleBaseDefault";
             var config=GetStencilValuesConfig();
@@ -2678,6 +2791,7 @@ namespace NBShaderEditor
 
         internal bool TryAdoptGraphBackFirstCurrentMain()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphBackFirstAdoptionSchema()) return false;
             var materials = _rootItem.Mats;
             var targets = new UnityEngine.Object[materials.Count];
@@ -2726,6 +2840,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphBackFirstToggle(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphBackFirstEditSchema()) return false;
             // Preflight selected intent on copies before writing any target.
             foreach (Material material in _rootItem.Mats)
@@ -2759,7 +2874,7 @@ namespace NBShaderEditor
             if(_rootItem.MatEditor==null||!HasGraphMainTexTargets())return false;
             foreach(Material material in _rootItem.Mats)
             {
-                bool changed;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out changed))return false;
+                bool changed;if(!CanApplyGraphSavedProjectionForPaint(material,out changed))return false;
                 foreach(string name in GraphVATSharedPropertyNames)
                 {
                     if(!_rootItem.PropertyInfoDic.ContainsKey(name)||!material.HasProperty(name))return false;
@@ -2775,6 +2890,7 @@ namespace NBShaderEditor
         }
         bool RunGraphVATTransaction(string label,Action<Material> edit,Action reset=null)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphVATEditSchema())return false;
             var snapshots=new List<Material>();var targets=new List<UnityEngine.Object>();
             try
@@ -2829,6 +2945,7 @@ namespace NBShaderEditor
             =>reset!=null&&RunGraphVATTransaction("Reset NB VAT",null,reset);
         internal bool TryApplyGraphVATFrameCustomData(NBShaderFlags.CutomDataComponent component)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphVATEditSchema()||(int)component<0||(int)component>8)return false;
             int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};
             return RunGraphMainTexEdit("VAT Frame Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag2Hi16",15<<12,values[(int)component]<<12));
@@ -2852,7 +2969,7 @@ namespace NBShaderEditor
             foreach (Material material in _rootItem.Mats)
             {
                 bool ignored;
-                if (!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material, out ignored)) return false;
+                if (!CanApplyGraphSavedProjectionForPaint(material, out ignored)) return false;
                 if(material.HasProperty("_TransparentShadowDitherToggle")&&!HasPortalFiniteFloat(material,"_TransparentShadowDitherToggle"))return false;
                 foreach (string n in GraphPortalSharedProperties)
                     if (!HasPortalFiniteFloat(material, n)) return false;
@@ -2884,6 +3001,7 @@ namespace NBShaderEditor
 
         private void ApplyGraphPortalPreset(Material material)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             bool portal = material.GetFloat("_Portal_Toggle") > .5f;
             bool mask = material.GetFloat("_Portal_MaskToggle") > .5f;
             bool wasTransparent = material.GetFloat("_Surface") == 1f;
@@ -2923,6 +3041,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphPortalState()
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if (!HasGraphPortalEditSchema()) return false;
             // Validate the complete projected state on copies before any target write.
             foreach (Material material in _rootItem.Mats)
@@ -2950,6 +3069,7 @@ namespace NBShaderEditor
 
         internal bool TryApplyGraphPortalToggle(string name, bool enabled, bool resetBoth = false)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if ((name != "_Portal_Toggle" && name != "_Portal_MaskToggle") || !HasGraphPortalEditSchema()) return false;
             foreach (Material material in _rootItem.Mats)
             {
@@ -3016,6 +3136,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphLightSubToggle(string name, bool? enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if ((name!="_BlinnPhongSpecularToggle" && name!="_SixWayColorAbsorptionToggle") || !HasGraphLightSubControlsSchema()) return false;
             int count=_rootItem.Mats.Count;var targets=new UnityEngine.Object[count];var oldRaw=new float[count];var oldAllow=new float[count];var next=new float[count];var oldDeclared=new bool[count][];
             for(int i=0;i<count;++i)
@@ -3047,6 +3168,7 @@ namespace NBShaderEditor
         }
         internal bool TryFinalizeGraphLightRampEdit(IList<Texture> before)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(before==null || before.Count!=_rootItem.Mats.Count || !HasGraphLightSubControlsSchema())return false;
             const int mask=1<<(29-16);
             for(int i=0;i<before.Count;++i)
@@ -3082,6 +3204,7 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphBaseBackColorToggle(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphBaseBackColorEditSchema())return false;
             const int mask=1<<(28-16);
             return RunGraphMainTexEdit("NB Back Color",value=>{
@@ -3093,6 +3216,7 @@ namespace NBShaderEditor
         }
         internal bool TryRunGraphBaseBackColorReset(System.Action reset)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(reset==null||!HasGraphBaseBackColorEditSchema())return false;
             bool resetApplied=false;const int mask=1<<(28-16);
             return RunGraphMainTexEdit("Reset NB Back Color",value=>{
@@ -3109,7 +3233,7 @@ namespace NBShaderEditor
             if(_rootItem.MatEditor==null || !HasGraphMainTexTargets())return false;
             foreach(Material material in _rootItem.Mats)
             {
-                bool ignored;if(!NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out ignored))return false;
+                bool ignored;if(!CanApplyGraphSavedProjectionForPaint(material,out ignored))return false;
                 foreach(string name in new[]{"_ChromaticAberrationFoldOut","_Distortion_Choraticaberrat_Toggle","_Distortion_Choraticaberrat_WithNoise_Toggle","_NB_Flags0Lo16","_NB_Flags0Hi16","_NB_CustomDataFlag0Lo16","_NB_CustomDataFlag0Hi16"})
                 {if(!NBShaderRootItem.HasFloatProperty(material,name)||!_rootItem.PropertyInfoDic.ContainsKey(name))return false;float v=material.GetFloat(name);if(float.IsNaN(v)||float.IsInfinity(v))return false;}
                 int index=material.shader.FindPropertyIndex("_DistortionDirection");
@@ -3121,6 +3245,7 @@ namespace NBShaderEditor
         internal bool TryApplyGraphChromaticToggle(bool enabled)=>TryCommitGraphChromaticOwned(enabled,false);
         internal bool TryApplyGraphChromaticNoiseFlag(bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphChromaticEditSchema())return false;
             return RunGraphMainTexEdit("Edit NB Chromatic With Noise",material=>
             {
@@ -3130,12 +3255,14 @@ namespace NBShaderEditor
         }
         internal bool TryApplyGraphChromaticIntensity(float value)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(float.IsNaN(value)||float.IsInfinity(value)||!HasGraphChromaticEditSchema())return false;
             return RunGraphMainTexEdit("Edit NB Chromatic Intensity",material=>
             {Vector4 v=material.GetVector("_DistortionDirection");if(v.z==value)return false;v.z=value;material.SetVector("_DistortionDirection",v);return true;});
         }
         internal bool TryApplyGraphChromaticCustomData(NBShaderFlags.CutomDataComponent component)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if((int)component<0||(int)component>8||!HasGraphChromaticEditSchema())return false;
             int[] values={0,NBShaderFlags.CustomData1XBit,NBShaderFlags.CustomData1YBit,NBShaderFlags.CustomData1ZBit,NBShaderFlags.CustomData1WBit,NBShaderFlags.CustomData2XBit,NBShaderFlags.CustomData2YBit,NBShaderFlags.CustomData2ZBit,NBShaderFlags.CustomData2WBit};
             return RunGraphMainTexEdit("Edit NB Chromatic Custom Data",material=>WriteGraphHalfSlice(material,"_NB_CustomDataFlag0Hi16",15<<12,values[(int)component]<<12));
@@ -3194,11 +3321,13 @@ namespace NBShaderEditor
         }
         internal bool TryWriteGraphBaseNumeric(string name,float next)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if((name!="_BaseColorIntensityForTimeline"&&name!="_AlphaAll"&&name!="_fogintensity")||float.IsNaN(next)||float.IsInfinity(next)||!HasGraphBaseNumericSchema())return false;
             return RunGraphMainTexEdit("NB Base Numeric",value=>{if(value.GetFloat(name)==next)return false;value.SetFloat(name,next);return true;});
         }
         internal bool TryWriteGraphAlphaRange(float min,float max,bool minEdited,bool maxEdited)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if((!minEdited&&!maxEdited)||float.IsNaN(min)||float.IsInfinity(min)||float.IsNaN(max)||float.IsInfinity(max)||!HasGraphBaseNumericSchema())return false;
             return RunGraphMainTexEdit("NB Overall Alpha Range",value=>{
                 Vector4 before=value.GetVector("AlphaAllRangeVec"),next=before;if(minEdited)next.x=min;if(maxEdited)next.y=max;
@@ -3208,6 +3337,7 @@ namespace NBShaderEditor
         }
         internal bool TryResetGraphBaseNumeric(string name)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if((name!="_BaseColorIntensityForTimeline"&&name!="_AlphaAll"&&name!="_fogintensity")||!HasGraphBaseNumericSchema())return false;
             return RunGraphMainTexEdit("Reset NB Base Numeric",value=>{
                 value.SetFloat(name,value.shader.GetPropertyDefaultFloatValue(value.shader.FindPropertyIndex(name)));
@@ -3280,6 +3410,7 @@ namespace NBShaderEditor
         }
         internal bool TryWriteGraphBaseShadow(string name,bool enabled)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(Array.IndexOf(GraphBaseShadowProperties,name)<0||!HasGraphBaseShadowSchema())return false;
             // Schema/enum preflight precedes the existing pre-write Undo owner.
             var images=new GraphBaseShadowSnapshot[_rootItem.Mats.Count];
@@ -3326,7 +3457,20 @@ namespace NBShaderEditor
             {material=value;owned=value.HasProperty("_TransparentShadowDitherToggle");if(owned){cast=value.GetFloat("_CastShadows");pass=value.GetShaderPassEnabled("ShadowCaster");}}
             internal void Restore(){if(owned){material.SetFloat("_CastShadows",cast);material.SetShaderPassEnabled("ShadowCaster",pass);}}
         }
+        int _graphResetPaintPass, _graphResetPaintShaderRevision;
+        bool _graphResetPaintAccepted;
         internal bool HasGraphSharedResetSchema()
+        {
+            int pass=_graphFreshPreflightDepth==0?_rootItem.GraphGUIReadPass:0;
+            if(pass==0)return HasGraphSharedResetSchemaFresh();
+            if(_graphResetPaintPass!=pass||_graphResetPaintShaderRevision!=NBShaderRootItem.ShaderPropertyTypeCacheRevision)
+            {
+                _graphResetPaintAccepted=HasGraphSharedResetSchemaFresh();_graphResetPaintPass=pass;
+                _graphResetPaintShaderRevision=NBShaderRootItem.ShaderPropertyTypeCacheRevision;
+            }
+            return _graphResetPaintAccepted;
+        }
+        private bool HasGraphSharedResetSchemaFresh()
         {
             if(!HasGraphSupportedGateTierEditSchema()||!HasGraphBaseNumericSchema()||!HasGraphBaseShadowSchema()||
                 !HasGraphBaseBackColorEditSchema()||!HasGraphLightSubControlsSchema()||!HasGraphTADepthEditSchema()||
@@ -3350,6 +3494,7 @@ namespace NBShaderEditor
         }
         internal bool TryResetGraphSpecialUVValues(string kind)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if((kind!="special"&&kind!="twirl"&&kind!="polar"&&kind!="all")||!HasGraphMainTexUVEditSchema())return false;
             return RunGraphMainTexEdit("Reset NB Special UV",value=>{
                 bool changed=false;
@@ -3376,6 +3521,7 @@ namespace NBShaderEditor
         }
         internal bool TryRunGraphSharedReset(Action reset,bool resetSpecial)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             return TryRunGraphKnownMaterialEdit(reset,rampBefore=>{
                 if(resetSpecial&&!TryResetGraphSpecialUVValues("all"))return false;
                 // Original Native final sync derives this existing ramp bit after Light reset.
@@ -3394,6 +3540,7 @@ namespace NBShaderEditor
         }
         internal bool TryRunGraphKnownMaterialEdit(Action reset,Func<IList<Texture>,bool> finish,string label)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(reset==null||!HasGraphSharedResetSchema())return false;
             var originals=new List<string>();var originalObjectReferences=new List<Dictionary<string,UnityEngine.Object>>();var objects=new List<UnityEngine.Object>();
             var rampBefore=new List<Texture>();var passState=new List<Dictionary<string,bool>>();int group=Undo.GetCurrentGroup();bool completed=false;
@@ -3460,7 +3607,20 @@ namespace NBShaderEditor
                 NBShaderFeatureLevelProjectSettings.instance.GetAllowedKeywordSetForBuildInfoNoSave(intent.tier),
                 NBShaderFeatureLevelProjectSettings.instance.GetAllowedPassFeatureSetForBuildInfoNoSave(intent.tier),out change);
         }
+        int _graphRemainingPaintPass, _graphRemainingPaintShaderRevision;
+        bool _graphRemainingPaintAccepted;
         internal bool HasGraphRemainingSharedUISchema()
+        {
+            int pass=_graphFreshPreflightDepth==0?_rootItem.GraphGUIReadPass:0;
+            if(pass==0)return HasGraphRemainingSharedUISchemaFresh();
+            if(_graphRemainingPaintPass!=pass||_graphRemainingPaintShaderRevision!=NBShaderRootItem.ShaderPropertyTypeCacheRevision)
+            {
+                _graphRemainingPaintAccepted=HasGraphRemainingSharedUISchemaFresh();_graphRemainingPaintPass=pass;
+                _graphRemainingPaintShaderRevision=NBShaderRootItem.ShaderPropertyTypeCacheRevision;
+            }
+            return _graphRemainingPaintAccepted;
+        }
+        private bool HasGraphRemainingSharedUISchemaFresh()
         {
             if(!HasGraphSharedResetSchema())return false;
             foreach(Material material in _rootItem.Mats)
@@ -3472,6 +3632,7 @@ namespace NBShaderEditor
         }
         internal bool TryWriteGraphAdditiveBlend(float value,bool reset=false)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphRemainingSharedUISchema()||float.IsNaN(value)||float.IsInfinity(value)||(!reset&&(value<0||value>1)))return false;
             return TryRunGraphKnownMaterialEdit(()=>{
                 foreach(Material material in _rootItem.Mats)material.SetFloat("_AdditiveToPreMultiplyAlphaLerp",reset?(material.GetFloat("_Blend")==1f?1f:0f):value);
@@ -3491,6 +3652,7 @@ namespace NBShaderEditor
         }
         internal bool TryRunGraphKnownToolbarEdit(Action edit)
         {
+            using var graphFreshPreflight=BeginGraphFreshPreflightRead();
             if(!HasGraphRemainingSharedUISchema())return false;
             return TryRunGraphKnownMaterialEdit(edit,null,"NB Graph Toolbar");
         }

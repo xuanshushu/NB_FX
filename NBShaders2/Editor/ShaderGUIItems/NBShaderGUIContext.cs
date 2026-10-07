@@ -7,12 +7,23 @@ using UnityEngine;
 
 namespace NBShaderEditor
 {
+    // GUI metadata only. No asset writes; every completed import invalidates
+    // same-count reimports as well as renamed/moved/generated Shader properties.
+    internal sealed class NBShaderGUIPropertyTypePostprocessor : AssetPostprocessor
+    {
+        static void OnPostprocessAllAssets(string[] imported,string[] deleted,string[] moved,string[] movedFrom)
+        {NBShaderRootItem.InvalidateShaderPropertyTypes();}
+    }
+
     public class NBShaderGUIContext
     {
         private const string FeatureTierPropertyName = "_NBShaderFeatureTier";
 
         private readonly NBShaderRootItem _rootItem;
         private HashSet<string> _currentTierAllowedKeywords;
+        int _lastGUIReadPass, _lastShaderTypeRevision;
+        internal void InvalidateGUIReadPass(){_lastGUIReadPass=0;}
+
 
         // Only an editor host distinction, not a GraphMPB/VFX capability claim.
         public bool IsGraphMaterialHost { get; private set; }
@@ -165,6 +176,8 @@ namespace NBShaderEditor
 
         public void Refresh()
         {
+            int pass=_rootItem.GraphGUIReadPass;
+            if(pass!=0&&_lastGUIReadPass==pass&&_lastShaderTypeRevision==NBShaderRootItem.ShaderPropertyTypeCacheRevision)return;
             HasMixedMaterialHosts = HasMixedHosts(_rootItem.Mats);
             IsGraphMaterialHost = !HasMixedMaterialHosts && _rootItem.Mats != null &&
                 _rootItem.Mats.Count > 0 && IsGraphMaterial(_rootItem.Mats[0]);
@@ -195,6 +208,7 @@ namespace NBShaderEditor
                 // Real saved Graph intent, not legacy mode/pass projection.
                 VatEnabled = GetGraphToggleState("_VAT_Toggle");
                 FlipbookEnabled = GetGraphToggleState("_FlipbookBlending");
+                if(pass!=0){_lastGUIReadPass=pass;_lastShaderTypeRevision=NBShaderRootItem.ShaderPropertyTypeCacheRevision;}
                 return;
             }
 
