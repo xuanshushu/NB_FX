@@ -737,10 +737,28 @@ namespace NBShaderEditor
         {
             return NBShaderInspectorLocalization.Get("inspector.toolbar." + key + ".undo", fallback);
         }
+        NBShaderRootItem.GraphGUIInputWitness _graphClipboardInputWitness;
+        readonly System.Collections.Generic.List<Material> _graphClipboardWitnessMaterial=new System.Collections.Generic.List<Material>(1);
+        readonly UnityEngine.Object[] _graphClipboardWitnessTargets=new UnityEngine.Object[1];
+        bool _graphClipboardWitnessValid,_graphClipboardSchemaAccepted;
         internal bool CanPasteGraphForDisplay()
         {
-            return _rootItem.CanUseGraphSharedToolbarForDisplay(true)&&copiedMaterialSnapshot!=null&&copiedShader==MainMaterial.shader&&
-                NBShaderSyncService.HasGraphRemainingSharedUIMaterialSchema(copiedMaterialSnapshot);
+            if(!_rootItem.CanUseGraphSharedToolbarForDisplay(true)||copiedMaterialSnapshot==null||copiedShader!=MainMaterial.shader)return false;
+            _graphClipboardWitnessTargets[0]=copiedMaterialSnapshot;
+            // The clipboard source is independent from the selected material's epoch.
+            // Reuse requires the same exact source values, policy and metadata too.
+            if(_rootItem.CanReuseGraphInitializedView&&_graphClipboardWitnessValid&&
+                _graphClipboardInputWitness.Matches(_graphClipboardWitnessTargets))return _graphClipboardSchemaAccepted;
+            bool accepted=NBShaderSyncService.HasGraphRemainingSharedUIMaterialSchema(copiedMaterialSnapshot);
+            if(_rootItem.GraphGUIReadPass!=0)
+            {
+                _graphClipboardInputWitness??=new NBShaderRootItem.GraphGUIInputWitness();
+                _graphClipboardWitnessMaterial.Clear();_graphClipboardWitnessMaterial.Add(copiedMaterialSnapshot);
+                _graphClipboardInputWitness.Capture(_graphClipboardWitnessMaterial);
+                _graphClipboardSchemaAccepted=accepted;_graphClipboardWitnessValid=true;
+            }
+            else _graphClipboardWitnessValid=false;
+            return accepted;
         }
         internal bool CanPasteGraph()
         {

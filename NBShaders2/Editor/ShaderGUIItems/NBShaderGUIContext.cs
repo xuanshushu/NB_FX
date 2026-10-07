@@ -22,6 +22,8 @@ namespace NBShaderEditor
         private readonly NBShaderRootItem _rootItem;
         private HashSet<string> _currentTierAllowedKeywords;
         int _lastGUIReadPass, _lastShaderTypeRevision;
+        int _graphOVZDisplayEpoch;
+        bool _graphOVZDisplayAllowed;
         internal void InvalidateGUIReadPass(){_lastGUIReadPass=0;}
 
 
@@ -79,13 +81,21 @@ namespace NBShaderEditor
             if (IsGraphMaterialHost)
             {
                 if (keyword != "_OVERRIDE_Z") return true;
+                int epoch=_rootItem.GraphGUIReadPass;
+                if(_rootItem.CanReuseGraphInitializedView&&epoch!=0&&_graphOVZDisplayEpoch==epoch)
+                    return _graphOVZDisplayAllowed;
                 bool anyAllowed = false;
                 foreach (Material material in _rootItem.Mats)
                 {
                     bool effective, allowed;
-                    if (!NBShaderFeatureLevelMaterialApplier.TryReadGraphOverrideDepthState(material, out effective, out allowed)) return false;
+                    if (!NBShaderFeatureLevelMaterialApplier.TryReadGraphOverrideDepthState(material, out effective, out allowed))
+                    {
+                        if(epoch!=0){_graphOVZDisplayEpoch=epoch;_graphOVZDisplayAllowed=false;}
+                        return false;
+                    }
                     anyAllowed |= allowed;
                 }
+                if(epoch!=0){_graphOVZDisplayEpoch=epoch;_graphOVZDisplayAllowed=anyAllowed;}
                 return anyAllowed; // Mixed tiers edit shared intent; each target keeps its own policy.
             }
             if (!NBShaderFeatureCatalog.IsManagedKeyword(keyword))
@@ -161,8 +171,38 @@ namespace NBShaderEditor
             return NBShaderFeatureCatalog.IsManagedKeyword(keyword);
         }
 
-        public bool CanEditGraphMainTexUV => IsGraphMaterialHost && _rootItem.SyncService != null && _rootItem.SyncService.HasGraphMainTexUVEditSchema();
-        public bool CanEditGraphMainTexCustomData => IsGraphMaterialHost && _rootItem.SyncService != null && _rootItem.SyncService.HasGraphMainTexCustomDataEditSchema();
+        int _mainUVDisplayEpoch, _mainCDDisplayEpoch;
+        bool _mainUVDisplayReady, _mainCDDisplayReady;
+        public bool CanEditGraphMainTexUV
+        {
+            get
+            {
+                if(!IsGraphMaterialHost||_rootItem.SyncService==null)return false;
+                int epoch=_rootItem.GraphGUIReadPass;
+                if(!_rootItem.CanReuseGraphInitializedView||epoch==0)
+                {
+                    bool ready=_rootItem.SyncService.HasGraphMainTexUVEditSchema();
+                    if(epoch!=0){_mainUVDisplayEpoch=epoch;_mainUVDisplayReady=ready;}return ready;
+                }
+                if(_mainUVDisplayEpoch!=epoch){_mainUVDisplayReady=_rootItem.SyncService.HasGraphMainTexUVEditSchema();_mainUVDisplayEpoch=epoch;}
+                return _mainUVDisplayReady;
+            }
+        }
+        public bool CanEditGraphMainTexCustomData
+        {
+            get
+            {
+                if(!IsGraphMaterialHost||_rootItem.SyncService==null)return false;
+                int epoch=_rootItem.GraphGUIReadPass;
+                if(!_rootItem.CanReuseGraphInitializedView||epoch==0)
+                {
+                    bool ready=_rootItem.SyncService.HasGraphMainTexCustomDataEditSchema();
+                    if(epoch!=0){_mainCDDisplayEpoch=epoch;_mainCDDisplayReady=ready;}return ready;
+                }
+                if(_mainCDDisplayEpoch!=epoch){_mainCDDisplayReady=_rootItem.SyncService.HasGraphMainTexCustomDataEditSchema();_mainCDDisplayEpoch=epoch;}
+                return _mainCDDisplayReady;
+            }
+        }
 
         public bool HasProperty(string propertyName)
         {
@@ -176,7 +216,7 @@ namespace NBShaderEditor
 
         public void Refresh()
         {
-            int pass=_rootItem.GraphGUIReadPass;
+            int pass=_rootItem.GraphNonPassiveGUIReadPassActive?0:_rootItem.GraphGUIReadPass;
             if(pass!=0&&_lastGUIReadPass==pass&&_lastShaderTypeRevision==NBShaderRootItem.ShaderPropertyTypeCacheRevision)return;
             HasMixedMaterialHosts = HasMixedHosts(_rootItem.Mats);
             IsGraphMaterialHost = !HasMixedMaterialHosts && _rootItem.Mats != null &&

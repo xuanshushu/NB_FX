@@ -293,7 +293,7 @@ namespace NBShaderEditor
         public override void DrawController()
         {
             if(!_graphLightingEdit){base.DrawController();return;}
-            if(!_graphLightingRoot.SyncService.HasGraphLightSubControlsSchema())return;
+            if(!_graphLightingRoot.CanDisplayGraphLightSubControls)return;
             EditorGUI.showMixedValue=PropertyInfo.Property.hasMixedValue;
             EditorGUI.BeginChangeCheck();bool value=EditorGUI.Toggle(ControlRect,PropertyInfo.Property.floatValue>0.5f);
             bool changed=EditorGUI.EndChangeCheck();EditorGUI.showMixedValue=false;

@@ -22,6 +22,9 @@ namespace NBShaderEditor
         }
 
         // Graph and ShaderLab share the original NB section layout and leaf controls.
+        protected bool GraphPassiveInputsUnchanged=>_rootItem!=null&&_rootItem.GraphPassiveInputsUnchanged;
+        protected void CompleteGraphGUIInputWitness(bool syncChanged=false)=>_rootItem?.CompleteGraphGUIInputWitness(syncChanged);
+
         protected void OnGraphGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
         {
             string language = NBShaderInspectorLocalization.CurrentLanguage;
@@ -106,17 +109,180 @@ namespace NBShaderEditor
         ToggleItem _graphAffectsShadowsItem,_graphTransparentShadowDitherItem,_graphIgnoreVertexColorItem;
         static readonly string[] SharedGraphLightModeProperties = { "_FxLightMode", "_LightBigBlockItemFoldOut" };
 
+        GraphGUIInputWitness _graphInputWitness;
+        bool _graphInputWitnessValid, _graphPassiveInputsUnchanged, _graphCaptureInputsAllowed, _graphForceFreshInitializedView;
+        int _graphObservedSchemaRevision=-1;
+        internal static bool IsGraphPassiveGUIEvent(Event current)
+        {
+            // Consumed write events reported as Used remain nonpassive.
+            if(current==null)return false;
+            EventType raw=current.rawType;
+            return raw==EventType.Layout||raw==EventType.Repaint||raw==EventType.MouseMove;
+        }
+        internal bool GraphPassiveInputsUnchanged=>_graphPassiveInputsUnchanged;
+        internal bool CanReuseGraphInitializedView=>_graphGUIReadPassActive&&_graphPassiveInputsUnchanged;
+        internal bool CanDisplayGraphBaseBackColor=>CanReuseGraphInitializedView
+            ? _sharedGraphBaseBackColorReady : SyncService!=null&&SyncService.HasGraphBaseBackColorEditSchema();
+        internal bool CanDisplayGraphQCMStencil=>CanReuseGraphInitializedView
+            ? _sharedGraphQCMReady : SyncService!=null&&SyncService.HasGraphQCMEditSchema();
+        internal bool CanDisplayGraphLightSubControls=>CanReuseGraphInitializedView
+            ? _sharedGraphLightSubReady : SyncService!=null&&SyncService.HasGraphLightSubControlsSchema();
+        int _graphBackFirstAdoptionDisplayEpoch=-1;
+        bool _graphBackFirstAdoptionDisplayReady;
+        internal bool CanDisplayGraphBackFirstAdoption
+        {
+            get
+            {
+                int epoch=GraphGUIReadPass;
+                // Backend/interactive/changed input always uses the original predicate.
+                // Only the display call may reuse an exact-unchanged input epoch.
+                if(!CanReuseGraphInitializedView||epoch==0)
+                {
+                    bool ready=SyncService!=null&&SyncService.HasGraphBackFirstAdoptionSchema();
+                    if(epoch!=0){_graphBackFirstAdoptionDisplayEpoch=epoch;_graphBackFirstAdoptionDisplayReady=ready;}
+                    return ready;
+                }
+                if(_graphBackFirstAdoptionDisplayEpoch!=epoch)
+                {
+                    _graphBackFirstAdoptionDisplayReady=SyncService!=null&&SyncService.HasGraphBackFirstAdoptionSchema();
+                    _graphBackFirstAdoptionDisplayEpoch=epoch;
+                }
+                return _graphBackFirstAdoptionDisplayReady;
+            }
+        }
+        static int FloatBits(float value)=>System.BitConverter.SingleToInt32Bits(value);
+        static bool ExactVector(Vector4 a,Vector4 b)=>FloatBits(a.x)==FloatBits(b.x)&&FloatBits(a.y)==FloatBits(b.y)&&FloatBits(a.z)==FloatBits(b.z)&&FloatBits(a.w)==FloatBits(b.w);
+        static readonly System.Reflection.BindingFlags RawPolicyFields=System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic;
+        static readonly System.Reflection.FieldInfo PolicyKeywords=typeof(NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelProjectSettings).GetField("m_TierKeywordSets",RawPolicyFields);
+        static readonly System.Reflection.FieldInfo PolicyPasses=typeof(NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelProjectSettings).GetField("m_TierPassSets",RawPolicyFields);
+        static readonly System.Reflection.FieldInfo PolicyQuality=typeof(NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelProjectSettings).GetField("m_QualityTierMappings",RawPolicyFields);
+        static readonly System.Reflection.FieldInfo PolicyWatcher=typeof(NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelProjectSettings).GetField("m_DisableQualityTierWatcher",RawPolicyFields);
+        static readonly System.Reflection.FieldInfo PolicyDebug=typeof(NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelProjectSettings).GetField("m_EnableDebugSymbols",RawPolicyFields);
+        sealed class GraphGUIMaterialWitness
+        {
+            internal Material material;internal Shader shader;internal int[] ids;internal UnityEngine.Rendering.ShaderPropertyType[] types;
+            internal int[] scalars;internal Vector4[] values;internal Texture[] textures;internal Vector4[] textureST;
+            internal UnityEngine.Rendering.LocalKeyword[] keywords;internal bool[] keywordStates;
+            internal string[] passNames,actualKeywords;internal bool[] passStates;internal int queue,gi;internal bool instancing,doubleSided;
+            static readonly string[] OwnedPassNames={"UniversalForward","SRPDefaultUnlit","SRPDEFAULTUNLIT","NBCameraOpaqueDistortPass","NBDeferredDistortPass","ShadowCaster","DepthOnly","DepthNormalsOnly"};
+            internal GraphGUIMaterialWitness(Material value)
+            {
+                material=value;shader=value.shader;int n=shader.GetPropertyCount();ids=new int[n];types=new UnityEngine.Rendering.ShaderPropertyType[n];scalars=new int[n];values=new Vector4[n];textures=new Texture[n];textureST=new Vector4[n];
+                for(int i=0;i<n;i++){ids[i]=shader.GetPropertyNameId(i);types[i]=shader.GetPropertyType(i);}
+                keywords=shader.keywordSpace.keywords;keywordStates=new bool[keywords.Length];passNames=(string[])OwnedPassNames.Clone();passStates=new bool[passNames.Length];Capture();
+            }
+            internal void Capture()
+            {
+                for(int i=0;i<ids.Length;i++)switch(types[i])
+                {
+                    case UnityEngine.Rendering.ShaderPropertyType.Float:case UnityEngine.Rendering.ShaderPropertyType.Range:scalars[i]=FloatBits(material.GetFloat(ids[i]));break;
+                    case UnityEngine.Rendering.ShaderPropertyType.Int:scalars[i]=material.GetInteger(ids[i]);break;
+                    case UnityEngine.Rendering.ShaderPropertyType.Vector:values[i]=material.GetVector(ids[i]);break;
+                    case UnityEngine.Rendering.ShaderPropertyType.Color:values[i]=material.GetColor(ids[i]);break;
+                    case UnityEngine.Rendering.ShaderPropertyType.Texture:var scale=material.GetTextureScale(ids[i]);var offset=material.GetTextureOffset(ids[i]);textures[i]=material.GetTexture(ids[i]);textureST[i]=new Vector4(scale.x,scale.y,offset.x,offset.y);break;
+                }
+                for(int i=0;i<keywords.Length;i++)keywordStates[i]=material.IsKeywordEnabled(keywords[i]);
+                for(int i=0;i<passNames.Length;i++)passStates[i]=material.GetShaderPassEnabled(passNames[i]);
+                actualKeywords=material.shaderKeywords;queue=material.renderQueue;gi=(int)material.globalIlluminationFlags;instancing=material.enableInstancing;doubleSided=material.doubleSidedGI;
+            }
+            internal bool Matches(Material value)
+            {
+                if(!System.Object.ReferenceEquals(material,value)||!System.Object.ReferenceEquals(shader,value.shader)||shader.GetPropertyCount()!=ids.Length||queue!=value.renderQueue||gi!=(int)value.globalIlluminationFlags||instancing!=value.enableInstancing||doubleSided!=value.doubleSidedGI)return false;
+                for(int i=0;i<ids.Length;i++)switch(types[i])
+                {
+                    case UnityEngine.Rendering.ShaderPropertyType.Float:case UnityEngine.Rendering.ShaderPropertyType.Range:if(scalars[i]!=FloatBits(value.GetFloat(ids[i])))return false;break;
+                    case UnityEngine.Rendering.ShaderPropertyType.Int:if(scalars[i]!=value.GetInteger(ids[i]))return false;break;
+                    case UnityEngine.Rendering.ShaderPropertyType.Vector:if(!ExactVector(values[i],value.GetVector(ids[i])))return false;break;
+                    case UnityEngine.Rendering.ShaderPropertyType.Color:if(!ExactVector(values[i],value.GetColor(ids[i])))return false;break;
+                    case UnityEngine.Rendering.ShaderPropertyType.Texture:var scale=value.GetTextureScale(ids[i]);var offset=value.GetTextureOffset(ids[i]);if(!System.Object.ReferenceEquals(textures[i],value.GetTexture(ids[i]))||!ExactVector(textureST[i],new Vector4(scale.x,scale.y,offset.x,offset.y)))return false;break;
+                }
+                for(int i=0;i<keywords.Length;i++)if(keywordStates[i]!=value.IsKeywordEnabled(keywords[i]))return false;
+                for(int i=0;i<passNames.Length;i++)if(passStates[i]!=value.GetShaderPassEnabled(passNames[i]))return false;
+                var actual=value.shaderKeywords;
+                if(actual.Length!=actualKeywords.Length)return false;
+                for(int i=0;i<actual.Length;i++)if(!string.Equals(actual[i],actualKeywords[i],System.StringComparison.Ordinal))return false;
+                return true;
+            }
+        }
+        internal sealed class GraphGUIInputWitness
+        {
+            GraphGUIMaterialWitness[] materials;internal int schemaRevision;
+            System.Type pipelineType;
+            internal NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelProjectSettings policy;
+            internal NBShaders2.Editor.FeatureLevel.NBShaderFeatureTierKeywordSet[] keywordSets;
+            internal NBShaders2.Editor.FeatureLevel.NBShaderFeatureTierPassSet[] passSets;
+            internal NBShaders2.Editor.FeatureLevel.NBShaderQualityTierMapping[] quality;
+            internal bool watcher,debug;
+            static bool SameStrings(string[] a,string[] b){if(a==null||b==null)return a==b;if(a.Length!=b.Length)return false;for(int i=0;i<a.Length;i++)if(!string.Equals(a[i],b[i],System.StringComparison.Ordinal))return false;return true;}
+            internal bool Matches(UnityEngine.Object[] targets)
+            {
+                if(pipelineType!=UnityEngine.Rendering.RenderPipelineManager.currentPipeline?.GetType()||schemaRevision!=ShaderPropertyTypeCacheRevision||targets.Length!=materials.Length)return false;
+                for(int i=0;i<materials.Length;i++)if(!(targets[i]is Material value)||!materials[i].Matches(value))return false;
+                var now=NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelProjectSettings.instance;
+                if(!System.Object.ReferenceEquals(policy,now)||(bool)PolicyWatcher.GetValue(now)!=watcher||(bool)PolicyDebug.GetValue(now)!=debug)return false;
+                var ks=(NBShaders2.Editor.FeatureLevel.NBShaderFeatureTierKeywordSet[])PolicyKeywords.GetValue(now);
+                if(ks==null||keywordSets==null){if(ks!=keywordSets)return false;}else{if(ks.Length!=keywordSets.Length)return false;for(int i=0;i<ks.Length;i++){var a=ks[i];var b=keywordSets[i];if(a==null||b==null){if(a!=b)return false;}else if(a.tier!=b.tier||!SameStrings(a.allowedKeywords,b.allowedKeywords))return false;}}
+                var ps=(NBShaders2.Editor.FeatureLevel.NBShaderFeatureTierPassSet[])PolicyPasses.GetValue(now);
+                if(ps==null||passSets==null){if(ps!=passSets)return false;}else{if(ps.Length!=passSets.Length)return false;for(int i=0;i<ps.Length;i++){var a=ps[i];var b=passSets[i];if(a==null||b==null){if(a!=b)return false;}else if(a.tier!=b.tier||!SameStrings(a.allowedPassFeatures,b.allowedPassFeatures))return false;}}
+                var q=(NBShaders2.Editor.FeatureLevel.NBShaderQualityTierMapping[])PolicyQuality.GetValue(now);
+                if(q==null||quality==null){if(q!=quality)return false;}else{if(q.Length!=quality.Length)return false;for(int i=0;i<q.Length;i++){var a=q[i];var b=quality[i];if(a==null||b==null){if(a!=b)return false;}else if(a.tier!=b.tier||!string.Equals(a.qualityName,b.qualityName,System.StringComparison.Ordinal))return false;}}
+                return true;
+            }
+            internal void Capture(System.Collections.Generic.List<Material> targets)
+            {
+                if(materials==null||materials.Length!=targets.Count)materials=new GraphGUIMaterialWitness[targets.Count];
+                for(int i=0;i<targets.Count;i++){var old=materials[i];if(old==null||!System.Object.ReferenceEquals(old.material,targets[i])||!System.Object.ReferenceEquals(old.shader,targets[i].shader)||old.ids.Length!=targets[i].shader.GetPropertyCount()||schemaRevision!=ShaderPropertyTypeCacheRevision)materials[i]=new GraphGUIMaterialWitness(targets[i]);else old.Capture();}
+                pipelineType=UnityEngine.Rendering.RenderPipelineManager.currentPipeline?.GetType();
+                schemaRevision=ShaderPropertyTypeCacheRevision;policy=NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelProjectSettings.instance;
+                var ks=(NBShaders2.Editor.FeatureLevel.NBShaderFeatureTierKeywordSet[])PolicyKeywords.GetValue(policy);keywordSets=ks==null?null:new NBShaders2.Editor.FeatureLevel.NBShaderFeatureTierKeywordSet[ks.Length];if(ks!=null)for(int i=0;i<ks.Length;i++)if(ks[i]!=null)keywordSets[i]=new NBShaders2.Editor.FeatureLevel.NBShaderFeatureTierKeywordSet{tier=ks[i].tier,allowedKeywords=ks[i].allowedKeywords==null?null:(string[])ks[i].allowedKeywords.Clone()};
+                var ps=(NBShaders2.Editor.FeatureLevel.NBShaderFeatureTierPassSet[])PolicyPasses.GetValue(policy);passSets=ps==null?null:new NBShaders2.Editor.FeatureLevel.NBShaderFeatureTierPassSet[ps.Length];if(ps!=null)for(int i=0;i<ps.Length;i++)if(ps[i]!=null)passSets[i]=new NBShaders2.Editor.FeatureLevel.NBShaderFeatureTierPassSet{tier=ps[i].tier,allowedPassFeatures=ps[i].allowedPassFeatures==null?null:(string[])ps[i].allowedPassFeatures.Clone()};
+                var q=(NBShaders2.Editor.FeatureLevel.NBShaderQualityTierMapping[])PolicyQuality.GetValue(policy);quality=q==null?null:new NBShaders2.Editor.FeatureLevel.NBShaderQualityTierMapping[q.Length];if(q!=null)for(int i=0;i<q.Length;i++)if(q[i]!=null)quality[i]=new NBShaders2.Editor.FeatureLevel.NBShaderQualityTierMapping{tier=q[i].tier,qualityName=q[i].qualityName};
+                watcher=(bool)PolicyWatcher.GetValue(policy);debug=(bool)PolicyDebug.GetValue(policy);
+            }
+        }
+        internal void CompleteGraphGUIInputWitness(bool syncChanged=false)
+        {
+            if(!_graphCaptureInputsAllowed||Context==null||!Context.IsGraphMaterialHost||Context.HasMixedMaterialHosts){_graphInputWitnessValid=false;return;}
+            // All validations occurred in this Root pass. Any actual keyword write
+            // afterwards invalidates the old WouldChange results even though Root scope ended.
+            if(_graphInputWitnessValid&&_graphInputWitness.Matches(MatEditor.targets)&&!syncChanged)return;
+            _graphForceFreshInitializedView=true;unchecked{++_graphGUIReadPass;}if(_graphGUIReadPass==0)++_graphGUIReadPass;
+            InvalidateGraphGUIReadPass();_graphInputWitness??=new GraphGUIInputWitness();_graphInputWitness.Capture(Mats);_graphInputWitnessValid=true;
+        }
+
         int _graphGUIReadPass;
-        bool _graphGUIReadPassActive;
+        bool _graphGUIReadPassActive, _graphNonPassiveGUIReadPass, _graphEventInputWitnessValid;
+        GraphGUIInputWitness _graphEventInputWitness;
+        internal bool GraphNonPassiveGUIReadPassActive=>_graphGUIReadPassActive&&_graphNonPassiveGUIReadPass;
         internal int GraphGUIReadPass => _graphGUIReadPassActive ? _graphGUIReadPass : 0;
+        internal int EnsureGraphGUIPureReadPass()
+        {
+            int pass=GraphGUIReadPass;
+            if(pass==0||!_graphNonPassiveGUIReadPass)return pass;
+            // Each real input event starts fresh. Only pure reads in that event
+            // may reuse, and every read first checks the complete exact input.
+            if(MatEditor==null||Mats==null||Mats.Count==0)return 0;
+            var targets=MatEditor.targets;
+            if(targets==null||targets.Length!=Mats.Count)return 0;
+            for(int i=0;i<targets.Length;i++)
+                if(Mats[i]==null||Mats[i].shader==null||!System.Object.ReferenceEquals(targets[i],Mats[i]))return 0;
+            if(_graphEventInputWitnessValid&&_graphEventInputWitness.Matches(targets))return pass;
+            // This also clears old saved-paint/reset/toolbar results by epoch.
+            InvalidateGraphGUIReadPass();
+            _graphEventInputWitness??=new GraphGUIInputWitness();
+            _graphEventInputWitness.Capture(Mats);_graphEventInputWitnessValid=true;
+            return GraphGUIReadPass;
+        }
         int _toolbarDisplayReadPass, _toolbarDisplayShaderRevision;
         bool _toolbarDisplayReady;
         internal void InvalidateGraphGUIReadPass()
         {
             // First capability initialization invalidates every scoped pure read,
             // including Sync preflight; clearing only Context would leave old results.
-            if(_graphGUIReadPassActive){unchecked{++_graphGUIReadPass;}if(_graphGUIReadPass==0)++_graphGUIReadPass;}
+            if(_graphGUIReadPassActive){_graphForceFreshInitializedView=true;unchecked{++_graphGUIReadPass;}if(_graphGUIReadPass==0)++_graphGUIReadPass;}
             _toolbarDisplayReadPass=0;
+            _graphEventInputWitnessValid=false;
+            _graphInputWitnessValid=false;_graphPassiveInputsUnchanged=false;
             Context?.InvalidateGUIReadPass();
         }
 
@@ -134,11 +300,16 @@ namespace NBShaderEditor
                     if (!PropertyInfoDic.ContainsKey(property.name)) { IsInit = true; break; }
             }
             if(graphSelection && Shader!=null && Mats!=null && Mats.Count>0 && Mats[0]!=null && Shader!=Mats[0].shader)IsInit=true;
-            _graphGUIReadPassActive=graphSelection&&Event.current!=null&&
-                (Event.current.rawType==EventType.Layout||Event.current.rawType==EventType.Repaint);
-            if(_graphGUIReadPassActive){unchecked{++_graphGUIReadPass;}if(_graphGUIReadPass==0)++_graphGUIReadPass;}
+            if(graphSelection&&_graphObservedSchemaRevision!=ShaderPropertyTypeCacheRevision){IsInit=true;_graphObservedSchemaRevision=ShaderPropertyTypeCacheRevision;}
+            _graphGUIReadPassActive=graphSelection&&Event.current!=null;
+            _graphNonPassiveGUIReadPass=_graphGUIReadPassActive&&!IsGraphPassiveGUIEvent(Event.current);
+            _graphEventInputWitnessValid=false;
+            bool forceFresh=_graphForceFreshInitializedView;_graphForceFreshInitializedView=false;
+            _graphPassiveInputsUnchanged=_graphGUIReadPassActive&&!_graphNonPassiveGUIReadPass&&!forceFresh&&!IsInit&&_graphInputWitnessValid&&_graphInputWitness.Matches(editor.targets);
+            if(_graphGUIReadPassActive&&!_graphPassiveInputsUnchanged){unchecked{++_graphGUIReadPass;}if(_graphGUIReadPass==0)++_graphGUIReadPass;}
+            if(!_graphGUIReadPassActive){_graphInputWitnessValid=false;_graphPassiveInputsUnchanged=false;}
             try{base.OnGUI(editor, properties);}
-            finally{_graphGUIReadPassActive=false;}
+            finally{_graphGUIReadPassActive=false;_graphNonPassiveGUIReadPass=false;_graphEventInputWitnessValid=false;}
         }
 
         GraphOriginalSectionItem _graphOriginalMode, _graphOriginalBase, _graphOriginalLight, _graphOriginalFeature, _graphOriginalTA;
@@ -247,7 +418,7 @@ namespace NBShaderEditor
         ShaderGUIPopUpItem _graphOfficialZWrite,_graphOfficialBlend;
         ShaderGUISliderItem _graphOfficialCutoff;
         static readonly string[] GraphOfficialZWriteOptions={"Default","Force On","Force Off"};
-        static readonly string[] GraphOfficialBlendOptions={"閫忔槑搴︽贩鍚圓lphaBlend","棰勪箻PreMultiply","鍙犲姞Additive","姝ｇ墖鍙犲簳Multiply"};
+        static readonly string[] GraphOfficialBlendOptions={"透明度混合AlphaBlend","预乘PreMultiply","叠加Additive","正片叠底Multiply"};
         void DrawGraphOriginalModeBody()
         {
             DrawGraphOfficialModeInputs();
@@ -298,13 +469,13 @@ namespace NBShaderEditor
         void DrawGraphBareBlock(BigBlockItem block,string undoLabel)
         {
             if(block==null)return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,undoLabel);
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))Undo.RecordObjects(MatEditor.targets,undoLabel);
             block.DrawBlock();
         }
         void DrawGraphOverlayLeaf(ShaderGUIItem item)
         {
             if(item==null||!InitializeGraphOverlayInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Overlay Inputs");item.OnGUI();
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))Undo.RecordObjects(MatEditor.targets,"Edit NB Overlay Inputs");item.OnGUI();
         }
         System.Collections.Generic.List<ShaderGUIItem> GraphOriginalSectionMembers(GraphOriginalSection section)
         {
@@ -439,6 +610,7 @@ namespace NBShaderEditor
         // and real MaterialProperties. Does not fabricate missing properties.
         internal bool InitializeGraphMainTextureInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphMainTextureReady;
             Context ??= new NBShaderGUIContext(this);
             SyncService ??= new NBShaderSyncService(this);
             Context.Refresh();
@@ -495,6 +667,7 @@ namespace NBShaderEditor
 
         internal bool InitializeGraphLightModeInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphLightModeReady;
             Context ??= new NBShaderGUIContext(this);
             SyncService ??= new NBShaderSyncService(this);
             Context.Refresh();
@@ -509,7 +682,7 @@ namespace NBShaderEditor
 
         internal void DrawGraphLightInputs(ShaderGUIItem selectedItem = null)
         {
-            bool interactive = Event.current!=null && Event.current.type!=EventType.Layout && Event.current.type!=EventType.Repaint;
+            bool interactive = Event.current!=null && !IsGraphPassiveGUIEvent(Event.current);
             System.Collections.Generic.List<Texture> rampBefore=null;
             if(_sharedGraphLightSubReady && interactive)
             {
@@ -524,6 +697,7 @@ namespace NBShaderEditor
 
         internal bool InitializeGraphTADepthInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphTADepthReady;
             Context ??= new NBShaderGUIContext(this);
             SyncService ??= new NBShaderSyncService(this);
             Context.Refresh();
@@ -536,6 +710,7 @@ namespace NBShaderEditor
 
         internal bool InitializeGraphFlipbookInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphFlipbookReady;
             Context ??= new NBShaderGUIContext(this);
             SyncService ??= new NBShaderSyncService(this);
             Context.Refresh();
@@ -559,6 +734,7 @@ namespace NBShaderEditor
         static readonly string[] SharedGraphOverlayProperties={"_EmissionEnabled","_EmissionMap","_EmissionMapColor","_EmissionMapUVRotation","_EmissionMapUVOffset","_EmissionMapColorIntensity","_EmissionAlphaIntensity","_Emi_Distortion_intensity","_EmissionBlendMode","_EmissionAlphaMultiplyMode","_ColorBlendMap_Toggle","_ColorBlendMap","_ColorBlendColor","_ColorBlendColorIntensity","_ColorBlendVec","_ColorBlendMapOffset","_ColorBlendMode","_ColorBlendAlphaMultiplyMode"};
         internal bool InitializeGraphOverlayInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphOverlayReady;
             Context ??= new NBShaderGUIContext(this); SyncService ??= new NBShaderSyncService(this); Context.Refresh();
             _sharedGraphOverlayReady=Context.IsGraphMaterialHost && SyncService.HasGraphOverlayEditSchema();
             if(!_sharedGraphOverlayReady)return false;
@@ -569,7 +745,7 @@ namespace NBShaderEditor
             if(!InitializeGraphOverlayInputs())return;
             // Original widgets keep their exact business. Capture the Material
             // before an interactive event for floats, packed choices and Reset.
-            if(Event.current!=null && Event.current.type!=EventType.Layout && Event.current.type!=EventType.Repaint)
+            if(Event.current!=null && !IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Overlay Inputs");
             _graphEmissionItem.OnGUI();_graphColorBlendItem.OnGUI();
         }
@@ -582,6 +758,7 @@ namespace NBShaderEditor
         };
         internal bool InitializeGraphParallaxInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphParallaxReady;
             Context ??= new NBShaderGUIContext(this); SyncService ??= new NBShaderSyncService(this); Context.Refresh();
             _sharedGraphParallaxReady = Context.IsGraphMaterialHost && SyncService.HasGraphParallaxEditSchema();
             if (!_sharedGraphParallaxReady) return false;
@@ -591,7 +768,7 @@ namespace NBShaderEditor
         void DrawGraphParallaxInputs()
         {
             if (!InitializeGraphParallaxInputs()) return;
-            bool input = Event.current != null && Event.current.rawType != EventType.Layout && Event.current.rawType != EventType.Repaint;
+            bool input = Event.current != null && !IsGraphPassiveGUIEvent(Event.current);
             Vector4[] previous = null;
             if (input)
             {
@@ -611,6 +788,7 @@ namespace NBShaderEditor
         internal static readonly string[] SharedGraphNormalMapProperties={"_BumpMapToggle","_BumpTex","_BumpMapMaskMode","_BumpScale"};
         internal bool InitializeGraphNormalMapInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphNormalMapReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphNormalMapReady=Context.IsGraphMaterialHost && SyncService.HasGraphNormalMapEditSchema();
             if(!_sharedGraphNormalMapReady)return false;
@@ -619,7 +797,7 @@ namespace NBShaderEditor
         void DrawGraphNormalMapInputs()
         {
             if(!InitializeGraphNormalMapInputs())return;
-            if(Event.current!=null && Event.current.rawType!=EventType.Layout && Event.current.rawType!=EventType.Repaint)
+            if(Event.current!=null && !IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Normal Map Inputs");
             _graphNormalMapBlock.OnGUI();
         }
@@ -628,6 +806,7 @@ namespace NBShaderEditor
         NoiseAndDistortFeatureItem _graphNoiseItem;
         internal bool InitializeGraphNoiseInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphNoiseReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphNoiseReady=Context.IsGraphMaterialHost && SyncService.HasGraphNoiseEditSchema();
             if(!_sharedGraphNoiseReady)return false;
@@ -636,7 +815,7 @@ namespace NBShaderEditor
         void DrawGraphNoiseInputs()
         {
             if(!InitializeGraphNoiseInputs())return;
-            if(Event.current!=null && Event.current.rawType!=EventType.Layout && Event.current.rawType!=EventType.Repaint)
+            if(Event.current!=null && !IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Noise Inputs");
             _graphNoiseItem.OnGUI();
         }
@@ -650,6 +829,7 @@ namespace NBShaderEditor
             }
 
             Context.Refresh();
+            _graphCaptureInputsAllowed=false;
             if (Context.HasMixedMaterialHosts)
             {
                 EditorGUILayout.HelpBox("NB shared Surface Inputs are read-only for mixed Graph/ShaderLab or different Graph shader selections.", MessageType.Info);
@@ -707,6 +887,7 @@ namespace NBShaderEditor
                     EditorGUILayout.HelpBox("Original NB Feature section requires its real Float foldout metadata. No generic Surface Inputs fallback is used.",MessageType.Error);
                     return;
                 }
+                _graphCaptureInputsAllowed=mainReady&&_toolbarDisplayReady&&_toolbarDisplayReadPass==_graphGUIReadPass&&_toolbarDisplayShaderRevision==ShaderPropertyTypeCacheRevision;
                 _graphOriginalMode.OnGUI();_graphOriginalBase.OnGUI();
                 if(mainReady)_mainTexBlock.OnGUI();
                 else EditorGUILayout.HelpBox("Shared Main Texture schema is incomplete.",MessageType.Error);
@@ -809,6 +990,7 @@ namespace NBShaderEditor
 
         internal bool InitializeGraphFresnelInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphFresnelReady;
             Context ??= new NBShaderGUIContext(this);
             SyncService ??= new NBShaderSyncService(this);
             Context.Refresh();
@@ -820,6 +1002,7 @@ namespace NBShaderEditor
 
         internal bool InitializeGraphDissolveInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphDissolveReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphDissolveReady=Context.IsGraphMaterialHost&&SyncService.HasGraphDissolveEditSchema();
             if(!_sharedGraphDissolveReady)return false;_graphDissolveItem??=new DissolveFeatureItem(this,null,true);return true;
@@ -827,14 +1010,14 @@ namespace NBShaderEditor
         internal void DrawGraphDissolveInputs(ShaderGUIItem selectedItem=null)
         {
             if(!_sharedGraphDissolveReady)return;
-            EventType type=Event.current.type;
-            if(type!=EventType.Layout && type!=EventType.Repaint)
+            if(!IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Dissolve");
             (selectedItem??_graphDissolveItem).OnGUI();
         }
 
         internal bool InitializeGraphMaskProgramInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphMaskProgramReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphMaskProgramReady=Context.IsGraphMaterialHost&&SyncService.HasGraphMaskProgramEditSchema();
             if(!_sharedGraphMaskProgramReady)return false;_graphMaskItem??=new MaskFeatureItem(this,null,true);_graphProgramNoiseItem??=new ProgramNoiseFeatureItem(this,null,true);return true;
@@ -842,12 +1025,13 @@ namespace NBShaderEditor
         internal void DrawGraphMaskProgramInputs(ShaderGUIItem selectedItem=null)
         {
             if(!_sharedGraphMaskProgramReady)return;
-            if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Mask / Program Noise");
+            if(!IsGraphPassiveGUIEvent(Event.current))Undo.RecordObjects(MatEditor.targets,"Edit NB Mask / Program Noise");
             if(selectedItem!=null)selectedItem.OnGUI();else{_graphMaskItem.OnGUI();_graphProgramNoiseItem.OnGUI();}
         }
 
         internal bool InitializeGraphColorAdjustmentInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphColorAdjustmentReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphColorAdjustmentReady=Context.IsGraphMaterialHost&&SyncService.HasGraphColorAdjustmentEditSchema();
             if(!_sharedGraphColorAdjustmentReady)return false;
@@ -855,6 +1039,7 @@ namespace NBShaderEditor
         }
         internal bool InitializeGraphColorRampInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphColorRampReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphColorRampReady=Context.IsGraphMaterialHost&&SyncService.HasGraphColorRampEditSchema();
             if(!_sharedGraphColorRampReady)return false;
@@ -863,14 +1048,14 @@ namespace NBShaderEditor
         internal void DrawGraphColorAdjustmentInputs(ShaderGUIItem selectedItem=null)
         {
             if(!InitializeGraphColorAdjustmentInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Color Adjustment");
             (selectedItem??_graphColorAdjustmentBlock).OnGUI();
         }
         internal void DrawGraphColorRampInputs(ShaderGUIItem selectedItem=null)
         {
             if(!InitializeGraphColorRampInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Color Ramp");
             (selectedItem??_graphColorRampItem).OnGUI();
         }
@@ -878,12 +1063,13 @@ namespace NBShaderEditor
         internal void DrawGraphTAInputs(ShaderGUIItem selectedItem=null)
         {
             if(!_sharedGraphTADepthReady)return;
-            if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB TA");
+            if(!IsGraphPassiveGUIEvent(Event.current))Undo.RecordObjects(MatEditor.targets,"Edit NB TA");
             (selectedItem??_graphTADepthBlock).OnGUI();
         }
 
         internal bool InitializeGraphMatCapInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphMatCapReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphMatCapReady=Context.IsGraphMaterialHost&&SyncService.HasGraphMatCapEditSchema();
             if(!_sharedGraphMatCapReady)return false;
@@ -892,13 +1078,14 @@ namespace NBShaderEditor
         internal void DrawGraphMatCapInputs(ShaderGUIItem selectedItem=null)
         {
             if(!InitializeGraphMatCapInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB MatCap Inputs");
             (selectedItem??_graphMatCapBlock).OnGUI();
         }
 
         internal bool InitializeGraphDepthFeaturesInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphDepthFeaturesReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphDepthFeaturesReady=Context.IsGraphMaterialHost&&SyncService.HasGraphDepthFeaturesEditSchema();
             if(!_sharedGraphDepthFeaturesReady)return false;
@@ -909,13 +1096,14 @@ namespace NBShaderEditor
         internal void DrawGraphDepthFeaturesInputs(ShaderGUIItem selectedItem=null)
         {
             if(!InitializeGraphDepthFeaturesInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Depth Features");
             if(selectedItem!=null){selectedItem.OnGUI();return;}
             _graphDistanceFadeBlock.OnGUI();_graphSoftParticlesBlock.OnGUI();_graphDepthOutlineItem.OnGUI();
         }
         internal bool InitializeGraphSharedUVInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphSharedUVReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphSharedUVReady=Context.IsGraphMaterialHost&&SyncService.HasGraphSharedUVEditSchema();
             if(!_sharedGraphSharedUVReady)return false;
@@ -924,7 +1112,7 @@ namespace NBShaderEditor
         internal void DrawGraphSharedUVInputs(ShaderGUIItem selectedItem=null)
         {
             if(!InitializeGraphSharedUVInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Shared UV");
             (selectedItem??_graphSharedUVItem).OnGUI();
         }
@@ -932,15 +1120,17 @@ namespace NBShaderEditor
 
         internal bool InitializeGraphVertexOffsetInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphVertexOffsetReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();_sharedGraphVertexOffsetReady=Context.IsGraphMaterialHost&&SyncService.HasGraphVertexOffsetEditSchema();
             if(!_sharedGraphVertexOffsetReady)return false;_graphVertexOffsetItem??=new VertexOffsetFeatureItem(this,null,true);return true;
         }
         internal void DrawGraphVertexOffsetInputs(ShaderGUIItem selectedItem=null)
         {
-            if(!_sharedGraphVertexOffsetReady)return;if(Event.current.type!=EventType.Layout&&Event.current.type!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Vertex Offset");(selectedItem??_graphVertexOffsetItem).OnGUI();
+            if(!_sharedGraphVertexOffsetReady)return;if(!IsGraphPassiveGUIEvent(Event.current))Undo.RecordObjects(MatEditor.targets,"Edit NB Vertex Offset");(selectedItem??_graphVertexOffsetItem).OnGUI();
         }
         internal bool InitializeGraphBaseShadowInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphBaseShadowReady;
             if(!InitializeGraphBaseNumericInputs())return false;
             _sharedGraphBaseShadowReady=SyncService.HasGraphBaseShadowSchema();if(!_sharedGraphBaseShadowReady)return false;
             _graphAffectsShadowsItem??=BaseOptionBigBlockItem.CreateAffectsShadowsItem(this,_graphBaseNumericBlock,graphShared:true);
@@ -951,11 +1141,12 @@ namespace NBShaderEditor
         internal void DrawGraphBaseShadowInputs(ShaderGUIItem selectedItem)
         {
             if(!InitializeGraphBaseShadowInputs()||selectedItem==null)return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Shadow/Vertex Color");selectedItem.OnGUI();
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))Undo.RecordObjects(MatEditor.targets,"Edit NB Shadow/Vertex Color");selectedItem.OnGUI();
         }
 
         internal bool InitializeGraphBaseNumericInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphBaseNumericReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphBaseNumericReady=Context.IsGraphMaterialHost&&SyncService.HasGraphBaseNumericSchema();if(!_sharedGraphBaseNumericReady)return false;
             _graphBaseNumericBlock??=BaseOptionBigBlockItem.CreateGraphBaseNumericBlock(this,null);return true;
@@ -963,12 +1154,13 @@ namespace NBShaderEditor
         internal void DrawGraphBaseNumericInputs(ShaderGUIItem selectedItem=null)
         {
             if(!InitializeGraphBaseNumericInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Base Numeric");
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))Undo.RecordObjects(MatEditor.targets,"Edit NB Base Numeric");
             if(selectedItem==null)_graphBaseNumericBlock.OnGUI();else selectedItem.OnGUI();
         }
 
         internal bool InitializeGraphBaseBackColorInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphBaseBackColorReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphBaseBackColorReady=Context.IsGraphMaterialHost&&SyncService.HasGraphBaseBackColorEditSchema();
             if(!_sharedGraphBaseBackColorReady)return false;
@@ -978,13 +1170,14 @@ namespace NBShaderEditor
         internal void DrawGraphBaseBackColorInputs(ShaderGUIItem selectedItem=null)
         {
             if(!InitializeGraphBaseBackColorInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Back Color");
             if(selectedItem==null)_graphBaseBackColorItem.OnGUI();else selectedItem.OnGUI();
         }
 
         internal bool InitializeGraphStencilWithoutPlayerInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphStencilWithoutPlayerReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphStencilWithoutPlayerReady=Context.IsGraphMaterialHost&&SyncService.HasGraphStencilWithoutPlayerEditSchema();
             if(!_sharedGraphStencilWithoutPlayerReady)return false;
@@ -994,7 +1187,7 @@ namespace NBShaderEditor
         internal void DrawGraphStencilWithoutPlayerInputs()
         {
             if(!InitializeGraphStencilWithoutPlayerInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Stencil Without Player");
             _graphStencilWithoutPlayerItem.OnGUI();
         }
@@ -1002,6 +1195,7 @@ namespace NBShaderEditor
 
         internal bool InitializeGraphDepthDecalInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphDepthDecalReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphDepthDecalReady=Context.IsGraphMaterialHost&&SyncService.HasGraphDepthDecalEditSchema();
             if(!_sharedGraphDepthDecalReady)return false;
@@ -1010,12 +1204,13 @@ namespace NBShaderEditor
         internal void DrawGraphDepthDecalInputs()
         {
             if(!InitializeGraphDepthDecalInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets,"Edit NB Depth Decal");
             _graphDepthDecalItem.OnGUI();
         }
         internal bool InitializeGraphBackFirstInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphBackFirstReady;
             Context ??= new NBShaderGUIContext(this);
             SyncService ??= new NBShaderSyncService(this);
             Context.Refresh();
@@ -1035,7 +1230,7 @@ namespace NBShaderEditor
             if (!ready)
             {
                 EditorGUILayout.HelpBox("此动作将保留各材质当前主颜色开关，并启用现代 Back First 控制；不会恢复或推测旧材质历史。", MessageType.Info);
-                using (new EditorGUI.DisabledScope(!SyncService.HasGraphBackFirstAdoptionSchema()))
+                using (new EditorGUI.DisabledScope(!CanDisplayGraphBackFirstAdoption))
                 {
                     if (GUILayout.Button("保留当前主颜色并启用 Back First 控制"))
                         SyncService.TryAdoptGraphBackFirstCurrentMain();
@@ -1043,13 +1238,14 @@ namespace NBShaderEditor
                 }
                 return;
             }
-            if (Event.current.type != EventType.Layout && Event.current.type != EventType.Repaint)
+            if (!IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets, "Edit NB Back First");
             _graphBackFirstItem.OnGUI();
         }
 
         internal bool InitializeGraphVATInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphVATReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphVATReady=Context.IsGraphMaterialHost&&SyncService.HasGraphVATEditSchema();
             if(!_sharedGraphVATReady)return false;
@@ -1061,12 +1257,13 @@ namespace NBShaderEditor
         internal void DrawGraphVATInputs(ShaderGUIItem selectedItem=null)
         {
             if(!InitializeGraphVATInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB VAT");
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))Undo.RecordObjects(MatEditor.targets,"Edit NB VAT");
             (selectedItem??_graphVATItem).OnGUI();
         }
 
         internal bool InitializeGraphPortalInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphPortalReady;
             Context ??= new NBShaderGUIContext(this); SyncService ??= new NBShaderSyncService(this); Context.Refresh();
             _sharedGraphPortalReady = Context.IsGraphMaterialHost && SyncService.HasGraphPortalEditSchema();
             if (!_sharedGraphPortalReady) return false;
@@ -1075,14 +1272,17 @@ namespace NBShaderEditor
         internal void DrawGraphPortalInputs(ShaderGUIItem selectedItem = null)
         {
             if (!InitializeGraphPortalInputs()) return;
-            if (Event.current != null && Event.current.rawType != EventType.Layout && Event.current.rawType != EventType.Repaint)
+            if (Event.current != null && !IsGraphPassiveGUIEvent(Event.current))
                 Undo.RecordObjects(MatEditor.targets, "Apply NB Portal preset");
             (selectedItem ?? _graphPortalItem).OnGUI();
-            EditorGUILayout.HelpBox("此 Portal 预设保留当前渲染队列；如需自动队列，可在 URP Advanced 中选择 Auto。", MessageType.Info);
+            MaterialProperty portal=PropertyInfoDic["_Portal_Toggle"].Property;
+            if(portal.hasMixedValue||portal.floatValue>0.5f)
+                EditorGUI.HelpBox(GetControlRect(40f),"此 Portal 预设保留当前渲染队列；如需调整队列，请使用 TA 中的 Queue Bias >> Current 控件。",MessageType.Info);
         }
 
         internal bool InitializeGraphChromaticInputs()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphChromaticReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphChromaticReady=Context.IsGraphMaterialHost&&SyncService.HasGraphChromaticEditSchema();
             if(!_sharedGraphChromaticReady)return false;_graphChromaticItem??=new ChromaticAberrationFeatureItem(this,null,true);return true;
@@ -1090,7 +1290,7 @@ namespace NBShaderEditor
         internal void DrawGraphChromaticInputs(ShaderGUIItem selectedItem=null)
         {
             if(!InitializeGraphChromaticInputs())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"Edit NB Chromatic");
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))Undo.RecordObjects(MatEditor.targets,"Edit NB Chromatic");
             (selectedItem??_graphChromaticItem).OnGUI();
         }
 
@@ -1187,6 +1387,7 @@ namespace NBShaderEditor
         BigBlockItem _graphBlendModeBlock;BlockItem _graphKeywordListBlock;bool _sharedGraphRemainingUIReady;
         internal bool InitializeGraphRemainingSharedUI()
         {
+            if(CanReuseGraphInitializedView)return _sharedGraphRemainingUIReady;
             Context??=new NBShaderGUIContext(this);SyncService??=new NBShaderSyncService(this);Context.Refresh();
             _sharedGraphRemainingUIReady=Context.IsGraphMaterialHost&&SyncService.HasGraphRemainingSharedUISchema();
             if(!_sharedGraphRemainingUIReady)return false;
@@ -1196,7 +1397,7 @@ namespace NBShaderEditor
         internal void DrawGraphRemainingSharedUI(ShaderGUIItem selectedItem=null)
         {
             if(!InitializeGraphRemainingSharedUI())return;
-            if(Event.current!=null&&Event.current.rawType!=EventType.Layout&&Event.current.rawType!=EventType.Repaint)Undo.RecordObjects(MatEditor.targets,"NB Shared Mode/Keywords");
+            if(Event.current!=null&&!IsGraphPassiveGUIEvent(Event.current))Undo.RecordObjects(MatEditor.targets,"NB Shared Mode/Keywords");
             if(selectedItem!=null){selectedItem.OnGUI();return;}
             _graphBlendModeBlock.OnGUI();if(Mats.Count==1)_graphKeywordListBlock.OnGUI();
         }
@@ -1210,7 +1411,7 @@ namespace NBShaderEditor
         {
             if(Context==null||!Context.IsGraphMaterialHost||Context.HasMixedMaterialHosts||
                 (singleTarget&&Mats.Count!=1)||SyncService==null)return false;
-            int pass=GraphGUIReadPass;
+            int pass=EnsureGraphGUIPureReadPass();
             if(pass==0)return SyncService.HasGraphRemainingSharedUISchema(); // All actions/backends fresh.
             if(_toolbarDisplayReadPass!=pass||_toolbarDisplayShaderRevision!=ShaderPropertyTypeCacheRevision)
             {

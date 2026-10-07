@@ -34,7 +34,7 @@ namespace NBShaderEditor
         int _graphSavedReadPass, _graphSavedShaderRevision;
         bool CanApplyGraphSavedProjectionForPaint(Material material,out bool wouldChange)
         {
-            int pass=_graphFreshPreflightDepth==0?_rootItem.GraphGUIReadPass:0;
+            int pass=_graphFreshPreflightDepth==0?_rootItem.EnsureGraphGUIPureReadPass():0;
             if(pass==0)return NBShaderFeatureLevelMaterialApplier.CanApplyGraphSavedSupportedGateTier(material,out wouldChange);
             if(_graphSavedReadPass!=pass||_graphSavedShaderRevision!=NBShaderRootItem.ShaderPropertyTypeCacheRevision)
             {
@@ -2418,7 +2418,7 @@ namespace NBShaderEditor
         }
         internal bool TryGetGraphQCMStencilDisplay(out bool enabled,out bool mixed)
         {
-            enabled=mixed=false;if(!HasGraphQCMEditSchema())return false;
+            enabled=mixed=false;if(!_rootItem.CanDisplayGraphQCMStencil)return false;
             var config=GetStencilValuesConfig();if(config==null||!config.ContainsKey("ParticleBaseDefault"))return false;
             var values=config.GetStencilValues("ParticleBaseDefault");if(values==null)return false;
             bool first=true;
@@ -3197,7 +3197,7 @@ namespace NBShaderEditor
         }
         internal bool TryGetGraphBaseBackColorDisplay(out bool enabled,out bool mixed)
         {
-            enabled=mixed=false;if(!HasGraphBaseBackColorEditSchema())return false;bool first=true;
+            enabled=mixed=false;if(!_rootItem.CanDisplayGraphBaseBackColor)return false;bool first=true;
             foreach(ShaderFlagsBase flags in _rootItem.ShaderFlags)
             {bool current=flags.CheckFlagBits(NBShaderFlags.FLAG_BIT_PARTICLE_BACKCOLOR,index:0);if(first){enabled=current;first=false;}else mixed|=enabled!=current;}
             return true;
@@ -3461,7 +3461,7 @@ namespace NBShaderEditor
         bool _graphResetPaintAccepted;
         internal bool HasGraphSharedResetSchema()
         {
-            int pass=_graphFreshPreflightDepth==0?_rootItem.GraphGUIReadPass:0;
+            int pass=_graphFreshPreflightDepth==0?_rootItem.EnsureGraphGUIPureReadPass():0;
             if(pass==0)return HasGraphSharedResetSchemaFresh();
             if(_graphResetPaintPass!=pass||_graphResetPaintShaderRevision!=NBShaderRootItem.ShaderPropertyTypeCacheRevision)
             {
@@ -3611,7 +3611,7 @@ namespace NBShaderEditor
         bool _graphRemainingPaintAccepted;
         internal bool HasGraphRemainingSharedUISchema()
         {
-            int pass=_graphFreshPreflightDepth==0?_rootItem.GraphGUIReadPass:0;
+            int pass=_graphFreshPreflightDepth==0?_rootItem.EnsureGraphGUIPureReadPass():0;
             if(pass==0)return HasGraphRemainingSharedUISchemaFresh();
             if(_graphRemainingPaintPass!=pass||_graphRemainingPaintShaderRevision!=NBShaderRootItem.ShaderPropertyTypeCacheRevision)
             {

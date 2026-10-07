@@ -14,12 +14,12 @@ namespace NBShaderEditor
         {
             // EditorPrefs foldouts can set GUI.changed without a Material edit.
             // Read the existing normalized intent before interactive events;
-            // Layout/Repaint must never normalize the saved gate values.
+            // Passive Layout/Repaint/MouseMove must never normalize the saved gate values.
             System.Collections.Generic.Dictionary<Material, NBShader.NBShaderMaterialIntentResult> before = null;
             System.Collections.Generic.Dictionary<Material, NBShader.NBShaderPassIntent> beforeBack = null;
             System.Collections.Generic.Dictionary<Material,float> beforeSurface=null;
             System.Collections.Generic.Dictionary<Material,float> beforeBlend=null;
-            bool interactive = Event.current != null && Event.current.type != EventType.Layout && Event.current.type != EventType.Repaint;
+            bool interactive = Event.current != null && !NBShaderRootItem.IsGraphPassiveGUIEvent(Event.current);
             if (interactive)
             {
                 beforeBlend=new System.Collections.Generic.Dictionary<Material,float>();
@@ -79,10 +79,11 @@ namespace NBShaderEditor
             }
             // URP's nested GUI owns surface state; this outer GUI owns only
             // the original NB SixWay keywords. Sync immediately on edits.
+            bool passiveSyncChanged=false;
             foreach (UnityEngine.Object target in materialEditor.targets)
                 if (target is Material material)
                 {
-                    SyncSixWayKeywords(material);
+                    if(interactive||graphEdited||!GraphPassiveInputsUnchanged)passiveSyncChanged|=SyncSixWayKeywordsWithChange(material);
                     NBShader.NBShaderPassIntent oldBack, newBack;
                     if (graphEdited && beforeBack != null && beforeBack.TryGetValue(material, out oldBack) &&
                         NBShaderSyncService.TryReadGraphSavedOwnedBackFirstPassIntent(material, out newBack) &&
@@ -99,6 +100,7 @@ namespace NBShaderEditor
                         if (changed) EditorUtility.SetDirty(material);
                     }
                 }
+            CompleteGraphGUIInputWitness(passiveSyncChanged);
         }
 
         static bool SameIntentKeywords(string[] before, string[] after)
@@ -129,9 +131,10 @@ namespace NBShaderEditor
             }
         }
 
-        internal static void SyncSixWayKeywords(Material material)
+        internal static void SyncSixWayKeywords(Material material)=>SyncSixWayKeywordsWithChange(material);
+        static bool SyncSixWayKeywordsWithChange(Material material)
         {
-            if (material == null) return;
+            if (material == null) return false;
             // Same authority as Tier transactions: final sync cannot reopen a filtered SV_Depth variant.
             bool overrideDepthChanged;
             NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedOverrideDepth(material, out overrideDepthChanged);
@@ -139,7 +142,7 @@ namespace NBShaderEditor
             // passive final sync never writes derived Float gates or raw intent.
             bool declaredChanged;
             NBShaders2.Editor.FeatureLevel.NBShaderFeatureLevelMaterialApplier.ApplyGraphSavedDeclaredKeywords(material,out declaredChanged);
-
+            return overrideDepthChanged||declaredChanged;
         }
 
         static void SetExistingKeyword(Material material, string keyword, bool enabled)
