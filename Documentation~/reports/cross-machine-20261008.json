@@ -1,0 +1,85 @@
+{
+  "savedLocalDate": "2026-10-08",
+  "savedUTC": "2026-10-08T14:51:48.140377+00:00",
+  "purpose": "Cross-machine checkpoint requested by user; commit and push local contents with LFS",
+  "branch": "codex/nb-fx-vfxgraph-implementation",
+  "preTransferHeads": {
+    "main": "d244d119fb3a5b995531141a95fe78ea066f6176",
+    "package": "9e7a3113be1406638677cf4c4c27a33ad1fd10a1"
+  },
+  "environment": {
+    "unity": "6000.3.25f1",
+    "URP": "17.3.0",
+    "ShaderGraph": "17.3.0",
+    "VFXGraph": "17.3.0",
+    "graphicsAPI": "Direct3D11",
+    "pipelinePackage": "0.7.0-exp.1"
+  },
+  "G3": "not released",
+  "G4": "not released",
+  "fullMeshGatePassed": false,
+  "formalVFXStarted": false,
+  "guiAcceptance": {
+    "userSteering": "差不多就可以了吧，我看已经很接近了",
+    "report": "gui-parity-20261008.html",
+    "microOptimizationStopped": true,
+    "runtimeMainVerification": "Final live main CLI timed out; actual final evidence from exact-source existing isolation"
+  },
+  "shaderlabMainAlignment": {
+    "mainProjectBaseline": "57a0604a8625ce171bc28f33d7e2472f97bc13b8",
+    "mainPackageBaseline": "26917c03709830fc62b12fa466e38862840cfde2",
+    "precision12Paired": {
+      "passed": 5,
+      "failed": 7,
+      "classification": "STRICT_MICRODIFFERENCE_RETAINED_FOR_MANUAL_ACCEPTANCE",
+      "maxRGBA": 1.9431114196777344e-05
+    },
+    "pairedWindowsPlayer": {
+      "passed": 8,
+      "failed": 0,
+      "stagesPerEndpoint": 66,
+      "allRGBAZero": true,
+      "bothActualWindowsPlayerExit0": true,
+      "sourceStagePlayerLocksBeforeAfter": true,
+      "defaultLightingEnumExecution": "UNOBSERVED",
+      "originalOffline3P5F": "Retained, corrected C#float32 stats offline without threshold changes"
+    },
+    "graphCore11": {
+      "passed": 6,
+      "failed": 5,
+      "normalMicroF": 4,
+      "normalMaxHalfDelta": 0.0009765625,
+      "GUIConstructorMigrationF": 1,
+      "noThresholdChange": true
+    },
+    "rootRestorationCommits": [
+      "3e53d069",
+      "4ed83587",
+      "88edfb87"
+    ],
+    "report": "D:\\UnityProject\\NBUnityProject\\Packages\\NB_FX\\Documentation~\\reports\\shaderlab-main-alignment-20261006.html"
+  },
+  "humanFilesSavedNotRetested": [
+    "Assets/NBShaderSamples/NBShaderSamples/Distort/Refraction.mat",
+    "Packages/NB_FX/NBShaders2/ShaderGraph/Samples/NBGraphVFXMeshMinimum.vfx"
+  ],
+  "profilerCapture": {
+    "path": "ProfilerCaptures/NBUnityProject_2026-10-07_12-17-17.data",
+    "bytes": 1156368528,
+    "LFSRequired": true,
+    "shaderIdentityAtCaptureUnproven": true
+  },
+  "transport": {
+    "trackedReportsAndAssets": "Transferred via both Git repos; LFS pull required",
+    "originalUtMp": "Not transferred via Git. Includes prior isolated Editor project, raw captures, CLI scripts and many original XML/logs. Do not claim original paths/PIDs exist on new machine.",
+    "newValidation": "Use existing/new ordinary isolation project on target machine, no Git worktree creation without specific approval",
+    "allTests": "Assets/Tests/NB_FX outside package"
+  },
+  "next": "Current combined Mesh source: human acceptance and G3/G4 remaining scope audit; formal VFX afterward, HDRP/lower versions last",
+  "constraints": [
+    "No reset/clean, no destructive overwrite",
+    "Strict failures and separate categories retained",
+    "No new push after this authorized migration unless user requests",
+    "Root alone controls Unity serially; delegate readonly audits and scoped work"
+  ]
+}

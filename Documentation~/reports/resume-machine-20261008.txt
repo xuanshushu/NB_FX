@@ -1,0 +1,45 @@
+请接任 NB_FX 重构与验证的主 Agent，在这台机器继续工作。不要读取旧会话全部历史；先读取此文件及指定的简洁报告，按需定向追证据。
+
+仓库与现场
+- 主仓：https://github.com/xuanshushu/NBUnityProject
+- 子模块 Packages/NB_FX：https://github.com/xuanshushu/NB_FX.git
+- 两仓分支：codex/nb-fx-vfxgraph-implementation。
+- 原机器工程 D:/UnityProject/NBUnityProject 只是来源路径；本机先定位实际 clone 和 manifest-linked package，检查实时 Git 状态、HEAD/gitlink 与 LFS，不硬编码原路径。
+- 迁移前 GUI 收口提交：主仓 d244d119fb3a5b995531141a95fe78ea066f6176；NB_FX 9e7a3113be1406638677cf4c4c27a33ad1fd10a1。本次迁移 checkpoint 在这些提交之后；最终推送的 SHA 以用户提供的回执、远端当前分支及主仓 gitlink 为准。
+- Git LFS 必须启用。先同步主仓，再 git submodule update --init --recursive；分别执行 git lfs pull（主仓和 Packages/NB_FX）。已有本机修改时不能 reset/clean/强制切分支。不要创建新 Git worktree。
+- 验证环境 Unity 6000.3.25f1 / URP、ShaderGraph、VFXGraph 17.3.0 / Windows D3D11。主仓 manifest/lock/ProjectVersion 已随迁移 checkpoint 保存。Pipeline 0.7.0-exp.1 是原现场已有依赖。
+
+先读
+1. 主工程 AGENTS.md、.codex/rules.md、.codex/project.md 和相关目录 AGENTS.md。
+2. Packages/NB_FX/Documentation~/reports/cross-machine-20261008.json。
+3. gui-parity-20261008.html（GUI 性能最终收口）、manual-gui-20261007.html（改名、原 GUI、测试迁移）、shaderlab-main-alignment-20261006.html（原 ShaderLab 与 main 的严格对照）。
+4. mesh-acceptance-20261006.html、mesh-player-first-20261006.html、mesh-runtime-owner-20261005.html、mesh-runtime-quality-dispatch-20261005.html 及 G3/G4 Gate 文档，判断剩余范围。报告缺项不能当通过。
+5. 较早 resume/handoff 仅按问题定向读取。旧“仅计划”、旧 SHA、“与已推送 HEAD 对齐”不能覆盖后续已授权进展。
+
+目标与已接受范围
+- 先完成普通 Mesh 的完整 ShaderGraph 功能对照、组合源必要回归及 G3/G4 审核，之后正式 VFX T08/G5、T09/G6，HDRP/低版本最后。URP 常规 Mesh 产品继续原 NBShader 路径。
+- Graph 已改为 NBShader_VFX.shadergraph，Shader 菜单 NB FX/Shader Graph/NBShader_VFX，GUID 63c742d3d39d403693767ca92e94d789 保留。
+- 原 NB 六个 GUI 分组已恢复，URP SurfaceOptions/SurfaceInputs 套层已移除，沿用现有 GUI/Resolver/Flags/HLSL；不要另建平行系统。
+- 用户已接受当前 GUI 性能接近程度，停止微调。热态展开 GUI 区域约 5.79ms/11.3KB，对照原 ShaderLab 约 5.41ms/11.1KB；属性收集单列，不能当整帧指标。真实拖动输入仍 53–74ms，已留档，不再反复追这点成本。
+- 精确输入 witness 复用只读 GUI 结果，所有实际写入口仍实时完整检查；Undo dedup 与 Context exact-refresh 两个无收益实验已回退。
+- 最终 7 文件 SHA 与现有隔离工程一致、实际 URP 初始化后测量、最终编译零错误。最终主工程 live CLI 超时，不能把隔离验证写成最终主工程实时验证。
+- Epoch 501 条记录含 481 通过断言+20观察；Mouse 237通过断言；Clipboard201记录含200通过断言+1观察；功能13记录含12通过断言+1观察。重叠套件不相加作功能完成数。
+- 原 ShaderLab/HLSL/Pass/Flags 定义本 GUI 片未改。main 对照历史 95 文件/37核心方法不变与 Player8配对完全一致等仅按报告限定范围解释；7 Native 微差、4 Graph 微差与其余首帧/未观察项保留，不能宣布所有原生路径完全一致。
+- 测试已经移至 Assets/Tests/NB_FX；以后测试代码和专用测试资产放 Assets，下发 package 不放回 Tests。
+
+本次保存的人工现场
+- Refraction.mat 当前人工测试状态改用 Graph，queue/flags/参数也改变；如实保存，尚未对该新增状态重新验证，不要擅自还原。
+- NBGraphVFXMeshMinimum.vfx 有 Unity 序列化及大量新增 slot 数据，保存实际文件；它不是正式 VFX Gate 通过证据。
+- 原 Profiler 捕获在主仓 ProfilerCaptures，约1.16GB，走 LFS；证据中原 capture shader 身份没有证明，不从当前材质倒推。
+- 原 .utmp 隔离工程、CLI 脚本、大量原始 raw/XML 和 CURRENT_STATE 是本机忽略文件，不经本次 Git 推送迁移。已选择归档到 Documentation~/reports 的证据会同步；不要声称原隔离工程、PID、原始绝对路径在新机可用。需要新验证时检查本机占用并建立/复用普通隔离工程，不能未经批准创建 Git worktree。缺少原始证据标为未取得，不能伪造。
+- 迁移前 outgoing 审查发现 43 个测试文件含原 D:/.../.utmp 隔离路径硬保护。它们不是产品依赖；新机不能直接宣称全 suite 可运行。需要移植时明确绑定新隔离工程并保留路径/TAI/占用保护，不能泛化删除 guard。
+
+下一步
+- 用户正在人工验收。先报告新机实时现场及当前组合源的真实缺口；优先查最终 Gate/human ledger 的剩余功能、默认 Pass/DepthNormals/SSAO、NBPostprocess Controller/Manager、运行时 Tier、组合、Player、变体/SVC/AssetBundle与性能范围，避免重跑已通过且源码未受影响的项目。
+- G3/G4 尚未正式放行，formal VFX 未开始。CA 原生 ShaderLab/SRP/GPU 故障单独记录，不能归入微差；Render 不可见/零响应、真实缺失、GPU故障、严格微差与首帧分别记录。
+- 微弱色差和首帧集中交人类验收，保持严格失败记录，不降 finite/visible/repeat/强响应/误差断言、不把空图/NaN当一致、不用缺XML或崩溃当通过。
+- 多 Agent 工作流：主 Agent 负责串行 Unity 操作和最终集成；SubAgent 做只读缺口/证据审查或私有小片任务，返回摘要，避免全历史和大型 XML/捕获清单塞满上下文。
+- 本任务用户已明确授权 Unity 操作及 Unity CLI/Pipeline 优先，MCP 作为备选，这项具体授权覆盖 AGENTS.md 的默认接口优先级；先读本机可用能力。任何可能刷新/编译/DomainReload前检查已加载场景，TAI 场景无明确授权不得触发 DomainReload；不反复打开主工程，不改无关 Assets/ProjectSettings。
+- 本次明确授权的推送只针对迁移 checkpoint；之后继续本地可回退切片提交，未经再次请求不要 push。
+
+先报告实时 Git/LFS/工程状态和第一项续接动作，再直接推进已授权的 Mesh 收尾工作。
